@@ -41,11 +41,12 @@
             void refreshSerialPort();
             void calcValue();
             void readCalibration();
+            void writeCalibration();
             void readReady();
             void timeout();
             void timeoutChanged(int newTimeout);
             void show();
-            void request(QModbusDataUnit::RegisterType rtype, int offset, int count);
+            void request(QModbusDataUnit& unit, bool isRead = true);
       
         private:
             Ui::ConfiguratorWindow* ui;
@@ -54,7 +55,7 @@
             QPanel*                 m_panel;
             QTimer*                 m_calc_timer;
             QTimer*                 m_timeout_timer;
-            QVector<quint16>        m_calib_data;
             QVector<QLineEdit*>     m_input_channel_cell;
+            QVector<QLineEdit*>     m_calib_cell;
     };
 #endif // CONFIGURATORWINDOW_H

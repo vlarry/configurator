@@ -31,6 +31,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
                              SLOT(timeoutChanged(int)));
     connect(m_calc_timer, &QTimer::timeout, this, &ConfiguratorWindow::calcValue);
     connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::readCalibration);
+    connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::writeCalibration);
     
     refreshSerialPort();
     
@@ -189,6 +190,25 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_input_channel_cell.append(ui->le_C_Ch_23);
     m_input_channel_cell.append(ui->le_fi_Ch_23);
     m_input_channel_cell.append(ui->le_R2_Ch_23);
+    
+    m_calib_cell.append(ui->leTextCalibFactorCurrentPhase_A);
+    m_calib_cell.append(ui->leTextCalibFactorCurrentPhase_B);
+    m_calib_cell.append(ui->leTextCalibFactorCurrentPhase_C);
+    m_calib_cell.append(ui->leTextCalibFactorCurrent3I0);
+    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_A);
+    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_B);
+    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_C);
+    m_calib_cell.append(ui->leTextCalibFactorPower3I0);
+    m_calib_cell.append(ui->leTextCalibFactorPowerTotal);
+    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_A_B);
+    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_B_C);
+    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_C_A);
+    m_calib_cell.append(ui->leTextCalibFactorPower3U0x);
+    m_calib_cell.append(ui->leTextCalibFactorPowerUAx);
+    m_calib_cell.append(ui->leTextCalibFactorPowerUBx);
+    m_calib_cell.append(ui->leTextCalibFactorPowerUCx);
+    m_calib_cell.append(ui->leTextCalibFactorChannel3U0);
+    m_calib_cell.append(ui->leTextCalibFactorChannel3Us);
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -231,7 +251,7 @@ void ConfiguratorWindow::serialPortCtrl()
             return;
         }
         
-//        m_calc_timer->start(ui->sboxTimeoutCalc->value());
+        m_calc_timer->start(ui->sboxTimeoutCalc->value());
     }
     else
     {
@@ -278,14 +298,41 @@ void ConfiguratorWindow::calcValue()
 {
     m_request_type = CALC_TYPE;
     
-    request(QModbusDataUnit::InputRegisters, 64, 110);
+    QModbusDataUnit unit(QModbusDataUnit::InputRegisters, 64, 110);
+    
+    request(unit);
 }
 //----------------------------------------
 void ConfiguratorWindow::readCalibration()
 {
     m_request_type = CALIB_TYPE;
     
-    request(QModbusDataUnit::InputRegisters, 362, 36);
+    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 362, 36);
+    
+    request(unit);
+}
+//-----------------------------------------
+void ConfiguratorWindow::writeCalibration()
+{
+    QVector<quint16> data;
+    
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+    
+    for(quint8 i = 0; i < m_calib_cell.count(); i++)
+    {
+        value.v = m_calib_cell.at(i)->text().toFloat();
+        
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+    
+    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 362, data);
+    
+    request(unit, false);
 }
 //----------------------------------
 void ConfiguratorWindow::readReady()
@@ -301,7 +348,26 @@ void ConfiguratorWindow::readReady()
         m_panel->setData(reply->result().values());
     else if(m_request_type == CALIB_TYPE)
     {
-        
+        QVector<quint16> data = reply->result().values();
+                
+        if(data.count() == 36)
+        {
+            union
+            {
+                quint16 b[2];
+                float   v;
+            } value;
+            
+            for(quint8 i = 0, j = 0; i < data.count() - 1; i += 2, j++)
+            {
+                value.b[0] = data.at(i + 1);
+                value.b[1] = data.at(i);
+                
+                m_calib_cell.at(j)->setText(QString::number(value.v, 'f', 4));
+            }
+        }
+        else
+            statusBar()->showMessage(tr("Получены не все данные"));
     }
 }
 //--------------------------------
@@ -327,14 +393,17 @@ void ConfiguratorWindow::show()
     setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
 }
-//------------------------------------------------------------------------------------------
-void ConfiguratorWindow::request(QModbusDataUnit::RegisterType rtype, int offset, int count)
+//------------------------------------------------------------------
+void ConfiguratorWindow::request(QModbusDataUnit& unit, bool isRead)
 {
     m_timeout_timer->start(ui->sboxTimeout->value());
     
-    QModbusDataUnit unit(rtype, offset, count);
+    QModbusReply* reply;
     
-    QModbusReply* reply = m_modbusDevice->sendReadRequest(unit, ui->sboxSlaveID->value());
+    if(isRead)
+        reply = m_modbusDevice->sendReadRequest(unit, ui->sboxSlaveID->value());
+    else
+        reply = m_modbusDevice->sendWriteRequest(unit, ui->sboxSlaveID->value());
     
     if(reply)
     {
