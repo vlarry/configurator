@@ -26,15 +26,15 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     
     m_protect_mtz_group = new QButtonGroup(ui->tabProtectionMTZ);
     
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ31);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ32);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ33);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ34);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ1);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ2);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ3);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ4);
     
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ31, 0);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ32, 1);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ33, 2);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ34, 3);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ1, 0);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ2, 1);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ3, 2);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ4, 3);
     
     protectMTZChangedID(0);
     
@@ -375,10 +375,10 @@ void ConfiguratorWindow::writeProtection()
     
     QVector<quint16> data;
     
-    data.append((quint16)ui->cboxProtectionMTZ31_Ctrl->currentIndex());
-    data.append((quint16)ui->cboxProtectionMTZ32_Ctrl->currentIndex());
-    data.append((quint16)ui->cboxProtectionMTZ33_Ctrl->currentIndex());
-    data.append((quint16)ui->cboxProtectionMTZ34_Ctrl->currentIndex());
+    data.append((quint16)ui->cboxProtectionMTZ1_Ctrl->currentIndex());
+    data.append((quint16)ui->cboxProtectionMTZ2_Ctrl->currentIndex());
+    data.append((quint16)ui->cboxProtectionMTZ3_Ctrl->currentIndex());
+    data.append((quint16)ui->cboxProtectionMTZ4_Ctrl->currentIndex());
     
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, data);
     
@@ -427,8 +427,8 @@ void ConfiguratorWindow::readReady()
             {
                 quint16 value = data.at(i);
                 
-                QComboBox* cbItem = (i == 0)?ui->cboxProtectionMTZ31_Ctrl:(i == 1)?ui->cboxProtectionMTZ32_Ctrl:
-                                    (i == 2)?ui->cboxProtectionMTZ33_Ctrl:ui->cboxProtectionMTZ34_Ctrl;
+                QComboBox* cbItem = (i == 0)?ui->cboxProtectionMTZ1_Ctrl:(i == 1)?ui->cboxProtectionMTZ2_Ctrl:
+                                    (i == 2)?ui->cboxProtectionMTZ3_Ctrl:ui->cboxProtectionMTZ4_Ctrl;
                 
                 cbItem->setCurrentIndex(value);
             }
@@ -458,9 +458,9 @@ void ConfiguratorWindow::show()
     setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
     
-    ui->gboxProtectionPropertiesMTZ32->hide();
-    ui->gboxProtectionPropertiesMTZ33->hide();
-    ui->gboxProtectionPropertiesMTZ34->hide();
+    ui->gboxProtectionPropertiesMTZ2->hide();
+    ui->gboxProtectionPropertiesMTZ3->hide();
+    ui->gboxProtectionPropertiesMTZ4->hide();
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::request(QModbusDataUnit& unit, bool isRead)
@@ -516,15 +516,15 @@ void ConfiguratorWindow::protectMTZChangedID(int id)
 {
     if(id >= 0 && id < 4)
     {
-        ui->gboxProtectionPropertiesMTZ31->hide();
-        ui->gboxProtectionPropertiesMTZ32->hide();
-        ui->gboxProtectionPropertiesMTZ33->hide();
-        ui->gboxProtectionPropertiesMTZ34->hide();
+        ui->gboxProtectionPropertiesMTZ1->hide();
+        ui->gboxProtectionPropertiesMTZ2->hide();
+        ui->gboxProtectionPropertiesMTZ3->hide();
+        ui->gboxProtectionPropertiesMTZ4->hide();
         
-        ui->pbtnProtectionMTZ31->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionMTZ32->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionMTZ33->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionMTZ34->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionMTZ1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionMTZ2->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionMTZ3->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionMTZ4->setStyleSheet("QPushButton { background: none }");
         
         QPushButton* btn = qobject_cast<QPushButton*>(m_protect_mtz_group->button(id));
         
@@ -533,19 +533,19 @@ void ConfiguratorWindow::protectMTZChangedID(int id)
         switch(id)
         {
             case 0:
-                ui->gboxProtectionPropertiesMTZ31->show();
+                ui->gboxProtectionPropertiesMTZ1->show();
             break;
             
             case 1:
-                ui->gboxProtectionPropertiesMTZ32->show();
+                ui->gboxProtectionPropertiesMTZ2->show();
             break;
             
             case 2:
-                ui->gboxProtectionPropertiesMTZ33->show();
+                ui->gboxProtectionPropertiesMTZ3->show();
             break;
             
             case 3:
-                ui->gboxProtectionPropertiesMTZ34->show();
+                ui->gboxProtectionPropertiesMTZ4->show();
             break;
         }
     }

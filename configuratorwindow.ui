@@ -1415,9 +1415,9 @@
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QPushButton" name="pbtnProtectionMTZ31">
+                     <widget class="QPushButton" name="pbtnProtectionMTZ1">
                       <property name="text">
-                       <string>МТЗ31</string>
+                       <string>МТЗ1</string>
                       </property>
                       <property name="checkable">
                        <bool>false</bool>
@@ -1425,9 +1425,9 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pbtnProtectionMTZ32">
+                     <widget class="QPushButton" name="pbtnProtectionMTZ2">
                       <property name="text">
-                       <string>МТЗ32</string>
+                       <string>МТЗ2</string>
                       </property>
                       <property name="checkable">
                        <bool>false</bool>
@@ -1435,9 +1435,9 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pbtnProtectionMTZ33">
+                     <widget class="QPushButton" name="pbtnProtectionMTZ3">
                       <property name="text">
-                       <string>МТЗ33</string>
+                       <string>МТЗ3</string>
                       </property>
                       <property name="checkable">
                        <bool>false</bool>
@@ -1445,9 +1445,9 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pbtnProtectionMTZ34">
+                     <widget class="QPushButton" name="pbtnProtectionMTZ4">
                       <property name="text">
-                       <string>МТЗ34</string>
+                       <string>МТЗ4</string>
                       </property>
                       <property name="checkable">
                        <bool>false</bool>
@@ -1457,7 +1457,7 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ31">
+                   <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ1">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1518,7 +1518,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="vltProtectionMTZ31">
                        <item>
-                        <widget class="QComboBox" name="cboxProtectionMTZ31_Ctrl">
+                        <widget class="QComboBox" name="cboxProtectionMTZ1_Ctrl">
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
@@ -1551,7 +1551,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ31_CurrentStart">
+                        <widget class="QLineEdit" name="leProtectionMTZ1_CurrentStart">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1579,7 +1579,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ31_Timeout">
+                        <widget class="QLineEdit" name="leProtectionMTZ1_Timeout">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1607,7 +1607,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ31_EnterBlocking">
+                        <widget class="QLineEdit" name="leProtectionMTZ1_EnterBlocking">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1640,7 +1640,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ32">
+                   <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ2">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1701,7 +1701,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_2">
                        <item>
-                        <widget class="QComboBox" name="cboxProtectionMTZ32_Ctrl">
+                        <widget class="QComboBox" name="cboxProtectionMTZ2_Ctrl">
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
@@ -1734,7 +1734,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ32_CurrentStart">
+                        <widget class="QLineEdit" name="leProtectionMTZ2_CurrentStart">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1762,7 +1762,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ32_Timeout">
+                        <widget class="QLineEdit" name="leProtectionMTZ2_Timeout">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1790,7 +1790,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ32_Acceleration">
+                        <widget class="QLineEdit" name="leProtectionMTZ2_Acceleration">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1823,7 +1823,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ33">
+                   <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ3">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1884,7 +1884,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_3">
                        <item>
-                        <widget class="QComboBox" name="cboxProtectionMTZ33_Ctrl">
+                        <widget class="QComboBox" name="cboxProtectionMTZ3_Ctrl">
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
@@ -1927,7 +1927,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ33_CurrentStart">
+                        <widget class="QLineEdit" name="leProtectionMTZ3_CurrentStart">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1955,7 +1955,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ33_Timeout">
+                        <widget class="QLineEdit" name="leProtectionMTZ3_Timeout">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1983,7 +1983,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ33_Factor">
+                        <widget class="QLineEdit" name="leProtectionMTZ3_Factor">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -2016,7 +2016,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ34">
+                   <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ4">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2077,7 +2077,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_4">
                        <item>
-                        <widget class="QComboBox" name="cboxProtectionMTZ34_Ctrl">
+                        <widget class="QComboBox" name="cboxProtectionMTZ4_Ctrl">
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
@@ -2110,7 +2110,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ34_CurrentStart">
+                        <widget class="QLineEdit" name="leProtectionMTZ4_CurrentStart">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -2138,7 +2138,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ34_Timeout">
+                        <widget class="QLineEdit" name="leProtectionMTZ4_Timeout">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -2166,7 +2166,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="leProtectionMTZ34_EnterBlocking">
+                        <widget class="QLineEdit" name="leProtectionMTZ4_EnterBlocking">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
