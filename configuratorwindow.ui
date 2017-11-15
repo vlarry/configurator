@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>965</width>
+    <width>1071</width>
     <height>630</height>
    </rect>
   </property>
@@ -1518,7 +1518,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="vltProtectionMTZ31">
                        <item>
-                        <widget class="QComboBox" name="cboxPortName_2">
+                        <widget class="QComboBox" name="cboxProtectionMTZ31_Ctrl">
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
@@ -1530,53 +1530,107 @@
                          </property>
                          <item>
                           <property name="text">
-                           <string>Нет значения</string>
+                           <string>Нет зн.</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>С блокировкой</string>
+                           <string>Откл</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Включить</string>
+                           <string>Вкл</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Отключить</string>
+                           <string>С блокир.</string>
                           </property>
                          </item>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit">
+                        <widget class="QLineEdit" name="leProtectionMTZ31_CurrentStart">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
                          </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_2">
+                        <widget class="QLineEdit" name="leProtectionMTZ31_Timeout">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
                          </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_3">
+                        <widget class="QLineEdit" name="leProtectionMTZ31_EnterBlocking">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
@@ -1633,9 +1687,9 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_2">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_Acceleration">
                          <property name="text">
-                          <string>Ввод блокировки</string>
+                          <string>Ввод ускор</string>
                          </property>
                          <property name="scaledContents">
                           <bool>true</bool>
@@ -1647,7 +1701,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_2">
                        <item>
-                        <widget class="QComboBox" name="cboxPortName_3">
+                        <widget class="QComboBox" name="cboxProtectionMTZ32_Ctrl">
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
@@ -1659,53 +1713,107 @@
                          </property>
                          <item>
                           <property name="text">
-                           <string>Нет значения</string>
+                           <string>Нет зн.</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>С блокировкой</string>
+                           <string>Откл</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Включить</string>
+                           <string>Вкл</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Отключить</string>
+                           <string>С ускор.</string>
                           </property>
                          </item>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_4">
+                        <widget class="QLineEdit" name="leProtectionMTZ32_CurrentStart">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
                          </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_5">
+                        <widget class="QLineEdit" name="leProtectionMTZ32_Timeout">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
                          </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_6">
+                        <widget class="QLineEdit" name="leProtectionMTZ32_Acceleration">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
@@ -1762,9 +1870,9 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_3">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_Factor">
                          <property name="text">
-                          <string>Ввод блокировки</string>
+                          <string>Множитель</string>
                          </property>
                          <property name="scaledContents">
                           <bool>true</bool>
@@ -1776,7 +1884,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_3">
                        <item>
-                        <widget class="QComboBox" name="cboxPortName_4">
+                        <widget class="QComboBox" name="cboxProtectionMTZ33_Ctrl">
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
@@ -1788,53 +1896,117 @@
                          </property>
                          <item>
                           <property name="text">
-                           <string>Нет значения</string>
+                           <string>Нет зн.</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>С блокировкой</string>
+                           <string>Откл</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Включить</string>
+                           <string>Х-ка A</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Отключить</string>
+                           <string>Х-ка B</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Х-ка С</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Вкл</string>
                           </property>
                          </item>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_7">
+                        <widget class="QLineEdit" name="leProtectionMTZ33_CurrentStart">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
                          </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_8">
+                        <widget class="QLineEdit" name="leProtectionMTZ33_Timeout">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
                          </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_9">
+                        <widget class="QLineEdit" name="leProtectionMTZ33_Factor">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
@@ -1881,9 +2053,9 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="lblTextProtectionMTZ_Timeout_4">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_DirStart">
                          <property name="text">
-                          <string>Задержка</string>
+                          <string>Напр. пуска</string>
                          </property>
                          <property name="scaledContents">
                           <bool>true</bool>
@@ -1891,9 +2063,9 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_4">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_Angle">
                          <property name="text">
-                          <string>Ввод блокировки</string>
+                          <string>Угол</string>
                          </property>
                          <property name="scaledContents">
                           <bool>true</bool>
@@ -1905,7 +2077,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_4">
                        <item>
-                        <widget class="QComboBox" name="cboxPortName_5">
+                        <widget class="QComboBox" name="cboxProtectionMTZ34_Ctrl">
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
@@ -1917,53 +2089,107 @@
                          </property>
                          <item>
                           <property name="text">
-                           <string>Нет значения</string>
+                           <string>Нет зн.</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>С блокировкой</string>
+                           <string>Откл</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Включить</string>
+                           <string>С пуск.</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Отключить</string>
+                           <string>Направл.</string>
                           </property>
                          </item>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_10">
+                        <widget class="QLineEdit" name="leProtectionMTZ34_CurrentStart">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
                          </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_11">
+                        <widget class="QLineEdit" name="leProtectionMTZ34_Timeout">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
                          </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_12">
+                        <widget class="QLineEdit" name="leProtectionMTZ34_EnterBlocking">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>100</width>
                            <height>100</height>
                           </size>
+                         </property>
+                         <property name="inputMask">
+                          <string>000</string>
+                         </property>
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>3</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>

@@ -362,12 +362,27 @@ void ConfiguratorWindow::writeCalibration()
 //---------------------------------------
 void ConfiguratorWindow::readProtection()
 {
+    m_request_type = PROTECTION_TYPE;
     
+    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, 4);
+    
+    request(unit);
 }
 //----------------------------------------
 void ConfiguratorWindow::writeProtection()
 {
+    m_request_type = EMPTY_TYPE;
     
+    QVector<quint16> data;
+    
+    data.append((quint16)ui->cboxProtectionMTZ31_Ctrl->currentIndex());
+    data.append((quint16)ui->cboxProtectionMTZ32_Ctrl->currentIndex());
+    data.append((quint16)ui->cboxProtectionMTZ33_Ctrl->currentIndex());
+    data.append((quint16)ui->cboxProtectionMTZ34_Ctrl->currentIndex());
+    
+    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, data);
+    
+    request(unit, false);
 }
 //----------------------------------
 void ConfiguratorWindow::readReady()
@@ -399,6 +414,23 @@ void ConfiguratorWindow::readReady()
                 value.b[1] = data.at(i);
                 
                 m_calib_cell.at(j)->setText(QString::number(value.v, 'f', 4));
+            }
+        }
+    }
+    else if(m_request_type == PROTECTION_TYPE)
+    {
+        QVector<quint16> data = reply->result().values();
+        
+        if(data.count() == 4)
+        {
+            for(quint8 i = 0; i < data.count(); i++)
+            {
+                quint16 value = data.at(i);
+                
+                QComboBox* cbItem = (i == 0)?ui->cboxProtectionMTZ31_Ctrl:(i == 1)?ui->cboxProtectionMTZ32_Ctrl:
+                                    (i == 2)?ui->cboxProtectionMTZ33_Ctrl:ui->cboxProtectionMTZ34_Ctrl;
+                
+                cbItem->setCurrentIndex(value);
             }
         }
     }

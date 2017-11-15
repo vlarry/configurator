@@ -26,7 +26,8 @@
     {
         EMPTY_TYPE,
         CALC_TYPE,
-        CALIB_TYPE
+        CALIB_TYPE,
+        PROTECTION_TYPE
     };
     //-------------------------------------------
     class ConfiguratorWindow: public QMainWindow
@@ -44,6 +45,8 @@
             void calcValue();
             void readCalibration();
             void writeCalibration();
+            void readProtection();
+            void writeProtection();
             void readReady();
             void timeout();
             void timeoutChanged(int newTimeout);
