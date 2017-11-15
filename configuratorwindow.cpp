@@ -8,7 +8,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_request_type(EMPTY_TYPE),
     m_panel(Q_NULLPTR),
     m_calc_timer(Q_NULLPTR),
-    m_timeout_timer(Q_NULLPTR)
+    m_timeout_timer(Q_NULLPTR),
+    m_protect_mtz_group(Q_NULLPTR)
 {
     ui->setupUi(this);
 
@@ -20,6 +21,24 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_modbusDevice  = new QModbusRtuSerialMaster(this);    
     m_calc_timer    = new QTimer;
     m_timeout_timer = new QTimer;
+
+    m_modbusDevice->setInterFrameDelay(5000);
+    
+    m_protect_mtz_group = new QButtonGroup(ui->tabProtectionMTZ);
+    
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ31);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ32);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ33);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ34);
+    
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ31, 0);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ32, 1);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ33, 2);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ34, 3);
+    
+    protectMTZChangedID(0);
+    
+    m_protect_mtz_group->setExclusive(true);
     
     connect(m_modbusDevice, SIGNAL(stateChanged(QModbusDevice::State)), this, 
                             SLOT(stateChanged(QModbusDevice::State)));
@@ -32,6 +51,11 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     connect(m_calc_timer, &QTimer::timeout, this, &ConfiguratorWindow::calcValue);
     connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::readCalibration);
     connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::writeCalibration);
+    connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::checkboxCalcTimeoutStateChanged);
+    connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalcChanged(int)));
+    connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
+    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::readProtection);
+    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::writeProtection);
     
     refreshSerialPort();
     
@@ -251,7 +275,8 @@ void ConfiguratorWindow::serialPortCtrl()
             return;
         }
         
-        m_calc_timer->start(ui->sboxTimeoutCalc->value());
+        if(ui->checkboxCalibTimeout->isChecked())
+            m_calc_timer->start(ui->sboxTimeoutCalc->value());
     }
     else
     {
@@ -334,6 +359,16 @@ void ConfiguratorWindow::writeCalibration()
     
     request(unit, false);
 }
+//---------------------------------------
+void ConfiguratorWindow::readProtection()
+{
+    
+}
+//----------------------------------------
+void ConfiguratorWindow::writeProtection()
+{
+    
+}
 //----------------------------------
 void ConfiguratorWindow::readReady()
 {
@@ -349,7 +384,7 @@ void ConfiguratorWindow::readReady()
     else if(m_request_type == CALIB_TYPE)
     {
         QVector<quint16> data = reply->result().values();
-                
+        
         if(data.count() == 36)
         {
             union
@@ -366,8 +401,6 @@ void ConfiguratorWindow::readReady()
                 m_calib_cell.at(j)->setText(QString::number(value.v, 'f', 4));
             }
         }
-        else
-            statusBar()->showMessage(tr("Получены не все данные"));
     }
 }
 //--------------------------------
@@ -392,6 +425,10 @@ void ConfiguratorWindow::show()
     
     setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
+    
+    ui->gboxProtectionPropertiesMTZ32->hide();
+    ui->gboxProtectionPropertiesMTZ33->hide();
+    ui->gboxProtectionPropertiesMTZ34->hide();
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::request(QModbusDataUnit& unit, bool isRead)
@@ -419,5 +456,65 @@ void ConfiguratorWindow::request(QModbusDataUnit& unit, bool isRead)
     else
     {
         statusBar()->showMessage(tr("Ошибка чтения: ") + m_modbusDevice->errorString(), 5000);
+    }
+}
+//------------------------------------------------------------------
+void ConfiguratorWindow::checkboxCalcTimeoutStateChanged(bool state)
+{
+    if(state)
+    {
+        m_calc_timer->start(ui->sboxTimeoutCalc->value());
+    }
+    else
+    {
+        m_calc_timer->stop();
+    }
+}
+//---------------------------------------------------
+void ConfiguratorWindow::timeCalcChanged(int newTime)
+{
+    if(m_calc_timer->isActive())
+    {
+        m_calc_timer->stop();
+        m_calc_timer->start(newTime);
+    }
+}
+//--------------------------------------------------
+void ConfiguratorWindow::protectMTZChangedID(int id)
+{
+    if(id >= 0 && id < 4)
+    {
+        ui->gboxProtectionPropertiesMTZ31->hide();
+        ui->gboxProtectionPropertiesMTZ32->hide();
+        ui->gboxProtectionPropertiesMTZ33->hide();
+        ui->gboxProtectionPropertiesMTZ34->hide();
+        
+        ui->pbtnProtectionMTZ31->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionMTZ32->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionMTZ33->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionMTZ34->setStyleSheet("QPushButton { background: none }");
+        
+        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_mtz_group->button(id));
+        
+        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+        
+        switch(id)
+        {
+            case 0:
+                ui->gboxProtectionPropertiesMTZ31->show();
+            break;
+            
+            case 1:
+                ui->gboxProtectionPropertiesMTZ32->show();
+            break;
+            
+            case 2:
+                ui->gboxProtectionPropertiesMTZ33->show();
+            break;
+            
+            case 3:
+                ui->gboxProtectionPropertiesMTZ34->show();
+            break;
+        }
     }
 }

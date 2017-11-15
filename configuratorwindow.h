@@ -13,6 +13,8 @@
     #include <QListWidget>
     #include <QTimer>
     #include <QSpinBox>
+    #include <QButtonGroup>
+    #include <QAbstractButton>
     #include "qpanel.h"
     //----------
     namespace Ui 
@@ -47,6 +49,9 @@
             void timeoutChanged(int newTimeout);
             void show();
             void request(QModbusDataUnit& unit, bool isRead = true);
+            void checkboxCalcTimeoutStateChanged(bool state);
+            void timeCalcChanged(int newTime);
+            void protectMTZChangedID(int id);
       
         private:
             Ui::ConfiguratorWindow* ui;
@@ -57,5 +62,6 @@
             QTimer*                 m_timeout_timer;
             QVector<QLineEdit*>     m_input_channel_cell;
             QVector<QLineEdit*>     m_calib_cell;
+            QButtonGroup*           m_protect_mtz_group;
     };
 #endif // CONFIGURATORWINDOW_H
