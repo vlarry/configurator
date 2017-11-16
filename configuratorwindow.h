@@ -22,12 +22,25 @@
         class ConfiguratorWindow;
     }
     //---------------
+    enum REQUEST_FUNC
+    {
+        EMPTY_FUNC,
+        CALCULATE_FUNC,
+        CALIBRATION_FUNC,
+        PROTECTION_FUNC
+    };
+    //---------------
     enum REQUEST_TYPE
     {
-        EMPTY_TYPE,
-        CALC_TYPE,
-        CALIB_TYPE,
-        PROTECTION_TYPE
+        READ_TYPE,
+        WRITE_TYPE
+    };
+    //------------------
+    struct request_cmd_t
+    {
+        REQUEST_TYPE    type;
+        REQUEST_FUNC    function;
+        QModbusDataUnit unit;
     };
     //-------------------------------------------
     class ConfiguratorWindow: public QMainWindow
@@ -51,20 +64,28 @@
             void timeout();
             void timeoutChanged(int newTimeout);
             void show();
-            void request(QModbusDataUnit& unit, bool isRead = true);
+            void request(request_cmd_t& cur_request);
             void checkboxCalcTimeoutStateChanged(bool state);
             void timeCalcChanged(int newTime);
             void protectMTZChangedID(int id);
+            void errorProtocol(QModbusDevice::Error error);
+            
+        private:
+            void block();
+            void unblock();
+            bool is_block() const;
       
         private:
             Ui::ConfiguratorWindow* ui;
             QModbusRtuSerialMaster* m_modbusDevice;
-            REQUEST_TYPE            m_request_type;
+            request_cmd_t           m_request;
             QPanel*                 m_panel;
             QTimer*                 m_calc_timer;
             QTimer*                 m_timeout_timer;
             QVector<QLineEdit*>     m_input_channel_cell;
             QVector<QLineEdit*>     m_calib_cell;
             QButtonGroup*           m_protect_mtz_group;
+            bool                    m_blocking;
+            QVector<request_cmd_t>  m_request_queue;
     };
 #endif // CONFIGURATORWINDOW_H

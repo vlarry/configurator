@@ -5,11 +5,11 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
     ui(new Ui::ConfiguratorWindow),
     m_modbusDevice(Q_NULLPTR),
-    m_request_type(EMPTY_TYPE),
     m_panel(Q_NULLPTR),
     m_calc_timer(Q_NULLPTR),
     m_timeout_timer(Q_NULLPTR),
-    m_protect_mtz_group(Q_NULLPTR)
+    m_protect_mtz_group(Q_NULLPTR),
+    m_blocking(false)
 {
     ui->setupUi(this);
 
@@ -22,7 +22,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_calc_timer    = new QTimer;
     m_timeout_timer = new QTimer;
 
-    m_modbusDevice->setInterFrameDelay(5000);
+    m_modbusDevice->setInterFrameDelay(10000);
     
     m_protect_mtz_group = new QButtonGroup(ui->tabProtectionMTZ);
     
@@ -44,10 +44,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
                             SLOT(stateChanged(QModbusDevice::State)));
     connect(ui->pbtnPortCtrl, SIGNAL(clicked()), this, SLOT(serialPortCtrl()));
     connect(ui->tbtnPortRefresh, SIGNAL(clicked()), this, SLOT(refreshSerialPort()));
-    connect(m_timeout_timer, &QTimer::timeout, this, 
-                            &ConfiguratorWindow::timeout);
-    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, 
-                             SLOT(timeoutChanged(int)));
+    connect(m_timeout_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeout);
+    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
     connect(m_calc_timer, &QTimer::timeout, this, &ConfiguratorWindow::calcValue);
     connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::readCalibration);
     connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::writeCalibration);
@@ -56,6 +54,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
     connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::readProtection);
     connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::writeProtection);
+    connect(m_modbusDevice, SIGNAL(errorOccurred(QModbusDevice::Error)), this, SLOT(errorProtocol(QModbusDevice::Error)));
     
     refreshSerialPort();
     
@@ -253,6 +252,12 @@ void ConfiguratorWindow::serialPortCtrl()
         
     statusBar()->clearMessage();
     
+    if(!m_request_queue.isEmpty())
+        m_request_queue.clear();
+    
+    if(is_block())
+        unblock();
+    
     if(m_modbusDevice->state() != QModbusDevice::ConnectedState)
     {
     	m_modbusDevice->setConnectionParameter(QModbusDevice::SerialPortNameParameter, ui->cboxPortName->currentText());
@@ -321,20 +326,20 @@ void ConfiguratorWindow::refreshSerialPort()
 //----------------------------------
 void ConfiguratorWindow::calcValue()
 {
-    m_request_type = CALC_TYPE;
-    
     QModbusDataUnit unit(QModbusDataUnit::InputRegisters, 64, 110);
     
-    request(unit);
+    request_cmd_t trequest = { READ_TYPE, CALCULATE_FUNC, unit };
+    
+    request(trequest);
 }
 //----------------------------------------
 void ConfiguratorWindow::readCalibration()
 {
-    m_request_type = CALIB_TYPE;
-    
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 362, 36);
     
-    request(unit);
+    request_cmd_t trequest = { READ_TYPE, CALIBRATION_FUNC, unit };
+    
+    request(trequest);
 }
 //-----------------------------------------
 void ConfiguratorWindow::writeCalibration()
@@ -357,22 +362,22 @@ void ConfiguratorWindow::writeCalibration()
     
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 362, data);
     
-    request(unit, false);
+    request_cmd_t trequest = { WRITE_TYPE, CALIBRATION_FUNC, unit };
+    
+    request(trequest);
 }
 //---------------------------------------
 void ConfiguratorWindow::readProtection()
 {
-    m_request_type = PROTECTION_TYPE;
-    
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, 4);
     
-    request(unit);
+    request_cmd_t trequest = { READ_TYPE, PROTECTION_FUNC, unit };
+    
+    request(trequest);
 }
 //----------------------------------------
 void ConfiguratorWindow::writeProtection()
 {
-    m_request_type = EMPTY_TYPE;
-    
     QVector<quint16> data;
     
     data.append((quint16)ui->cboxProtectionMTZ1_Ctrl->currentIndex());
@@ -382,11 +387,15 @@ void ConfiguratorWindow::writeProtection()
     
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, data);
     
-    request(unit, false);
+    request_cmd_t trequest = { WRITE_TYPE, PROTECTION_FUNC, unit };
+    
+    request(trequest);
 }
 //----------------------------------
 void ConfiguratorWindow::readReady()
 {
+    unblock(); // снимаем блокировку передачи
+    
     m_timeout_timer->stop();
     
     QModbusReply* reply = qobject_cast<QModbusReply*>(sender());
@@ -394,51 +403,80 @@ void ConfiguratorWindow::readReady()
     if(!reply)
         return;
     
-    if(m_request_type == CALC_TYPE)
-        m_panel->setData(reply->result().values());
-    else if(m_request_type == CALIB_TYPE)
+    qDebug() << tr("Чтение запроса->Функция = ") << ((m_request.function == CALCULATE_FUNC)?tr("CALCULATE"):
+                                                    (m_request.function == CALIBRATION_FUNC)?tr("CALIBRATION"):
+                                                    (m_request.function == PROTECTION_FUNC)?tr("PROTECTION"):
+                                                    tr("EMPTY"));
+    
+    if(m_request.type == READ_TYPE)
     {
-        QVector<quint16> data = reply->result().values();
-        
-        if(data.count() == 36)
+        if(reply->result().valueCount() == m_request.unit.valueCount())
         {
-            union
-            {
-                quint16 b[2];
-                float   v;
-            } value;
             
-            for(quint8 i = 0, j = 0; i < data.count() - 1; i += 2, j++)
+            if(m_request.function == CALCULATE_FUNC)
+                m_panel->setData(reply->result().values());
+            else if(m_request.function == CALIBRATION_FUNC)
             {
-                value.b[0] = data.at(i + 1);
-                value.b[1] = data.at(i);
+                QVector<quint16> data = reply->result().values();
                 
-                m_calib_cell.at(j)->setText(QString::number(value.v, 'f', 4));
+                if(data.count() == 36)
+                {
+                    union
+                    {
+                        quint16 b[2];
+                        float   v;
+                    } value;
+                    
+                    for(quint8 i = 0, j = 0; i < data.count() - 1; i += 2, j++)
+                    {
+                        value.b[0] = data.at(i + 1);
+                        value.b[1] = data.at(i);
+                        
+                        m_calib_cell.at(j)->setText(QString::number(value.v, 'f', 4));
+                    }
+                }
+            }
+            else if(m_request.function == PROTECTION_FUNC)
+            {
+                QVector<quint16> data = reply->result().values();
+                
+                if(data.count() == 4)
+                {
+                    for(quint8 i = 0; i < data.count(); i++)
+                    {
+                        quint16 value = data.at(i);
+                        
+                        QComboBox* cbItem = (i == 0)?ui->cboxProtectionMTZ1_Ctrl:(i == 1)?ui->cboxProtectionMTZ2_Ctrl:
+                                                                                          (i == 2)?ui->cboxProtectionMTZ3_Ctrl:ui->cboxProtectionMTZ4_Ctrl;
+                        
+                        cbItem->setCurrentIndex(value);
+                    }
+                }
             }
         }
     }
-    else if(m_request_type == PROTECTION_TYPE)
+    
+    if(!is_block() && !m_request_queue.isEmpty())
     {
-        QVector<quint16> data = reply->result().values();
+//        block(); // блокируем передачу
         
-        if(data.count() == 4)
-        {
-            for(quint8 i = 0; i < data.count(); i++)
-            {
-                quint16 value = data.at(i);
-                
-                QComboBox* cbItem = (i == 0)?ui->cboxProtectionMTZ1_Ctrl:(i == 1)?ui->cboxProtectionMTZ2_Ctrl:
-                                    (i == 2)?ui->cboxProtectionMTZ3_Ctrl:ui->cboxProtectionMTZ4_Ctrl;
-                
-                cbItem->setCurrentIndex(value);
-            }
-        }
+        m_request = m_request_queue.takeFirst(); // забираем из очереди очередной запрос и удаляем его из очереди
+        
+        qDebug() << tr("Извлечение запроса из очереди: ") << m_request_queue.count();
+        
+        request(m_request);
     }
 }
 //--------------------------------
 void ConfiguratorWindow::timeout()
 {
     m_timeout_timer->stop();
+    
+    if(!m_request_queue.isEmpty())
+        m_request_queue.clear();
+    
+    if(is_block())
+        unblock();
 //    QMessageBox::warning(this, tr("Ошибка ожидания ответа"), tr("Время ожидания ответа от устройства истекло"));
 }
 //-----------------------------------------------------
@@ -462,22 +500,36 @@ void ConfiguratorWindow::show()
     ui->gboxProtectionPropertiesMTZ3->hide();
     ui->gboxProtectionPropertiesMTZ4->hide();
 }
-//------------------------------------------------------------------
-void ConfiguratorWindow::request(QModbusDataUnit& unit, bool isRead)
+//---------------------------------------------------------
+void ConfiguratorWindow::request(request_cmd_t& cur_request)
 {
+    if(is_block()) // если идет передача
+    {
+        m_request_queue.append(cur_request); // сохраняем запрос в очередь
+        
+        qDebug() << tr("Вставка запроса в очередь: ") << m_request_queue.count();
+        return;
+    }
+    
+    block(); // блокируем передачу
+    
+    m_request = cur_request; // сохраняем текущий запрос
+    
     m_timeout_timer->start(ui->sboxTimeout->value());
     
     QModbusReply* reply;
     
-    if(isRead)
-        reply = m_modbusDevice->sendReadRequest(unit, ui->sboxSlaveID->value());
-    else
-        reply = m_modbusDevice->sendWriteRequest(unit, ui->sboxSlaveID->value());
+    if(m_request.type == READ_TYPE)
+        reply = m_modbusDevice->sendReadRequest(m_request.unit, ui->sboxSlaveID->value());
+    else if(m_request.type == WRITE_TYPE)
+        reply = m_modbusDevice->sendWriteRequest(m_request.unit, ui->sboxSlaveID->value());
     
     if(reply)
     {
         if(!reply->isFinished())
         {
+            qDebug() << tr("Отправка запроса: ") << m_request_queue.count();
+            
             connect(reply, &QModbusReply::finished, this, &ConfiguratorWindow::readReady);
         }
         else
@@ -549,4 +601,32 @@ void ConfiguratorWindow::protectMTZChangedID(int id)
             break;
         }
     }
+}
+//----------------------------------------------------------------
+void ConfiguratorWindow::errorProtocol(QModbusDevice::Error error)
+{
+    Q_UNUSED(error);
+    
+    statusBar()->showMessage(tr("Ошибка: ") + m_modbusDevice->errorString(), 10000);
+    
+    if(!m_request_queue.isEmpty())
+        m_request_queue.clear();
+    
+    if(is_block())
+        unblock();
+}
+//------------------------------
+void ConfiguratorWindow::block()
+{
+    m_blocking = true;
+}
+//--------------------------------
+void ConfiguratorWindow::unblock()
+{
+    m_blocking = false;
+}
+//---------------------------------------
+bool ConfiguratorWindow::is_block() const
+{
+    return m_blocking;
 }
