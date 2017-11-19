@@ -31,7 +31,8 @@
             enum RegisterAddress
             {
                 CalculateAddress   = 64,
-                CalibrationAddress = 362
+                CalibrationAddress = 362,
+                ProtectionAddress  = 22
             };
       
         public:
@@ -59,6 +60,7 @@
         private:
             void displayCalculateValues(QVector<quint16> values);
             void displayCalibrationValues(QVector<quint16> values);
+            void displayProtectionValues(QVector<quint16> values);
             
         private:
             Ui::ConfiguratorWindow* ui;

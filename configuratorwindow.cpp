@@ -21,8 +21,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_calculate    = new QTimer;
     
     m_modbusDeviceNew = new CModbus(this);
-
-    m_modbusDevice->setInterFrameDelay(10000);
     
     m_protect_mtz_group = new QButtonGroup(ui->tabProtectionMTZ);
     
@@ -51,9 +49,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_write);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
-//    connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
-//    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::readProtection);
-//    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::writeProtection);
+    connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
+    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_read);
+    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_write);
     connect(m_modbusDeviceNew, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
@@ -360,7 +358,9 @@ void ConfiguratorWindow::calibration_write()
 //----------------------------------------
 void ConfiguratorWindow::protection_read()
 {
-    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, 4);
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
+                       ProtectionAddress, QVector<quint16>() << 4);
+    m_modbusDeviceNew->request(unit);
 }
 //-----------------------------------------
 void ConfiguratorWindow::protection_write()
@@ -372,7 +372,9 @@ void ConfiguratorWindow::protection_write()
     data.append((quint16)ui->cboxProtectionMTZ3_Ctrl->currentIndex());
     data.append((quint16)ui->cboxProtectionMTZ4_Ctrl->currentIndex());
     
-    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, data);
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
+                       ProtectionAddress, data);
+    m_modbusDeviceNew->request(unit);
 }
 //--------------------------------------------------------
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
@@ -384,6 +386,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     
     switch(unit.valueCount())
     {
+        case 4: // чтение состояний токовых защит
+            displayProtectionValues(unit.values());
+        break;
+        
         case 36: // чтение калибровок
             displayCalibrationValues(unit.values());
         break;
@@ -523,5 +529,21 @@ void ConfiguratorWindow::displayCalibrationValues(QVector<quint16> values)
         cell_value.word[1] = value2;
         
         m_calibration_cell.at(j)->setText(QString::number(cell_value.value, 'f', 6));
+    }
+}
+//-----------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionValues(QVector<quint16> values)
+{     
+    if(values.count() == 4)
+    {
+        for(quint8 i = 0; i < values.count(); i++)
+        {
+            quint16 value = values.at(i);
+            
+            QComboBox* cbItem = (i == 0)?ui->cboxProtectionMTZ1_Ctrl:(i == 1)?ui->cboxProtectionMTZ2_Ctrl:
+                                (i == 2)?ui->cboxProtectionMTZ3_Ctrl:ui->cboxProtectionMTZ4_Ctrl;
+            
+            cbItem->setCurrentIndex(value);
+        }
     }
 }

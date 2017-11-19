@@ -613,7 +613,7 @@
         <item>
          <widget class="QTabWidget" name="tabwgtSettings">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tabCalibration">
            <attribute name="title">
