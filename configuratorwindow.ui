@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1071</width>
-    <height>630</height>
+    <height>656</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -87,7 +87,7 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QComboBox" name="cboxPortSpeed">
+                <widget class="QComboBox" name="cboxBaudrate">
                  <property name="toolTip">
                   <string>Скорость</string>
                  </property>
@@ -389,18 +389,70 @@
                   <string>Ожидание ответа от устройства</string>
                  </property>
                  <property name="minimum">
-                  <number>50</number>
+                  <number>100</number>
                  </property>
                  <property name="maximum">
-                  <number>5000</number>
+                  <number>1000</number>
+                 </property>
+                 <property name="singleStep">
+                  <number>100</number>
                  </property>
                  <property name="value">
-                  <number>1000</number>
+                  <number>500</number>
                  </property>
                 </widget>
                </item>
                <item row="0" column="1">
                 <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="0">
+                <widget class="QLabel" name="lblTextNumRepeat">
+                 <property name="text">
+                  <string>Количество попыток</string>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QSpinBox" name="sboxNumRepeat">
+                 <property name="maximumSize">
+                  <size>
+                   <width>75</width>
+                   <height>75</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Ожидание ответа от устройства</string>
+                 </property>
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>20</number>
+                 </property>
+                 <property name="value">
+                  <number>3</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <spacer name="horizontalSpacer_12">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -561,7 +613,7 @@
         <item>
          <widget class="QTabWidget" name="tabwgtSettings">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tabCalibration">
            <attribute name="title">

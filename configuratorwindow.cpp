@@ -4,12 +4,11 @@
 ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
     ui(new Ui::ConfiguratorWindow),
-    m_modbusDevice(Q_NULLPTR),
-    m_panel(Q_NULLPTR),
-    m_calc_timer(Q_NULLPTR),
-    m_timeout_timer(Q_NULLPTR),
-    m_protect_mtz_group(Q_NULLPTR),
-    m_blocking(false)
+    m_modbusDevice(nullptr),
+    m_modbusDeviceNew(nullptr),
+    m_panel(nullptr),
+    m_tim_calculate(nullptr),
+    m_protect_mtz_group(nullptr)
 {
     ui->setupUi(this);
 
@@ -19,8 +18,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     addDockWidget(Qt::RightDockWidgetArea, m_panel);
     
     m_modbusDevice  = new QModbusRtuSerialMaster(this);    
-    m_calc_timer    = new QTimer;
-    m_timeout_timer = new QTimer;
+    m_tim_calculate    = new QTimer;
+    
+    m_modbusDeviceNew = new CModbus(this);
 
     m_modbusDevice->setInterFrameDelay(10000);
     
@@ -40,198 +40,199 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     
     m_protect_mtz_group->setExclusive(true);
     
-    connect(m_modbusDevice, SIGNAL(stateChanged(QModbusDevice::State)), this, 
-                            SLOT(stateChanged(QModbusDevice::State)));
-    connect(ui->pbtnPortCtrl, SIGNAL(clicked()), this, SLOT(serialPortCtrl()));
-    connect(ui->tbtnPortRefresh, SIGNAL(clicked()), this, SLOT(refreshSerialPort()));
-    connect(m_timeout_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeout);
-    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
-    connect(m_calc_timer, &QTimer::timeout, this, &ConfiguratorWindow::calcValue);
-    connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::readCalibration);
-    connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::writeCalibration);
-    connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::checkboxCalcTimeoutStateChanged);
-    connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalcChanged(int)));
-    connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
-    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::readProtection);
-    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::writeProtection);
-    connect(m_modbusDevice, SIGNAL(errorOccurred(QModbusDevice::Error)), this, SLOT(errorProtocol(QModbusDevice::Error)));
-    
+    connect(ui->pbtnPortCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
+    connect(m_modbusDeviceNew, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
+    connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
+    connect(m_modbusDeviceNew, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
+    //    connect(m_timeout_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeout);
+//    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
+    connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculate_value);
+    connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_read);
+    connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_write);
+    connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
+    connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
+//    connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
+//    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::readProtection);
+//    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::writeProtection);
+    connect(m_modbusDeviceNew, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
+    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
+    connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
     refreshSerialPort();
     
-    m_input_channel_cell.append(ui->le_State_Ch_0);
-    m_input_channel_cell.append(ui->le_n_min_Ch_0);
-    m_input_channel_cell.append(ui->le_n_max_Ch_0);
-    m_input_channel_cell.append(ui->le_n_err_Ch_0);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_0);
-    m_input_channel_cell.append(ui->le_Am_Ch_0);
-    m_input_channel_cell.append(ui->le_A_Ch_0);
-    m_input_channel_cell.append(ui->le_B_Ch_0);
-    m_input_channel_cell.append(ui->le_C_Ch_0);
-    m_input_channel_cell.append(ui->le_fi_Ch_0);
-    m_input_channel_cell.append(ui->le_R2_Ch_0);
+    m_calculate_cell.append(ui->le_State_Ch_0);
+    m_calculate_cell.append(ui->le_n_min_Ch_0);
+    m_calculate_cell.append(ui->le_n_max_Ch_0);
+    m_calculate_cell.append(ui->le_n_err_Ch_0);
+    m_calculate_cell.append(ui->le_n_skp_Ch_0);
+    m_calculate_cell.append(ui->le_Am_Ch_0);
+    m_calculate_cell.append(ui->le_A_Ch_0);
+    m_calculate_cell.append(ui->le_B_Ch_0);
+    m_calculate_cell.append(ui->le_C_Ch_0);
+    m_calculate_cell.append(ui->le_fi_Ch_0);
+    m_calculate_cell.append(ui->le_R2_Ch_0);
     
-    m_input_channel_cell.append(ui->le_State_Ch_1);
-    m_input_channel_cell.append(ui->le_n_min_Ch_1);
-    m_input_channel_cell.append(ui->le_n_max_Ch_1);
-    m_input_channel_cell.append(ui->le_n_err_Ch_1);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_1);
-    m_input_channel_cell.append(ui->le_Am_Ch_1);
-    m_input_channel_cell.append(ui->le_A_Ch_1);
-    m_input_channel_cell.append(ui->le_B_Ch_1);
-    m_input_channel_cell.append(ui->le_C_Ch_1);
-    m_input_channel_cell.append(ui->le_fi_Ch_1);
-    m_input_channel_cell.append(ui->le_R2_Ch_1);
+    m_calculate_cell.append(ui->le_State_Ch_1);
+    m_calculate_cell.append(ui->le_n_min_Ch_1);
+    m_calculate_cell.append(ui->le_n_max_Ch_1);
+    m_calculate_cell.append(ui->le_n_err_Ch_1);
+    m_calculate_cell.append(ui->le_n_skp_Ch_1);
+    m_calculate_cell.append(ui->le_Am_Ch_1);
+    m_calculate_cell.append(ui->le_A_Ch_1);
+    m_calculate_cell.append(ui->le_B_Ch_1);
+    m_calculate_cell.append(ui->le_C_Ch_1);
+    m_calculate_cell.append(ui->le_fi_Ch_1);
+    m_calculate_cell.append(ui->le_R2_Ch_1);
     
-    m_input_channel_cell.append(ui->le_State_Ch_2);
-    m_input_channel_cell.append(ui->le_n_min_Ch_2);
-    m_input_channel_cell.append(ui->le_n_max_Ch_2);
-    m_input_channel_cell.append(ui->le_n_err_Ch_2);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_2);
-    m_input_channel_cell.append(ui->le_Am_Ch_2);
-    m_input_channel_cell.append(ui->le_A_Ch_2);
-    m_input_channel_cell.append(ui->le_B_Ch_2);
-    m_input_channel_cell.append(ui->le_C_Ch_2);
-    m_input_channel_cell.append(ui->le_fi_Ch_2);
-    m_input_channel_cell.append(ui->le_R2_Ch_2);
+    m_calculate_cell.append(ui->le_State_Ch_2);
+    m_calculate_cell.append(ui->le_n_min_Ch_2);
+    m_calculate_cell.append(ui->le_n_max_Ch_2);
+    m_calculate_cell.append(ui->le_n_err_Ch_2);
+    m_calculate_cell.append(ui->le_n_skp_Ch_2);
+    m_calculate_cell.append(ui->le_Am_Ch_2);
+    m_calculate_cell.append(ui->le_A_Ch_2);
+    m_calculate_cell.append(ui->le_B_Ch_2);
+    m_calculate_cell.append(ui->le_C_Ch_2);
+    m_calculate_cell.append(ui->le_fi_Ch_2);
+    m_calculate_cell.append(ui->le_R2_Ch_2);
     
-    m_input_channel_cell.append(ui->le_State_Ch_3);
-    m_input_channel_cell.append(ui->le_n_min_Ch_3);
-    m_input_channel_cell.append(ui->le_n_max_Ch_3);
-    m_input_channel_cell.append(ui->le_n_err_Ch_3);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_3);
-    m_input_channel_cell.append(ui->le_Am_Ch_3);
-    m_input_channel_cell.append(ui->le_A_Ch_3);
-    m_input_channel_cell.append(ui->le_B_Ch_3);
-    m_input_channel_cell.append(ui->le_C_Ch_3);
-    m_input_channel_cell.append(ui->le_fi_Ch_3);
-    m_input_channel_cell.append(ui->le_R2_Ch_3);
+    m_calculate_cell.append(ui->le_State_Ch_3);
+    m_calculate_cell.append(ui->le_n_min_Ch_3);
+    m_calculate_cell.append(ui->le_n_max_Ch_3);
+    m_calculate_cell.append(ui->le_n_err_Ch_3);
+    m_calculate_cell.append(ui->le_n_skp_Ch_3);
+    m_calculate_cell.append(ui->le_Am_Ch_3);
+    m_calculate_cell.append(ui->le_A_Ch_3);
+    m_calculate_cell.append(ui->le_B_Ch_3);
+    m_calculate_cell.append(ui->le_C_Ch_3);
+    m_calculate_cell.append(ui->le_fi_Ch_3);
+    m_calculate_cell.append(ui->le_R2_Ch_3);
     
-    m_input_channel_cell.append(ui->le_State_Ch_4);
-    m_input_channel_cell.append(ui->le_n_min_Ch_4);
-    m_input_channel_cell.append(ui->le_n_max_Ch_4);
-    m_input_channel_cell.append(ui->le_n_err_Ch_4);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_4);
-    m_input_channel_cell.append(ui->le_Am_Ch_4);
-    m_input_channel_cell.append(ui->le_A_Ch_4);
-    m_input_channel_cell.append(ui->le_B_Ch_4);
-    m_input_channel_cell.append(ui->le_C_Ch_4);
-    m_input_channel_cell.append(ui->le_fi_Ch_4);
-    m_input_channel_cell.append(ui->le_R2_Ch_4);
+    m_calculate_cell.append(ui->le_State_Ch_4);
+    m_calculate_cell.append(ui->le_n_min_Ch_4);
+    m_calculate_cell.append(ui->le_n_max_Ch_4);
+    m_calculate_cell.append(ui->le_n_err_Ch_4);
+    m_calculate_cell.append(ui->le_n_skp_Ch_4);
+    m_calculate_cell.append(ui->le_Am_Ch_4);
+    m_calculate_cell.append(ui->le_A_Ch_4);
+    m_calculate_cell.append(ui->le_B_Ch_4);
+    m_calculate_cell.append(ui->le_C_Ch_4);
+    m_calculate_cell.append(ui->le_fi_Ch_4);
+    m_calculate_cell.append(ui->le_R2_Ch_4);
     
-    m_input_channel_cell.append(ui->le_State_Ch_5);
-    m_input_channel_cell.append(ui->le_n_min_Ch_5);
-    m_input_channel_cell.append(ui->le_n_max_Ch_5);
-    m_input_channel_cell.append(ui->le_n_err_Ch_5);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_5);
-    m_input_channel_cell.append(ui->le_Am_Ch_5);
-    m_input_channel_cell.append(ui->le_A_Ch_5);
-    m_input_channel_cell.append(ui->le_B_Ch_5);
-    m_input_channel_cell.append(ui->le_C_Ch_5);
-    m_input_channel_cell.append(ui->le_fi_Ch_5);
-    m_input_channel_cell.append(ui->le_R2_Ch_5);
+    m_calculate_cell.append(ui->le_State_Ch_5);
+    m_calculate_cell.append(ui->le_n_min_Ch_5);
+    m_calculate_cell.append(ui->le_n_max_Ch_5);
+    m_calculate_cell.append(ui->le_n_err_Ch_5);
+    m_calculate_cell.append(ui->le_n_skp_Ch_5);
+    m_calculate_cell.append(ui->le_Am_Ch_5);
+    m_calculate_cell.append(ui->le_A_Ch_5);
+    m_calculate_cell.append(ui->le_B_Ch_5);
+    m_calculate_cell.append(ui->le_C_Ch_5);
+    m_calculate_cell.append(ui->le_fi_Ch_5);
+    m_calculate_cell.append(ui->le_R2_Ch_5);
     
-    m_input_channel_cell.append(ui->le_State_Ch_6);
-    m_input_channel_cell.append(ui->le_n_min_Ch_6);
-    m_input_channel_cell.append(ui->le_n_max_Ch_6);
-    m_input_channel_cell.append(ui->le_n_err_Ch_6);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_6);
-    m_input_channel_cell.append(ui->le_Am_Ch_6);
-    m_input_channel_cell.append(ui->le_A_Ch_6);
-    m_input_channel_cell.append(ui->le_B_Ch_6);
-    m_input_channel_cell.append(ui->le_C_Ch_6);
-    m_input_channel_cell.append(ui->le_fi_Ch_6);
-    m_input_channel_cell.append(ui->le_R2_Ch_6);
+    m_calculate_cell.append(ui->le_State_Ch_6);
+    m_calculate_cell.append(ui->le_n_min_Ch_6);
+    m_calculate_cell.append(ui->le_n_max_Ch_6);
+    m_calculate_cell.append(ui->le_n_err_Ch_6);
+    m_calculate_cell.append(ui->le_n_skp_Ch_6);
+    m_calculate_cell.append(ui->le_Am_Ch_6);
+    m_calculate_cell.append(ui->le_A_Ch_6);
+    m_calculate_cell.append(ui->le_B_Ch_6);
+    m_calculate_cell.append(ui->le_C_Ch_6);
+    m_calculate_cell.append(ui->le_fi_Ch_6);
+    m_calculate_cell.append(ui->le_R2_Ch_6);
     
-    m_input_channel_cell.append(ui->le_State_Ch_7);
-    m_input_channel_cell.append(ui->le_n_min_Ch_7);
-    m_input_channel_cell.append(ui->le_n_max_Ch_7);
-    m_input_channel_cell.append(ui->le_n_err_Ch_7);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_7);
-    m_input_channel_cell.append(ui->le_Am_Ch_7);
-    m_input_channel_cell.append(ui->le_A_Ch_7);
-    m_input_channel_cell.append(ui->le_B_Ch_7);
-    m_input_channel_cell.append(ui->le_C_Ch_7);
-    m_input_channel_cell.append(ui->le_fi_Ch_7);
-    m_input_channel_cell.append(ui->le_R2_Ch_7);
+    m_calculate_cell.append(ui->le_State_Ch_7);
+    m_calculate_cell.append(ui->le_n_min_Ch_7);
+    m_calculate_cell.append(ui->le_n_max_Ch_7);
+    m_calculate_cell.append(ui->le_n_err_Ch_7);
+    m_calculate_cell.append(ui->le_n_skp_Ch_7);
+    m_calculate_cell.append(ui->le_Am_Ch_7);
+    m_calculate_cell.append(ui->le_A_Ch_7);
+    m_calculate_cell.append(ui->le_B_Ch_7);
+    m_calculate_cell.append(ui->le_C_Ch_7);
+    m_calculate_cell.append(ui->le_fi_Ch_7);
+    m_calculate_cell.append(ui->le_R2_Ch_7);
     
-    m_input_channel_cell.append(ui->le_State_Ch_8);
-    m_input_channel_cell.append(ui->le_n_min_Ch_8);
-    m_input_channel_cell.append(ui->le_n_max_Ch_8);
-    m_input_channel_cell.append(ui->le_n_err_Ch_8);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_8);
-    m_input_channel_cell.append(ui->le_Am_Ch_8);
-    m_input_channel_cell.append(ui->le_A_Ch_8);
-    m_input_channel_cell.append(ui->le_B_Ch_8);
-    m_input_channel_cell.append(ui->le_C_Ch_8);
-    m_input_channel_cell.append(ui->le_fi_Ch_8);
-    m_input_channel_cell.append(ui->le_R2_Ch_8);
+    m_calculate_cell.append(ui->le_State_Ch_8);
+    m_calculate_cell.append(ui->le_n_min_Ch_8);
+    m_calculate_cell.append(ui->le_n_max_Ch_8);
+    m_calculate_cell.append(ui->le_n_err_Ch_8);
+    m_calculate_cell.append(ui->le_n_skp_Ch_8);
+    m_calculate_cell.append(ui->le_Am_Ch_8);
+    m_calculate_cell.append(ui->le_A_Ch_8);
+    m_calculate_cell.append(ui->le_B_Ch_8);
+    m_calculate_cell.append(ui->le_C_Ch_8);
+    m_calculate_cell.append(ui->le_fi_Ch_8);
+    m_calculate_cell.append(ui->le_R2_Ch_8);
     
-    m_input_channel_cell.append(ui->le_State_Ch_9);
-    m_input_channel_cell.append(ui->le_n_min_Ch_9);
-    m_input_channel_cell.append(ui->le_n_max_Ch_9);
-    m_input_channel_cell.append(ui->le_n_err_Ch_9);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_9);
-    m_input_channel_cell.append(ui->le_Am_Ch_9);
-    m_input_channel_cell.append(ui->le_A_Ch_9);
-    m_input_channel_cell.append(ui->le_B_Ch_9);
-    m_input_channel_cell.append(ui->le_C_Ch_9);
-    m_input_channel_cell.append(ui->le_fi_Ch_9);
-    m_input_channel_cell.append(ui->le_R2_Ch_9);
+    m_calculate_cell.append(ui->le_State_Ch_9);
+    m_calculate_cell.append(ui->le_n_min_Ch_9);
+    m_calculate_cell.append(ui->le_n_max_Ch_9);
+    m_calculate_cell.append(ui->le_n_err_Ch_9);
+    m_calculate_cell.append(ui->le_n_skp_Ch_9);
+    m_calculate_cell.append(ui->le_Am_Ch_9);
+    m_calculate_cell.append(ui->le_A_Ch_9);
+    m_calculate_cell.append(ui->le_B_Ch_9);
+    m_calculate_cell.append(ui->le_C_Ch_9);
+    m_calculate_cell.append(ui->le_fi_Ch_9);
+    m_calculate_cell.append(ui->le_R2_Ch_9);
     
-    m_input_channel_cell.append(ui->le_State_Ch_10);
-    m_input_channel_cell.append(ui->le_n_min_Ch_10);
-    m_input_channel_cell.append(ui->le_n_max_Ch_10);
-    m_input_channel_cell.append(ui->le_n_err_Ch_10);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_10);
-    m_input_channel_cell.append(ui->le_Am_Ch_10);
-    m_input_channel_cell.append(ui->le_A_Ch_10);
-    m_input_channel_cell.append(ui->le_B_Ch_10);
-    m_input_channel_cell.append(ui->le_C_Ch_10);
-    m_input_channel_cell.append(ui->le_fi_Ch_10);
-    m_input_channel_cell.append(ui->le_R2_Ch_10);
+    m_calculate_cell.append(ui->le_State_Ch_10);
+    m_calculate_cell.append(ui->le_n_min_Ch_10);
+    m_calculate_cell.append(ui->le_n_max_Ch_10);
+    m_calculate_cell.append(ui->le_n_err_Ch_10);
+    m_calculate_cell.append(ui->le_n_skp_Ch_10);
+    m_calculate_cell.append(ui->le_Am_Ch_10);
+    m_calculate_cell.append(ui->le_A_Ch_10);
+    m_calculate_cell.append(ui->le_B_Ch_10);
+    m_calculate_cell.append(ui->le_C_Ch_10);
+    m_calculate_cell.append(ui->le_fi_Ch_10);
+    m_calculate_cell.append(ui->le_R2_Ch_10);
     
-    m_input_channel_cell.append(ui->le_State_Ch_22);
-    m_input_channel_cell.append(ui->le_n_min_Ch_22);
-    m_input_channel_cell.append(ui->le_n_max_Ch_22);
-    m_input_channel_cell.append(ui->le_n_err_Ch_22);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_22);
-    m_input_channel_cell.append(ui->le_Am_Ch_22);
-    m_input_channel_cell.append(ui->le_A_Ch_22);
-    m_input_channel_cell.append(ui->le_B_Ch_22);
-    m_input_channel_cell.append(ui->le_C_Ch_22);
-    m_input_channel_cell.append(ui->le_fi_Ch_22);
-    m_input_channel_cell.append(ui->le_R2_Ch_22);
+    m_calculate_cell.append(ui->le_State_Ch_22);
+    m_calculate_cell.append(ui->le_n_min_Ch_22);
+    m_calculate_cell.append(ui->le_n_max_Ch_22);
+    m_calculate_cell.append(ui->le_n_err_Ch_22);
+    m_calculate_cell.append(ui->le_n_skp_Ch_22);
+    m_calculate_cell.append(ui->le_Am_Ch_22);
+    m_calculate_cell.append(ui->le_A_Ch_22);
+    m_calculate_cell.append(ui->le_B_Ch_22);
+    m_calculate_cell.append(ui->le_C_Ch_22);
+    m_calculate_cell.append(ui->le_fi_Ch_22);
+    m_calculate_cell.append(ui->le_R2_Ch_22);
     
-    m_input_channel_cell.append(ui->le_State_Ch_23);
-    m_input_channel_cell.append(ui->le_n_min_Ch_23);
-    m_input_channel_cell.append(ui->le_n_max_Ch_23);
-    m_input_channel_cell.append(ui->le_n_err_Ch_23);
-    m_input_channel_cell.append(ui->le_n_skp_Ch_23);
-    m_input_channel_cell.append(ui->le_Am_Ch_23);
-    m_input_channel_cell.append(ui->le_A_Ch_23);
-    m_input_channel_cell.append(ui->le_B_Ch_23);
-    m_input_channel_cell.append(ui->le_C_Ch_23);
-    m_input_channel_cell.append(ui->le_fi_Ch_23);
-    m_input_channel_cell.append(ui->le_R2_Ch_23);
+    m_calculate_cell.append(ui->le_State_Ch_23);
+    m_calculate_cell.append(ui->le_n_min_Ch_23);
+    m_calculate_cell.append(ui->le_n_max_Ch_23);
+    m_calculate_cell.append(ui->le_n_err_Ch_23);
+    m_calculate_cell.append(ui->le_n_skp_Ch_23);
+    m_calculate_cell.append(ui->le_Am_Ch_23);
+    m_calculate_cell.append(ui->le_A_Ch_23);
+    m_calculate_cell.append(ui->le_B_Ch_23);
+    m_calculate_cell.append(ui->le_C_Ch_23);
+    m_calculate_cell.append(ui->le_fi_Ch_23);
+    m_calculate_cell.append(ui->le_R2_Ch_23);
     
-    m_calib_cell.append(ui->leTextCalibFactorCurrentPhase_A);
-    m_calib_cell.append(ui->leTextCalibFactorCurrentPhase_B);
-    m_calib_cell.append(ui->leTextCalibFactorCurrentPhase_C);
-    m_calib_cell.append(ui->leTextCalibFactorCurrent3I0);
-    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_A);
-    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_B);
-    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_C);
-    m_calib_cell.append(ui->leTextCalibFactorPower3I0);
-    m_calib_cell.append(ui->leTextCalibFactorPowerTotal);
-    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_A_B);
-    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_B_C);
-    m_calib_cell.append(ui->leTextCalibFactorPowerPhase_C_A);
-    m_calib_cell.append(ui->leTextCalibFactorPower3U0x);
-    m_calib_cell.append(ui->leTextCalibFactorPowerUAx);
-    m_calib_cell.append(ui->leTextCalibFactorPowerUBx);
-    m_calib_cell.append(ui->leTextCalibFactorPowerUCx);
-    m_calib_cell.append(ui->leTextCalibFactorChannel3U0);
-    m_calib_cell.append(ui->leTextCalibFactorChannel3Us);
+    m_calibration_cell.append(ui->leTextCalibFactorCurrentPhase_A);
+    m_calibration_cell.append(ui->leTextCalibFactorCurrentPhase_B);
+    m_calibration_cell.append(ui->leTextCalibFactorCurrentPhase_C);
+    m_calibration_cell.append(ui->leTextCalibFactorCurrent3I0);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_A);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_B);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_C);
+    m_calibration_cell.append(ui->leTextCalibFactorPower3I0);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerTotal);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_A_B);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_B_C);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_C_A);
+    m_calibration_cell.append(ui->leTextCalibFactorPower3U0x);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerUAx);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerUBx);
+    m_calibration_cell.append(ui->leTextCalibFactorPowerUCx);
+    m_calibration_cell.append(ui->leTextCalibFactorChannel3U0);
+    m_calibration_cell.append(ui->leTextCalibFactorChannel3Us);
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -241,68 +242,62 @@ ConfiguratorWindow::~ConfiguratorWindow()
         m_modbusDevice->disconnectDevice();
     }
     
+    if(m_modbusDeviceNew)
+    {
+        m_modbusDeviceNew->disconnectDevice();
+    }
+    
+    delete m_modbusDeviceNew;
+    m_modbusDeviceNew = nullptr;
+    
     delete m_modbusDevice;
+    m_modbusDevice = nullptr;
+    
     delete ui;
 }
 //---------------------------------------
 void ConfiguratorWindow::serialPortCtrl()
 {
-    if(!m_modbusDevice || ui->cboxPortName->count() == 0)
+    if(!m_modbusDeviceNew || ui->cboxPortName->count() == 0)
         return;
         
     statusBar()->clearMessage();
     
-    if(!m_request_queue.isEmpty())
-        m_request_queue.clear();
-    
-    if(is_block())
-        unblock();
-    
-    if(m_modbusDevice->state() != QModbusDevice::ConnectedState)
+    if(ui->pbtnPortCtrl->isChecked())
     {
-    	m_modbusDevice->setConnectionParameter(QModbusDevice::SerialPortNameParameter, ui->cboxPortName->currentText());
-        m_modbusDevice->setConnectionParameter(QModbusDevice::SerialBaudRateParameter, ui->cboxPortSpeed->currentText().toInt());
-        m_modbusDevice->setConnectionParameter(QModbusDevice::SerialDataBitsParameter, ui->cboxDataBit->currentText().toInt());
-        m_modbusDevice->setConnectionParameter(QModbusDevice::SerialStopBitsParameter, ui->cboxStopBit->currentText().toInt());
+        m_modbusDeviceNew->setPortName(ui->cboxPortName->currentText());
+        m_modbusDeviceNew->setBaudrate(ui->cboxBaudrate->currentText().toInt());
+        m_modbusDeviceNew->setDatabits((QSerialPort::DataBits)ui->cboxDataBit->currentText().toInt());
+
+        quint32 stopbits = ((ui->cboxStopBit->currentText() == "1.5")?3:ui->cboxStopBit->currentText().toInt());
+        quint32 parity   = ((ui->cboxParity->currentText().toUpper() == tr("NO"))?0:
+                           (ui->cboxParity->currentText().toUpper() == tr("EVEN"))?2:
+                           (ui->cboxParity->currentText().toUpper() == tr("ODD"))?3:
+                           (ui->cboxParity->currentText().toUpper() == tr("SPACE")))?4:5;
         
-        int parity = (ui->cboxParity->currentText().toUpper() == tr("NO"))?QSerialPort::NoParity:
-                     (ui->cboxParity->currentText().toUpper() == tr("EVEN"))?QSerialPort::EvenParity:
-                     (ui->cboxParity->currentText().toUpper() == tr("ODD"))?QSerialPort::OddParity:
-                     (ui->cboxParity->currentText().toUpper() == tr("MARK"))?QSerialPort::MarkParity:QSerialPort::SpaceParity;
+        m_modbusDeviceNew->setStopbits((QSerialPort::StopBits)stopbits);
+        m_modbusDeviceNew->setParity((QSerialPort::Parity)parity);
         
-        m_modbusDevice->setConnectionParameter(QModbusDevice::SerialParityParameter, parity);
-        m_modbusDevice->setTimeout(ui->sboxTimeout->value());
-        
-        if(!m_modbusDevice->connectDevice())
-        {
-            statusBar()->showMessage(tr("Ошибка соединения: ") + m_modbusDevice->errorString(), 5000);
-            
-            return;
-        }
-        
-        if(ui->checkboxCalibTimeout->isChecked())
-            m_calc_timer->start(ui->sboxTimeoutCalc->value());
+        m_modbusDeviceNew->connectDevice();
     }
     else
     {
-        m_modbusDevice->disconnectDevice();
+        m_modbusDeviceNew->disconnectDevice();
     }
 }
-//---------------------------------------------------------------
-void ConfiguratorWindow::stateChanged(QModbusDevice::State state)
+//-----------------------------------------------
+void ConfiguratorWindow::stateChanged(bool state)
 {
-    if(state == QModbusDevice::UnconnectedState)
-    {
-        ui->pbtnPortCtrl->setChecked(false);
-        ui->pbtnPortCtrl->setText(tr("Открыть"));
-        statusBar()->showMessage(tr("Соединение закрыто"), 5000);
-    }
-    else if(state == QModbusDevice::ConnectedState)
-    {
-        ui->pbtnPortCtrl->setChecked(true);
-        ui->pbtnPortCtrl->setText(tr("Закрыть"));
-        statusBar()->showMessage(tr("Соединение установлено"), 5000);
-    }
+    ui->pbtnPortCtrl->setChecked(state);
+    
+    ui->pbtnPortCtrl->setText(((state)?tr("Закрыть"):tr("Открыть")));
+    statusBar()->showMessage(((state)?tr("Соединение с устройством установлено"):
+                                      tr("Соединение с устройством разорвано")), 5000);
+    
+    if(ui->checkboxCalibTimeout->isChecked() && state)
+        chboxCalculateTimeoutStateChanged(true);
+    else
+        m_tim_calculate->stop();
 }
 //------------------------------------------
 void ConfiguratorWindow::refreshSerialPort()
@@ -316,33 +311,31 @@ void ConfiguratorWindow::refreshSerialPort()
     
     if(port_list.isEmpty())
     {
-        statusBar()->showMessage(tr("Нет доступных портов"), 3000);
+        QMessageBox::warning(nullptr, tr("Com-порт"), 
+                             tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"));
+        
         return;
     }
     
     ui->cboxPortName->clear();
     ui->cboxPortName->addItems(port_list);
 }
-//----------------------------------
-void ConfiguratorWindow::calcValue()
-{
-    QModbusDataUnit unit(QModbusDataUnit::InputRegisters, 64, 110);
-    
-    request_cmd_t trequest = { READ_TYPE, CALCULATE_FUNC, unit };
-    
-    request(trequest);
-}
 //----------------------------------------
-void ConfiguratorWindow::readCalibration()
+void ConfiguratorWindow::calculate_value()
 {
-    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 362, 36);
-    
-    request_cmd_t trequest = { READ_TYPE, CALIBRATION_FUNC, unit };
-    
-    request(trequest);
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 
+                       CalculateAddress, QVector<quint16>() << 110);
+    m_modbusDeviceNew->request(unit);
 }
 //-----------------------------------------
-void ConfiguratorWindow::writeCalibration()
+void ConfiguratorWindow::calibration_read()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
+                       CalibrationAddress, QVector<quint16>() << 36);
+    m_modbusDeviceNew->request(unit);
+}
+//------------------------------------------
+void ConfiguratorWindow::calibration_write()
 {
     QVector<quint16> data;
     
@@ -352,31 +345,25 @@ void ConfiguratorWindow::writeCalibration()
         float   v;
     } value;
     
-    for(quint8 i = 0; i < m_calib_cell.count(); i++)
+    for(quint8 i = 0; i < m_calibration_cell.count(); i++)
     {
-        value.v = m_calib_cell.at(i)->text().toFloat();
+        value.v = m_calibration_cell.at(i)->text().toFloat();
         
         data.append(value.b[1]);
         data.append(value.b[0]);
     }
     
-    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 362, data);
-    
-    request_cmd_t trequest = { WRITE_TYPE, CALIBRATION_FUNC, unit };
-    
-    request(trequest);
-}
-//---------------------------------------
-void ConfiguratorWindow::readProtection()
-{
-    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, 4);
-    
-    request_cmd_t trequest = { READ_TYPE, PROTECTION_FUNC, unit };
-    
-    request(trequest);
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
+                       CalibrationAddress, data);
+    m_modbusDeviceNew->request(unit);
 }
 //----------------------------------------
-void ConfiguratorWindow::writeProtection()
+void ConfiguratorWindow::protection_read()
+{
+    QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, 4);
+}
+//-----------------------------------------
+void ConfiguratorWindow::protection_write()
 {
     QVector<quint16> data;
     
@@ -386,103 +373,25 @@ void ConfiguratorWindow::writeProtection()
     data.append((quint16)ui->cboxProtectionMTZ4_Ctrl->currentIndex());
     
     QModbusDataUnit unit(QModbusDataUnit::HoldingRegisters, 22, data);
-    
-    request_cmd_t trequest = { WRITE_TYPE, PROTECTION_FUNC, unit };
-    
-    request(trequest);
 }
-//----------------------------------
-void ConfiguratorWindow::readReady()
+//--------------------------------------------------------
+void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 {
-    unblock(); // снимаем блокировку передачи
-    
-    m_timeout_timer->stop();
-    
-    QModbusReply* reply = qobject_cast<QModbusReply*>(sender());
-    
-    if(!reply)
+    if(unit.is_empty())
         return;
     
-    qDebug() << tr("Чтение запроса->Функция = ") << ((m_request.function == CALCULATE_FUNC)?tr("CALCULATE"):
-                                                    (m_request.function == CALIBRATION_FUNC)?tr("CALIBRATION"):
-                                                    (m_request.function == PROTECTION_FUNC)?tr("PROTECTION"):
-                                                    tr("EMPTY"));
+    qDebug() << "Получен ответ: " << unit.valueCount();
     
-    if(m_request.type == READ_TYPE)
+    switch(unit.valueCount())
     {
-        if(reply->result().valueCount() == m_request.unit.valueCount())
-        {
-            
-            if(m_request.function == CALCULATE_FUNC)
-                m_panel->setData(reply->result().values());
-            else if(m_request.function == CALIBRATION_FUNC)
-            {
-                QVector<quint16> data = reply->result().values();
-                
-                if(data.count() == 36)
-                {
-                    union
-                    {
-                        quint16 b[2];
-                        float   v;
-                    } value;
-                    
-                    for(quint8 i = 0, j = 0; i < data.count() - 1; i += 2, j++)
-                    {
-                        value.b[0] = data.at(i + 1);
-                        value.b[1] = data.at(i);
-                        
-                        m_calib_cell.at(j)->setText(QString::number(value.v, 'f', 4));
-                    }
-                }
-            }
-            else if(m_request.function == PROTECTION_FUNC)
-            {
-                QVector<quint16> data = reply->result().values();
-                
-                if(data.count() == 4)
-                {
-                    for(quint8 i = 0; i < data.count(); i++)
-                    {
-                        quint16 value = data.at(i);
-                        
-                        QComboBox* cbItem = (i == 0)?ui->cboxProtectionMTZ1_Ctrl:(i == 1)?ui->cboxProtectionMTZ2_Ctrl:
-                                                                                          (i == 2)?ui->cboxProtectionMTZ3_Ctrl:ui->cboxProtectionMTZ4_Ctrl;
-                        
-                        cbItem->setCurrentIndex(value);
-                    }
-                }
-            }
-        }
+        case 36: // чтение калибровок
+            displayCalibrationValues(unit.values());
+        break;
+        
+        case 110: // чтение расчетных величин
+            displayCalculateValues(unit.values());
+        break;
     }
-    
-    if(!is_block() && !m_request_queue.isEmpty())
-    {
-//        block(); // блокируем передачу
-        
-        m_request = m_request_queue.takeFirst(); // забираем из очереди очередной запрос и удаляем его из очереди
-        
-        qDebug() << tr("Извлечение запроса из очереди: ") << m_request_queue.count();
-        
-        request(m_request);
-    }
-}
-//--------------------------------
-void ConfiguratorWindow::timeout()
-{
-    m_timeout_timer->stop();
-    
-    if(!m_request_queue.isEmpty())
-        m_request_queue.clear();
-    
-    if(is_block())
-        unblock();
-//    QMessageBox::warning(this, tr("Ошибка ожидания ответа"), tr("Время ожидания ответа от устройства истекло"));
-}
-//-----------------------------------------------------
-void ConfiguratorWindow::timeoutChanged(int newTimeout)
-{
-    m_modbusDevice->setTimeout(newTimeout);
 }
 //-----------------------------
 void ConfiguratorWindow::show()
@@ -500,68 +409,36 @@ void ConfiguratorWindow::show()
     ui->gboxProtectionPropertiesMTZ3->hide();
     ui->gboxProtectionPropertiesMTZ4->hide();
 }
-//---------------------------------------------------------
-void ConfiguratorWindow::request(request_cmd_t& cur_request)
-{
-    if(is_block()) // если идет передача
-    {
-        m_request_queue.append(cur_request); // сохраняем запрос в очередь
-        
-        qDebug() << tr("Вставка запроса в очередь: ") << m_request_queue.count();
-        return;
-    }
-    
-    block(); // блокируем передачу
-    
-    m_request = cur_request; // сохраняем текущий запрос
-    
-    m_timeout_timer->start(ui->sboxTimeout->value());
-    
-    QModbusReply* reply;
-    
-    if(m_request.type == READ_TYPE)
-        reply = m_modbusDevice->sendReadRequest(m_request.unit, ui->sboxSlaveID->value());
-    else if(m_request.type == WRITE_TYPE)
-        reply = m_modbusDevice->sendWriteRequest(m_request.unit, ui->sboxSlaveID->value());
-    
-    if(reply)
-    {
-        if(!reply->isFinished())
-        {
-            qDebug() << tr("Отправка запроса: ") << m_request_queue.count();
-            
-            connect(reply, &QModbusReply::finished, this, &ConfiguratorWindow::readReady);
-        }
-        else
-        {
-            delete reply;
-        }
-    }
-    else
-    {
-        statusBar()->showMessage(tr("Ошибка чтения: ") + m_modbusDevice->errorString(), 5000);
-    }
-}
 //------------------------------------------------------------------
-void ConfiguratorWindow::checkboxCalcTimeoutStateChanged(bool state)
+void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
 {
     if(state)
     {
-        m_calc_timer->start(ui->sboxTimeoutCalc->value());
+        m_tim_calculate->start(ui->sboxTimeoutCalc->value());
     }
     else
     {
-        m_calc_timer->stop();
+        m_tim_calculate->stop();
     }
 }
-//---------------------------------------------------
-void ConfiguratorWindow::timeCalcChanged(int newTime)
+//--------------------------------------------------------
+void ConfiguratorWindow::timeCalculateChanged(int newTime)
 {
-    if(m_calc_timer->isActive())
+    if(m_tim_calculate->isActive())
     {
-        m_calc_timer->stop();
-        m_calc_timer->start(newTime);
+        m_tim_calculate->stop();
+        m_tim_calculate->start(newTime);
     }
+}
+//-------------------------------------------------------
+void ConfiguratorWindow::timeoutValueChanged(int newTime)
+{
+    m_modbusDeviceNew->setTimeoutRepeat(newTime);
+}
+//------------------------------------------------------
+void ConfiguratorWindow::numberRepeatChanged(int number)
+{
+    m_modbusDeviceNew->setRequestCountRepeat(number);
 }
 //--------------------------------------------------
 void ConfiguratorWindow::protectMTZChangedID(int id)
@@ -602,31 +479,49 @@ void ConfiguratorWindow::protectMTZChangedID(int id)
         }
     }
 }
-//----------------------------------------------------------------
-void ConfiguratorWindow::errorProtocol(QModbusDevice::Error error)
+//--------------------------------------------------------
+void ConfiguratorWindow::errorDevice(const QString& error)
 {
-    Q_UNUSED(error);
-    
-    statusBar()->showMessage(tr("Ошибка: ") + m_modbusDevice->errorString(), 10000);
-    
-    if(!m_request_queue.isEmpty())
-        m_request_queue.clear();
-    
-    if(is_block())
-        unblock();
+    statusBar()->showMessage(error, 5000);
 }
-//------------------------------
-void ConfiguratorWindow::block()
+//----------------------------------------------------------------------
+void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
-    m_blocking = true;
+//    union
+//    {
+//        quint16 word[2];
+//        float   value;
+//    } cell_value;
+    
+//    for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+//    {
+//        quint16 value1 = values.at(i);
+//        quint16 value2 = values.at(i + 1);
+        
+//        cell_value.word[0] = value1;
+//        cell_value.word[1] = value2;
+        
+//        m_calculate_cell.at(j)->setText(/*QString::number(cell_value.value, 'f', 6)*/"yes");
+//    }
+    m_panel->setData(values);
 }
-//--------------------------------
-void ConfiguratorWindow::unblock()
+//------------------------------------------------------------------------
+void ConfiguratorWindow::displayCalibrationValues(QVector<quint16> values)
 {
-    m_blocking = false;
-}
-//---------------------------------------
-bool ConfiguratorWindow::is_block() const
-{
-    return m_blocking;
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+    
+    for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+    {
+        quint16 value1 = values.at(i + 1);
+        quint16 value2 = values.at(i);
+        
+        cell_value.word[0] = value1;
+        cell_value.word[1] = value2;
+        
+        m_calibration_cell.at(j)->setText(QString::number(cell_value.value, 'f', 6));
+    }
 }

@@ -37,20 +37,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         configuratorwindow.cpp \
-    qpanel.cpp \
-    qcell.cpp
+        qpanel.cpp \
+        qcell.cpp \
+        cmodbus.cpp \
+        cdataunittype.cpp
 
 HEADERS += \
         configuratorwindow.h \
-    qpanel.h \
-    qcell.h
+        qpanel.h \
+        qcell.h \
+        cmodbus.h \
+        cdataunittype.h
 
 FORMS += \
         configuratorwindow.ui \
-    qcell.ui
+        qcell.ui
 
 win32::RC_FILE = \
                  resource/icon.rc
 
 RESOURCES += \
-    resource.qrc
+             resource.qrc
