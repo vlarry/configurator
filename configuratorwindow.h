@@ -2,13 +2,9 @@
     #define CONFIGURATORWINDOW_H
     //--------------------
     #include <QMainWindow>
-    #include <QModbusRtuSerialMaster>
-    #include <QModbusDataUnit>
-    #include <QModbusReply>
     #include <QSerialPort>
     #include <QSerialPortInfo>
     #include <QMessageBox>
-    #include <QTextCodec>
     #include <QDebug>
     #include <QListWidget>
     #include <QTimer>
@@ -64,12 +60,11 @@
             
         private:
             Ui::ConfiguratorWindow* ui;
-            QModbusRtuSerialMaster* m_modbusDevice;
             QPanel*                 m_panel;
             QTimer*                 m_tim_calculate;
             QVector<QLineEdit*>     m_calculate_cell;
             QVector<QLineEdit*>     m_calibration_cell;
             QButtonGroup*           m_protect_mtz_group;
-            CModbus*                m_modbusDeviceNew;
+            CModbus*                m_modbusDevice;
     };
 #endif // CONFIGURATORWINDOW_H

@@ -5,24 +5,20 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
     ui(new Ui::ConfiguratorWindow),
     m_modbusDevice(nullptr),
-    m_modbusDeviceNew(nullptr),
     m_panel(nullptr),
     m_tim_calculate(nullptr),
     m_protect_mtz_group(nullptr)
 {
     ui->setupUi(this);
 
-    m_panel = new QPanel(this);
+    m_modbusDevice      = new CModbus(this);
+    m_panel             = new QPanel(this);
+    m_tim_calculate     = new QTimer;
+    m_protect_mtz_group = new QButtonGroup(ui->tabProtectionMTZ);
+    
     m_panel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_panel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     addDockWidget(Qt::RightDockWidgetArea, m_panel);
-    
-    m_modbusDevice  = new QModbusRtuSerialMaster(this);    
-    m_tim_calculate    = new QTimer;
-    
-    m_modbusDeviceNew = new CModbus(this);
-    
-    m_protect_mtz_group = new QButtonGroup(ui->tabProtectionMTZ);
     
     m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ1);
     m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ2);
@@ -39,11 +35,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_mtz_group->setExclusive(true);
     
     connect(ui->pbtnPortCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
-    connect(m_modbusDeviceNew, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
+    connect(m_modbusDevice, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
     connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
-    connect(m_modbusDeviceNew, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
-    //    connect(m_timeout_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeout);
-//    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
+    connect(m_modbusDevice, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculate_value);
     connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_read);
     connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_write);
@@ -52,9 +46,11 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
     connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_read);
     connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_write);
-    connect(m_modbusDeviceNew, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
+    connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
+    
+    ui->tabwgtRegisters->setDisabled(true);
     refreshSerialPort();
     
     m_calculate_cell.append(ui->le_State_Ch_0);
@@ -240,14 +236,6 @@ ConfiguratorWindow::~ConfiguratorWindow()
         m_modbusDevice->disconnectDevice();
     }
     
-    if(m_modbusDeviceNew)
-    {
-        m_modbusDeviceNew->disconnectDevice();
-    }
-    
-    delete m_modbusDeviceNew;
-    m_modbusDeviceNew = nullptr;
-    
     delete m_modbusDevice;
     m_modbusDevice = nullptr;
     
@@ -256,16 +244,16 @@ ConfiguratorWindow::~ConfiguratorWindow()
 //---------------------------------------
 void ConfiguratorWindow::serialPortCtrl()
 {
-    if(!m_modbusDeviceNew || ui->cboxPortName->count() == 0)
+    if(!m_modbusDevice || ui->cboxPortName->count() == 0)
         return;
         
     statusBar()->clearMessage();
     
     if(ui->pbtnPortCtrl->isChecked())
     {
-        m_modbusDeviceNew->setPortName(ui->cboxPortName->currentText());
-        m_modbusDeviceNew->setBaudrate(ui->cboxBaudrate->currentText().toInt());
-        m_modbusDeviceNew->setDatabits((QSerialPort::DataBits)ui->cboxDataBit->currentText().toInt());
+        m_modbusDevice->setPortName(ui->cboxPortName->currentText());
+        m_modbusDevice->setBaudrate(ui->cboxBaudrate->currentText().toInt());
+        m_modbusDevice->setDatabits((QSerialPort::DataBits)ui->cboxDataBit->currentText().toInt());
 
         quint32 stopbits = ((ui->cboxStopBit->currentText() == "1.5")?3:ui->cboxStopBit->currentText().toInt());
         quint32 parity   = ((ui->cboxParity->currentText().toUpper() == tr("NO"))?0:
@@ -273,14 +261,14 @@ void ConfiguratorWindow::serialPortCtrl()
                            (ui->cboxParity->currentText().toUpper() == tr("ODD"))?3:
                            (ui->cboxParity->currentText().toUpper() == tr("SPACE")))?4:5;
         
-        m_modbusDeviceNew->setStopbits((QSerialPort::StopBits)stopbits);
-        m_modbusDeviceNew->setParity((QSerialPort::Parity)parity);
+        m_modbusDevice->setStopbits((QSerialPort::StopBits)stopbits);
+        m_modbusDevice->setParity((QSerialPort::Parity)parity);
         
-        m_modbusDeviceNew->connectDevice();
+        m_modbusDevice->connectDevice();
     }
     else
     {
-        m_modbusDeviceNew->disconnectDevice();
+        m_modbusDevice->disconnectDevice();
     }
 }
 //-----------------------------------------------
@@ -296,6 +284,8 @@ void ConfiguratorWindow::stateChanged(bool state)
         chboxCalculateTimeoutStateChanged(true);
     else
         m_tim_calculate->stop();
+    
+    ui->tabwgtRegisters->setEnabled(state);
 }
 //------------------------------------------
 void ConfiguratorWindow::refreshSerialPort()
@@ -323,14 +313,14 @@ void ConfiguratorWindow::calculate_value()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 
                        CalculateAddress, QVector<quint16>() << 110);
-    m_modbusDeviceNew->request(unit);
+    m_modbusDevice->request(unit);
 }
 //-----------------------------------------
 void ConfiguratorWindow::calibration_read()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
                        CalibrationAddress, QVector<quint16>() << 36);
-    m_modbusDeviceNew->request(unit);
+    m_modbusDevice->request(unit);
 }
 //------------------------------------------
 void ConfiguratorWindow::calibration_write()
@@ -353,14 +343,14 @@ void ConfiguratorWindow::calibration_write()
     
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
                        CalibrationAddress, data);
-    m_modbusDeviceNew->request(unit);
+    m_modbusDevice->request(unit);
 }
 //----------------------------------------
 void ConfiguratorWindow::protection_read()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
                        ProtectionAddress, QVector<quint16>() << 4);
-    m_modbusDeviceNew->request(unit);
+    m_modbusDevice->request(unit);
 }
 //-----------------------------------------
 void ConfiguratorWindow::protection_write()
@@ -374,7 +364,7 @@ void ConfiguratorWindow::protection_write()
     
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
                        ProtectionAddress, data);
-    m_modbusDeviceNew->request(unit);
+    m_modbusDevice->request(unit);
 }
 //--------------------------------------------------------
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
@@ -439,12 +429,12 @@ void ConfiguratorWindow::timeCalculateChanged(int newTime)
 //-------------------------------------------------------
 void ConfiguratorWindow::timeoutValueChanged(int newTime)
 {
-    m_modbusDeviceNew->setTimeoutRepeat(newTime);
+    m_modbusDevice->setTimeoutRepeat(newTime);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::numberRepeatChanged(int number)
 {
-    m_modbusDeviceNew->setRequestCountRepeat(number);
+    m_modbusDevice->setRequestCountRepeat(number);
 }
 //--------------------------------------------------
 void ConfiguratorWindow::protectMTZChangedID(int id)
