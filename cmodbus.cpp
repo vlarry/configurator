@@ -240,6 +240,8 @@ void CModbus::request(CDataUnitType& unit)
     m_request_cur = unit;
     m_timeout_timer->start(m_timeout_repeat);
     m_device->write(ba);
+    
+    emit rawData(ba);
 }
 //-----------------------
 void CModbus::readyRead()
@@ -272,15 +274,19 @@ void CModbus::readyRead()
     // сообщение передается в однобайтовых значениях + 
     // 5 байт накладные расхорды + 1 пустой байт
     {
+        emit rawData(m_receive_buffer);
+        
         return;
     }
     else if(count < m_receive_buffer.count())
     {
-         m_receive_buffer.clear();
-         unblock();
-         process_request_queue();
-         
-         return;
+        emit rawData(m_receive_buffer);
+        
+        m_receive_buffer.clear();
+        unblock();
+        process_request_queue();
+        
+        return;
     }
     
     m_timeout_timer->stop();
@@ -300,6 +306,7 @@ void CModbus::readyRead()
         data.append(m_receive_buffer.at(i));
     }
     
+    emit rawData(m_receive_buffer);
     m_receive_buffer.clear();
     
     quint16 crc_calculate = CRC16(data, data.count());

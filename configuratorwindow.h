@@ -13,6 +13,7 @@
     #include <QAbstractButton>
     #include "cmodbus.h"
     #include "qpanel.h"
+    #include "cterminal.h"
     //----------
     namespace Ui 
     {
@@ -51,12 +52,16 @@
             void timeoutValueChanged(int newTime);
             void numberRepeatChanged(int number);
             void protectMTZChangedID(int id);
+            void protectMotorChangedID(int id);
             void errorDevice(const QString& error);
+            void terminalVisiblity(int state);
             
         private:
             void displayCalculateValues(QVector<quint16> values);
             void displayCalibrationValues(QVector<quint16> values);
             void displayProtectionValues(QVector<quint16> values);
+            
+            void initConnect();
             
         private:
             Ui::ConfiguratorWindow* ui;
@@ -65,6 +70,8 @@
             QVector<QLineEdit*>     m_calculate_cell;
             QVector<QLineEdit*>     m_calibration_cell;
             QButtonGroup*           m_protect_mtz_group;
+            QButtonGroup*           m_protect_motor_group;
             CModbus*                m_modbusDevice;
+            CTerminal*              m_terminal;
     };
 #endif // CONFIGURATORWINDOW_H

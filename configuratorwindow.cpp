@@ -7,14 +7,17 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_modbusDevice(nullptr),
     m_panel(nullptr),
     m_tim_calculate(nullptr),
-    m_protect_mtz_group(nullptr)
+    m_protect_mtz_group(nullptr),
+    m_terminal(nullptr)
 {
     ui->setupUi(this);
 
-    m_modbusDevice      = new CModbus(this);
-    m_panel             = new QPanel(this);
-    m_tim_calculate     = new QTimer;
-    m_protect_mtz_group = new QButtonGroup(ui->tabProtectionMTZ);
+    m_modbusDevice        = new CModbus(this);
+    m_panel               = new QPanel(this);
+    m_tim_calculate       = new QTimer(this);
+    m_protect_mtz_group   = new QButtonGroup(ui->tabProtectionMTZ);
+    m_protect_motor_group = new QButtonGroup(ui->tabProtectionMotor);
+    m_terminal            = new CTerminal(this);
     
     m_panel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_panel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -24,31 +27,23 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ2);
     m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ3);
     m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ4);
-    
     m_protect_mtz_group->setId(ui->pbtnProtectionMTZ1, 0);
     m_protect_mtz_group->setId(ui->pbtnProtectionMTZ2, 1);
     m_protect_mtz_group->setId(ui->pbtnProtectionMTZ3, 2);
     m_protect_mtz_group->setId(ui->pbtnProtectionMTZ4, 3);
     
+    m_protect_motor_group->addButton(ui->pbtnProtectionMotorStarting);
+    m_protect_motor_group->addButton(ui->pbtnProtectionMotorImin);
+    m_protect_motor_group->setId(ui->pbtnProtectionMotorStarting, 0);
+    m_protect_motor_group->setId(ui->pbtnProtectionMotorImin, 1);
+    
     protectMTZChangedID(0);
+    protectMotorChangedID(0);
     
     m_protect_mtz_group->setExclusive(true);
+    m_protect_motor_group->setExclusive(true);
     
-    connect(ui->pbtnPortCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
-    connect(m_modbusDevice, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
-    connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
-    connect(m_modbusDevice, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
-    connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculate_value);
-    connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_read);
-    connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_write);
-    connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
-    connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
-    connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
-    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_read);
-    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_write);
-    connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
-    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
-    connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
+    initConnect();
     
     ui->tabwgtRegisters->setDisabled(true);
     refreshSerialPort();
@@ -236,6 +231,9 @@ ConfiguratorWindow::~ConfiguratorWindow()
         m_modbusDevice->disconnectDevice();
     }
     
+    delete m_terminal;
+    m_terminal = nullptr;
+    
     delete m_modbusDevice;
     m_modbusDevice = nullptr;
     
@@ -286,6 +284,12 @@ void ConfiguratorWindow::stateChanged(bool state)
         m_tim_calculate->stop();
     
     ui->tabwgtRegisters->setEnabled(state);
+    
+    if(state)
+    {
+        if(ui->chboxTerminal->isChecked())
+            terminalVisiblity(Qt::Checked);
+    }
 }
 //------------------------------------------
 void ConfiguratorWindow::refreshSerialPort()
@@ -397,6 +401,8 @@ void ConfiguratorWindow::show()
     ui->tabwgtRegisters->setCurrentIndex(0);
     ui->tabwgtSettings->setCurrentIndex(0);
     ui->tabwgtInputChannels->setCurrentIndex(0);
+    ui->tabwgtProtections->setCurrentIndex(0);
+    ui->tabwgtProtectionLevel->setCurrentIndex(0);
     
     setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
@@ -404,6 +410,8 @@ void ConfiguratorWindow::show()
     ui->gboxProtectionPropertiesMTZ2->hide();
     ui->gboxProtectionPropertiesMTZ3->hide();
     ui->gboxProtectionPropertiesMTZ4->hide();
+    
+    m_terminal->hide();
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
@@ -475,10 +483,50 @@ void ConfiguratorWindow::protectMTZChangedID(int id)
         }
     }
 }
+//----------------------------------------------------
+void ConfiguratorWindow::protectMotorChangedID(int id)
+{
+    if(id >= 0 && id < 2)
+    {
+        ui->gboxProtectionPropertiesMotor_StartingCurrent->hide();
+        ui->gboxProtectionPropertiesMotor_Imin->hide();
+        
+        ui->pbtnProtectionMotorStarting->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionMotorImin->setStyleSheet("QPushButton { background: none }");
+        
+        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_motor_group->button(id));
+        
+        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+        
+        switch(id)
+        {
+            case 0:
+                ui->gboxProtectionPropertiesMotor_StartingCurrent->show();
+            break;
+            
+            case 1:
+                ui->gboxProtectionPropertiesMotor_Imin->show();
+            break;
+        }
+    }
+}
 //--------------------------------------------------------
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
     statusBar()->showMessage(error, 5000);
+}
+//---------------------------------------------------
+void ConfiguratorWindow::terminalVisiblity(int state)
+{
+    if(m_modbusDevice->is_open())
+    {
+        if(state == Qt::Checked)
+            m_terminal->show();
+        else if(state == Qt::Unchecked)
+            m_terminal->hide();
+    }
+    
+    ui->chboxTerminal->setCheckState((Qt::CheckState)state);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -536,4 +584,27 @@ void ConfiguratorWindow::displayProtectionValues(QVector<quint16> values)
             cbItem->setCurrentIndex(value);
         }
     }
+}
+//------------------------------------
+void ConfiguratorWindow::initConnect()
+{
+    connect(ui->pbtnPortCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
+    connect(m_modbusDevice, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
+    connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
+    connect(m_modbusDevice, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
+    connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculate_value);
+    connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_read);
+    connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_write);
+    connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
+    connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
+    connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
+    connect(m_protect_motor_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMotorChangedID(int)));
+    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_read);
+    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_write);
+    connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
+    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
+    connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
+    connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
+    connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
+    connect(m_terminal, &CTerminal::close, this, &ConfiguratorWindow::terminalVisiblity);
 }

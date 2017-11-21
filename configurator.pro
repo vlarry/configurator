@@ -40,18 +40,21 @@ SOURCES += \
         qpanel.cpp \
         qcell.cpp \
         cmodbus.cpp \
-        cdataunittype.cpp
+        cdataunittype.cpp \
+    cterminal.cpp
 
 HEADERS += \
         configuratorwindow.h \
         qpanel.h \
         qcell.h \
         cmodbus.h \
-        cdataunittype.h
+        cdataunittype.h \
+    cterminal.h
 
 FORMS += \
         configuratorwindow.ui \
-        qcell.ui
+        qcell.ui \
+    cterminal.ui
 
 win32::RC_FILE = \
                  resource/icon.rc
