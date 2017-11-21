@@ -22,15 +22,22 @@ CTerminal::~CTerminal()
 {
     delete ui;
 }
-//------------------------------------------
-void CTerminal::appendData(QByteArray& data)
+//----------------------------------------------------------
+void CTerminal::appendData(QByteArray& data, bool isRequest)
 {
-    Q_UNUSED(data);
+    QString str = (isRequest)?tr("Запрос:\n"):tr("Ответ:\n");
+    
+    for(QString s: data)
+    {
+        str += s.toLocal8Bit().toHex() + " ";
+    }
+    
+    str += tr("   (") + QString::number(data.count()) + tr(" байт)\n");
+    
+    ui->pteConsole->appendPlainText(str);
 }
 //--------------------------------------------
 void CTerminal::closeEvent(QCloseEvent* event)
 {
-    QWidget::closeEvent(event);
-    
-    emit close(Qt::Unchecked);
+    emit closeTerminal(Qt::Unchecked);
 }

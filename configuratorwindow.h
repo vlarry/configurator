@@ -11,6 +11,7 @@
     #include <QSpinBox>
     #include <QButtonGroup>
     #include <QAbstractButton>
+    #include <QFile>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -61,6 +62,7 @@
             void protectLevelChangedID(int id);
             void errorDevice(const QString& error);
             void terminalVisiblity(int state);
+            void saveLog(const QString& info);
             
         private:
             void initButtonGroup();
@@ -86,5 +88,6 @@
             QButtonGroup*           m_protect_level_group;
             CModbus*                m_modbusDevice;
             CTerminal*              m_terminal;
+            QFile*                  m_logFile;
     };
 #endif // CONFIGURATORWINDOW_H

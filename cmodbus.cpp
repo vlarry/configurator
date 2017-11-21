@@ -40,10 +40,10 @@ CModbus::~CModbus()
     {
         if(m_device->isOpen())
             m_device->close();
-        
-        delete m_device;
-        m_device = nullptr;
     }
+    
+    delete m_device;
+    m_device = nullptr;
 }
 //--------------------------------------------
 void CModbus::setPortName(const QString& name)
@@ -147,6 +147,8 @@ void CModbus::connectDevice()
     }
     else
         emit connectDeviceState(true);
+    
+    emit infoLog(tr("Последовательный порт <") + m_device->portName() + tr("> открыт\n"));
 }
 //------------------------------
 void CModbus::disconnectDevice()
@@ -163,6 +165,7 @@ void CModbus::disconnectDevice()
         unblock();
         
         emit connectDeviceState(false);
+        emit infoLog(tr("Последовательный порт <") + m_device->portName() + tr("> закрыт\n"));
     }
 }
 //----------------------------------------
@@ -183,7 +186,7 @@ void CModbus::request(CDataUnitType& unit)
         size = unit.valueCount()*2;
     }
     
-    if(size > 246) // максимальный размер запроса 252 байта - накладные расходы 
+    if(size > 247) // максимальный размер запроса 252 байта - накладные расходы 
     {
         return;
     }
@@ -265,28 +268,24 @@ void CModbus::readyRead()
     if(m_request_cur.functionType() == CDataUnitType::ReadHoldingRegisters || 
        m_request_cur.functionType() == CDataUnitType::ReadInputRegisters)
     {
-        count = m_request_cur.value(0)*2 + 6;   
+        count = m_request_cur.value(0)*2 + 5;   
     }
     else
-        count = 9;
+        count = 8;
     
     if(count != m_receive_buffer.count() && count > m_receive_buffer.count()) 
     // сообщение передается в однобайтовых значениях + 
-    // 5 байт накладные расхорды + 1 пустой байт
+    // 5 байт накладные расхорды
     {
-        emit rawData(m_receive_buffer);
-        
         return;
     }
     else if(count < m_receive_buffer.count())
     {
-        emit rawData(m_receive_buffer);
+        emit infoLog(tr("Получено больше, чем ожидалось (") + QString::number(count) + " < " + 
+                     QString::number(m_receive_buffer.count()) + tr("). Данные обрезаны до размера: ") + 
+                     QString::number(count) + tr(" байт"));
         
-        m_receive_buffer.clear();
-        unblock();
-        process_request_queue();
-        
-        return;
+        m_receive_buffer = m_receive_buffer.remove(count, (m_receive_buffer.count() - count));
     }
     
     m_timeout_timer->stop();
@@ -294,19 +293,19 @@ void CModbus::readyRead()
     
     // приняли все сообщение
     // расчет и проверка контрольной суммы
-    quint8 mbs = m_receive_buffer.at(m_receive_buffer.count() - 3);
-    quint8 lbs = m_receive_buffer.at(m_receive_buffer.count() - 2);
+    quint8 mbs = m_receive_buffer.at(m_receive_buffer.count() - 2);
+    quint8 lbs = m_receive_buffer.at(m_receive_buffer.count() - 1);
     
     quint16 crc_receive = ((quint16)lbs << 8) | mbs;
     
     QVector<quint8> data;
     
-    for(quint8 i = 0; i < count - 3; i++) // получаем целочиесленные однобайтовые данные без учета CRC и пустого байта
+    for(quint8 i = 0; i < count - 2; i++) // получаем целочиесленные однобайтовые данные без учета CRC
     {
         data.append(m_receive_buffer.at(i));
     }
     
-    emit rawData(m_receive_buffer);
+    emit rawData(m_receive_buffer, false);
     m_receive_buffer.clear();
     
     quint16 crc_calculate = CRC16(data, data.count());
@@ -321,6 +320,7 @@ void CModbus::readyRead()
         QString error = tr("Ошибка контрольной суммы->принято(") + str1 + tr("), рассчитано(") + str2 + tr(")");
         
         emit errorDevice(error);
+        emit infoLog(error + QString("\n"));
         
         unblock();
         process_request_queue();

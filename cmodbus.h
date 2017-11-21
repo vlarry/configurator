@@ -42,7 +42,8 @@
             void connectDeviceState(bool);
             void dataReady(CDataUnitType&);
             void timeoutResponse();
-            void rawData(QByteArray& data);
+            void rawData(QByteArray& data, bool = true);
+            void infoLog(const QString&);
             
         public slots:
             void connectDevice();

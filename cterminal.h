@@ -20,10 +20,10 @@
             ~CTerminal();
         
         signals:
-            void close(int);
+            void closeTerminal(int);
         
         public slots:
-            void appendData(QByteArray& data);
+            void appendData(QByteArray& data, bool isRequest = true);
             
         private:
             void closeEvent(QCloseEvent* event);

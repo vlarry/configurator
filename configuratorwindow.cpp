@@ -8,7 +8,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_panel(nullptr),
     m_tim_calculate(nullptr),
     m_protect_mtz_group(nullptr),
-    m_terminal(nullptr)
+    m_terminal(nullptr),
+    m_logFile(nullptr)
 {
     ui->setupUi(this);
 
@@ -24,6 +25,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_temperature_group = new QButtonGroup(ui->tabProtectionTemperature);
     m_protect_level_group       = new QButtonGroup(ui->tabProtectionLevels);
     m_terminal                  = new CTerminal(this);
+    m_logFile                   = new QFile("Log.txt");
     
     m_panel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_panel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -213,10 +215,16 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
 {
-    if(m_modbusDevice)
+    if(m_logFile)
     {
-        m_modbusDevice->disconnectDevice();
+        m_logFile->write("Завершение работы программы...\n\n");
+                
+        if(m_logFile->isOpen())
+            m_logFile->close();
     }
+    
+    delete m_logFile;
+    m_logFile = nullptr;
     
     delete m_terminal;
     m_terminal = nullptr;
@@ -274,8 +282,10 @@ void ConfiguratorWindow::stateChanged(bool state)
     
     if(state)
     {
-        if(ui->chboxTerminal->isChecked())
-            terminalVisiblity(Qt::Checked);
+        if(!m_logFile->open(QFile::Append))
+        {
+            statusBar()->showMessage(tr("Ошибка. Невозможно открыть log-файл"));
+        }
     }
 }
 //------------------------------------------
@@ -364,6 +374,7 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         return;
     
     qDebug() << "Получен ответ: " << unit.valueCount();
+    emit m_modbusDevice->infoLog(tr("Получен ответ: ") + QString::number(unit.valueCount()) + tr(" байт \n"));
     
     switch(unit.valueCount())
     {
@@ -715,15 +726,22 @@ void ConfiguratorWindow::errorDevice(const QString& error)
 //---------------------------------------------------
 void ConfiguratorWindow::terminalVisiblity(int state)
 {
-    if(m_modbusDevice->is_open())
-    {
-        if(state == Qt::Checked)
-            m_terminal->show();
-        else if(state == Qt::Unchecked)
-            m_terminal->hide();
-    }
+    if(state == Qt::Checked)
+        m_terminal->show();
+    else if(state == Qt::Unchecked)
+        m_terminal->hide();
     
     ui->chboxTerminal->setCheckState((Qt::CheckState)state);
+}
+//---------------------------------------------------
+void ConfiguratorWindow::saveLog(const QString& info)
+{
+    qDebug() << info;
+    
+    if(m_logFile->isOpen())
+    {
+        m_logFile->write(info.toStdString().c_str());
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::initButtonGroup()
@@ -898,5 +916,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
-    connect(m_terminal, &CTerminal::close, this, &ConfiguratorWindow::terminalVisiblity);
+    connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
+    connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
 }
