@@ -52,11 +52,18 @@
             void timeoutValueChanged(int newTime);
             void numberRepeatChanged(int number);
             void protectMTZChangedID(int id);
+            void protectEarthlyChangedID(int id);
+            void protectPowerChangedID(int id);
             void protectMotorChangedID(int id);
+            void protectFrequencyChangedID(int id);
+            void protectExternalChangedID(int id);
+            void protectTemperatureChangedID(int id);
+            void protectLevelChangedID(int id);
             void errorDevice(const QString& error);
             void terminalVisiblity(int state);
             
         private:
+            void initButtonGroup();
             void displayCalculateValues(QVector<quint16> values);
             void displayCalibrationValues(QVector<quint16> values);
             void displayProtectionValues(QVector<quint16> values);
@@ -70,7 +77,13 @@
             QVector<QLineEdit*>     m_calculate_cell;
             QVector<QLineEdit*>     m_calibration_cell;
             QButtonGroup*           m_protect_mtz_group;
+            QButtonGroup*           m_protect_earthly_group;
+            QButtonGroup*           m_protect_power_group;
             QButtonGroup*           m_protect_motor_group;
+            QButtonGroup*           m_protect_frequency_group;
+            QButtonGroup*           m_protect_external_group;
+            QButtonGroup*           m_protect_temperature_group;
+            QButtonGroup*           m_protect_level_group;
             CModbus*                m_modbusDevice;
             CTerminal*              m_terminal;
     };

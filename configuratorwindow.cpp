@@ -12,37 +12,24 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 {
     ui->setupUi(this);
 
-    m_modbusDevice        = new CModbus(this);
-    m_panel               = new QPanel(this);
-    m_tim_calculate       = new QTimer(this);
-    m_protect_mtz_group   = new QButtonGroup(ui->tabProtectionMTZ);
-    m_protect_motor_group = new QButtonGroup(ui->tabProtectionMotor);
-    m_terminal            = new CTerminal(this);
+    m_modbusDevice              = new CModbus(this);
+    m_panel                     = new QPanel(this);
+    m_tim_calculate             = new QTimer(this);
+    m_protect_mtz_group         = new QButtonGroup(ui->tabProtectionMTZ);
+    m_protect_earthly_group     = new QButtonGroup(ui->tabProtectionEarthly);
+    m_protect_power_group       = new QButtonGroup(ui->tabProtectionPower);
+    m_protect_motor_group       = new QButtonGroup(ui->tabProtectionMotor);
+    m_protect_frequency_group   = new QButtonGroup(ui->tabProtectionFrenquency);
+    m_protect_external_group    = new QButtonGroup(ui->tabProtectionExternal);
+    m_protect_temperature_group = new QButtonGroup(ui->tabProtectionTemperature);
+    m_protect_level_group       = new QButtonGroup(ui->tabProtectionLevels);
+    m_terminal                  = new CTerminal(this);
     
     m_panel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_panel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     addDockWidget(Qt::RightDockWidgetArea, m_panel);
     
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ1);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ2);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ3);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ4);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ1, 0);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ2, 1);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ3, 2);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ4, 3);
-    
-    m_protect_motor_group->addButton(ui->pbtnProtectionMotorStarting);
-    m_protect_motor_group->addButton(ui->pbtnProtectionMotorImin);
-    m_protect_motor_group->setId(ui->pbtnProtectionMotorStarting, 0);
-    m_protect_motor_group->setId(ui->pbtnProtectionMotorImin, 1);
-    
-    protectMTZChangedID(0);
-    protectMotorChangedID(0);
-    
-    m_protect_mtz_group->setExclusive(true);
-    m_protect_motor_group->setExclusive(true);
-    
+    initButtonGroup();
     initConnect();
     
     ui->tabwgtRegisters->setDisabled(true);
@@ -447,7 +434,7 @@ void ConfiguratorWindow::numberRepeatChanged(int number)
 //--------------------------------------------------
 void ConfiguratorWindow::protectMTZChangedID(int id)
 {
-    if(id >= 0 && id < 4)
+    if(id >= 0 && id < m_protect_mtz_group->buttons().count())
     {
         ui->gboxProtectionPropertiesMTZ1->hide();
         ui->gboxProtectionPropertiesMTZ2->hide();
@@ -483,10 +470,94 @@ void ConfiguratorWindow::protectMTZChangedID(int id)
         }
     }
 }
+//------------------------------------------------------
+void ConfiguratorWindow::protectEarthlyChangedID(int id)
+{
+    if(id >= 0 && id < m_protect_earthly_group->buttons().count())
+    {
+        ui->gboxProtectionPropertiesEarthly_OZZ1->hide();
+        ui->gboxProtectionPropertiesEarthly_OZZ2->hide();
+        ui->gboxProtectionPropertiesEarthly_NZZ1->hide();
+        ui->gboxProtectionPropertiesEarthly_NZZ2->hide();
+        
+        ui->pbtnProtectionEarthly_OZZ1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionEarthly_OZZ2->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionEarthly_NZZ1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionEarthly_NZZ2->setStyleSheet("QPushButton { background: none }");
+        
+        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_earthly_group->button(id));
+        
+        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+        
+        switch(id)
+        {
+            case 0:
+                ui->gboxProtectionPropertiesEarthly_OZZ1->show();
+            break;
+            
+            case 1:
+                ui->gboxProtectionPropertiesEarthly_OZZ2->show();
+            break;
+            
+            case 2:
+                ui->gboxProtectionPropertiesEarthly_NZZ1->show();
+            break;
+            
+            case 3:
+                ui->gboxProtectionPropertiesEarthly_NZZ2->show();
+            break;
+        }
+    }
+}
+//----------------------------------------------------
+void ConfiguratorWindow::protectPowerChangedID(int id)
+{
+    if(id >= 0 && id < m_protect_power_group->buttons().count())
+    {
+        ui->gboxProtectionPropertiesPower_Umax1->hide();
+        ui->gboxProtectionPropertiesPower_Umax2->hide();
+        ui->gboxProtectionPropertiesPower_Umin1->hide();
+        ui->gboxProtectionPropertiesPower_Umin2->hide();
+        ui->gboxProtectionPropertiesPower_3UO->hide();
+        
+        ui->pbtnProtectionPower_Umax1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionPower_Umax2->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionPower_Umin1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionPower_Umin2->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionPower_3UO->setStyleSheet("QPushButton { background: none }");
+        
+        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_power_group->button(id));
+        
+        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+        
+        switch(id)
+        {
+            case 0:
+                ui->gboxProtectionPropertiesPower_Umax1->show();
+            break;
+            
+            case 1:
+                ui->gboxProtectionPropertiesPower_Umax2->show();
+            break;
+            
+            case 2:
+                ui->gboxProtectionPropertiesPower_Umin1->show();
+            break;
+            
+            case 3:
+                ui->gboxProtectionPropertiesPower_Umin2->show();
+            break;
+                
+            case 4:
+                ui->gboxProtectionPropertiesPower_3UO->show();
+            break;
+        }
+    }
+}
 //----------------------------------------------------
 void ConfiguratorWindow::protectMotorChangedID(int id)
 {
-    if(id >= 0 && id < 2)
+    if(id >= 0 && id < m_protect_motor_group->buttons().count())
     {
         ui->gboxProtectionPropertiesMotor_StartingCurrent->hide();
         ui->gboxProtectionPropertiesMotor_Imin->hide();
@@ -511,6 +582,132 @@ void ConfiguratorWindow::protectMotorChangedID(int id)
     }
 }
 //--------------------------------------------------------
+void ConfiguratorWindow::protectFrequencyChangedID(int id)
+{
+    if(id >= 0 && id < m_protect_frequency_group->buttons().count())
+    {
+        ui->gboxProtectionPropertiesFrequency_ACR1->hide();
+        ui->gboxProtectionPropertiesFrequency_ACR2->hide();
+        ui->gboxProtectionPropertiesFrequency_ACR3->hide();
+        
+        ui->pbtnProtectionFrequency_ACR1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionFrequency_ACR2->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionFrequency_ACR3->setStyleSheet("QPushButton { background: none }");
+        
+        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_frequency_group->button(id));
+        
+        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+        
+        switch(id)
+        {
+            case 0:
+                ui->gboxProtectionPropertiesFrequency_ACR1->show();
+            break;
+            
+            case 1:
+                ui->gboxProtectionPropertiesFrequency_ACR2->show();
+            break;
+            
+            case 2:
+                ui->gboxProtectionPropertiesFrequency_ACR3->show();
+            break;
+        }
+    }
+}
+//-------------------------------------------------------
+void ConfiguratorWindow::protectExternalChangedID(int id)
+{
+    if(id >= 0 && id < m_protect_external_group->buttons().count())
+    {
+        ui->gboxProtectionPropertiesExternalArc->hide();
+        ui->gboxProtectionPropertiesExternal1->hide();
+        ui->gboxProtectionPropertiesExternal2->hide();
+        ui->gboxProtectionPropertiesExternal3->hide();
+        
+        ui->pbtnProtectionExternal_Arc->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionExternal1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionExternal2->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionExternal3->setStyleSheet("QPushButton { background: none }");
+        
+        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_external_group->button(id));
+        
+        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+        
+        switch(id)
+        {
+            case 0:
+                ui->gboxProtectionPropertiesExternalArc->show();
+            break;
+            
+            case 1:
+                ui->gboxProtectionPropertiesExternal1->show();
+            break;
+            
+            case 2:
+                ui->gboxProtectionPropertiesExternal2->show();
+            break;
+            
+            case 3:
+                ui->gboxProtectionPropertiesExternal3->show();
+            break;
+        }
+    }
+}
+//----------------------------------------------------------
+void ConfiguratorWindow::protectTemperatureChangedID(int id)
+{
+    if(id >= 0 && id < m_protect_temperature_group->buttons().count())
+    {
+        ui->gboxProtectionPropertiesTemperature1->hide();
+        ui->gboxProtectionPropertiesTemperature2->hide();
+        
+        ui->pbtnProtectionTemp1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionTemp2->setStyleSheet("QPushButton { background: none }");
+        
+        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_temperature_group->button(id));
+        
+        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+        
+        switch(id)
+        {
+            case 0:
+                ui->gboxProtectionPropertiesTemperature1->show();
+            break;
+            
+            case 1:
+                ui->gboxProtectionPropertiesTemperature2->show();
+            break;
+        }
+    }
+}
+//----------------------------------------------------
+void ConfiguratorWindow::protectLevelChangedID(int id)
+{
+    if(id >= 0 && id < m_protect_level_group->buttons().count())
+    {
+        ui->gboxProtectionPropertiesLevel1->hide();
+        ui->gboxProtectionPropertiesLevel2->hide();
+        
+        ui->pbtnProtectionLevel1->setStyleSheet("QPushButton { background: none }");
+        ui->pbtnProtectionLevel2->setStyleSheet("QPushButton { background: none }");
+        
+        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_level_group->button(id));
+        
+        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+        
+        switch(id)
+        {
+            case 0:
+                ui->gboxProtectionPropertiesLevel1->show();
+            break;
+            
+            case 1:
+                ui->gboxProtectionPropertiesLevel2->show();
+            break;
+        }
+    }
+}
+//--------------------------------------------------------
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
     statusBar()->showMessage(error, 5000);
@@ -527,6 +724,95 @@ void ConfiguratorWindow::terminalVisiblity(int state)
     }
     
     ui->chboxTerminal->setCheckState((Qt::CheckState)state);
+}
+//----------------------------------------
+void ConfiguratorWindow::initButtonGroup()
+{
+    // группа токовых защит
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ1);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ2);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ3);
+    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ4);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ1, 0);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ2, 1);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ3, 2);
+    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ4, 3);
+    
+    // группа земляных защит
+    m_protect_earthly_group->addButton(ui->pbtnProtectionEarthly_OZZ1);
+    m_protect_earthly_group->addButton(ui->pbtnProtectionEarthly_OZZ2);
+    m_protect_earthly_group->addButton(ui->pbtnProtectionEarthly_NZZ1);
+    m_protect_earthly_group->addButton(ui->pbtnProtectionEarthly_NZZ2);
+    m_protect_earthly_group->setId(ui->pbtnProtectionEarthly_OZZ1, 0);
+    m_protect_earthly_group->setId(ui->pbtnProtectionEarthly_OZZ2, 1);
+    m_protect_earthly_group->setId(ui->pbtnProtectionEarthly_NZZ1, 2);
+    m_protect_earthly_group->setId(ui->pbtnProtectionEarthly_NZZ2, 3);
+    
+    // группа защит по напряжению
+    m_protect_power_group->addButton(ui->pbtnProtectionPower_Umax1);
+    m_protect_power_group->addButton(ui->pbtnProtectionPower_Umax2);
+    m_protect_power_group->addButton(ui->pbtnProtectionPower_Umin1);
+    m_protect_power_group->addButton(ui->pbtnProtectionPower_Umin2);
+    m_protect_power_group->addButton(ui->pbtnProtectionPower_3UO);
+    m_protect_power_group->setId(ui->pbtnProtectionPower_Umax1, 0);
+    m_protect_power_group->setId(ui->pbtnProtectionPower_Umax2, 1);
+    m_protect_power_group->setId(ui->pbtnProtectionPower_Umin1, 2);
+    m_protect_power_group->setId(ui->pbtnProtectionPower_Umin2, 3);
+    m_protect_power_group->setId(ui->pbtnProtectionPower_3UO, 4);
+    
+    // группа защиты двигателей
+    m_protect_motor_group->addButton(ui->pbtnProtectionMotorStarting);
+    m_protect_motor_group->addButton(ui->pbtnProtectionMotorImin);
+    m_protect_motor_group->setId(ui->pbtnProtectionMotorStarting, 0);
+    m_protect_motor_group->setId(ui->pbtnProtectionMotorImin, 1);
+    
+    // группа частотных защит
+    m_protect_frequency_group->addButton(ui->pbtnProtectionFrequency_ACR1);
+    m_protect_frequency_group->addButton(ui->pbtnProtectionFrequency_ACR2);
+    m_protect_frequency_group->addButton(ui->pbtnProtectionFrequency_ACR3);
+    m_protect_frequency_group->setId(ui->pbtnProtectionFrequency_ACR1, 0);
+    m_protect_frequency_group->setId(ui->pbtnProtectionFrequency_ACR2, 1);
+    m_protect_frequency_group->setId(ui->pbtnProtectionFrequency_ACR3, 2);
+    
+    // группа внешних защит
+    m_protect_external_group->addButton(ui->pbtnProtectionExternal_Arc);
+    m_protect_external_group->addButton(ui->pbtnProtectionExternal1);
+    m_protect_external_group->addButton(ui->pbtnProtectionExternal2);
+    m_protect_external_group->addButton(ui->pbtnProtectionExternal3);
+    m_protect_external_group->addButton(ui->pbtnProtectionExternal_Arc, 0);
+    m_protect_external_group->addButton(ui->pbtnProtectionExternal1, 1);
+    m_protect_external_group->addButton(ui->pbtnProtectionExternal2, 2);
+    m_protect_external_group->addButton(ui->pbtnProtectionExternal3, 3);
+    
+    // группа температурных защит
+    m_protect_temperature_group->addButton(ui->pbtnProtectionTemp1);
+    m_protect_temperature_group->addButton(ui->pbtnProtectionTemp2);
+    m_protect_temperature_group->setId(ui->pbtnProtectionTemp1, 0);
+    m_protect_temperature_group->setId(ui->pbtnProtectionTemp2, 1);
+    
+    // группа уровневых защит
+    m_protect_level_group->addButton(ui->pbtnProtectionLevel1);
+    m_protect_level_group->addButton(ui->pbtnProtectionLevel2);
+    m_protect_level_group->setId(ui->pbtnProtectionLevel1, 0);
+    m_protect_level_group->setId(ui->pbtnProtectionLevel2, 1);
+    
+    protectMTZChangedID(0);
+    protectEarthlyChangedID(0);
+    protectPowerChangedID(0);
+    protectMotorChangedID(0);
+    protectFrequencyChangedID(0);
+    protectExternalChangedID(0);
+    protectTemperatureChangedID(0);
+    protectLevelChangedID(0);
+    
+    m_protect_mtz_group->setExclusive(true);
+    m_protect_earthly_group->setExclusive(true);
+    m_protect_power_group->setExclusive(true);
+    m_protect_motor_group->setExclusive(true);
+    m_protect_frequency_group->setExclusive(true);
+    m_protect_external_group->setExclusive(true);
+    m_protect_temperature_group->setExclusive(true);
+    m_protect_level_group->setExclusive(true);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -598,7 +884,13 @@ void ConfiguratorWindow::initConnect()
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
     connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
+    connect(m_protect_earthly_group, SIGNAL(buttonClicked(int)), this, SLOT(protectEarthlyChangedID(int)));
+    connect(m_protect_power_group, SIGNAL(buttonClicked(int)), this, SLOT(protectPowerChangedID(int)));
     connect(m_protect_motor_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMotorChangedID(int)));
+    connect(m_protect_frequency_group, SIGNAL(buttonClicked(int)), this, SLOT(protectFrequencyChangedID(int)));
+    connect(m_protect_external_group, SIGNAL(buttonClicked(int)), this, SLOT(protectExternalChangedID(int)));
+    connect(m_protect_temperature_group, SIGNAL(buttonClicked(int)), this, SLOT(protectTemperatureChangedID(int)));
+    connect(m_protect_level_group, SIGNAL(buttonClicked(int)), this, SLOT(protectLevelChangedID(int)));
     connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_read);
     connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_write);
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);

@@ -1489,7 +1489,7 @@
             <item>
              <widget class="QTabWidget" name="tabwgtProtections">
               <property name="currentIndex">
-               <number>0</number>
+               <number>5</number>
               </property>
               <widget class="QWidget" name="tabProtectionMTZ">
                <attribute name="title">
@@ -5471,6 +5471,9 @@
                         <set>Qt::AlignCenter</set>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_40">
+                        <property name="sizeConstraint">
+                         <enum>QLayout::SetFixedSize</enum>
+                        </property>
                         <item>
                          <layout class="QHBoxLayout" name="horizontalLayout_36">
                           <item>
@@ -5620,6 +5623,9 @@
                      </item>
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_47">
+                       <property name="sizeConstraint">
+                        <enum>QLayout::SetFixedSize</enum>
+                       </property>
                        <item>
                         <widget class="QGroupBox" name="gboxProtectionPropertiesExternal1">
                          <property name="sizePolicy">
@@ -5748,6 +5754,9 @@
                      </item>
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_48">
+                       <property name="sizeConstraint">
+                        <enum>QLayout::SetFixedSize</enum>
+                       </property>
                        <item>
                         <widget class="QGroupBox" name="gboxProtectionPropertiesExternal2">
                          <property name="sizePolicy">
@@ -5876,6 +5885,9 @@
                      </item>
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_49">
+                       <property name="sizeConstraint">
+                        <enum>QLayout::SetFixedSize</enum>
+                       </property>
                        <item>
                         <widget class="QGroupBox" name="gboxProtectionPropertiesExternal3">
                          <property name="sizePolicy">
@@ -6521,7 +6533,7 @@
                 <item>
                  <widget class="QTabWidget" name="tabwgtProtectionLevel">
                   <property name="currentIndex">
-                   <number>1</number>
+                   <number>0</number>
                   </property>
                   <widget class="QWidget" name="tabProtectionLevels">
                    <attribute name="title">
