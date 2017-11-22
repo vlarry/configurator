@@ -42,10 +42,10 @@
             void stateChanged(bool state);
             void refreshSerialPort();
             void calculate_value(); // запрос расчетных величин
-            void calibration_read();
-            void calibration_write();
-            void protection_read();
-            void protection_write();
+            void inputAnalogRead();
+            void inputAnalogWrite();
+            void protectionRead();
+            void protectionWrite();
             void responseRead(CDataUnitType& unit);
             void show();
             void chboxCalculateTimeoutStateChanged(bool state);
@@ -60,6 +60,7 @@
             void protectExternalChangedID(int id);
             void protectTemperatureChangedID(int id);
             void protectLevelChangedID(int id);
+            void switchDeviceChangedID(int id);
             void errorDevice(const QString& error);
             void terminalVisiblity(int state);
             void saveLog(const QString& info);
@@ -86,6 +87,7 @@
             QButtonGroup*           m_protect_external_group;
             QButtonGroup*           m_protect_temperature_group;
             QButtonGroup*           m_protect_level_group;
+            QButtonGroup*           m_switch_device_group;
             CModbus*                m_modbusDevice;
             CTerminal*              m_terminal;
             QFile*                  m_logFile;

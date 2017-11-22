@@ -8,6 +8,13 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_panel(nullptr),
     m_tim_calculate(nullptr),
     m_protect_mtz_group(nullptr),
+    m_protect_earthly_group(nullptr),
+    m_protect_power_group(nullptr),
+    m_protect_motor_group(nullptr),
+    m_protect_frequency_group(nullptr),
+    m_protect_external_group(nullptr),
+    m_protect_temperature_group(nullptr),
+    m_protect_level_group(nullptr),
     m_terminal(nullptr),
     m_logFile(nullptr)
 {
@@ -24,6 +31,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_external_group    = new QButtonGroup(ui->tabProtectionExternal);
     m_protect_temperature_group = new QButtonGroup(ui->tabProtectionTemperature);
     m_protect_level_group       = new QButtonGroup(ui->tabProtectionLevels);
+    m_switch_device_group       = new QButtonGroup(ui->tabSwitchDevice);
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
     
@@ -282,7 +290,7 @@ void ConfiguratorWindow::stateChanged(bool state)
     
     if(state)
     {
-        if(!m_logFile->open(QFile::Append))
+        if(!m_logFile->open(QFile::ReadWrite))
         {
             statusBar()->showMessage(tr("Ошибка. Невозможно открыть log-файл"));
         }
@@ -317,14 +325,14 @@ void ConfiguratorWindow::calculate_value()
     m_modbusDevice->request(unit);
 }
 //-----------------------------------------
-void ConfiguratorWindow::calibration_read()
+void ConfiguratorWindow::inputAnalogRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
                        CalibrationAddress, QVector<quint16>() << 36);
     m_modbusDevice->request(unit);
 }
 //------------------------------------------
-void ConfiguratorWindow::calibration_write()
+void ConfiguratorWindow::inputAnalogWrite()
 {
     QVector<quint16> data;
     
@@ -346,15 +354,15 @@ void ConfiguratorWindow::calibration_write()
                        CalibrationAddress, data);
     m_modbusDevice->request(unit);
 }
-//----------------------------------------
-void ConfiguratorWindow::protection_read()
+//---------------------------------------
+void ConfiguratorWindow::protectionRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
                        ProtectionAddress, QVector<quint16>() << 4);
     m_modbusDevice->request(unit);
 }
-//-----------------------------------------
-void ConfiguratorWindow::protection_write()
+//----------------------------------------
+void ConfiguratorWindow::protectionWrite()
 {
     QVector<quint16> data;
     
@@ -401,6 +409,7 @@ void ConfiguratorWindow::show()
     ui->tabwgtInputChannels->setCurrentIndex(0);
     ui->tabwgtProtections->setCurrentIndex(0);
     ui->tabwgtProtectionLevel->setCurrentIndex(0);
+    ui->tabwgtSetInputAnalogs->setCurrentIndex(0);
     
     setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
@@ -718,6 +727,28 @@ void ConfiguratorWindow::protectLevelChangedID(int id)
         }
     }
 }
+//----------------------------------------------------
+void ConfiguratorWindow::switchDeviceChangedID(int id)
+{
+    quint8 count = m_switch_device_group->buttons().count();
+
+    if(id >= 0 && id < count)
+    {
+        for(quint8 i = 0; i < count; i++)
+        {
+           QPushButton* btn = qobject_cast<QPushButton*>(m_switch_device_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
+        }
+
+        ui->stwgtSwitchDevice->setCurrentIndex(id);
+    }
+}
 //--------------------------------------------------------
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
@@ -813,6 +844,22 @@ void ConfiguratorWindow::initButtonGroup()
     m_protect_level_group->addButton(ui->pbtnProtectionLevel2);
     m_protect_level_group->setId(ui->pbtnProtectionLevel1, 0);
     m_protect_level_group->setId(ui->pbtnProtectionLevel2, 1);
+
+    // группа коммутационных устройств
+    m_switch_device_group->addButton(ui->pbtnSwDevBreaker);
+    m_switch_device_group->addButton(ui->pbtnSwDevBlock);
+    m_switch_device_group->addButton(ui->pbtnSwDevSCHR);
+    m_switch_device_group->addButton(ui->pbtnSwDevLR);
+    m_switch_device_group->addButton(ui->pbtnSwDevZR);
+    m_switch_device_group->addButton(ui->pbtnSwDevTruck);
+    m_switch_device_group->addButton(ui->pbtnSwDevCtrl);
+    m_switch_device_group->setId(ui->pbtnSwDevBreaker, 0);
+    m_switch_device_group->setId(ui->pbtnSwDevBlock, 1);
+    m_switch_device_group->setId(ui->pbtnSwDevSCHR, 2);
+    m_switch_device_group->setId(ui->pbtnSwDevLR, 3);
+    m_switch_device_group->setId(ui->pbtnSwDevZR, 4);
+    m_switch_device_group->setId(ui->pbtnSwDevTruck, 5);
+    m_switch_device_group->setId(ui->pbtnSwDevCtrl, 6);
     
     protectMTZChangedID(0);
     protectEarthlyChangedID(0);
@@ -822,6 +869,7 @@ void ConfiguratorWindow::initButtonGroup()
     protectExternalChangedID(0);
     protectTemperatureChangedID(0);
     protectLevelChangedID(0);
+    switchDeviceChangedID(0);
     
     m_protect_mtz_group->setExclusive(true);
     m_protect_earthly_group->setExclusive(true);
@@ -831,6 +879,7 @@ void ConfiguratorWindow::initButtonGroup()
     m_protect_external_group->setExclusive(true);
     m_protect_temperature_group->setExclusive(true);
     m_protect_level_group->setExclusive(true);
+    m_switch_device_group->setExclusive(true);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -897,8 +946,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
     connect(m_modbusDevice, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculate_value);
-    connect(ui->pbtnReadCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_read);
-    connect(ui->pbtnWriteCalibration, &QPushButton::clicked, this, &ConfiguratorWindow::calibration_write);
+    connect(ui->pbtnReadInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::inputAnalogRead);
+    connect(ui->pbtnWriteInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::inputAnalogWrite);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
     connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
@@ -909,8 +958,9 @@ void ConfiguratorWindow::initConnect()
     connect(m_protect_external_group, SIGNAL(buttonClicked(int)), this, SLOT(protectExternalChangedID(int)));
     connect(m_protect_temperature_group, SIGNAL(buttonClicked(int)), this, SLOT(protectTemperatureChangedID(int)));
     connect(m_protect_level_group, SIGNAL(buttonClicked(int)), this, SLOT(protectLevelChangedID(int)));
-    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_read);
-    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protection_write);
+    connect(m_switch_device_group, SIGNAL(buttonClicked(int)), this, SLOT(switchDeviceChangedID(int)));
+    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionRead);
+    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionWrite);
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));

@@ -40,4 +40,6 @@ void CTerminal::appendData(QByteArray& data, bool isRequest)
 void CTerminal::closeEvent(QCloseEvent* event)
 {
     emit closeTerminal(Qt::Unchecked);
+    
+    QWidget::closeEvent(event);
 }
