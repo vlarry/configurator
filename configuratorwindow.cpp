@@ -41,6 +41,13 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     
     initButtonGroup();
     initConnect();
+
+    if(!m_logFile->open(QFile::ReadWrite))
+    {
+        statusBar()->showMessage(tr("Ошибка. Невозможно открыть log-файл"));
+    }
+    else
+        m_logFile->write(tr("Запуск программы...").toStdString().c_str());
     
     ui->tabwgtRegisters->setDisabled(true);
     refreshSerialPort();
@@ -225,10 +232,11 @@ ConfiguratorWindow::~ConfiguratorWindow()
 {
     if(m_logFile)
     {
-        m_logFile->write("Завершение работы программы...\n\n");
-                
         if(m_logFile->isOpen())
+        {
+            m_logFile->write("Завершение работы программы...\n\n");
             m_logFile->close();
+        }
     }
     
     delete m_logFile;
@@ -285,16 +293,11 @@ void ConfiguratorWindow::stateChanged(bool state)
         chboxCalculateTimeoutStateChanged(true);
     else
         m_tim_calculate->stop();
-    
-    ui->tabwgtRegisters->setEnabled(state);
-    
+
     if(state)
-    {
-        if(!m_logFile->open(QFile::ReadWrite))
-        {
-            statusBar()->showMessage(tr("Ошибка. Невозможно открыть log-файл"));
-        }
-    }
+        saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> открыт."));
+    else
+        saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> закрыт."));
 }
 //------------------------------------------
 void ConfiguratorWindow::refreshSerialPort()
@@ -414,11 +417,8 @@ void ConfiguratorWindow::show()
     setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
     
-    ui->gboxProtectionPropertiesMTZ2->hide();
-    ui->gboxProtectionPropertiesMTZ3->hide();
-    ui->gboxProtectionPropertiesMTZ4->hide();
-    
     m_terminal->hide();
+    ui->tabwgtRegisters->setEnabled(true);
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
@@ -454,46 +454,31 @@ void ConfiguratorWindow::numberRepeatChanged(int number)
 //--------------------------------------------------
 void ConfiguratorWindow::protectMTZChangedID(int id)
 {
-    if(id >= 0 && id < m_protect_mtz_group->buttons().count())
+    quint8 count = m_protect_mtz_group->buttons().count();
+
+    if(id >= 0 && id < count)
     {
-        ui->gboxProtectionPropertiesMTZ1->hide();
-        ui->gboxProtectionPropertiesMTZ2->hide();
-        ui->gboxProtectionPropertiesMTZ3->hide();
-        ui->gboxProtectionPropertiesMTZ4->hide();
-        
-        ui->pbtnProtectionMTZ1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionMTZ2->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionMTZ3->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionMTZ4->setStyleSheet("QPushButton { background: none }");
-        
-        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_mtz_group->button(id));
-        
-        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-        
-        switch(id)
+        for(quint8 i = 0; i < count; i++)
         {
-            case 0:
-                ui->gboxProtectionPropertiesMTZ1->show();
-            break;
-            
-            case 1:
-                ui->gboxProtectionPropertiesMTZ2->show();
-            break;
-            
-            case 2:
-                ui->gboxProtectionPropertiesMTZ3->show();
-            break;
-            
-            case 3:
-                ui->gboxProtectionPropertiesMTZ4->show();
-            break;
+           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_mtz_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
         }
+
+        ui->stwgtProtectionPropertiesMTZ->setCurrentIndex(id);
     }
 }
 //------------------------------------------------------
 void ConfiguratorWindow::protectEarthlyChangedID(int id)
 {
-    if(id >= 0 && id < m_protect_earthly_group->buttons().count())
+    int32_t count = m_protect_mtz_group->buttons().count();
+
+    if(id >= 0 && id < count)
     {
         ui->gboxProtectionPropertiesEarthly_OZZ1->hide();
         ui->gboxProtectionPropertiesEarthly_OZZ2->hide();
@@ -767,8 +752,6 @@ void ConfiguratorWindow::terminalVisiblity(int state)
 //---------------------------------------------------
 void ConfiguratorWindow::saveLog(const QString& info)
 {
-    qDebug() << info;
-    
     if(m_logFile->isOpen())
     {
         m_logFile->write(info.toStdString().c_str());
