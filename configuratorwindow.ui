@@ -10,6 +10,12 @@
     <height>684</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Конфигуратор БЗУ-16</string>
   </property>
@@ -36,7 +42,7 @@
           <item>
            <widget class="QGroupBox" name="gboxSerialPort">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -199,7 +205,7 @@
           <item>
            <widget class="QGroupBox" name="gboxSerialPortSettings">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -356,7 +362,7 @@
           <item>
            <widget class="QGroupBox" name="gboxSerialPortSettings_2">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1812,7 +1818,7 @@
             <item>
              <widget class="QTabWidget" name="tabwgtProtections">
               <property name="currentIndex">
-               <number>7</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="tabProtectionMTZ">
                <attribute name="title">
@@ -11694,6 +11700,1995 @@
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tabSetAdditional">
+           <attribute name="title">
+            <string>Дополнительные </string>
+           </attribute>
+           <widget class="QWidget" name="layoutWidget_9">
+            <property name="geometry">
+             <rect>
+              <x>9</x>
+              <y>9</y>
+              <width>77</width>
+              <height>157</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_108">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="pbtnAddAVR">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>АВР</string>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pbtnAddAPV">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>АПВ</string>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pbtnAddAPV_Start">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>АПВ:пуск</string>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pbtnAddBRU">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>БРУ</string>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pbtnAddVacuum">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Вакуум</string>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_55">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QStackedWidget" name="stwgtAdditional">
+            <property name="geometry">
+             <rect>
+              <x>100</x>
+              <y>10</y>
+              <width>791</width>
+              <height>335</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="currentIndex">
+             <number>1</number>
+            </property>
+            <widget class="QWidget" name="pageAdditionalPropertiesAVR">
+             <layout class="QVBoxLayout" name="verticalLayout_109">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_104">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_97">
+                  <item>
+                   <widget class="QGroupBox" name="groupBox_2">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="title">
+                     <string/>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_111">
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_12">
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="label_4">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Задержка</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QLineEdit" name="leAdditionalAVRPause">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="leAdditionalAVRCtrlUwork">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Управление</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="cboxAdditionalAVRCtrl">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет зн.</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Откл</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Вкл</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_2">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Контр Uраб</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="label_3">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Контр Uрзр</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QLineEdit" name="leAdditionalAVRUrzr">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="0">
+                        <widget class="QLabel" name="label_5">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>T однократ</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="1">
+                        <widget class="QLineEdit" name="leAdditionalAVRTime">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_62">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_71">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_56">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>151</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="pageAdditionalPropertiesAPV">
+             <layout class="QVBoxLayout" name="verticalLayout_113">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_105">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_100">
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_110">
+                    <item>
+                     <widget class="QGroupBox" name="groupBox_4">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="title">
+                       <string/>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_99">
+                       <item>
+                        <layout class="QGridLayout" name="gridLayout_13">
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="label_7">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Т блк вкл</string>
+                           </property>
+                           <property name="scaledContents">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1">
+                          <widget class="QComboBox" name="cboxAdditionalAPVCtrl">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <item>
+                            <property name="text">
+                             <string>Нет зн.</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Откл</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Вкл</string>
+                            </property>
+                           </item>
+                          </widget>
+                         </item>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_6">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Управление</string>
+                           </property>
+                           <property name="scaledContents">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
+                          <widget class="QLineEdit" name="leAdditionalAPVTBlockOn">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="inputMask">
+                            <string>0.000000</string>
+                           </property>
+                           <property name="text">
+                            <string>0.000000</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="0">
+                          <widget class="QLabel" name="label_8">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Время АПВ</string>
+                           </property>
+                           <property name="scaledContents">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="1">
+                          <widget class="QLineEdit" name="leAdditionalAPVTime">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="inputMask">
+                            <string>0.000000</string>
+                           </property>
+                           <property name="text">
+                            <string>0.000000</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_58">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_63">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_72">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_57">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>152</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="pageAdditionalPropertiesAPVStart">
+             <layout class="QVBoxLayout" name="verticalLayout_332">
+              <item>
+               <widget class="QGroupBox" name="groupBox_10">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="title">
+                 <string/>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_304">
+                 <item>
+                  <layout class="QGridLayout" name="gridLayout_25">
+                   <item row="0" column="11">
+                    <spacer name="horizontalSpacer_184">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="7" column="1">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartRmeasOK">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="6" column="1">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartBlockOnBRU">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="6" column="9">
+                    <widget class="QLabel" name="label_39">
+                     <property name="text">
+                      <string>Откл Вн3</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="10">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffExt1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="5" column="9">
+                    <widget class="QLabel" name="label_38">
+                     <property name="text">
+                      <string>Откл Вн2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="10">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffExt3">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="5" column="10">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffExt2">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="7" column="9">
+                    <widget class="QLabel" name="label_40">
+                     <property name="text">
+                      <string>Откл УР1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="7">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffAVR">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="1" column="10">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffACHR3">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="2" column="10">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffTemp1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="5">
+                    <spacer name="horizontalSpacer_185">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="4" column="3">
+                    <widget class="QLabel" name="label_25">
+                     <property name="text">
+                      <string>Откл МТЗ4</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="6">
+                    <widget class="QLabel" name="label_26">
+                     <property name="text">
+                      <string>Откл Imin</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="3">
+                    <widget class="QLabel" name="label_27">
+                     <property name="text">
+                      <string>Откл Пусков</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="3">
+                    <widget class="QLabel" name="label_28">
+                     <property name="text">
+                      <string>Откл ОЗЗ1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="7">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffUmax1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="2" column="7">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffUmax2">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="3" column="7">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffUmin1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="5" column="0">
+                    <widget class="QLabel" name="label_29">
+                     <property name="text">
+                      <string>Работа БРУ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="label_30">
+                     <property name="text">
+                      <string>Работа Вак</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="7" column="0">
+                    <widget class="QLabel" name="label_31">
+                     <property name="text">
+                      <string>Rиз норма</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="1">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartBRUWork">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartVacWork">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="7" column="10">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffLev1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="7" column="7">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffACHR1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="5" column="7">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOff3UO">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="8">
+                    <spacer name="horizontalSpacer_186">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="0" column="2">
+                    <spacer name="horizontalSpacer_187">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="3" column="3">
+                    <widget class="QLabel" name="label_32">
+                     <property name="text">
+                      <string>Откл МТЗ3</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QLabel" name="label_33">
+                     <property name="text">
+                      <string>ВКЛ от БРУ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="4">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffMTZ1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="2" column="4">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffMTZ2">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="5" column="4">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffStart">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="7" column="3">
+                    <widget class="QLabel" name="label_34">
+                     <property name="text">
+                      <string>Откл НЗЗ1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="6">
+                    <widget class="QLabel" name="label_35">
+                     <property name="text">
+                      <string>Откл 3UO</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="6">
+                    <widget class="QLabel" name="label_36">
+                     <property name="text">
+                      <string>Откл Umin1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="7">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffUmin2">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="7" column="6">
+                    <widget class="QLabel" name="label_37">
+                     <property name="text">
+                      <string>Откл АЧР1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="6">
+                    <widget class="QLabel" name="label_41">
+                     <property name="text">
+                      <string>Откл АВР</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="4">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffOZZ1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="7" column="4">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffNZZ1">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="12">
+                    <widget class="QLabel" name="label_42">
+                     <property name="text">
+                      <string>Откл УР2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="6">
+                    <widget class="QLabel" name="label_43">
+                     <property name="text">
+                      <string>Откл Umin2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="4">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffMTZ4">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="4" column="9">
+                    <widget class="QLabel" name="label_44">
+                     <property name="text">
+                      <string>Откл Вн1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOnFromBRU">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="2" column="3">
+                    <widget class="QLabel" name="label_45">
+                     <property name="text">
+                      <string>Откл МТЗ2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="QLabel" name="label_46">
+                     <property name="text">
+                      <string>Откл МТЗ1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_47">
+                     <property name="text">
+                      <string>Измер БРУ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_48">
+                     <property name="text">
+                      <string>Пск Вак фВ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_49">
+                     <property name="text">
+                      <string>Пск Вак фА</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartPskVacPhaseC">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartMeasBRU">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="9">
+                    <widget class="QLabel" name="label_50">
+                     <property name="text">
+                      <string>Откл АЧР2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartPskVacPhaseA">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartPskVacPhaseB">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="10">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffACHR2">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="2" column="9">
+                    <widget class="QLabel" name="label_51">
+                     <property name="text">
+                      <string>Откл Тмп1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="9">
+                    <widget class="QLabel" name="label_52">
+                     <property name="text">
+                      <string>Откл АЧР3</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="9">
+                    <widget class="QLabel" name="label_53">
+                     <property name="text">
+                      <string>Откл Тмп2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="4">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffMTZ3">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="6" column="0">
+                    <widget class="QLabel" name="label_54">
+                     <property name="text">
+                      <string>Бл.ВКЛ БРУ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="7">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffImin">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="1" column="6">
+                    <widget class="QLabel" name="label_55">
+                     <property name="text">
+                      <string>Откл Umax1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="6">
+                    <widget class="QLabel" name="label_56">
+                     <property name="text">
+                      <string>Откл Umax2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="label_57">
+                     <property name="text">
+                      <string>Пск Вак фС</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="10">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffTemp2">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="13">
+                    <widget class="QComboBox" name="cboxAdditionalAPV_StartOffLev2">
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_172">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>84</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="pageAdditionalPropertiesBRU">
+             <layout class="QVBoxLayout" name="verticalLayout_112">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_101">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_305">
+                  <item>
+                   <widget class="QGroupBox" name="groupBox_11">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="title">
+                     <string/>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_102">
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_10">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_5">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Перед вкл</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_Timeout_4">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>T имерен</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="cboxAdditionalPropertiesBRUPeredOn">
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>100</height>
+                          </size>
+                         </property>
+                         <property name="toolTip">
+                          <string>Имя порта</string>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет зн.</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Откл</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Вкл</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QLineEdit" name="cboxAdditionalPropertiesBRUTmeasure">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>100</height>
+                          </size>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_StartCurrent_5">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Периодич.</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QLineEdit" name="cboxAdditionalPropertiesBRUSet">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>100</height>
+                          </size>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="0">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_3">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Задержка откл</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_2">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Уставка</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QComboBox" name="cboxAdditionalPropertiesBRUDiscretSet">
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>100</height>
+                          </size>
+                         </property>
+                         <property name="toolTip">
+                          <string>Имя порта</string>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет зн.</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Откл</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Вкл</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="4" column="1">
+                        <widget class="QLineEdit" name="cboxAdditionalPropertiesBRUOffPause">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>100</height>
+                          </size>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="0">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_4">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Периодичность</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="1">
+                        <widget class="QLineEdit" name="cboxAdditionalPropertiesBRUDiscret">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>100</height>
+                          </size>
+                         </property>
+                         <property name="inputMask">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="text">
+                          <string>0.000000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>8</number>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_69">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_64">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_59">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>132</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="pageAdditionalPropertiesVacuum">
+             <layout class="QVBoxLayout" name="verticalLayout_119">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_307">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_306">
+                  <item>
+                   <widget class="QGroupBox" name="groupBox_12">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="title">
+                     <string/>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_103">
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_11">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_6">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>50</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Управление</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="cboxAdditionalPropertiesVacuumCtrl">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>50</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>100</height>
+                          </size>
+                         </property>
+                         <property name="toolTip">
+                          <string>Имя порта</string>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет зн.</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Откл</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Вкл</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_7">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>50</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>Уставка</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QComboBox" name="cboxAdditionalPropertiesVacuumSet">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>50</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>100</height>
+                          </size>
+                         </property>
+                         <property name="toolTip">
+                          <string>Имя порта</string>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет зн.</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Откл</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Вкл</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_70">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_189">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_60">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>234</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -15802,6 +17797,17 @@
      </widget>
     </item>
    </layout>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>100</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_98"/>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

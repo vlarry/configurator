@@ -61,6 +61,7 @@
             void protectTemperatureChangedID(int id);
             void protectLevelChangedID(int id);
             void switchDeviceChangedID(int id);
+            void additionalChangedID(int id);
             void errorDevice(const QString& error);
             void terminalVisiblity(int state);
             void saveLog(const QString& info);
@@ -88,6 +89,7 @@
             QButtonGroup*           m_protect_temperature_group;
             QButtonGroup*           m_protect_level_group;
             QButtonGroup*           m_switch_device_group;
+            QButtonGroup*           m_additional_group;
             CModbus*                m_modbusDevice;
             CTerminal*              m_terminal;
             QFile*                  m_logFile;

@@ -15,6 +15,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_external_group(nullptr),
     m_protect_temperature_group(nullptr),
     m_protect_level_group(nullptr),
+    m_additional_group(nullptr),
     m_terminal(nullptr),
     m_logFile(nullptr)
 {
@@ -32,6 +33,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_temperature_group = new QButtonGroup(ui->tabProtectionTemperature);
     m_protect_level_group       = new QButtonGroup(ui->tabProtectionLevels);
     m_switch_device_group       = new QButtonGroup(ui->tabSwitchDevice);
+    m_additional_group          = new QButtonGroup(ui->tabSetAdditional);
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
     
@@ -649,6 +651,28 @@ void ConfiguratorWindow::switchDeviceChangedID(int id)
         ui->stwgtSwitchDevice->setCurrentIndex(id);
     }
 }
+//--------------------------------------------------
+void ConfiguratorWindow::additionalChangedID(int id)
+{
+    quint8 count = m_additional_group->buttons().count();
+
+    if(id >= 0 && id < count)
+    {
+        for(quint8 i = 0; i < count; i++)
+        {
+           QPushButton* btn = qobject_cast<QPushButton*>(m_additional_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
+        }
+
+        ui->stwgtAdditional->setCurrentIndex(id);
+    }
+}
 //--------------------------------------------------------
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
@@ -758,6 +782,18 @@ void ConfiguratorWindow::initButtonGroup()
     m_switch_device_group->setId(ui->pbtnSwDevZR, 4);
     m_switch_device_group->setId(ui->pbtnSwDevTruck, 5);
     m_switch_device_group->setId(ui->pbtnSwDevCtrl, 6);
+
+    // группа дополнительных настроек
+    m_additional_group->addButton(ui->pbtnAddAVR);
+    m_additional_group->addButton(ui->pbtnAddAPV);
+    m_additional_group->addButton(ui->pbtnAddAPV_Start);
+    m_additional_group->addButton(ui->pbtnAddBRU);
+    m_additional_group->addButton(ui->pbtnAddVacuum);
+    m_additional_group->setId(ui->pbtnAddAVR, 0);
+    m_additional_group->setId(ui->pbtnAddAPV, 1);
+    m_additional_group->setId(ui->pbtnAddAPV_Start, 2);
+    m_additional_group->setId(ui->pbtnAddBRU, 3);
+    m_additional_group->setId(ui->pbtnAddVacuum, 4);
     
     protectMTZChangedID(0);
     protectEarthlyChangedID(0);
@@ -768,6 +804,7 @@ void ConfiguratorWindow::initButtonGroup()
     protectTemperatureChangedID(0);
     protectLevelChangedID(0);
     switchDeviceChangedID(0);
+    additionalChangedID(0);
     
     m_protect_mtz_group->setExclusive(true);
     m_protect_earthly_group->setExclusive(true);
@@ -778,6 +815,7 @@ void ConfiguratorWindow::initButtonGroup()
     m_protect_temperature_group->setExclusive(true);
     m_protect_level_group->setExclusive(true);
     m_switch_device_group->setExclusive(true);
+    m_additional_group->setExclusive(true);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -857,6 +895,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_protect_temperature_group, SIGNAL(buttonClicked(int)), this, SLOT(protectTemperatureChangedID(int)));
     connect(m_protect_level_group, SIGNAL(buttonClicked(int)), this, SLOT(protectLevelChangedID(int)));
     connect(m_switch_device_group, SIGNAL(buttonClicked(int)), this, SLOT(switchDeviceChangedID(int)));
+    connect(m_additional_group, SIGNAL(buttonClicked(int)), this, SLOT(additionalChangedID(int)));
     connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionRead);
     connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionWrite);
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);

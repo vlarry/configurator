@@ -283,7 +283,7 @@ void CModbus::readyRead()
     {
         emit infoLog(tr("Получено больше, чем ожидалось (") + QString::number(count) + " < " + 
                      QString::number(m_receive_buffer.count()) + tr("). Данные обрезаны до размера: ") + 
-                     QString::number(count) + tr(" байт"));
+                     QString::number(count) + tr(" байт\n"));
         
         m_receive_buffer = m_receive_buffer.remove(count, (m_receive_buffer.count() - count));
     }
@@ -317,7 +317,7 @@ void CModbus::readyRead()
         QString str2 = (crc_calculate <= 0x0FFF)?tr("0x0") + QString::number(crc_calculate, 16).toUpper():
                                                  tr("0x") + QString::number(crc_calculate, 16).toUpper();
         
-        QString error = tr("Ошибка контрольной суммы->принято(") + str1 + tr("), рассчитано(") + str2 + tr(")");
+        QString error = tr("Ошибка контрольной суммы->принято(") + str1 + tr("), рассчитано(") + str2 + tr(")\n");
         
         emit errorDevice(error);
         emit infoLog(error + QString("\n"));
