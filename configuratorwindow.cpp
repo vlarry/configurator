@@ -498,199 +498,133 @@ void ConfiguratorWindow::protectEarthlyChangedID(int id)
 //----------------------------------------------------
 void ConfiguratorWindow::protectPowerChangedID(int id)
 {
-    if(id >= 0 && id < m_protect_power_group->buttons().count())
+    quint8 count = m_protect_power_group->buttons().count();
+
+    if(id >= 0 && id < count)
     {
-        ui->gboxProtectionPropertiesPower_Umax1->hide();
-        ui->gboxProtectionPropertiesPower_Umax2->hide();
-        ui->gboxProtectionPropertiesPower_Umin1->hide();
-        ui->gboxProtectionPropertiesPower_Umin2->hide();
-        ui->gboxProtectionPropertiesPower_3UO->hide();
-        
-        ui->pbtnProtectionPower_Umax1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionPower_Umax2->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionPower_Umin1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionPower_Umin2->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionPower_3UO->setStyleSheet("QPushButton { background: none }");
-        
-        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_power_group->button(id));
-        
-        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-        
-        switch(id)
+        for(quint8 i = 0; i < count; i++)
         {
-            case 0:
-                ui->gboxProtectionPropertiesPower_Umax1->show();
-            break;
-            
-            case 1:
-                ui->gboxProtectionPropertiesPower_Umax2->show();
-            break;
-            
-            case 2:
-                ui->gboxProtectionPropertiesPower_Umin1->show();
-            break;
-            
-            case 3:
-                ui->gboxProtectionPropertiesPower_Umin2->show();
-            break;
-                
-            case 4:
-                ui->gboxProtectionPropertiesPower_3UO->show();
-            break;
+           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_power_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
         }
+
+        ui->stwgtProtectionPropertiesPower->setCurrentIndex(id);
     }
 }
 //----------------------------------------------------
 void ConfiguratorWindow::protectMotorChangedID(int id)
 {
-    if(id >= 0 && id < m_protect_motor_group->buttons().count())
+    quint8 count = m_protect_motor_group->buttons().count();
+
+    if(id >= 0 && id < count)
     {
-        ui->gboxProtectionPropertiesMotor_StartingCurrent->hide();
-        ui->gboxProtectionPropertiesMotor_Imin->hide();
-        
-        ui->pbtnProtectionMotorStarting->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionMotorImin->setStyleSheet("QPushButton { background: none }");
-        
-        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_motor_group->button(id));
-        
-        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-        
-        switch(id)
+        for(quint8 i = 0; i < count; i++)
         {
-            case 0:
-                ui->gboxProtectionPropertiesMotor_StartingCurrent->show();
-            break;
-            
-            case 1:
-                ui->gboxProtectionPropertiesMotor_Imin->show();
-            break;
+           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_motor_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
         }
+
+        ui->stwgtProtectionPropertiesMotor->setCurrentIndex(id);
     }
 }
 //--------------------------------------------------------
 void ConfiguratorWindow::protectFrequencyChangedID(int id)
 {
-    if(id >= 0 && id < m_protect_frequency_group->buttons().count())
+    quint8 count = m_protect_frequency_group->buttons().count();
+
+    if(id >= 0 && id < count)
     {
-        ui->gboxProtectionPropertiesFrequency_ACR1->hide();
-        ui->gboxProtectionPropertiesFrequency_ACR2->hide();
-        ui->gboxProtectionPropertiesFrequency_ACR3->hide();
-        
-        ui->pbtnProtectionFrequency_ACR1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionFrequency_ACR2->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionFrequency_ACR3->setStyleSheet("QPushButton { background: none }");
-        
-        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_frequency_group->button(id));
-        
-        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-        
-        switch(id)
+        for(quint8 i = 0; i < count; i++)
         {
-            case 0:
-                ui->gboxProtectionPropertiesFrequency_ACR1->show();
-            break;
-            
-            case 1:
-                ui->gboxProtectionPropertiesFrequency_ACR2->show();
-            break;
-            
-            case 2:
-                ui->gboxProtectionPropertiesFrequency_ACR3->show();
-            break;
+           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_frequency_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
         }
+
+        ui->stwgtProtectionPropertiesFrequency->setCurrentIndex(id);
     }
 }
 //-------------------------------------------------------
 void ConfiguratorWindow::protectExternalChangedID(int id)
 {
-    if(id >= 0 && id < m_protect_external_group->buttons().count())
+    quint8 count = m_protect_external_group->buttons().count();
+
+    if(id >= 0 && id < count)
     {
-        ui->gboxProtectionPropertiesExternalArc->hide();
-        ui->gboxProtectionPropertiesExternal1->hide();
-        ui->gboxProtectionPropertiesExternal2->hide();
-        ui->gboxProtectionPropertiesExternal3->hide();
-        
-        ui->pbtnProtectionExternal_Arc->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionExternal1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionExternal2->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionExternal3->setStyleSheet("QPushButton { background: none }");
-        
-        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_external_group->button(id));
-        
-        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-        
-        switch(id)
+        for(quint8 i = 0; i < count; i++)
         {
-            case 0:
-                ui->gboxProtectionPropertiesExternalArc->show();
-            break;
-            
-            case 1:
-                ui->gboxProtectionPropertiesExternal1->show();
-            break;
-            
-            case 2:
-                ui->gboxProtectionPropertiesExternal2->show();
-            break;
-            
-            case 3:
-                ui->gboxProtectionPropertiesExternal3->show();
-            break;
+           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_external_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
         }
+
+        ui->stwgtProtectionPropertiesExternal->setCurrentIndex(id);
     }
 }
 //----------------------------------------------------------
 void ConfiguratorWindow::protectTemperatureChangedID(int id)
 {
-    if(id >= 0 && id < m_protect_temperature_group->buttons().count())
+    quint8 count = m_protect_temperature_group->buttons().count();
+
+    if(id >= 0 && id < count)
     {
-        ui->gboxProtectionPropertiesTemperature1->hide();
-        ui->gboxProtectionPropertiesTemperature2->hide();
-        
-        ui->pbtnProtectionTemp1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionTemp2->setStyleSheet("QPushButton { background: none }");
-        
-        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_temperature_group->button(id));
-        
-        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-        
-        switch(id)
+        for(quint8 i = 0; i < count; i++)
         {
-            case 0:
-                ui->gboxProtectionPropertiesTemperature1->show();
-            break;
-            
-            case 1:
-                ui->gboxProtectionPropertiesTemperature2->show();
-            break;
+           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_temperature_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
         }
+
+        ui->stwgtProtectionPropertiesTemperature->setCurrentIndex(id);
     }
 }
 //----------------------------------------------------
 void ConfiguratorWindow::protectLevelChangedID(int id)
 {
-    if(id >= 0 && id < m_protect_level_group->buttons().count())
+    quint8 count = m_protect_level_group->buttons().count();
+
+    if(id >= 0 && id < count)
     {
-        ui->gboxProtectionPropertiesLevel1->hide();
-        ui->gboxProtectionPropertiesLevel2->hide();
-        
-        ui->pbtnProtectionLevel1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionLevel2->setStyleSheet("QPushButton { background: none }");
-        
-        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_level_group->button(id));
-        
-        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-        
-        switch(id)
+        for(quint8 i = 0; i < count; i++)
         {
-            case 0:
-                ui->gboxProtectionPropertiesLevel1->show();
-            break;
-            
-            case 1:
-                ui->gboxProtectionPropertiesLevel2->show();
-            break;
+           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_level_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
         }
+
+        ui->stwgtProtectionPropertiesLevel->setCurrentIndex(id);
     }
 }
 //----------------------------------------------------
