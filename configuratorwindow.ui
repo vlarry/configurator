@@ -1812,7 +1812,7 @@
             <item>
              <widget class="QTabWidget" name="tabwgtProtections">
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="tabProtectionMTZ">
                <attribute name="title">
@@ -2846,1007 +2846,1160 @@
                <attribute name="title">
                 <string>Земляные</string>
                </attribute>
-               <layout class="QVBoxLayout" name="verticalLayout_25">
+               <layout class="QVBoxLayout" name="verticalLayout_95">
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_23">
                   <item>
-                   <widget class="QGroupBox" name="gboxButtonProtectionEarthly">
-                    <property name="title">
-                     <string/>
+                   <layout class="QVBoxLayout" name="verticalLayout_20">
+                    <property name="spacing">
+                     <number>0</number>
                     </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_18">
-                     <item>
-                      <layout class="QVBoxLayout" name="verticalLayout_20">
-                       <property name="spacing">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QPushButton" name="pbtnProtectionEarthly_OZZ1">
-                         <property name="text">
-                          <string>ОЗЗ1</string>
-                         </property>
-                         <property name="checkable">
-                          <bool>false</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pbtnProtectionEarthly_OZZ2">
-                         <property name="text">
-                          <string>ОЗЗ2</string>
-                         </property>
-                         <property name="checkable">
-                          <bool>false</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pbtnProtectionEarthly_NZZ1">
-                         <property name="text">
-                          <string>НЗЗ1</string>
-                         </property>
-                         <property name="checkable">
-                          <bool>false</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pbtnProtectionEarthly_NZZ2">
-                         <property name="text">
-                          <string>НЗЗ2</string>
-                         </property>
-                         <property name="checkable">
-                          <bool>false</bool>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <widget class="QGroupBox" name="gboxProtectionPropertiesEarthly_OZZ1">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="title">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                       <layout class="QHBoxLayout" name="horizontalLayout_19">
+                    <item>
+                     <widget class="QPushButton" name="pbtnProtectionEarthly_OZZ1">
+                      <property name="text">
+                       <string>ОЗЗ1</string>
+                      </property>
+                      <property name="checkable">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pbtnProtectionEarthly_OZZ2">
+                      <property name="text">
+                       <string>ОЗЗ2</string>
+                      </property>
+                      <property name="checkable">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pbtnProtectionEarthly_NZZ1">
+                      <property name="text">
+                       <string>НЗЗ1</string>
+                      </property>
+                      <property name="checkable">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="pbtnProtectionEarthly_NZZ2">
+                      <property name="text">
+                       <string>НЗЗ2</string>
+                      </property>
+                      <property name="checkable">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_27">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QStackedWidget" name="stwgtProtectionPropertiesEarthly">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="currentIndex">
+                     <number>3</number>
+                    </property>
+                    <widget class="QWidget" name="pageProtectionPropertiesOZZ1">
+                     <layout class="QVBoxLayout" name="verticalLayout_92">
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_79">
                         <item>
-                         <layout class="QVBoxLayout" name="verticalLayout_21">
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_Ctrl">
-                            <property name="text">
-                             <string>Управление</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_StartCurrent">
-                            <property name="text">
-                             <string>Ток пуска</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_Pause">
-                            <property name="text">
-                             <string>Задержка</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_KvzCurrent">
-                            <property name="text">
-                             <string>Квз ток</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
+                         <widget class="QGroupBox" name="gboxProtectionPropertiesEarthly_OZZ1">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="title">
+                           <string/>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                          <layout class="QHBoxLayout" name="horizontalLayout_19">
+                           <item>
+                            <layout class="QVBoxLayout" name="verticalLayout_21">
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_Ctrl">
+                               <property name="text">
+                                <string>Управление</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_StartCurrent">
+                               <property name="text">
+                                <string>Ток пуска</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_Pause">
+                               <property name="text">
+                                <string>Задержка</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_KvzCurrent">
+                               <property name="text">
+                                <string>Квз ток</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <layout class="QVBoxLayout" name="vltProtectionMTZ31_7">
+                             <item>
+                              <widget class="QComboBox" name="cboxProtectionEarthly_OZZ1_Ctrl">
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="toolTip">
+                                <string>Имя порта</string>
+                               </property>
+                               <item>
+                                <property name="text">
+                                 <string>Нет зн.</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Откл</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Вкл</string>
+                                </property>
+                               </item>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_StartCurrent">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_Pause">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_KvzCurrent">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                          </layout>
+                         </widget>
                         </item>
                         <item>
-                         <layout class="QVBoxLayout" name="vltProtectionMTZ31_7">
-                          <item>
-                           <widget class="QComboBox" name="cboxProtectionEarthly_OZZ1_Ctrl">
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="toolTip">
-                             <string>Имя порта</string>
-                            </property>
-                            <item>
-                             <property name="text">
-                              <string>Нет зн.</string>
-                             </property>
-                            </item>
-                            <item>
-                             <property name="text">
-                              <string>Откл</string>
-                             </property>
-                            </item>
-                            <item>
-                             <property name="text">
-                              <string>Вкл</string>
-                             </property>
-                            </item>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_StartCurrent">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_Pause">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_KvzCurrent">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QGroupBox" name="gboxProtectionPropertiesEarthly_OZZ2">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="title">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                       <layout class="QHBoxLayout" name="horizontalLayout_20">
-                        <item>
-                         <layout class="QVBoxLayout" name="verticalLayout_22">
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_Ctrl">
-                            <property name="text">
-                             <string>Управление</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_StartCurrent">
-                            <property name="text">
-                             <string>Ток пуска</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_Pause">
-                            <property name="text">
-                             <string>Задержка</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_KvzCurrent">
-                            <property name="text">
-                             <string>Квз ток</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
-                        <item>
-                         <layout class="QVBoxLayout" name="vltProtectionMTZ31_8">
-                          <item>
-                           <widget class="QComboBox" name="cboxProtectionEarthly_OZZ2_Ctrl">
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="toolTip">
-                             <string>Имя порта</string>
-                            </property>
-                            <item>
-                             <property name="text">
-                              <string>Нет зн.</string>
-                             </property>
-                            </item>
-                            <item>
-                             <property name="text">
-                              <string>Откл</string>
-                             </property>
-                            </item>
-                            <item>
-                             <property name="text">
-                              <string>Вкл</string>
-                             </property>
-                            </item>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_StartCurrent">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_Pause">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_KvzCurrent">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
+                         <spacer name="horizontalSpacer_38">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
                         </item>
                        </layout>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QGroupBox" name="gboxProtectionPropertiesEarthly_NZZ1">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="title">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                       <layout class="QHBoxLayout" name="horizontalLayout_21">
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_28">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>118</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                    <widget class="QWidget" name="pageProtectionPropertiesOZZ2">
+                     <layout class="QVBoxLayout" name="verticalLayout_93">
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_80">
                         <item>
-                         <layout class="QVBoxLayout" name="verticalLayout_23">
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Ctrl">
-                            <property name="text">
-                             <string>Управление</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_StartCurrent">
-                            <property name="text">
-                             <string>Ток пуска</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_StartPower">
-                            <property name="text">
-                             <string>Напр пуска</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Angle">
-                            <property name="text">
-                             <string>Угол</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Pause">
-                            <property name="text">
-                             <string>Задержка</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_KvzCurrent">
-                            <property name="text">
-                             <string>Квз ток</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_KvzPower">
-                            <property name="text">
-                             <string>Квз напряжение</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
+                         <widget class="QGroupBox" name="gboxProtectionPropertiesEarthly_OZZ2">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="title">
+                           <string/>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                          <layout class="QHBoxLayout" name="horizontalLayout_20">
+                           <item>
+                            <layout class="QVBoxLayout" name="verticalLayout_22">
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_Ctrl">
+                               <property name="text">
+                                <string>Управление</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_StartCurrent">
+                               <property name="text">
+                                <string>Ток пуска</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_Pause">
+                               <property name="text">
+                                <string>Задержка</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_KvzCurrent">
+                               <property name="text">
+                                <string>Квз ток</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <layout class="QVBoxLayout" name="vltProtectionMTZ31_8">
+                             <item>
+                              <widget class="QComboBox" name="cboxProtectionEarthly_OZZ2_Ctrl">
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="toolTip">
+                                <string>Имя порта</string>
+                               </property>
+                               <item>
+                                <property name="text">
+                                 <string>Нет зн.</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Откл</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Вкл</string>
+                                </property>
+                               </item>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_StartCurrent">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_Pause">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_KvzCurrent">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                          </layout>
+                         </widget>
                         </item>
                         <item>
-                         <layout class="QVBoxLayout" name="vltProtectionMTZ31_9">
-                          <item>
-                           <widget class="QComboBox" name="cboxProtectionEarthly_NZZ1_Ctrl">
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="toolTip">
-                             <string>Имя порта</string>
-                            </property>
-                            <item>
-                             <property name="text">
-                              <string>Нет зн.</string>
-                             </property>
-                            </item>
-                            <item>
-                             <property name="text">
-                              <string>Откл</string>
-                             </property>
-                            </item>
-                            <item>
-                             <property name="text">
-                              <string>Вкл</string>
-                             </property>
-                            </item>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_StartCurrent">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_StartPower">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_Angle">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>000</string>
-                            </property>
-                            <property name="text">
-                             <string>90</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>3</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_Pause">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_KvzCurrent">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_KvzPower">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
+                         <spacer name="horizontalSpacer_39">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
                         </item>
                        </layout>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QGroupBox" name="gboxProtectionPropertiesEarthly_NZZ2">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="title">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                       <layout class="QHBoxLayout" name="horizontalLayout_22">
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_29">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                    <widget class="QWidget" name="pageProtectionPropertiesNZZ1">
+                     <layout class="QVBoxLayout" name="verticalLayout_94">
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_81">
                         <item>
-                         <layout class="QVBoxLayout" name="verticalLayout_24">
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Ctrl">
-                            <property name="text">
-                             <string>Управление</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_StartCurrent">
-                            <property name="text">
-                             <string>Ток пуска</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_StartPower">
-                            <property name="text">
-                             <string>Напр пуска</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Angle">
-                            <property name="text">
-                             <string>Угол</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Pause">
-                            <property name="text">
-                             <string>Задержка</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_KvzCurrent">
-                            <property name="text">
-                             <string>Квз ток</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_KvzPower">
-                            <property name="text">
-                             <string>Квз напряжение</string>
-                            </property>
-                            <property name="scaledContents">
-                             <bool>true</bool>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
+                         <widget class="QGroupBox" name="gboxProtectionPropertiesEarthly_NZZ1">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="title">
+                           <string/>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                          <layout class="QHBoxLayout" name="horizontalLayout_21">
+                           <item>
+                            <layout class="QVBoxLayout" name="verticalLayout_23">
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Ctrl">
+                               <property name="text">
+                                <string>Управление</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_StartCurrent">
+                               <property name="text">
+                                <string>Ток пуска</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_StartPower">
+                               <property name="text">
+                                <string>Напр пуска</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Angle">
+                               <property name="text">
+                                <string>Угол</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Pause">
+                               <property name="text">
+                                <string>Задержка</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_KvzCurrent">
+                               <property name="text">
+                                <string>Квз ток</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_KvzPower">
+                               <property name="text">
+                                <string>Квз напряжение</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <layout class="QVBoxLayout" name="vltProtectionMTZ31_9">
+                             <item>
+                              <widget class="QComboBox" name="cboxProtectionEarthly_NZZ1_Ctrl">
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="toolTip">
+                                <string>Имя порта</string>
+                               </property>
+                               <item>
+                                <property name="text">
+                                 <string>Нет зн.</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Откл</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Вкл</string>
+                                </property>
+                               </item>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_StartCurrent">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_StartPower">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_Angle">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>000</string>
+                               </property>
+                               <property name="text">
+                                <string>90</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>3</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_Pause">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_KvzCurrent">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_KvzPower">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                          </layout>
+                         </widget>
                         </item>
                         <item>
-                         <layout class="QVBoxLayout" name="vltProtectionMTZ31_10">
-                          <item>
-                           <widget class="QComboBox" name="cboxProtectionEarthly_NZZ2_Ctrl">
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="toolTip">
-                             <string>Имя порта</string>
-                            </property>
-                            <item>
-                             <property name="text">
-                              <string>Нет зн.</string>
-                             </property>
-                            </item>
-                            <item>
-                             <property name="text">
-                              <string>Откл</string>
-                             </property>
-                            </item>
-                            <item>
-                             <property name="text">
-                              <string>Вкл</string>
-                             </property>
-                            </item>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_StartCurrent">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_StartPower">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_Angle">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>000</string>
-                            </property>
-                            <property name="text">
-                             <string>90</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>3</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_Pause">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_KvzCurrent">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_KvzPower">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>100</width>
-                              <height>100</height>
-                             </size>
-                            </property>
-                            <property name="inputMask">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="text">
-                             <string>0.000000</string>
-                            </property>
-                            <property name="maxLength">
-                             <number>8</number>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
+                         <spacer name="horizontalSpacer_40">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
                         </item>
                        </layout>
-                      </widget>
-                     </item>
-                    </layout>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_30">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                    <widget class="QWidget" name="pageProtectionPropertiesNZZ2">
+                     <layout class="QVBoxLayout" name="verticalLayout_25">
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_18">
+                        <item>
+                         <widget class="QGroupBox" name="gboxProtectionPropertiesEarthly_NZZ2">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="title">
+                           <string/>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                          <layout class="QHBoxLayout" name="horizontalLayout_22">
+                           <item>
+                            <layout class="QVBoxLayout" name="verticalLayout_24">
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Ctrl">
+                               <property name="text">
+                                <string>Управление</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_StartCurrent">
+                               <property name="text">
+                                <string>Ток пуска</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_StartPower">
+                               <property name="text">
+                                <string>Напр пуска</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Angle">
+                               <property name="text">
+                                <string>Угол</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Pause">
+                               <property name="text">
+                                <string>Задержка</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_KvzCurrent">
+                               <property name="text">
+                                <string>Квз ток</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_KvzPower">
+                               <property name="text">
+                                <string>Квз напряжение</string>
+                               </property>
+                               <property name="scaledContents">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                           <item>
+                            <layout class="QVBoxLayout" name="vltProtectionMTZ31_10">
+                             <item>
+                              <widget class="QComboBox" name="cboxProtectionEarthly_NZZ2_Ctrl">
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="toolTip">
+                                <string>Имя порта</string>
+                               </property>
+                               <item>
+                                <property name="text">
+                                 <string>Нет зн.</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Откл</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Вкл</string>
+                                </property>
+                               </item>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_StartCurrent">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_StartPower">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_Angle">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>000</string>
+                               </property>
+                               <property name="text">
+                                <string>90</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>3</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_Pause">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_KvzCurrent">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_KvzPower">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="inputMask">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="text">
+                                <string>0.000000</string>
+                               </property>
+                               <property name="maxLength">
+                                <number>8</number>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <spacer name="horizontalSpacer_16">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_8">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
                    </widget>
                   </item>
                   <item>
-                   <spacer name="horizontalSpacer_16">
+                   <spacer name="horizontalSpacer_41">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -3859,19 +4012,6 @@
                    </spacer>
                   </item>
                  </layout>
-                </item>
-                <item>
-                 <spacer name="verticalSpacer_8">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>75</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                </layout>
               </widget>

@@ -476,42 +476,23 @@ void ConfiguratorWindow::protectMTZChangedID(int id)
 //------------------------------------------------------
 void ConfiguratorWindow::protectEarthlyChangedID(int id)
 {
-    int32_t count = m_protect_mtz_group->buttons().count();
+    quint8 count = m_protect_earthly_group->buttons().count();
 
     if(id >= 0 && id < count)
     {
-        ui->gboxProtectionPropertiesEarthly_OZZ1->hide();
-        ui->gboxProtectionPropertiesEarthly_OZZ2->hide();
-        ui->gboxProtectionPropertiesEarthly_NZZ1->hide();
-        ui->gboxProtectionPropertiesEarthly_NZZ2->hide();
-        
-        ui->pbtnProtectionEarthly_OZZ1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionEarthly_OZZ2->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionEarthly_NZZ1->setStyleSheet("QPushButton { background: none }");
-        ui->pbtnProtectionEarthly_NZZ2->setStyleSheet("QPushButton { background: none }");
-        
-        QPushButton* btn = qobject_cast<QPushButton*>(m_protect_earthly_group->button(id));
-        
-        btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-        
-        switch(id)
+        for(quint8 i = 0; i < count; i++)
         {
-            case 0:
-                ui->gboxProtectionPropertiesEarthly_OZZ1->show();
-            break;
-            
-            case 1:
-                ui->gboxProtectionPropertiesEarthly_OZZ2->show();
-            break;
-            
-            case 2:
-                ui->gboxProtectionPropertiesEarthly_NZZ1->show();
-            break;
-            
-            case 3:
-                ui->gboxProtectionPropertiesEarthly_NZZ2->show();
-            break;
+           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_earthly_group->button(i));
+
+           if(i == id)
+           {
+               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
+           }
+           else
+               btn->setStyleSheet(tr("QPushButton { background: none }"));
         }
+
+        ui->stwgtProtectionPropertiesEarthly->setCurrentIndex(id);
     }
 }
 //----------------------------------------------------
