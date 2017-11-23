@@ -6,7 +6,7 @@
 
 QT += core gui serialport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = configurator
 TEMPLATE = app
@@ -30,7 +30,8 @@ SOURCES += \
         qcell.cpp \
         cmodbus.cpp \
         cdataunittype.cpp \
-    cterminal.cpp
+    cterminal.cpp \
+    qcustomplot.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -38,7 +39,8 @@ HEADERS += \
         qcell.h \
         cmodbus.h \
         cdataunittype.h \
-    cterminal.h
+    cterminal.h \
+    qcustomplot.h
 
 FORMS += \
         configuratorwindow.ui \

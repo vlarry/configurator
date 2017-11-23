@@ -15,6 +15,7 @@
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
+    #include "qcustomplot.h"
     //----------
     namespace Ui 
     {

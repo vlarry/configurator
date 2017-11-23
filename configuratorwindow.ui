@@ -652,7 +652,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tabSettings">
        <attribute name="title">
@@ -668,7 +668,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tabSetInputAnalogs">
            <attribute name="title">
@@ -2824,6 +2824,16 @@
                       </item>
                      </layout>
                     </widget>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCustomPlot" name="wgtChartMTZ" native="true">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -13693,6 +13703,88 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tabJournals">
+       <attribute name="title">
+        <string>Журналы</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_114">
+        <item>
+         <widget class="QTabWidget" name="tabwgtJournal">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tabCrashJournal">
+           <attribute name="title">
+            <string>Журнал аварий</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tabEventJournal">
+           <attribute name="title">
+            <string>Журнал событий</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tabOscilloscope">
+           <attribute name="title">
+            <string>Осциллограф</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabMeasure">
+       <attribute name="title">
+        <string>Измерения</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_115">
+        <item>
+         <widget class="QTabWidget" name="tabwgtMeasure">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tabPrimaryValues">
+           <attribute name="title">
+            <string>Первичные величины</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tabSecondaryValues">
+           <attribute name="title">
+            <string>Вторичные величины</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tabElectricPower">
+           <attribute name="title">
+            <string>Электроэнергия</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabMonitoring">
+       <attribute name="title">
+        <string>Мониторинг</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_116">
+        <item>
+         <widget class="QTabWidget" name="tabwgtMonitoring">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tabInputDiscrete">
+           <attribute name="title">
+            <string>Дискретные входы</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="tabOutputDiscrete">
+           <attribute name="title">
+            <string>Дискретные выходы</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tabRegInput">
        <attribute name="title">
         <string>Регистр входов</string>
@@ -17812,6 +17904,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resource.qrc"/>
  </resources>

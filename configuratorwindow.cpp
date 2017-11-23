@@ -415,6 +415,9 @@ void ConfiguratorWindow::show()
     ui->tabwgtProtections->setCurrentIndex(0);
     ui->tabwgtProtectionLevel->setCurrentIndex(0);
     ui->tabwgtSetInputAnalogs->setCurrentIndex(0);
+    ui->tabwgtJournal->setCurrentIndex(0);
+    ui->tabwgtMeasure->setCurrentIndex(0);
+    ui->tabwgtMonitoring->setCurrentIndex(0);
     
     setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
@@ -422,7 +425,7 @@ void ConfiguratorWindow::show()
     m_terminal->hide();
     ui->tabwgtRegisters->setEnabled(true);
 }
-//------------------------------------------------------------------
+//--------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
 {
     if(state)
