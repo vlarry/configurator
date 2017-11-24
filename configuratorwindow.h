@@ -12,6 +12,7 @@
     #include <QButtonGroup>
     #include <QAbstractButton>
     #include <QFile>
+    #include <QTreeWidget>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -33,6 +34,13 @@
                 CalibrationAddress = 362,
                 ProtectionAddress  = 22
             };
+
+            enum RequestType
+            {
+                CALCULATE_TYPE,
+                CALIBRATION_TYPE,
+                PROTECTION_TYPE
+            };
       
         public:
             explicit ConfiguratorWindow(QWidget* parent = Q_NULLPTR);
@@ -42,9 +50,9 @@
             void serialPortCtrl();
             void stateChanged(bool state);
             void refreshSerialPort();
-            void calculate_value(); // запрос расчетных величин
-            void inputAnalogRead();
-            void inputAnalogWrite();
+            void calculateRead(); // запрос расчетных величин
+            void calibrationRead();
+            void calibrationWrite();
             void protectionRead();
             void protectionWrite();
             void responseRead(CDataUnitType& unit);
@@ -77,10 +85,11 @@
             
         private:
             Ui::ConfiguratorWindow* ui;
-            QPanel*                 m_panel;
+            CModbus*                m_modbusDevice;
+            QPanel*                 m_calculateWidget;
+            CTerminal*              m_terminal;
+            QFile*                  m_logFile;
             QTimer*                 m_tim_calculate;
-            QVector<QLineEdit*>     m_calculate_cell;
-            QVector<QLineEdit*>     m_calibration_cell;
             QButtonGroup*           m_protect_mtz_group;
             QButtonGroup*           m_protect_earthly_group;
             QButtonGroup*           m_protect_power_group;
@@ -91,8 +100,7 @@
             QButtonGroup*           m_protect_level_group;
             QButtonGroup*           m_switch_device_group;
             QButtonGroup*           m_additional_group;
-            CModbus*                m_modbusDevice;
-            CTerminal*              m_terminal;
-            QFile*                  m_logFile;
+            QVector<QLineEdit*>     m_calculate_cell;
+            QVector<QLineEdit*>     m_calibration_cell;
     };
 #endif // CONFIGURATORWINDOW_H

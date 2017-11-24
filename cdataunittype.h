@@ -2,6 +2,8 @@
     #define CDATAUNITTYPE_H
     //----------------
     #include <QVector>
+    #include <QMap>
+    #include <QVariant>
     //-----------------
     class CDataUnitType
     {
@@ -34,11 +36,17 @@
             quint8                  valueCount() const;
             
             bool                    is_empty() const;
+
+            void                     setProperty(const QString& key, QVariant value);
+            void                     setProperties(QMap<QString, QVariant> &properties);
+            QVariant                 property(const QString& key) const;
+            QMap<QString, QVariant>& properties();
             
         private:
-            FunctionType     m_type;
-            quint8           m_slaveID;
-            quint16          m_address;
-            QVector<quint16> m_values;
+            FunctionType            m_type;
+            quint8                  m_slaveID;
+            quint16                 m_address;
+            QVector<quint16>        m_values;
+            QMap<QString, QVariant> m_properties;
     };
 #endif // CDATAUNITTYPE_H

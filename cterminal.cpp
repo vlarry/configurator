@@ -26,10 +26,12 @@ CTerminal::~CTerminal()
 void CTerminal::appendData(QByteArray& data, bool isRequest)
 {
     QString str = (isRequest)?tr("Запрос:\n"):tr("Ответ:\n");
-    
-    for(QString s: data)
+
+    for(int i = 0; i < data.count(); i++)
     {
-        str += s.toLocal8Bit().toHex() + " ";
+        char ch = data.at(i);
+
+        str += QString(ch).toLocal8Bit().toHex() + " ";
     }
     
     str += tr("   (") + QString::number(data.count()) + tr(" байт)\n");

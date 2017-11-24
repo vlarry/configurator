@@ -5,7 +5,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
     ui(new Ui::ConfiguratorWindow),
     m_modbusDevice(nullptr),
-    m_panel(nullptr),
+    m_calculateWidget(nullptr),
+    m_terminal(nullptr),
+    m_logFile(nullptr),
     m_tim_calculate(nullptr),
     m_protect_mtz_group(nullptr),
     m_protect_earthly_group(nullptr),
@@ -15,14 +17,13 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_external_group(nullptr),
     m_protect_temperature_group(nullptr),
     m_protect_level_group(nullptr),
-    m_additional_group(nullptr),
-    m_terminal(nullptr),
-    m_logFile(nullptr)
+    m_additional_group(nullptr)
+
 {
     ui->setupUi(this);
 
     m_modbusDevice              = new CModbus(this);
-    m_panel                     = new QPanel(this);
+    m_calculateWidget           = new QPanel(this);
     m_tim_calculate             = new QTimer(this);
     m_protect_mtz_group         = new QButtonGroup(ui->tabProtectionMTZ);
     m_protect_earthly_group     = new QButtonGroup(ui->tabProtectionEarthly);
@@ -37,9 +38,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
     
-    m_panel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    m_panel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    addDockWidget(Qt::RightDockWidgetArea, m_panel);
+    m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
     
     initButtonGroup();
     initConnect();
@@ -322,22 +323,26 @@ void ConfiguratorWindow::refreshSerialPort()
     ui->cboxPortName->clear();
     ui->cboxPortName->addItems(port_list);
 }
-//----------------------------------------
-void ConfiguratorWindow::calculate_value()
+//--------------------------------------
+void ConfiguratorWindow::calculateRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 
                        CalculateAddress, QVector<quint16>() << 110);
+    unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+
     m_modbusDevice->request(unit);
 }
-//-----------------------------------------
-void ConfiguratorWindow::inputAnalogRead()
+//----------------------------------------
+void ConfiguratorWindow::calibrationRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
                        CalibrationAddress, QVector<quint16>() << 36);
+    unit.setProperty(tr("REQUEST"), CALIBRATION_TYPE);
+
     m_modbusDevice->request(unit);
 }
-//------------------------------------------
-void ConfiguratorWindow::inputAnalogWrite()
+//-----------------------------------------
+void ConfiguratorWindow::calibrationWrite()
 {
     QVector<quint16> data;
     
@@ -357,6 +362,8 @@ void ConfiguratorWindow::inputAnalogWrite()
     
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
                        CalibrationAddress, data);
+    unit.setProperty(tr("REQUEST"), CALIBRATION_TYPE);
+
     m_modbusDevice->request(unit);
 }
 //---------------------------------------
@@ -364,6 +371,8 @@ void ConfiguratorWindow::protectionRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
                        ProtectionAddress, QVector<quint16>() << 4);
+    unit.setProperty(tr("REQUEST"), PROTECTION_TYPE);
+
     m_modbusDevice->request(unit);
 }
 //----------------------------------------
@@ -378,6 +387,8 @@ void ConfiguratorWindow::protectionWrite()
     
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
                        ProtectionAddress, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_TYPE);
+
     m_modbusDevice->request(unit);
 }
 //--------------------------------------------------------
@@ -389,17 +400,17 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     qDebug() << "Получен ответ: " << unit.valueCount();
     emit m_modbusDevice->infoLog(tr("Получен ответ: ") + QString::number(unit.valueCount()) + tr(" байт \n"));
     
-    switch(unit.valueCount())
+    switch((RequestType)unit.property("REQUEST").toInt())
     {
-        case 4: // чтение состояний токовых защит
+        case PROTECTION_TYPE: // чтение состояний токовых защит
             displayProtectionValues(unit.values());
         break;
         
-        case 36: // чтение калибровок
+        case CALIBRATION_TYPE: // чтение калибровок
             displayCalibrationValues(unit.values());
         break;
         
-        case 110: // чтение расчетных величин
+        case CALCULATE_TYPE: // чтение расчетных величин
             displayCalculateValues(unit.values());
         break;
     }
@@ -839,7 +850,7 @@ void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
         
 //        m_calculate_cell.at(j)->setText(/*QString::number(cell_value.value, 'f', 6)*/"yes");
 //    }
-    m_panel->setData(values);
+    m_calculateWidget->setData(values);
 }
 //------------------------------------------------------------------------
 void ConfiguratorWindow::displayCalibrationValues(QVector<quint16> values)
@@ -884,9 +895,9 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
     connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
     connect(m_modbusDevice, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
-    connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculate_value);
-    connect(ui->pbtnReadInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::inputAnalogRead);
-    connect(ui->pbtnWriteInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::inputAnalogWrite);
+    connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
+    connect(ui->pbtnReadInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRead);
+    connect(ui->pbtnWriteInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationWrite);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
     connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));

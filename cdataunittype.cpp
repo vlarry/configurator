@@ -19,8 +19,8 @@ CDataUnitType::CDataUnitType(FunctionType type):
 //----------------------------------------------------------------------------
 CDataUnitType::CDataUnitType(quint8 slaveID, CDataUnitType::FunctionType type, 
                              uint16_t address, QVector<quint16> values):
-    m_slaveID(slaveID),
     m_type(type),
+    m_slaveID(slaveID),
     m_address(address),
     m_values(values)
 {
@@ -82,5 +82,25 @@ quint8 CDataUnitType::valueCount() const
 //----------------------------------
 bool CDataUnitType::is_empty() const
 {
-    return (m_slaveID == 0xFFFF);
+    return (m_slaveID == 0xFF);
+}
+//------------------------------------------------------------------
+void CDataUnitType::setProperty(const QString& key, QVariant value)
+{
+    m_properties.insert(key, value);
+}
+//--------------------------------------------------------------------
+void CDataUnitType::setProperties(QMap<QString, QVariant>& properties)
+{
+    m_properties = properties;
+}
+//---------------------------------------------------------
+QVariant CDataUnitType::property(const QString& key) const
+{
+    return m_properties.value(key);
+}
+//--------------------------------------------------
+QMap<QString, QVariant>& CDataUnitType::properties()
+{
+    return m_properties;
 }

@@ -2,6 +2,7 @@
 //--------------------------------
 CModbus::CModbus(QObject *parent):
     QObject(parent),
+    m_device(nullptr),
     m_port_name(tr("")),
     m_baudrate(115200),
     m_data_bits(QSerialPort::Data8),
@@ -9,10 +10,9 @@ CModbus::CModbus(QObject *parent):
     m_parity(QSerialPort::EvenParity),
     m_blocking_send(false),
     m_timeout_timer(nullptr),
-    m_timeout_repeat(1000),
-    m_request_count_repeat(3),
     m_counter_request_error(0),
-    m_sizeQuery(0)
+    m_request_count_repeat(3),
+    m_timeout_repeat(1000)
 {
     m_device = new QSerialPort(this);
     m_timeout_timer = new QTimer(this);
@@ -344,6 +344,7 @@ void CModbus::readyRead()
     }
     
     unit.setValues(values);
+    unit.setProperties(m_request_cur.properties());
     
     emit dataReady(unit);
     
