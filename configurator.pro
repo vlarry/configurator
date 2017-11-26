@@ -31,7 +31,8 @@ SOURCES += \
         cmodbus.cpp \
         cdataunittype.cpp \
     cterminal.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    ctreedevicemenu.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -40,7 +41,8 @@ HEADERS += \
         cmodbus.h \
         cdataunittype.h \
     cterminal.h \
-    qcustomplot.h
+    qcustomplot.h \
+    ctreedevicemenu.h
 
 FORMS += \
         configuratorwindow.ui \

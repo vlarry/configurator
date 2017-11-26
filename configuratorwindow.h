@@ -17,6 +17,7 @@
     #include "qpanel.h"
     #include "cterminal.h"
     #include "qcustomplot.h"
+    #include "ctreedevicemenu.h"
     //----------
     namespace Ui 
     {

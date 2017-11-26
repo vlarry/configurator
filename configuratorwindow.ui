@@ -652,7 +652,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabSettings">
        <attribute name="title">
@@ -668,7 +668,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tabSetInputAnalogs">
            <attribute name="title">
@@ -13740,7 +13740,7 @@
         <item>
          <widget class="QTabWidget" name="tabwgtMeasure">
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tabPrimaryValues">
            <attribute name="title">
@@ -13769,7 +13769,7 @@
         <item>
          <widget class="QTabWidget" name="tabwgtMonitoring">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tabInputDiscrete">
            <attribute name="title">
@@ -17889,19 +17889,30 @@
      </widget>
     </item>
    </layout>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>100</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_98"/>
-   </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QDockWidget" name="dockwgtDeviceMenu">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_117">
+     <item>
+      <widget class="CTreeDeviceMenu" name="treewgtDeviceMenu">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="headerHidden">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -17910,6 +17921,11 @@
    <extends>QWidget</extends>
    <header>qcustomplot.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CTreeDeviceMenu</class>
+   <extends>QTreeWidget</extends>
+   <header>ctreedevicemenu.h</header>
   </customwidget>
  </customwidgets>
  <resources>
