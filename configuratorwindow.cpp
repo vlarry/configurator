@@ -25,16 +25,16 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_modbusDevice              = new CModbus(this);
     m_calculateWidget           = new QPanel(this);
     m_tim_calculate             = new QTimer(this);
-    m_protect_mtz_group         = new QButtonGroup(ui->tabProtectionMTZ);
-    m_protect_earthly_group     = new QButtonGroup(ui->tabProtectionEarthly);
-    m_protect_power_group       = new QButtonGroup(ui->tabProtectionPower);
-    m_protect_motor_group       = new QButtonGroup(ui->tabProtectionMotor);
-    m_protect_frequency_group   = new QButtonGroup(ui->tabProtectionFrenquency);
-    m_protect_external_group    = new QButtonGroup(ui->tabProtectionExternal);
-    m_protect_temperature_group = new QButtonGroup(ui->tabProtectionTemperature);
-    m_protect_level_group       = new QButtonGroup(ui->tabProtectionLevels);
-    m_switch_device_group       = new QButtonGroup(ui->tabSwitchDevice);
-    m_additional_group          = new QButtonGroup(ui->tabSetAdditional);
+    m_protect_mtz_group         = new QButtonGroup;
+    m_protect_earthly_group     = new QButtonGroup;
+    m_protect_power_group       = new QButtonGroup;
+    m_protect_motor_group       = new QButtonGroup;
+    m_protect_frequency_group   = new QButtonGroup;
+    m_protect_external_group    = new QButtonGroup;
+    m_protect_temperature_group = new QButtonGroup;
+    m_protect_level_group       = new QButtonGroup;
+    m_switch_device_group       = new QButtonGroup;
+    m_additional_group          = new QButtonGroup;
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
     
@@ -51,165 +51,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     }
     else
         m_logFile->write(tr("Запуск программы...").toStdString().c_str());
-    
-    ui->tabwgtRegisters->setDisabled(true);
+
     refreshSerialPort();
-    
-    m_calculate_cell.append(ui->le_State_Ch_0);
-    m_calculate_cell.append(ui->le_n_min_Ch_0);
-    m_calculate_cell.append(ui->le_n_max_Ch_0);
-    m_calculate_cell.append(ui->le_n_err_Ch_0);
-    m_calculate_cell.append(ui->le_n_skp_Ch_0);
-    m_calculate_cell.append(ui->le_Am_Ch_0);
-    m_calculate_cell.append(ui->le_A_Ch_0);
-    m_calculate_cell.append(ui->le_B_Ch_0);
-    m_calculate_cell.append(ui->le_C_Ch_0);
-    m_calculate_cell.append(ui->le_fi_Ch_0);
-    m_calculate_cell.append(ui->le_R2_Ch_0);
-    
-    m_calculate_cell.append(ui->le_State_Ch_1);
-    m_calculate_cell.append(ui->le_n_min_Ch_1);
-    m_calculate_cell.append(ui->le_n_max_Ch_1);
-    m_calculate_cell.append(ui->le_n_err_Ch_1);
-    m_calculate_cell.append(ui->le_n_skp_Ch_1);
-    m_calculate_cell.append(ui->le_Am_Ch_1);
-    m_calculate_cell.append(ui->le_A_Ch_1);
-    m_calculate_cell.append(ui->le_B_Ch_1);
-    m_calculate_cell.append(ui->le_C_Ch_1);
-    m_calculate_cell.append(ui->le_fi_Ch_1);
-    m_calculate_cell.append(ui->le_R2_Ch_1);
-    
-    m_calculate_cell.append(ui->le_State_Ch_2);
-    m_calculate_cell.append(ui->le_n_min_Ch_2);
-    m_calculate_cell.append(ui->le_n_max_Ch_2);
-    m_calculate_cell.append(ui->le_n_err_Ch_2);
-    m_calculate_cell.append(ui->le_n_skp_Ch_2);
-    m_calculate_cell.append(ui->le_Am_Ch_2);
-    m_calculate_cell.append(ui->le_A_Ch_2);
-    m_calculate_cell.append(ui->le_B_Ch_2);
-    m_calculate_cell.append(ui->le_C_Ch_2);
-    m_calculate_cell.append(ui->le_fi_Ch_2);
-    m_calculate_cell.append(ui->le_R2_Ch_2);
-    
-    m_calculate_cell.append(ui->le_State_Ch_3);
-    m_calculate_cell.append(ui->le_n_min_Ch_3);
-    m_calculate_cell.append(ui->le_n_max_Ch_3);
-    m_calculate_cell.append(ui->le_n_err_Ch_3);
-    m_calculate_cell.append(ui->le_n_skp_Ch_3);
-    m_calculate_cell.append(ui->le_Am_Ch_3);
-    m_calculate_cell.append(ui->le_A_Ch_3);
-    m_calculate_cell.append(ui->le_B_Ch_3);
-    m_calculate_cell.append(ui->le_C_Ch_3);
-    m_calculate_cell.append(ui->le_fi_Ch_3);
-    m_calculate_cell.append(ui->le_R2_Ch_3);
-    
-    m_calculate_cell.append(ui->le_State_Ch_4);
-    m_calculate_cell.append(ui->le_n_min_Ch_4);
-    m_calculate_cell.append(ui->le_n_max_Ch_4);
-    m_calculate_cell.append(ui->le_n_err_Ch_4);
-    m_calculate_cell.append(ui->le_n_skp_Ch_4);
-    m_calculate_cell.append(ui->le_Am_Ch_4);
-    m_calculate_cell.append(ui->le_A_Ch_4);
-    m_calculate_cell.append(ui->le_B_Ch_4);
-    m_calculate_cell.append(ui->le_C_Ch_4);
-    m_calculate_cell.append(ui->le_fi_Ch_4);
-    m_calculate_cell.append(ui->le_R2_Ch_4);
-    
-    m_calculate_cell.append(ui->le_State_Ch_5);
-    m_calculate_cell.append(ui->le_n_min_Ch_5);
-    m_calculate_cell.append(ui->le_n_max_Ch_5);
-    m_calculate_cell.append(ui->le_n_err_Ch_5);
-    m_calculate_cell.append(ui->le_n_skp_Ch_5);
-    m_calculate_cell.append(ui->le_Am_Ch_5);
-    m_calculate_cell.append(ui->le_A_Ch_5);
-    m_calculate_cell.append(ui->le_B_Ch_5);
-    m_calculate_cell.append(ui->le_C_Ch_5);
-    m_calculate_cell.append(ui->le_fi_Ch_5);
-    m_calculate_cell.append(ui->le_R2_Ch_5);
-    
-    m_calculate_cell.append(ui->le_State_Ch_6);
-    m_calculate_cell.append(ui->le_n_min_Ch_6);
-    m_calculate_cell.append(ui->le_n_max_Ch_6);
-    m_calculate_cell.append(ui->le_n_err_Ch_6);
-    m_calculate_cell.append(ui->le_n_skp_Ch_6);
-    m_calculate_cell.append(ui->le_Am_Ch_6);
-    m_calculate_cell.append(ui->le_A_Ch_6);
-    m_calculate_cell.append(ui->le_B_Ch_6);
-    m_calculate_cell.append(ui->le_C_Ch_6);
-    m_calculate_cell.append(ui->le_fi_Ch_6);
-    m_calculate_cell.append(ui->le_R2_Ch_6);
-    
-    m_calculate_cell.append(ui->le_State_Ch_7);
-    m_calculate_cell.append(ui->le_n_min_Ch_7);
-    m_calculate_cell.append(ui->le_n_max_Ch_7);
-    m_calculate_cell.append(ui->le_n_err_Ch_7);
-    m_calculate_cell.append(ui->le_n_skp_Ch_7);
-    m_calculate_cell.append(ui->le_Am_Ch_7);
-    m_calculate_cell.append(ui->le_A_Ch_7);
-    m_calculate_cell.append(ui->le_B_Ch_7);
-    m_calculate_cell.append(ui->le_C_Ch_7);
-    m_calculate_cell.append(ui->le_fi_Ch_7);
-    m_calculate_cell.append(ui->le_R2_Ch_7);
-    
-    m_calculate_cell.append(ui->le_State_Ch_8);
-    m_calculate_cell.append(ui->le_n_min_Ch_8);
-    m_calculate_cell.append(ui->le_n_max_Ch_8);
-    m_calculate_cell.append(ui->le_n_err_Ch_8);
-    m_calculate_cell.append(ui->le_n_skp_Ch_8);
-    m_calculate_cell.append(ui->le_Am_Ch_8);
-    m_calculate_cell.append(ui->le_A_Ch_8);
-    m_calculate_cell.append(ui->le_B_Ch_8);
-    m_calculate_cell.append(ui->le_C_Ch_8);
-    m_calculate_cell.append(ui->le_fi_Ch_8);
-    m_calculate_cell.append(ui->le_R2_Ch_8);
-    
-    m_calculate_cell.append(ui->le_State_Ch_9);
-    m_calculate_cell.append(ui->le_n_min_Ch_9);
-    m_calculate_cell.append(ui->le_n_max_Ch_9);
-    m_calculate_cell.append(ui->le_n_err_Ch_9);
-    m_calculate_cell.append(ui->le_n_skp_Ch_9);
-    m_calculate_cell.append(ui->le_Am_Ch_9);
-    m_calculate_cell.append(ui->le_A_Ch_9);
-    m_calculate_cell.append(ui->le_B_Ch_9);
-    m_calculate_cell.append(ui->le_C_Ch_9);
-    m_calculate_cell.append(ui->le_fi_Ch_9);
-    m_calculate_cell.append(ui->le_R2_Ch_9);
-    
-    m_calculate_cell.append(ui->le_State_Ch_10);
-    m_calculate_cell.append(ui->le_n_min_Ch_10);
-    m_calculate_cell.append(ui->le_n_max_Ch_10);
-    m_calculate_cell.append(ui->le_n_err_Ch_10);
-    m_calculate_cell.append(ui->le_n_skp_Ch_10);
-    m_calculate_cell.append(ui->le_Am_Ch_10);
-    m_calculate_cell.append(ui->le_A_Ch_10);
-    m_calculate_cell.append(ui->le_B_Ch_10);
-    m_calculate_cell.append(ui->le_C_Ch_10);
-    m_calculate_cell.append(ui->le_fi_Ch_10);
-    m_calculate_cell.append(ui->le_R2_Ch_10);
-    
-    m_calculate_cell.append(ui->le_State_Ch_22);
-    m_calculate_cell.append(ui->le_n_min_Ch_22);
-    m_calculate_cell.append(ui->le_n_max_Ch_22);
-    m_calculate_cell.append(ui->le_n_err_Ch_22);
-    m_calculate_cell.append(ui->le_n_skp_Ch_22);
-    m_calculate_cell.append(ui->le_Am_Ch_22);
-    m_calculate_cell.append(ui->le_A_Ch_22);
-    m_calculate_cell.append(ui->le_B_Ch_22);
-    m_calculate_cell.append(ui->le_C_Ch_22);
-    m_calculate_cell.append(ui->le_fi_Ch_22);
-    m_calculate_cell.append(ui->le_R2_Ch_22);
-    
-    m_calculate_cell.append(ui->le_State_Ch_23);
-    m_calculate_cell.append(ui->le_n_min_Ch_23);
-    m_calculate_cell.append(ui->le_n_max_Ch_23);
-    m_calculate_cell.append(ui->le_n_err_Ch_23);
-    m_calculate_cell.append(ui->le_n_skp_Ch_23);
-    m_calculate_cell.append(ui->le_Am_Ch_23);
-    m_calculate_cell.append(ui->le_A_Ch_23);
-    m_calculate_cell.append(ui->le_B_Ch_23);
-    m_calculate_cell.append(ui->le_C_Ch_23);
-    m_calculate_cell.append(ui->le_fi_Ch_23);
-    m_calculate_cell.append(ui->le_R2_Ch_23);
     
     m_calibration_cell.append(ui->leTextCalibFactorCurrentPhase_A);
     m_calibration_cell.append(ui->leTextCalibFactorCurrentPhase_B);
@@ -419,22 +262,12 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 void ConfiguratorWindow::show()
 {
     QMainWindow::show();
-    
-    ui->tabwgtRegisters->setCurrentIndex(0);
-    ui->tabwgtSettings->setCurrentIndex(0);
-    ui->tabwgtInputChannels->setCurrentIndex(0);
-    ui->tabwgtProtections->setCurrentIndex(0);
-    ui->tabwgtProtectionLevel->setCurrentIndex(0);
-    ui->tabwgtSetInputAnalogs->setCurrentIndex(0);
-    ui->tabwgtJournal->setCurrentIndex(0);
-    ui->tabwgtMeasure->setCurrentIndex(0);
-    ui->tabwgtMonitoring->setCurrentIndex(0);
-    
+
     setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
     
     m_terminal->hide();
-    ui->tabwgtRegisters->setEnabled(true);
+    ui->stwgtMain->setCurrentIndex(0);
 }
 //--------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
