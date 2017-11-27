@@ -649,7 +649,7 @@
        <item>
         <widget class="QStackedWidget" name="stwgtMain">
          <property name="currentIndex">
-          <number>18</number>
+          <number>9</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -8093,9 +8093,9 @@
           </layout>
          </widget>
          <widget class="QWidget" name="pageProtectionLevel">
-          <layout class="QVBoxLayout" name="verticalLayout_124">
+          <layout class="QVBoxLayout" name="verticalLayout_114">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_62">
+            <layout class="QHBoxLayout" name="horizontalLayout_61">
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_57">
                <property name="spacing">
@@ -8512,1093 +8512,1110 @@
                 </layout>
                </widget>
                <widget class="QWidget" name="pageProtectionLevelSignStart">
-                <layout class="QHBoxLayout" name="horizontalLayout_61">
+                <layout class="QVBoxLayout" name="verticalLayout_113">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_56">
+                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                    <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_66">
+                    <layout class="QHBoxLayout" name="horizontalLayout_56">
                      <item>
-                      <widget class="QLabel" name="lblTextStartSignal_1">
-                       <property name="text">
-                        <string>Измер БРУ</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
+                      <layout class="QVBoxLayout" name="verticalLayout_66">
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_1">
+                         <property name="text">
+                          <string>Измер БРУ</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_2">
+                         <property name="text">
+                          <string>Пск Вак фА</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_3">
+                         <property name="text">
+                          <string>Пск Вак фВ</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_4">
+                         <property name="text">
+                          <string>Пск Вак фС</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_5">
+                         <property name="text">
+                          <string>Работа Вак</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_6">
+                         <property name="text">
+                          <string>Работа БРУ</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_7">
+                         <property name="text">
+                          <string>Бл. ВКЛ БРУ</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_8">
+                         <property name="text">
+                          <string>Rиз норма</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                      <item>
-                      <widget class="QLabel" name="lblTextStartSignal_2">
-                       <property name="text">
-                        <string>Пск Вак фА</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_3">
-                       <property name="text">
-                        <string>Пск Вак фВ</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_4">
-                       <property name="text">
-                        <string>Пск Вак фС</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_5">
-                       <property name="text">
-                        <string>Работа Вак</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_6">
-                       <property name="text">
-                        <string>Работа БРУ</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_7">
-                       <property name="text">
-                        <string>Бл. ВКЛ БРУ</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_8">
-                       <property name="text">
-                        <string>Rиз норма</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
+                      <layout class="QVBoxLayout" name="verticalLayout_63">
+                       <item>
+                        <widget class="QComboBox" name="cboxMeasBRU">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxfA">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxfB">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxfC">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxWorkVak">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxWorkBRU">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOnBRU">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxRmeasOK">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </item>
                    <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_63">
-                     <item>
-                      <widget class="QComboBox" name="cboxMeasBRU">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxfA">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxfB">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxfC">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxWorkVak">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxWorkBRU">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOnBRU">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxRmeasOK">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="Line" name="line">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_57">
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_68">
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_9">
-                       <property name="text">
-                        <string>ВКЛ от БРУ</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_10">
-                       <property name="text">
-                        <string>Откл МТЗ1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_11">
-                       <property name="text">
-                        <string>Откл МТЗ2</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_12">
-                       <property name="text">
-                        <string>Откл МТЗ3</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_13">
-                       <property name="text">
-                        <string>Откл МТЗ4</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_14">
-                       <property name="text">
-                        <string>Откл Пусков</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_15">
-                       <property name="text">
-                        <string>Откл ОЗЗ1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_16">
-                       <property name="text">
-                        <string>Откл НЗЗ1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_67">
-                     <item>
-                      <widget class="QComboBox" name="cboxOnBRU_2">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffMTZ1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffMTZ2">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffMTZ3">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffMTZ4">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffStart">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffOZZ1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffNZZ1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="Line" name="line_2">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_58">
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_70">
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_17">
-                       <property name="text">
-                        <string>Откл Imin</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_18">
-                       <property name="text">
-                        <string>Откл Umax1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_19">
-                       <property name="text">
-                        <string>Откл Umax2</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_20">
-                       <property name="text">
-                        <string>Откл Umin1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_21">
-                       <property name="text">
-                        <string>Откл Umin2</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_22">
-                       <property name="text">
-                        <string>Откл 3UO</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_23">
-                       <property name="text">
-                        <string>Откл АВР</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_24">
-                       <property name="text">
-                        <string>Откл АЧР1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_69">
-                     <item>
-                      <widget class="QComboBox" name="cboxOffImin">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffImax1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffImax2">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffImin1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffImin2">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffI3UO">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffAVR">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffACR1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="Line" name="line_3">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_59">
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_71">
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_25">
-                       <property name="text">
-                        <string>Откл АЧР2</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_26">
-                       <property name="text">
-                        <string>Откл АЧР3</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_27">
-                       <property name="text">
-                        <string>Откл Тмп1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_28">
-                       <property name="text">
-                        <string>Откл Тмп2</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_29">
-                       <property name="text">
-                        <string>Откл Вн1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_30">
-                       <property name="text">
-                        <string>Откл Вн2</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_31">
-                       <property name="text">
-                        <string>Откл Вн3</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_32">
-                       <property name="text">
-                        <string>Откл УР1</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_72">
-                     <item>
-                      <widget class="QComboBox" name="cboxOffACR2">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffACR3">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffTemp1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffTemp2">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffExt1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffExt2">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffExt3">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffLevel1">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="Line" name="line_4">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_73">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_60">
-                     <item>
-                      <widget class="QLabel" name="lblTextStartSignal_33">
-                       <property name="text">
-                        <string>Откл УР2</string>
-                       </property>
-                       <property name="scaledContents">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboxOffLevel2">
-                       <property name="toolTip">
-                        <string>Скорость</string>
-                       </property>
-                       <property name="currentIndex">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Нет</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Да</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <spacer name="verticalSpacer_19">
+                    <widget class="Line" name="line">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
                      </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_57">
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_68">
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_9">
+                         <property name="text">
+                          <string>ВКЛ от БРУ</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_10">
+                         <property name="text">
+                          <string>Откл МТЗ1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_11">
+                         <property name="text">
+                          <string>Откл МТЗ2</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_12">
+                         <property name="text">
+                          <string>Откл МТЗ3</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_13">
+                         <property name="text">
+                          <string>Откл МТЗ4</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_14">
+                         <property name="text">
+                          <string>Откл Пусков</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_15">
+                         <property name="text">
+                          <string>Откл ОЗЗ1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_16">
+                         <property name="text">
+                          <string>Откл НЗЗ1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_67">
+                       <item>
+                        <widget class="QComboBox" name="cboxOnBRU_2">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffMTZ1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffMTZ2">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffMTZ3">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffMTZ4">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffStart">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffOZZ1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffNZZ1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line_2">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
                      </property>
-                    </spacer>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_58">
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_70">
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_17">
+                         <property name="text">
+                          <string>Откл Imin</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_18">
+                         <property name="text">
+                          <string>Откл Umax1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_19">
+                         <property name="text">
+                          <string>Откл Umax2</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_20">
+                         <property name="text">
+                          <string>Откл Umin1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_21">
+                         <property name="text">
+                          <string>Откл Umin2</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_22">
+                         <property name="text">
+                          <string>Откл 3UO</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_23">
+                         <property name="text">
+                          <string>Откл АВР</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_24">
+                         <property name="text">
+                          <string>Откл АЧР1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_69">
+                       <item>
+                        <widget class="QComboBox" name="cboxOffImin">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffImax1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffImax2">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffImin1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffImin2">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffI3UO">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffAVR">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffACR1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line_3">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_59">
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_71">
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_25">
+                         <property name="text">
+                          <string>Откл АЧР2</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_26">
+                         <property name="text">
+                          <string>Откл АЧР3</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_27">
+                         <property name="text">
+                          <string>Откл Тмп1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_28">
+                         <property name="text">
+                          <string>Откл Тмп2</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_29">
+                         <property name="text">
+                          <string>Откл Вн1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_30">
+                         <property name="text">
+                          <string>Откл Вн2</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_31">
+                         <property name="text">
+                          <string>Откл Вн3</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_32">
+                         <property name="text">
+                          <string>Откл УР1</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_72">
+                       <item>
+                        <widget class="QComboBox" name="cboxOffACR2">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffACR3">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffTemp1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffTemp2">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffExt1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffExt2">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffExt3">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffLevel1">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line_4">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_73">
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_60">
+                       <item>
+                        <widget class="QLabel" name="lblTextStartSignal_33">
+                         <property name="text">
+                          <string>Откл УР2</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cboxOffLevel2">
+                         <property name="toolTip">
+                          <string>Скорость</string>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Нет</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Да</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <spacer name="verticalSpacer_19">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_68">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </widget>
@@ -9619,17 +9636,1970 @@
              </item>
             </layout>
            </item>
+           <item>
+            <spacer name="verticalSpacer_69">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>95</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="pageJournalCrash"/>
-         <widget class="QWidget" name="pageJournalEvent"/>
-         <widget class="QWidget" name="pageJournalOscilloscope"/>
-         <widget class="QWidget" name="pageMeasurePrimaryValues"/>
-         <widget class="QWidget" name="pageMeasureSecondaryValues"/>
-         <widget class="QWidget" name="pageMeasureElectricPower"/>
-         <widget class="QWidget" name="pageMonitorInputDiscret"/>
-         <widget class="QWidget" name="pageMonitorOutputDiscret"/>
          <widget class="QWidget" name="pageSwitchDevice">
+          <layout class="QVBoxLayout" name="verticalLayout_83">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_50">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_75">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="pbtnSwDevBreaker">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Выключат.</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pbtnSwDevBlock">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Блокиров.</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pbtnSwDevSCHR">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>ШР</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pbtnSwDevLR">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>ЛР</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pbtnSwDevZR">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>ЗР</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pbtnSwDevTruck">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Тележка</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pbtnSwDevCtrl">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Контр.ТН</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_22">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QStackedWidget" name="stwgtSwitchDevice">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="currentIndex">
+                <number>6</number>
+               </property>
+               <widget class="QWidget" name="pageSwDevBreaker">
+                <layout class="QVBoxLayout" name="verticalLayout_76">
+                 <item>
+                  <widget class="QGroupBox" name="groupBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="title">
+                    <string/>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_55">
+                    <item>
+                     <layout class="QGridLayout" name="gridLayout_6">
+                      <item row="3" column="3">
+                       <widget class="QLabel" name="lblT_KCU">
+                        <property name="text">
+                         <string>Т.КЦУ</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="4">
+                       <widget class="QLineEdit" name="leT_KCU">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="inputMask">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="text">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="maxLength">
+                         <number>8</number>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0">
+                       <widget class="QLabel" name="lblTextSwitchON">
+                        <property name="text">
+                         <string>ВКЛ.</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="3">
+                       <widget class="QLabel" name="lblCtrlOT">
+                        <property name="text">
+                         <string>Контр.ОТ</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QComboBox" name="cboxSwBreakerModeCtrl">
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Имя порта</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Нет зн.</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Дист</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Мест</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="0" column="4">
+                       <widget class="QComboBox" name="cboxKcu">
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Имя порта</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Нет зн.</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Откл</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Вкл</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="0" column="3">
+                       <widget class="QLabel" name="lblKcu">
+                        <property name="text">
+                         <string>КЦУ</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="lblTextSwBreakerModeCtrl">
+                        <property name="text">
+                         <string>Режим управления</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="5" column="1">
+                       <widget class="QLineEdit" name="leTotv">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="inputMask">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="text">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="maxLength">
+                         <number>8</number>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="5" column="4">
+                       <widget class="QLineEdit" name="leKv_KCU_I">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="inputMask">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="text">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="maxLength">
+                         <number>8</number>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="5" column="3">
+                       <widget class="QLabel" name="lblKv_KCU_I">
+                        <property name="text">
+                         <string>Кв КЦУ I</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="3">
+                       <widget class="QLabel" name="lblPosVV">
+                        <property name="text">
+                         <string>Полож.ВВ</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="4">
+                       <widget class="QComboBox" name="cboxPosVV">
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Имя порта</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Нет зн.</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Кат.упр</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Б/к</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="4" column="1">
+                       <widget class="QLineEdit" name="leSwitchOFF_T">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="inputMask">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="text">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="maxLength">
+                         <number>8</number>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="5" column="0">
+                       <widget class="QLabel" name="lblTotv">
+                        <property name="text">
+                         <string>Тотв.</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="0">
+                       <widget class="QLabel" name="lblTextSwitchOFF_T">
+                        <property name="text">
+                         <string>ОТКЛ.Т</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="3">
+                       <widget class="QLabel" name="lblI_VV_on">
+                        <property name="text">
+                         <string>I ВВ вкл</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="4">
+                       <widget class="QLineEdit" name="leI_VV_on">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="inputMask">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="text">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="maxLength">
+                         <number>8</number>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="1">
+                       <widget class="QComboBox" name="cboxSwitchOFF">
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Имя порта</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Нет зн.</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Импульсн.</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Пост</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="3" column="0">
+                       <widget class="QLabel" name="lblTextSwitchOFF">
+                        <property name="text">
+                         <string>ОТКЛ.</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1">
+                       <widget class="QComboBox" name="cboxSwitchON">
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Имя порта</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Нет зн.</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Импульсн.</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Пост</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="2" column="0">
+                       <widget class="QLabel" name="lblTextSwitchON_T">
+                        <property name="text">
+                         <string>ВКЛ.Т</string>
+                        </property>
+                        <property name="scaledContents">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="1">
+                       <widget class="QLineEdit" name="leSwitchON_T">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="inputMask">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="text">
+                         <string>0.000000</string>
+                        </property>
+                        <property name="maxLength">
+                         <number>8</number>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="4">
+                       <widget class="QComboBox" name="cboxCtrlOT">
+                        <property name="maximumSize">
+                         <size>
+                          <width>100</width>
+                          <height>100</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Имя порта</string>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Нет зн.</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Откл</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Вкл</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="0" column="2">
+                       <spacer name="horizontalSpacer_11">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>149</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="pageSwDevDisconnect">
+                <layout class="QVBoxLayout" name="verticalLayout_8">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_70">
+                   <item>
+                    <widget class="QGroupBox" name="gboxSwDevDisconnect">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="title">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_54">
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_77">
+                        <item>
+                         <widget class="QLabel" name="lblTextVk_VV_tel">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Вк.ВВ тел</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextVk_VV_ZR">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Вк.ВВ ЗР</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextDisconnect">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>Разъед.</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_28">
+                        <property name="sizeConstraint">
+                         <enum>QLayout::SetFixedSize</enum>
+                        </property>
+                        <item>
+                         <widget class="QComboBox" name="cboxVk_VV_tel">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Откл</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Вкл</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leVk_VV_ZR">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leDisconnect">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_27">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_43">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>230</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="pageSwDevSCHR">
+                <layout class="QVBoxLayout" name="verticalLayout_84">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_71">
+                   <item>
+                    <widget class="QGroupBox" name="gboxSwDevSCHR">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="title">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_64">
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_78">
+                        <item>
+                         <widget class="QLabel" name="lblTextSCHR_Ctrl">
+                          <property name="text">
+                           <string>Управление</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextSCHR_Cmd">
+                          <property name="text">
+                           <string>Команда</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextSCHR_Timp">
+                          <property name="text">
+                           <string>Т имп</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextSCHR_Toff">
+                          <property name="text">
+                           <string>Т откл</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_29">
+                        <item>
+                         <widget class="QComboBox" name="cboxSCHR_Ctrl">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Дист</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Местн</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="cboxSCHR_Cmd">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Импульсн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Пост</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leSCHR_Timp">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leSCHR_Toff">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_28">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_44">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>204</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="pageSwDevLR">
+                <layout class="QVBoxLayout" name="verticalLayout_85">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_72">
+                   <item>
+                    <widget class="QGroupBox" name="gboxSwDevLR">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="title">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_65">
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_79">
+                        <item>
+                         <widget class="QLabel" name="lblTextLR_Ctrl">
+                          <property name="text">
+                           <string>Управление</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextLR_Cmd">
+                          <property name="text">
+                           <string>Команда</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextLR_Timp">
+                          <property name="text">
+                           <string>Т имп</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextLR_Toff">
+                          <property name="text">
+                           <string>Т откл</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_30">
+                        <item>
+                         <widget class="QComboBox" name="cboxLR_Ctrl">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Дист</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Местн</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="cboxLR_Cmd">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Импульсн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Пост</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leLR_Timp">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leLR_Toff">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_30">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_45">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>204</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="pageSwDevZR">
+                <layout class="QVBoxLayout" name="verticalLayout_9">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_73">
+                   <item>
+                    <widget class="QGroupBox" name="gboxSwDevZR">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="title">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_66">
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_80">
+                        <item>
+                         <widget class="QLabel" name="lblTextZR_Ctrl">
+                          <property name="text">
+                           <string>Управление</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextZR_Cmd">
+                          <property name="text">
+                           <string>Команда</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextZR_Timp">
+                          <property name="text">
+                           <string>Т имп</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextZR_Toff">
+                          <property name="text">
+                           <string>Т откл</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_31">
+                        <item>
+                         <widget class="QComboBox" name="cboxZR_Ctrl">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Дист</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Местн</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="cboZR_Cmd">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Импульсн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Пост</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leZR_Timp">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leZR_Toff">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_31">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_46">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>204</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="pageSwDevTruck">
+                <layout class="QVBoxLayout" name="verticalLayout_86">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_74">
+                   <item>
+                    <widget class="QGroupBox" name="gboxSwDevTruck">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="title">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_67">
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_81">
+                        <item>
+                         <widget class="QLabel" name="lblTextTruck_Ctrl">
+                          <property name="text">
+                           <string>Управление</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextTruck_Cmd">
+                          <property name="text">
+                           <string>Команда</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextTruck_Timp">
+                          <property name="text">
+                           <string>Т имп</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextTruck_Toff">
+                          <property name="text">
+                           <string>Т откл</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_32">
+                        <item>
+                         <widget class="QComboBox" name="cboxTruck_Ctrl">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Дист</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Местн</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="cboTruck_Cmd">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Импульсн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Пост</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leTruck_Timp">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leTruck_Toff">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_32">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_47">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>204</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="pageSwDevCtrl">
+                <layout class="QVBoxLayout" name="verticalLayout_87">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_75">
+                   <item>
+                    <widget class="QGroupBox" name="gboxSwDevCtrl">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="title">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_68">
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_82">
+                        <item>
+                         <widget class="QLabel" name="lblTextCtrl_Ctrl">
+                          <property name="text">
+                           <string>Управление</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextTruck_Cmd_2">
+                          <property name="text">
+                           <string>Команда</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextTruck_Timp_2">
+                          <property name="text">
+                           <string>Т имп</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextTruck_Toff_2">
+                          <property name="text">
+                           <string>Т откл</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="vltProtectionMTZ31_33">
+                        <property name="sizeConstraint">
+                         <enum>QLayout::SetMinimumSize</enum>
+                        </property>
+                        <item>
+                         <widget class="QComboBox" name="cboxCtrl_Ctrl">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Дист</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Местн</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="cboTruck_Cmd_2">
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>Имя порта</string>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Нет зн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Импульсн.</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Пост</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leCtrl_Timp">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leCtrl_Toff">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>8</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_33">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_48">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>184</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>30</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageAutomation">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -11607,23 +13577,20 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="pageJournalCrash"/>
+         <widget class="QWidget" name="pageJournalEvent"/>
+         <widget class="QWidget" name="pageJournalOscilloscope"/>
+         <widget class="QWidget" name="pageMeasurePrimaryValues"/>
+         <widget class="QWidget" name="pageMeasureSecondaryValues"/>
+         <widget class="QWidget" name="pageMeasureElectricPower"/>
+         <widget class="QWidget" name="pageMonitorInputDiscret"/>
+         <widget class="QWidget" name="pageMonitorOutputDiscret"/>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
    </layout>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>100</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_4"/>
-   </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockwgtDeviceMenu">
@@ -11639,6 +13606,21 @@
          <family>Arial</family>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings
+{
+        border-image: none;
+        image: url(:/images/resource/images/branch_close.png);
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings  
+{
+        border-image: none;
+        image: url(:/images/resource/images/branch_open.png);
+}</string>
        </property>
        <property name="headerHidden">
         <bool>true</bool>

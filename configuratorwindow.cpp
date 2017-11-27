@@ -543,6 +543,95 @@ void ConfiguratorWindow::saveLog(const QString& info)
         m_logFile->write(info.toStdString().c_str());
     }
 }
+//------------------------------------------------------------------
+void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
+{
+    if(!item)
+        return;
+
+    QString itemName = item->text(col).toUpper();
+
+    if(itemName == tr("ОСНОВНЫЕ"))
+    {
+        ui->stwgtMain->setCurrentIndex(0);
+    }
+    else if(itemName == tr("КАЛИБРОВКИ"))
+    {
+        ui->stwgtMain->setCurrentIndex(1);
+    }
+    else if(itemName == tr("МАКСИМАЛЬНЫЕ ТОКОВЫЕ"))
+    {
+        ui->stwgtMain->setCurrentIndex(2);
+    }
+    else if(itemName == tr("ЗЕМЛЯНЫЕ"))
+    {
+        ui->stwgtMain->setCurrentIndex(3);
+    }
+    else if(itemName == tr("ЗАЩИТЫ ПО НАПРЯЖЕНИЮ"))
+    {
+        ui->stwgtMain->setCurrentIndex(4);
+    }
+    else if(itemName == tr("ЗАЩИТЫ ДВИГАТЕЛЯ"))
+    {
+        ui->stwgtMain->setCurrentIndex(5);
+    }
+    else if(itemName == tr("ЗАЩИТЫ ПО ЧАСТОТЕ"))
+    {
+        ui->stwgtMain->setCurrentIndex(6);
+    }
+    else if(itemName == tr("ВНЕШНИЕ ЗАЩИТЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(7);
+    }
+    else if(itemName == tr("ТЕМПЕРАТУРНЫЕ ЗАЩИТЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(8);
+    }
+    else if(itemName == tr("УРОВНЕВЫЕ ЗАЩИТЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(9);
+    }
+    else if(itemName == tr("КОММУТАЦИОННЫЕ АППАРАТЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(10);
+    }
+    else if(itemName == tr("АВТОМАТИКА"))
+    {
+        ui->stwgtMain->setCurrentIndex(11);
+    }
+    else if(itemName == tr("АВАРИЙ"))
+    {
+        ui->stwgtMain->setCurrentIndex(12);
+    }
+    else if(itemName == tr("СОБЫТИЙ"))
+    {
+        ui->stwgtMain->setCurrentIndex(13);
+    }
+    else if(itemName == tr("ОСЦИЛЛОГРАФ"))
+    {
+        ui->stwgtMain->setCurrentIndex(14);
+    }
+    else if(itemName == tr("ПЕРВИЧНЫЕ ВЕЛИЧИНЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(15);
+    }
+    else if(itemName == tr("ВТОРИЧНЫЕ ВЕЛИЧИНЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(16);
+    }
+    else if(itemName == tr("ЭЛЕКТРОЭНЕРГИЯ"))
+    {
+        ui->stwgtMain->setCurrentIndex(17);
+    }
+    else if(itemName == tr("ДИСКРЕТНЫЕ ВХОДЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(18);
+    }
+    else if(itemName == tr("ДИСКРЕТНЫЕ ВЫХОДЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(19);
+    }
+}
 //----------------------------------------
 void ConfiguratorWindow::initButtonGroup()
 {
@@ -611,8 +700,10 @@ void ConfiguratorWindow::initButtonGroup()
     // группа уровневых защит
     m_protect_level_group->addButton(ui->pbtnProtectionLevel1);
     m_protect_level_group->addButton(ui->pbtnProtectionLevel2);
+    m_protect_level_group->addButton(ui->pbtnProtectionLevelSignStart);
     m_protect_level_group->setId(ui->pbtnProtectionLevel1, 0);
     m_protect_level_group->setId(ui->pbtnProtectionLevel2, 1);
+    m_protect_level_group->setId(ui->pbtnProtectionLevelSignStart, 2);
 
     // группа коммутационных устройств
     m_switch_device_group->addButton(ui->pbtnSwDevBreaker);
@@ -729,8 +820,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
     connect(m_modbusDevice, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
-    connect(ui->pbtnReadInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRead);
-    connect(ui->pbtnWriteInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationWrite);
+//    connect(ui->pbtnReadInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRead);
+//    connect(ui->pbtnWriteInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationWrite);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
     connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
@@ -743,8 +834,8 @@ void ConfiguratorWindow::initConnect()
     connect(m_protect_level_group, SIGNAL(buttonClicked(int)), this, SLOT(protectLevelChangedID(int)));
     connect(m_switch_device_group, SIGNAL(buttonClicked(int)), this, SLOT(switchDeviceChangedID(int)));
     connect(m_additional_group, SIGNAL(buttonClicked(int)), this, SLOT(additionalChangedID(int)));
-    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionRead);
-    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionWrite);
+//    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionRead);
+//    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionWrite);
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
@@ -752,4 +843,5 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
     connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
+    connect(ui->treewgtDeviceMenu, &CTreeDeviceMenu::itemClicked, this, &ConfiguratorWindow::itemClicked);
 }

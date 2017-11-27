@@ -75,6 +75,7 @@
             void errorDevice(const QString& error);
             void terminalVisiblity(int state);
             void saveLog(const QString& info);
+            void itemClicked(QTreeWidgetItem* item, int col);
             
         private:
             void initButtonGroup();
