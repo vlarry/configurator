@@ -18,7 +18,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_temperature_group(nullptr),
     m_protect_level_group(nullptr),
     m_additional_group(nullptr)
-
 {
     ui->setupUi(this);
 
@@ -53,25 +52,169 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
         m_logFile->write(tr("Запуск программы...").toStdString().c_str());
 
     refreshSerialPort();
-    
-    m_calibration_cell.append(ui->leTextCalibFactorCurrentPhase_A);
-    m_calibration_cell.append(ui->leTextCalibFactorCurrentPhase_B);
-    m_calibration_cell.append(ui->leTextCalibFactorCurrentPhase_C);
-    m_calibration_cell.append(ui->leTextCalibFactorCurrent3I0);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_A);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_B);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_C);
-    m_calibration_cell.append(ui->leTextCalibFactorPower3I0);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerTotal);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_A_B);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_B_C);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerPhase_C_A);
-    m_calibration_cell.append(ui->leTextCalibFactorPower3U0x);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerUAx);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerUBx);
-    m_calibration_cell.append(ui->leTextCalibFactorPowerUCx);
-    m_calibration_cell.append(ui->leTextCalibFactorChannel3U0);
-    m_calibration_cell.append(ui->leTextCalibFactorChannel3Us);
+
+    m_in_analog_cell.append(ui->leMainKtt);
+    m_in_analog_cell.append(ui->leMainKt0);
+    m_in_analog_cell.append(ui->leMainKtn);
+    m_in_analog_cell.append(ui->leTextCalibFactorCurrentPhase_A);
+    m_in_analog_cell.append(ui->leTextCalibFactorCurrentPhase_B);
+    m_in_analog_cell.append(ui->leTextCalibFactorCurrentPhase_C);
+    m_in_analog_cell.append(ui->leTextCalibFactorCurrent3I0);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerPhase_A);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerPhase_B);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerPhase_C);
+    m_in_analog_cell.append(ui->leTextCalibFactorPower3I0);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerTotal);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerPhase_A_B);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerPhase_B_C);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerPhase_C_A);
+    m_in_analog_cell.append(ui->leTextCalibFactorPower3U0x);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerUAx);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerUBx);
+    m_in_analog_cell.append(ui->leTextCalibFactorPowerUCx);
+    m_in_analog_cell.append(ui->leTextCalibFactorChannel3U0);
+    m_in_analog_cell.append(ui->leTextCalibFactorChannel3Us);
+
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ1_CurrentStart);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ1_Timeout);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ1_EnterBlocking);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ1_CurrentKvz);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ2_CurrentStart);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ2_Timeout);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ2_Acceleration);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ2_CurrentKvz);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ3_CurrentStart);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ3_Timeout);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ3_Factor);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ3_CurrentKvz);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ4_CurrentStart);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ4_Timeout);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ4_Angle);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ4_PowerStart);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ4_CurrentKvz);
+    m_protectionMTZ_cell.append(ui->leProtectionMTZ4_PowerKvz);
+
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_OZZ1_StartCurrent);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_OZZ1_Pause);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_OZZ1_KvzCurrent);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_OZZ2_StartCurrent);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_OZZ2_Pause);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_OZZ2_KvzCurrent);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ1_StartCurrent);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ1_StartPower);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ1_Angle);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ1_Pause);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ1_KvzCurrent);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ1_KvzPower);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ2_StartCurrent);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ2_StartPower);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ2_Angle);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ2_Pause);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ2_KvzCurrent);
+    m_protectionEarthy_cell.append(ui->leProtectionEarthly_NZZ2_KvzPower);
+
+    m_protectionPower_cell.append(ui->leProtectionPower_3UO_StartCurrent);
+    m_protectionPower_cell.append(ui->leProtectionPower_3UO_Pause);
+    m_protectionPower_cell.append(ui->leProtectionPower_3UO_KvzPower);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umax1_StartPower);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umax1_Pause);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umax1_KvzPower);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umax2_StartPower);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umax2_Pause);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umax2_KvzPower);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umin1_StartPower);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umin1_Pause);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umin1_KvzPower);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umin2_StartPower);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umin2_Pause);
+    m_protectionPower_cell.append(ui->leProtectionPower_Umin2_KvzPower);
+
+    m_protectionMotor_cell.append(ui->leProtectionMotorStarting_StartCurrent);
+    m_protectionMotor_cell.append(ui->leProtectionMotorStarting_Pause);
+    m_protectionMotor_cell.append(ui->leProtectionMotorStarting_KvzCurrent);
+    m_protectionMotor_cell.append(ui->leProtectionMotorImin_StartPower);
+    m_protectionMotor_cell.append(ui->leProtectionMotorImin_Pause);
+    m_protectionMotor_cell.append(ui->leProtectionMotorImin_KvzPower);
+
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR1_StartFreq);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR1_Pause);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR1_Umin);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR1_KvzPower);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR2_StartFreq);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR2_Pause);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR2_Umin);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR2_KvzPower);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR3_StartFreq);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR3_Pause);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR3_Umin);
+    m_protectionFrequency_cell.append(ui->leProtectionFrequency_ACR3_KvzPower);
+
+    m_protectionExternal_cell.append(ui->leProtectionExternal_Arc_CurrentStart);
+    m_protectionExternal_cell.append(ui->leProtectionExternal_Arc_KvzCurrent);
+    m_protectionExternal_cell.append(ui->leProtectionExternal_Ext1_Pause);
+    m_protectionExternal_cell.append(ui->leProtectionExternal_Ext2_Pause);
+    m_protectionExternal_cell.append(ui->leProtectionExternal_Ext3_Pause);
+
+    m_protectionTemperature_cell.append(ui->leProtectionTemp1_StartTemp);
+    m_protectionTemperature_cell.append(ui->leProtectionTemp1_Pause);
+    m_protectionTemperature_cell.append(ui->leProtectionTemp1_KvzTemp);
+    m_protectionTemperature_cell.append(ui->leProtectionTemp2_StartTemp);
+    m_protectionTemperature_cell.append(ui->leProtectionTemp2_Pause);
+    m_protectionTemperature_cell.append(ui->leProtectionTemp2_KvzTemp);
+
+    m_protectionLevel_cell.append(ui->leProtectionLevel1_Pause);
+    m_protectionLevel_cell.append(ui->leProtectionLevel2_Pause);
+
+    for(QLineEdit* ledit: m_in_analog_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionMTZ_cell)
+    {
+        if(ledit != ui->leProtectionMTZ4_Angle)
+            ledit->setValidator(new QDoubleValidator);
+        else
+            ledit->setValidator(new QIntValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionEarthy_cell)
+    {
+        if(ledit != ui->leProtectionEarthly_NZZ1_Angle || ledit != ui->leProtectionEarthly_NZZ2_Angle)
+            ledit->setValidator(new QDoubleValidator);
+        else
+            ledit->setValidator(new QIntValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionPower_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionMotor_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionFrequency_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionExternal_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionTemperature_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionLevel_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -170,22 +313,22 @@ void ConfiguratorWindow::refreshSerialPort()
 void ConfiguratorWindow::calculateRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 
-                       CalculateAddress, QVector<quint16>() << 110);
+                       CALCULATE_ADDRESS, QVector<quint16>() << 110);
     unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
 
     m_modbusDevice->request(unit);
 }
-//----------------------------------------
-void ConfiguratorWindow::calibrationRead()
+//-------------------------------------
+void ConfiguratorWindow::inAnalogRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
-                       CalibrationAddress, QVector<quint16>() << 36);
-    unit.setProperty(tr("REQUEST"), CALIBRATION_TYPE);
+                       IN_ANALOG_ADDRESS, QVector<quint16>() << 42);
+    unit.setProperty(tr("REQUEST"), IN_ANALOG_TYPE);
 
     m_modbusDevice->request(unit);
 }
-//-----------------------------------------
-void ConfiguratorWindow::calibrationWrite()
+//--------------------------------------
+void ConfiguratorWindow::inAnalogWrite()
 {
     QVector<quint16> data;
     
@@ -195,31 +338,31 @@ void ConfiguratorWindow::calibrationWrite()
         float   v;
     } value;
     
-    for(quint8 i = 0; i < m_calibration_cell.count(); i++)
+    for(quint8 i = 0; i < m_in_analog_cell.count(); i++)
     {
-        value.v = m_calibration_cell.at(i)->text().toFloat();
+        value.v = m_in_analog_cell.at(i)->text().toFloat();
         
         data.append(value.b[1]);
         data.append(value.b[0]);
     }
     
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
-                       CalibrationAddress, data);
-    unit.setProperty(tr("REQUEST"), CALIBRATION_TYPE);
+                       IN_ANALOG_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), IN_ANALOG_TYPE);
 
     m_modbusDevice->request(unit);
 }
 //---------------------------------------
-void ConfiguratorWindow::protectionRead()
+void ConfiguratorWindow::protectionMTZStateRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
-                       ProtectionAddress, QVector<quint16>() << 4);
-    unit.setProperty(tr("REQUEST"), PROTECTION_TYPE);
+                       PROTECTION_MTZ_ADDRESS, QVector<quint16>() << 4);
+    unit.setProperty(tr("REQUEST"), PROTECTION_MTZ_TYPE);
 
     m_modbusDevice->request(unit);
 }
 //----------------------------------------
-void ConfiguratorWindow::protectionWrite()
+void ConfiguratorWindow::protectionMTZStateWrite()
 {
     QVector<quint16> data;
     
@@ -229,8 +372,283 @@ void ConfiguratorWindow::protectionWrite()
     data.append((quint16)ui->cboxProtectionMTZ4_Ctrl->currentIndex());
     
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
-                       ProtectionAddress, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_TYPE);
+                       PROTECTION_MTZ_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_MTZ_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//---------------------------------------------
+void ConfiguratorWindow::protectionMTZSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_MTZ_SET_ADDRESS, QVector<quint16>() << 38);
+    unit.setProperty(tr("REQUEST"), PROTECTION_MTZ_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//----------------------------------------------
+void ConfiguratorWindow::protectionMTZSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionMTZ_cell.count() + 1; i++)
+    {
+        if(i == 4)
+            value.v = 0;
+        else
+            value.v = m_protectionMTZ_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_MTZ_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_MTZ_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//------------------------------------------------
+void ConfiguratorWindow::protectionEarthySetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_EARTHY_SET_ADDRESS, QVector<quint16>() << 36);
+    unit.setProperty(tr("REQUEST"), PROTECTION_EARTHY_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-------------------------------------------------
+void ConfiguratorWindow::protectionEarthySetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionEarthy_cell.count(); i++)
+    {
+        value.v = m_protectionEarthy_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_EARTHY_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_EARTHY_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-----------------------------------------------
+void ConfiguratorWindow::protectionPowerSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_POWER_SET_ADDRESS, QVector<quint16>() << 30);
+    unit.setProperty(tr("REQUEST"), PROTECTION_POWER_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//------------------------------------------------
+void ConfiguratorWindow::protectionPowerSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionPower_cell.count(); i++)
+    {
+        value.v = m_protectionPower_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_POWER_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_POWER_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-----------------------------------------------
+void ConfiguratorWindow::protectionMotorSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_MOTOR_SET_ADDRESS, QVector<quint16>() << 12);
+    unit.setProperty(tr("REQUEST"), PROTECTION_MOTOR_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//------------------------------------------------
+void ConfiguratorWindow::protectionMotorSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionMotor_cell.count(); i++)
+    {
+        value.v = m_protectionMotor_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_MOTOR_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_MOTOR_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//---------------------------------------------------
+void ConfiguratorWindow::protectionFrequencySetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_FREQUENCY_SET_ADDRESS, QVector<quint16>() << 24);
+    unit.setProperty(tr("REQUEST"), PROTECTION_FREQUENCY_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//----------------------------------------------------
+void ConfiguratorWindow::protectionFrequencySetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionFrequency_cell.count(); i++)
+    {
+        value.v = m_protectionFrequency_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_FREQUENCY_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_FREQUENCY_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//--------------------------------------------------
+void ConfiguratorWindow::protectionExternalSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_EXTERNAL_SET_ADDRESS, QVector<quint16>() << 10);
+    unit.setProperty(tr("REQUEST"), PROTECTION_EXTERNAL_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//---------------------------------------------------
+void ConfiguratorWindow::protectionExternalSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionExternal_cell.count(); i++)
+    {
+        value.v = m_protectionExternal_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_EXTERNAL_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_EXTERNAL_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-----------------------------------------------------
+void ConfiguratorWindow::protectionTemperatureSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_TEMP_SET_ADDRESS, QVector<quint16>() << 12);
+    unit.setProperty(tr("REQUEST"), PROTECTION_TEMP_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//------------------------------------------------------
+void ConfiguratorWindow::protectionTemperatureSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionTemperature_cell.count(); i++)
+    {
+        value.v = m_protectionTemperature_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_TEMP_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_TEMP_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-----------------------------------------------
+void ConfiguratorWindow::protectionLevelSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_LEVEL_SET_ADDRESS, QVector<quint16>() << 4);
+    unit.setProperty(tr("REQUEST"), PROTECTION_LEVEL_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//------------------------------------------------
+void ConfiguratorWindow::protectionLevelSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionLevel_cell.count(); i++)
+    {
+        value.v = m_protectionLevel_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_LEVEL_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_LEVEL_SET_TYPE);
 
     m_modbusDevice->request(unit);
 }
@@ -245,12 +663,44 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     
     switch((RequestType)unit.property("REQUEST").toInt())
     {
-        case PROTECTION_TYPE: // чтение состояний токовых защит
-            displayProtectionValues(unit.values());
+        case PROTECTION_MTZ_TYPE: // чтение состояний токовых защит
+            displayProtectionMTZStateValues(unit.values());
+        break;
+
+        case PROTECTION_MTZ_SET_TYPE: // чтение состояний токовых защит
+            displayProtectionMTZSetValues(unit.values());
+        break;
+
+        case PROTECTION_EARTHY_SET_TYPE: // чтение состояний земляных защит
+            displayProtectionEarthySetValues(unit.values());
+        break;
+
+        case PROTECTION_POWER_SET_TYPE: // чтение состояний защит по напряжению
+            displayProtectionPowerSetValues(unit.values());
+        break;
+
+        case PROTECTION_MOTOR_SET_TYPE: // чтение состояний защит двигателей
+            displayProtectionMotorSetValues(unit.values());
+        break;
+
+        case PROTECTION_FREQUENCY_SET_TYPE: // чтение состояний частотных защит
+            displayProtectionFrequencySetValues(unit.values());
+        break;
+
+        case PROTECTION_EXTERNAL_SET_TYPE: // чтение состояний внешних защит
+            displayProtectionExternalSetValues(unit.values());
+        break;
+
+        case PROTECTION_TEMP_SET_TYPE: // чтение состояний температурных защит
+            displayProtectionTemperatureSetValues(unit.values());
+        break;
+
+        case PROTECTION_LEVEL_SET_TYPE: // чтение состояний уровневых защит
+            displayProtectionLevelSetValues(unit.values());
         break;
         
-        case CALIBRATION_TYPE: // чтение калибровок
-            displayCalibrationValues(unit.values());
+        case IN_ANALOG_TYPE: // чтение калибровок
+            displayInAnalogValues(unit.values());
         break;
         
         case CALCULATE_TYPE: // чтение расчетных величин
@@ -632,6 +1082,44 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
         ui->stwgtMain->setCurrentIndex(19);
     }
 }
+//-------------------------------------
+void ConfiguratorWindow::readSettings()
+{
+    qint32 index = ui->stwgtMain->currentIndex();
+
+    if(index >= 0 && index < 12) // выбрана группа "Настройки"
+    {
+        inAnalogRead(); // чтение настроек "Основные" и "Калибровки"
+        protectionMTZStateRead(); // чтение настроек состояния токовых защит
+        protectionMTZSetRead(); // чтение настроек токовых защит
+        protectionEarthySetRead(); // чтение настроек земляных защит
+        protectionPowerSetRead(); // чтение настроек защит по напряжению
+        protectionMotorSetRead(); // чтение настроек защит двигателей
+        protectionFrequencySetRead(); // чтение настроек частотных защит
+        protectionExternalSetRead(); // чтение настроек внешних защит
+        protectionTemperatureSetRead(); // чтение настроек температурных защит
+        protectionLevelSetRead(); // чтение настроек уровневых защит
+    }
+}
+//--------------------------------------
+void ConfiguratorWindow::writeSettings()
+{
+    qint32 index = ui->stwgtMain->currentIndex();
+
+    if(index >= 0 && index < 12) // выбрана группа "Настройки"
+    {
+        inAnalogWrite(); // запись настроек "Основные" и "Калибровки"
+        protectionMTZStateWrite(); // запись настроек состояния токовых защит
+        protectionMTZSetWrite(); // запись настроек токовых защит
+        protectionEarthySetWrite(); // запись настроек земляных защит
+        protectionPowerSetWrite(); // запись настроек защит по напряжению
+        protectionMotorSetWrite(); // запись настроек защит двигателей
+        protectionFrequencySetWrite(); // запись настроек частотных защит
+        protectionExternalSetWrite(); // запись настроек внешних защит
+        protectionTemperatureSetWrite(); // запись настроек температурных защит
+        protectionLevelSetWrite(); // запись настроек уровневых защит
+    }
+}
 //----------------------------------------
 void ConfiguratorWindow::initButtonGroup()
 {
@@ -776,8 +1264,8 @@ void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 //    }
     m_calculateWidget->setData(values);
 }
-//------------------------------------------------------------------------
-void ConfiguratorWindow::displayCalibrationValues(QVector<quint16> values)
+//---------------------------------------------------------------------
+void ConfiguratorWindow::displayInAnalogValues(QVector<quint16> values)
 {
     union
     {
@@ -793,11 +1281,11 @@ void ConfiguratorWindow::displayCalibrationValues(QVector<quint16> values)
         cell_value.word[0] = value1;
         cell_value.word[1] = value2;
         
-        m_calibration_cell.at(j)->setText(QString::number(cell_value.value, 'f', 6));
+        m_in_analog_cell.at(j)->setText(QString::number(cell_value.value, 'f', 6));
     }
 }
 //-----------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionValues(QVector<quint16> values)
+void ConfiguratorWindow::displayProtectionMTZStateValues(QVector<quint16> values)
 {     
     if(values.count() == 4)
     {
@@ -809,6 +1297,218 @@ void ConfiguratorWindow::displayProtectionValues(QVector<quint16> values)
                                 (i == 2)?ui->cboxProtectionMTZ3_Ctrl:ui->cboxProtectionMTZ4_Ctrl;
             
             cbItem->setCurrentIndex(value);
+        }
+    }
+}
+//-----------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionMTZSetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 38)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            if(i == 6)
+            {
+                j--;
+                continue;
+            }
+
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionMTZ_cell.at(j);
+
+            if(item != ui->leProtectionMTZ4_Angle)
+                item->setText(QString::number(cell_value.value, 'f', 6));
+            else
+                item->setText(QString::number((int)cell_value.value));
+        }
+    }
+}
+//--------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionEarthySetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 36)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionEarthy_cell.at(j);
+
+            if(item != ui->leProtectionEarthly_NZZ1_Angle && item != ui->leProtectionEarthly_NZZ2_Angle)
+                item->setText(QString::number(cell_value.value, 'f', 6));
+            else
+                item->setText(QString::number((int)cell_value.value));
+        }
+    }
+}
+//-------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionPowerSetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 30)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionPower_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
+//-------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionMotorSetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 12)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionMotor_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
+//-----------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionFrequencySetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 24)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionFrequency_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
+//----------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionExternalSetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 10)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionExternal_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
+//-------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionTemperatureSetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 12)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionTemperature_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
+//-------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionLevelSetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 4)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionLevel_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
         }
     }
 }
@@ -844,4 +1544,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
     connect(ui->treewgtDeviceMenu, &CTreeDeviceMenu::itemClicked, this, &ConfiguratorWindow::itemClicked);
+    connect(ui->pbtnRead, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
+    connect(ui->pbtnWrite, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);
 }

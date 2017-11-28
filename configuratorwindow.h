@@ -31,16 +31,32 @@
         public:
             enum RegisterAddress
             {
-                CalculateAddress   = 64,
-                CalibrationAddress = 362,
-                ProtectionAddress  = 22
+                CALCULATE_ADDRESS                = 64,
+                IN_ANALOG_ADDRESS                = 356,
+                PROTECTION_MTZ_ADDRESS           = 22,
+                PROTECTION_MTZ_SET_ADDRESS       = 128,
+                PROTECTION_EARTHY_SET_ADDRESS    = 166,
+                PROTECTION_POWER_SET_ADDRESS     = 202,
+                PROTECTION_MOTOR_SET_ADDRESS     = 232,
+                PROTECTION_FREQUENCY_SET_ADDRESS = 244,
+                PROTECTION_EXTERNAL_SET_ADDRESS  = 268,
+                PROTECTION_TEMP_SET_ADDRESS      = 278,
+                PROTECTION_LEVEL_SET_ADDRESS     = 290
             };
 
             enum RequestType
             {
                 CALCULATE_TYPE,
-                CALIBRATION_TYPE,
-                PROTECTION_TYPE
+                IN_ANALOG_TYPE,
+                PROTECTION_MTZ_TYPE,
+                PROTECTION_MTZ_SET_TYPE,
+                PROTECTION_EARTHY_SET_TYPE,
+                PROTECTION_POWER_SET_TYPE,
+                PROTECTION_MOTOR_SET_TYPE,
+                PROTECTION_FREQUENCY_SET_TYPE,
+                PROTECTION_EXTERNAL_SET_TYPE,
+                PROTECTION_TEMP_SET_TYPE,
+                PROTECTION_LEVEL_SET_TYPE
             };
       
         public:
@@ -52,10 +68,26 @@
             void stateChanged(bool state);
             void refreshSerialPort();
             void calculateRead(); // запрос расчетных величин
-            void calibrationRead();
-            void calibrationWrite();
-            void protectionRead();
-            void protectionWrite();
+            void inAnalogRead();
+            void inAnalogWrite();
+            void protectionMTZStateRead();
+            void protectionMTZStateWrite();
+            void protectionMTZSetRead();
+            void protectionMTZSetWrite();
+            void protectionEarthySetRead();
+            void protectionEarthySetWrite();
+            void protectionPowerSetRead();
+            void protectionPowerSetWrite();
+            void protectionMotorSetRead();
+            void protectionMotorSetWrite();
+            void protectionFrequencySetRead();
+            void protectionFrequencySetWrite();
+            void protectionExternalSetRead();
+            void protectionExternalSetWrite();
+            void protectionTemperatureSetRead();
+            void protectionTemperatureSetWrite();
+            void protectionLevelSetRead();
+            void protectionLevelSetWrite();
             void responseRead(CDataUnitType& unit);
             void show();
             void chboxCalculateTimeoutStateChanged(bool state);
@@ -76,12 +108,22 @@
             void terminalVisiblity(int state);
             void saveLog(const QString& info);
             void itemClicked(QTreeWidgetItem* item, int col);
+            void readSettings();
+            void writeSettings();
             
         private:
             void initButtonGroup();
             void displayCalculateValues(QVector<quint16> values);
-            void displayCalibrationValues(QVector<quint16> values);
-            void displayProtectionValues(QVector<quint16> values);
+            void displayInAnalogValues(QVector<quint16> values);
+            void displayProtectionMTZStateValues(QVector<quint16> values);
+            void displayProtectionMTZSetValues(QVector<quint16> values);
+            void displayProtectionEarthySetValues(QVector<quint16> values);
+            void displayProtectionPowerSetValues(QVector<quint16> values);
+            void displayProtectionMotorSetValues(QVector<quint16> values);
+            void displayProtectionFrequencySetValues(QVector<quint16> values);
+            void displayProtectionExternalSetValues(QVector<quint16> values);
+            void displayProtectionTemperatureSetValues(QVector<quint16> values);
+            void displayProtectionLevelSetValues(QVector<quint16> values);
             
             void initConnect();
             
@@ -103,6 +145,14 @@
             QButtonGroup*           m_switch_device_group;
             QButtonGroup*           m_additional_group;
             QVector<QLineEdit*>     m_calculate_cell;
-            QVector<QLineEdit*>     m_calibration_cell;
+            QVector<QLineEdit*>     m_in_analog_cell;
+            QVector<QLineEdit*>     m_protectionMTZ_cell;
+            QVector<QLineEdit*>     m_protectionEarthy_cell;
+            QVector<QLineEdit*>     m_protectionPower_cell;
+            QVector<QLineEdit*>     m_protectionMotor_cell;
+            QVector<QLineEdit*>     m_protectionFrequency_cell;
+            QVector<QLineEdit*>     m_protectionExternal_cell;
+            QVector<QLineEdit*>     m_protectionTemperature_cell;
+            QVector<QLineEdit*>     m_protectionLevel_cell;
     };
 #endif // CONFIGURATORWINDOW_H

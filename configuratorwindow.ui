@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1086</width>
-    <height>684</height>
+    <height>584</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -668,7 +668,7 @@
                     <item>
                      <widget class="QLabel" name="lblTextMainKtt">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -684,7 +684,7 @@
                     <item>
                      <widget class="QLabel" name="lblTextMainKt0">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -700,7 +700,7 @@
                     <item>
                      <widget class="QLabel" name="lblTextMainKtn">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -716,7 +716,7 @@
                     <item>
                      <widget class="QLabel" name="lblMainOnTN">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -748,13 +748,13 @@
                        </size>
                       </property>
                       <property name="inputMask">
-                       <string>0.000000</string>
+                       <string/>
                       </property>
                       <property name="text">
                        <string>0.000000</string>
                       </property>
                       <property name="maxLength">
-                       <number>8</number>
+                       <number>32767</number>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
@@ -776,13 +776,13 @@
                        </size>
                       </property>
                       <property name="inputMask">
-                       <string>0.000000</string>
+                       <string/>
                       </property>
                       <property name="text">
                        <string>0.000000</string>
                       </property>
                       <property name="maxLength">
-                       <number>8</number>
+                       <number>32767</number>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
@@ -804,13 +804,13 @@
                        </size>
                       </property>
                       <property name="inputMask">
-                       <string>0.000000</string>
+                       <string/>
                       </property>
                       <property name="text">
                        <string>0.000000</string>
                       </property>
                       <property name="maxLength">
-                       <number>8</number>
+                       <number>32767</number>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
@@ -1826,7 +1826,7 @@
                   </sizepolicy>
                  </property>
                  <property name="currentIndex">
-                  <number>0</number>
+                  <number>3</number>
                  </property>
                  <widget class="QWidget" name="pageProtectionPropertiesMTZ1">
                   <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1913,6 +1913,22 @@
                             </property>
                            </widget>
                           </item>
+                          <item>
+                           <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_5">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="text">
+                             <string>Квз ток</string>
+                            </property>
+                            <property name="scaledContents">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
                          </layout>
                         </item>
                         <item>
@@ -1965,13 +1981,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -1993,13 +2009,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2021,13 +2037,41 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLineEdit" name="leProtectionMTZ1_CurrentKvz">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>100</width>
+                              <height>100</height>
+                             </size>
+                            </property>
+                            <property name="inputMask">
+                             <string/>
+                            </property>
+                            <property name="text">
+                             <string>0.000000</string>
+                            </property>
+                            <property name="maxLength">
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2130,6 +2174,16 @@
                             </property>
                            </widget>
                           </item>
+                          <item>
+                           <widget class="QLabel" name="lblTextProtectionMTZ_Acceleration_2">
+                            <property name="text">
+                             <string>Квз ток</string>
+                            </property>
+                            <property name="scaledContents">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
                          </layout>
                         </item>
                         <item>
@@ -2182,13 +2236,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2210,13 +2264,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2238,13 +2292,41 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLineEdit" name="leProtectionMTZ2_CurrentKvz">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>100</width>
+                              <height>100</height>
+                             </size>
+                            </property>
+                            <property name="inputMask">
+                             <string/>
+                            </property>
+                            <property name="text">
+                             <string>0.000000</string>
+                            </property>
+                            <property name="maxLength">
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2347,6 +2429,16 @@
                             </property>
                            </widget>
                           </item>
+                          <item>
+                           <widget class="QLabel" name="lblTextProtectionMTZ_Factor_2">
+                            <property name="text">
+                             <string>Квз ток</string>
+                            </property>
+                            <property name="scaledContents">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
                          </layout>
                         </item>
                         <item>
@@ -2409,13 +2501,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2437,13 +2529,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2465,13 +2557,41 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLineEdit" name="leProtectionMTZ3_CurrentKvz">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>100</width>
+                              <height>100</height>
+                             </size>
+                            </property>
+                            <property name="inputMask">
+                             <string/>
+                            </property>
+                            <property name="text">
+                             <string>0.000000</string>
+                            </property>
+                            <property name="maxLength">
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2574,6 +2694,36 @@
                             </property>
                            </widget>
                           </item>
+                          <item>
+                           <widget class="QLabel" name="lblTextProtectionMTZ_Angle_2">
+                            <property name="text">
+                             <string>Задержка</string>
+                            </property>
+                            <property name="scaledContents">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="lblTextProtectionMTZ_Angle_3">
+                            <property name="text">
+                             <string>Квз ток</string>
+                            </property>
+                            <property name="scaledContents">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="lblTextProtectionMTZ_Angle_4">
+                            <property name="text">
+                             <string>Квз напр</string>
+                            </property>
+                            <property name="scaledContents">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
                          </layout>
                         </item>
                         <item>
@@ -2626,13 +2776,69 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLineEdit" name="leProtectionMTZ4_PowerStart">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>100</width>
+                              <height>100</height>
+                             </size>
+                            </property>
+                            <property name="inputMask">
+                             <string/>
+                            </property>
+                            <property name="text">
+                             <string>0.000000</string>
+                            </property>
+                            <property name="maxLength">
+                             <number>32767</number>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLineEdit" name="leProtectionMTZ4_Angle">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>100</width>
+                              <height>100</height>
+                             </size>
+                            </property>
+                            <property name="inputMask">
+                             <string/>
+                            </property>
+                            <property name="text">
+                             <string>0</string>
+                            </property>
+                            <property name="maxLength">
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2654,13 +2860,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2668,7 +2874,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ4_EnterBlocking">
+                           <widget class="QLineEdit" name="leProtectionMTZ4_CurrentKvz">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2682,13 +2888,41 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>000</string>
+                             <string/>
                             </property>
                             <property name="text">
-                             <string>0</string>
+                             <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>3</number>
+                             <number>32767</number>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLineEdit" name="leProtectionMTZ4_PowerKvz">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>100</width>
+                              <height>100</height>
+                             </size>
+                            </property>
+                            <property name="inputMask">
+                             <string/>
+                            </property>
+                            <property name="text">
+                             <string>0.000000</string>
+                            </property>
+                            <property name="maxLength">
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -2834,7 +3068,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pageProtectionPropertiesOZZ1">
                 <layout class="QVBoxLayout" name="verticalLayout_92">
@@ -2944,13 +3178,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -2972,13 +3206,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3000,13 +3234,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3156,13 +3390,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3184,13 +3418,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3212,13 +3446,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3398,13 +3632,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3426,13 +3660,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3454,13 +3688,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>000</string>
+                           <string/>
                           </property>
                           <property name="text">
-                           <string>90</string>
+                           <string>0</string>
                           </property>
                           <property name="maxLength">
-                           <number>3</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3482,13 +3716,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3510,13 +3744,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3538,13 +3772,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3724,13 +3958,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3752,13 +3986,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3780,13 +4014,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>000</string>
+                           <string/>
                           </property>
                           <property name="text">
-                           <string>90</string>
+                           <string>0</string>
                           </property>
                           <property name="maxLength">
-                           <number>3</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3808,13 +4042,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3836,13 +4070,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -3864,13 +4098,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4060,7 +4294,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>4</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pageProtectionPropertiesUmax1">
                 <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4170,13 +4404,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4198,13 +4432,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4226,13 +4460,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4382,13 +4616,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4410,13 +4644,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4438,13 +4672,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4541,6 +4775,26 @@
                          <widget class="QLabel" name="lblTextProtectionPower_Umin1_StartPower">
                           <property name="text">
                            <string>Напр пуска</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextProtectionPower_Umin1_StartPower_2">
+                          <property name="text">
+                           <string>Задержка</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextProtectionPower_Umin1_StartPower_3">
+                          <property name="text">
+                           <string>Квз напр</string>
                           </property>
                           <property name="scaledContents">
                            <bool>true</bool>
@@ -4650,13 +4904,69 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leProtectionPower_Umin1_Pause">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string/>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>32767</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leProtectionPower_Umin1_KvzPower">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string/>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -4753,6 +5063,26 @@
                          <widget class="QLabel" name="lblTextProtectionPower_Umin2_StartPower">
                           <property name="text">
                            <string>Напр пуска</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextProtectionPower_Umin2_StartPower_2">
+                          <property name="text">
+                           <string>Задержка</string>
+                          </property>
+                          <property name="scaledContents">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="lblTextProtectionPower_Umin2_StartPower_3">
+                          <property name="text">
+                           <string>Квз напр</string>
                           </property>
                           <property name="scaledContents">
                            <bool>true</bool>
@@ -4862,13 +5192,69 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leProtectionPower_Umin2_Pause">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string/>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>32767</number>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="leProtectionPower_Umin2_KvzPower">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>100</width>
+                            <height>100</height>
+                           </size>
+                          </property>
+                          <property name="inputMask">
+                           <string/>
+                          </property>
+                          <property name="text">
+                           <string>0.000000</string>
+                          </property>
+                          <property name="maxLength">
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5018,13 +5404,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5046,13 +5432,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5074,13 +5460,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5219,7 +5605,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pagePotectionPropertiesStarting">
                 <layout class="QVBoxLayout" name="verticalLayout_101">
@@ -5321,7 +5707,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotor_StartCurrent">
+                         <widget class="QLineEdit" name="leProtectionMotorStarting_StartCurrent">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5335,13 +5721,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5349,7 +5735,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotor_Pause">
+                         <widget class="QLineEdit" name="leProtectionMotorStarting_Pause">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5363,13 +5749,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5377,7 +5763,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotor_Kvz_Current">
+                         <widget class="QLineEdit" name="leProtectionMotorStarting_KvzCurrent">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5391,13 +5777,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5539,7 +5925,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotor_StartPower">
+                         <widget class="QLineEdit" name="leProtectionMotorImin_StartPower">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5553,13 +5939,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5567,7 +5953,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotor_Pause_2">
+                         <widget class="QLineEdit" name="leProtectionMotorImin_Pause">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5581,13 +5967,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5595,7 +5981,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotor_Kvz_Power">
+                         <widget class="QLineEdit" name="leProtectionMotorImin_KvzPower">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5609,13 +5995,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5890,13 +6276,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5918,13 +6304,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5946,13 +6332,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -5974,13 +6360,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6140,13 +6526,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6168,13 +6554,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6196,13 +6582,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6224,13 +6610,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6390,13 +6776,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6418,13 +6804,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6446,13 +6832,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6474,13 +6860,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -6554,7 +6940,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="widget">
+         <widget class="QWidget" name="pageProtectionExternal">
           <layout class="QVBoxLayout" name="verticalLayout_122">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_95">
@@ -6779,13 +7165,13 @@
                                </size>
                               </property>
                               <property name="inputMask">
-                               <string>0.000000</string>
+                               <string/>
                               </property>
                               <property name="text">
                                <string>0.000000</string>
                               </property>
                               <property name="maxLength">
-                               <number>8</number>
+                               <number>32767</number>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -6807,13 +7193,13 @@
                                </size>
                               </property>
                               <property name="inputMask">
-                               <string>0.000000</string>
+                               <string/>
                               </property>
                               <property name="text">
                                <string>0.000000</string>
                               </property>
                               <property name="maxLength">
-                               <number>8</number>
+                               <number>32767</number>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -6982,13 +7368,13 @@
                                </size>
                               </property>
                               <property name="inputMask">
-                               <string>0.000000</string>
+                               <string/>
                               </property>
                               <property name="text">
                                <string>0.000000</string>
                               </property>
                               <property name="maxLength">
-                               <number>8</number>
+                               <number>32767</number>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -7157,13 +7543,13 @@
                                </size>
                               </property>
                               <property name="inputMask">
-                               <string>0.000000</string>
+                               <string/>
                               </property>
                               <property name="text">
                                <string>0.000000</string>
                               </property>
                               <property name="maxLength">
-                               <number>8</number>
+                               <number>32767</number>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -7332,13 +7718,13 @@
                                </size>
                               </property>
                               <property name="inputMask">
-                               <string>0.000000</string>
+                               <string/>
                               </property>
                               <property name="text">
                                <string>0.000000</string>
                               </property>
                               <property name="maxLength">
-                               <number>8</number>
+                               <number>32767</number>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignCenter</set>
@@ -7498,7 +7884,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pageProtectionPropertiesTemp1">
                 <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -7676,13 +8062,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -7704,13 +8090,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -7732,13 +8118,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -7956,13 +8342,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -7984,13 +8370,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -8012,13 +8398,13 @@
                            </size>
                           </property>
                           <property name="inputMask">
-                           <string>0.000000</string>
+                           <string/>
                           </property>
                           <property name="text">
                            <string>0.000000</string>
                           </property>
                           <property name="maxLength">
-                           <number>8</number>
+                           <number>32767</number>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignCenter</set>
@@ -8173,7 +8559,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="pageProtectionPropertiesLevel1">
                 <layout class="QVBoxLayout" name="verticalLayout_106">
@@ -8280,13 +8666,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -8448,13 +8834,13 @@
                              </size>
                             </property>
                             <property name="inputMask">
-                             <string>0.000000</string>
+                             <string/>
                             </property>
                             <property name="text">
                              <string>0.000000</string>
                             </property>
                             <property name="maxLength">
-                             <number>8</number>
+                             <number>32767</number>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignCenter</set>
@@ -13586,6 +13972,50 @@
          <widget class="QWidget" name="pageMonitorInputDiscret"/>
          <widget class="QWidget" name="pageMonitorOutputDiscret"/>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_62">
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbtnRead">
+           <property name="text">
+            <string>Чтение</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbtnWrite">
+           <property name="text">
+            <string>Запись</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
