@@ -595,6 +595,13 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="pbtnVersionSoftware">
+              <property name="text">
+               <string>Версия</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
          </layout>
@@ -14128,6 +14135,9 @@
            <width>24</width>
            <height>24</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>Развернуть меню</string>
          </property>
          <property name="text">
           <string>...</string>

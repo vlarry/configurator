@@ -13,10 +13,12 @@
     #include <QAbstractButton>
     #include <QFile>
     #include <QTreeWidget>
+    #include <QTextStream>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
     #include "qcustomplot.h"
+    #include "cversionsoftware.h"
     //----------
     namespace Ui 
     {
@@ -128,6 +130,7 @@
             void writeSettings();
             void writeSetCurrent();
             void expandItemTree(bool state);
+            void versionSowftware();
             
         private:
             void initConnect();
@@ -148,6 +151,7 @@
             void displayProtectionVacuumSetValues(QVector<quint16> values);
             void displayAutomationValues(QVector<quint16> values);
             void displaySwitchDeviceValues(QVector<quint16> values);
+            void versionParser();
             
         private:
             Ui::ConfiguratorWindow* ui;
@@ -180,6 +184,7 @@
             QVector<QLineEdit*>     m_protectionBru_cell;
             QVector<QLineEdit*>     m_automation_cell;
             QVector<QLineEdit*>     m_switch_device_cell;
+            CVersionSoftware*       m_versionWidget;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

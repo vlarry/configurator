@@ -17,7 +17,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_external_group(nullptr),
     m_protect_temperature_group(nullptr),
     m_protect_level_group(nullptr),
-    m_additional_group(nullptr)
+    m_additional_group(nullptr),
+    m_versionWidget(nullptr)
 {
     ui->setupUi(this);
 
@@ -926,6 +927,9 @@ void ConfiguratorWindow::show()
     
     m_terminal->hide();
     ui->stwgtMain->setCurrentIndex(0);
+
+    m_versionWidget = new CVersionSoftware(this);
+    versionParser();
 }
 //--------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
@@ -1523,12 +1527,19 @@ void ConfiguratorWindow::expandItemTree(bool state)
     {
         ui->treewgtDeviceMenu->expandAll();
         ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_open.png")));
+        ui->tbntExpandItems->setToolTip(tr("Свернуть меню"));
     }
     else
     {
         ui->treewgtDeviceMenu->collapseAll();
         ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_close.png")));
+        ui->tbntExpandItems->setToolTip(tr("Развернуть меню"));
     }
+}
+//-----------------------------------------
+void ConfiguratorWindow::versionSowftware()
+{
+    m_versionWidget->show();
 }
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
@@ -2126,6 +2137,117 @@ void ConfiguratorWindow::displaySwitchDeviceValues(QVector<quint16> values)
         }
     }
 }
+//--------------------------------------
+void ConfiguratorWindow::versionParser()
+{
+    QFile file(tr(":/files/resource/files/version.txt"));
+
+    if(!file.open(QFile::ReadOnly))
+    {
+        statusBar()->showMessage(tr("Нет файла версии или он поврежден..."), 2000);
+        file.close();
+
+        return;
+    }
+
+    QTextStream in(&file);
+
+    bool fMajor = false;
+    bool fMinor = false;
+    bool fBuild = false;
+    bool fDesc  = false;
+
+    QString version = "";
+    QString desc    = "";
+    QString param   = tr("MAJOR");
+
+    QMap<QString, QString> ver;
+
+    while(!in.atEnd())
+    {
+        QString line = in.readLine();
+
+        if(line.isEmpty())
+            continue;
+
+        if(!fMajor || !fMinor || !fBuild || !fDesc)
+        {
+            if(line.contains(param, Qt::CaseInsensitive))
+            {
+                QStringList list = line.split(":");
+
+                if(!list.isEmpty())
+                {
+                    QString temp = "";
+
+                    if(list.count() > 1)
+                        temp = list.at(1);
+
+                    temp = temp.replace(tr(" "), "");
+
+                    if(!fMajor)
+                    {
+                        version = tr("v") + temp + QString(".");
+                        fMajor  = true;
+                        param   = tr("MINOR");
+
+                        continue;
+                    }
+                    else if(fMajor && !fMinor)
+                    {
+                        version += ((temp.toInt() < 10)?tr("0") + temp:temp) + tr(" build ");
+                        fMinor   = true;
+                        param    = tr("BUILD");
+
+                        continue;
+                    }
+                    else if(fMajor && fMinor && !fBuild)
+                    {
+                        version += temp;
+                        fBuild   = true;
+                        param    = tr("<DESCRIPTION>");
+
+                        continue;
+                    }
+                    else if(fMajor && fMinor && fBuild && !fDesc)
+                    {
+                        fDesc = true;
+                        param = tr("</DESCRIPTION>");
+
+                        continue;
+                    }
+                }
+            }
+        }
+        else if(fDesc)
+        {
+            if(!line.contains(param, Qt::CaseInsensitive))
+                desc += line + "\n";
+            else
+            {
+                ver.insert(version, desc);
+
+                fMajor = fMinor = fBuild = fDesc = false;
+
+                version.clear();
+                desc.clear();
+
+                param = tr("MAJOR");
+            }
+        }
+    }
+
+    file.close();
+
+    m_versionWidget->setText(ver);
+
+    QString title = this->windowTitle();
+
+    if(!ver.isEmpty())
+        title += tr(" ") + ver.lastKey();
+
+    this->setWindowTitle(title);
+}
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
@@ -2163,4 +2285,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnReadCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSetCurrent);
     connect(ui->pbtnWriteCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetCurrent);
     connect(ui->tbntExpandItems, &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
+    connect(ui->pbtnVersionSoftware, &QPushButton::clicked, this, &ConfiguratorWindow::versionSowftware);
 }

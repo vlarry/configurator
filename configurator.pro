@@ -31,7 +31,8 @@ SOURCES += \
         cmodbus.cpp \
         cdataunittype.cpp \
     cterminal.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    cversionsoftware.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -40,12 +41,14 @@ HEADERS += \
         cmodbus.h \
         cdataunittype.h \
     cterminal.h \
-    qcustomplot.h
+    qcustomplot.h \
+    cversionsoftware.h
 
 FORMS += \
         configuratorwindow.ui \
         qcell.ui \
-    cterminal.ui
+    cterminal.ui \
+    versionform.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

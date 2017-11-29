@@ -4,4 +4,7 @@
         <file>resource/images/branch_close.png</file>
         <file>resource/images/branch_open.png</file>
     </qresource>
+    <qresource prefix="/files">
+        <file>resource/files/version.txt</file>
+    </qresource>
 </RCC>
