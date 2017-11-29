@@ -41,6 +41,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
     
+    initMenuPanel();
     initButtonGroup();
     initConnect();
 
@@ -165,6 +166,41 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protectionLevel_cell.append(ui->leProtectionLevel1_Pause);
     m_protectionLevel_cell.append(ui->leProtectionLevel2_Pause);
 
+    m_protectionBru_cell.append(ui->leProtectionBRUTmeasure);
+    m_protectionBru_cell.append(ui->leProtectionBRUSet);
+    m_protectionBru_cell.append(ui->leProtectionBRUOffPause);
+    m_protectionBru_cell.append(ui->leProtectionBRUDiscret);
+
+    m_protectionVacuum_cell.append(ui->leProtectionVacuumSet);
+    m_protectionVacuum_cell.append(ui->leProtectionVacuumPause);
+    m_protectionVacuum_cell.append(ui->leProtectionVacuumKvzPower);
+
+    m_automation_cell.append(ui->leAdditionalAVRCtrlUwork);
+    m_automation_cell.append(ui->leAdditionalAVRUrzr);
+    m_automation_cell.append(ui->leAdditionalAVRPause);
+    m_automation_cell.append(ui->leAdditionalAVRTime);
+    m_automation_cell.append(ui->leAdditionalAPVTBlockOn);
+    m_automation_cell.append(ui->leAdditionalAPVTime);
+
+    m_switch_device_cell.append(ui->leSwitchOFF_TCmdOn);
+    m_switch_device_cell.append(ui->leSwitchOFF_TCmdOff);
+    m_switch_device_cell.append(ui->leSwitchOFF_Tcallback);
+    m_switch_device_cell.append(ui->leSwitchOFF_I_OnState);
+    m_switch_device_cell.append(ui->leKCU_Tdefect);
+    m_switch_device_cell.append(ui->leKCU_Ikvz);
+    m_switch_device_cell.append(ui->leDisconnect_Timp);
+    m_switch_device_cell.append(ui->leDisconnectKNC_Tpause);
+    m_switch_device_cell.append(ui->leSCHR_TCmdCtrl);
+    m_switch_device_cell.append(ui->leSCHR_Tcallback);
+    m_switch_device_cell.append(ui->leLR_TCmdCtrl);
+    m_switch_device_cell.append(ui->leLR_Tcallback);
+    m_switch_device_cell.append(ui->leZR_TCmdCtrl);
+    m_switch_device_cell.append(ui->leZR_Tcallback);
+    m_switch_device_cell.append(ui->leTruck_TCmdCtrl);
+    m_switch_device_cell.append(ui->leTruck_Tcallback);
+    m_switch_device_cell.append(ui->leCtrl_TSet1);
+    m_switch_device_cell.append(ui->leCtrl_TSet2);
+
     for(QLineEdit* ledit: m_in_analog_cell)
     {
         ledit->setValidator(new QDoubleValidator);
@@ -212,6 +248,26 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     }
 
     for(QLineEdit* ledit: m_protectionLevel_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionBru_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_protectionVacuum_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_automation_cell)
+    {
+        ledit->setValidator(new QDoubleValidator);
+    }
+
+    for(QLineEdit* ledit: m_switch_device_cell)
     {
         ledit->setValidator(new QDoubleValidator);
     }
@@ -652,6 +708,142 @@ void ConfiguratorWindow::protectionLevelSetWrite()
 
     m_modbusDevice->request(unit);
 }
+//---------------------------------------------
+void ConfiguratorWindow::protectionBruSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_BRU_SET_ADDRESS, QVector<quint16>() << 8);
+    unit.setProperty(tr("REQUEST"), PROTECTION_BRU_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//----------------------------------------------
+void ConfiguratorWindow::protectionBruSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionBru_cell.count(); i++)
+    {
+        value.v = m_protectionBru_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_BRU_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_BRU_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//------------------------------------------------
+void ConfiguratorWindow::protectionVacuumSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       PROTECTION_VACUUM_SET_ADDRESS, QVector<quint16>() << 6);
+    unit.setProperty(tr("REQUEST"), PROTECTION_VACUUM_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-------------------------------------------------
+void ConfiguratorWindow::protectionVacuumSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_protectionVacuum_cell.count(); i++)
+    {
+        value.v = m_protectionVacuum_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       PROTECTION_VACUUM_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), PROTECTION_VACUUM_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//------------------------------------------
+void ConfiguratorWindow::automationSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       AUTOMATION_SET_ADDRESS, QVector<quint16>() << 12);
+    unit.setProperty(tr("REQUEST"), AUTOMATION_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-------------------------------------------
+void ConfiguratorWindow::automationSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_automation_cell.count(); i++)
+    {
+        value.v = m_automation_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       AUTOMATION_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), AUTOMATION_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//--------------------------------------------
+void ConfiguratorWindow::switchDeviceSetRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
+                       SWITCH_DEV_SET_ADDRESS, QVector<quint16>() << 36);
+    unit.setProperty(tr("REQUEST"), SWITCH_DEV_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//---------------------------------------------
+void ConfiguratorWindow::switchDeviceSetWrite()
+{
+    QVector<quint16> data;
+
+    union
+    {
+        quint16 b[2];
+        float   v;
+    } value;
+
+    for(quint8 i = 0, j = 0; i < m_switch_device_cell.count(); i++)
+    {
+        value.v = m_switch_device_cell.at(j++)->text().toFloat();
+
+        data.append(value.b[1]);
+        data.append(value.b[0]);
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                       SWITCH_DEV_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), SWITCH_DEV_SET_TYPE);
+
+    m_modbusDevice->request(unit);
+}
 //--------------------------------------------------------
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 {
@@ -697,6 +889,22 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 
         case PROTECTION_LEVEL_SET_TYPE: // чтение состояний уровневых защит
             displayProtectionLevelSetValues(unit.values());
+        break;
+
+        case PROTECTION_BRU_SET_TYPE: // чтение состояний защит БРУ
+            displayProtectionBruSetValues(unit.values());
+        break;
+
+        case PROTECTION_VACUUM_SET_TYPE: // чтение состояний вакуумных защит
+            displayProtectionVacuumSetValues(unit.values());
+        break;
+
+        case AUTOMATION_SET_TYPE: // чтение состояний автоматики
+            displayAutomationValues(unit.values());
+        break;
+
+        case SWITCH_DEV_SET_TYPE: // чтение состояний коммутационных аппаратов
+            displaySwitchDeviceValues(unit.values());
         break;
         
         case IN_ANALOG_TYPE: // чтение калибровок
@@ -1041,45 +1249,53 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
     {
         ui->stwgtMain->setCurrentIndex(9);
     }
-    else if(itemName == tr("КОММУТАЦИОННЫЕ АППАРАТЫ"))
+    else if(itemName == tr("ЗАЩИТЫ БРУ"))
     {
         ui->stwgtMain->setCurrentIndex(10);
     }
-    else if(itemName == tr("АВТОМАТИКА"))
+    else if(itemName == tr("ВАКУУМНЫЕ ЗАЩИТЫ"))
     {
         ui->stwgtMain->setCurrentIndex(11);
     }
-    else if(itemName == tr("АВАРИЙ"))
+    else if(itemName == tr("КОММУТАЦИОННЫЕ АППАРАТЫ"))
     {
         ui->stwgtMain->setCurrentIndex(12);
     }
-    else if(itemName == tr("СОБЫТИЙ"))
+    else if(itemName == tr("АВТОМАТИКА"))
     {
         ui->stwgtMain->setCurrentIndex(13);
     }
-    else if(itemName == tr("ОСЦИЛЛОГРАФ"))
+    else if(itemName == tr("АВАРИЙ"))
     {
         ui->stwgtMain->setCurrentIndex(14);
     }
-    else if(itemName == tr("ПЕРВИЧНЫЕ ВЕЛИЧИНЫ"))
+    else if(itemName == tr("СОБЫТИЙ"))
     {
         ui->stwgtMain->setCurrentIndex(15);
     }
-    else if(itemName == tr("ВТОРИЧНЫЕ ВЕЛИЧИНЫ"))
+    else if(itemName == tr("ОСЦИЛЛОГРАФ"))
     {
         ui->stwgtMain->setCurrentIndex(16);
     }
-    else if(itemName == tr("ЭЛЕКТРОЭНЕРГИЯ"))
+    else if(itemName == tr("ПЕРВИЧНЫЕ ВЕЛИЧИНЫ"))
     {
         ui->stwgtMain->setCurrentIndex(17);
     }
-    else if(itemName == tr("ДИСКРЕТНЫЕ ВХОДЫ"))
+    else if(itemName == tr("ВТОРИЧНЫЕ ВЕЛИЧИНЫ"))
     {
         ui->stwgtMain->setCurrentIndex(18);
     }
-    else if(itemName == tr("ДИСКРЕТНЫЕ ВЫХОДЫ"))
+    else if(itemName == tr("ЭЛЕКТРОЭНЕРГИЯ"))
     {
         ui->stwgtMain->setCurrentIndex(19);
+    }
+    else if(itemName == tr("ДИСКРЕТНЫЕ ВХОДЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(20);
+    }
+    else if(itemName == tr("ДИСКРЕТНЫЕ ВЫХОДЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(21);
     }
 }
 //-------------------------------------
@@ -1087,7 +1303,7 @@ void ConfiguratorWindow::readSettings()
 {
     qint32 index = ui->stwgtMain->currentIndex();
 
-    if(index >= 0 && index < 12) // выбрана группа "Настройки"
+    if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
         inAnalogRead(); // чтение настроек "Основные" и "Калибровки"
         protectionMTZStateRead(); // чтение настроек состояния токовых защит
@@ -1099,6 +1315,96 @@ void ConfiguratorWindow::readSettings()
         protectionExternalSetRead(); // чтение настроек внешних защит
         protectionTemperatureSetRead(); // чтение настроек температурных защит
         protectionLevelSetRead(); // чтение настроек уровневых защит
+        protectionVacuumSetRead(); // чтение настроек вакуумных защит
+        protectionBruSetRead(); // чтение настроек защит БРУ
+        automationSetRead(); // чтение настроек автоматики
+        switchDeviceSetRead(); // чтение настроек коммутационных аппаратов
+    }
+}
+//---------------------------------------
+void ConfiguratorWindow::readSetCurrent()
+{
+    qint32 index = ui->stwgtMain->currentIndex();
+
+    switch(index)
+    {
+        case 0:
+        case 1:
+            inAnalogRead(); // чтение настроек "Основные" и "Калибровки"
+        break;
+
+        case 2:
+            protectionMTZStateRead(); // чтение настроек состояния токовых защит
+            protectionMTZSetRead(); // чтение настроек токовых защит
+        break;
+
+        case 3:
+            protectionEarthySetRead(); // чтение настроек земляных защит
+        break;
+
+        case 4:
+            protectionPowerSetRead(); // чтение настроек защит по напряжению
+        break;
+
+        case 5:
+            protectionMotorSetRead(); // чтение настроек защит двигателей
+        break;
+
+        case 6:
+            protectionFrequencySetRead(); // чтение настроек частотных защит
+        break;
+
+        case 7:
+            protectionExternalSetRead(); // чтение настроек внешних защит
+        break;
+
+        case 8:
+            protectionTemperatureSetRead(); // чтение настроек температурных защит
+        break;
+
+        case 9:
+            protectionLevelSetRead(); // чтение настроек уровневых защит
+        break;
+
+        case 10:
+            protectionVacuumSetRead(); // чтение настроек вакуумных защит
+        break;
+
+        case 11:
+            protectionBruSetRead(); // чтение настроек защит БРУ
+        break;
+
+        case 12:
+            automationSetRead(); // чтение настроек автоматики
+        break;
+
+        case 13:
+            switchDeviceSetRead(); // чтение настроек коммутационных аппаратов
+        break;
+
+        case 14:
+        break;
+
+        case 15:
+        break;
+
+        case 16:
+        break;
+
+        case 17:
+        break;
+
+        case 18:
+        break;
+
+        case 19:
+        break;
+
+        case 20:
+        break;
+
+        case 21:
+        break;
     }
 }
 //--------------------------------------
@@ -1106,7 +1412,7 @@ void ConfiguratorWindow::writeSettings()
 {
     qint32 index = ui->stwgtMain->currentIndex();
 
-    if(index >= 0 && index < 12) // выбрана группа "Настройки"
+    if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
         inAnalogWrite(); // запись настроек "Основные" и "Калибровки"
         protectionMTZStateWrite(); // запись настроек состояния токовых защит
@@ -1118,7 +1424,205 @@ void ConfiguratorWindow::writeSettings()
         protectionExternalSetWrite(); // запись настроек внешних защит
         protectionTemperatureSetWrite(); // запись настроек температурных защит
         protectionLevelSetWrite(); // запись настроек уровневых защит
+        protectionVacuumSetWrite(); // запись настроек вакуумных защит
+        protectionBruSetWrite(); // запись настроек защит БРУ
+        automationSetWrite(); // запись настроек автоматики
+        switchDeviceSetWrite(); // запись настроек коммутационных аппаратов
     }
+}
+//----------------------------------------
+void ConfiguratorWindow::writeSetCurrent()
+{
+    qint32 index = ui->stwgtMain->currentIndex();
+
+    switch(index)
+    {
+        case 0:
+        case 1:
+            inAnalogWrite(); // запись настроек "Основные" и "Калибровки"
+        break;
+
+        case 2:
+            protectionMTZStateWrite(); // запись настроек состояния токовых защит
+            protectionMTZSetWrite(); // запись настроек токовых защит
+        break;
+
+        case 3:
+            protectionEarthySetWrite(); // запись настроек земляных защит
+        break;
+
+        case 4:
+            protectionPowerSetWrite(); // запись настроек защит по напряжению
+        break;
+
+        case 5:
+            protectionMotorSetWrite(); // запись настроек защит двигателей
+        break;
+
+        case 6:
+            protectionFrequencySetWrite(); // запись настроек частотных защит
+        break;
+
+        case 7:
+            protectionExternalSetWrite(); // запись настроек внешних защит
+        break;
+
+        case 8:
+            protectionTemperatureSetWrite(); // запись настроек температурных защит
+        break;
+
+        case 9:
+            protectionLevelSetWrite(); // запись настроек уровневых защит
+        break;
+
+        case 10:
+            protectionVacuumSetWrite(); // запись настроек вакуумных защит
+        break;
+
+        case 11:
+            protectionBruSetWrite(); // запись настроек защит БРУ
+        break;
+
+        case 12:
+            automationSetWrite(); // запись настроек автоматики
+        break;
+
+        case 13:
+            switchDeviceSetWrite(); // запись настроек коммутационных аппаратов
+        break;
+
+        case 14:
+        break;
+
+        case 15:
+        break;
+
+        case 16:
+        break;
+
+        case 17:
+        break;
+
+        case 18:
+        break;
+
+        case 19:
+        break;
+
+        case 20:
+        break;
+
+        case 21:
+        break;
+    }
+}
+//--------------------------------------
+void ConfiguratorWindow::initMenuPanel()
+{
+    QTreeWidgetItem* itemSettings   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    QTreeWidgetItem* itemJournals   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    QTreeWidgetItem* itemMeasures   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    QTreeWidgetItem* itemMonitoring = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+
+    QTreeWidgetItem* itemSetInputAnalogs   = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetProtections    = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetDevConnections = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetAutomation     = new QTreeWidgetItem(itemSettings);
+
+    QTreeWidgetItem* itemJournalCrashs = new QTreeWidgetItem(itemJournals);
+    QTreeWidgetItem* itemJournalEvents = new QTreeWidgetItem(itemJournals);
+    QTreeWidgetItem* itemJournalOscill = new QTreeWidgetItem(itemJournals);
+
+    QTreeWidgetItem* itemMeasPrimaryValues   = new QTreeWidgetItem(itemMeasures);
+    QTreeWidgetItem* itemMeasSecondaryValues = new QTreeWidgetItem(itemMeasures);
+    QTreeWidgetItem* itemMeasPowerElectric   = new QTreeWidgetItem(itemMeasures);
+
+    QTreeWidgetItem* itemMonitorInputDiscrets  = new QTreeWidgetItem(itemMonitoring);
+    QTreeWidgetItem* itemMonitorOutputDiscrets = new QTreeWidgetItem(itemMonitoring);
+
+    QTreeWidgetItem* itemInAnalogMain        = new QTreeWidgetItem(itemSetInputAnalogs);
+    QTreeWidgetItem* itemInAnalogCalibration = new QTreeWidgetItem(itemSetInputAnalogs);
+
+    QTreeWidgetItem* itemProtectCurrentMax  = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectEarthy      = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectPower       = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectMotor       = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectFrequency   = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectExternal    = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectTemperature = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectLevel       = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectBRU         = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectVacuum      = new QTreeWidgetItem(itemSetProtections);
+
+    itemSettings->setText(0, tr("Настройки"));
+    itemJournals->setText(0, tr("Журналы"));
+    itemMeasures->setText(0, tr("Измерения"));
+    itemMonitoring->setText(0, tr("Мониторинг"));
+
+    itemSetInputAnalogs->setText(0, tr("Аналоговые входы"));
+    itemSetProtections->setText(0, tr("Защита"));
+    itemSetDevConnections->setText(0, tr("Коммутационные аппараты"));
+    itemSetAutomation->setText(0, tr("Автоматика"));
+
+    itemJournalCrashs->setText(0, tr("Аварий"));
+    itemJournalEvents->setText(0, tr("Событий"));
+    itemJournalOscill->setText(0, tr("Осциллограф"));
+
+    itemMeasPrimaryValues->setText(0, tr("Первичные величины"));
+    itemMeasSecondaryValues->setText(0, tr("Вторичные величины"));
+    itemMeasPowerElectric->setText(0, tr("Электроэнергия"));
+
+    itemMonitorInputDiscrets->setText(0, tr("Дискретные входы"));
+    itemMonitorOutputDiscrets->setText(0, tr("Дискретные выходы"));
+
+    itemInAnalogMain->setText(0, tr("Основные"));
+    itemInAnalogCalibration->setText(0, tr("Калибровки"));
+
+    itemProtectCurrentMax->setText(0, tr("Максимальные токовые"));
+    itemProtectEarthy->setText(0, tr("Земляные"));
+    itemProtectPower->setText(0, tr("Защиты по напряжению"));
+    itemProtectMotor->setText(0, tr("Защиты двигателя"));
+    itemProtectFrequency->setText(0, tr("Защиты по частоте"));
+    itemProtectExternal->setText(0, tr("Внешние защиты"));
+    itemProtectTemperature->setText(0, tr("Температурные защиты"));
+    itemProtectLevel->setText(0, tr("Уровневые защиты"));
+    itemProtectBRU->setText(0, tr("Защиты БРУ"));
+    itemProtectVacuum->setText(0, tr("Вакуумные защиты"));
+
+    ui->treewgtDeviceMenu->addTopLevelItem(itemSettings);
+    ui->treewgtDeviceMenu->addTopLevelItem(itemJournals);
+    ui->treewgtDeviceMenu->addTopLevelItem(itemMeasures);
+    ui->treewgtDeviceMenu->addTopLevelItem(itemMonitoring);
+
+    itemSettings->addChild(itemSetInputAnalogs);
+    itemSettings->addChild(itemSetProtections);
+    itemSettings->addChild(itemSetDevConnections);
+    itemSettings->addChild(itemSetAutomation);
+
+    itemJournals->addChild(itemJournalCrashs);
+    itemJournals->addChild(itemJournalEvents);
+    itemJournals->addChild(itemJournalOscill);
+
+    itemMeasures->addChild(itemMeasPrimaryValues);
+    itemMeasures->addChild(itemMeasSecondaryValues);
+    itemMeasures->addChild(itemMeasPowerElectric);
+
+    itemMonitoring->addChild(itemMonitorInputDiscrets);
+    itemMonitoring->addChild(itemMonitorOutputDiscrets);
+
+    itemSetInputAnalogs->addChild(itemInAnalogMain);
+    itemSetInputAnalogs->addChild(itemInAnalogCalibration);
+
+    itemSetProtections->addChild(itemProtectCurrentMax);
+    itemSetProtections->addChild(itemProtectEarthy);
+    itemSetProtections->addChild(itemProtectPower);
+    itemSetProtections->addChild(itemProtectMotor);
+    itemSetProtections->addChild(itemProtectFrequency);
+    itemSetProtections->addChild(itemProtectExternal);
+    itemSetProtections->addChild(itemProtectTemperature);
+    itemSetProtections->addChild(itemProtectLevel);
+    itemSetProtections->addChild(itemProtectBRU);
+    itemSetProtections->addChild(itemProtectVacuum);
 }
 //----------------------------------------
 void ConfiguratorWindow::initButtonGroup()
@@ -1213,13 +1717,9 @@ void ConfiguratorWindow::initButtonGroup()
     m_additional_group->addButton(ui->pbtnAddAVR);
     m_additional_group->addButton(ui->pbtnAddAPV);
     m_additional_group->addButton(ui->pbtnAddAPV_Start);
-    m_additional_group->addButton(ui->pbtnAddBRU);
-    m_additional_group->addButton(ui->pbtnAddVacuum);
     m_additional_group->setId(ui->pbtnAddAVR, 0);
     m_additional_group->setId(ui->pbtnAddAPV, 1);
     m_additional_group->setId(ui->pbtnAddAPV_Start, 2);
-    m_additional_group->setId(ui->pbtnAddBRU, 3);
-    m_additional_group->setId(ui->pbtnAddVacuum, 4);
     
     protectMTZChangedID(0);
     protectEarthlyChangedID(0);
@@ -1512,6 +2012,106 @@ void ConfiguratorWindow::displayProtectionLevelSetValues(QVector<quint16> values
         }
     }
 }
+//-----------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionBruSetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 8)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionBru_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
+//--------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionVacuumSetValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 6)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_protectionVacuum_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
+//-----------------------------------------------------------------------
+void ConfiguratorWindow::displayAutomationValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 12)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_automation_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
+//-------------------------------------------------------------------------
+void ConfiguratorWindow::displaySwitchDeviceValues(QVector<quint16> values)
+{
+    union
+    {
+        quint16 word[2];
+        float   value;
+    } cell_value;
+
+    if(values.count() == 36)
+    {
+        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        {
+            quint16 value1 = values.at(i + 1);
+            quint16 value2 = values.at(i);
+
+            cell_value.word[0] = value1;
+            cell_value.word[1] = value2;
+
+            QLineEdit* item = m_switch_device_cell.at(j);
+
+            item->setText(QString::number(cell_value.value, 'f', 6));
+        }
+    }
+}
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
@@ -1543,7 +2143,9 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
     connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
-    connect(ui->treewgtDeviceMenu, &CTreeDeviceMenu::itemClicked, this, &ConfiguratorWindow::itemClicked);
-    connect(ui->pbtnRead, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
-    connect(ui->pbtnWrite, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);
+    connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
+    connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
+    connect(ui->pbtnWriteAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);
+    connect(ui->pbtnReadCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSetCurrent);
+    connect(ui->pbtnWriteCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetCurrent);
 }

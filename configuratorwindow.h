@@ -17,7 +17,6 @@
     #include "qpanel.h"
     #include "cterminal.h"
     #include "qcustomplot.h"
-    #include "ctreedevicemenu.h"
     //----------
     namespace Ui 
     {
@@ -41,7 +40,11 @@
                 PROTECTION_FREQUENCY_SET_ADDRESS = 244,
                 PROTECTION_EXTERNAL_SET_ADDRESS  = 268,
                 PROTECTION_TEMP_SET_ADDRESS      = 278,
-                PROTECTION_LEVEL_SET_ADDRESS     = 290
+                PROTECTION_LEVEL_SET_ADDRESS     = 290,
+                PROTECTION_BRU_SET_ADDRESS       = 294,
+                PROTECTION_VACUUM_SET_ADDRESS    = 302,
+                AUTOMATION_SET_ADDRESS           = 308,
+                SWITCH_DEV_SET_ADDRESS           = 320
             };
 
             enum RequestType
@@ -56,7 +59,11 @@
                 PROTECTION_FREQUENCY_SET_TYPE,
                 PROTECTION_EXTERNAL_SET_TYPE,
                 PROTECTION_TEMP_SET_TYPE,
-                PROTECTION_LEVEL_SET_TYPE
+                PROTECTION_LEVEL_SET_TYPE,
+                PROTECTION_BRU_SET_TYPE,
+                PROTECTION_VACUUM_SET_TYPE,
+                AUTOMATION_SET_TYPE,
+                SWITCH_DEV_SET_TYPE
             };
       
         public:
@@ -88,6 +95,14 @@
             void protectionTemperatureSetWrite();
             void protectionLevelSetRead();
             void protectionLevelSetWrite();
+            void protectionBruSetRead();
+            void protectionBruSetWrite();
+            void protectionVacuumSetRead();
+            void protectionVacuumSetWrite();
+            void automationSetRead();
+            void automationSetWrite();
+            void switchDeviceSetRead();
+            void switchDeviceSetWrite();
             void responseRead(CDataUnitType& unit);
             void show();
             void chboxCalculateTimeoutStateChanged(bool state);
@@ -109,9 +124,13 @@
             void saveLog(const QString& info);
             void itemClicked(QTreeWidgetItem* item, int col);
             void readSettings();
+            void readSetCurrent();
             void writeSettings();
+            void writeSetCurrent();
             
         private:
+            void initConnect();
+            void initMenuPanel();
             void initButtonGroup();
             void displayCalculateValues(QVector<quint16> values);
             void displayInAnalogValues(QVector<quint16> values);
@@ -124,8 +143,10 @@
             void displayProtectionExternalSetValues(QVector<quint16> values);
             void displayProtectionTemperatureSetValues(QVector<quint16> values);
             void displayProtectionLevelSetValues(QVector<quint16> values);
-            
-            void initConnect();
+            void displayProtectionBruSetValues(QVector<quint16> values);
+            void displayProtectionVacuumSetValues(QVector<quint16> values);
+            void displayAutomationValues(QVector<quint16> values);
+            void displaySwitchDeviceValues(QVector<quint16> values);
             
         private:
             Ui::ConfiguratorWindow* ui;
@@ -154,5 +175,9 @@
             QVector<QLineEdit*>     m_protectionExternal_cell;
             QVector<QLineEdit*>     m_protectionTemperature_cell;
             QVector<QLineEdit*>     m_protectionLevel_cell;
+            QVector<QLineEdit*>     m_protectionVacuum_cell;
+            QVector<QLineEdit*>     m_protectionBru_cell;
+            QVector<QLineEdit*>     m_automation_cell;
+            QVector<QLineEdit*>     m_switch_device_cell;
     };
 #endif // CONFIGURATORWINDOW_H
