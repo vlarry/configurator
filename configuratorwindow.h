@@ -127,6 +127,7 @@
             void readSetCurrent();
             void writeSettings();
             void writeSetCurrent();
+            void expandItemTree(bool state);
             
         private:
             void initConnect();
@@ -179,5 +180,34 @@
             QVector<QLineEdit*>     m_protectionBru_cell;
             QVector<QLineEdit*>     m_automation_cell;
             QVector<QLineEdit*>     m_switch_device_cell;
+
+            QTreeWidgetItem* itemSettings;
+            QTreeWidgetItem* itemJournals;
+            QTreeWidgetItem* itemMeasures;
+            QTreeWidgetItem* itemMonitoring;
+            QTreeWidgetItem* itemSetInputAnalogs;
+            QTreeWidgetItem* itemSetProtections;
+            QTreeWidgetItem* itemSetDevConnections;
+            QTreeWidgetItem* itemSetAutomation;
+            QTreeWidgetItem* itemJournalCrashs;
+            QTreeWidgetItem* itemJournalEvents;
+            QTreeWidgetItem* itemJournalOscill;
+            QTreeWidgetItem* itemMeasPrimaryValues;
+            QTreeWidgetItem* itemMeasSecondaryValues;
+            QTreeWidgetItem* itemMeasPowerElectric;
+            QTreeWidgetItem* itemMonitorInputDiscrets;
+            QTreeWidgetItem* itemMonitorOutputDiscrets;
+            QTreeWidgetItem* itemInAnalogMain;
+            QTreeWidgetItem* itemInAnalogCalibration;
+            QTreeWidgetItem* itemProtectCurrentMax;
+            QTreeWidgetItem* itemProtectEarthy;
+            QTreeWidgetItem* itemProtectPower;
+            QTreeWidgetItem* itemProtectMotor;
+            QTreeWidgetItem* itemProtectFrequency;
+            QTreeWidgetItem* itemProtectExternal;
+            QTreeWidgetItem* itemProtectTemperature;
+            QTreeWidgetItem* itemProtectLevel;
+            QTreeWidgetItem* itemProtectBRU;
+            QTreeWidgetItem* itemProtectVacuum;
     };
 #endif // CONFIGURATORWINDOW_H

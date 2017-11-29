@@ -1516,43 +1516,57 @@ void ConfiguratorWindow::writeSetCurrent()
         break;
     }
 }
+//-------------------------------------------------
+void ConfiguratorWindow::expandItemTree(bool state)
+{
+    if(state)
+    {
+        ui->treewgtDeviceMenu->expandAll();
+        ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_open.png")));
+    }
+    else
+    {
+        ui->treewgtDeviceMenu->collapseAll();
+        ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_close.png")));
+    }
+}
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
 {
-    QTreeWidgetItem* itemSettings   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    QTreeWidgetItem* itemJournals   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    QTreeWidgetItem* itemMeasures   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    QTreeWidgetItem* itemMonitoring = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    itemSettings   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    itemJournals   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    itemMeasures   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    itemMonitoring = new QTreeWidgetItem(ui->treewgtDeviceMenu);
 
-    QTreeWidgetItem* itemSetInputAnalogs   = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetProtections    = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetDevConnections = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetAutomation     = new QTreeWidgetItem(itemSettings);
+    itemSetInputAnalogs   = new QTreeWidgetItem(itemSettings);
+    itemSetProtections    = new QTreeWidgetItem(itemSettings);
+    itemSetDevConnections = new QTreeWidgetItem(itemSettings);
+    itemSetAutomation     = new QTreeWidgetItem(itemSettings);
 
-    QTreeWidgetItem* itemJournalCrashs = new QTreeWidgetItem(itemJournals);
-    QTreeWidgetItem* itemJournalEvents = new QTreeWidgetItem(itemJournals);
-    QTreeWidgetItem* itemJournalOscill = new QTreeWidgetItem(itemJournals);
+    itemJournalCrashs = new QTreeWidgetItem(itemJournals);
+    itemJournalEvents = new QTreeWidgetItem(itemJournals);
+    itemJournalOscill = new QTreeWidgetItem(itemJournals);
 
-    QTreeWidgetItem* itemMeasPrimaryValues   = new QTreeWidgetItem(itemMeasures);
-    QTreeWidgetItem* itemMeasSecondaryValues = new QTreeWidgetItem(itemMeasures);
-    QTreeWidgetItem* itemMeasPowerElectric   = new QTreeWidgetItem(itemMeasures);
+    itemMeasPrimaryValues   = new QTreeWidgetItem(itemMeasures);
+    itemMeasSecondaryValues = new QTreeWidgetItem(itemMeasures);
+    itemMeasPowerElectric   = new QTreeWidgetItem(itemMeasures);
 
-    QTreeWidgetItem* itemMonitorInputDiscrets  = new QTreeWidgetItem(itemMonitoring);
-    QTreeWidgetItem* itemMonitorOutputDiscrets = new QTreeWidgetItem(itemMonitoring);
+    itemMonitorInputDiscrets  = new QTreeWidgetItem(itemMonitoring);
+    itemMonitorOutputDiscrets = new QTreeWidgetItem(itemMonitoring);
 
-    QTreeWidgetItem* itemInAnalogMain        = new QTreeWidgetItem(itemSetInputAnalogs);
-    QTreeWidgetItem* itemInAnalogCalibration = new QTreeWidgetItem(itemSetInputAnalogs);
+    itemInAnalogMain        = new QTreeWidgetItem(itemSetInputAnalogs);
+    itemInAnalogCalibration = new QTreeWidgetItem(itemSetInputAnalogs);
 
-    QTreeWidgetItem* itemProtectCurrentMax  = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectEarthy      = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectPower       = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectMotor       = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectFrequency   = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectExternal    = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectTemperature = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectLevel       = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectBRU         = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectVacuum      = new QTreeWidgetItem(itemSetProtections);
+    itemProtectCurrentMax  = new QTreeWidgetItem(itemSetProtections);
+    itemProtectEarthy      = new QTreeWidgetItem(itemSetProtections);
+    itemProtectPower       = new QTreeWidgetItem(itemSetProtections);
+    itemProtectMotor       = new QTreeWidgetItem(itemSetProtections);
+    itemProtectFrequency   = new QTreeWidgetItem(itemSetProtections);
+    itemProtectExternal    = new QTreeWidgetItem(itemSetProtections);
+    itemProtectTemperature = new QTreeWidgetItem(itemSetProtections);
+    itemProtectLevel       = new QTreeWidgetItem(itemSetProtections);
+    itemProtectBRU         = new QTreeWidgetItem(itemSetProtections);
+    itemProtectVacuum      = new QTreeWidgetItem(itemSetProtections);
 
     itemSettings->setText(0, tr("Настройки"));
     itemJournals->setText(0, tr("Журналы"));
@@ -2148,4 +2162,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnWriteAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);
     connect(ui->pbtnReadCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSetCurrent);
     connect(ui->pbtnWriteCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetCurrent);
+    connect(ui->tbntExpandItems, &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
 }
