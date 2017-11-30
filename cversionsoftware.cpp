@@ -8,14 +8,14 @@ CVersionSoftware::CVersionSoftware(QWidget *parent):
     ui->setupUi(this);
     setWindowFlag(Qt::Window);
 
-    ui->plainTextEdit->clear();
+    ui->textEdit->clear();
 
-    QPalette p = ui->plainTextEdit->palette();
+    QPalette p = ui->textEdit->palette();
 
     p.setColor(QPalette::Base, QColor(Qt::black));
     p.setColor(QPalette::Text, QColor(Qt::gray));
 
-    ui->plainTextEdit->setPalette(p);
+    ui->textEdit->setPalette(p);
 
     this->setWindowTitle(tr("История версий"));
 }
@@ -32,6 +32,11 @@ void CVersionSoftware::setText(const QMap<QString, QString>& data)
         QString key = data.keys().at(i);
         QString str = key + tr(":\n") + data.value(key) + tr("\n");
 
-        ui->plainTextEdit->appendPlainText(str);
+        if(i == data.keys().count() - 1)
+            ui->textEdit->setTextColor(Qt::green);
+        else
+            ui->textEdit->setTextColor(Qt::gray);
+
+        ui->textEdit->append(str);
     }
 }

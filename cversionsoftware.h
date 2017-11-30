@@ -2,6 +2,7 @@
     #define CVERSIONSOFTWARE_H
     //----------------
     #include <QWidget>
+    #include <QTextCharFormat>
     //----------
     namespace Ui
     {
