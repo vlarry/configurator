@@ -34,7 +34,7 @@
             {
                 CALCULATE_ADDRESS                = 64,
                 IN_ANALOG_ADDRESS                = 356,
-                PROTECTION_MTZ_ADDRESS           = 22,
+                CONTROL_SET_ADDRESS              = 0,
                 PROTECTION_MTZ_SET_ADDRESS       = 128,
                 PROTECTION_EARTHY_SET_ADDRESS    = 166,
                 PROTECTION_POWER_SET_ADDRESS     = 202,
@@ -53,7 +53,7 @@
             {
                 CALCULATE_TYPE,
                 IN_ANALOG_TYPE,
-                PROTECTION_MTZ_TYPE,
+                CONTROL_SET_TYPE,
                 PROTECTION_MTZ_SET_TYPE,
                 PROTECTION_EARTHY_SET_TYPE,
                 PROTECTION_POWER_SET_TYPE,
@@ -79,8 +79,8 @@
             void calculateRead(); // запрос расчетных величин
             void inAnalogRead();
             void inAnalogWrite();
-            void protectionMTZStateRead();
-            void protectionMTZStateWrite();
+            void controlStateRead();
+            void conntrolStateWrite();
             void protectionMTZSetRead();
             void protectionMTZSetWrite();
             void protectionEarthySetRead();
@@ -138,7 +138,7 @@
             void initButtonGroup();
             void displayCalculateValues(QVector<quint16> values);
             void displayInAnalogValues(QVector<quint16> values);
-            void displayProtectionMTZStateValues(QVector<quint16> values);
+            void displayControlStateValues(QVector<quint16> values);
             void displayProtectionMTZSetValues(QVector<quint16> values);
             void displayProtectionEarthySetValues(QVector<quint16> values);
             void displayProtectionPowerSetValues(QVector<quint16> values);
@@ -184,6 +184,9 @@
             QVector<QLineEdit*>     m_protectionBru_cell;
             QVector<QLineEdit*>     m_automation_cell;
             QVector<QLineEdit*>     m_switch_device_cell;
+
+            QVector<QComboBox*>     m_control_cell;
+
             CVersionSoftware*       m_versionWidget;
 
             QTreeWidgetItem* itemSettings;

@@ -189,8 +189,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_switch_device_cell.append(ui->leSwitchOFF_I_OnState);
     m_switch_device_cell.append(ui->leKCU_Tdefect);
     m_switch_device_cell.append(ui->leKCU_Ikvz);
-    m_switch_device_cell.append(ui->leDisconnect_Timp);
-    m_switch_device_cell.append(ui->leDisconnectKNC_Tpause);
     m_switch_device_cell.append(ui->leSCHR_TCmdCtrl);
     m_switch_device_cell.append(ui->leSCHR_Tcallback);
     m_switch_device_cell.append(ui->leLR_TCmdCtrl);
@@ -199,8 +197,62 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_switch_device_cell.append(ui->leZR_Tcallback);
     m_switch_device_cell.append(ui->leTruck_TCmdCtrl);
     m_switch_device_cell.append(ui->leTruck_Tcallback);
-    m_switch_device_cell.append(ui->leCtrl_TSet1);
-    m_switch_device_cell.append(ui->leCtrl_TSet2);
+    m_switch_device_cell.append(ui->leCtrlTN_Pause);
+
+    m_control_cell.append(ui->cboxSwDevBreaker_CmdON);
+    m_control_cell.append(ui->cboxSwDevBreaker_CmdOFF);
+    m_control_cell.append(ui->cboxSwDevBreaker_Kcu);
+    m_control_cell.append(ui->cboxSwDevBreaker_PosVV);
+    m_control_cell.append(ui->cboxSwDevDisconnect_TruckPosition_VV_ON);
+    m_control_cell.append(ui->cboxcboxSwDevDisconnect_VV_ZR_ON);
+    m_control_cell.append(ui->cboxcboxSwDevDisconnect_DisconnectBlock);
+    m_control_cell.append(ui->cboxSwDevBreaker_CtrlOT);
+    m_control_cell.append(ui->cboxCtrlTN_CtrlTN_DV);
+    m_control_cell.append(ui->cboxProtectionEarthly_OZZ2_Ctrl);
+    m_control_cell.append(ui->cboxProtectionEarthly_NZZ2_Ctrl);
+    m_control_cell.append(ui->cboxSwDevBreaker_ModeCtrl);
+    m_control_cell.append(ui->cboxAdditionalAVRSection_Ctrl);
+    m_control_cell.append(ui->cboxSCHR_Cmd);
+    m_control_cell.append(ui->cboxLR_Ctrl);
+    m_control_cell.append(ui->cboxZR_Ctrl);
+    m_control_cell.append(ui->cboxTruck_Ctrl);
+    m_control_cell.append(ui->cboxSCHR_Cmd);
+    m_control_cell.append(ui->cboxLR_Cmd);
+    m_control_cell.append(ui->cboxZR_Cmd);
+    m_control_cell.append(ui->cboxTruck_Cmd);
+    m_control_cell.append(ui->cboxAnalogIn_OnTN);
+    m_control_cell.append(ui->cboxProtectionMTZ1_Ctrl);
+    m_control_cell.append(ui->cboxProtectionMTZ2_Ctrl);
+    m_control_cell.append(ui->cboxProtectionMTZ3_Ctrl);
+    m_control_cell.append(ui->cboxProtectionMTZ4_Ctrl);
+    m_control_cell.append(ui->cboxProtectionMoror_Ctrl);
+    m_control_cell.append(ui->cboxProtectionEarthly_OZZ1_Ctrl);
+    m_control_cell.append(ui->cboxProtectionEarthly_NZZ1_Ctrl);
+    m_control_cell.append(ui->cboxProtectionMotor_Imin_Ctrl);
+    m_control_cell.append(ui->cboxProtectionPower_Umax1_Ctrl);
+    m_control_cell.append(ui->cboxProtectionPower_Umax2_Ctrl);
+    m_control_cell.append(ui->cboxProtectionPower_Umin1_Ctrl);
+    m_control_cell.append(ui->cboxProtectionPower_Umin1_Logic);
+    m_control_cell.append(ui->cboxProtectionPower_Umin1_StartCtrl);
+    m_control_cell.append(ui->cboxProtectionPower_Umin2_Ctrl);
+    m_control_cell.append(ui->cboxProtectionPower_Umin2_Logic);
+    m_control_cell.append(ui->cboxProtectionPower_Umin2_StartCtrl);
+    m_control_cell.append(ui->cboxProtectionPower_3UO_Ctrl);
+    m_control_cell.append(ui->cboxProtectionFrequency_ACR1_Ctrl);
+    m_control_cell.append(ui->cboxProtectionFrequency_ACR2_Ctrl);
+    m_control_cell.append(ui->cboxProtectionFrequency_ACR3_Ctrl);
+    m_control_cell.append(ui->cboxProtectionExternal_Arc_Ctrl);
+    m_control_cell.append(ui->cboxProtectionTemp1_Sensor1); // тоже самое выводится в temp2_sensor1
+    m_control_cell.append(ui->cboxProtectionTemp1_Sensor2); // тоже самое выводится в temp2_sensor2
+    m_control_cell.append(ui->cboxProtectionExternal_Ext1_Ctrl);
+    m_control_cell.append(ui->cboxProtectionExternal_Ext2_Ctrl);
+    m_control_cell.append(ui->cboxProtectionExternal_Ext3_Ctrl);
+    m_control_cell.append(ui->cboxProtectionLevel1_Ctrl); // тоже самое выводится в level2_ctrl
+    m_control_cell.append(ui->cboxAdditionalAVRInput_Ctrl);
+    m_control_cell.append(ui->cboxAdditionalAPVCtrl);
+    m_control_cell.append(ui->cboxAdditionalPropertiesVacuumCtrl);
+    m_control_cell.append(ui->cboxAdditionalPropertiesBRUPeredOn);
+    m_control_cell.append(ui->cboxAdditionalPropertiesBRUDiscretSet);
 
     for(QLineEdit* ledit: m_in_analog_cell)
     {
@@ -210,7 +262,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     for(QLineEdit* ledit: m_protectionMTZ_cell)
     {
         if(ledit != ui->leProtectionMTZ4_Angle)
+        {
             ledit->setValidator(new QDoubleValidator);
+        }
         else
             ledit->setValidator(new QIntValidator);
     }
@@ -409,28 +463,28 @@ void ConfiguratorWindow::inAnalogWrite()
 
     m_modbusDevice->request(unit);
 }
-//---------------------------------------
-void ConfiguratorWindow::protectionMTZStateRead()
+//-----------------------------------------
+void ConfiguratorWindow::controlStateRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
-                       PROTECTION_MTZ_ADDRESS, QVector<quint16>() << 4);
-    unit.setProperty(tr("REQUEST"), PROTECTION_MTZ_TYPE);
+                       CONTROL_SET_ADDRESS, QVector<quint16>() << 54);
+    unit.setProperty(tr("REQUEST"), CONTROL_SET_TYPE);
 
     m_modbusDevice->request(unit);
 }
 //----------------------------------------
-void ConfiguratorWindow::protectionMTZStateWrite()
+void ConfiguratorWindow::conntrolStateWrite()
 {
     QVector<quint16> data;
     
-    data.append((quint16)ui->cboxProtectionMTZ1_Ctrl->currentIndex());
-    data.append((quint16)ui->cboxProtectionMTZ2_Ctrl->currentIndex());
-    data.append((quint16)ui->cboxProtectionMTZ3_Ctrl->currentIndex());
-    data.append((quint16)ui->cboxProtectionMTZ4_Ctrl->currentIndex());
+    for(QComboBox* box: m_control_cell)
+    {
+        data.append((quint16)box->currentIndex());
+    }
     
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
-                       PROTECTION_MTZ_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_MTZ_TYPE);
+                       CONTROL_SET_ADDRESS, data);
+    unit.setProperty(tr("REQUEST"), CONTROL_SET_TYPE);
 
     m_modbusDevice->request(unit);
 }
@@ -815,7 +869,7 @@ void ConfiguratorWindow::automationSetWrite()
 void ConfiguratorWindow::switchDeviceSetRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       SWITCH_DEV_SET_ADDRESS, QVector<quint16>() << 36);
+                       SWITCH_DEV_SET_ADDRESS, QVector<quint16>() << 30);
     unit.setProperty(tr("REQUEST"), SWITCH_DEV_SET_TYPE);
 
     m_modbusDevice->request(unit);
@@ -856,8 +910,8 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     
     switch((RequestType)unit.property("REQUEST").toInt())
     {
-        case PROTECTION_MTZ_TYPE: // чтение состояний токовых защит
-            displayProtectionMTZStateValues(unit.values());
+        case CONTROL_SET_TYPE: // чтение состояний токовых защит
+            displayControlStateValues(unit.values());
         break;
 
         case PROTECTION_MTZ_SET_TYPE: // чтение состояний токовых защит
@@ -1305,12 +1359,15 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
 //-------------------------------------
 void ConfiguratorWindow::readSettings()
 {
+    if(!m_modbusDevice->is_open())
+        return;
+
     qint32 index = ui->stwgtMain->currentIndex();
 
     if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
+        controlStateRead(); // чтение настроек состояний
         inAnalogRead(); // чтение настроек "Основные" и "Калибровки"
-        protectionMTZStateRead(); // чтение настроек состояния токовых защит
         protectionMTZSetRead(); // чтение настроек токовых защит
         protectionEarthySetRead(); // чтение настроек земляных защит
         protectionPowerSetRead(); // чтение настроек защит по напряжению
@@ -1328,6 +1385,9 @@ void ConfiguratorWindow::readSettings()
 //---------------------------------------
 void ConfiguratorWindow::readSetCurrent()
 {
+    if(!m_modbusDevice->is_open())
+        return;
+
     qint32 index = ui->stwgtMain->currentIndex();
 
     switch(index)
@@ -1338,7 +1398,6 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 2:
-            protectionMTZStateRead(); // чтение настроек состояния токовых защит
             protectionMTZSetRead(); // чтение настроек токовых защит
         break;
 
@@ -1414,12 +1473,15 @@ void ConfiguratorWindow::readSetCurrent()
 //--------------------------------------
 void ConfiguratorWindow::writeSettings()
 {
+    if(!m_modbusDevice->is_open())
+        return;
+
     qint32 index = ui->stwgtMain->currentIndex();
 
     if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
+        conntrolStateWrite(); // запись настроек состояния
         inAnalogWrite(); // запись настроек "Основные" и "Калибровки"
-        protectionMTZStateWrite(); // запись настроек состояния токовых защит
         protectionMTZSetWrite(); // запись настроек токовых защит
         protectionEarthySetWrite(); // запись настроек земляных защит
         protectionPowerSetWrite(); // запись настроек защит по напряжению
@@ -1437,6 +1499,9 @@ void ConfiguratorWindow::writeSettings()
 //----------------------------------------
 void ConfiguratorWindow::writeSetCurrent()
 {
+    if(!m_modbusDevice->is_open())
+        return;
+
     qint32 index = ui->stwgtMain->currentIndex();
 
     switch(index)
@@ -1447,7 +1512,6 @@ void ConfiguratorWindow::writeSetCurrent()
         break;
 
         case 2:
-            protectionMTZStateWrite(); // запись настроек состояния токовых защит
             protectionMTZSetWrite(); // запись настроек токовых защит
         break;
 
@@ -1740,11 +1804,13 @@ void ConfiguratorWindow::initButtonGroup()
 
     // группа дополнительных настроек
     m_additional_group->addButton(ui->pbtnAddAVR);
+    m_additional_group->addButton(ui->pbtnAddAVRSection);
     m_additional_group->addButton(ui->pbtnAddAPV);
     m_additional_group->addButton(ui->pbtnAddAPV_Start);
     m_additional_group->setId(ui->pbtnAddAVR, 0);
-    m_additional_group->setId(ui->pbtnAddAPV, 1);
-    m_additional_group->setId(ui->pbtnAddAPV_Start, 2);
+    m_additional_group->setId(ui->pbtnAddAVRSection, 1);
+    m_additional_group->setId(ui->pbtnAddAPV, 2);
+    m_additional_group->setId(ui->pbtnAddAPV_Start, 3);
     
     protectMTZChangedID(0);
     protectEarthlyChangedID(0);
@@ -1810,16 +1876,24 @@ void ConfiguratorWindow::displayInAnalogValues(QVector<quint16> values)
     }
 }
 //-----------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionMTZStateValues(QVector<quint16> values)
+void ConfiguratorWindow::displayControlStateValues(QVector<quint16> values)
 {     
-    if(values.count() == 4)
+    if(values.count() == 54)
     {
         for(quint8 i = 0; i < values.count(); i++)
         {
             quint16 value = values.at(i);
             
-            QComboBox* cbItem = (i == 0)?ui->cboxProtectionMTZ1_Ctrl:(i == 1)?ui->cboxProtectionMTZ2_Ctrl:
-                                (i == 2)?ui->cboxProtectionMTZ3_Ctrl:ui->cboxProtectionMTZ4_Ctrl;
+            QComboBox* cbItem = m_control_cell.at(i);
+
+            if(cbItem == ui->cboxProtectionTemp1_Sensor1)
+                ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(value);
+
+            if(cbItem == ui->cboxProtectionTemp1_Sensor2)
+                ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(value);
+
+            if(cbItem == ui->cboxProtectionLevel1_Ctrl)
+                ui->cboxProtectionLevel1_Ctrl->setCurrentIndex(value);
             
             cbItem->setCurrentIndex(value);
         }
@@ -2121,7 +2195,7 @@ void ConfiguratorWindow::displaySwitchDeviceValues(QVector<quint16> values)
         float   value;
     } cell_value;
 
-    if(values.count() == 36)
+    if(values.count() == 30)
     {
         for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
         {
