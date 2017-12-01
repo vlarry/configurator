@@ -656,7 +656,7 @@
        <item>
         <widget class="QStackedWidget" name="stwgtMain">
          <property name="currentIndex">
-          <number>13</number>
+          <number>12</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -741,7 +741,7 @@
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_64">
                     <item>
-                     <widget class="QLineEdit" name="leMainKtt">
+                     <widget class="QLineEdit" name="leM01">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -772,7 +772,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="leMainKt0">
+                     <widget class="QLineEdit" name="leM02">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -800,7 +800,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="leMainKtn">
+                     <widget class="QLineEdit" name="leM03">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -828,7 +828,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QComboBox" name="cboxAnalogIn_OnTN">
+                     <widget class="QComboBox" name="cboxM04">
                       <item>
                        <property name="text">
                         <string>Нет зн.</string>
@@ -1013,7 +1013,7 @@
                 </widget>
                </item>
                <item row="1" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerPhase_B_C">
+                <widget class="QLineEdit" name="leKUBC">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1041,7 +1041,7 @@
                 </widget>
                </item>
                <item row="2" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerPhase_C_A">
+                <widget class="QLineEdit" name="leKUCA">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1069,7 +1069,7 @@
                 </widget>
                </item>
                <item row="0" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerPhase_A_B">
+                <widget class="QLineEdit" name="leKUAB">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1097,7 +1097,7 @@
                 </widget>
                </item>
                <item row="6" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerUCx">
+                <widget class="QLineEdit" name="leKUCX">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1125,7 +1125,7 @@
                 </widget>
                </item>
                <item row="3" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorPower3U0x">
+                <widget class="QLineEdit" name="leK3U0X">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1153,7 +1153,7 @@
                 </widget>
                </item>
                <item row="8" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorChannel3Us">
+                <widget class="QLineEdit" name="leKU0X_">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1181,7 +1181,7 @@
                 </widget>
                </item>
                <item row="7" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorChannel3U0">
+                <widget class="QLineEdit" name="leKU0X">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1209,7 +1209,7 @@
                 </widget>
                </item>
                <item row="4" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerUAx">
+                <widget class="QLineEdit" name="leKUAX">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1237,7 +1237,7 @@
                 </widget>
                </item>
                <item row="5" column="4">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerUBx">
+                <widget class="QLineEdit" name="leKUBX">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1281,7 +1281,7 @@
                 </widget>
                </item>
                <item row="5" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerPhase_B">
+                <widget class="QLineEdit" name="leKUB">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1325,7 +1325,7 @@
                 </widget>
                </item>
                <item row="7" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorPower3I0">
+                <widget class="QLineEdit" name="leK3U0">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1401,7 +1401,7 @@
                 </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerPhase_A">
+                <widget class="QLineEdit" name="leKUA">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1429,7 +1429,7 @@
                 </widget>
                </item>
                <item row="6" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerPhase_C">
+                <widget class="QLineEdit" name="leKUC">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1457,7 +1457,7 @@
                 </widget>
                </item>
                <item row="8" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorPowerTotal">
+                <widget class="QLineEdit" name="leKUS">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1485,7 +1485,7 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorCurrent3I0">
+                <widget class="QLineEdit" name="leK3I0">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1561,7 +1561,7 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorCurrentPhase_A">
+                <widget class="QLineEdit" name="leKIA">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1589,7 +1589,7 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorCurrentPhase_B">
+                <widget class="QLineEdit" name="leKIB">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1633,7 +1633,7 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLineEdit" name="leTextCalibFactorCurrentPhase_C">
+                <widget class="QLineEdit" name="leKIC">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1836,7 +1836,7 @@
                   </sizepolicy>
                  </property>
                  <property name="currentIndex">
-                  <number>3</number>
+                  <number>1</number>
                  </property>
                  <widget class="QWidget" name="pageProtectionPropertiesMTZ1">
                   <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1944,7 +1944,7 @@
                         <item>
                          <layout class="QVBoxLayout" name="vltProtectionMTZ31">
                           <item>
-                           <widget class="QComboBox" name="cboxProtectionMTZ1_Ctrl">
+                           <widget class="QComboBox" name="cboxM05">
                             <property name="maximumSize">
                              <size>
                               <width>100</width>
@@ -1977,7 +1977,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ1_CurrentStart">
+                           <widget class="QLineEdit" name="leM06">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2005,7 +2005,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ1_Timeout">
+                           <widget class="QLineEdit" name="leM08">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2033,7 +2033,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ1_EnterBlocking">
+                           <widget class="QLineEdit" name="leK31">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2061,7 +2061,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ1_CurrentKvz">
+                           <widget class="QLineEdit" name="leX01">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2199,7 +2199,7 @@
                         <item>
                          <layout class="QVBoxLayout" name="vltProtectionMTZ31_2">
                           <item>
-                           <widget class="QComboBox" name="cboxProtectionMTZ2_Ctrl">
+                           <widget class="QComboBox" name="cboxM09">
                             <property name="maximumSize">
                              <size>
                               <width>100</width>
@@ -2232,7 +2232,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ2_CurrentStart">
+                           <widget class="QLineEdit" name="leM10">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2260,7 +2260,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ2_Timeout">
+                           <widget class="QLineEdit" name="leM11">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2288,7 +2288,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ2_Acceleration">
+                           <widget class="QLineEdit" name="leM12">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2316,7 +2316,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ2_CurrentKvz">
+                           <widget class="QLineEdit" name="leX03">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2454,7 +2454,7 @@
                         <item>
                          <layout class="QVBoxLayout" name="vltProtectionMTZ31_3">
                           <item>
-                           <widget class="QComboBox" name="cboxProtectionMTZ3_Ctrl">
+                           <widget class="QComboBox" name="cboxM13">
                             <property name="maximumSize">
                              <size>
                               <width>100</width>
@@ -2497,7 +2497,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ3_CurrentStart">
+                           <widget class="QLineEdit" name="leM14">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2525,7 +2525,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ3_Timeout">
+                           <widget class="QLineEdit" name="leK22">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2553,7 +2553,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ3_Factor">
+                           <widget class="QLineEdit" name="leM15">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2581,7 +2581,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ3_CurrentKvz">
+                           <widget class="QLineEdit" name="leX04">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2739,7 +2739,7 @@
                         <item>
                          <layout class="QVBoxLayout" name="vltProtectionMTZ31_4">
                           <item>
-                           <widget class="QComboBox" name="cboxProtectionMTZ4_Ctrl">
+                           <widget class="QComboBox" name="cboxM16">
                             <property name="maximumSize">
                              <size>
                               <width>100</width>
@@ -2772,7 +2772,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ4_CurrentStart">
+                           <widget class="QLineEdit" name="leM17">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2800,7 +2800,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ4_PowerStart">
+                           <widget class="QLineEdit" name="leM07">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2828,7 +2828,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ4_Angle">
+                           <widget class="QLineEdit" name="leK20">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2856,7 +2856,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ4_Timeout">
+                           <widget class="QLineEdit" name="leM18">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2884,7 +2884,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ4_CurrentKvz">
+                           <widget class="QLineEdit" name="leX05">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -2912,7 +2912,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionMTZ4_PowerKvz">
+                           <widget class="QLineEdit" name="leX05a">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -3146,7 +3146,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_7">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionEarthly_OZZ1_Ctrl">
+                         <widget class="QComboBox" name="cboxM22">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -3174,7 +3174,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_StartCurrent">
+                         <widget class="QLineEdit" name="leM23">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3202,7 +3202,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_Pause">
+                         <widget class="QLineEdit" name="leM24">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3230,7 +3230,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_OZZ1_KvzCurrent">
+                         <widget class="QLineEdit" name="leX07">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3358,7 +3358,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_8">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionEarthly_OZZ2_Ctrl">
+                         <widget class="QComboBox" name="cboxK23">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -3386,7 +3386,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_StartCurrent">
+                         <widget class="QLineEdit" name="leK24">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3414,7 +3414,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_Pause">
+                         <widget class="QLineEdit" name="leK25">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3442,7 +3442,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_OZZ2_KvzCurrent">
+                         <widget class="QLineEdit" name="leX07a">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3600,7 +3600,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_9">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionEarthly_NZZ1_Ctrl">
+                         <widget class="QComboBox" name="cboxM25">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -3628,7 +3628,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_StartCurrent">
+                         <widget class="QLineEdit" name="leM26">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3656,7 +3656,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_StartPower">
+                         <widget class="QLineEdit" name="leM27">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3684,7 +3684,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_Angle">
+                         <widget class="QLineEdit" name="leK21">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3712,7 +3712,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_Pause">
+                         <widget class="QLineEdit" name="leM28">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3740,7 +3740,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_KvzCurrent">
+                         <widget class="QLineEdit" name="leX08">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3768,7 +3768,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ1_KvzPower">
+                         <widget class="QLineEdit" name="leX09">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3926,7 +3926,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_10">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionEarthly_NZZ2_Ctrl">
+                         <widget class="QComboBox" name="cboxK26">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -3954,7 +3954,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_StartCurrent">
+                         <widget class="QLineEdit" name="leK27">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -3982,7 +3982,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_StartPower">
+                         <widget class="QLineEdit" name="leK28">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4010,7 +4010,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_Angle">
+                         <widget class="QLineEdit" name="leK29">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4038,7 +4038,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_Pause">
+                         <widget class="QLineEdit" name="leK30">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4066,7 +4066,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_KvzCurrent">
+                         <widget class="QLineEdit" name="leX08a">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4094,7 +4094,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionEarthly_NZZ2_KvzPower">
+                         <widget class="QLineEdit" name="leX09a">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4372,7 +4372,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_11">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_Umax1_Ctrl">
+                         <widget class="QComboBox" name="cboxM32">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -4405,7 +4405,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umax1_StartPower">
+                         <widget class="QLineEdit" name="leM33">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4433,7 +4433,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umax1_Pause">
+                         <widget class="QLineEdit" name="leM34">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4461,7 +4461,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umax1_KvzPower">
+                         <widget class="QLineEdit" name="leX11">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4589,7 +4589,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_12">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_Umax2_Ctrl">
+                         <widget class="QComboBox" name="cboxM35">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -4622,7 +4622,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umax2_StartPower">
+                         <widget class="QLineEdit" name="leM36">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4650,7 +4650,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umax2_Pause">
+                         <widget class="QLineEdit" name="leM37">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4678,7 +4678,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umax2_KvzPower">
+                         <widget class="QLineEdit" name="leX12">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4826,7 +4826,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_13">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_Umin1_Ctrl">
+                         <widget class="QComboBox" name="cboxM38">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -4859,7 +4859,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_Umin1_Logic">
+                         <widget class="QComboBox" name="cboxM39">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -4887,7 +4887,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_Umin1_StartCtrl">
+                         <widget class="QComboBox" name="cboxM40">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -4915,7 +4915,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umin1_StartPower">
+                         <widget class="QLineEdit" name="leM41">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4943,7 +4943,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umin1_Pause">
+                         <widget class="QLineEdit" name="leM42">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -4971,7 +4971,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umin1_KvzPower">
+                         <widget class="QLineEdit" name="leX13">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5119,7 +5119,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_14">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_Umin2_Ctrl">
+                         <widget class="QComboBox" name="cboxM43">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -5152,7 +5152,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_Umin2_Logic">
+                         <widget class="QComboBox" name="cboxM44">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -5180,7 +5180,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_Umin2_StartCtrl">
+                         <widget class="QComboBox" name="cboxM45">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -5208,7 +5208,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umin2_StartPower">
+                         <widget class="QLineEdit" name="leM46">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5236,7 +5236,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umin2_Pause">
+                         <widget class="QLineEdit" name="leM47">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5264,7 +5264,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_Umin2_KvzPower">
+                         <widget class="QLineEdit" name="leX14">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5392,7 +5392,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_15">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionPower_3UO_Ctrl">
+                         <widget class="QComboBox" name="cboxM48">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -5420,7 +5420,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_3UO_StartCurrent">
+                         <widget class="QLineEdit" name="leM49">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5448,7 +5448,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_3UO_Pause">
+                         <widget class="QLineEdit" name="leM50">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5476,7 +5476,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionPower_3UO_KvzPower">
+                         <widget class="QLineEdit" name="leX15">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5709,7 +5709,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_5">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionMoror_Ctrl">
+                         <widget class="QComboBox" name="cboxM19">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -5737,7 +5737,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotorStarting_StartCurrent">
+                         <widget class="QLineEdit" name="leM20">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5765,7 +5765,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotorStarting_Pause">
+                         <widget class="QLineEdit" name="leM21">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5793,7 +5793,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotorStarting_KvzCurrent">
+                         <widget class="QLineEdit" name="leX06">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5927,7 +5927,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_6">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionMotor_Imin_Ctrl">
+                         <widget class="QComboBox" name="cboxM29">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -5955,7 +5955,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotorImin_StartPower">
+                         <widget class="QLineEdit" name="leM30">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -5983,7 +5983,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotorImin_Pause">
+                         <widget class="QLineEdit" name="leM31">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6011,7 +6011,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionMotorImin_KvzPower">
+                         <widget class="QLineEdit" name="leX10">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6264,7 +6264,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_16">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionFrequency_ACR1_Ctrl">
+                         <widget class="QComboBox" name="cboxM51">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -6292,7 +6292,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR1_StartFreq">
+                         <widget class="QLineEdit" name="leM52">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6320,7 +6320,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR1_Pause">
+                         <widget class="QLineEdit" name="leM53">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6348,7 +6348,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR1_Umin">
+                         <widget class="QLineEdit" name="leM54">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6376,7 +6376,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR1_KvzPower">
+                         <widget class="QLineEdit" name="leX16">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6514,7 +6514,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_17">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionFrequency_ACR2_Ctrl">
+                         <widget class="QComboBox" name="cboxM55">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -6542,7 +6542,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR2_StartFreq">
+                         <widget class="QLineEdit" name="leM56">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6570,7 +6570,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR2_Pause">
+                         <widget class="QLineEdit" name="leM57">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6598,7 +6598,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR2_Umin">
+                         <widget class="QLineEdit" name="leM58">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6626,7 +6626,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR2_KvzPower">
+                         <widget class="QLineEdit" name="leX17">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6764,7 +6764,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_18">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionFrequency_ACR3_Ctrl">
+                         <widget class="QComboBox" name="cboxM59">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -6792,7 +6792,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR3_StartFreq">
+                         <widget class="QLineEdit" name="leM60">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6820,7 +6820,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR3_Pause">
+                         <widget class="QLineEdit" name="leM61">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6848,7 +6848,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR3_Umin">
+                         <widget class="QLineEdit" name="leM62">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -6876,7 +6876,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionFrequency_ACR3_KvzPower">
+                         <widget class="QLineEdit" name="leX18">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -7147,7 +7147,7 @@
                           <item>
                            <layout class="QVBoxLayout" name="vltProtectionMTZ31_19">
                             <item>
-                             <widget class="QComboBox" name="cboxProtectionExternal_Arc_Ctrl">
+                             <widget class="QComboBox" name="cboxM63">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -7186,7 +7186,7 @@
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="leProtectionExternal_Arc_CurrentStart">
+                             <widget class="QLineEdit" name="leM64">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -7214,7 +7214,7 @@
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="leProtectionExternal_Arc_KvzCurrent">
+                             <widget class="QLineEdit" name="leX19">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -7355,7 +7355,7 @@
                           <item>
                            <layout class="QVBoxLayout" name="vltProtectionMTZ31_20">
                             <item>
-                             <widget class="QComboBox" name="cboxProtectionExternal_Ext1_Ctrl">
+                             <widget class="QComboBox" name="cboxM71">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -7389,7 +7389,7 @@
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="leProtectionExternal_Ext1_Pause">
+                             <widget class="QLineEdit" name="leM72">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -7530,7 +7530,7 @@
                           <item>
                            <layout class="QVBoxLayout" name="vltProtectionMTZ31_21">
                             <item>
-                             <widget class="QComboBox" name="cboxProtectionExternal_Ext2_Ctrl">
+                             <widget class="QComboBox" name="cboxM73">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -7564,7 +7564,7 @@
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="leProtectionExternal_Ext2_Pause">
+                             <widget class="QLineEdit" name="leM74">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -7705,7 +7705,7 @@
                           <item>
                            <layout class="QVBoxLayout" name="vltProtectionMTZ31_22">
                             <item>
-                             <widget class="QComboBox" name="cboxProtectionExternal_Ext3_Ctrl">
+                             <widget class="QComboBox" name="cboxM75">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -7739,7 +7739,7 @@
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="leProtectionExternal_Ext3_Pause">
+                             <widget class="QLineEdit" name="leM76">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                 <horstretch>0</horstretch>
@@ -8027,7 +8027,7 @@
                       <item>
                        <layout class="QVBoxLayout" name="vltProtectionMTZ31_23">
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionTemp1_Sensor1">
+                         <widget class="QComboBox" name="cboxM65">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8055,7 +8055,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QComboBox" name="cboxProtectionTemp1_Sensor2">
+                         <widget class="QComboBox" name="cboxM66">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8083,7 +8083,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionTemp1_StartTemp">
+                         <widget class="QLineEdit" name="leM67">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -8111,7 +8111,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionTemp1_Pause">
+                         <widget class="QLineEdit" name="leM69">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -8139,7 +8139,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionTemp1_KvzTemp">
+                         <widget class="QLineEdit" name="leX20">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -8363,7 +8363,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionTemp2_StartTemp">
+                         <widget class="QLineEdit" name="leM68">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -8391,7 +8391,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionTemp2_Pause">
+                         <widget class="QLineEdit" name="leM70">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -8419,7 +8419,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leProtectionTemp2_KvzTemp">
+                         <widget class="QLineEdit" name="leX21">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -8644,7 +8644,7 @@
                         <item>
                          <layout class="QVBoxLayout" name="vltProtectionMTZ31_25">
                           <item>
-                           <widget class="QComboBox" name="cboxProtectionLevel1_Ctrl">
+                           <widget class="QComboBox" name="cboxM77">
                             <property name="maximumSize">
                              <size>
                               <width>100</width>
@@ -8687,7 +8687,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionLevel1_Pause">
+                           <widget class="QLineEdit" name="leM78">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -8855,7 +8855,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leProtectionLevel2_Pause">
+                           <widget class="QLineEdit" name="leM79">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -10123,7 +10123,7 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QComboBox" name="cboxAdditionalPropertiesBRUPeredOn">
+                   <widget class="QComboBox" name="cboxM93">
                     <property name="maximumSize">
                      <size>
                       <width>100</width>
@@ -10151,7 +10151,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leProtectionBRUTmeasure">
+                   <widget class="QLineEdit" name="leM96">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10195,7 +10195,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leProtectionBRUSet">
+                   <widget class="QLineEdit" name="leM97">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10255,7 +10255,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="cboxAdditionalPropertiesBRUDiscretSet">
+                   <widget class="QComboBox" name="cboxM95">
                     <property name="maximumSize">
                      <size>
                       <width>100</width>
@@ -10283,7 +10283,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leProtectionBRUOffPause">
+                   <widget class="QLineEdit" name="leM98">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10327,7 +10327,7 @@
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="leProtectionBRUDiscret">
+                   <widget class="QLineEdit" name="leM99">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10410,7 +10410,7 @@
                   <item>
                    <layout class="QGridLayout" name="gridLayout_11">
                     <item row="1" column="1">
-                     <widget class="QLineEdit" name="leProtectionVacuumSet">
+                     <widget class="QLineEdit" name="leM91">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -10457,7 +10457,7 @@
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QComboBox" name="cboxAdditionalPropertiesVacuumCtrl">
+                     <widget class="QComboBox" name="cboxM90">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -10541,7 +10541,7 @@
                      </widget>
                     </item>
                     <item row="2" column="1">
-                     <widget class="QLineEdit" name="leProtectionVacuumPause">
+                     <widget class="QLineEdit" name="leM92">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -10588,7 +10588,7 @@
                      </widget>
                     </item>
                     <item row="3" column="1">
-                     <widget class="QLineEdit" name="leProtectionVacuumKvzPower">
+                     <widget class="QLineEdit" name="leX23">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -10805,7 +10805,7 @@
               </sizepolicy>
              </property>
              <property name="currentIndex">
-              <number>6</number>
+              <number>2</number>
              </property>
              <widget class="QWidget" name="pageSwDevBreaker">
               <layout class="QVBoxLayout" name="verticalLayout_76">
@@ -10854,7 +10854,7 @@
                      </widget>
                     </item>
                     <item row="3" column="4">
-                     <widget class="QLineEdit" name="leSwitchOFF_I_OnState">
+                     <widget class="QLineEdit" name="leK09">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -10882,7 +10882,7 @@
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QComboBox" name="cboxSwDevBreaker_ModeCtrl">
+                     <widget class="QComboBox" name="cboxK32">
                       <property name="maximumSize">
                        <size>
                         <width>100</width>
@@ -10910,7 +10910,7 @@
                      </widget>
                     </item>
                     <item row="0" column="4">
-                     <widget class="QComboBox" name="cboxSwDevBreaker_Kcu">
+                     <widget class="QComboBox" name="cboxK06">
                       <property name="maximumSize">
                        <size>
                         <width>100</width>
@@ -10968,7 +10968,7 @@
                      </widget>
                     </item>
                     <item row="2" column="4">
-                     <widget class="QComboBox" name="cboxSwDevBreaker_PosVV">
+                     <widget class="QComboBox" name="cboxK07">
                       <property name="maximumSize">
                        <size>
                         <width>100</width>
@@ -10996,7 +10996,7 @@
                      </widget>
                     </item>
                     <item row="1" column="1">
-                     <widget class="QComboBox" name="cboxSwDevBreaker_CmdON">
+                     <widget class="QComboBox" name="cboxK01">
                       <property name="maximumSize">
                        <size>
                         <width>100</width>
@@ -11024,7 +11024,7 @@
                      </widget>
                     </item>
                     <item row="1" column="4">
-                     <widget class="QComboBox" name="cboxSwDevBreaker_CtrlOT">
+                     <widget class="QComboBox" name="cboxK17">
                       <property name="maximumSize">
                        <size>
                         <width>100</width>
@@ -11075,7 +11075,7 @@
                      </widget>
                     </item>
                     <item row="2" column="1">
-                     <widget class="QComboBox" name="cboxSwDevBreaker_CmdOFF">
+                     <widget class="QComboBox" name="cboxK03">
                       <property name="maximumSize">
                        <size>
                         <width>100</width>
@@ -11113,7 +11113,7 @@
                      </widget>
                     </item>
                     <item row="3" column="1">
-                     <widget class="QLineEdit" name="leSwitchOFF_TCmdOn">
+                     <widget class="QLineEdit" name="leK02">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -11141,7 +11141,7 @@
                      </widget>
                     </item>
                     <item row="4" column="1">
-                     <widget class="QLineEdit" name="leSwitchOFF_TCmdOff">
+                     <widget class="QLineEdit" name="leK04">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -11189,7 +11189,7 @@
                      </widget>
                     </item>
                     <item row="5" column="1">
-                     <widget class="QLineEdit" name="leSwitchOFF_Tcallback">
+                     <widget class="QLineEdit" name="leK05">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -11237,7 +11237,7 @@
                      </widget>
                     </item>
                     <item row="4" column="4">
-                     <widget class="QLineEdit" name="leKCU_Tdefect">
+                     <widget class="QLineEdit" name="leK08">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -11265,7 +11265,7 @@
                      </widget>
                     </item>
                     <item row="5" column="4">
-                     <widget class="QLineEdit" name="leKCU_Ikvz">
+                     <widget class="QLineEdit" name="leX22">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -11389,7 +11389,7 @@
                        <enum>QLayout::SetFixedSize</enum>
                       </property>
                       <item>
-                       <widget class="QComboBox" name="cboxSwDevDisconnect_TruckPosition_VV_ON">
+                       <widget class="QComboBox" name="cboxK13">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -11423,7 +11423,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="cboxcboxSwDevDisconnect_VV_ZR_ON">
+                       <widget class="QComboBox" name="cboxK14">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -11457,7 +11457,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="cboxcboxSwDevDisconnect_DisconnectBlock">
+                       <widget class="QComboBox" name="cboxK15">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -11591,7 +11591,7 @@
                     <item>
                      <layout class="QVBoxLayout" name="vltProtectionMTZ31_29">
                       <item>
-                       <widget class="QComboBox" name="cboxSCHR_Ctrl">
+                       <widget class="QComboBox" name="cboxK34">
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
@@ -11619,7 +11619,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="cboxSCHR_Cmd">
+                       <widget class="QComboBox" name="cboxK38">
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
@@ -11647,7 +11647,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="leSCHR_TCmdCtrl">
+                       <widget class="QLineEdit" name="leK42">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -11675,7 +11675,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="leSCHR_Tcallback">
+                       <widget class="QLineEdit" name="leK46">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -11803,7 +11803,7 @@
                     <item>
                      <layout class="QVBoxLayout" name="vltProtectionMTZ31_30">
                       <item>
-                       <widget class="QComboBox" name="cboxLR_Ctrl">
+                       <widget class="QComboBox" name="cboxK35">
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
@@ -11831,7 +11831,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="cboxLR_Cmd">
+                       <widget class="QComboBox" name="cboxK39">
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
@@ -11859,7 +11859,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="leLR_TCmdCtrl">
+                       <widget class="QLineEdit" name="leK43">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -11887,7 +11887,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="leLR_Tcallback">
+                       <widget class="QLineEdit" name="leK47">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -12015,7 +12015,7 @@
                     <item>
                      <layout class="QVBoxLayout" name="vltProtectionMTZ31_31">
                       <item>
-                       <widget class="QComboBox" name="cboxZR_Ctrl">
+                       <widget class="QComboBox" name="cboxK36">
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
@@ -12043,7 +12043,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="cboxZR_Cmd">
+                       <widget class="QComboBox" name="cboxK40">
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
@@ -12071,7 +12071,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="leZR_TCmdCtrl">
+                       <widget class="QLineEdit" name="leK44">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -12099,7 +12099,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="leZR_Tcallback">
+                       <widget class="QLineEdit" name="leK48">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -12227,7 +12227,7 @@
                     <item>
                      <layout class="QVBoxLayout" name="vltProtectionMTZ31_32">
                       <item>
-                       <widget class="QComboBox" name="cboxTruck_Ctrl">
+                       <widget class="QComboBox" name="cboxK37">
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
@@ -12255,7 +12255,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="cboxTruck_Cmd">
+                       <widget class="QComboBox" name="cboxK41">
                         <property name="maximumSize">
                          <size>
                           <width>100</width>
@@ -12283,7 +12283,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="leTruck_TCmdCtrl">
+                       <widget class="QLineEdit" name="leK45">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -12311,7 +12311,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="leTruck_Tcallback">
+                       <widget class="QLineEdit" name="leK49">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -12430,7 +12430,7 @@
                          <enum>QLayout::SetMinimumSize</enum>
                         </property>
                         <item>
-                         <widget class="QComboBox" name="cboxCtrlTN_CtrlTN_DV">
+                         <widget class="QComboBox" name="cboxK18">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -12458,7 +12458,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="leCtrlTN_Pause">
+                         <widget class="QLineEdit" name="leT02">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -12686,7 +12686,7 @@
                          </widget>
                         </item>
                         <item row="3" column="1">
-                         <widget class="QLineEdit" name="leAdditionalAVRPause">
+                         <widget class="QLineEdit" name="leM84">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -12708,7 +12708,7 @@
                          </widget>
                         </item>
                         <item row="1" column="1">
-                         <widget class="QLineEdit" name="leAdditionalAVRCtrlUwork">
+                         <widget class="QLineEdit" name="leM82">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -12746,7 +12746,7 @@
                          </widget>
                         </item>
                         <item row="0" column="1">
-                         <widget class="QComboBox" name="cboxAdditionalAVRInput_Ctrl">
+                         <widget class="QComboBox" name="cboxM81">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -12803,7 +12803,7 @@
                          </widget>
                         </item>
                         <item row="2" column="1">
-                         <widget class="QLineEdit" name="leAdditionalAVRUrzr">
+                         <widget class="QLineEdit" name="leM83">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -12841,7 +12841,7 @@
                          </widget>
                         </item>
                         <item row="4" column="1">
-                         <widget class="QLineEdit" name="leAdditionalAVRTime">
+                         <widget class="QLineEdit" name="leM85">
                           <property name="sizePolicy">
                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                             <horstretch>0</horstretch>
@@ -12935,7 +12935,7 @@
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QComboBox" name="cboxAdditionalAVRSection_Ctrl">
+                    <widget class="QComboBox" name="cboxK33">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13030,7 +13030,7 @@
                            </widget>
                           </item>
                           <item row="0" column="1">
-                           <widget class="QComboBox" name="cboxAdditionalAPVCtrl">
+                           <widget class="QComboBox" name="cboxM87">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -13071,7 +13071,7 @@
                            </widget>
                           </item>
                           <item row="1" column="1">
-                           <widget class="QLineEdit" name="leAdditionalAPVTBlockOn">
+                           <widget class="QLineEdit" name="leM88">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -13109,7 +13109,7 @@
                            </widget>
                           </item>
                           <item row="2" column="1">
-                           <widget class="QLineEdit" name="leAdditionalAPVTime">
+                           <widget class="QLineEdit" name="leM89">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                               <horstretch>0</horstretch>
