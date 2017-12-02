@@ -67,6 +67,13 @@
                 AUTOMATION_SET_TYPE,
                 SWITCH_DEV_SET_TYPE
             };
+            //-------------
+            enum WidgetType
+            {
+                INT,
+                FLOAT, // QLineEdit (set validator: QDoubleValidator)
+                LIST   // QComboBox
+            };
       
         public:
             explicit ConfiguratorWindow(QWidget* parent = Q_NULLPTR);
@@ -136,6 +143,7 @@
             void initConnect();
             void initMenuPanel();
             void initButtonGroup();
+            void initCellBind();
             void displayCalculateValues(QVector<quint16> values);
             void displayInAnalogValues(QVector<quint16> values);
             void displayControlStateValues(QVector<quint16> values);
@@ -152,6 +160,10 @@
             void displayAutomationValues(QVector<quint16> values);
             void displaySwitchDeviceValues(QVector<quint16> values);
             void versionParser();
+            void addNewBind(const QString& key, QWidget* widget, int address, WidgetType wtype);
+            int  sizeBlock(const QString& first_key, const QString& second_key);
+            void sendReadRequest(const QString& first_key, const QString& second_key);
+            int  addressBeg(const QString& key) const;
             
         private:
             Ui::ConfiguratorWindow* ui;
@@ -217,5 +229,8 @@
             QTreeWidgetItem* itemProtectLevel;
             QTreeWidgetItem* itemProtectBRU;
             QTreeWidgetItem* itemProtectVacuum;
+
+
+            QVector<QPair<QString, QWidget*> > m_cell_list;
     };
 #endif // CONFIGURATORWINDOW_H

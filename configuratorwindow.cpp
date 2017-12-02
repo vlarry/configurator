@@ -45,6 +45,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initMenuPanel();
     initButtonGroup();
     initConnect();
+    initCellBind();
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -1834,6 +1835,31 @@ void ConfiguratorWindow::initButtonGroup()
     m_switch_device_group->setExclusive(true);
     m_additional_group->setExclusive(true);
 }
+//-------------------------------------
+void ConfiguratorWindow::initCellBind()
+{
+    addNewBind(tr("M01"), ui->leM01, 356, FLOAT);
+    addNewBind(tr("M02"), ui->leM02, 358, FLOAT);
+    addNewBind(tr("M03"), ui->leM03, 360, FLOAT);
+    addNewBind(tr("KIA"), ui->leKIA, 362, FLOAT);
+    addNewBind(tr("KIB"), ui->leKIB, 364, FLOAT);
+    addNewBind(tr("KIC"), ui->leKIC, 366, FLOAT);
+    addNewBind(tr("K3I0"), ui->leK3I0, 368, FLOAT);
+    addNewBind(tr("KUA"), ui->leKUA, 370, FLOAT);
+    addNewBind(tr("KUB"), ui->leKUB, 372, FLOAT);
+    addNewBind(tr("KUC"), ui->leKUC, 374, FLOAT);
+    addNewBind(tr("K3U0"), ui->leK3U0, 376, FLOAT);
+    addNewBind(tr("KUS"), ui->leKUS, 378, FLOAT);
+    addNewBind(tr("KUAB"), ui->leKUAB, 380, FLOAT);
+    addNewBind(tr("KUBC"), ui->leKUBC, 382, FLOAT);
+    addNewBind(tr("KUCA"), ui->leKUCA, 384, FLOAT);
+    addNewBind(tr("K3U0X"), ui->leK3U0X, 386, FLOAT);
+    addNewBind(tr("KUAX"), ui->leKUAX, 388, FLOAT);
+    addNewBind(tr("KUBX"), ui->leKUBX, 390, FLOAT);
+    addNewBind(tr("KUCX"), ui->leKUCX, 392, FLOAT);
+    addNewBind(tr("KU0X"), ui->leKU0X, 394, FLOAT);
+    addNewBind(tr("KU0X_"), ui->leKU0X_, 396, FLOAT);
+}
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
@@ -2321,6 +2347,76 @@ void ConfiguratorWindow::versionParser()
         title += tr(" ") + ver.lastKey();
 
     this->setWindowTitle(title);
+}
+//-----------------------------------------------------------------------------------
+void ConfiguratorWindow::addNewBind(const QString& key, QWidget* widget, int address,
+                                    ConfiguratorWindow::WidgetType wtype)
+{
+    if(key.isEmpty() || !widget)
+        return;
+
+    widget->setProperty("ADDRESS", address);
+    widget->setProperty("TYPE", wtype);
+
+    m_cell_list.append(qMakePair(key, widget));
+}
+//------------------------------------------------------------------------------------
+int ConfiguratorWindow::sizeBindBlock(const QString& first_key, const QString& second_key)
+{
+    int iFirst = -1, iSecond = -1;
+
+    for(quint8 i = 0; i < m_cell_list.count(); i++)
+    {
+        QPair<QString, QWidget*> pair = m_cell_list.at(i);
+
+        if(pair.first == first_key)
+            iFirst = i;
+
+        if(pair.first == second_key)
+            iSecond = i;
+    }
+
+    if(iFirst != -1 && iSecond != -1 && (iSecond >= iFirst))
+        return ((iSecond - iFirst) + 1);
+
+    return -1;
+}
+//-------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendReadRequest(const QString& first_key, const QString& second_key)
+{
+    int size = sizeBindBlock(first_key, second_key);
+
+    if(size <= 0)
+        return;
+
+    int addr = addressKey(first_key);
+
+    qDebug() << "addr = " << addr;
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr,
+                       QVector<quint16>() << size);
+
+    unit.setProperty(tr("FIRST"), first_key);
+    unit.setProperty(tr("LAST"), second_key);
+}
+//----------------------------------------------------------
+int ConfiguratorWindow::addressKey(const QString& key) const
+{
+    int addr = -1;
+
+    for(QPair<QString, QWidget*> pair: m_cell_list)
+    {
+        if(pair.first == key)
+        {
+            if(pair.second)
+            {
+                addr = pair.second->property("ADDRESS").toInt();
+                break;
+            }
+        }
+    }
+
+    return addr;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()
