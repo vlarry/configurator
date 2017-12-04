@@ -65,7 +65,8 @@
                 PROTECTION_BRU_SET_TYPE,
                 PROTECTION_VACUUM_SET_TYPE,
                 AUTOMATION_SET_TYPE,
-                SWITCH_DEV_SET_TYPE
+                SWITCH_DEV_SET_TYPE,
+                GENERAL_TYPE
             };
             //-------------
             enum WidgetType
@@ -87,7 +88,7 @@
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
-            void conntrolStateWrite();
+            void controlStateWrite();
             void protectionMTZSetRead();
             void protectionMTZSetWrite();
             void protectionEarthySetRead();
@@ -138,6 +139,9 @@
             void writeSetCurrent();
             void expandItemTree(bool state);
             void versionSowftware();
+            void sendReadRequest(const QString& first_key, const QString& second_key,
+                                 CDataUnitType::FunctionType type, int size);
+            void sendWriteRequest(const QString& first_key, const QString& second_key);
             
         private:
             void initConnect();
@@ -145,25 +149,12 @@
             void initButtonGroup();
             void initCellBind();
             void displayCalculateValues(QVector<quint16> values);
-            void displayInAnalogValues(QVector<quint16> values);
-            void displayControlStateValues(QVector<quint16> values);
-            void displayProtectionMTZSetValues(QVector<quint16> values);
-            void displayProtectionEarthySetValues(QVector<quint16> values);
-            void displayProtectionPowerSetValues(QVector<quint16> values);
-            void displayProtectionMotorSetValues(QVector<quint16> values);
-            void displayProtectionFrequencySetValues(QVector<quint16> values);
-            void displayProtectionExternalSetValues(QVector<quint16> values);
-            void displayProtectionTemperatureSetValues(QVector<quint16> values);
-            void displayProtectionLevelSetValues(QVector<quint16> values);
-            void displayProtectionBruSetValues(QVector<quint16> values);
-            void displayProtectionVacuumSetValues(QVector<quint16> values);
-            void displayAutomationValues(QVector<quint16> values);
-            void displaySwitchDeviceValues(QVector<quint16> values);
+            void displayResponse(CDataUnitType& unit);
             void versionParser();
             void addNewBind(const QString& key, QWidget* widget, int address, WidgetType wtype);
-            int  sizeBlock(const QString& first_key, const QString& second_key);
-            void sendReadRequest(const QString& first_key, const QString& second_key);
-            int  addressBeg(const QString& key) const;
+            int  sizeBindBlock(const QString& first_key, const QString& second_key);
+            int  addressKey(const QString& key) const;
+            QVector<QWidget*> listWidget(const QString& first_key, const QString& second_key);
             
         private:
             Ui::ConfiguratorWindow* ui;

@@ -424,7 +424,7 @@ void ConfiguratorWindow::refreshSerialPort()
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
                        CALCULATE_ADDRESS, QVector<quint16>() << 110);
     unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
 
@@ -433,11 +433,7 @@ void ConfiguratorWindow::calculateRead()
 //-------------------------------------
 void ConfiguratorWindow::inAnalogRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
-                       IN_ANALOG_ADDRESS, QVector<quint16>() << 42);
-    unit.setProperty(tr("REQUEST"), IN_ANALOG_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M01"), tr("KU0X_"), CDataUnitType::ReadHoldingRegisters, 42);
 }
 //--------------------------------------
 void ConfiguratorWindow::inAnalogWrite()
@@ -467,438 +463,132 @@ void ConfiguratorWindow::inAnalogWrite()
 //-----------------------------------------
 void ConfiguratorWindow::controlStateRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 
-                       CONTROL_SET_ADDRESS, QVector<quint16>() << 54);
-    unit.setProperty(tr("REQUEST"), CONTROL_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("K01"), tr("M95"), CDataUnitType::ReadHoldingRegisters, 54);
 }
-//----------------------------------------
-void ConfiguratorWindow::conntrolStateWrite()
+//------------------------------------------
+void ConfiguratorWindow::controlStateWrite()
 {
-    QVector<quint16> data;
-    
-    for(QComboBox* box: m_control_cell)
-    {
-        data.append((quint16)box->currentIndex());
-    }
-    
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
-                       CONTROL_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), CONTROL_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("K01"), tr("M95"));
 }
 //---------------------------------------------
 void ConfiguratorWindow::protectionMTZSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_MTZ_SET_ADDRESS, QVector<quint16>() << 38);
-    unit.setProperty(tr("REQUEST"), PROTECTION_MTZ_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M06"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 38);
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionMTZSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionMTZ_cell.count() + 1; i++)
-    {
-        if(i == 4)
-            value.v = 0;
-        else
-            value.v = m_protectionMTZ_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_MTZ_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_MTZ_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M06"), tr("X05a"));
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_EARTHY_SET_ADDRESS, QVector<quint16>() << 36);
-    unit.setProperty(tr("REQUEST"), PROTECTION_EARTHY_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M23"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 36);
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionEarthy_cell.count(); i++)
-    {
-        value.v = m_protectionEarthy_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_EARTHY_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_EARTHY_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M23"), tr("X09a"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionPowerSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_POWER_SET_ADDRESS, QVector<quint16>() << 30);
-    unit.setProperty(tr("REQUEST"), PROTECTION_POWER_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M49"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 30);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionPowerSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionPower_cell.count(); i++)
-    {
-        value.v = m_protectionPower_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_POWER_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_POWER_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M49"), tr("X14"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionMotorSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_MOTOR_SET_ADDRESS, QVector<quint16>() << 12);
-    unit.setProperty(tr("REQUEST"), PROTECTION_MOTOR_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M20"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionMotorSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionMotor_cell.count(); i++)
-    {
-        value.v = m_protectionMotor_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_MOTOR_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_MOTOR_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M20"), tr("X10"));
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_FREQUENCY_SET_ADDRESS, QVector<quint16>() << 24);
-    unit.setProperty(tr("REQUEST"), PROTECTION_FREQUENCY_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M52"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 24);
 }
 //----------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionFrequency_cell.count(); i++)
-    {
-        value.v = m_protectionFrequency_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_FREQUENCY_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_FREQUENCY_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M52"), tr("X18"));
 }
 //--------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_EXTERNAL_SET_ADDRESS, QVector<quint16>() << 10);
-    unit.setProperty(tr("REQUEST"), PROTECTION_EXTERNAL_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M64"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 10);
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionExternal_cell.count(); i++)
-    {
-        value.v = m_protectionExternal_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_EXTERNAL_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_EXTERNAL_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M64"), tr("M76"));
 }
 //-----------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_TEMP_SET_ADDRESS, QVector<quint16>() << 12);
-    unit.setProperty(tr("REQUEST"), PROTECTION_TEMP_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M67"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionTemperature_cell.count(); i++)
-    {
-        value.v = m_protectionTemperature_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_TEMP_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_TEMP_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M67"), tr("X21"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionLevelSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_LEVEL_SET_ADDRESS, QVector<quint16>() << 4);
-    unit.setProperty(tr("REQUEST"), PROTECTION_LEVEL_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M78"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 4);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionLevelSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionLevel_cell.count(); i++)
-    {
-        value.v = m_protectionLevel_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_LEVEL_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_LEVEL_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M78"), tr("M79"));
 }
 //---------------------------------------------
 void ConfiguratorWindow::protectionBruSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_BRU_SET_ADDRESS, QVector<quint16>() << 8);
-    unit.setProperty(tr("REQUEST"), PROTECTION_BRU_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionBruSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionBru_cell.count(); i++)
-    {
-        value.v = m_protectionBru_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_BRU_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_BRU_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M96"), tr("M99"));
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       PROTECTION_VACUUM_SET_ADDRESS, QVector<quint16>() << 6);
-    unit.setProperty(tr("REQUEST"), PROTECTION_VACUUM_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_protectionVacuum_cell.count(); i++)
-    {
-        value.v = m_protectionVacuum_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       PROTECTION_VACUUM_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), PROTECTION_VACUUM_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M91"), tr("X23"));
 }
 //------------------------------------------
 void ConfiguratorWindow::automationSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       AUTOMATION_SET_ADDRESS, QVector<quint16>() << 12);
-    unit.setProperty(tr("REQUEST"), AUTOMATION_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("M82"), tr("M89"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //-------------------------------------------
 void ConfiguratorWindow::automationSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_automation_cell.count(); i++)
-    {
-        value.v = m_automation_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       AUTOMATION_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), AUTOMATION_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M82"), tr("M89"));
 }
 //--------------------------------------------
 void ConfiguratorWindow::switchDeviceSetRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters,
-                       SWITCH_DEV_SET_ADDRESS, QVector<quint16>() << 30);
-    unit.setProperty(tr("REQUEST"), SWITCH_DEV_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendReadRequest(tr("K02"), tr("K10"), CDataUnitType::ReadHoldingRegisters, 30);
 }
 //---------------------------------------------
 void ConfiguratorWindow::switchDeviceSetWrite()
 {
-    QVector<quint16> data;
-
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-
-    for(quint8 i = 0, j = 0; i < m_switch_device_cell.count(); i++)
-    {
-        value.v = m_switch_device_cell.at(j++)->text().toFloat();
-
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                       SWITCH_DEV_SET_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), SWITCH_DEV_SET_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("K02"), tr("K10"));
 }
 //--------------------------------------------------------
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
@@ -909,68 +599,12 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     qDebug() << "Получен ответ: " << unit.valueCount();
     emit m_modbusDevice->infoLog(tr("Получен ответ: ") + QString::number(unit.valueCount()) + tr(" байт \n"));
     
-    switch((RequestType)unit.property("REQUEST").toInt())
-    {
-        case CONTROL_SET_TYPE: // чтение состояний токовых защит
-            displayControlStateValues(unit.values());
-        break;
+    RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
 
-        case PROTECTION_MTZ_SET_TYPE: // чтение состояний токовых защит
-            displayProtectionMTZSetValues(unit.values());
-        break;
-
-        case PROTECTION_EARTHY_SET_TYPE: // чтение состояний земляных защит
-            displayProtectionEarthySetValues(unit.values());
-        break;
-
-        case PROTECTION_POWER_SET_TYPE: // чтение состояний защит по напряжению
-            displayProtectionPowerSetValues(unit.values());
-        break;
-
-        case PROTECTION_MOTOR_SET_TYPE: // чтение состояний защит двигателей
-            displayProtectionMotorSetValues(unit.values());
-        break;
-
-        case PROTECTION_FREQUENCY_SET_TYPE: // чтение состояний частотных защит
-            displayProtectionFrequencySetValues(unit.values());
-        break;
-
-        case PROTECTION_EXTERNAL_SET_TYPE: // чтение состояний внешних защит
-            displayProtectionExternalSetValues(unit.values());
-        break;
-
-        case PROTECTION_TEMP_SET_TYPE: // чтение состояний температурных защит
-            displayProtectionTemperatureSetValues(unit.values());
-        break;
-
-        case PROTECTION_LEVEL_SET_TYPE: // чтение состояний уровневых защит
-            displayProtectionLevelSetValues(unit.values());
-        break;
-
-        case PROTECTION_BRU_SET_TYPE: // чтение состояний защит БРУ
-            displayProtectionBruSetValues(unit.values());
-        break;
-
-        case PROTECTION_VACUUM_SET_TYPE: // чтение состояний вакуумных защит
-            displayProtectionVacuumSetValues(unit.values());
-        break;
-
-        case AUTOMATION_SET_TYPE: // чтение состояний автоматики
-            displayAutomationValues(unit.values());
-        break;
-
-        case SWITCH_DEV_SET_TYPE: // чтение состояний коммутационных аппаратов
-            displaySwitchDeviceValues(unit.values());
-        break;
-        
-        case IN_ANALOG_TYPE: // чтение калибровок
-            displayInAnalogValues(unit.values());
-        break;
-        
-        case CALCULATE_TYPE: // чтение расчетных величин
-            displayCalculateValues(unit.values());
-        break;
-    }
+    if(type == CALCULATE_TYPE)
+        displayCalculateValues(unit.values());
+    else if(type == GENERAL_TYPE)
+        displayResponse(unit);
 }
 //-----------------------------
 void ConfiguratorWindow::show()
@@ -1431,19 +1065,19 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 10:
-            protectionVacuumSetRead(); // чтение настроек вакуумных защит
-        break;
-
-        case 11:
             protectionBruSetRead(); // чтение настроек защит БРУ
         break;
 
+        case 11:
+            protectionVacuumSetRead(); // чтение настроек вакуумных защит
+        break;
+
         case 12:
-            automationSetRead(); // чтение настроек автоматики
+            switchDeviceSetRead(); // чтение настроек коммутационных аппаратов
         break;
 
         case 13:
-            switchDeviceSetRead(); // чтение настроек коммутационных аппаратов
+            automationSetRead(); // чтение настроек автоматики
         break;
 
         case 14:
@@ -1481,7 +1115,7 @@ void ConfiguratorWindow::writeSettings()
 
     if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
-        conntrolStateWrite(); // запись настроек состояния
+        controlStateWrite(); // запись настроек состояния
         inAnalogWrite(); // запись настроек "Основные" и "Калибровки"
         protectionMTZSetWrite(); // запись настроек токовых защит
         protectionEarthySetWrite(); // запись настроек земляных защит
@@ -1838,6 +1472,201 @@ void ConfiguratorWindow::initButtonGroup()
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
 {
+    // инициализация виджетов визуализирующих состояние настроек
+    addNewBind(tr("K01"), ui->cboxK01, 0, LIST);
+    addNewBind(tr("K03"), ui->cboxK03, 1, LIST);
+    addNewBind(tr("K06"), ui->cboxK06, 2, LIST);
+    addNewBind(tr("K07"), ui->cboxK07, 3, LIST);
+    addNewBind(tr("K13"), ui->cboxK13, 4, LIST);
+    addNewBind(tr("K14"), ui->cboxK14, 5, LIST);
+    addNewBind(tr("K15"), ui->cboxK15, 6, LIST);
+    addNewBind(tr("K17"), ui->cboxK17, 7, LIST);
+    addNewBind(tr("K18"), ui->cboxK18, 8, LIST);
+    addNewBind(tr("K23"), ui->cboxK23, 9, LIST);
+    addNewBind(tr("K26"), ui->cboxK26, 10, LIST);
+    addNewBind(tr("K32"), ui->cboxK32, 11, LIST);
+    addNewBind(tr("K33"), ui->cboxK33, 12, LIST);
+    addNewBind(tr("K34"), ui->cboxK34, 13, LIST);
+    addNewBind(tr("K35"), ui->cboxK35, 14, LIST);
+    addNewBind(tr("K36"), ui->cboxK36, 15, LIST);
+    addNewBind(tr("K37"), ui->cboxK37, 16, LIST);
+    addNewBind(tr("K38"), ui->cboxK38, 17, LIST);
+    addNewBind(tr("K39"), ui->cboxK39, 18, LIST);
+    addNewBind(tr("K40"), ui->cboxK40, 19, LIST);
+    addNewBind(tr("K41"), ui->cboxK41, 20, LIST);
+    addNewBind(tr("M04"), ui->cboxM04, 21, LIST);
+    addNewBind(tr("M05"), ui->cboxM05, 22, LIST);
+    addNewBind(tr("M09"), ui->cboxM09, 23, LIST);
+    addNewBind(tr("M13"), ui->cboxM13, 24, LIST);
+    addNewBind(tr("M16"), ui->cboxM16, 25, LIST);
+    addNewBind(tr("M19"), ui->cboxM19, 26, LIST);
+    addNewBind(tr("M22"), ui->cboxM22, 27, LIST);
+    addNewBind(tr("M25"), ui->cboxM25, 28, LIST);
+    addNewBind(tr("M29"), ui->cboxM29, 29, LIST);
+    addNewBind(tr("M32"), ui->cboxM32, 30, LIST);
+    addNewBind(tr("M35"), ui->cboxM35, 31, LIST);
+    addNewBind(tr("M38"), ui->cboxM38, 32, LIST);
+    addNewBind(tr("M39"), ui->cboxM39, 33, LIST);
+    addNewBind(tr("M40"), ui->cboxM40, 34, LIST);
+    addNewBind(tr("M43"), ui->cboxM43, 35, LIST);
+    addNewBind(tr("M44"), ui->cboxM44, 36, LIST);
+    addNewBind(tr("M45"), ui->cboxM45, 37, LIST);
+    addNewBind(tr("M48"), ui->cboxM48, 38, LIST);
+    addNewBind(tr("M51"), ui->cboxM51, 39, LIST);
+    addNewBind(tr("M55"), ui->cboxM55, 40, LIST);
+    addNewBind(tr("M59"), ui->cboxM59, 41, LIST);
+    addNewBind(tr("M63"), ui->cboxM63, 42, LIST);
+    addNewBind(tr("M65"), ui->cboxM65, 43, LIST);
+    addNewBind(tr("M66"), ui->cboxM66, 44, LIST);
+    addNewBind(tr("M71"), ui->cboxM71, 45, LIST);
+    addNewBind(tr("M73"), ui->cboxM73, 46, LIST);
+    addNewBind(tr("M75"), ui->cboxM75, 47, LIST);
+    addNewBind(tr("M77"), ui->cboxM77, 48, LIST);
+    addNewBind(tr("M81"), ui->cboxM81, 49, LIST);
+    addNewBind(tr("M87"), ui->cboxM87, 50, LIST);
+    addNewBind(tr("M90"), ui->cboxM90, 51, LIST);
+    addNewBind(tr("M93"), ui->cboxM93, 52, LIST);
+    addNewBind(tr("M95"), ui->cboxM95, 53, LIST);
+
+    // инициализация виджетов максимальных токовых защит
+    addNewBind(tr("M06"), ui->leM06, 128, FLOAT);
+    addNewBind(tr("M08"), ui->leM08, 130, FLOAT);
+    addNewBind(tr("K31"), ui->leK31, 132, FLOAT);
+    addNewBind(tr("X01"), ui->leX01, 134, FLOAT);
+    addNewBind(tr("X02"), nullptr, 136, FLOAT);
+    addNewBind(tr("M10"), ui->leM10, 138, FLOAT);
+    addNewBind(tr("M11"), ui->leM11, 140, FLOAT);
+    addNewBind(tr("M12"), ui->leM12, 142, FLOAT);
+    addNewBind(tr("X03"), ui->leX03, 144, FLOAT);
+    addNewBind(tr("M14"), ui->leM14, 146, FLOAT);
+    addNewBind(tr("K22"), ui->leK22, 148, FLOAT);
+    addNewBind(tr("M15"), ui->leM15, 150, FLOAT);
+    addNewBind(tr("X04"), ui->leX04, 152, FLOAT);
+    addNewBind(tr("M17"), ui->leM17, 154, FLOAT);
+    addNewBind(tr("M18"), ui->leM18, 156, FLOAT);
+    addNewBind(tr("K20"), ui->leK20, 158, FLOAT);
+    addNewBind(tr("M07"), ui->leM07, 160, FLOAT);
+    addNewBind(tr("X05"), ui->leX05, 162, FLOAT);
+    addNewBind(tr("X05a"), ui->leX05a, 164, FLOAT);
+
+    // инициализация виджетов земельных защит
+    addNewBind(tr("M23"), ui->leM23, 166, FLOAT);
+    addNewBind(tr("M24"), ui->leM24, 168, FLOAT);
+    addNewBind(tr("X07"), ui->leX07, 170, FLOAT);
+    addNewBind(tr("K24"), ui->leK24, 172, FLOAT);
+    addNewBind(tr("K25"), ui->leK25, 174, FLOAT);
+    addNewBind(tr("X07a"), ui->leX07a, 176, FLOAT);
+    addNewBind(tr("M26"), ui->leM26, 178, FLOAT);
+    addNewBind(tr("M27"), ui->leM27, 180, FLOAT);
+    addNewBind(tr("K21"), ui->leK21, 182, FLOAT);
+    addNewBind(tr("M28"), ui->leM28, 184, FLOAT);
+    addNewBind(tr("X08"), ui->leX08, 186, FLOAT);
+    addNewBind(tr("X09"), ui->leX09, 188, FLOAT);
+    addNewBind(tr("K27"), ui->leK27, 190, FLOAT);
+    addNewBind(tr("K28"), ui->leK28, 192, FLOAT);
+    addNewBind(tr("K29"), ui->leK29, 194, FLOAT);
+    addNewBind(tr("K30"), ui->leK30, 196, FLOAT);
+    addNewBind(tr("X08a"), ui->leX08a, 198, FLOAT);
+    addNewBind(tr("X09a"), ui->leX09a, 200, FLOAT);
+
+    // инициализация виджетов защит напряжения
+    addNewBind(tr("M49"), ui->leM49, 202, FLOAT);
+    addNewBind(tr("M50"), ui->leM50, 204, FLOAT);
+    addNewBind(tr("X15"), ui->leX15, 206, FLOAT);
+    addNewBind(tr("M33"), ui->leM33, 208, FLOAT);
+    addNewBind(tr("M34"), ui->leM34, 210, FLOAT);
+    addNewBind(tr("X11"), ui->leX11, 212, FLOAT);
+    addNewBind(tr("M36"), ui->leM36, 214, FLOAT);
+    addNewBind(tr("M37"), ui->leM37, 216, FLOAT);
+    addNewBind(tr("X12"), ui->leX12, 218, FLOAT);
+    addNewBind(tr("M41"), ui->leM41, 220, FLOAT);
+    addNewBind(tr("M42"), ui->leM42, 222, FLOAT);
+    addNewBind(tr("X13"), ui->leX13, 224, FLOAT);
+    addNewBind(tr("M46"), ui->leM46, 226, FLOAT);
+    addNewBind(tr("M47"), ui->leM47, 228, FLOAT);
+    addNewBind(tr("X14"), ui->leX14, 230, FLOAT);
+
+    // инициализация виджетов защит двигателя
+    addNewBind(tr("M20"), ui->leM20, 232, FLOAT);
+    addNewBind(tr("M21"), ui->leM21, 234, FLOAT);
+    addNewBind(tr("X06"), ui->leX06, 236, FLOAT);
+    addNewBind(tr("M30"), ui->leM30, 238, FLOAT);
+    addNewBind(tr("M31"), ui->leM31, 240, FLOAT);
+    addNewBind(tr("X10"), ui->leX10, 242, FLOAT);
+
+    // инициализация виджетов защит по частоте
+    addNewBind(tr("M52"), ui->leM52, 244, FLOAT);
+    addNewBind(tr("M53"), ui->leM53, 246, FLOAT);
+    addNewBind(tr("M54"), ui->leM54, 248, FLOAT);
+    addNewBind(tr("X16"), ui->leX16, 250, FLOAT);
+    addNewBind(tr("M56"), ui->leM56, 252, FLOAT);
+    addNewBind(tr("M57"), ui->leM57, 254, FLOAT);
+    addNewBind(tr("M58"), ui->leM58, 256, FLOAT);
+    addNewBind(tr("X17"), ui->leX17, 258, FLOAT);
+    addNewBind(tr("M60"), ui->leM60, 260, FLOAT);
+    addNewBind(tr("M61"), ui->leM61, 262, FLOAT);
+    addNewBind(tr("M62"), ui->leM62, 264, FLOAT);
+    addNewBind(tr("X18"), ui->leX18, 266, FLOAT);
+
+    // инициализация виджетов внешних защит
+    addNewBind(tr("M64"), ui->leM64, 268, FLOAT);
+    addNewBind(tr("X19"), ui->leX19, 270, FLOAT);
+    addNewBind(tr("M72"), ui->leM72, 272, FLOAT);
+    addNewBind(tr("M74"), ui->leM74, 274, FLOAT);
+    addNewBind(tr("M76"), ui->leM76, 276, FLOAT);
+
+    // инициализация виджетов защит по температуре
+    addNewBind(tr("M67"), ui->leM67, 278, FLOAT);
+    addNewBind(tr("M69"), ui->leM69, 280, FLOAT);
+    addNewBind(tr("X20"), ui->leX20, 282, FLOAT);
+    addNewBind(tr("M68"), ui->leM68, 284, FLOAT);
+    addNewBind(tr("M70"), ui->leM70, 286, FLOAT);
+    addNewBind(tr("X21"), ui->leX21, 288, FLOAT);
+
+    // инициализация виджетов уровневых защит
+    addNewBind(tr("M78"), ui->leM78, 290, FLOAT);
+    addNewBind(tr("M79"), ui->leM79, 292, FLOAT);
+
+    // инициализация виджетов защит  БРУ
+    addNewBind(tr("M96"), ui->leM96, 294, FLOAT);
+    addNewBind(tr("M97"), ui->leM97, 296, FLOAT);
+    addNewBind(tr("M98"), ui->leM98, 298, FLOAT);
+    addNewBind(tr("M99"), ui->leM99, 300, FLOAT);
+
+    // инициализация виджетов вакуумных защит
+    addNewBind(tr("M91"), ui->leM91, 302, FLOAT);
+    addNewBind(tr("M92"), ui->leM92, 304, FLOAT);
+    addNewBind(tr("X23"), ui->leX23, 306, FLOAT);
+
+    // инициализация виджетов автоматики
+    addNewBind(tr("M82"), ui->leM82, 308, FLOAT);
+    addNewBind(tr("M83"), ui->leM83, 310, FLOAT);
+    addNewBind(tr("M84"), ui->leM84, 312, FLOAT);
+    addNewBind(tr("M85"), ui->leM85, 314, FLOAT);
+    addNewBind(tr("M88"), ui->leM88, 316, FLOAT);
+    addNewBind(tr("M89"), ui->leM89, 318, FLOAT);
+
+    // инициализация виджетов коммутационных аппаратов
+    addNewBind(tr("K02"), ui->leK02, 320, FLOAT);
+    addNewBind(tr("K04"), ui->leK04, 322, FLOAT);
+    addNewBind(tr("K05"), ui->leK05, 324, FLOAT);
+    addNewBind(tr("K09"), ui->leK09, 326, FLOAT);
+    addNewBind(tr("K08"), ui->leK08, 328, FLOAT);
+    addNewBind(tr("X22"), ui->leX22, 330, FLOAT);
+    addNewBind(tr("K12"), nullptr, 332, FLOAT);
+    addNewBind(tr("K19"), nullptr, 334, FLOAT);
+    addNewBind(tr("K42"), ui->leK42, 336, FLOAT);
+    addNewBind(tr("K46"), ui->leK46, 338, FLOAT);
+    addNewBind(tr("K43"), ui->leK43, 340, FLOAT);
+    addNewBind(tr("K47"), ui->leK47, 342, FLOAT);
+    addNewBind(tr("K44"), ui->leK44, 344, FLOAT);
+    addNewBind(tr("K48"), ui->leK48, 346, FLOAT);
+    addNewBind(tr("K45"), ui->leK45, 348, FLOAT);
+    addNewBind(tr("K49"), ui->leK49, 350, FLOAT);
+    addNewBind(tr("T02"), ui->leT02, 352, FLOAT);
+    addNewBind(tr("K10"), nullptr, 354, FLOAT);
+
+    // инициализация виджетов аналоговые входы
     addNewBind(tr("M01"), ui->leM01, 356, FLOAT);
     addNewBind(tr("M02"), ui->leM02, 358, FLOAT);
     addNewBind(tr("M03"), ui->leM03, 360, FLOAT);
@@ -1863,377 +1692,81 @@ void ConfiguratorWindow::initCellBind()
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
-//    union
-//    {
-//        quint16 word[2];
-//        float   value;
-//    } cell_value;
-    
-//    for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-//    {
-//        quint16 value1 = values.at(i);
-//        quint16 value2 = values.at(i + 1);
-        
-//        cell_value.word[0] = value1;
-//        cell_value.word[1] = value2;
-        
-//        m_calculate_cell.at(j)->setText(/*QString::number(cell_value.value, 'f', 6)*/"yes");
-//    }
     m_calculateWidget->setData(values);
 }
-//---------------------------------------------------------------------
-void ConfiguratorWindow::displayInAnalogValues(QVector<quint16> values)
+//-----------------------------------------------------------
+void ConfiguratorWindow::displayResponse(CDataUnitType& unit)
 {
+    if(unit.is_empty())
+        return;
+
+    QString first_key  = unit.property("FIRST").toString();
+    QString second_key = unit.property("LAST").toString();
+
+    QVector<QWidget*> list = listWidget(first_key, second_key);
+
+    if(list.isEmpty())
+        return;
+
+    int index = 0;
+
     union
     {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-    
-    for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        quint16 b[2];
+        float   f;
+        int     i;
+    } value;
+
+    for(QWidget* wgt: list)
     {
-        quint16 value1 = values.at(i + 1);
-        quint16 value2 = values.at(i);
-        
-        cell_value.word[0] = value1;
-        cell_value.word[1] = value2;
-        
-        m_in_analog_cell.at(j)->setText(QString::number(cell_value.value, 'f', 6));
-    }
-}
-//-----------------------------------------------------------------------
-void ConfiguratorWindow::displayControlStateValues(QVector<quint16> values)
-{     
-    if(values.count() == 54)
-    {
-        for(quint8 i = 0; i < values.count(); i++)
+        if(index >= unit.valueCount())
+            break;
+
+        if(!wgt)
         {
-            quint16 value = values.at(i);
-            
-            QComboBox* cbItem = m_control_cell.at(i);
-
-            if(cbItem == ui->cboxM65)
-                ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(value);
-
-            if(cbItem == ui->cboxM66)
-                ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(value);
-
-            if(cbItem == ui->cboxM77)
-                ui->cboxM77->setCurrentIndex(value);
-            
-            cbItem->setCurrentIndex(value);
+            index += 2;
+            continue;
         }
-    }
-}
-//-----------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionMTZSetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
 
-    if(values.count() == 38)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        WidgetType type = (WidgetType)wgt->property("TYPE").toInt();
+
+        if(type != LIST)
         {
-            if(i == 6)
+            QLineEdit* edit = qobject_cast<QLineEdit*>(wgt);
+
+            if(edit)
             {
-                j--;
-                continue;
+                quint16 val1 = unit.values().at(index + 1);
+                quint16 val2 = unit.values().at(index);
+
+                value.b[0] = val1;
+                value.b[1] = val2;
+
+                QString str = "";
+
+                if(type == INT)
+                    str = QString::number(value.i);
+                else if(type == FLOAT)
+                    str = QString::number(value.f, 'f', 6);
+
+                if(!str.isEmpty())
+                    edit->setText(str);
+
+                index += 2;
             }
-
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionMTZ_cell.at(j);
-
-            if(item != ui->leK20)
-                item->setText(QString::number(cell_value.value, 'f', 6));
-            else
-                item->setText(QString::number((int)cell_value.value));
         }
-    }
-}
-//--------------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionEarthySetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 36)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
+        else if(type == LIST)
         {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
+            QComboBox* box = qobject_cast<QComboBox*>(wgt);
 
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
+            if(box)
+            {
+                quint16 i = unit.values().at(index);
 
-            QLineEdit* item = m_protectionEarthy_cell.at(j);
+                box->setCurrentIndex(i);
 
-            if(item != ui->leK21 && item != ui->leK29)
-                item->setText(QString::number(cell_value.value, 'f', 6));
-            else
-                item->setText(QString::number((int)cell_value.value));
-        }
-    }
-}
-//-------------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionPowerSetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 30)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionPower_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//-------------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionMotorSetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 12)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionMotor_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//-----------------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionFrequencySetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 24)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionFrequency_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//----------------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionExternalSetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 10)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionExternal_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//-------------------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionTemperatureSetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 12)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionTemperature_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//-------------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionLevelSetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 4)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionLevel_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//-----------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionBruSetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 8)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionBru_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//--------------------------------------------------------------------------------
-void ConfiguratorWindow::displayProtectionVacuumSetValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 6)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_protectionVacuum_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//-----------------------------------------------------------------------
-void ConfiguratorWindow::displayAutomationValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 12)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_automation_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
-        }
-    }
-}
-//-------------------------------------------------------------------------
-void ConfiguratorWindow::displaySwitchDeviceValues(QVector<quint16> values)
-{
-    union
-    {
-        quint16 word[2];
-        float   value;
-    } cell_value;
-
-    if(values.count() == 30)
-    {
-        for(quint8 i = 0, j = 0; i < values.count() - 1; i += 2, j++)
-        {
-            quint16 value1 = values.at(i + 1);
-            quint16 value2 = values.at(i);
-
-            cell_value.word[0] = value1;
-            cell_value.word[1] = value2;
-
-            QLineEdit* item = m_switch_device_cell.at(j);
-
-            item->setText(QString::number(cell_value.value, 'f', 6));
+                index++;
+            }
         }
     }
 }
@@ -2382,22 +1915,93 @@ int ConfiguratorWindow::sizeBindBlock(const QString& first_key, const QString& s
     return -1;
 }
 //-------------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendReadRequest(const QString& first_key, const QString& second_key)
+void ConfiguratorWindow::sendReadRequest(const QString& first_key, const QString& second_key,
+                                         CDataUnitType::FunctionType type, int size)
 {
-    int size = sizeBindBlock(first_key, second_key);
-
     if(size <= 0)
         return;
 
     int addr = addressKey(first_key);
 
-    qDebug() << "addr = " << addr;
+    CDataUnitType unit(ui->sboxSlaveID->value(), type, addr, QVector<quint16>() << size);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr,
-                       QVector<quint16>() << size);
+    unit.setProperty(tr("REQUEST"), GENERAL_TYPE);
+    unit.setProperty(tr("FIRST"), first_key);
+    unit.setProperty(tr("LAST"), second_key);
+
+    m_modbusDevice->request(unit);
+}
+//--------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendWriteRequest(const QString& first_key, const QString& second_key)
+{
+    if(first_key.isEmpty() || second_key.isEmpty())
+        return;
+
+    int addr = addressKey(first_key);
+
+    if(addr == -1)
+        return;
+
+    union
+    {
+        quint16 b[2];
+        float f;
+        int i;
+    } value;
+
+    QVector<quint16>  data;
+    QVector<QWidget*> list = listWidget(first_key, second_key);
+
+    if(list.isEmpty())
+        return;
+
+    for(QWidget* wgt: list)
+    {
+        if(!wgt)
+        {
+            data.append(0.0f);
+            data.append(0.0f);
+
+            continue;
+        }
+
+        WidgetType type = (WidgetType)wgt->property("TYPE").toInt();
+
+        if(type != LIST)
+        {
+            QLineEdit* edit = qobject_cast<QLineEdit*>(wgt);
+
+            if(!edit)
+                continue;
+
+            if(type == INT)
+                value.i = edit->text().toInt();
+            else if(type == FLOAT)
+                value.f = edit->text().toFloat();
+
+            data.append(value.b[1]);
+            data.append(value.b[0]);
+        }
+        else if(type == LIST)
+        {
+            QComboBox* box = qobject_cast<QComboBox*>(wgt);
+
+            if(!box)
+                continue;
+
+            data.append((quint16)box->currentIndex());
+        }
+    }
+
+    CDataUnitType::FunctionType funType = ((data.count() == 1)?CDataUnitType::WriteSingleRegister:
+                                                               CDataUnitType::WriteMultipleRegisters);
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addr, data);
 
     unit.setProperty(tr("FIRST"), first_key);
     unit.setProperty(tr("LAST"), second_key);
+
+    m_modbusDevice->request(unit);
 }
 //----------------------------------------------------------
 int ConfiguratorWindow::addressKey(const QString& key) const
@@ -2418,6 +2022,33 @@ int ConfiguratorWindow::addressKey(const QString& key) const
 
     return addr;
 }
+//---------------------------------------------------------------------------------------------------
+QVector<QWidget*> ConfiguratorWindow::listWidget(const QString& first_key, const QString& second_key)
+{
+    QVector<QWidget*> list;
+
+    bool flag_key = false;
+
+    for(int i = 0; i < m_cell_list.count(); i++)
+    {
+        if(!flag_key && m_cell_list.at(i).first == first_key)
+        {
+            list.append(m_cell_list.at(i).second);
+            flag_key = true;
+        }
+        else if(flag_key && m_cell_list.at(i).first == second_key)
+        {
+            list.append(m_cell_list.at(i).second);
+            break;
+        }
+        else if(flag_key)
+        {
+            list.append(m_cell_list.at(i).second);
+        }
+    }
+
+    return list;
+}
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
@@ -2426,8 +2057,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
     connect(m_modbusDevice, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
-//    connect(ui->pbtnReadInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRead);
-//    connect(ui->pbtnWriteInputAnalog, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationWrite);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
     connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
@@ -2440,8 +2069,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_protect_level_group, SIGNAL(buttonClicked(int)), this, SLOT(protectLevelChangedID(int)));
     connect(m_switch_device_group, SIGNAL(buttonClicked(int)), this, SLOT(switchDeviceChangedID(int)));
     connect(m_additional_group, SIGNAL(buttonClicked(int)), this, SLOT(additionalChangedID(int)));
-//    connect(ui->pbtnReadProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionRead);
-//    connect(ui->pbtnWriteProtection, &QPushButton::clicked, this, &ConfiguratorWindow::protectionWrite);
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
