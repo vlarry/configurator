@@ -171,6 +171,12 @@ void CModbus::disconnectDevice()
 //----------------------------------------
 void CModbus::request(CDataUnitType& unit)
 {
+    if(!m_device->isOpen())
+    {
+        emit errorDevice(tr("Порт <") + m_device->portName() + tr("> закрыт."));
+        return;
+    }
+
     if(unit.is_empty())
         return;
     
@@ -327,12 +333,7 @@ void CModbus::readyRead()
         
         return;
     }
-    
-    CDataUnitType unit;
-    
-    unit.setSlaveID(data.at(0));
-    unit.setFunctionType((CDataUnitType::FunctionType)data.at(1));
-    
+
     QVector<quint16> values;
     
     for(quint8 i = 3; i < data.count() - 1; i += 2)
@@ -343,9 +344,10 @@ void CModbus::readyRead()
         values.append((quint16)(mbs << 8) | lbs);
     }
     
+    CDataUnitType unit = m_request_cur;
+
     unit.setValues(values);
-    unit.setProperties(m_request_cur.properties());
-    
+
     emit dataReady(unit);
     
     unblock();

@@ -55,278 +55,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
         m_logFile->write(tr("Запуск программы...").toStdString().c_str());
 
     refreshSerialPort();
-
-    m_in_analog_cell.append(ui->leM01);
-    m_in_analog_cell.append(ui->leM02);
-    m_in_analog_cell.append(ui->leM03);
-    m_in_analog_cell.append(ui->leKIA);
-    m_in_analog_cell.append(ui->leKIB);
-    m_in_analog_cell.append(ui->leKIC);
-    m_in_analog_cell.append(ui->leK3I0);
-    m_in_analog_cell.append(ui->leKUA);
-    m_in_analog_cell.append(ui->leKUB);
-    m_in_analog_cell.append(ui->leKUC);
-    m_in_analog_cell.append(ui->leK3U0);
-    m_in_analog_cell.append(ui->leKUS);
-    m_in_analog_cell.append(ui->leKUAB);
-    m_in_analog_cell.append(ui->leKUBC);
-    m_in_analog_cell.append(ui->leKUCA);
-    m_in_analog_cell.append(ui->leK3U0X);
-    m_in_analog_cell.append(ui->leKUAX);
-    m_in_analog_cell.append(ui->leKUBX);
-    m_in_analog_cell.append(ui->leKUCX);
-    m_in_analog_cell.append(ui->leKU0X);
-    m_in_analog_cell.append(ui->leKU0X_);
-
-    m_protectionMTZ_cell.append(ui->leM06);
-    m_protectionMTZ_cell.append(ui->leM08);
-    m_protectionMTZ_cell.append(ui->leK31);
-    m_protectionMTZ_cell.append(ui->leX01);
-    m_protectionMTZ_cell.append(ui->leM10);
-    m_protectionMTZ_cell.append(ui->leM11);
-    m_protectionMTZ_cell.append(ui->leM12);
-    m_protectionMTZ_cell.append(ui->leX03);
-    m_protectionMTZ_cell.append(ui->leM14);
-    m_protectionMTZ_cell.append(ui->leK22);
-    m_protectionMTZ_cell.append(ui->leM15);
-    m_protectionMTZ_cell.append(ui->leX04);
-    m_protectionMTZ_cell.append(ui->leM17);
-    m_protectionMTZ_cell.append(ui->leM18);
-    m_protectionMTZ_cell.append(ui->leK20);
-    m_protectionMTZ_cell.append(ui->leM07);
-    m_protectionMTZ_cell.append(ui->leX05);
-    m_protectionMTZ_cell.append(ui->leX05a);
-
-    m_protectionEarthy_cell.append(ui->leM23);
-    m_protectionEarthy_cell.append(ui->leM24);
-    m_protectionEarthy_cell.append(ui->leX07);
-    m_protectionEarthy_cell.append(ui->leK24);
-    m_protectionEarthy_cell.append(ui->leK25);
-    m_protectionEarthy_cell.append(ui->leX07a);
-    m_protectionEarthy_cell.append(ui->leM26);
-    m_protectionEarthy_cell.append(ui->leM27);
-    m_protectionEarthy_cell.append(ui->leK21);
-    m_protectionEarthy_cell.append(ui->leM28);
-    m_protectionEarthy_cell.append(ui->leX08);
-    m_protectionEarthy_cell.append(ui->leX09);
-    m_protectionEarthy_cell.append(ui->leK27);
-    m_protectionEarthy_cell.append(ui->leK28);
-    m_protectionEarthy_cell.append(ui->leK29);
-    m_protectionEarthy_cell.append(ui->leK30);
-    m_protectionEarthy_cell.append(ui->leX08a);
-    m_protectionEarthy_cell.append(ui->leX09a);
-
-    m_protectionPower_cell.append(ui->leM49);
-    m_protectionPower_cell.append(ui->leM50);
-    m_protectionPower_cell.append(ui->leX15);
-    m_protectionPower_cell.append(ui->leM33);
-    m_protectionPower_cell.append(ui->leM34);
-    m_protectionPower_cell.append(ui->leX11);
-    m_protectionPower_cell.append(ui->leM36);
-    m_protectionPower_cell.append(ui->leM37);
-    m_protectionPower_cell.append(ui->leX12);
-    m_protectionPower_cell.append(ui->leM41);
-    m_protectionPower_cell.append(ui->leM42);
-    m_protectionPower_cell.append(ui->leX13);
-    m_protectionPower_cell.append(ui->leM46);
-    m_protectionPower_cell.append(ui->leM47);
-    m_protectionPower_cell.append(ui->leX14);
-
-    m_protectionMotor_cell.append(ui->leM20);
-    m_protectionMotor_cell.append(ui->leM21);
-    m_protectionMotor_cell.append(ui->leX06);
-    m_protectionMotor_cell.append(ui->leM30);
-    m_protectionMotor_cell.append(ui->leM31);
-    m_protectionMotor_cell.append(ui->leX10);
-
-    m_protectionFrequency_cell.append(ui->leM52);
-    m_protectionFrequency_cell.append(ui->leM53);
-    m_protectionFrequency_cell.append(ui->leM54);
-    m_protectionFrequency_cell.append(ui->leX16);
-    m_protectionFrequency_cell.append(ui->leM56);
-    m_protectionFrequency_cell.append(ui->leM57);
-    m_protectionFrequency_cell.append(ui->leM58);
-    m_protectionFrequency_cell.append(ui->leX17);
-    m_protectionFrequency_cell.append(ui->leM60);
-    m_protectionFrequency_cell.append(ui->leM61);
-    m_protectionFrequency_cell.append(ui->leM62);
-    m_protectionFrequency_cell.append(ui->leX18);
-
-    m_protectionExternal_cell.append(ui->leM64);
-    m_protectionExternal_cell.append(ui->leX19);
-    m_protectionExternal_cell.append(ui->leM72);
-    m_protectionExternal_cell.append(ui->leM74);
-    m_protectionExternal_cell.append(ui->leM76);
-
-    m_protectionTemperature_cell.append(ui->leM67);
-    m_protectionTemperature_cell.append(ui->leM69);
-    m_protectionTemperature_cell.append(ui->leX20);
-    m_protectionTemperature_cell.append(ui->leM68);
-    m_protectionTemperature_cell.append(ui->leM70);
-    m_protectionTemperature_cell.append(ui->leX21);
-
-    m_protectionLevel_cell.append(ui->leM78);
-    m_protectionLevel_cell.append(ui->leM79);
-
-    m_protectionBru_cell.append(ui->leM96);
-    m_protectionBru_cell.append(ui->leM97);
-    m_protectionBru_cell.append(ui->leM98);
-    m_protectionBru_cell.append(ui->leM99);
-
-    m_protectionVacuum_cell.append(ui->leM91);
-    m_protectionVacuum_cell.append(ui->leM92);
-    m_protectionVacuum_cell.append(ui->leX23);
-
-    m_automation_cell.append(ui->leM82);
-    m_automation_cell.append(ui->leM83);
-    m_automation_cell.append(ui->leM84);
-    m_automation_cell.append(ui->leM85);
-    m_automation_cell.append(ui->leM88);
-    m_automation_cell.append(ui->leM89);
-
-    m_switch_device_cell.append(ui->leK02);
-    m_switch_device_cell.append(ui->leK04);
-    m_switch_device_cell.append(ui->leK05);
-    m_switch_device_cell.append(ui->leK09);
-    m_switch_device_cell.append(ui->leK08);
-    m_switch_device_cell.append(ui->leX22);
-    m_switch_device_cell.append(ui->leK42);
-    m_switch_device_cell.append(ui->leK46);
-    m_switch_device_cell.append(ui->leK43);
-    m_switch_device_cell.append(ui->leK47);
-    m_switch_device_cell.append(ui->leK44);
-    m_switch_device_cell.append(ui->leK48);
-    m_switch_device_cell.append(ui->leK45);
-    m_switch_device_cell.append(ui->leK49);
-    m_switch_device_cell.append(ui->leT02);
-
-    m_control_cell.append(ui->cboxK01);
-    m_control_cell.append(ui->cboxK03);
-    m_control_cell.append(ui->cboxK06);
-    m_control_cell.append(ui->cboxK07);
-    m_control_cell.append(ui->cboxK13);
-    m_control_cell.append(ui->cboxK14);
-    m_control_cell.append(ui->cboxK15);
-    m_control_cell.append(ui->cboxK17);
-    m_control_cell.append(ui->cboxK18);
-    m_control_cell.append(ui->cboxK23);
-    m_control_cell.append(ui->cboxK26);
-    m_control_cell.append(ui->cboxK32);
-    m_control_cell.append(ui->cboxK33);
-    m_control_cell.append(ui->cboxK34);
-    m_control_cell.append(ui->cboxK35);
-    m_control_cell.append(ui->cboxK36);
-    m_control_cell.append(ui->cboxK37);
-    m_control_cell.append(ui->cboxK38);
-    m_control_cell.append(ui->cboxK39);
-    m_control_cell.append(ui->cboxK40);
-    m_control_cell.append(ui->cboxK41);
-    m_control_cell.append(ui->cboxM04);
-    m_control_cell.append(ui->cboxM05);
-    m_control_cell.append(ui->cboxM09);
-    m_control_cell.append(ui->cboxM13);
-    m_control_cell.append(ui->cboxM16);
-    m_control_cell.append(ui->cboxM19);
-    m_control_cell.append(ui->cboxM22);
-    m_control_cell.append(ui->cboxM25);
-    m_control_cell.append(ui->cboxM29);
-    m_control_cell.append(ui->cboxM32);
-    m_control_cell.append(ui->cboxM35);
-    m_control_cell.append(ui->cboxM38);
-    m_control_cell.append(ui->cboxM39);
-    m_control_cell.append(ui->cboxM40);
-    m_control_cell.append(ui->cboxM43);
-    m_control_cell.append(ui->cboxM44);
-    m_control_cell.append(ui->cboxM45);
-    m_control_cell.append(ui->cboxM48);
-    m_control_cell.append(ui->cboxM51);
-    m_control_cell.append(ui->cboxM55);
-    m_control_cell.append(ui->cboxM59);
-    m_control_cell.append(ui->cboxM63);
-    m_control_cell.append(ui->cboxM65); // тоже самое выводится в temp2_sensor1
-    m_control_cell.append(ui->cboxM66); // тоже самое выводится в temp2_sensor2
-    m_control_cell.append(ui->cboxM71);
-    m_control_cell.append(ui->cboxM73);
-    m_control_cell.append(ui->cboxM75);
-    m_control_cell.append(ui->cboxM77); // тоже самое выводится в level2_ctrl
-    m_control_cell.append(ui->cboxM81);
-    m_control_cell.append(ui->cboxM87);
-    m_control_cell.append(ui->cboxM90);
-    m_control_cell.append(ui->cboxM93);
-    m_control_cell.append(ui->cboxM95);
-
-    for(QLineEdit* ledit: m_in_analog_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionMTZ_cell)
-    {
-        if(ledit != ui->leK20)
-        {
-            ledit->setValidator(new QDoubleValidator);
-        }
-        else
-            ledit->setValidator(new QIntValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionEarthy_cell)
-    {
-        if(ledit != ui->leK21 || ledit != ui->leK29)
-            ledit->setValidator(new QDoubleValidator);
-        else
-            ledit->setValidator(new QIntValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionPower_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionMotor_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionFrequency_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionExternal_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionTemperature_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionLevel_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionBru_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_protectionVacuum_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_automation_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
-
-    for(QLineEdit* ledit: m_switch_device_cell)
-    {
-        ledit->setValidator(new QDoubleValidator);
-    }
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -438,27 +166,7 @@ void ConfiguratorWindow::inAnalogRead()
 //--------------------------------------
 void ConfiguratorWindow::inAnalogWrite()
 {
-    QVector<quint16> data;
-    
-    union
-    {
-        quint16 b[2];
-        float   v;
-    } value;
-    
-    for(quint8 i = 0; i < m_in_analog_cell.count(); i++)
-    {
-        value.v = m_in_analog_cell.at(i)->text().toFloat();
-        
-        data.append(value.b[1]);
-        data.append(value.b[0]);
-    }
-    
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 
-                       IN_ANALOG_ADDRESS, data);
-    unit.setProperty(tr("REQUEST"), IN_ANALOG_TYPE);
-
-    m_modbusDevice->request(unit);
+    sendWriteRequest(tr("M01"), tr("KU0X_"));
 }
 //-----------------------------------------
 void ConfiguratorWindow::controlStateRead()
@@ -1179,19 +887,19 @@ void ConfiguratorWindow::writeSetCurrent()
         break;
 
         case 10:
-            protectionVacuumSetWrite(); // запись настроек вакуумных защит
-        break;
-
-        case 11:
             protectionBruSetWrite(); // запись настроек защит БРУ
         break;
 
+        case 11:
+            protectionVacuumSetWrite(); // запись настроек вакуумных защит
+        break;
+
         case 12:
-            automationSetWrite(); // запись настроек автоматики
+            switchDeviceSetWrite(); // запись настроек коммутационных аппаратов
         break;
 
         case 13:
-            switchDeviceSetWrite(); // запись настроек коммутационных аппаратов
+            automationSetWrite(); // запись настроек автоматики
         break;
 
         case 14:

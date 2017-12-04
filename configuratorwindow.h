@@ -173,24 +173,9 @@
             QButtonGroup*           m_protect_level_group;
             QButtonGroup*           m_switch_device_group;
             QButtonGroup*           m_additional_group;
-            QVector<QLineEdit*>     m_calculate_cell;
-            QVector<QLineEdit*>     m_in_analog_cell;
-            QVector<QLineEdit*>     m_protectionMTZ_cell;
-            QVector<QLineEdit*>     m_protectionEarthy_cell;
-            QVector<QLineEdit*>     m_protectionPower_cell;
-            QVector<QLineEdit*>     m_protectionMotor_cell;
-            QVector<QLineEdit*>     m_protectionFrequency_cell;
-            QVector<QLineEdit*>     m_protectionExternal_cell;
-            QVector<QLineEdit*>     m_protectionTemperature_cell;
-            QVector<QLineEdit*>     m_protectionLevel_cell;
-            QVector<QLineEdit*>     m_protectionVacuum_cell;
-            QVector<QLineEdit*>     m_protectionBru_cell;
-            QVector<QLineEdit*>     m_automation_cell;
-            QVector<QLineEdit*>     m_switch_device_cell;
-
-            QVector<QComboBox*>     m_control_cell;
-
             CVersionSoftware*       m_versionWidget;
+
+            QVector<QPair<QString, QWidget*> > m_cell_list;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;
@@ -220,8 +205,5 @@
             QTreeWidgetItem* itemProtectLevel;
             QTreeWidgetItem* itemProtectBRU;
             QTreeWidgetItem* itemProtectVacuum;
-
-
-            QVector<QPair<QString, QWidget*> > m_cell_list;
     };
 #endif // CONFIGURATORWINDOW_H
