@@ -656,7 +656,7 @@
        <item>
         <widget class="QStackedWidget" name="stwgtMain">
          <property name="currentIndex">
-          <number>12</number>
+          <number>25</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -14087,6 +14087,34 @@
          <widget class="QWidget" name="pageMeasureElectricPower"/>
          <widget class="QWidget" name="pageMonitorInputDiscret"/>
          <widget class="QWidget" name="pageMonitorOutputDiscret"/>
+         <widget class="QWidget" name="pageSetLedPurpose">
+          <layout class="QVBoxLayout" name="verticalLayout_118">
+           <item>
+            <widget class="QTableView" name="tablewgtLedPurpose"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageSetDiscretInputPurpose">
+          <layout class="QVBoxLayout" name="verticalLayout_119">
+           <item>
+            <widget class="QTableView" name="tablewgtDiscreteInputPurpose"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageSetRelayPurpose">
+          <layout class="QVBoxLayout" name="verticalLayout_120">
+           <item>
+            <widget class="QTableView" name="tablewgtRelayPurpose"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageSetKeyboardPurpose">
+          <layout class="QVBoxLayout" name="verticalLayout_124">
+           <item>
+            <widget class="QTableView" name="tablewgtKeyboardPurpose"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
        <item>

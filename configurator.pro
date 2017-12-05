@@ -32,7 +32,8 @@ SOURCES += \
         cdataunittype.cpp \
     cterminal.cpp \
     qcustomplot.cpp \
-    cversionsoftware.cpp
+    cversionsoftware.cpp \
+    cmatrixpurposemodel.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -42,7 +43,8 @@ HEADERS += \
         cdataunittype.h \
     cterminal.h \
     qcustomplot.h \
-    cversionsoftware.h
+    cversionsoftware.h \
+    cmatrixpurposemodel.h
 
 FORMS += \
         configuratorwindow.ui \

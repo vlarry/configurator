@@ -19,6 +19,7 @@
     #include "cterminal.h"
     #include "qcustomplot.h"
     #include "cversionsoftware.h"
+    #include "cmatrixpurposemodel.h"
     //----------
     namespace Ui 
     {
@@ -32,21 +33,7 @@
         public:
             enum RegisterAddress
             {
-                CALCULATE_ADDRESS                = 64,
-                IN_ANALOG_ADDRESS                = 356,
-                CONTROL_SET_ADDRESS              = 0,
-                PROTECTION_MTZ_SET_ADDRESS       = 128,
-                PROTECTION_EARTHY_SET_ADDRESS    = 166,
-                PROTECTION_POWER_SET_ADDRESS     = 202,
-                PROTECTION_MOTOR_SET_ADDRESS     = 232,
-                PROTECTION_FREQUENCY_SET_ADDRESS = 244,
-                PROTECTION_EXTERNAL_SET_ADDRESS  = 268,
-                PROTECTION_TEMP_SET_ADDRESS      = 278,
-                PROTECTION_LEVEL_SET_ADDRESS     = 290,
-                PROTECTION_BRU_SET_ADDRESS       = 294,
-                PROTECTION_VACUUM_SET_ADDRESS    = 302,
-                AUTOMATION_SET_ADDRESS           = 308,
-                SWITCH_DEV_SET_ADDRESS           = 320
+                CALCULATE_ADDRESS = 64
             };
 
             enum RequestType
@@ -205,5 +192,9 @@
             QTreeWidgetItem* itemProtectLevel;
             QTreeWidgetItem* itemProtectBRU;
             QTreeWidgetItem* itemProtectVacuum;
+            QTreeWidgetItem* itemSetLedPurpose;
+            QTreeWidgetItem* itemSetDiscretInPurpose;
+            QTreeWidgetItem* itemSetRelayPurpose;
+            QTreeWidgetItem* itemSetKeyboardPurpose;
     };
 #endif // CONFIGURATORWINDOW_H

@@ -37,6 +37,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_additional_group          = new QButtonGroup;
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
+
+    CMatrixPurposeModel* model = new CMatrixPurposeModel;
+    ui->tablewgtLedPurpose->setModel(model);
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -698,6 +701,22 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
     {
         ui->stwgtMain->setCurrentIndex(21);
     }
+    else if(itemName == tr("НАЗНАЧЕНИЕ СВЕТОДИОДОВ"))
+    {
+        ui->stwgtMain->setCurrentIndex(22);
+    }
+    else if(itemName == tr("НАЗНАЧЕНИЕ ДИСКРЕТНЫХ ВХОДОВ"))
+    {
+        ui->stwgtMain->setCurrentIndex(23);
+    }
+    else if(itemName == tr("НАЗНАЧЕНИЕ РЕЛЕ"))
+    {
+        ui->stwgtMain->setCurrentIndex(24);
+    }
+    else if(itemName == tr("НАЗНАЧЕНИЕ КЛАВИАТУРЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(25);
+    }
 }
 //-------------------------------------
 void ConfiguratorWindow::readSettings()
@@ -956,10 +975,14 @@ void ConfiguratorWindow::initMenuPanel()
     itemMeasures   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
     itemMonitoring = new QTreeWidgetItem(ui->treewgtDeviceMenu);
 
-    itemSetInputAnalogs   = new QTreeWidgetItem(itemSettings);
-    itemSetProtections    = new QTreeWidgetItem(itemSettings);
-    itemSetDevConnections = new QTreeWidgetItem(itemSettings);
-    itemSetAutomation     = new QTreeWidgetItem(itemSettings);
+    itemSetInputAnalogs     = new QTreeWidgetItem(itemSettings);
+    itemSetProtections      = new QTreeWidgetItem(itemSettings);
+    itemSetDevConnections   = new QTreeWidgetItem(itemSettings);
+    itemSetAutomation       = new QTreeWidgetItem(itemSettings);
+    itemSetLedPurpose       = new QTreeWidgetItem(itemSettings);
+    itemSetDiscretInPurpose = new QTreeWidgetItem(itemSettings);
+    itemSetRelayPurpose     = new QTreeWidgetItem(itemSettings);
+    itemSetKeyboardPurpose  = new QTreeWidgetItem(itemSettings);
 
     itemJournalCrashs = new QTreeWidgetItem(itemJournals);
     itemJournalEvents = new QTreeWidgetItem(itemJournals);
@@ -995,6 +1018,10 @@ void ConfiguratorWindow::initMenuPanel()
     itemSetProtections->setText(0, tr("Защита"));
     itemSetDevConnections->setText(0, tr("Коммутационные аппараты"));
     itemSetAutomation->setText(0, tr("Автоматика"));
+    itemSetLedPurpose->setText(0, tr("Назначение светодиодов"));
+    itemSetDiscretInPurpose->setText(0, tr("Назначение дискретных входов"));
+    itemSetRelayPurpose->setText(0, tr("Назначение реле"));
+    itemSetKeyboardPurpose->setText(0, tr("Назначение клавиатуры"));
 
     itemJournalCrashs->setText(0, tr("Аварий"));
     itemJournalEvents->setText(0, tr("Событий"));
@@ -1030,6 +1057,10 @@ void ConfiguratorWindow::initMenuPanel()
     itemSettings->addChild(itemSetProtections);
     itemSettings->addChild(itemSetDevConnections);
     itemSettings->addChild(itemSetAutomation);
+    itemSettings->addChild(itemSetLedPurpose);
+    itemSettings->addChild(itemSetDiscretInPurpose);
+    itemSettings->addChild(itemSetRelayPurpose);
+    itemSettings->addChild(itemSetKeyboardPurpose);
 
     itemJournals->addChild(itemJournalCrashs);
     itemJournals->addChild(itemJournalEvents);
