@@ -135,6 +135,7 @@
             void initMenuPanel();
             void initButtonGroup();
             void initCellBind();
+            void initTable();
             void displayCalculateValues(QVector<quint16> values);
             void displayResponse(CDataUnitType& unit);
             void versionParser();

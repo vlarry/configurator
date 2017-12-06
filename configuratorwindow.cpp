@@ -37,9 +37,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_additional_group          = new QButtonGroup;
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
-
-    CMatrixPurposeModel* model = new CMatrixPurposeModel;
-    ui->tablewgtLedPurpose->setModel(model);
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -49,6 +46,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initButtonGroup();
     initConnect();
     initCellBind();
+    initTable();
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -1427,6 +1425,19 @@ void ConfiguratorWindow::initCellBind()
     addNewBind(tr("KUCX"), ui->leKUCX, 392, FLOAT);
     addNewBind(tr("KU0X"), ui->leKU0X, 394, FLOAT);
     addNewBind(tr("KU0X_"), ui->leKU0X_, 396, FLOAT);
+}
+//----------------------------------
+void ConfiguratorWindow::initTable()
+{
+    QVector<CRow> rows;
+
+    rows.append(CRow(tr("header 1"), 3));
+
+    CDataTable d(rows, QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3"));
+
+    CMatrixPurposeModel* model = new CMatrixPurposeModel(d);
+
+    ui->tablewgtLedPurpose->setModel(model);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
