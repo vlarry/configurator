@@ -1431,11 +1431,33 @@ void ConfiguratorWindow::initTable()
 {
     QVector<CRow> rows;
 
-    rows.append(CRow(tr("header 1"), 3));
+    rows.append(CRow(tr("Вход 1"), 3));
+    rows.append(CRow(tr("Вход 2"), 3));
+    rows.append(CRow(tr("Вход 3"), 3));
+    rows.append(CRow(tr("Вход 4"), 3));
+    rows.append(CRow(tr("Вход 5"), 3));
+    rows.append(CRow(tr("Вход 6"), 3));
+    rows.append(CRow(tr("Вход 7"), 3));
+    rows.append(CRow(tr("Вход 8"), 3));
+    rows.append(CRow(tr("Вход 9"), 3));
+    rows.append(CRow(tr("Вход 10"), 3));
+    rows.append(CRow(tr("Вход 11"), 3));
+    rows.append(CRow(tr("Вход 12"), 3));
+    rows.append(CRow(tr("Вход 13"), 3));
+    rows.append(CRow(tr("Вход 14"), 3));
+    rows.append(CRow(tr("Вход 15"), 3));
+    rows.append(CRow(tr("Вход 16"), 3));
+    rows.append(CRow(tr("Вход 17"), 3));
+    rows.append(CRow(tr("Вход 18"), 3));
+    rows.append(CRow(tr("Вход 19"), 3));
+    rows.append(CRow(tr("Вход 20"), 3));
 
-    CDataTable d(rows, QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3"));
+    CDataTable led_input_table(rows, QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3"));
 
-    CMatrixPurposeModel* model = new CMatrixPurposeModel(d);
+    led_input_table.setDisableColumns(0, QVector<int>() << 1);
+    led_input_table.setDisableColumns(1, QVector<int>() << 0 << 2);
+
+    CMatrixPurposeModel* model = new CMatrixPurposeModel(led_input_table);
 
     ui->tablewgtLedPurpose->setItemDelegate(new CTableItemDelegate);
     ui->tablewgtLedPurpose->setModel(model);

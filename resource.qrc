@@ -3,6 +3,9 @@
         <file>resource/images/refresh.png</file>
         <file>resource/images/branch_close.png</file>
         <file>resource/images/branch_open.png</file>
+        <file>resource/images/checkbox_disable.png</file>
+        <file>resource/images/checkbox_enable.png</file>
+        <file>resource/images/checkbox_inactive.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

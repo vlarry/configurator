@@ -14,11 +14,14 @@
         public:
             CColumn();
 
+            bool active() const;
             bool state() const;
             void setState(bool state);
+            void setActive(bool active);
 
         private:
             bool m_state;
+            bool m_active;
     };
     class CRow
     {
@@ -27,6 +30,8 @@
             CRow(const QString& header, int columnSize);
 
             const QString& header() const;
+
+            void setInactiveColumnList(QVector<int>& list);
 
             CColumn&       operator [](int index);
             const CColumn& operator [](int index) const;
@@ -44,9 +49,9 @@
             int count() const;
             int columnCounts() const;
 
-            const QString&     columnName(int index) const;
-            const QStringList& columnNames() const;
-            const QStringList  rowNames() const;
+            const QString& columnName(int index) const;
+
+            void setDisableColumns(int row, QVector<int>& list);
 
             CRow&       operator [](int index);
             const CRow& operator [](int index) const;
