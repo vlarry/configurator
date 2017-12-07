@@ -14,6 +14,7 @@
     #include <QFile>
     #include <QTreeWidget>
     #include <QTextStream>
+    #include <QTableWidget>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"

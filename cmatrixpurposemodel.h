@@ -5,6 +5,8 @@
     #include <QStyledItemDelegate>
     #include <QApplication>
     #include <QCheckBox>
+    #include <QMouseEvent>
+    #include <QPainter>
     #include <QDebug>
     //-----------
     class CColumn
@@ -42,7 +44,9 @@
             int count() const;
             int columnCounts() const;
 
-            const QString& columnName(int index) const;
+            const QString&     columnName(int index) const;
+            const QStringList& columnNames() const;
+            const QStringList  rowNames() const;
 
             CRow&       operator [](int index);
             const CRow& operator [](int index) const;
@@ -68,5 +72,15 @@
 
         private:
             CDataTable m_data;
+    };
+    //--------------------------------------------------
+    class CTableItemDelegate: public QStyledItemDelegate
+    {
+        public:
+            CTableItemDelegate(QObject* parent = nullptr);
+
+        protected:
+            void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+            bool editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index);
     };
 #endif // CMATRIXPURPOSEMODEL_H

@@ -23,9 +23,12 @@ int CMatrixPurposeModel::columnCount(const QModelIndex& parent) const
 //------------------------------------------------------------------------------------------
 bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
+    if(!index.isValid() || !value.isValid())
+        return false;
+
     if(role == Qt::CheckStateRole)
     {
-        bool state = ((value == Qt::Checked)?true:false);
+        bool state = ((static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked)?true:false);
 
         m_data[index.row()][index.column()].setState(state);
 
@@ -44,10 +47,10 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
 
     if(role == Qt::CheckStateRole)
     {
-        if(m_data[index.row()][index.column()].state())
-            return Qt::Checked;
-        else
-            return Qt::Unchecked;
+        Qt::CheckState state = static_cast<Qt::CheckState>((m_data[index.row()][index.column()].state())?Qt::Checked:
+                                                                                                         Qt::Unchecked);
+
+        return state;
     }
 
     return QVariant();
@@ -100,6 +103,21 @@ int CDataTable::columnCounts() const
 const QString& CDataTable::columnName(int index) const
 {
     return m_columnHeaders.at(index);
+}
+//------------------------------------------------
+const QStringList &CDataTable::columnNames() const
+{
+    return m_columnHeaders;
+}
+//---------------------------------------------
+const QStringList CDataTable::rowNames() const
+{
+    QStringList names;
+
+    for(const CRow& row: m_rows)
+        names << row.header();
+
+    return names;
 }
 //--------------------------------------
 CRow& CDataTable::operator [](int index)
@@ -162,4 +180,67 @@ void CColumn::setState(bool state)
 }
 //--------------------------------
 //------class CItemDelegate-------
-//--------------------------------------------
+//------------------------------------------------------
+CTableItemDelegate::CTableItemDelegate(QObject* parent):
+    QStyledItemDelegate(parent)
+{
+
+}
+//-------------------------------------------------------------------------------------------------------------------
+void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+    bool data = index.model()->data(index, Qt::CheckStateRole).toBool();
+
+    QStyleOptionButton checkboxstyle;
+
+    QRect checkbox_rect = QApplication::style()->subElementRect(QStyle::SE_CheckBoxIndicator, &checkboxstyle);
+
+    checkboxstyle.rect = option.rect;
+
+    checkboxstyle.rect.setLeft(option.rect.x() + option.rect.width()/2 - checkbox_rect.width()/2);
+
+    if(data)
+        checkboxstyle.state = QStyle::State_On|QStyle::State_Enabled;
+    else
+        checkboxstyle.state = QStyle::State_Off|QStyle::State_Enabled;
+
+    QApplication::style()->drawControl(QStyle::CE_CheckBox, &checkboxstyle, painter);
+}
+//----------------------------------------------------------------------------------------------------------------
+bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option,
+                                     const QModelIndex& index)
+{
+    Qt::ItemFlags flags = model->flags(index);
+
+    if(!(flags & Qt::ItemIsUserCheckable))
+        return false;
+
+    QVariant value = index.data(Qt::CheckStateRole);
+
+    if(!value.isValid())
+        return false;
+
+    if(event->type() == QEvent::MouseButtonRelease)
+    {
+        QStyleOptionButton checkboxstyle;
+
+        QRect checkbox_rect = QApplication::style()->subElementRect(QStyle::SE_CheckBoxIndicator, &option);
+        checkboxstyle.rect  = option.rect;
+
+        QPoint ct(option.rect.x() + option.rect.width()/2, option.rect.y() + option.rect.height()/2);
+
+        checkboxstyle.rect.setTopLeft(QPoint(ct.x() - checkbox_rect.width()/2, ct.y() - checkbox_rect.height()/2));
+        checkboxstyle.rect.setBottomRight(QPoint(ct.x() + checkbox_rect.width()/2, ct.y() + checkbox_rect.height()/2));
+
+        QPoint point = static_cast<QMouseEvent*>(event)->pos();
+
+        if(!checkboxstyle.rect.contains(point))
+            return false;
+
+        Qt::CheckState state = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked?Qt::Unchecked:Qt::Checked);
+
+        return model->setData(index, state, Qt::CheckStateRole);
+    }
+
+    return false;
+}

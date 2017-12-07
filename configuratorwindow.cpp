@@ -1437,6 +1437,7 @@ void ConfiguratorWindow::initTable()
 
     CMatrixPurposeModel* model = new CMatrixPurposeModel(d);
 
+    ui->tablewgtLedPurpose->setItemDelegate(new CTableItemDelegate);
     ui->tablewgtLedPurpose->setModel(model);
 }
 //----------------------------------------------------------------------

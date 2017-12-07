@@ -656,7 +656,7 @@
        <item>
         <widget class="QStackedWidget" name="stwgtMain">
          <property name="currentIndex">
-          <number>25</number>
+          <number>22</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
