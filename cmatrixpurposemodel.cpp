@@ -6,6 +6,25 @@ CMatrixPurposeModel::CMatrixPurposeModel(CDataTable &data, QAbstractTableModel* 
 {
 
 }
+//----------------------------------------------------------
+void CMatrixPurposeModel::updateData(QVector<quint16>& data)
+{
+    for(int i = 0, k = 0; i < data.count(); i += 2, k++)
+    {
+        quint32 value = data[i + 1] | (data[i] << 16); // старший байт идет первым (big endian)
+
+        for(quint32 j = 0; j < sizeof(value); j++)
+        {
+            m_data[j][k].setState((value >> j)&0x00000001); // получаем отдельные биты
+        }
+    }
+
+    // обновление модели
+    QModelIndex topLeft     = createIndex(0, 0);
+    QModelIndex bottomRight = createIndex(m_data.count(), m_data.columnCounts());
+
+    emit dataChanged(topLeft, bottomRight);
+}
 //----------------------------------------------------------------
 int CMatrixPurposeModel::rowCount(const QModelIndex& parent) const
 {
@@ -85,11 +104,6 @@ Qt::ItemFlags CMatrixPurposeModel::flags(const QModelIndex& index) const
     Qt::ItemFlags itemFlags = QAbstractTableModel::flags(index) | Qt::ItemIsUserCheckable;
 
     return itemFlags;
-}
-//------------------------------------------
-CDataTable& CMatrixPurposeModel::dataTable()
-{
-    return m_data;
 }
 //----------------------
 //---class CDataTable---
@@ -217,39 +231,33 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
     rect.setTopLeft(QPoint(ct.x() - checkbox_rect.width()/2, ct.y() - checkbox_rect.height()/2));
     rect.setBottomRight(QPoint(ct.x() + checkbox_rect.width()/2, ct.y() + checkbox_rect.height()/2));
 
-    if(!index.data(Qt::UserRole).toBool())
-    {
+    rect.setTopLeft(QPoint(rect.left() - 1, rect.top() - 2));
+    rect.setBottomRight(QPoint(rect.right() + 1, rect.bottom()));
 
-        painter->save();
-        painter->setBrush(Qt::gray);
+    checkboxstyle.rect = option.rect;
+
+    checkboxstyle.rect.setLeft(option.rect.x() + option.rect.width()/2 - checkbox_rect.width()/2);
+
+    bool data = index.model()->data(index, Qt::CheckStateRole).toBool();
+
+    painter->save();
+        if(!index.data(Qt::UserRole).toBool())
+            painter->setBrush(Qt::gray);
+        else if(!index.data(Qt::CheckStateRole).toBool())
+            painter->setBrush(Qt::red);
+        else if(index.data(Qt::CheckStateRole).toBool())
+            painter->setBrush(Qt::green);
+
+        painter->setPen(Qt::transparent);
         painter->drawRect(rect);
-//        painter->drawPixmap(rect, QPixmap(tr(":/images/resource/images/checkbox_inactive.png")));
-        painter->restore();
-    }
+    painter->restore();
+
+    if(data)
+        checkboxstyle.state = QStyle::State_On|QStyle::State_Enabled;
     else
-    {
-        rect.setTopLeft(QPoint(rect.left() - 2, rect.top() - 2));
-        rect.setBottomRight(QPoint(rect.right() + 1, rect.bottom() + 1));
+        checkboxstyle.state = QStyle::State_Off|QStyle::State_Enabled;
 
-        checkboxstyle.rect = option.rect;
-
-        checkboxstyle.rect.setLeft(option.rect.x() + option.rect.width()/2 - checkbox_rect.width()/2);
-
-        bool data = index.model()->data(index, Qt::CheckStateRole).toBool();
-
-        painter->save();
-            painter->setBrush(((data)?Qt::green:Qt::red));
-            painter->setPen(((data)?Qt::green:Qt::red));
-            painter->drawRect(rect);
-        painter->restore();
-
-        if(data)
-            checkboxstyle.state = QStyle::State_On|QStyle::State_Enabled;
-        else
-            checkboxstyle.state = QStyle::State_Off|QStyle::State_Enabled;
-
-        QApplication::style()->drawControl(QStyle::CE_CheckBox, &checkboxstyle, painter);
-    }
+    QApplication::style()->drawControl(QStyle::CE_CheckBox, &checkboxstyle, painter);
 }
 //----------------------------------------------------------------------------------------------------------------
 bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option,

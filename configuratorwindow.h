@@ -15,6 +15,7 @@
     #include <QTreeWidget>
     #include <QTextStream>
     #include <QTableWidget>
+    #include <QFont>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -34,27 +35,15 @@
         public:
             enum RegisterAddress
             {
-                CALCULATE_ADDRESS = 64
+                CALCULATE_ADDRESS     = 64,
+                INPUT_PURPOSE_ADDRESS = 512
             };
-
+            //--------------
             enum RequestType
             {
-                CALCULATE_TYPE,
-                IN_ANALOG_TYPE,
-                CONTROL_SET_TYPE,
-                PROTECTION_MTZ_SET_TYPE,
-                PROTECTION_EARTHY_SET_TYPE,
-                PROTECTION_POWER_SET_TYPE,
-                PROTECTION_MOTOR_SET_TYPE,
-                PROTECTION_FREQUENCY_SET_TYPE,
-                PROTECTION_EXTERNAL_SET_TYPE,
-                PROTECTION_TEMP_SET_TYPE,
-                PROTECTION_LEVEL_SET_TYPE,
-                PROTECTION_BRU_SET_TYPE,
-                PROTECTION_VACUUM_SET_TYPE,
-                AUTOMATION_SET_TYPE,
-                SWITCH_DEV_SET_TYPE,
-                GENERAL_TYPE
+                CALCULATE_TYPE, // расчетные данные
+                GENERAL_TYPE, // общие (настройки/уставки)
+                INPUT_PURPOSE_TYPE // привязки входов
             };
             //-------------
             enum WidgetType

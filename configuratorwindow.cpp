@@ -828,6 +828,18 @@ void ConfiguratorWindow::readSetCurrent()
 
         case 21:
         break;
+
+        case 22: // привязки выходов (светодиодов)
+        break;
+
+        case 23: // привязки входов
+        break;
+
+        case 24: // привязки выходов (реле)
+        break;
+
+        case 25: // привязки выходов (клавиатуры)
+        break;
     }
 }
 //--------------------------------------
@@ -1431,36 +1443,44 @@ void ConfiguratorWindow::initTable()
 {
     QVector<CRow> rows;
 
-    rows.append(CRow(tr("Вход 1"), 3));
-    rows.append(CRow(tr("Вход 2"), 3));
-    rows.append(CRow(tr("Вход 3"), 3));
-    rows.append(CRow(tr("Вход 4"), 3));
-    rows.append(CRow(tr("Вход 5"), 3));
-    rows.append(CRow(tr("Вход 6"), 3));
-    rows.append(CRow(tr("Вход 7"), 3));
-    rows.append(CRow(tr("Вход 8"), 3));
-    rows.append(CRow(tr("Вход 9"), 3));
-    rows.append(CRow(tr("Вход 10"), 3));
-    rows.append(CRow(tr("Вход 11"), 3));
-    rows.append(CRow(tr("Вход 12"), 3));
-    rows.append(CRow(tr("Вход 13"), 3));
-    rows.append(CRow(tr("Вход 14"), 3));
-    rows.append(CRow(tr("Вход 15"), 3));
-    rows.append(CRow(tr("Вход 16"), 3));
-    rows.append(CRow(tr("Вход 17"), 3));
-    rows.append(CRow(tr("Вход 18"), 3));
-    rows.append(CRow(tr("Вход 19"), 3));
-    rows.append(CRow(tr("Вход 20"), 3));
+    rows.append(CRow(tr("Светодиод 1"), 3));
+    rows.append(CRow(tr("Светодиод 2"), 3));
+    rows.append(CRow(tr("Светодиод 3"), 3));
+    rows.append(CRow(tr("Светодиод 4"), 3));
+    rows.append(CRow(tr("Светодиод 5"), 3));
+    rows.append(CRow(tr("Светодиод 6"), 3));
+    rows.append(CRow(tr("Светодиод 7"), 3));
+    rows.append(CRow(tr("Светодиод 8"), 3));
+    rows.append(CRow(tr("Светодиод 9"), 3));
+    rows.append(CRow(tr("Светодиод 10"), 3));
+    rows.append(CRow(tr("Светодиод 11"), 3));
+    rows.append(CRow(tr("Светодиод 12"), 3));
+    rows.append(CRow(tr("Светодиод 13"), 3));
+    rows.append(CRow(tr("Светодиод 14"), 3));
+    rows.append(CRow(tr("Светодиод 15"), 3));
+    rows.append(CRow(tr("Светодиод 16"), 3));
+    rows.append(CRow(tr("Светодиод 17"), 3));
+    rows.append(CRow(tr("Светодиод 18"), 3));
+    rows.append(CRow(tr("Светодиод 19"), 3));
+    rows.append(CRow(tr("Светодиод 20"), 3));
 
     CDataTable led_input_table(rows, QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3"));
 
     led_input_table.setDisableColumns(0, QVector<int>() << 1);
     led_input_table.setDisableColumns(1, QVector<int>() << 0 << 2);
 
+    CHeaderTable* header_horizontal = new CHeaderTable(Qt::Horizontal, ui->tablewgtLedPurpose);
+    CHeaderTable* header_vertical   = new CHeaderTable(Qt::Vertical, ui->tablewgtLedPurpose);
+
+    ui->tablewgtLedPurpose->setHorizontalHeader(header_horizontal);
+    ui->tablewgtLedPurpose->setVerticalHeader(header_vertical);
+
     CMatrixPurposeModel* model = new CMatrixPurposeModel(led_input_table);
 
     ui->tablewgtLedPurpose->setItemDelegate(new CTableItemDelegate);
     ui->tablewgtLedPurpose->setModel(model);
+    ui->tablewgtLedPurpose->resizeColumnsToContents();
+    ui->tablewgtLedPurpose->resizeRowsToContents();
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)

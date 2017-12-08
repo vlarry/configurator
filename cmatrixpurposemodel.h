@@ -8,6 +8,7 @@
     #include <QMouseEvent>
     #include <QPainter>
     #include <QDebug>
+    #include "cheadertable.h"
     //-----------
     class CColumn
     {
@@ -65,7 +66,7 @@
     {
         public:
             CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent = nullptr);
-            CDataTable&   dataTable();
+            void updateData(QVector<quint16>& data);
 
         private:
             int           rowCount(const QModelIndex& parent = QModelIndex()) const;
