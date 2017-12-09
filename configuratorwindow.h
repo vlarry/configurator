@@ -36,13 +36,15 @@
             enum RegisterAddress
             {
                 CALCULATE_ADDRESS     = 64,
-                INPUT_PURPOSE_ADDRESS = 512
+                RELAY_PURPOSE_ADDRESS = 197,
+                INPUT_PURPOSE_ADDRESS = 512,
             };
             //--------------
             enum RequestType
             {
                 CALCULATE_TYPE, // расчетные данные
                 GENERAL_TYPE, // общие (настройки/уставки)
+                RELAY_PURPOSE_TYPE, // привязки выходов реле
                 INPUT_PURPOSE_TYPE // привязки входов
             };
             //-------------
@@ -62,6 +64,7 @@
             void stateChanged(bool state);
             void refreshSerialPort();
             void calculateRead(); // запрос расчетных величин
+            void relayOutRead(); // запрос привязок реле
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
@@ -125,9 +128,11 @@
             void initMenuPanel();
             void initButtonGroup();
             void initCellBind();
-            void initTable();
+            void initModelTables();
+            void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
             void displayResponse(CDataUnitType& unit);
+            void displayRelayOuts(const QVector<quint16>& values);
             void versionParser();
             void addNewBind(const QString& key, QWidget* widget, int address, WidgetType wtype);
             int  sizeBindBlock(const QString& first_key, const QString& second_key);

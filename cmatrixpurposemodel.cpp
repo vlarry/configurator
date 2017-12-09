@@ -6,24 +6,19 @@ CMatrixPurposeModel::CMatrixPurposeModel(CDataTable &data, QAbstractTableModel* 
 {
 
 }
-//----------------------------------------------------------
-void CMatrixPurposeModel::updateData(QVector<quint16>& data)
+//------------------------------------
+void CMatrixPurposeModel::updateData()
 {
-    for(int i = 0, k = 0; i < data.count(); i += 2, k++)
-    {
-        quint32 value = data[i + 1] | (data[i] << 16); // старший байт идет первым (big endian)
-
-        for(quint32 j = 0; j < sizeof(value); j++)
-        {
-            m_data[j][k].setState((value >> j)&0x00000001); // получаем отдельные биты
-        }
-    }
-
     // обновление модели
     QModelIndex topLeft     = createIndex(0, 0);
     QModelIndex bottomRight = createIndex(m_data.count(), m_data.columnCounts());
 
     emit dataChanged(topLeft, bottomRight);
+}
+//------------------------------------------
+CDataTable& CMatrixPurposeModel::dataTable()
+{
+    return m_data;
 }
 //----------------------------------------------------------------
 int CMatrixPurposeModel::rowCount(const QModelIndex& parent) const

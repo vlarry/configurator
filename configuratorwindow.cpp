@@ -46,7 +46,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initButtonGroup();
     initConnect();
     initCellBind();
-    initTable();
+    initModelTables();
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -156,6 +156,15 @@ void ConfiguratorWindow::calculateRead()
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
                        CALCULATE_ADDRESS, QVector<quint16>() << 110);
     unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-------------------------------------
+void ConfiguratorWindow::relayOutRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
+                       RELAY_PURPOSE_ADDRESS, QVector<quint16>() << 1);
+    unit.setProperty(tr("REQUEST"), RELAY_PURPOSE_TYPE);
 
     m_modbusDevice->request(unit);
 }
@@ -314,6 +323,8 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         displayCalculateValues(unit.values());
     else if(type == GENERAL_TYPE)
         displayResponse(unit);
+    else if(type == RELAY_PURPOSE_TYPE)
+        displayRelayOuts(unit.values());
 }
 //-----------------------------
 void ConfiguratorWindow::show()
@@ -836,6 +847,7 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 24: // привязки выходов (реле)
+            relayOutRead();
         break;
 
         case 25: // привязки выходов (клавиатуры)
@@ -1438,49 +1450,67 @@ void ConfiguratorWindow::initCellBind()
     addNewBind(tr("KU0X"), ui->leKU0X, 394, FLOAT);
     addNewBind(tr("KU0X_"), ui->leKU0X_, 396, FLOAT);
 }
-//----------------------------------
-void ConfiguratorWindow::initTable()
+//----------------------------------------
+void ConfiguratorWindow::initModelTables()
 {
-    QVector<CRow> rows;
+    QVector<CRow> led_rows;
 
-    rows.append(CRow(tr("Светодиод 1"), 3));
-    rows.append(CRow(tr("Светодиод 2"), 3));
-    rows.append(CRow(tr("Светодиод 3"), 3));
-    rows.append(CRow(tr("Светодиод 4"), 3));
-    rows.append(CRow(tr("Светодиод 5"), 3));
-    rows.append(CRow(tr("Светодиод 6"), 3));
-    rows.append(CRow(tr("Светодиод 7"), 3));
-    rows.append(CRow(tr("Светодиод 8"), 3));
-    rows.append(CRow(tr("Светодиод 9"), 3));
-    rows.append(CRow(tr("Светодиод 10"), 3));
-    rows.append(CRow(tr("Светодиод 11"), 3));
-    rows.append(CRow(tr("Светодиод 12"), 3));
-    rows.append(CRow(tr("Светодиод 13"), 3));
-    rows.append(CRow(tr("Светодиод 14"), 3));
-    rows.append(CRow(tr("Светодиод 15"), 3));
-    rows.append(CRow(tr("Светодиод 16"), 3));
-    rows.append(CRow(tr("Светодиод 17"), 3));
-    rows.append(CRow(tr("Светодиод 18"), 3));
-    rows.append(CRow(tr("Светодиод 19"), 3));
-    rows.append(CRow(tr("Светодиод 20"), 3));
+    led_rows.append(CRow(tr("Светодиод 1"), 3));
+    led_rows.append(CRow(tr("Светодиод 2"), 3));
+    led_rows.append(CRow(tr("Светодиод 3"), 3));
+    led_rows.append(CRow(tr("Светодиод 4"), 3));
+    led_rows.append(CRow(tr("Светодиод 5"), 3));
+    led_rows.append(CRow(tr("Светодиод 6"), 3));
+    led_rows.append(CRow(tr("Светодиод 7"), 3));
+    led_rows.append(CRow(tr("Светодиод 8"), 3));
+    led_rows.append(CRow(tr("Светодиод 9"), 3));
+    led_rows.append(CRow(tr("Светодиод 10"), 3));
+    led_rows.append(CRow(tr("Светодиод 11"), 3));
+    led_rows.append(CRow(tr("Светодиод 12"), 3));
+    led_rows.append(CRow(tr("Светодиод 13"), 3));
+    led_rows.append(CRow(tr("Светодиод 14"), 3));
+    led_rows.append(CRow(tr("Светодиод 15"), 3));
+    led_rows.append(CRow(tr("Светодиод 16"), 3));
+    led_rows.append(CRow(tr("Светодиод 17"), 3));
+    led_rows.append(CRow(tr("Светодиод 18"), 3));
+    led_rows.append(CRow(tr("Светодиод 19"), 3));
+    led_rows.append(CRow(tr("Светодиод 20"), 3));
 
-    CDataTable led_input_table(rows, QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3"));
+    QStringList led_columns = QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3");
+
+    CDataTable led_input_table(led_rows, led_columns);
 
     led_input_table.setDisableColumns(0, QVector<int>() << 1);
     led_input_table.setDisableColumns(1, QVector<int>() << 0 << 2);
 
-    CHeaderTable* header_horizontal = new CHeaderTable(Qt::Horizontal, ui->tablewgtLedPurpose);
-    CHeaderTable* header_vertical   = new CHeaderTable(Qt::Vertical, ui->tablewgtLedPurpose);
+    initTable(ui->tablewgtLedPurpose, led_input_table);
 
-    ui->tablewgtLedPurpose->setHorizontalHeader(header_horizontal);
-    ui->tablewgtLedPurpose->setVerticalHeader(header_vertical);
+    QVector<CRow> out_rows = QVector<CRow>() << CRow(tr("Реле 1"), 1) << CRow(tr("Реле 2"), 1) << CRow(tr("Реле 4"), 1)
+                                             << CRow(tr("Реле 5"), 1) << CRow(tr("Реле 6"), 1) << CRow(tr("Реле 7"), 1)
+                                             << CRow(tr("Реле 8"), 1) << CRow(tr("Реле 9"), 1) << CRow(tr("Реле 10"), 1)
+                                             << CRow(tr("Реле 11"), 1) << CRow(tr("Реле 12"), 1) << CRow(tr("Реле 13"), 1);
 
-    CMatrixPurposeModel* model = new CMatrixPurposeModel(led_input_table);
+    QStringList out_columns = QStringList() << tr("Состояние");
 
-    ui->tablewgtLedPurpose->setItemDelegate(new CTableItemDelegate);
-    ui->tablewgtLedPurpose->setModel(model);
-    ui->tablewgtLedPurpose->resizeColumnsToContents();
-    ui->tablewgtLedPurpose->resizeRowsToContents();
+    CDataTable out_relay_table(out_rows, out_columns);
+
+    initTable(ui->tablewgtRelayPurpose, out_relay_table);
+}
+//---------------------------------------------------------------------
+void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
+{
+    CHeaderTable* header_horizontal = new CHeaderTable(Qt::Horizontal, table);
+    CHeaderTable* header_vertical   = new CHeaderTable(Qt::Vertical, table);
+
+    table->setHorizontalHeader(header_horizontal);
+    table->setVerticalHeader(header_vertical);
+
+    CMatrixPurposeModel* model = new CMatrixPurposeModel(data);
+
+    table->setItemDelegate(new CTableItemDelegate);
+    table->setModel(model);
+    table->resizeColumnsToContents();
+    table->resizeRowsToContents();
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -1561,6 +1591,25 @@ void ConfiguratorWindow::displayResponse(CDataUnitType& unit)
                 index++;
             }
         }
+    }
+}
+//-----------------------------------------------------------------------
+void ConfiguratorWindow::displayRelayOuts(const QVector<quint16>& values)
+{
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model());
+
+    if(model)
+    {
+        CDataTable& data = model->dataTable();
+
+        for(int i = 0; i < 12; i++)
+        {
+            bool state = (values[0] >> i)&0x0001;
+
+            data[i][0].setState(state);
+        }
+
+        model->updateData();
     }
 }
 //--------------------------------------
