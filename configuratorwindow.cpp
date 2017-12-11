@@ -1703,10 +1703,18 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 
     QTableView* table = nullptr;
 
+    int offset = 0;
+
     if(indexes.x() >= 0 && indexes.y() <= 11) // выходы: реле
-        table = ui->tablewgtRelayPurpose;
+    {
+        table  = ui->tablewgtRelayPurpose;
+        offset = indexes.x();
+    }
     else if(indexes.x() >= 12 && indexes.y() <= 19) // выходы: светодиоды
-        table = ui->tablewgtLedPurpose;
+    {
+        table  = ui->tablewgtLedPurpose;
+        offset = indexes.x() - 12;
+    }
 
     if(!table)
         return;
@@ -1731,7 +1739,9 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
                 if(m == 11 && k >= 6)
                     break;
 
-                data[i][m*32 + k].setState(state);
+                int column = m*32 + k;
+
+                data[i + offset][column].setState(state);
             }
         }
     }
