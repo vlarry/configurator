@@ -35,17 +35,14 @@
         public:
             enum RegisterAddress
             {
-                CALCULATE_ADDRESS     = 64,
-                RELAY_PURPOSE_ADDRESS = 197,
-                INPUT_PURPOSE_ADDRESS = 512,
+                CALCULATE_ADDRESS = 64
             };
             //--------------
             enum RequestType
             {
                 CALCULATE_TYPE, // расчетные данные
                 GENERAL_TYPE, // общие (настройки/уставки)
-                RELAY_PURPOSE_TYPE, // привязки выходов реле
-                INPUT_PURPOSE_TYPE // привязки входов
+                PURPOSE_OUT_TYPE, // матрца привязок выходов
             };
             //-------------
             enum WidgetType
@@ -64,7 +61,6 @@
             void stateChanged(bool state);
             void refreshSerialPort();
             void calculateRead(); // запрос расчетных величин
-            void relayOutRead(); // запрос привязок реле
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
@@ -119,25 +115,31 @@
             void writeSetCurrent();
             void expandItemTree(bool state);
             void versionSowftware();
-            void sendReadRequest(const QString& first_key, const QString& second_key,
-                                 CDataUnitType::FunctionType type, int size);
-            void sendWriteRequest(const QString& first_key, const QString& second_key);
+            void sendGeneralReadRequest(const QString& first, const QString& last,
+                                        CDataUnitType::FunctionType type, int size);
+            void sendGeneralWriteRequest(const QString& first, const QString& last);
+            void sendPurposeReadRequest(const QString& first, const QString& last);
+//            void sendPurposeWriteRequest();
             
         private:
             void initConnect();
             void initMenuPanel();
             void initButtonGroup();
             void initCellBind();
+            void initPurposeBind();
             void initModelTables();
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
-            void displayResponse(CDataUnitType& unit);
-            void displayRelayOuts(const QVector<quint16>& values);
+            void displayGeneralResponse(CDataUnitType& unit);
+            void displayPurposeResponse(CDataUnitType& unit);
             void versionParser();
-            void addNewBind(const QString& key, QWidget* widget, int address, WidgetType wtype);
+            void addNewGeneralBind(const QString& key, QWidget* widget, int address, WidgetType wtype);
+            void addNewPurposeBind(const QString& key, int address);
             int  sizeBindBlock(const QString& first_key, const QString& second_key);
-            int  addressKey(const QString& key) const;
-            QVector<QWidget*> listWidget(const QString& first_key, const QString& second_key);
+            int  addressGeneralKey(const QString& key) const;
+            int  addressPurposeKey(const QString& key) const;
+            QVector<QWidget*> listWidget(const QString& first, const QString& last);
+            QPoint indexPurposeKey(const QString& first, const QString& last);
             
         private:
             Ui::ConfiguratorWindow* ui;
@@ -159,6 +161,7 @@
             CVersionSoftware*       m_versionWidget;
 
             QVector<QPair<QString, QWidget*> > m_cell_list;
+            QVector<QPair<QString, int> >      m_purpose_list;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

@@ -9,5 +9,6 @@
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
+        <file>resource/files/variables.txt</file>
     </qresource>
 </RCC>

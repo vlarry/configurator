@@ -45,7 +45,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initMenuPanel();
     initButtonGroup();
     initConnect();
-    initCellBind();
+    initCellBind(); // инициализация привязки настроек к адресам
+    initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
     initModelTables();
 
     if(!m_logFile->open(QFile::ReadWrite))
@@ -160,153 +161,144 @@ void ConfiguratorWindow::calculateRead()
     m_modbusDevice->request(unit);
 }
 //-------------------------------------
-void ConfiguratorWindow::relayOutRead()
-{
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-                       RELAY_PURPOSE_ADDRESS, QVector<quint16>() << 1);
-    unit.setProperty(tr("REQUEST"), RELAY_PURPOSE_TYPE);
-
-    m_modbusDevice->request(unit);
-}
-//-------------------------------------
 void ConfiguratorWindow::inAnalogRead()
 {
-    sendReadRequest(tr("M01"), tr("KU0X_"), CDataUnitType::ReadHoldingRegisters, 42);
+    sendGeneralReadRequest(tr("M01"), tr("KU0X_"), CDataUnitType::ReadHoldingRegisters, 42);
 }
 //--------------------------------------
 void ConfiguratorWindow::inAnalogWrite()
 {
-    sendWriteRequest(tr("M01"), tr("KU0X_"));
+    sendGeneralWriteRequest(tr("M01"), tr("KU0X_"));
 }
 //-----------------------------------------
 void ConfiguratorWindow::controlStateRead()
 {
-    sendReadRequest(tr("K01"), tr("M95"), CDataUnitType::ReadHoldingRegisters, 54);
+    sendGeneralReadRequest(tr("K01"), tr("M95"), CDataUnitType::ReadHoldingRegisters, 54);
 }
 //------------------------------------------
 void ConfiguratorWindow::controlStateWrite()
 {
-    sendWriteRequest(tr("K01"), tr("M95"));
+    sendGeneralWriteRequest(tr("K01"), tr("M95"));
 }
 //---------------------------------------------
 void ConfiguratorWindow::protectionMTZSetRead()
 {
-    sendReadRequest(tr("M06"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 38);
+    sendGeneralReadRequest(tr("M06"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 38);
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionMTZSetWrite()
 {
-    sendWriteRequest(tr("M06"), tr("X05a"));
+    sendGeneralWriteRequest(tr("M06"), tr("X05a"));
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetRead()
 {
-    sendReadRequest(tr("M23"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 36);
+    sendGeneralReadRequest(tr("M23"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 36);
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetWrite()
 {
-    sendWriteRequest(tr("M23"), tr("X09a"));
+    sendGeneralWriteRequest(tr("M23"), tr("X09a"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionPowerSetRead()
 {
-    sendReadRequest(tr("M49"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 30);
+    sendGeneralReadRequest(tr("M49"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 30);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionPowerSetWrite()
 {
-    sendWriteRequest(tr("M49"), tr("X14"));
+    sendGeneralWriteRequest(tr("M49"), tr("X14"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionMotorSetRead()
 {
-    sendReadRequest(tr("M20"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendGeneralReadRequest(tr("M20"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionMotorSetWrite()
 {
-    sendWriteRequest(tr("M20"), tr("X10"));
+    sendGeneralWriteRequest(tr("M20"), tr("X10"));
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetRead()
 {
-    sendReadRequest(tr("M52"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 24);
+    sendGeneralReadRequest(tr("M52"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 24);
 }
 //----------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetWrite()
 {
-    sendWriteRequest(tr("M52"), tr("X18"));
+    sendGeneralWriteRequest(tr("M52"), tr("X18"));
 }
 //--------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetRead()
 {
-    sendReadRequest(tr("M64"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 10);
+    sendGeneralReadRequest(tr("M64"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 10);
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetWrite()
 {
-    sendWriteRequest(tr("M64"), tr("M76"));
+    sendGeneralWriteRequest(tr("M64"), tr("M76"));
 }
 //-----------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetRead()
 {
-    sendReadRequest(tr("M67"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendGeneralReadRequest(tr("M67"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetWrite()
 {
-    sendWriteRequest(tr("M67"), tr("X21"));
+    sendGeneralWriteRequest(tr("M67"), tr("X21"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionLevelSetRead()
 {
-    sendReadRequest(tr("M78"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendGeneralReadRequest(tr("M78"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 4);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionLevelSetWrite()
 {
-    sendWriteRequest(tr("M78"), tr("M79"));
+    sendGeneralWriteRequest(tr("M78"), tr("M79"));
 }
 //---------------------------------------------
 void ConfiguratorWindow::protectionBruSetRead()
 {
-    sendReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendGeneralReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionBruSetWrite()
 {
-    sendWriteRequest(tr("M96"), tr("M99"));
+    sendGeneralWriteRequest(tr("M96"), tr("M99"));
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetRead()
 {
-    sendReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendGeneralReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetWrite()
 {
-    sendWriteRequest(tr("M91"), tr("X23"));
+    sendGeneralWriteRequest(tr("M91"), tr("X23"));
 }
 //------------------------------------------
 void ConfiguratorWindow::automationSetRead()
 {
-    sendReadRequest(tr("M82"), tr("M89"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendGeneralReadRequest(tr("M82"), tr("M89"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //-------------------------------------------
 void ConfiguratorWindow::automationSetWrite()
 {
-    sendWriteRequest(tr("M82"), tr("M89"));
+    sendGeneralWriteRequest(tr("M82"), tr("M89"));
 }
 //--------------------------------------------
 void ConfiguratorWindow::switchDeviceSetRead()
 {
-    sendReadRequest(tr("K02"), tr("K10"), CDataUnitType::ReadHoldingRegisters, 30);
+    sendGeneralReadRequest(tr("K02"), tr("K10"), CDataUnitType::ReadHoldingRegisters, 30);
 }
 //---------------------------------------------
 void ConfiguratorWindow::switchDeviceSetWrite()
 {
-    sendWriteRequest(tr("K02"), tr("K10"));
+    sendGeneralWriteRequest(tr("K02"), tr("K10"));
 }
 //--------------------------------------------------------
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
@@ -322,9 +314,9 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     if(type == CALCULATE_TYPE)
         displayCalculateValues(unit.values());
     else if(type == GENERAL_TYPE)
-        displayResponse(unit);
-    else if(type == RELAY_PURPOSE_TYPE)
-        displayRelayOuts(unit.values());
+        displayGeneralResponse(unit);
+    else if(type == PURPOSE_OUT_TYPE)
+        displayPurposeResponse(unit);
 }
 //-----------------------------
 void ConfiguratorWindow::show()
@@ -847,7 +839,12 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 24: // привязки выходов (реле)
-            relayOutRead();
+            sendPurposeReadRequest(tr("DO1"), tr("DO2"));
+            sendPurposeReadRequest(tr("DO4"), tr("DO5"));
+            sendPurposeReadRequest(tr("DO6"), tr("DO7"));
+            sendPurposeReadRequest(tr("DO8"), tr("DO9"));
+            sendPurposeReadRequest(tr("DO10"), tr("DO11"));
+            sendPurposeReadRequest(tr("DO12"), tr("DO13"));
         break;
 
         case 25: // привязки выходов (клавиатуры)
@@ -1234,225 +1231,280 @@ void ConfiguratorWindow::initButtonGroup()
 void ConfiguratorWindow::initCellBind()
 {
     // инициализация виджетов визуализирующих состояние настроек
-    addNewBind(tr("K01"), ui->cboxK01, 0, LIST);
-    addNewBind(tr("K03"), ui->cboxK03, 1, LIST);
-    addNewBind(tr("K06"), ui->cboxK06, 2, LIST);
-    addNewBind(tr("K07"), ui->cboxK07, 3, LIST);
-    addNewBind(tr("K13"), ui->cboxK13, 4, LIST);
-    addNewBind(tr("K14"), ui->cboxK14, 5, LIST);
-    addNewBind(tr("K15"), ui->cboxK15, 6, LIST);
-    addNewBind(tr("K17"), ui->cboxK17, 7, LIST);
-    addNewBind(tr("K18"), ui->cboxK18, 8, LIST);
-    addNewBind(tr("K23"), ui->cboxK23, 9, LIST);
-    addNewBind(tr("K26"), ui->cboxK26, 10, LIST);
-    addNewBind(tr("K32"), ui->cboxK32, 11, LIST);
-    addNewBind(tr("K33"), ui->cboxK33, 12, LIST);
-    addNewBind(tr("K34"), ui->cboxK34, 13, LIST);
-    addNewBind(tr("K35"), ui->cboxK35, 14, LIST);
-    addNewBind(tr("K36"), ui->cboxK36, 15, LIST);
-    addNewBind(tr("K37"), ui->cboxK37, 16, LIST);
-    addNewBind(tr("K38"), ui->cboxK38, 17, LIST);
-    addNewBind(tr("K39"), ui->cboxK39, 18, LIST);
-    addNewBind(tr("K40"), ui->cboxK40, 19, LIST);
-    addNewBind(tr("K41"), ui->cboxK41, 20, LIST);
-    addNewBind(tr("M04"), ui->cboxM04, 21, LIST);
-    addNewBind(tr("M05"), ui->cboxM05, 22, LIST);
-    addNewBind(tr("M09"), ui->cboxM09, 23, LIST);
-    addNewBind(tr("M13"), ui->cboxM13, 24, LIST);
-    addNewBind(tr("M16"), ui->cboxM16, 25, LIST);
-    addNewBind(tr("M19"), ui->cboxM19, 26, LIST);
-    addNewBind(tr("M22"), ui->cboxM22, 27, LIST);
-    addNewBind(tr("M25"), ui->cboxM25, 28, LIST);
-    addNewBind(tr("M29"), ui->cboxM29, 29, LIST);
-    addNewBind(tr("M32"), ui->cboxM32, 30, LIST);
-    addNewBind(tr("M35"), ui->cboxM35, 31, LIST);
-    addNewBind(tr("M38"), ui->cboxM38, 32, LIST);
-    addNewBind(tr("M39"), ui->cboxM39, 33, LIST);
-    addNewBind(tr("M40"), ui->cboxM40, 34, LIST);
-    addNewBind(tr("M43"), ui->cboxM43, 35, LIST);
-    addNewBind(tr("M44"), ui->cboxM44, 36, LIST);
-    addNewBind(tr("M45"), ui->cboxM45, 37, LIST);
-    addNewBind(tr("M48"), ui->cboxM48, 38, LIST);
-    addNewBind(tr("M51"), ui->cboxM51, 39, LIST);
-    addNewBind(tr("M55"), ui->cboxM55, 40, LIST);
-    addNewBind(tr("M59"), ui->cboxM59, 41, LIST);
-    addNewBind(tr("M63"), ui->cboxM63, 42, LIST);
-    addNewBind(tr("M65"), ui->cboxM65, 43, LIST);
-    addNewBind(tr("M66"), ui->cboxM66, 44, LIST);
-    addNewBind(tr("M71"), ui->cboxM71, 45, LIST);
-    addNewBind(tr("M73"), ui->cboxM73, 46, LIST);
-    addNewBind(tr("M75"), ui->cboxM75, 47, LIST);
-    addNewBind(tr("M77"), ui->cboxM77, 48, LIST);
-    addNewBind(tr("M81"), ui->cboxM81, 49, LIST);
-    addNewBind(tr("M87"), ui->cboxM87, 50, LIST);
-    addNewBind(tr("M90"), ui->cboxM90, 51, LIST);
-    addNewBind(tr("M93"), ui->cboxM93, 52, LIST);
-    addNewBind(tr("M95"), ui->cboxM95, 53, LIST);
+    addNewGeneralBind(tr("K01"), ui->cboxK01, 0, LIST);
+    addNewGeneralBind(tr("K03"), ui->cboxK03, 1, LIST);
+    addNewGeneralBind(tr("K06"), ui->cboxK06, 2, LIST);
+    addNewGeneralBind(tr("K07"), ui->cboxK07, 3, LIST);
+    addNewGeneralBind(tr("K13"), ui->cboxK13, 4, LIST);
+    addNewGeneralBind(tr("K14"), ui->cboxK14, 5, LIST);
+    addNewGeneralBind(tr("K15"), ui->cboxK15, 6, LIST);
+    addNewGeneralBind(tr("K17"), ui->cboxK17, 7, LIST);
+    addNewGeneralBind(tr("K18"), ui->cboxK18, 8, LIST);
+    addNewGeneralBind(tr("K23"), ui->cboxK23, 9, LIST);
+    addNewGeneralBind(tr("K26"), ui->cboxK26, 10, LIST);
+    addNewGeneralBind(tr("K32"), ui->cboxK32, 11, LIST);
+    addNewGeneralBind(tr("K33"), ui->cboxK33, 12, LIST);
+    addNewGeneralBind(tr("K34"), ui->cboxK34, 13, LIST);
+    addNewGeneralBind(tr("K35"), ui->cboxK35, 14, LIST);
+    addNewGeneralBind(tr("K36"), ui->cboxK36, 15, LIST);
+    addNewGeneralBind(tr("K37"), ui->cboxK37, 16, LIST);
+    addNewGeneralBind(tr("K38"), ui->cboxK38, 17, LIST);
+    addNewGeneralBind(tr("K39"), ui->cboxK39, 18, LIST);
+    addNewGeneralBind(tr("K40"), ui->cboxK40, 19, LIST);
+    addNewGeneralBind(tr("K41"), ui->cboxK41, 20, LIST);
+    addNewGeneralBind(tr("M04"), ui->cboxM04, 21, LIST);
+    addNewGeneralBind(tr("M05"), ui->cboxM05, 22, LIST);
+    addNewGeneralBind(tr("M09"), ui->cboxM09, 23, LIST);
+    addNewGeneralBind(tr("M13"), ui->cboxM13, 24, LIST);
+    addNewGeneralBind(tr("M16"), ui->cboxM16, 25, LIST);
+    addNewGeneralBind(tr("M19"), ui->cboxM19, 26, LIST);
+    addNewGeneralBind(tr("M22"), ui->cboxM22, 27, LIST);
+    addNewGeneralBind(tr("M25"), ui->cboxM25, 28, LIST);
+    addNewGeneralBind(tr("M29"), ui->cboxM29, 29, LIST);
+    addNewGeneralBind(tr("M32"), ui->cboxM32, 30, LIST);
+    addNewGeneralBind(tr("M35"), ui->cboxM35, 31, LIST);
+    addNewGeneralBind(tr("M38"), ui->cboxM38, 32, LIST);
+    addNewGeneralBind(tr("M39"), ui->cboxM39, 33, LIST);
+    addNewGeneralBind(tr("M40"), ui->cboxM40, 34, LIST);
+    addNewGeneralBind(tr("M43"), ui->cboxM43, 35, LIST);
+    addNewGeneralBind(tr("M44"), ui->cboxM44, 36, LIST);
+    addNewGeneralBind(tr("M45"), ui->cboxM45, 37, LIST);
+    addNewGeneralBind(tr("M48"), ui->cboxM48, 38, LIST);
+    addNewGeneralBind(tr("M51"), ui->cboxM51, 39, LIST);
+    addNewGeneralBind(tr("M55"), ui->cboxM55, 40, LIST);
+    addNewGeneralBind(tr("M59"), ui->cboxM59, 41, LIST);
+    addNewGeneralBind(tr("M63"), ui->cboxM63, 42, LIST);
+    addNewGeneralBind(tr("M65"), ui->cboxM65, 43, LIST);
+    addNewGeneralBind(tr("M66"), ui->cboxM66, 44, LIST);
+    addNewGeneralBind(tr("M71"), ui->cboxM71, 45, LIST);
+    addNewGeneralBind(tr("M73"), ui->cboxM73, 46, LIST);
+    addNewGeneralBind(tr("M75"), ui->cboxM75, 47, LIST);
+    addNewGeneralBind(tr("M77"), ui->cboxM77, 48, LIST);
+    addNewGeneralBind(tr("M81"), ui->cboxM81, 49, LIST);
+    addNewGeneralBind(tr("M87"), ui->cboxM87, 50, LIST);
+    addNewGeneralBind(tr("M90"), ui->cboxM90, 51, LIST);
+    addNewGeneralBind(tr("M93"), ui->cboxM93, 52, LIST);
+    addNewGeneralBind(tr("M95"), ui->cboxM95, 53, LIST);
 
     // инициализация виджетов максимальных токовых защит
-    addNewBind(tr("M06"), ui->leM06, 128, FLOAT);
-    addNewBind(tr("M08"), ui->leM08, 130, FLOAT);
-    addNewBind(tr("K31"), ui->leK31, 132, FLOAT);
-    addNewBind(tr("X01"), ui->leX01, 134, FLOAT);
-    addNewBind(tr("X02"), nullptr, 136, FLOAT);
-    addNewBind(tr("M10"), ui->leM10, 138, FLOAT);
-    addNewBind(tr("M11"), ui->leM11, 140, FLOAT);
-    addNewBind(tr("M12"), ui->leM12, 142, FLOAT);
-    addNewBind(tr("X03"), ui->leX03, 144, FLOAT);
-    addNewBind(tr("M14"), ui->leM14, 146, FLOAT);
-    addNewBind(tr("K22"), ui->leK22, 148, FLOAT);
-    addNewBind(tr("M15"), ui->leM15, 150, FLOAT);
-    addNewBind(tr("X04"), ui->leX04, 152, FLOAT);
-    addNewBind(tr("M17"), ui->leM17, 154, FLOAT);
-    addNewBind(tr("M18"), ui->leM18, 156, FLOAT);
-    addNewBind(tr("K20"), ui->leK20, 158, FLOAT);
-    addNewBind(tr("M07"), ui->leM07, 160, FLOAT);
-    addNewBind(tr("X05"), ui->leX05, 162, FLOAT);
-    addNewBind(tr("X05a"), ui->leX05a, 164, FLOAT);
+    addNewGeneralBind(tr("M06"), ui->leM06, 128, FLOAT);
+    addNewGeneralBind(tr("M08"), ui->leM08, 130, FLOAT);
+    addNewGeneralBind(tr("K31"), ui->leK31, 132, FLOAT);
+    addNewGeneralBind(tr("X01"), ui->leX01, 134, FLOAT);
+    addNewGeneralBind(tr("X02"), nullptr, 136, FLOAT);
+    addNewGeneralBind(tr("M10"), ui->leM10, 138, FLOAT);
+    addNewGeneralBind(tr("M11"), ui->leM11, 140, FLOAT);
+    addNewGeneralBind(tr("M12"), ui->leM12, 142, FLOAT);
+    addNewGeneralBind(tr("X03"), ui->leX03, 144, FLOAT);
+    addNewGeneralBind(tr("M14"), ui->leM14, 146, FLOAT);
+    addNewGeneralBind(tr("K22"), ui->leK22, 148, FLOAT);
+    addNewGeneralBind(tr("M15"), ui->leM15, 150, FLOAT);
+    addNewGeneralBind(tr("X04"), ui->leX04, 152, FLOAT);
+    addNewGeneralBind(tr("M17"), ui->leM17, 154, FLOAT);
+    addNewGeneralBind(tr("M18"), ui->leM18, 156, FLOAT);
+    addNewGeneralBind(tr("K20"), ui->leK20, 158, FLOAT);
+    addNewGeneralBind(tr("M07"), ui->leM07, 160, FLOAT);
+    addNewGeneralBind(tr("X05"), ui->leX05, 162, FLOAT);
+    addNewGeneralBind(tr("X05a"), ui->leX05a, 164, FLOAT);
 
     // инициализация виджетов земельных защит
-    addNewBind(tr("M23"), ui->leM23, 166, FLOAT);
-    addNewBind(tr("M24"), ui->leM24, 168, FLOAT);
-    addNewBind(tr("X07"), ui->leX07, 170, FLOAT);
-    addNewBind(tr("K24"), ui->leK24, 172, FLOAT);
-    addNewBind(tr("K25"), ui->leK25, 174, FLOAT);
-    addNewBind(tr("X07a"), ui->leX07a, 176, FLOAT);
-    addNewBind(tr("M26"), ui->leM26, 178, FLOAT);
-    addNewBind(tr("M27"), ui->leM27, 180, FLOAT);
-    addNewBind(tr("K21"), ui->leK21, 182, FLOAT);
-    addNewBind(tr("M28"), ui->leM28, 184, FLOAT);
-    addNewBind(tr("X08"), ui->leX08, 186, FLOAT);
-    addNewBind(tr("X09"), ui->leX09, 188, FLOAT);
-    addNewBind(tr("K27"), ui->leK27, 190, FLOAT);
-    addNewBind(tr("K28"), ui->leK28, 192, FLOAT);
-    addNewBind(tr("K29"), ui->leK29, 194, FLOAT);
-    addNewBind(tr("K30"), ui->leK30, 196, FLOAT);
-    addNewBind(tr("X08a"), ui->leX08a, 198, FLOAT);
-    addNewBind(tr("X09a"), ui->leX09a, 200, FLOAT);
+    addNewGeneralBind(tr("M23"), ui->leM23, 166, FLOAT);
+    addNewGeneralBind(tr("M24"), ui->leM24, 168, FLOAT);
+    addNewGeneralBind(tr("X07"), ui->leX07, 170, FLOAT);
+    addNewGeneralBind(tr("K24"), ui->leK24, 172, FLOAT);
+    addNewGeneralBind(tr("K25"), ui->leK25, 174, FLOAT);
+    addNewGeneralBind(tr("X07a"), ui->leX07a, 176, FLOAT);
+    addNewGeneralBind(tr("M26"), ui->leM26, 178, FLOAT);
+    addNewGeneralBind(tr("M27"), ui->leM27, 180, FLOAT);
+    addNewGeneralBind(tr("K21"), ui->leK21, 182, FLOAT);
+    addNewGeneralBind(tr("M28"), ui->leM28, 184, FLOAT);
+    addNewGeneralBind(tr("X08"), ui->leX08, 186, FLOAT);
+    addNewGeneralBind(tr("X09"), ui->leX09, 188, FLOAT);
+    addNewGeneralBind(tr("K27"), ui->leK27, 190, FLOAT);
+    addNewGeneralBind(tr("K28"), ui->leK28, 192, FLOAT);
+    addNewGeneralBind(tr("K29"), ui->leK29, 194, FLOAT);
+    addNewGeneralBind(tr("K30"), ui->leK30, 196, FLOAT);
+    addNewGeneralBind(tr("X08a"), ui->leX08a, 198, FLOAT);
+    addNewGeneralBind(tr("X09a"), ui->leX09a, 200, FLOAT);
 
     // инициализация виджетов защит напряжения
-    addNewBind(tr("M49"), ui->leM49, 202, FLOAT);
-    addNewBind(tr("M50"), ui->leM50, 204, FLOAT);
-    addNewBind(tr("X15"), ui->leX15, 206, FLOAT);
-    addNewBind(tr("M33"), ui->leM33, 208, FLOAT);
-    addNewBind(tr("M34"), ui->leM34, 210, FLOAT);
-    addNewBind(tr("X11"), ui->leX11, 212, FLOAT);
-    addNewBind(tr("M36"), ui->leM36, 214, FLOAT);
-    addNewBind(tr("M37"), ui->leM37, 216, FLOAT);
-    addNewBind(tr("X12"), ui->leX12, 218, FLOAT);
-    addNewBind(tr("M41"), ui->leM41, 220, FLOAT);
-    addNewBind(tr("M42"), ui->leM42, 222, FLOAT);
-    addNewBind(tr("X13"), ui->leX13, 224, FLOAT);
-    addNewBind(tr("M46"), ui->leM46, 226, FLOAT);
-    addNewBind(tr("M47"), ui->leM47, 228, FLOAT);
-    addNewBind(tr("X14"), ui->leX14, 230, FLOAT);
+    addNewGeneralBind(tr("M49"), ui->leM49, 202, FLOAT);
+    addNewGeneralBind(tr("M50"), ui->leM50, 204, FLOAT);
+    addNewGeneralBind(tr("X15"), ui->leX15, 206, FLOAT);
+    addNewGeneralBind(tr("M33"), ui->leM33, 208, FLOAT);
+    addNewGeneralBind(tr("M34"), ui->leM34, 210, FLOAT);
+    addNewGeneralBind(tr("X11"), ui->leX11, 212, FLOAT);
+    addNewGeneralBind(tr("M36"), ui->leM36, 214, FLOAT);
+    addNewGeneralBind(tr("M37"), ui->leM37, 216, FLOAT);
+    addNewGeneralBind(tr("X12"), ui->leX12, 218, FLOAT);
+    addNewGeneralBind(tr("M41"), ui->leM41, 220, FLOAT);
+    addNewGeneralBind(tr("M42"), ui->leM42, 222, FLOAT);
+    addNewGeneralBind(tr("X13"), ui->leX13, 224, FLOAT);
+    addNewGeneralBind(tr("M46"), ui->leM46, 226, FLOAT);
+    addNewGeneralBind(tr("M47"), ui->leM47, 228, FLOAT);
+    addNewGeneralBind(tr("X14"), ui->leX14, 230, FLOAT);
 
     // инициализация виджетов защит двигателя
-    addNewBind(tr("M20"), ui->leM20, 232, FLOAT);
-    addNewBind(tr("M21"), ui->leM21, 234, FLOAT);
-    addNewBind(tr("X06"), ui->leX06, 236, FLOAT);
-    addNewBind(tr("M30"), ui->leM30, 238, FLOAT);
-    addNewBind(tr("M31"), ui->leM31, 240, FLOAT);
-    addNewBind(tr("X10"), ui->leX10, 242, FLOAT);
+    addNewGeneralBind(tr("M20"), ui->leM20, 232, FLOAT);
+    addNewGeneralBind(tr("M21"), ui->leM21, 234, FLOAT);
+    addNewGeneralBind(tr("X06"), ui->leX06, 236, FLOAT);
+    addNewGeneralBind(tr("M30"), ui->leM30, 238, FLOAT);
+    addNewGeneralBind(tr("M31"), ui->leM31, 240, FLOAT);
+    addNewGeneralBind(tr("X10"), ui->leX10, 242, FLOAT);
 
     // инициализация виджетов защит по частоте
-    addNewBind(tr("M52"), ui->leM52, 244, FLOAT);
-    addNewBind(tr("M53"), ui->leM53, 246, FLOAT);
-    addNewBind(tr("M54"), ui->leM54, 248, FLOAT);
-    addNewBind(tr("X16"), ui->leX16, 250, FLOAT);
-    addNewBind(tr("M56"), ui->leM56, 252, FLOAT);
-    addNewBind(tr("M57"), ui->leM57, 254, FLOAT);
-    addNewBind(tr("M58"), ui->leM58, 256, FLOAT);
-    addNewBind(tr("X17"), ui->leX17, 258, FLOAT);
-    addNewBind(tr("M60"), ui->leM60, 260, FLOAT);
-    addNewBind(tr("M61"), ui->leM61, 262, FLOAT);
-    addNewBind(tr("M62"), ui->leM62, 264, FLOAT);
-    addNewBind(tr("X18"), ui->leX18, 266, FLOAT);
+    addNewGeneralBind(tr("M52"), ui->leM52, 244, FLOAT);
+    addNewGeneralBind(tr("M53"), ui->leM53, 246, FLOAT);
+    addNewGeneralBind(tr("M54"), ui->leM54, 248, FLOAT);
+    addNewGeneralBind(tr("X16"), ui->leX16, 250, FLOAT);
+    addNewGeneralBind(tr("M56"), ui->leM56, 252, FLOAT);
+    addNewGeneralBind(tr("M57"), ui->leM57, 254, FLOAT);
+    addNewGeneralBind(tr("M58"), ui->leM58, 256, FLOAT);
+    addNewGeneralBind(tr("X17"), ui->leX17, 258, FLOAT);
+    addNewGeneralBind(tr("M60"), ui->leM60, 260, FLOAT);
+    addNewGeneralBind(tr("M61"), ui->leM61, 262, FLOAT);
+    addNewGeneralBind(tr("M62"), ui->leM62, 264, FLOAT);
+    addNewGeneralBind(tr("X18"), ui->leX18, 266, FLOAT);
 
     // инициализация виджетов внешних защит
-    addNewBind(tr("M64"), ui->leM64, 268, FLOAT);
-    addNewBind(tr("X19"), ui->leX19, 270, FLOAT);
-    addNewBind(tr("M72"), ui->leM72, 272, FLOAT);
-    addNewBind(tr("M74"), ui->leM74, 274, FLOAT);
-    addNewBind(tr("M76"), ui->leM76, 276, FLOAT);
+    addNewGeneralBind(tr("M64"), ui->leM64, 268, FLOAT);
+    addNewGeneralBind(tr("X19"), ui->leX19, 270, FLOAT);
+    addNewGeneralBind(tr("M72"), ui->leM72, 272, FLOAT);
+    addNewGeneralBind(tr("M74"), ui->leM74, 274, FLOAT);
+    addNewGeneralBind(tr("M76"), ui->leM76, 276, FLOAT);
 
     // инициализация виджетов защит по температуре
-    addNewBind(tr("M67"), ui->leM67, 278, FLOAT);
-    addNewBind(tr("M69"), ui->leM69, 280, FLOAT);
-    addNewBind(tr("X20"), ui->leX20, 282, FLOAT);
-    addNewBind(tr("M68"), ui->leM68, 284, FLOAT);
-    addNewBind(tr("M70"), ui->leM70, 286, FLOAT);
-    addNewBind(tr("X21"), ui->leX21, 288, FLOAT);
+    addNewGeneralBind(tr("M67"), ui->leM67, 278, FLOAT);
+    addNewGeneralBind(tr("M69"), ui->leM69, 280, FLOAT);
+    addNewGeneralBind(tr("X20"), ui->leX20, 282, FLOAT);
+    addNewGeneralBind(tr("M68"), ui->leM68, 284, FLOAT);
+    addNewGeneralBind(tr("M70"), ui->leM70, 286, FLOAT);
+    addNewGeneralBind(tr("X21"), ui->leX21, 288, FLOAT);
 
     // инициализация виджетов уровневых защит
-    addNewBind(tr("M78"), ui->leM78, 290, FLOAT);
-    addNewBind(tr("M79"), ui->leM79, 292, FLOAT);
+    addNewGeneralBind(tr("M78"), ui->leM78, 290, FLOAT);
+    addNewGeneralBind(tr("M79"), ui->leM79, 292, FLOAT);
 
     // инициализация виджетов защит  БРУ
-    addNewBind(tr("M96"), ui->leM96, 294, FLOAT);
-    addNewBind(tr("M97"), ui->leM97, 296, FLOAT);
-    addNewBind(tr("M98"), ui->leM98, 298, FLOAT);
-    addNewBind(tr("M99"), ui->leM99, 300, FLOAT);
+    addNewGeneralBind(tr("M96"), ui->leM96, 294, FLOAT);
+    addNewGeneralBind(tr("M97"), ui->leM97, 296, FLOAT);
+    addNewGeneralBind(tr("M98"), ui->leM98, 298, FLOAT);
+    addNewGeneralBind(tr("M99"), ui->leM99, 300, FLOAT);
 
     // инициализация виджетов вакуумных защит
-    addNewBind(tr("M91"), ui->leM91, 302, FLOAT);
-    addNewBind(tr("M92"), ui->leM92, 304, FLOAT);
-    addNewBind(tr("X23"), ui->leX23, 306, FLOAT);
+    addNewGeneralBind(tr("M91"), ui->leM91, 302, FLOAT);
+    addNewGeneralBind(tr("M92"), ui->leM92, 304, FLOAT);
+    addNewGeneralBind(tr("X23"), ui->leX23, 306, FLOAT);
 
     // инициализация виджетов автоматики
-    addNewBind(tr("M82"), ui->leM82, 308, FLOAT);
-    addNewBind(tr("M83"), ui->leM83, 310, FLOAT);
-    addNewBind(tr("M84"), ui->leM84, 312, FLOAT);
-    addNewBind(tr("M85"), ui->leM85, 314, FLOAT);
-    addNewBind(tr("M88"), ui->leM88, 316, FLOAT);
-    addNewBind(tr("M89"), ui->leM89, 318, FLOAT);
+    addNewGeneralBind(tr("M82"), ui->leM82, 308, FLOAT);
+    addNewGeneralBind(tr("M83"), ui->leM83, 310, FLOAT);
+    addNewGeneralBind(tr("M84"), ui->leM84, 312, FLOAT);
+    addNewGeneralBind(tr("M85"), ui->leM85, 314, FLOAT);
+    addNewGeneralBind(tr("M88"), ui->leM88, 316, FLOAT);
+    addNewGeneralBind(tr("M89"), ui->leM89, 318, FLOAT);
 
     // инициализация виджетов коммутационных аппаратов
-    addNewBind(tr("K02"), ui->leK02, 320, FLOAT);
-    addNewBind(tr("K04"), ui->leK04, 322, FLOAT);
-    addNewBind(tr("K05"), ui->leK05, 324, FLOAT);
-    addNewBind(tr("K09"), ui->leK09, 326, FLOAT);
-    addNewBind(tr("K08"), ui->leK08, 328, FLOAT);
-    addNewBind(tr("X22"), ui->leX22, 330, FLOAT);
-    addNewBind(tr("K12"), nullptr, 332, FLOAT);
-    addNewBind(tr("K19"), nullptr, 334, FLOAT);
-    addNewBind(tr("K42"), ui->leK42, 336, FLOAT);
-    addNewBind(tr("K46"), ui->leK46, 338, FLOAT);
-    addNewBind(tr("K43"), ui->leK43, 340, FLOAT);
-    addNewBind(tr("K47"), ui->leK47, 342, FLOAT);
-    addNewBind(tr("K44"), ui->leK44, 344, FLOAT);
-    addNewBind(tr("K48"), ui->leK48, 346, FLOAT);
-    addNewBind(tr("K45"), ui->leK45, 348, FLOAT);
-    addNewBind(tr("K49"), ui->leK49, 350, FLOAT);
-    addNewBind(tr("T02"), ui->leT02, 352, FLOAT);
-    addNewBind(tr("K10"), nullptr, 354, FLOAT);
+    addNewGeneralBind(tr("K02"), ui->leK02, 320, FLOAT);
+    addNewGeneralBind(tr("K04"), ui->leK04, 322, FLOAT);
+    addNewGeneralBind(tr("K05"), ui->leK05, 324, FLOAT);
+    addNewGeneralBind(tr("K09"), ui->leK09, 326, FLOAT);
+    addNewGeneralBind(tr("K08"), ui->leK08, 328, FLOAT);
+    addNewGeneralBind(tr("X22"), ui->leX22, 330, FLOAT);
+    addNewGeneralBind(tr("K12"), nullptr, 332, FLOAT);
+    addNewGeneralBind(tr("K19"), nullptr, 334, FLOAT);
+    addNewGeneralBind(tr("K42"), ui->leK42, 336, FLOAT);
+    addNewGeneralBind(tr("K46"), ui->leK46, 338, FLOAT);
+    addNewGeneralBind(tr("K43"), ui->leK43, 340, FLOAT);
+    addNewGeneralBind(tr("K47"), ui->leK47, 342, FLOAT);
+    addNewGeneralBind(tr("K44"), ui->leK44, 344, FLOAT);
+    addNewGeneralBind(tr("K48"), ui->leK48, 346, FLOAT);
+    addNewGeneralBind(tr("K45"), ui->leK45, 348, FLOAT);
+    addNewGeneralBind(tr("K49"), ui->leK49, 350, FLOAT);
+    addNewGeneralBind(tr("T02"), ui->leT02, 352, FLOAT);
+    addNewGeneralBind(tr("K10"), nullptr, 354, FLOAT);
 
     // инициализация виджетов аналоговые входы
-    addNewBind(tr("M01"), ui->leM01, 356, FLOAT);
-    addNewBind(tr("M02"), ui->leM02, 358, FLOAT);
-    addNewBind(tr("M03"), ui->leM03, 360, FLOAT);
-    addNewBind(tr("KIA"), ui->leKIA, 362, FLOAT);
-    addNewBind(tr("KIB"), ui->leKIB, 364, FLOAT);
-    addNewBind(tr("KIC"), ui->leKIC, 366, FLOAT);
-    addNewBind(tr("K3I0"), ui->leK3I0, 368, FLOAT);
-    addNewBind(tr("KUA"), ui->leKUA, 370, FLOAT);
-    addNewBind(tr("KUB"), ui->leKUB, 372, FLOAT);
-    addNewBind(tr("KUC"), ui->leKUC, 374, FLOAT);
-    addNewBind(tr("K3U0"), ui->leK3U0, 376, FLOAT);
-    addNewBind(tr("KUS"), ui->leKUS, 378, FLOAT);
-    addNewBind(tr("KUAB"), ui->leKUAB, 380, FLOAT);
-    addNewBind(tr("KUBC"), ui->leKUBC, 382, FLOAT);
-    addNewBind(tr("KUCA"), ui->leKUCA, 384, FLOAT);
-    addNewBind(tr("K3U0X"), ui->leK3U0X, 386, FLOAT);
-    addNewBind(tr("KUAX"), ui->leKUAX, 388, FLOAT);
-    addNewBind(tr("KUBX"), ui->leKUBX, 390, FLOAT);
-    addNewBind(tr("KUCX"), ui->leKUCX, 392, FLOAT);
-    addNewBind(tr("KU0X"), ui->leKU0X, 394, FLOAT);
-    addNewBind(tr("KU0X_"), ui->leKU0X_, 396, FLOAT);
+    addNewGeneralBind(tr("M01"), ui->leM01, 356, FLOAT);
+    addNewGeneralBind(tr("M02"), ui->leM02, 358, FLOAT);
+    addNewGeneralBind(tr("M03"), ui->leM03, 360, FLOAT);
+    addNewGeneralBind(tr("KIA"), ui->leKIA, 362, FLOAT);
+    addNewGeneralBind(tr("KIB"), ui->leKIB, 364, FLOAT);
+    addNewGeneralBind(tr("KIC"), ui->leKIC, 366, FLOAT);
+    addNewGeneralBind(tr("K3I0"), ui->leK3I0, 368, FLOAT);
+    addNewGeneralBind(tr("KUA"), ui->leKUA, 370, FLOAT);
+    addNewGeneralBind(tr("KUB"), ui->leKUB, 372, FLOAT);
+    addNewGeneralBind(tr("KUC"), ui->leKUC, 374, FLOAT);
+    addNewGeneralBind(tr("K3U0"), ui->leK3U0, 376, FLOAT);
+    addNewGeneralBind(tr("KUS"), ui->leKUS, 378, FLOAT);
+    addNewGeneralBind(tr("KUAB"), ui->leKUAB, 380, FLOAT);
+    addNewGeneralBind(tr("KUBC"), ui->leKUBC, 382, FLOAT);
+    addNewGeneralBind(tr("KUCA"), ui->leKUCA, 384, FLOAT);
+    addNewGeneralBind(tr("K3U0X"), ui->leK3U0X, 386, FLOAT);
+    addNewGeneralBind(tr("KUAX"), ui->leKUAX, 388, FLOAT);
+    addNewGeneralBind(tr("KUBX"), ui->leKUBX, 390, FLOAT);
+    addNewGeneralBind(tr("KUCX"), ui->leKUCX, 392, FLOAT);
+    addNewGeneralBind(tr("KU0X"), ui->leKU0X, 394, FLOAT);
+    addNewGeneralBind(tr("KU0X_"), ui->leKU0X_, 396, FLOAT);
+}
+//----------------------------------------
+void ConfiguratorWindow::initPurposeBind()
+{
+    addNewPurposeBind(tr("DO1"), 1024);
+    addNewPurposeBind(tr("DO2"), 1048);
+    addNewPurposeBind(tr("DO4"), 1072);
+    addNewPurposeBind(tr("DO5"), 1096);
+    addNewPurposeBind(tr("DO6"), 1120);
+    addNewPurposeBind(tr("DO7"), 1144);
+    addNewPurposeBind(tr("DO8"), 1168);
+    addNewPurposeBind(tr("DO9"), 1192);
+    addNewPurposeBind(tr("DO10"), 1216);
+    addNewPurposeBind(tr("DO11"), 1240);
+    addNewPurposeBind(tr("DO12"), 1264);
+    addNewPurposeBind(tr("DO13"), 1288);
+    addNewPurposeBind(tr("LED1"), 1312);
+    addNewPurposeBind(tr("LED2"), 1336);
+    addNewPurposeBind(tr("LED3"), 1360);
+    addNewPurposeBind(tr("LED4"), 1384);
+    addNewPurposeBind(tr("LED5"), 1408);
+    addNewPurposeBind(tr("LED6"), 1432);
+    addNewPurposeBind(tr("LED7"), 1456);
+    addNewPurposeBind(tr("LED8"), 1480);
+    addNewPurposeBind(tr("K10"), 1504);
+    addNewPurposeBind(tr("K11"), 1528);
+    addNewPurposeBind(tr("I49"), 1552);
+    addNewPurposeBind(tr("M86"), 1576);
+    addNewPurposeBind(tr("M80"), 1600);
+    addNewPurposeBind(tr("N27"), 1624);
+    addNewPurposeBind(tr("N28"), 1648);
+    addNewPurposeBind(tr("N29"), 1672);
+    addNewPurposeBind(tr("N30"), 1696);
+    addNewPurposeBind(tr("N31"), 1720);
+    addNewPurposeBind(tr("N32"), 1744);
+    addNewPurposeBind(tr("N33"), 1768);
+    addNewPurposeBind(tr("N34"), 1792);
+    addNewPurposeBind(tr("N35"), 1816);
+    addNewPurposeBind(tr("N36"), 1840);
+    addNewPurposeBind(tr("N37"), 1864);
+    addNewPurposeBind(tr("N38"), 1888);
+    addNewPurposeBind(tr("N39"), 1912);
+    addNewPurposeBind(tr("N40"), 1936);
+    addNewPurposeBind(tr("N41"), 1960);
+    addNewPurposeBind(tr("N42"), 1984);
+    addNewPurposeBind(tr("N43"), 2008);
+    addNewPurposeBind(tr("N44"), 2032);
+    addNewPurposeBind(tr("N45"), 2056);
+    addNewPurposeBind(tr("N46"), 2080);
+    addNewPurposeBind(tr("N49"), 2104);
+    addNewPurposeBind(tr("N68"), 2128);
+    addNewPurposeBind(tr("N69"), 2152);
+    addNewPurposeBind(tr("N70"), 2176);
+    addNewPurposeBind(tr("N72"), 2200);
 }
 //----------------------------------------
 void ConfiguratorWindow::initModelTables()
 {
+    // инициализация таблицы привязок светодиодов
     QVector<CRow> led_rows;
 
     led_rows.append(CRow(tr("Светодиод 1"), 3));
@@ -1463,34 +1515,68 @@ void ConfiguratorWindow::initModelTables()
     led_rows.append(CRow(tr("Светодиод 6"), 3));
     led_rows.append(CRow(tr("Светодиод 7"), 3));
     led_rows.append(CRow(tr("Светодиод 8"), 3));
-    led_rows.append(CRow(tr("Светодиод 9"), 3));
-    led_rows.append(CRow(tr("Светодиод 10"), 3));
-    led_rows.append(CRow(tr("Светодиод 11"), 3));
-    led_rows.append(CRow(tr("Светодиод 12"), 3));
-    led_rows.append(CRow(tr("Светодиод 13"), 3));
-    led_rows.append(CRow(tr("Светодиод 14"), 3));
-    led_rows.append(CRow(tr("Светодиод 15"), 3));
-    led_rows.append(CRow(tr("Светодиод 16"), 3));
-    led_rows.append(CRow(tr("Светодиод 17"), 3));
-    led_rows.append(CRow(tr("Светодиод 18"), 3));
-    led_rows.append(CRow(tr("Светодиод 19"), 3));
-    led_rows.append(CRow(tr("Светодиод 20"), 3));
 
     QStringList led_columns = QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3");
 
-    CDataTable led_input_table(led_rows, led_columns);
+    CDataTable led_output_table(led_rows, led_columns);
 
-    led_input_table.setDisableColumns(0, QVector<int>() << 1);
-    led_input_table.setDisableColumns(1, QVector<int>() << 0 << 2);
+    led_output_table.setDisableColumns(0, QVector<int>() << 1);
+    led_output_table.setDisableColumns(1, QVector<int>() << 0 << 2);
 
-    initTable(ui->tablewgtLedPurpose, led_input_table);
+    initTable(ui->tablewgtLedPurpose, led_output_table);
 
-    QVector<CRow> out_rows = QVector<CRow>() << CRow(tr("Реле 1"), 1) << CRow(tr("Реле 2"), 1) << CRow(tr("Реле 4"), 1)
-                                             << CRow(tr("Реле 5"), 1) << CRow(tr("Реле 6"), 1) << CRow(tr("Реле 7"), 1)
-                                             << CRow(tr("Реле 8"), 1) << CRow(tr("Реле 9"), 1) << CRow(tr("Реле 10"), 1)
-                                             << CRow(tr("Реле 11"), 1) << CRow(tr("Реле 12"), 1) << CRow(tr("Реле 13"), 1);
+    // инициализация таблицы привязок входов
+    QVector<CRow> input_rows;
 
-    QStringList out_columns = QStringList() << tr("Состояние");
+    input_rows.append(CRow(tr("Вход 1"), 3));
+    input_rows.append(CRow(tr("Вход 2"), 3));
+    input_rows.append(CRow(tr("Вход 3"), 3));
+    input_rows.append(CRow(tr("Вход 4"), 3));
+    input_rows.append(CRow(tr("Вход 5"), 3));
+    input_rows.append(CRow(tr("Вход 6"), 3));
+    input_rows.append(CRow(tr("Вход 7"), 3));
+    input_rows.append(CRow(tr("Вход 8"), 3));
+    input_rows.append(CRow(tr("Вход 9"), 3));
+    input_rows.append(CRow(tr("Вход 10"), 3));
+    input_rows.append(CRow(tr("Вход 11"), 3));
+    input_rows.append(CRow(tr("Вход 12"), 3));
+    input_rows.append(CRow(tr("Вход 13"), 3));
+    input_rows.append(CRow(tr("Вход 14"), 3));
+    input_rows.append(CRow(tr("Вход 15"), 3));
+    input_rows.append(CRow(tr("Вход 16"), 3));
+    input_rows.append(CRow(tr("Вход 17"), 3));
+    input_rows.append(CRow(tr("Вход 18"), 3));
+    input_rows.append(CRow(tr("Вход 19"), 3));
+    input_rows.append(CRow(tr("Вход 20"), 3));
+
+    QStringList input_columns = QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3");
+
+    CDataTable input_table(input_rows, input_columns);
+
+    initTable(ui->tablewgtDiscreteInputPurpose, input_table);
+
+    // инициализация таблицы привязок реле
+    QStringList out_columns;
+
+    QFile file(":/files/resource/files/variables.txt");
+
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        statusBar()->showMessage(tr("Не обнаружен файл с именами переменных"));
+        exit(1);
+    }
+
+    QTextStream in(&file);
+
+    while(!in.atEnd())
+        out_columns << in.readLine();
+
+    QVector<CRow> out_rows = QVector<CRow>() << CRow(tr("Реле 1"), out_columns.count()) << CRow(tr("Реле 2"), out_columns.count())
+                                             << CRow(tr("Реле 4"), out_columns.count()) << CRow(tr("Реле 5"), out_columns.count())
+                                             << CRow(tr("Реле 6"), out_columns.count()) << CRow(tr("Реле 7"), out_columns.count())
+                                             << CRow(tr("Реле 8"), out_columns.count()) << CRow(tr("Реле 9"), out_columns.count())
+                                             << CRow(tr("Реле 10"), out_columns.count()) << CRow(tr("Реле 11"), out_columns.count())
+                                             << CRow(tr("Реле 12"), out_columns.count()) << CRow(tr("Реле 13"), out_columns.count());
 
     CDataTable out_relay_table(out_rows, out_columns);
 
@@ -1518,7 +1604,7 @@ void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
     m_calculateWidget->setData(values);
 }
 //-----------------------------------------------------------
-void ConfiguratorWindow::displayResponse(CDataUnitType& unit)
+void ConfiguratorWindow::displayGeneralResponse(CDataUnitType& unit)
 {
     if(unit.is_empty())
         return;
@@ -1593,24 +1679,64 @@ void ConfiguratorWindow::displayResponse(CDataUnitType& unit)
         }
     }
 }
-//-----------------------------------------------------------------------
-void ConfiguratorWindow::displayRelayOuts(const QVector<quint16>& values)
+//------------------------------------------------------------------
+void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 {
-    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model());
+    if(unit.valueCount() == 0)
+        return;
 
-    if(model)
+    QString first = unit.property(tr("FIRST")).toString();
+    QString last  = unit.property(tr("LAST")).toString();
+
+    if(first.isEmpty() || last.isEmpty())
+        return;
+
+    QPoint indexes = indexPurposeKey(first, last);
+
+    if(indexes.x() == -1 || indexes.y() == -1)
+        return;
+
+    int size = m_purpose_list[indexes.y()].second - m_purpose_list[indexes.x()].second + 24;
+
+    if(size != unit.valueCount())
+        return;
+
+    QTableView* table = nullptr;
+
+    if(indexes.x() >= 0 && indexes.y() <= 11) // выходы: реле
+        table = ui->tablewgtRelayPurpose;
+    else if(indexes.x() >= 12 && indexes.y() <= 19) // выходы: светодиоды
+        table = ui->tablewgtLedPurpose;
+
+    if(!table)
+        return;
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+    if(!model)
+        return;
+
+    CDataTable& data = model->dataTable();
+
+    for(int i = 0; i < (indexes.y() - indexes.x() + 1); i++)
     {
-        CDataTable& data = model->dataTable();
-
-        for(int i = 0; i < 12; i++)
+        for(int j = i*24, m = 0; j < i*24 + 24; j += 2, m++)
         {
-            bool state = (values[0] >> i)&0x0001;
+            quint32 value = unit.value(j + 1) | ((unit.value(j) << 16));
 
-            data[i][0].setState(state);
+            for(int k = 0; k < (int)sizeof(value)*8; k++)
+            {
+                bool state = (value >> k)&0x00000001;
+
+                if(m == 11 && k >= 6)
+                    break;
+
+                data[i][m*32 + k].setState(state);
+            }
         }
-
-        model->updateData();
     }
+
+    model->updateData();
 }
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
@@ -1724,7 +1850,7 @@ void ConfiguratorWindow::versionParser()
     this->setWindowTitle(title);
 }
 //-----------------------------------------------------------------------------------
-void ConfiguratorWindow::addNewBind(const QString& key, QWidget* widget, int address,
+void ConfiguratorWindow::addNewGeneralBind(const QString& key, QWidget* widget, int address,
                                     ConfiguratorWindow::WidgetType wtype)
 {
     if(key.isEmpty() || !widget)
@@ -1734,6 +1860,11 @@ void ConfiguratorWindow::addNewBind(const QString& key, QWidget* widget, int add
     widget->setProperty("TYPE", wtype);
 
     m_cell_list.append(qMakePair(key, widget));
+}
+//-------------------------------------------------------------------------
+void ConfiguratorWindow::addNewPurposeBind(const QString& key, int address)
+{
+    m_purpose_list.append(qMakePair(key, address));
 }
 //------------------------------------------------------------------------------------
 int ConfiguratorWindow::sizeBindBlock(const QString& first_key, const QString& second_key)
@@ -1756,30 +1887,30 @@ int ConfiguratorWindow::sizeBindBlock(const QString& first_key, const QString& s
 
     return -1;
 }
-//-------------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendReadRequest(const QString& first_key, const QString& second_key,
-                                         CDataUnitType::FunctionType type, int size)
+//----------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendGeneralReadRequest(const QString& first, const QString& last,
+                                                CDataUnitType::FunctionType type, int size)
 {
     if(size <= 0)
         return;
 
-    int addr = addressKey(first_key);
+    int addr = addressGeneralKey(first);
 
     CDataUnitType unit(ui->sboxSlaveID->value(), type, addr, QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), GENERAL_TYPE);
-    unit.setProperty(tr("FIRST"), first_key);
-    unit.setProperty(tr("LAST"), second_key);
+    unit.setProperty(tr("FIRST"), first);
+    unit.setProperty(tr("LAST"), last);
 
     m_modbusDevice->request(unit);
 }
-//--------------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendWriteRequest(const QString& first_key, const QString& second_key)
+//-----------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendGeneralWriteRequest(const QString& first, const QString& last)
 {
-    if(first_key.isEmpty() || second_key.isEmpty())
+    if(first.isEmpty() || last.isEmpty())
         return;
 
-    int addr = addressKey(first_key);
+    int addr = addressGeneralKey(first);
 
     if(addr == -1)
         return;
@@ -1792,7 +1923,7 @@ void ConfiguratorWindow::sendWriteRequest(const QString& first_key, const QStrin
     } value;
 
     QVector<quint16>  data;
-    QVector<QWidget*> list = listWidget(first_key, second_key);
+    QVector<QWidget*> list = listWidget(first, last);
 
     if(list.isEmpty())
         return;
@@ -1840,32 +1971,62 @@ void ConfiguratorWindow::sendWriteRequest(const QString& first_key, const QStrin
 
     CDataUnitType unit(ui->sboxSlaveID->value(), funType, addr, data);
 
-    unit.setProperty(tr("FIRST"), first_key);
-    unit.setProperty(tr("LAST"), second_key);
+    unit.setProperty(tr("FIRST"), first);
+    unit.setProperty(tr("LAST"), last);
+
+    m_modbusDevice->request(unit);
+}
+//----------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QString& last)
+{
+    int faddr = addressPurposeKey(first);
+    int laddr = addressPurposeKey(last);
+
+    if(faddr == -1 || laddr == -1)
+        return;
+
+    int size = laddr - faddr + 24;
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, faddr,
+                       QVector<quint16>() << size);
+
+    unit.setProperty(tr("REQUEST"), PURPOSE_OUT_TYPE);
+    unit.setProperty(tr("FIRST"), first);
+    unit.setProperty(tr("LAST"), last);
 
     m_modbusDevice->request(unit);
 }
 //----------------------------------------------------------
-int ConfiguratorWindow::addressKey(const QString& key) const
+int ConfiguratorWindow::addressGeneralKey(const QString& key) const
 {
-    int addr = -1;
-
     for(QPair<QString, QWidget*> pair: m_cell_list)
     {
         if(pair.first == key)
         {
             if(pair.second)
             {
-                addr = pair.second->property("ADDRESS").toInt();
-                break;
+                return pair.second->property("ADDRESS").toInt();
             }
         }
     }
 
-    return addr;
+    return -1;
 }
-//---------------------------------------------------------------------------------------------------
-QVector<QWidget*> ConfiguratorWindow::listWidget(const QString& first_key, const QString& second_key)
+//-----------------------------------------------------------------
+int ConfiguratorWindow::addressPurposeKey(const QString& key) const
+{
+    for(QPair<QString, int> pair: m_purpose_list)
+    {
+        if(pair.first == key)
+        {
+            return pair.second;
+        }
+    }
+
+    return -1;
+}
+//-----------------------------------------------------------------------------------------
+QVector<QWidget*> ConfiguratorWindow::listWidget(const QString& first, const QString& last)
 {
     QVector<QWidget*> list;
 
@@ -1873,12 +2034,12 @@ QVector<QWidget*> ConfiguratorWindow::listWidget(const QString& first_key, const
 
     for(int i = 0; i < m_cell_list.count(); i++)
     {
-        if(!flag_key && m_cell_list.at(i).first == first_key)
+        if(!flag_key && m_cell_list.at(i).first == first)
         {
             list.append(m_cell_list.at(i).second);
             flag_key = true;
         }
-        else if(flag_key && m_cell_list.at(i).first == second_key)
+        else if(flag_key && m_cell_list.at(i).first == last)
         {
             list.append(m_cell_list.at(i).second);
             break;
@@ -1890,6 +2051,31 @@ QVector<QWidget*> ConfiguratorWindow::listWidget(const QString& first_key, const
     }
 
     return list;
+}
+//-----------------------------------------------------------------------------------
+QPoint ConfiguratorWindow::indexPurposeKey(const QString& first, const QString& last)
+{
+    QPoint  indexes(-1, -1);
+    QString key = first;
+
+    for(int i = 0; i < m_purpose_list.count(); i++)
+    {
+        if(m_purpose_list[i].first == key)
+        {
+            if(indexes.x() == -1)
+            {
+                indexes.setX(i);
+                key = last;
+            }
+            else
+            {
+                indexes.setY(i);
+                break;
+            }
+        }
+    }
+
+    return indexes;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

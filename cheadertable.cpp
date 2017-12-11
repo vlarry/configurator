@@ -12,43 +12,54 @@ void CHeaderTable::paintSection(QPainter* painter, const QRect& rect, int logica
     if(!rect.isValid())
         return;
 
+    QFont font = painter->font();
+
+    font.setBold(true);
+
+    painter->setFont(font);
+
     QString text = model()->headerData(logicalIndex, m_orientation).toString();
 
-    if(m_orientation == Qt::Vertical)
-    {
-        QRect r(rect.x() + 1, rect.y() + 1, rect.width() - 1, rect.height() - 1);
+    QRect r;
 
-        painter->save();
-            painter->setPen(Qt::black);
-            QHeaderView::paintSection(painter, r, logicalIndex);
-        painter->restore();
-    }
-    else
-    {
-        painter->save();
-        painter->translate(rect.left(), rect.bottom());
-        painter->rotate(-90);
+    painter->save();
 
-        QRect r(0, 0, rect.height() - 1, rect.width() - 1);
+        if(m_orientation == Qt::Vertical)
+        {
+            r = QRect(rect.x(), rect.y(), rect.width() - 1, rect.height() - 1);
+        }
+        else
+        {
+            painter->translate(rect.left(), rect.bottom());
+            painter->rotate(-90);
 
-        painter->setPen(Qt::black);
-        painter->fillRect(r, Qt::white);
+            r = QRect(0, 0, rect.height() - 1, rect.width() - 1);
+        }
 
         QRect t = r;
-
         t.setX(t.x() + 5);
 
+        painter->setPen(Qt::black);
+        painter->setBrush(Qt::white);
+        painter->fillRect(r, Qt::white);
+
         painter->drawText(t, Qt::AlignLeft | Qt::AlignVCenter, text);
-        painter->restore();
-    }
+
+    painter->restore();
 }
 //-----------------------------------------------------------------
 QSize CHeaderTable::sectionSizeFromContents(int logicalIndex) const
 {
-    QSize s = QHeaderView::sectionSizeFromContents(logicalIndex);
+    QString text = model()->headerData(logicalIndex, m_orientation).toString();
+
+    QFont        font = this->font();
+    QFontMetrics fm(font);
+
+    int w = fm.width(text)*1.2 + 10;
+    int h = fm.height()*1.2 + 5;
 
     if(m_orientation == Qt::Horizontal)
-        return QSize(s.height(), std::max(100, s.width()));
+        return QSize(h, w);
 
-    return s;
+    return QSize(w, h);
 }

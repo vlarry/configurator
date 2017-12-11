@@ -24,14 +24,12 @@ CDataTable& CMatrixPurposeModel::dataTable()
 int CMatrixPurposeModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-
     return m_data.count();
 }
 //-------------------------------------------------------------------
 int CMatrixPurposeModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-
     return m_data.columnCounts();
 }
 //------------------------------------------------------------------------------------------
