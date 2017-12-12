@@ -127,6 +127,11 @@ void CDataTable::setDisableColumns(int row, QVector<int>& list)
 {
     m_rows[row].setInactiveColumnList(list);
 }
+//------------------------------------------------------------
+void CDataTable::setEnableColumns(int row, QVector<int>& list)
+{
+    m_rows[row].setActiveColumnList(list);
+}
 //--------------------------------------
 CRow& CDataTable::operator [](int index)
 {
@@ -162,7 +167,13 @@ const QString& CRow::header() const
 void CRow::setInactiveColumnList(QVector<int>& list)
 {
     for(int index: list)
-       m_columns[index].setActive(false);
+        m_columns[index].setActive(false);
+}
+//------------------------------------------------
+void CRow::setActiveColumnList(QVector<int>& list)
+{
+    for(int index: list)
+        m_columns[index].setActive(true);
 }
 //-----------------------------------
 CColumn& CRow::operator [](int index)
@@ -179,7 +190,7 @@ const CColumn& CRow::operator [](int index) const
 //-----------------
 CColumn::CColumn():
     m_state(false),
-    m_active(true)
+    m_active(false)
 {
 
 }
@@ -231,26 +242,34 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
 
     checkboxstyle.rect.setLeft(option.rect.x() + option.rect.width()/2 - checkbox_rect.width()/2);
 
-    bool data = index.model()->data(index, Qt::CheckStateRole).toBool();
+    bool state = index.model()->data(index, Qt::CheckStateRole).toBool();
 
-    painter->save();
-        if(!index.data(Qt::UserRole).toBool())
-            painter->setBrush(Qt::gray);
-        else if(!index.data(Qt::CheckStateRole).toBool())
-            painter->setBrush(Qt::red);
-        else if(index.data(Qt::CheckStateRole).toBool())
-            painter->setBrush(Qt::green);
-
-        painter->setPen(Qt::transparent);
-        painter->drawRect(rect);
-    painter->restore();
-
-    if(data)
+    if(state)
         checkboxstyle.state = QStyle::State_On|QStyle::State_Enabled;
     else
         checkboxstyle.state = QStyle::State_Off|QStyle::State_Enabled;
 
-    QApplication::style()->drawControl(QStyle::CE_CheckBox, &checkboxstyle, painter);
+    if(!index.data(Qt::UserRole).toBool())
+    {
+        int cx = option.rect.x() + option.rect.width()/2;
+        int cy = option.rect.y() + option.rect.height()/2;
+
+        QPoint line_topLeft(cx - checkbox_rect.width()/2, cy - checkbox_rect.height()/2 - 1);
+        QPoint line_bottomRight(cx + checkbox_rect.width()/2, cy + checkbox_rect.height()/2 -1);
+        QPoint line_bottomLeft(cx - checkbox_rect.width()/2, cy + checkbox_rect.height()/2);
+        QPoint line_topRight(cx + checkbox_rect.width()/2, cy - checkbox_rect.height()/2);
+
+        painter->save();
+            painter->setPen(Qt::gray);
+            painter->drawRect(line_topLeft.x(), line_topLeft.y(), checkbox_rect.width(), checkbox_rect.height());
+            painter->drawLine(line_topLeft, line_bottomRight);
+            painter->drawLine(line_bottomLeft, line_topRight);
+        painter->restore();
+    }
+    else
+    {
+        QApplication::style()->drawControl(QStyle::CE_CheckBox, &checkboxstyle, painter);
+    }
 }
 //----------------------------------------------------------------------------------------------------------------
 bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option,

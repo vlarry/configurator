@@ -1520,9 +1520,6 @@ void ConfiguratorWindow::initModelTables()
 
     CDataTable led_output_table(led_rows, led_columns);
 
-    led_output_table.setDisableColumns(0, QVector<int>() << 1);
-    led_output_table.setDisableColumns(1, QVector<int>() << 0 << 2);
-
     initTable(ui->tablewgtLedPurpose, led_output_table);
 
     // инициализация таблицы привязок входов
@@ -1579,6 +1576,23 @@ void ConfiguratorWindow::initModelTables()
                                              << CRow(tr("Реле 12"), out_columns.count()) << CRow(tr("Реле 13"), out_columns.count());
 
     CDataTable out_relay_table(out_rows, out_columns);
+
+    out_relay_table.setEnableColumns(0, QVector<int>() << 11);
+    out_relay_table.setEnableColumns(1, QVector<int>() << 12);
+    out_relay_table.setEnableColumns(2, QVector<int>() << 138 << 139 << 140 << 149 << 152 << 182 << 185 << 188 << 191
+                                                       << 194 << 197 << 200 << 203 << 206 << 209 << 214 << 217 << 222
+                                                       << 228 << 237 << 240 << 243 << 246 << 250 << 251 << 256 << 260
+                                                       << 264 << 269);
+    out_relay_table.setEnableColumns(4, QVector<int>() << 185);
+    out_relay_table.setEnableColumns(5, QVector<int>() << 51 << 52 << 84 << 141 << 142 << 150 << 153 << 183 << 186
+                                                       << 189 << 192 << 195 << 198 << 201 << 204 << 207 << 210 << 215
+                                                       << 218 << 223 << 229 << 238 << 241 << 244 << 247 << 252 << 253
+                                                       << 257 << 261 << 265 << 270 << 271);
+    out_relay_table.setEnableColumns(6, QVector<int>() << 14 << 143 << 181);
+    out_relay_table.setEnableColumns(7, QVector<int>() << 270);
+    out_relay_table.setEnableColumns(9, QVector<int>() << 252 << 253);
+    out_relay_table.setEnableColumns(10, QVector<int>() << 235);
+    out_relay_table.setEnableColumns(11, QVector<int>() << 16);
 
     initTable(ui->tablewgtRelayPurpose, out_relay_table);
 }

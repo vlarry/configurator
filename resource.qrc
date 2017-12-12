@@ -8,7 +8,7 @@
         <file>resource/images/checkbox_inactive.png</file>
     </qresource>
     <qresource prefix="/files">
-        <file>resource/files/version.txt</file>
         <file>resource/files/variables.txt</file>
+        <file>resource/files/version.txt</file>
     </qresource>
 </RCC>

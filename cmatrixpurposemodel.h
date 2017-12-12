@@ -33,6 +33,7 @@
             const QString& header() const;
 
             void setInactiveColumnList(QVector<int>& list);
+            void setActiveColumnList(QVector<int>& list);
 
             CColumn&       operator [](int index);
             const CColumn& operator [](int index) const;
@@ -53,6 +54,7 @@
             const QString& columnName(int index) const;
 
             void setDisableColumns(int row, QVector<int>& list);
+            void setEnableColumns(int row, QVector<int>& list);
 
             CRow&       operator [](int index);
             const CRow& operator [](int index) const;
