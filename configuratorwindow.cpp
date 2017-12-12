@@ -833,6 +833,10 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 22: // привязки выходов (светодиодов)
+            sendPurposeReadRequest(tr("LED1"), tr("LED2"));
+            sendPurposeReadRequest(tr("LED3"), tr("LED4"));
+            sendPurposeReadRequest(tr("LED5"), tr("LED6"));
+            sendPurposeReadRequest(tr("LED7"), tr("LED8"));
         break;
 
         case 23: // привязки входов
@@ -1504,21 +1508,40 @@ void ConfiguratorWindow::initPurposeBind()
 //----------------------------------------
 void ConfiguratorWindow::initModelTables()
 {
+    QStringList outputs;
+
+    QFile file(":/files/resource/files/variables.txt");
+
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        statusBar()->showMessage(tr("Не обнаружен файл с именами переменных"));
+        exit(1);
+    }
+
+    QTextStream in(&file);
+
+    while(!in.atEnd())
+        outputs << in.readLine();
+
+    if(outputs.isEmpty())
+    {
+        statusBar()->showMessage(tr("Файл с именами переменных пустой"));
+        exit(1);
+    }
+
     // инициализация таблицы привязок светодиодов
     QVector<CRow> led_rows;
 
-    led_rows.append(CRow(tr("Светодиод 1"), 3));
-    led_rows.append(CRow(tr("Светодиод 2"), 3));
-    led_rows.append(CRow(tr("Светодиод 3"), 3));
-    led_rows.append(CRow(tr("Светодиод 4"), 3));
-    led_rows.append(CRow(tr("Светодиод 5"), 3));
-    led_rows.append(CRow(tr("Светодиод 6"), 3));
-    led_rows.append(CRow(tr("Светодиод 7"), 3));
-    led_rows.append(CRow(tr("Светодиод 8"), 3));
+    led_rows.append(CRow(tr("Светодиод 1"), outputs.count()));
+    led_rows.append(CRow(tr("Светодиод 2"), outputs.count()));
+    led_rows.append(CRow(tr("Светодиод 3"), outputs.count()));
+    led_rows.append(CRow(tr("Светодиод 4"), outputs.count()));
+    led_rows.append(CRow(tr("Светодиод 5"), outputs.count()));
+    led_rows.append(CRow(tr("Светодиод 6"), outputs.count()));
+    led_rows.append(CRow(tr("Светодиод 7"), outputs.count()));
+    led_rows.append(CRow(tr("Светодиод 8"), outputs.count()));
 
-    QStringList led_columns = QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3");
-
-    CDataTable led_output_table(led_rows, led_columns);
+    CDataTable led_output_table(led_rows, outputs);
 
     initTable(ui->tablewgtLedPurpose, led_output_table);
 
@@ -1553,46 +1576,14 @@ void ConfiguratorWindow::initModelTables()
     initTable(ui->tablewgtDiscreteInputPurpose, input_table);
 
     // инициализация таблицы привязок реле
-    QStringList out_columns;
+    QVector<CRow> out_rows = QVector<CRow>() << CRow(tr("Реле 1"), outputs.count()) << CRow(tr("Реле 2"), outputs.count())
+                                             << CRow(tr("Реле 4"), outputs.count()) << CRow(tr("Реле 5"), outputs.count())
+                                             << CRow(tr("Реле 6"), outputs.count()) << CRow(tr("Реле 7"), outputs.count())
+                                             << CRow(tr("Реле 8"), outputs.count()) << CRow(tr("Реле 9"), outputs.count())
+                                             << CRow(tr("Реле 10"), outputs.count()) << CRow(tr("Реле 11"), outputs.count())
+                                             << CRow(tr("Реле 12"), outputs.count()) << CRow(tr("Реле 13"), outputs.count());
 
-    QFile file(":/files/resource/files/variables.txt");
-
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        statusBar()->showMessage(tr("Не обнаружен файл с именами переменных"));
-        exit(1);
-    }
-
-    QTextStream in(&file);
-
-    while(!in.atEnd())
-        out_columns << in.readLine();
-
-    QVector<CRow> out_rows = QVector<CRow>() << CRow(tr("Реле 1"), out_columns.count()) << CRow(tr("Реле 2"), out_columns.count())
-                                             << CRow(tr("Реле 4"), out_columns.count()) << CRow(tr("Реле 5"), out_columns.count())
-                                             << CRow(tr("Реле 6"), out_columns.count()) << CRow(tr("Реле 7"), out_columns.count())
-                                             << CRow(tr("Реле 8"), out_columns.count()) << CRow(tr("Реле 9"), out_columns.count())
-                                             << CRow(tr("Реле 10"), out_columns.count()) << CRow(tr("Реле 11"), out_columns.count())
-                                             << CRow(tr("Реле 12"), out_columns.count()) << CRow(tr("Реле 13"), out_columns.count());
-
-    CDataTable out_relay_table(out_rows, out_columns);
-
-    out_relay_table.setEnableColumns(0, QVector<int>() << 11);
-    out_relay_table.setEnableColumns(1, QVector<int>() << 12);
-    out_relay_table.setEnableColumns(2, QVector<int>() << 138 << 139 << 140 << 149 << 152 << 182 << 185 << 188 << 191
-                                                       << 194 << 197 << 200 << 203 << 206 << 209 << 214 << 217 << 222
-                                                       << 228 << 237 << 240 << 243 << 246 << 250 << 251 << 256 << 260
-                                                       << 264 << 269);
-    out_relay_table.setEnableColumns(4, QVector<int>() << 185);
-    out_relay_table.setEnableColumns(5, QVector<int>() << 51 << 52 << 84 << 141 << 142 << 150 << 153 << 183 << 186
-                                                       << 189 << 192 << 195 << 198 << 201 << 204 << 207 << 210 << 215
-                                                       << 218 << 223 << 229 << 238 << 241 << 244 << 247 << 252 << 253
-                                                       << 257 << 261 << 265 << 270 << 271);
-    out_relay_table.setEnableColumns(6, QVector<int>() << 14 << 143 << 181);
-    out_relay_table.setEnableColumns(7, QVector<int>() << 270);
-    out_relay_table.setEnableColumns(9, QVector<int>() << 252 << 253);
-    out_relay_table.setEnableColumns(10, QVector<int>() << 235);
-    out_relay_table.setEnableColumns(11, QVector<int>() << 16);
+    CDataTable out_relay_table(out_rows, outputs);
 
     initTable(ui->tablewgtRelayPurpose, out_relay_table);
 }

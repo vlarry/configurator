@@ -24,12 +24,14 @@
             bool m_state;
             bool m_active;
     };
+    //--------
     class CRow
     {
         public:
             CRow();
             CRow(const QString& header, int columnSize);
 
+            int   columns() const;
             const QString& header() const;
 
             void setInactiveColumnList(QVector<int>& list);

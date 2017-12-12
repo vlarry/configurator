@@ -158,6 +158,11 @@ CRow::CRow(const QString& header, int columnSize):
 {
 
 }
+//-----------------------
+int CRow::columns() const
+{
+    return m_columns.count();
+}
 //---------------------------------
 const QString& CRow::header() const
 {
