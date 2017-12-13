@@ -1553,7 +1553,7 @@ void ConfiguratorWindow::connectDb()
 
     if(!m_db.open())
     {
-        QMessageBox::critical(this, tr("База данных"), tr("Невозможно открыть базу данных") + m_db.lastError().text());
+        QMessageBox::critical(this, tr("База данных"), tr("Невозможно открыть базу данных: ") + m_db.lastError().text());
         exit(1);
     }
 }
