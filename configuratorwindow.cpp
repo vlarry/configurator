@@ -1454,138 +1454,108 @@ void ConfiguratorWindow::initCellBind()
 //----------------------------------------
 void ConfiguratorWindow::initPurposeBind()
 {
-    addNewPurposeBind(tr("DO1"), 1024);
-    addNewPurposeBind(tr("DO2"), 1048);
-    addNewPurposeBind(tr("DO4"), 1072);
-    addNewPurposeBind(tr("DO5"), 1096);
-    addNewPurposeBind(tr("DO6"), 1120);
-    addNewPurposeBind(tr("DO7"), 1144);
-    addNewPurposeBind(tr("DO8"), 1168);
-    addNewPurposeBind(tr("DO9"), 1192);
-    addNewPurposeBind(tr("DO10"), 1216);
-    addNewPurposeBind(tr("DO11"), 1240);
-    addNewPurposeBind(tr("DO12"), 1264);
-    addNewPurposeBind(tr("DO13"), 1288);
-    addNewPurposeBind(tr("LED1"), 1312);
-    addNewPurposeBind(tr("LED2"), 1336);
-    addNewPurposeBind(tr("LED3"), 1360);
-    addNewPurposeBind(tr("LED4"), 1384);
-    addNewPurposeBind(tr("LED5"), 1408);
-    addNewPurposeBind(tr("LED6"), 1432);
-    addNewPurposeBind(tr("LED7"), 1456);
-    addNewPurposeBind(tr("LED8"), 1480);
-    addNewPurposeBind(tr("K10"), 1504);
-    addNewPurposeBind(tr("K11"), 1528);
-    addNewPurposeBind(tr("I49"), 1552);
-    addNewPurposeBind(tr("M86"), 1576);
-    addNewPurposeBind(tr("M80"), 1600);
-    addNewPurposeBind(tr("N27"), 1624);
-    addNewPurposeBind(tr("N28"), 1648);
-    addNewPurposeBind(tr("N29"), 1672);
-    addNewPurposeBind(tr("N30"), 1696);
-    addNewPurposeBind(tr("N31"), 1720);
-    addNewPurposeBind(tr("N32"), 1744);
-    addNewPurposeBind(tr("N33"), 1768);
-    addNewPurposeBind(tr("N34"), 1792);
-    addNewPurposeBind(tr("N35"), 1816);
-    addNewPurposeBind(tr("N36"), 1840);
-    addNewPurposeBind(tr("N37"), 1864);
-    addNewPurposeBind(tr("N38"), 1888);
-    addNewPurposeBind(tr("N39"), 1912);
-    addNewPurposeBind(tr("N40"), 1936);
-    addNewPurposeBind(tr("N41"), 1960);
-    addNewPurposeBind(tr("N42"), 1984);
-    addNewPurposeBind(tr("N43"), 2008);
-    addNewPurposeBind(tr("N44"), 2032);
-    addNewPurposeBind(tr("N45"), 2056);
-    addNewPurposeBind(tr("N46"), 2080);
-    addNewPurposeBind(tr("N49"), 2104);
-    addNewPurposeBind(tr("N68"), 2128);
-    addNewPurposeBind(tr("N69"), 2152);
-    addNewPurposeBind(tr("N70"), 2176);
-    addNewPurposeBind(tr("N72"), 2200);
+    if(!m_db.isOpen())
+        return;
+
+    QSqlQuery query;
+
+    QStringList type_list;
+    type_list << tr("INPUT") << tr("RELAY") << tr("LED");
+
+    for(const QString& type: type_list)
+    {
+        if(query.exec(tr("SELECT key, address, description FROM iodevice WHERE type = '") + type + "'"))
+        {
+            while(query.next())
+            {
+                m_purpose_list.append(qMakePair(query.value(tr("key")).toString(),
+                                                qMakePair(query.value(tr("address")).toInt(),
+                                                          query.value(tr("description")).toString())));
+            }
+        }
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::initModelTables()
 {
-    QStringList outputs;
+    QSqlQuery query(tr("SELECT * FROM variable"));
 
-    QFile file(":/files/resource/files/variables.txt");
+    QStringList columns;
 
-    if(!file.open(QIODevice::ReadOnly))
+    if(query.exec())
     {
-        statusBar()->showMessage(tr("Не обнаружен файл с именами переменных"));
-        exit(1);
+        while(query.next())
+        {
+            columns << query.value(tr("key")).toString();
+        }
     }
 
-    QTextStream in(&file);
+    if(columns.isEmpty())
+        return;
 
-    while(!in.atEnd())
-        outputs << in.readLine();
+    QList<QTableView*> view_list = QList<QTableView*>() << ui->tablewgtLedPurpose << ui->tablewgtDiscreteInputPurpose
+                                                        << ui->tablewgtRelayPurpose << ui->tablewgtKeyboardPurpose;
 
-    if(outputs.isEmpty())
+    for(QTableView* wgt: view_list)
     {
-        statusBar()->showMessage(tr("Файл с именами переменных пустой"));
+        QString first = "";
+        QString last  = "";
+
+        if(wgt == ui->tablewgtLedPurpose)
+        {
+            first = tr("LED1");
+            last  = tr("LED8");
+        }
+        else if(wgt == ui->tablewgtDiscreteInputPurpose)
+        {
+            first = tr("DI01");
+            last  = tr("DI20");
+        }
+        else if(wgt == ui->tablewgtRelayPurpose)
+        {
+            first = tr("DO1");
+            last  = tr("DO13");
+        }
+        else if(wgt == ui->tablewgtKeyboardPurpose)
+        {
+            break; // заглушка
+        }
+
+        if(first.isEmpty() || last.isEmpty())
+            break;
+
+        QPoint index = indexPurposeKey(first, last);
+
+        if(index.x() == -1 || index.y() == -1)
+            break;
+
+        QVector<CRow> rows;
+
+        for(int i = index.x(); i <= index.y(); i++)
+        {
+            rows.append(CRow(m_purpose_list[i].second.second, columns.count()));
+        }
+
+        if(rows.isEmpty())
+            return;
+
+        CDataTable data(rows, columns);
+
+        initTable(wgt, data);
+    }
+}
+//----------------------------------
+void ConfiguratorWindow::connectDb()
+{
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+
+    m_db.setDatabaseName("db/db.db");
+
+    if(!m_db.open())
+    {
+        QMessageBox::critical(this, tr("База данных"), tr("Невозможно открыть базу данных") + m_db.lastError().text());
         exit(1);
     }
-
-    // инициализация таблицы привязок светодиодов
-    QVector<CRow> led_rows;
-
-    led_rows.append(CRow(tr("Светодиод 1"), outputs.count()));
-    led_rows.append(CRow(tr("Светодиод 2"), outputs.count()));
-    led_rows.append(CRow(tr("Светодиод 3"), outputs.count()));
-    led_rows.append(CRow(tr("Светодиод 4"), outputs.count()));
-    led_rows.append(CRow(tr("Светодиод 5"), outputs.count()));
-    led_rows.append(CRow(tr("Светодиод 6"), outputs.count()));
-    led_rows.append(CRow(tr("Светодиод 7"), outputs.count()));
-    led_rows.append(CRow(tr("Светодиод 8"), outputs.count()));
-
-    CDataTable led_output_table(led_rows, outputs);
-
-    initTable(ui->tablewgtLedPurpose, led_output_table);
-
-    // инициализация таблицы привязок входов
-    QVector<CRow> input_rows;
-
-    input_rows.append(CRow(tr("Вход 1"), 3));
-    input_rows.append(CRow(tr("Вход 2"), 3));
-    input_rows.append(CRow(tr("Вход 3"), 3));
-    input_rows.append(CRow(tr("Вход 4"), 3));
-    input_rows.append(CRow(tr("Вход 5"), 3));
-    input_rows.append(CRow(tr("Вход 6"), 3));
-    input_rows.append(CRow(tr("Вход 7"), 3));
-    input_rows.append(CRow(tr("Вход 8"), 3));
-    input_rows.append(CRow(tr("Вход 9"), 3));
-    input_rows.append(CRow(tr("Вход 10"), 3));
-    input_rows.append(CRow(tr("Вход 11"), 3));
-    input_rows.append(CRow(tr("Вход 12"), 3));
-    input_rows.append(CRow(tr("Вход 13"), 3));
-    input_rows.append(CRow(tr("Вход 14"), 3));
-    input_rows.append(CRow(tr("Вход 15"), 3));
-    input_rows.append(CRow(tr("Вход 16"), 3));
-    input_rows.append(CRow(tr("Вход 17"), 3));
-    input_rows.append(CRow(tr("Вход 18"), 3));
-    input_rows.append(CRow(tr("Вход 19"), 3));
-    input_rows.append(CRow(tr("Вход 20"), 3));
-
-    QStringList input_columns = QStringList() << tr("Переменная 1") << tr("Переменная 2") << tr("Переменная 3");
-
-    CDataTable input_table(input_rows, input_columns);
-
-    initTable(ui->tablewgtDiscreteInputPurpose, input_table);
-
-    // инициализация таблицы привязок реле
-    QVector<CRow> out_rows = QVector<CRow>() << CRow(tr("Реле 1"), outputs.count()) << CRow(tr("Реле 2"), outputs.count())
-                                             << CRow(tr("Реле 4"), outputs.count()) << CRow(tr("Реле 5"), outputs.count())
-                                             << CRow(tr("Реле 6"), outputs.count()) << CRow(tr("Реле 7"), outputs.count())
-                                             << CRow(tr("Реле 8"), outputs.count()) << CRow(tr("Реле 9"), outputs.count())
-                                             << CRow(tr("Реле 10"), outputs.count()) << CRow(tr("Реле 11"), outputs.count())
-                                             << CRow(tr("Реле 12"), outputs.count()) << CRow(tr("Реле 13"), outputs.count());
-
-    CDataTable out_relay_table(out_rows, outputs);
-
-    initTable(ui->tablewgtRelayPurpose, out_relay_table);
 }
 //---------------------------------------------------------------------
 void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
@@ -1701,7 +1671,7 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(indexes.x() == -1 || indexes.y() == -1)
         return;
 
-    int size = m_purpose_list[indexes.y()].second - m_purpose_list[indexes.x()].second + 24;
+    int size = m_purpose_list[indexes.y()].second.first - m_purpose_list[indexes.x()].second.first + 24;
 
     if(size != unit.valueCount())
         return;
@@ -1718,7 +1688,7 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     else if(indexes.x() >= 12 && indexes.y() <= 19) // выходы: светодиоды
     {
         table  = ui->tablewgtLedPurpose;
-        offset = indexes.x() - 12;
+        offset = indexes.x() - 33;
     }
 
     if(!table)
@@ -1876,11 +1846,6 @@ void ConfiguratorWindow::addNewGeneralBind(const QString& key, QWidget* widget, 
 
     m_cell_list.append(qMakePair(key, widget));
 }
-//-------------------------------------------------------------------------
-void ConfiguratorWindow::addNewPurposeBind(const QString& key, int address)
-{
-    m_purpose_list.append(qMakePair(key, address));
-}
 //------------------------------------------------------------------------------------
 int ConfiguratorWindow::sizeBindBlock(const QString& first_key, const QString& second_key)
 {
@@ -2030,11 +1995,11 @@ int ConfiguratorWindow::addressGeneralKey(const QString& key) const
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressPurposeKey(const QString& key) const
 {
-    for(QPair<QString, int> pair: m_purpose_list)
+    for(QPair<QString, QPair<int, QString> > pair: m_purpose_list)
     {
         if(pair.first == key)
         {
-            return pair.second;
+            return pair.second.first;
         }
     }
 
@@ -2095,6 +2060,8 @@ QPoint ConfiguratorWindow::indexPurposeKey(const QString& first, const QString& 
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
+    connectDb();
+
     connect(ui->pbtnPortCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
     connect(m_modbusDevice, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
     connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);

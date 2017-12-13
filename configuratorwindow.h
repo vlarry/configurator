@@ -16,6 +16,9 @@
     #include <QTextStream>
     #include <QTableWidget>
     #include <QFont>
+    #include <QSqlDatabase>
+    #include <QSqlQuery>
+    #include <QSqlError>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -128,13 +131,13 @@
             void initCellBind();
             void initPurposeBind();
             void initModelTables();
+            void connectDb();
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
             void displayGeneralResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void versionParser();
             void addNewGeneralBind(const QString& key, QWidget* widget, int address, WidgetType wtype);
-            void addNewPurposeBind(const QString& key, int address);
             int  sizeBindBlock(const QString& first_key, const QString& second_key);
             int  addressGeneralKey(const QString& key) const;
             int  addressPurposeKey(const QString& key) const;
@@ -159,9 +162,10 @@
             QButtonGroup*           m_switch_device_group;
             QButtonGroup*           m_additional_group;
             CVersionSoftware*       m_versionWidget;
+            QSqlDatabase            m_db;
 
-            QVector<QPair<QString, QWidget*> > m_cell_list;
-            QVector<QPair<QString, int> >      m_purpose_list;
+            QVector<QPair<QString, QWidget*> >             m_cell_list;
+            QVector<QPair<QString, QPair<int, QString> > > m_purpose_list;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;
