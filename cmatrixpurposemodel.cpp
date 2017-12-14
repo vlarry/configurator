@@ -171,12 +171,18 @@ const QString& CRow::header() const
 //--------------------------------------------------
 void CRow::setInactiveColumnList(QVector<int>& list)
 {
+    if(list.isEmpty())
+        return;
+
     for(int index: list)
         m_columns[index].setActive(false);
 }
 //------------------------------------------------
 void CRow::setActiveColumnList(QVector<int>& list)
 {
+    if(list.isEmpty())
+        return;
+
     for(int index: list)
         m_columns[index].setActive(true);
 }

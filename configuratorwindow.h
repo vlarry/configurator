@@ -54,6 +54,9 @@
                 FLOAT, // QLineEdit (set validator: QDoubleValidator)
                 LIST   // QComboBox
             };
+            //------------------------------------------------------------------------------------------
+            //--------------------key, address, description, list variables purpose---------------------
+            typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;
       
         public:
             explicit ConfiguratorWindow(QWidget* parent = Q_NULLPTR);
@@ -138,11 +141,12 @@
             void displayPurposeResponse(CDataUnitType& unit);
             void versionParser();
             void addNewGeneralBind(const QString& key, QWidget* widget, int address, WidgetType wtype);
-            int  sizeBindBlock(const QString& first_key, const QString& second_key);
+            int  sizeBindBlock(const QString& first, const QString& last);
             int  addressGeneralKey(const QString& key) const;
             int  addressPurposeKey(const QString& key) const;
             QVector<QWidget*> listWidget(const QString& first, const QString& last);
             QPoint indexPurposeKey(const QString& first, const QString& last);
+            QVector<int> indexVariableFromKey(const QStringList& variables, const QString& key);
             
         private:
             Ui::ConfiguratorWindow* ui;
@@ -164,8 +168,8 @@
             CVersionSoftware*       m_versionWidget;
             QSqlDatabase            m_db;
 
-            QVector<QPair<QString, QWidget*> >             m_cell_list;
-            QVector<QPair<QString, QPair<int, QString> > > m_purpose_list;
+            QVector<QPair<QString, QWidget*> > m_cell_list;
+            purpose_t                          m_purpose_list;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

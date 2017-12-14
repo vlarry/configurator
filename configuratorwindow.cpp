@@ -1468,9 +1468,22 @@ void ConfiguratorWindow::initPurposeBind()
         {
             while(query.next())
             {
-                m_purpose_list.append(qMakePair(query.value(tr("key")).toString(),
-                                                qMakePair(query.value(tr("address")).toInt(),
-                                                          query.value(tr("description")).toString())));
+                QString          key  = query.value(tr("key")).toString();
+                int              addr = query.value(tr("address")).toInt();
+                QString          desc = query.value(tr("description")).toString();
+                QVector<QString> var_list;
+
+                QSqlQuery query_var(tr("SELECT var_key FROM purpose WHERE io_key = '") + key + "'");
+
+                if(query_var.exec())
+                {
+                    while(query_var.next())
+                    {
+                        var_list.append(query_var.value(0).toString());
+                    }
+                }
+
+                m_purpose_list.append(qMakePair(key, qMakePair(addr, qMakePair(desc, var_list))));
             }
         }
     }
@@ -1533,7 +1546,12 @@ void ConfiguratorWindow::initModelTables()
 
         for(int i = index.x(); i <= index.y(); i++)
         {
-            rows.append(CRow(m_purpose_list[i].second.second, columns.count()));
+            QVector<int> indexes = indexVariableFromKey(columns, m_purpose_list[i].first);
+            CRow row(m_purpose_list[i].second.second.first, columns.count());
+
+            row.setActiveColumnList(indexes);
+
+            rows.append(row);
         }
 
         if(rows.isEmpty())
@@ -1834,7 +1852,7 @@ void ConfiguratorWindow::versionParser()
 
     this->setWindowTitle(title);
 }
-//-----------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
 void ConfiguratorWindow::addNewGeneralBind(const QString& key, QWidget* widget, int address,
                                     ConfiguratorWindow::WidgetType wtype)
 {
@@ -1846,8 +1864,8 @@ void ConfiguratorWindow::addNewGeneralBind(const QString& key, QWidget* widget, 
 
     m_cell_list.append(qMakePair(key, widget));
 }
-//------------------------------------------------------------------------------------
-int ConfiguratorWindow::sizeBindBlock(const QString& first_key, const QString& second_key)
+//------------------------------------------------------------------------------
+int ConfiguratorWindow::sizeBindBlock(const QString& first, const QString& last)
 {
     int iFirst = -1, iSecond = -1;
 
@@ -1855,10 +1873,10 @@ int ConfiguratorWindow::sizeBindBlock(const QString& first_key, const QString& s
     {
         QPair<QString, QWidget*> pair = m_cell_list.at(i);
 
-        if(pair.first == first_key)
+        if(pair.first == first)
             iFirst = i;
 
-        if(pair.first == second_key)
+        if(pair.first == last)
             iSecond = i;
     }
 
@@ -1995,11 +2013,11 @@ int ConfiguratorWindow::addressGeneralKey(const QString& key) const
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressPurposeKey(const QString& key) const
 {
-    for(QPair<QString, QPair<int, QString> > pair: m_purpose_list)
+    for(QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > purpose: m_purpose_list)
     {
-        if(pair.first == key)
+        if(purpose.first == key)
         {
-            return pair.second.first;
+            return purpose.second.first;
         }
     }
 
@@ -2051,6 +2069,43 @@ QPoint ConfiguratorWindow::indexPurposeKey(const QString& first, const QString& 
             {
                 indexes.setY(i);
                 break;
+            }
+        }
+    }
+
+    return indexes;
+}
+//------------------------------------------------------------------------------------------------------
+QVector<int> ConfiguratorWindow::indexVariableFromKey(const QStringList& variables, const QString& key)
+{
+    QVector<int> indexes = QVector<int>();
+
+    QSqlQuery query(tr("SELECT var_key FROM purpose WHERE io_key = '") + key + "'");
+
+    QStringList list = QStringList();
+
+    if(query.exec())
+    {
+        while(query.next())
+        {
+            list << query.value(0).toString();
+        }
+    }
+
+    if(!list.isEmpty())
+    {
+        for(int i = 0; i < list.count(); i++)
+        {
+            QString var1 = list.at(i);
+
+            for(int j = 0; j < variables.count(); j++)
+            {
+                QString var2 = variables.at(j);
+
+                if(var1 == var2)
+                {
+                    indexes << j;
+                }
             }
         }
     }
