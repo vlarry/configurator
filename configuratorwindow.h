@@ -57,7 +57,9 @@
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
             typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;
-      
+            //---------------------------------key, addres, widget name------------------------------
+            typedef QVector<QPair<QString, QPair<int, QString> > >                            cell_t;
+
         public:
             explicit ConfiguratorWindow(QWidget* parent = Q_NULLPTR);
             ~ConfiguratorWindow();
@@ -121,9 +123,9 @@
             void writeSetCurrent();
             void expandItemTree(bool state);
             void versionSowftware();
-            void sendGeneralReadRequest(const QString& first, const QString& last,
+            void sendSettingReadRequest(const QString& first, const QString& last,
                                         CDataUnitType::FunctionType type, int size);
-            void sendGeneralWriteRequest(const QString& first, const QString& last);
+            void sendSettingWriteRequest(const QString& first, const QString& last);
             void sendPurposeReadRequest(const QString& first, const QString& last);
 //            void sendPurposeWriteRequest();
             
@@ -137,16 +139,15 @@
             void connectDb();
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
-            void displayGeneralResponse(CDataUnitType& unit);
+            void displaySettingResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void versionParser();
-            void addNewGeneralBind(const QString& key, QWidget* widget, int address, WidgetType wtype);
-            int  sizeBindBlock(const QString& first, const QString& last);
-            int  addressGeneralKey(const QString& key) const;
+            int  sizeBlockSetting(const QString& first, const QString& last);
+            int  addressSettingKey(const QString& key) const;
             int  addressPurposeKey(const QString& key) const;
-            QVector<QWidget*> listWidget(const QString& first, const QString& last);
-            QPoint indexPurposeKey(const QString& first, const QString& last);
-            QVector<int> indexVariableFromKey(const QStringList& variables, const QString& key);
+            QPoint            indexSettingKey(const QString& first, const QString& last);
+            QPoint            indexPurposeKey(const QString& first, const QString& last);
+            QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);
             
         private:
             Ui::ConfiguratorWindow* ui;
@@ -167,9 +168,8 @@
             QButtonGroup*           m_additional_group;
             CVersionSoftware*       m_versionWidget;
             QSqlDatabase            m_db;
-
-            QVector<QPair<QString, QWidget*> > m_cell_list;
-            purpose_t                          m_purpose_list;
+            cell_t                  m_cell_list;
+            purpose_t               m_purpose_list;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

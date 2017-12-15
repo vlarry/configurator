@@ -163,142 +163,142 @@ void ConfiguratorWindow::calculateRead()
 //-------------------------------------
 void ConfiguratorWindow::inAnalogRead()
 {
-    sendGeneralReadRequest(tr("M01"), tr("KU0X_"), CDataUnitType::ReadHoldingRegisters, 42);
+    sendSettingReadRequest(tr("M01"), tr("KU0X_"), CDataUnitType::ReadHoldingRegisters, 42);
 }
 //--------------------------------------
 void ConfiguratorWindow::inAnalogWrite()
 {
-    sendGeneralWriteRequest(tr("M01"), tr("KU0X_"));
+    sendSettingWriteRequest(tr("M01"), tr("KU0X_"));
 }
 //-----------------------------------------
 void ConfiguratorWindow::controlStateRead()
 {
-    sendGeneralReadRequest(tr("K01"), tr("M95"), CDataUnitType::ReadHoldingRegisters, 54);
+    sendSettingReadRequest(tr("K01"), tr("M95"), CDataUnitType::ReadHoldingRegisters, 54);
 }
 //------------------------------------------
 void ConfiguratorWindow::controlStateWrite()
 {
-    sendGeneralWriteRequest(tr("K01"), tr("M95"));
+    sendSettingWriteRequest(tr("K01"), tr("M95"));
 }
 //---------------------------------------------
 void ConfiguratorWindow::protectionMTZSetRead()
 {
-    sendGeneralReadRequest(tr("M06"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 38);
+    sendSettingReadRequest(tr("M06"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 38);
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionMTZSetWrite()
 {
-    sendGeneralWriteRequest(tr("M06"), tr("X05a"));
+    sendSettingWriteRequest(tr("M06"), tr("X05a"));
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetRead()
 {
-    sendGeneralReadRequest(tr("M23"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 36);
+    sendSettingReadRequest(tr("M23"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 36);
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetWrite()
 {
-    sendGeneralWriteRequest(tr("M23"), tr("X09a"));
+    sendSettingWriteRequest(tr("M23"), tr("X09a"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionPowerSetRead()
 {
-    sendGeneralReadRequest(tr("M49"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 30);
+    sendSettingReadRequest(tr("M49"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 30);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionPowerSetWrite()
 {
-    sendGeneralWriteRequest(tr("M49"), tr("X14"));
+    sendSettingWriteRequest(tr("M49"), tr("X14"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionMotorSetRead()
 {
-    sendGeneralReadRequest(tr("M20"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingReadRequest(tr("M20"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionMotorSetWrite()
 {
-    sendGeneralWriteRequest(tr("M20"), tr("X10"));
+    sendSettingWriteRequest(tr("M20"), tr("X10"));
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetRead()
 {
-    sendGeneralReadRequest(tr("M52"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 24);
+    sendSettingReadRequest(tr("M52"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 24);
 }
 //----------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetWrite()
 {
-    sendGeneralWriteRequest(tr("M52"), tr("X18"));
+    sendSettingWriteRequest(tr("M52"), tr("X18"));
 }
 //--------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetRead()
 {
-    sendGeneralReadRequest(tr("M64"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 10);
+    sendSettingReadRequest(tr("M64"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 10);
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetWrite()
 {
-    sendGeneralWriteRequest(tr("M64"), tr("M76"));
+    sendSettingWriteRequest(tr("M64"), tr("M76"));
 }
 //-----------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetRead()
 {
-    sendGeneralReadRequest(tr("M67"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingReadRequest(tr("M67"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetWrite()
 {
-    sendGeneralWriteRequest(tr("M67"), tr("X21"));
+    sendSettingWriteRequest(tr("M67"), tr("X21"));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionLevelSetRead()
 {
-    sendGeneralReadRequest(tr("M78"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest(tr("M78"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 4);
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionLevelSetWrite()
 {
-    sendGeneralWriteRequest(tr("M78"), tr("M79"));
+    sendSettingWriteRequest(tr("M78"), tr("M79"));
 }
 //---------------------------------------------
 void ConfiguratorWindow::protectionBruSetRead()
 {
-    sendGeneralReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendSettingReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionBruSetWrite()
 {
-    sendGeneralWriteRequest(tr("M96"), tr("M99"));
+    sendSettingWriteRequest(tr("M96"), tr("M99"));
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetRead()
 {
-    sendGeneralReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendSettingReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetWrite()
 {
-    sendGeneralWriteRequest(tr("M91"), tr("X23"));
+    sendSettingWriteRequest(tr("M91"), tr("X23"));
 }
 //------------------------------------------
 void ConfiguratorWindow::automationSetRead()
 {
-    sendGeneralReadRequest(tr("M82"), tr("M89"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingReadRequest(tr("M82"), tr("M89"), CDataUnitType::ReadHoldingRegisters, 12);
 }
 //-------------------------------------------
 void ConfiguratorWindow::automationSetWrite()
 {
-    sendGeneralWriteRequest(tr("M82"), tr("M89"));
+    sendSettingWriteRequest(tr("M82"), tr("M89"));
 }
 //--------------------------------------------
 void ConfiguratorWindow::switchDeviceSetRead()
 {
-    sendGeneralReadRequest(tr("K02"), tr("K10"), CDataUnitType::ReadHoldingRegisters, 30);
+    sendSettingReadRequest(tr("K02"), tr("K10"), CDataUnitType::ReadHoldingRegisters, 30);
 }
 //---------------------------------------------
 void ConfiguratorWindow::switchDeviceSetWrite()
 {
-    sendGeneralWriteRequest(tr("K02"), tr("K10"));
+    sendSettingWriteRequest(tr("K02"), tr("K10"));
 }
 //--------------------------------------------------------
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
@@ -314,7 +314,7 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     if(type == CALCULATE_TYPE)
         displayCalculateValues(unit.values());
     else if(type == GENERAL_TYPE)
-        displayGeneralResponse(unit);
+        displaySettingResponse(unit);
     else if(type == PURPOSE_OUT_TYPE)
         displayPurposeResponse(unit);
 }
@@ -1234,222 +1234,19 @@ void ConfiguratorWindow::initButtonGroup()
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
 {
-    // инициализация виджетов визуализирующих состояние настроек
-    addNewGeneralBind(tr("K01"), ui->cboxK01, 0, LIST);
-    addNewGeneralBind(tr("K03"), ui->cboxK03, 1, LIST);
-    addNewGeneralBind(tr("K06"), ui->cboxK06, 2, LIST);
-    addNewGeneralBind(tr("K07"), ui->cboxK07, 3, LIST);
-    addNewGeneralBind(tr("K13"), ui->cboxK13, 4, LIST);
-    addNewGeneralBind(tr("K14"), ui->cboxK14, 5, LIST);
-    addNewGeneralBind(tr("K15"), ui->cboxK15, 6, LIST);
-    addNewGeneralBind(tr("K17"), ui->cboxK17, 7, LIST);
-    addNewGeneralBind(tr("K18"), ui->cboxK18, 8, LIST);
-    addNewGeneralBind(tr("K23"), ui->cboxK23, 9, LIST);
-    addNewGeneralBind(tr("K26"), ui->cboxK26, 10, LIST);
-    addNewGeneralBind(tr("K32"), ui->cboxK32, 11, LIST);
-    addNewGeneralBind(tr("K33"), ui->cboxK33, 12, LIST);
-    addNewGeneralBind(tr("K34"), ui->cboxK34, 13, LIST);
-    addNewGeneralBind(tr("K35"), ui->cboxK35, 14, LIST);
-    addNewGeneralBind(tr("K36"), ui->cboxK36, 15, LIST);
-    addNewGeneralBind(tr("K37"), ui->cboxK37, 16, LIST);
-    addNewGeneralBind(tr("K38"), ui->cboxK38, 17, LIST);
-    addNewGeneralBind(tr("K39"), ui->cboxK39, 18, LIST);
-    addNewGeneralBind(tr("K40"), ui->cboxK40, 19, LIST);
-    addNewGeneralBind(tr("K41"), ui->cboxK41, 20, LIST);
-    addNewGeneralBind(tr("M04"), ui->cboxM04, 21, LIST);
-    addNewGeneralBind(tr("M05"), ui->cboxM05, 22, LIST);
-    addNewGeneralBind(tr("M09"), ui->cboxM09, 23, LIST);
-    addNewGeneralBind(tr("M13"), ui->cboxM13, 24, LIST);
-    addNewGeneralBind(tr("M16"), ui->cboxM16, 25, LIST);
-    addNewGeneralBind(tr("M19"), ui->cboxM19, 26, LIST);
-    addNewGeneralBind(tr("M22"), ui->cboxM22, 27, LIST);
-    addNewGeneralBind(tr("M25"), ui->cboxM25, 28, LIST);
-    addNewGeneralBind(tr("M29"), ui->cboxM29, 29, LIST);
-    addNewGeneralBind(tr("M32"), ui->cboxM32, 30, LIST);
-    addNewGeneralBind(tr("M35"), ui->cboxM35, 31, LIST);
-    addNewGeneralBind(tr("M38"), ui->cboxM38, 32, LIST);
-    addNewGeneralBind(tr("M39"), ui->cboxM39, 33, LIST);
-    addNewGeneralBind(tr("M40"), ui->cboxM40, 34, LIST);
-    addNewGeneralBind(tr("M43"), ui->cboxM43, 35, LIST);
-    addNewGeneralBind(tr("M44"), ui->cboxM44, 36, LIST);
-    addNewGeneralBind(tr("M45"), ui->cboxM45, 37, LIST);
-    addNewGeneralBind(tr("M48"), ui->cboxM48, 38, LIST);
-    addNewGeneralBind(tr("M51"), ui->cboxM51, 39, LIST);
-    addNewGeneralBind(tr("M55"), ui->cboxM55, 40, LIST);
-    addNewGeneralBind(tr("M59"), ui->cboxM59, 41, LIST);
-    addNewGeneralBind(tr("M63"), ui->cboxM63, 42, LIST);
-    addNewGeneralBind(tr("M65"), ui->cboxM65, 43, LIST);
-    addNewGeneralBind(tr("M66"), ui->cboxM66, 44, LIST);
-    addNewGeneralBind(tr("M71"), ui->cboxM71, 45, LIST);
-    addNewGeneralBind(tr("M73"), ui->cboxM73, 46, LIST);
-    addNewGeneralBind(tr("M75"), ui->cboxM75, 47, LIST);
-    addNewGeneralBind(tr("M77"), ui->cboxM77, 48, LIST);
-    addNewGeneralBind(tr("M81"), ui->cboxM81, 49, LIST);
-    addNewGeneralBind(tr("M87"), ui->cboxM87, 50, LIST);
-    addNewGeneralBind(tr("M90"), ui->cboxM90, 51, LIST);
-    addNewGeneralBind(tr("M93"), ui->cboxM93, 52, LIST);
-    addNewGeneralBind(tr("M95"), ui->cboxM95, 53, LIST);
+    QSqlQuery query(tr("SELECT * FROM iodevice WHERE type = 'SET'"));
 
-    // инициализация виджетов максимальных токовых защит
-    addNewGeneralBind(tr("M06"), ui->leM06, 128, FLOAT);
-    addNewGeneralBind(tr("M08"), ui->leM08, 130, FLOAT);
-    addNewGeneralBind(tr("K31"), ui->leK31, 132, FLOAT);
-    addNewGeneralBind(tr("X01"), ui->leX01, 134, FLOAT);
-    addNewGeneralBind(tr("X02"), nullptr, 136, FLOAT);
-    addNewGeneralBind(tr("M10"), ui->leM10, 138, FLOAT);
-    addNewGeneralBind(tr("M11"), ui->leM11, 140, FLOAT);
-    addNewGeneralBind(tr("M12"), ui->leM12, 142, FLOAT);
-    addNewGeneralBind(tr("X03"), ui->leX03, 144, FLOAT);
-    addNewGeneralBind(tr("M14"), ui->leM14, 146, FLOAT);
-    addNewGeneralBind(tr("K22"), ui->leK22, 148, FLOAT);
-    addNewGeneralBind(tr("M15"), ui->leM15, 150, FLOAT);
-    addNewGeneralBind(tr("X04"), ui->leX04, 152, FLOAT);
-    addNewGeneralBind(tr("M17"), ui->leM17, 154, FLOAT);
-    addNewGeneralBind(tr("M18"), ui->leM18, 156, FLOAT);
-    addNewGeneralBind(tr("K20"), ui->leK20, 158, FLOAT);
-    addNewGeneralBind(tr("M07"), ui->leM07, 160, FLOAT);
-    addNewGeneralBind(tr("X05"), ui->leX05, 162, FLOAT);
-    addNewGeneralBind(tr("X05a"), ui->leX05a, 164, FLOAT);
+    if(!query.exec())
+        return;
 
-    // инициализация виджетов земельных защит
-    addNewGeneralBind(tr("M23"), ui->leM23, 166, FLOAT);
-    addNewGeneralBind(tr("M24"), ui->leM24, 168, FLOAT);
-    addNewGeneralBind(tr("X07"), ui->leX07, 170, FLOAT);
-    addNewGeneralBind(tr("K24"), ui->leK24, 172, FLOAT);
-    addNewGeneralBind(tr("K25"), ui->leK25, 174, FLOAT);
-    addNewGeneralBind(tr("X07a"), ui->leX07a, 176, FLOAT);
-    addNewGeneralBind(tr("M26"), ui->leM26, 178, FLOAT);
-    addNewGeneralBind(tr("M27"), ui->leM27, 180, FLOAT);
-    addNewGeneralBind(tr("K21"), ui->leK21, 182, FLOAT);
-    addNewGeneralBind(tr("M28"), ui->leM28, 184, FLOAT);
-    addNewGeneralBind(tr("X08"), ui->leX08, 186, FLOAT);
-    addNewGeneralBind(tr("X09"), ui->leX09, 188, FLOAT);
-    addNewGeneralBind(tr("K27"), ui->leK27, 190, FLOAT);
-    addNewGeneralBind(tr("K28"), ui->leK28, 192, FLOAT);
-    addNewGeneralBind(tr("K29"), ui->leK29, 194, FLOAT);
-    addNewGeneralBind(tr("K30"), ui->leK30, 196, FLOAT);
-    addNewGeneralBind(tr("X08a"), ui->leX08a, 198, FLOAT);
-    addNewGeneralBind(tr("X09a"), ui->leX09a, 200, FLOAT);
+    while(query.next())
+    {
+        QString key  = query.value(tr("key")).toString();
+        QString name = query.value(tr("widget")).toString();
+        int     addr = query.value(tr("address")).toInt();
 
-    // инициализация виджетов защит напряжения
-    addNewGeneralBind(tr("M49"), ui->leM49, 202, FLOAT);
-    addNewGeneralBind(tr("M50"), ui->leM50, 204, FLOAT);
-    addNewGeneralBind(tr("X15"), ui->leX15, 206, FLOAT);
-    addNewGeneralBind(tr("M33"), ui->leM33, 208, FLOAT);
-    addNewGeneralBind(tr("M34"), ui->leM34, 210, FLOAT);
-    addNewGeneralBind(tr("X11"), ui->leX11, 212, FLOAT);
-    addNewGeneralBind(tr("M36"), ui->leM36, 214, FLOAT);
-    addNewGeneralBind(tr("M37"), ui->leM37, 216, FLOAT);
-    addNewGeneralBind(tr("X12"), ui->leX12, 218, FLOAT);
-    addNewGeneralBind(tr("M41"), ui->leM41, 220, FLOAT);
-    addNewGeneralBind(tr("M42"), ui->leM42, 222, FLOAT);
-    addNewGeneralBind(tr("X13"), ui->leX13, 224, FLOAT);
-    addNewGeneralBind(tr("M46"), ui->leM46, 226, FLOAT);
-    addNewGeneralBind(tr("M47"), ui->leM47, 228, FLOAT);
-    addNewGeneralBind(tr("X14"), ui->leX14, 230, FLOAT);
-
-    // инициализация виджетов защит двигателя
-    addNewGeneralBind(tr("M20"), ui->leM20, 232, FLOAT);
-    addNewGeneralBind(tr("M21"), ui->leM21, 234, FLOAT);
-    addNewGeneralBind(tr("X06"), ui->leX06, 236, FLOAT);
-    addNewGeneralBind(tr("M30"), ui->leM30, 238, FLOAT);
-    addNewGeneralBind(tr("M31"), ui->leM31, 240, FLOAT);
-    addNewGeneralBind(tr("X10"), ui->leX10, 242, FLOAT);
-
-    // инициализация виджетов защит по частоте
-    addNewGeneralBind(tr("M52"), ui->leM52, 244, FLOAT);
-    addNewGeneralBind(tr("M53"), ui->leM53, 246, FLOAT);
-    addNewGeneralBind(tr("M54"), ui->leM54, 248, FLOAT);
-    addNewGeneralBind(tr("X16"), ui->leX16, 250, FLOAT);
-    addNewGeneralBind(tr("M56"), ui->leM56, 252, FLOAT);
-    addNewGeneralBind(tr("M57"), ui->leM57, 254, FLOAT);
-    addNewGeneralBind(tr("M58"), ui->leM58, 256, FLOAT);
-    addNewGeneralBind(tr("X17"), ui->leX17, 258, FLOAT);
-    addNewGeneralBind(tr("M60"), ui->leM60, 260, FLOAT);
-    addNewGeneralBind(tr("M61"), ui->leM61, 262, FLOAT);
-    addNewGeneralBind(tr("M62"), ui->leM62, 264, FLOAT);
-    addNewGeneralBind(tr("X18"), ui->leX18, 266, FLOAT);
-
-    // инициализация виджетов внешних защит
-    addNewGeneralBind(tr("M64"), ui->leM64, 268, FLOAT);
-    addNewGeneralBind(tr("X19"), ui->leX19, 270, FLOAT);
-    addNewGeneralBind(tr("M72"), ui->leM72, 272, FLOAT);
-    addNewGeneralBind(tr("M74"), ui->leM74, 274, FLOAT);
-    addNewGeneralBind(tr("M76"), ui->leM76, 276, FLOAT);
-
-    // инициализация виджетов защит по температуре
-    addNewGeneralBind(tr("M67"), ui->leM67, 278, FLOAT);
-    addNewGeneralBind(tr("M69"), ui->leM69, 280, FLOAT);
-    addNewGeneralBind(tr("X20"), ui->leX20, 282, FLOAT);
-    addNewGeneralBind(tr("M68"), ui->leM68, 284, FLOAT);
-    addNewGeneralBind(tr("M70"), ui->leM70, 286, FLOAT);
-    addNewGeneralBind(tr("X21"), ui->leX21, 288, FLOAT);
-
-    // инициализация виджетов уровневых защит
-    addNewGeneralBind(tr("M78"), ui->leM78, 290, FLOAT);
-    addNewGeneralBind(tr("M79"), ui->leM79, 292, FLOAT);
-
-    // инициализация виджетов защит  БРУ
-    addNewGeneralBind(tr("M96"), ui->leM96, 294, FLOAT);
-    addNewGeneralBind(tr("M97"), ui->leM97, 296, FLOAT);
-    addNewGeneralBind(tr("M98"), ui->leM98, 298, FLOAT);
-    addNewGeneralBind(tr("M99"), ui->leM99, 300, FLOAT);
-
-    // инициализация виджетов вакуумных защит
-    addNewGeneralBind(tr("M91"), ui->leM91, 302, FLOAT);
-    addNewGeneralBind(tr("M92"), ui->leM92, 304, FLOAT);
-    addNewGeneralBind(tr("X23"), ui->leX23, 306, FLOAT);
-
-    // инициализация виджетов автоматики
-    addNewGeneralBind(tr("M82"), ui->leM82, 308, FLOAT);
-    addNewGeneralBind(tr("M83"), ui->leM83, 310, FLOAT);
-    addNewGeneralBind(tr("M84"), ui->leM84, 312, FLOAT);
-    addNewGeneralBind(tr("M85"), ui->leM85, 314, FLOAT);
-    addNewGeneralBind(tr("M88"), ui->leM88, 316, FLOAT);
-    addNewGeneralBind(tr("M89"), ui->leM89, 318, FLOAT);
-
-    // инициализация виджетов коммутационных аппаратов
-    addNewGeneralBind(tr("K02"), ui->leK02, 320, FLOAT);
-    addNewGeneralBind(tr("K04"), ui->leK04, 322, FLOAT);
-    addNewGeneralBind(tr("K05"), ui->leK05, 324, FLOAT);
-    addNewGeneralBind(tr("K09"), ui->leK09, 326, FLOAT);
-    addNewGeneralBind(tr("K08"), ui->leK08, 328, FLOAT);
-    addNewGeneralBind(tr("X22"), ui->leX22, 330, FLOAT);
-    addNewGeneralBind(tr("K12"), nullptr, 332, FLOAT);
-    addNewGeneralBind(tr("K19"), nullptr, 334, FLOAT);
-    addNewGeneralBind(tr("K42"), ui->leK42, 336, FLOAT);
-    addNewGeneralBind(tr("K46"), ui->leK46, 338, FLOAT);
-    addNewGeneralBind(tr("K43"), ui->leK43, 340, FLOAT);
-    addNewGeneralBind(tr("K47"), ui->leK47, 342, FLOAT);
-    addNewGeneralBind(tr("K44"), ui->leK44, 344, FLOAT);
-    addNewGeneralBind(tr("K48"), ui->leK48, 346, FLOAT);
-    addNewGeneralBind(tr("K45"), ui->leK45, 348, FLOAT);
-    addNewGeneralBind(tr("K49"), ui->leK49, 350, FLOAT);
-    addNewGeneralBind(tr("T02"), ui->leT02, 352, FLOAT);
-    addNewGeneralBind(tr("K10"), nullptr, 354, FLOAT);
-
-    // инициализация виджетов аналоговые входы
-    addNewGeneralBind(tr("M01"), ui->leM01, 356, FLOAT);
-    addNewGeneralBind(tr("M02"), ui->leM02, 358, FLOAT);
-    addNewGeneralBind(tr("M03"), ui->leM03, 360, FLOAT);
-    addNewGeneralBind(tr("KIA"), ui->leKIA, 362, FLOAT);
-    addNewGeneralBind(tr("KIB"), ui->leKIB, 364, FLOAT);
-    addNewGeneralBind(tr("KIC"), ui->leKIC, 366, FLOAT);
-    addNewGeneralBind(tr("K3I0"), ui->leK3I0, 368, FLOAT);
-    addNewGeneralBind(tr("KUA"), ui->leKUA, 370, FLOAT);
-    addNewGeneralBind(tr("KUB"), ui->leKUB, 372, FLOAT);
-    addNewGeneralBind(tr("KUC"), ui->leKUC, 374, FLOAT);
-    addNewGeneralBind(tr("K3U0"), ui->leK3U0, 376, FLOAT);
-    addNewGeneralBind(tr("KUS"), ui->leKUS, 378, FLOAT);
-    addNewGeneralBind(tr("KUAB"), ui->leKUAB, 380, FLOAT);
-    addNewGeneralBind(tr("KUBC"), ui->leKUBC, 382, FLOAT);
-    addNewGeneralBind(tr("KUCA"), ui->leKUCA, 384, FLOAT);
-    addNewGeneralBind(tr("K3U0X"), ui->leK3U0X, 386, FLOAT);
-    addNewGeneralBind(tr("KUAX"), ui->leKUAX, 388, FLOAT);
-    addNewGeneralBind(tr("KUBX"), ui->leKUBX, 390, FLOAT);
-    addNewGeneralBind(tr("KUCX"), ui->leKUCX, 392, FLOAT);
-    addNewGeneralBind(tr("KU0X"), ui->leKU0X, 394, FLOAT);
-    addNewGeneralBind(tr("KU0X_"), ui->leKU0X_, 396, FLOAT);
+        m_cell_list.append(qMakePair(key, qMakePair(addr, name)));
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::initPurposeBind()
@@ -1596,60 +1393,59 @@ void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
     m_calculateWidget->setData(values);
 }
-//-----------------------------------------------------------
-void ConfiguratorWindow::displayGeneralResponse(CDataUnitType& unit)
+//------------------------------------------------------------------
+void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
 {
     if(unit.is_empty())
         return;
 
-    QString first_key  = unit.property("FIRST").toString();
-    QString second_key = unit.property("LAST").toString();
+    QString first = unit.property("FIRST").toString();
+    QString last  = unit.property("LAST").toString();
 
-    QVector<QWidget*> list = listWidget(first_key, second_key);
+    QPoint indexWgt = indexSettingKey(first, last);
 
-    if(list.isEmpty())
+    if(indexWgt.x() == -1 || indexWgt.y() == -1)
         return;
 
     int index = 0;
 
     union
     {
-        quint16 b[2];
+        quint16 w[2];
         float   f;
         int     i;
     } value;
 
-    for(QWidget* wgt: list)
+    for(int i = indexWgt.x(); i < indexWgt.y(); i++)
     {
         if(index >= unit.valueCount())
             break;
 
-        if(!wgt)
+        QString nameWgt = m_cell_list[i].second.second;
+
+        if(nameWgt.isEmpty())
         {
             index += 2;
             continue;
         }
 
-        WidgetType type = (WidgetType)wgt->property("TYPE").toInt();
+        QWidget* widget = findChild<QWidget*>(nameWgt);
 
-        if(type != LIST)
+        QString classWgt = widget->metaObject()->className();
+
+        if(classWgt == tr("QLineEdit"))
         {
-            QLineEdit* edit = qobject_cast<QLineEdit*>(wgt);
+            QLineEdit* edit = qobject_cast<QLineEdit*>(widget);
 
             if(edit)
             {
                 quint16 val1 = unit.values().at(index + 1);
                 quint16 val2 = unit.values().at(index);
 
-                value.b[0] = val1;
-                value.b[1] = val2;
+                value.w[0] = val1;
+                value.w[1] = val2;
 
-                QString str = "";
-
-                if(type == INT)
-                    str = QString::number(value.i);
-                else if(type == FLOAT)
-                    str = QString::number(value.f, 'f', 6);
+                QString str = QString::number(value.f, 'f', 6);
 
                 if(!str.isEmpty())
                     edit->setText(str);
@@ -1657,9 +1453,9 @@ void ConfiguratorWindow::displayGeneralResponse(CDataUnitType& unit)
                 index += 2;
             }
         }
-        else if(type == LIST)
+        else if(classWgt == tr("QComboBox"))
         {
-            QComboBox* box = qobject_cast<QComboBox*>(wgt);
+            QComboBox* box = qobject_cast<QComboBox*>(widget);
 
             if(box)
             {
@@ -1852,26 +1648,14 @@ void ConfiguratorWindow::versionParser()
 
     this->setWindowTitle(title);
 }
-//------------------------------------------------------------------------------------------
-void ConfiguratorWindow::addNewGeneralBind(const QString& key, QWidget* widget, int address,
-                                    ConfiguratorWindow::WidgetType wtype)
-{
-    if(key.isEmpty() || !widget)
-        return;
-
-    widget->setProperty("ADDRESS", address);
-    widget->setProperty("TYPE", wtype);
-
-    m_cell_list.append(qMakePair(key, widget));
-}
-//------------------------------------------------------------------------------
-int ConfiguratorWindow::sizeBindBlock(const QString& first, const QString& last)
+//---------------------------------------------------------------------------------
+int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& last)
 {
     int iFirst = -1, iSecond = -1;
 
     for(quint8 i = 0; i < m_cell_list.count(); i++)
     {
-        QPair<QString, QWidget*> pair = m_cell_list.at(i);
+        QPair<QString, QPair<int, QString> > pair = m_cell_list.at(i);
 
         if(pair.first == first)
             iFirst = i;
@@ -1886,13 +1670,13 @@ int ConfiguratorWindow::sizeBindBlock(const QString& first, const QString& last)
     return -1;
 }
 //----------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendGeneralReadRequest(const QString& first, const QString& last,
+void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
                                                 CDataUnitType::FunctionType type, int size)
 {
     if(size <= 0)
         return;
 
-    int addr = addressGeneralKey(first);
+    int addr = addressSettingKey(first);
 
     CDataUnitType unit(ui->sboxSlaveID->value(), type, addr, QVector<quint16>() << size);
 
@@ -1903,32 +1687,30 @@ void ConfiguratorWindow::sendGeneralReadRequest(const QString& first, const QStr
     m_modbusDevice->request(unit);
 }
 //-----------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendGeneralWriteRequest(const QString& first, const QString& last)
+void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QString& last)
 {
     if(first.isEmpty() || last.isEmpty())
         return;
 
-    int addr = addressGeneralKey(first);
+    QPoint index = indexSettingKey(first, last);
 
-    if(addr == -1)
+    if(index.x() == -1 || index.y() == -1)
         return;
 
     union
     {
-        quint16 b[2];
+        quint16 w[2];
         float f;
         int i;
     } value;
 
     QVector<quint16>  data;
-    QVector<QWidget*> list = listWidget(first, last);
 
-    if(list.isEmpty())
-        return;
-
-    for(QWidget* wgt: list)
+    for(int i = index.x(); i < index.y(); i++)
     {
-        if(!wgt)
+        QString nameWgt = m_cell_list[i].second.second;
+
+        if(nameWgt.isEmpty())
         {
             data.append(0.0f);
             data.append(0.0f);
@@ -1936,26 +1718,28 @@ void ConfiguratorWindow::sendGeneralWriteRequest(const QString& first, const QSt
             continue;
         }
 
-        WidgetType type = (WidgetType)wgt->property("TYPE").toInt();
+        QWidget* widget = findChild<QWidget*>(nameWgt);
 
-        if(type != LIST)
+        if(!widget)
+            continue;
+
+        QString classWgt = widget->metaObject()->className();
+
+        if(classWgt == tr("QLineEdit"))
         {
-            QLineEdit* edit = qobject_cast<QLineEdit*>(wgt);
+            QLineEdit* edit = qobject_cast<QLineEdit*>(widget);
 
             if(!edit)
                 continue;
 
-            if(type == INT)
-                value.i = edit->text().toInt();
-            else if(type == FLOAT)
-                value.f = edit->text().toFloat();
+            value.f = edit->text().toFloat();
 
-            data.append(value.b[1]);
-            data.append(value.b[0]);
+            data.append(value.w[1]);
+            data.append(value.w[0]);
         }
-        else if(type == LIST)
+        else if(classWgt == tr("QComboBox"))
         {
-            QComboBox* box = qobject_cast<QComboBox*>(wgt);
+            QComboBox* box = qobject_cast<QComboBox*>(widget);
 
             if(!box)
                 continue;
@@ -1967,7 +1751,7 @@ void ConfiguratorWindow::sendGeneralWriteRequest(const QString& first, const QSt
     CDataUnitType::FunctionType funType = ((data.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                CDataUnitType::WriteMultipleRegisters);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addr, data);
+    CDataUnitType unit(ui->sboxSlaveID->value(), funType, index.x(), data);
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
@@ -1994,17 +1778,14 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
 
     m_modbusDevice->request(unit);
 }
-//----------------------------------------------------------
-int ConfiguratorWindow::addressGeneralKey(const QString& key) const
+//-----------------------------------------------------------------
+int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
-    for(QPair<QString, QWidget*> pair: m_cell_list)
+    for(QPair<QString, QPair<int, QString> > pair: m_cell_list)
     {
         if(pair.first == key)
         {
-            if(pair.second)
-            {
-                return pair.second->property("ADDRESS").toInt();
-            }
+            return pair.second.first;
         }
     }
 
@@ -2023,57 +1804,55 @@ int ConfiguratorWindow::addressPurposeKey(const QString& key) const
 
     return -1;
 }
-//-----------------------------------------------------------------------------------------
-QVector<QWidget*> ConfiguratorWindow::listWidget(const QString& first, const QString& last)
+//-----------------------------------------------------------------------------------
+QPoint ConfiguratorWindow::indexSettingKey(const QString& first, const QString& last)
 {
-    QVector<QWidget*> list;
-
-    bool flag_key = false;
+    QPoint index(-1, -1);
+    QString key = first;
 
     for(int i = 0; i < m_cell_list.count(); i++)
     {
-        if(!flag_key && m_cell_list.at(i).first == first)
+        if(m_cell_list[i].first == key)
         {
-            list.append(m_cell_list.at(i).second);
-            flag_key = true;
-        }
-        else if(flag_key && m_cell_list.at(i).first == last)
-        {
-            list.append(m_cell_list.at(i).second);
-            break;
-        }
-        else if(flag_key)
-        {
-            list.append(m_cell_list.at(i).second);
+            if(index.x() == -1)
+            {
+                index.setX(i);
+                key = last;
+            }
+            else
+            {
+                index.setY(i);
+                break;
+            }
         }
     }
 
-    return list;
+    return index;
 }
 //-----------------------------------------------------------------------------------
 QPoint ConfiguratorWindow::indexPurposeKey(const QString& first, const QString& last)
 {
-    QPoint  indexes(-1, -1);
+    QPoint  index(-1, -1);
     QString key = first;
 
     for(int i = 0; i < m_purpose_list.count(); i++)
     {
         if(m_purpose_list[i].first == key)
         {
-            if(indexes.x() == -1)
+            if(index.x() == -1)
             {
-                indexes.setX(i);
+                index.setX(i);
                 key = last;
             }
             else
             {
-                indexes.setY(i);
+                index.setY(i);
                 break;
             }
         }
     }
 
-    return indexes;
+    return index;
 }
 //------------------------------------------------------------------------------------------------------
 QVector<int> ConfiguratorWindow::indexVariableFromKey(const QStringList& variables, const QString& key)
