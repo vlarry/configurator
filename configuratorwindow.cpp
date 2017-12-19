@@ -844,11 +844,11 @@ void ConfiguratorWindow::readSetCurrent()
 
         case 24: // привязки выходов (реле)
             sendPurposeReadRequest(tr("DO1"), tr("DO2"));
-            sendPurposeReadRequest(tr("DO4"), tr("DO5"));
-            sendPurposeReadRequest(tr("DO6"), tr("DO7"));
-            sendPurposeReadRequest(tr("DO8"), tr("DO9"));
-            sendPurposeReadRequest(tr("DO10"), tr("DO11"));
-            sendPurposeReadRequest(tr("DO12"), tr("DO13"));
+//            sendPurposeReadRequest(tr("DO4"), tr("DO5"));
+//            sendPurposeReadRequest(tr("DO6"), tr("DO7"));
+//            sendPurposeReadRequest(tr("DO8"), tr("DO9"));
+//            sendPurposeReadRequest(tr("DO10"), tr("DO11"));
+//            sendPurposeReadRequest(tr("DO12"), tr("DO13"));
         break;
 
         case 25: // привязки выходов (клавиатуры)
@@ -1416,7 +1416,7 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
         int     i;
     } value;
 
-    for(int i = indexWgt.x(); i < indexWgt.y(); i++)
+    for(int i = indexWgt.x(); i <= indexWgt.y(); i++)
     {
         if(index >= unit.valueCount())
             break;
@@ -1492,17 +1492,20 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 
     QTableView* table = nullptr;
 
-    int offset = 0;
-
-    if(indexes.x() >= 0 && indexes.y() <= 11) // выходы: реле
+    if(m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive) &&
+       m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive)) // входы
+    {
+        table  = ui->tablewgtDiscreteInputPurpose;
+    }
+    else if(m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive) &&
+            m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive)) // выходы: реле
     {
         table  = ui->tablewgtRelayPurpose;
-        offset = indexes.x();
     }
-    else if(indexes.x() >= 12 && indexes.y() <= 19) // выходы: светодиоды
+    else if(m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive) &&
+            m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive)) // выходы: светодиоды
     {
         table  = ui->tablewgtLedPurpose;
-        offset = indexes.x() - 33;
     }
 
     if(!table)
@@ -1515,22 +1518,37 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 
     CDataTable& data = model->dataTable();
 
-    for(int i = 0; i < (indexes.y() - indexes.x() + 1); i++)
-    {
-        for(int j = i*24, m = 0; j < i*24 + 24; j += 2, m++)
-        {
-            quint32 value = unit.value(j + 1) | ((unit.value(j) << 16));
+    int var_count = data.columnCounts()/16;
 
-            for(int k = 0; k < (int)sizeof(value)*8; k++)
+    if(data.columnCounts()%16)
+        var_count++;
+
+    int row_count = indexes.y() - indexes.x() + 1;
+
+    for(int i = 0; i < row_count; i++)
+    {
+        qDebug() << "i: " << i;
+
+        for(int j = 0, m = 0; j < var_count*2; j += 2, m++)
+        {
+            qDebug() << "j: " << j << ", m: " << m;
+
+            int pos = i*var_count*2;
+
+            quint32 value      = unit.value(pos + 1) | ((unit.value(pos) << 16));
+            int     size_dword = (int)sizeof(value)*8;
+
+            for(int k = 0; k < size_dword; k++)
             {
                 bool state = (value >> k)&0x00000001;
 
-                if(m == 11 && k >= 6)
+                if(i == row_count - 1 && k >= var_count*16 - data.columnCounts())
                     break;
 
                 int column = m*32 + k;
 
-                data[i + offset][column].setState(state);
+                qDebug() << "k = " << k;
+//                data[i][column].setState(state);
             }
         }
     }

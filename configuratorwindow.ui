@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1086</width>
-    <height>603</height>
+    <height>657</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -656,7 +656,7 @@
        <item>
         <widget class="QStackedWidget" name="stwgtMain">
          <property name="currentIndex">
-          <number>1</number>
+          <number>10</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -10079,7 +10079,7 @@
              <item>
               <widget class="QGroupBox" name="groupBox_11">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -10663,7 +10663,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="pageSwitchDevice">
-          <layout class="QHBoxLayout" name="horizontalLayout_75">
+          <layout class="QHBoxLayout" name="horizontalLayout_55">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_75">
              <property name="spacing">
@@ -10805,14 +10805,14 @@
               </sizepolicy>
              </property>
              <property name="currentIndex">
-              <number>3</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="pageSwDevBreaker">
-              <layout class="QVBoxLayout" name="verticalLayout_76">
+              <layout class="QVBoxLayout" name="verticalLayout_125">
                <item>
                 <widget class="QGroupBox" name="groupBox">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -10820,7 +10820,7 @@
                  <property name="title">
                   <string/>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_55">
+                 <layout class="QVBoxLayout" name="verticalLayout_76">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_6">
                     <item row="1" column="0">
@@ -10881,34 +10881,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="1">
-                     <widget class="QComboBox" name="cboxK32">
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>100</height>
-                       </size>
-                      </property>
-                      <property name="toolTip">
-                       <string>Имя порта</string>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>Нет зн.</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Мест</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Дист</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
                     <item row="0" column="4">
                      <widget class="QComboBox" name="cboxK06">
                       <property name="maximumSize">
@@ -10937,16 +10909,6 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="lblTextSwBreakerModeCtrl">
-                      <property name="text">
-                       <string>Режим управления</string>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="3">
                      <widget class="QLabel" name="lblKcu">
                       <property name="text">
@@ -10961,6 +10923,95 @@
                      <widget class="QLabel" name="lblPosVV">
                       <property name="text">
                        <string>Определение положения ВВ</string>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QComboBox" name="cboxK32">
+                      <property name="maximumSize">
+                       <size>
+                        <width>100</width>
+                        <height>100</height>
+                       </size>
+                      </property>
+                      <property name="toolTip">
+                       <string>Имя порта</string>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Нет зн.</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Мест</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Дист</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="lblTextSwBreakerModeCtrl">
+                      <property name="text">
+                       <string>Режим управления</string>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <spacer name="horizontalSpacer_11">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="1" column="4">
+                     <widget class="QComboBox" name="cboxK17">
+                      <property name="maximumSize">
+                       <size>
+                        <width>100</width>
+                        <height>100</height>
+                       </size>
+                      </property>
+                      <property name="toolTip">
+                       <string>Имя порта</string>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Нет зн.</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Откл</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Вкл</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="lblTextSwitchOFF">
+                      <property name="text">
+                       <string>Команда отключения</string>
                       </property>
                       <property name="scaledContents">
                        <bool>true</bool>
@@ -11023,95 +11074,6 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="1" column="4">
-                     <widget class="QComboBox" name="cboxK17">
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>100</height>
-                       </size>
-                      </property>
-                      <property name="toolTip">
-                       <string>Имя порта</string>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>Нет зн.</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Откл</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Вкл</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="0" column="2">
-                     <spacer name="horizontalSpacer_11">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QLabel" name="lblTextSwitchOFF">
-                      <property name="text">
-                       <string>Команда отключения</string>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <widget class="QComboBox" name="cboxK03">
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>100</height>
-                       </size>
-                      </property>
-                      <property name="toolTip">
-                       <string>Имя порта</string>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>Нет зн.</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Постоянная</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Импульсная</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="3" column="0">
-                     <widget class="QLabel" name="lblTextSwitchON_T">
-                      <property name="text">
-                       <string>Время комамнды включения</string>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="3" column="1">
                      <widget class="QLineEdit" name="leK02">
                       <property name="sizePolicy">
@@ -11165,6 +11127,44 @@
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QComboBox" name="cboxK03">
+                      <property name="maximumSize">
+                       <size>
+                        <width>100</width>
+                        <height>100</height>
+                       </size>
+                      </property>
+                      <property name="toolTip">
+                       <string>Имя порта</string>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Нет зн.</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Постоянная</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Импульсная</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="lblTextSwitchON_T">
+                      <property name="text">
+                       <string>Время комамнды включения</string>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -11236,8 +11236,8 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="4" column="4">
-                     <widget class="QLineEdit" name="leK08">
+                    <item row="5" column="4">
+                     <widget class="QLineEdit" name="leX22">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -11264,8 +11264,8 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="4">
-                     <widget class="QLineEdit" name="leX22">
+                    <item row="4" column="4">
+                     <widget class="QLineEdit" name="leK08">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -11305,7 +11305,7 @@
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>149</height>
+                   <height>51</height>
                   </size>
                  </property>
                 </spacer>
@@ -11319,7 +11319,7 @@
                  <item>
                   <widget class="QGroupBox" name="gboxSwDevDisconnect">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -11532,7 +11532,7 @@
                  <item>
                   <widget class="QGroupBox" name="gboxSwDevSCHR">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -11744,7 +11744,7 @@
                  <item>
                   <widget class="QGroupBox" name="gboxSwDevLR">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -11956,7 +11956,7 @@
                  <item>
                   <widget class="QGroupBox" name="gboxSwDevZR">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -12168,7 +12168,7 @@
                  <item>
                   <widget class="QGroupBox" name="gboxSwDevTruck">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -12382,7 +12382,7 @@
                    <item>
                     <widget class="QGroupBox" name="gboxSwDevCtrl">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -12553,7 +12553,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="pageAutomation">
-          <layout class="QHBoxLayout" name="horizontalLayout_101">
+          <layout class="QHBoxLayout" name="horizontalLayout_75">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_108">
              <property name="spacing">
@@ -12647,7 +12647,7 @@
               </sizepolicy>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>3</number>
              </property>
              <widget class="QWidget" name="pageAdditionalPropertiesAVRInput">
               <layout class="QVBoxLayout" name="verticalLayout_109">
@@ -12658,7 +12658,7 @@
                    <item>
                     <widget class="QGroupBox" name="groupBox_2">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -13002,7 +13002,7 @@
                      <item>
                       <widget class="QGroupBox" name="groupBox_4">
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
@@ -13196,11 +13196,11 @@
               </layout>
              </widget>
              <widget class="QWidget" name="pageAdditionalPropertiesAPVStart">
-              <layout class="QVBoxLayout" name="verticalLayout_332">
+              <layout class="QVBoxLayout" name="verticalLayout_127">
                <item>
                 <widget class="QGroupBox" name="groupBox_10">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -13208,7 +13208,7 @@
                  <property name="title">
                   <string/>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_304">
+                 <layout class="QVBoxLayout" name="verticalLayout_126">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_25">
                     <item row="0" column="11">
@@ -14061,14 +14061,14 @@
                 </widget>
                </item>
                <item>
-                <spacer name="verticalSpacer_172">
+                <spacer name="verticalSpacer_2">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>84</height>
+                   <height>65</height>
                   </size>
                  </property>
                 </spacer>
@@ -14076,6 +14076,19 @@
               </layout>
              </widget>
             </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_29">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
