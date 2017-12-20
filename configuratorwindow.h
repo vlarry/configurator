@@ -127,7 +127,7 @@
                                         CDataUnitType::FunctionType type, int size);
             void sendSettingWriteRequest(const QString& first, const QString& last);
             void sendPurposeReadRequest(const QString& first, const QString& last);
-            void sendPurposeWriteRequest();
+            void sendPurposeWriteRequest(const QString& first, const QString& last);
             
         private:
             void initConnect();

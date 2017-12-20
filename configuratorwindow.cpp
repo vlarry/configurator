@@ -967,6 +967,25 @@ void ConfiguratorWindow::writeSetCurrent()
 
         case 21:
         break;
+
+        case 22: // привязки выходов (светодиодов)
+
+        break;
+
+        case 23: // привязки входов
+        break;
+
+        case 24: // привязки выходов (реле)
+            sendPurposeWriteRequest(tr("DO1"), tr("DO2"));
+            sendPurposeWriteRequest(tr("DO4"), tr("DO5"));
+            sendPurposeWriteRequest(tr("DO6"), tr("DO7"));
+            sendPurposeWriteRequest(tr("DO8"), tr("DO9"));
+            sendPurposeWriteRequest(tr("DO10"), tr("DO11"));
+            sendPurposeWriteRequest(tr("DO12"), tr("DO13"));
+        break;
+
+        case 25: // привязки выходов (клавиатуры)
+        break;
     }
 }
 //-------------------------------------------------
@@ -1757,7 +1776,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
     CDataUnitType::FunctionType funType = ((data.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                CDataUnitType::WriteMultipleRegisters);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), funType, index.x(), data);
+    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addressPurposeKey(first), data);
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
@@ -1784,10 +1803,64 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
 
     m_modbusDevice->request(unit);
 }
-//------------------------------------------------
-void ConfiguratorWindow::sendPurposeWriteRequest()
+//-----------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QString& last)
 {
+    QTableView* table = tableMatrixFromKeys(first, last);
 
+    if(!table)
+        return;
+
+    CDataTable data = static_cast<CMatrixPurposeModel*>(table->model())->dataTable();
+
+    int bIndex = data.indexRowFromKey(first);
+    int eIndex = data.indexRowFromKey(last);
+
+    if(bIndex == -1 || eIndex == -1)
+        return;
+
+    QVector<quint16> values;
+
+    int var_count = data.columnCounts()/16;
+
+    if(data.columnCounts()%16)
+        var_count++;
+
+    for(int i = bIndex; i <= eIndex; i++)
+    {
+        for(int j = 0, offset = 0; j < 24 - 1; j += 2, offset += 32)
+        {
+            quint32 value = 0;
+
+            for(int k = 0; k < 32; k++)
+            {
+                int bit = offset + k;
+
+                if(bit >= var_count*16 - (var_count*16 - data.columnCounts()))
+                    break;
+
+                bool state = data[i][bit].state();
+
+                if(state)
+                    value |= 1 << k;
+            }
+
+            quint16 lbs = (quint16)value&0x0000FFFF;
+            quint16 mbs = (quint16)((value >> 16)&0x0000FFFF);
+
+            values << lbs << mbs;
+        }
+    }
+
+    CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
+                                                                 CDataUnitType::WriteMultipleRegisters);
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addressPurposeKey(first), values);
+
+    unit.setProperty(tr("FIRST"), first);
+    unit.setProperty(tr("LAST"), last);
+
+    m_modbusDevice->request(unit);
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const

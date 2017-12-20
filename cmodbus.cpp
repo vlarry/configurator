@@ -287,9 +287,9 @@ void CModbus::readyRead()
     }
     else if(count < m_receive_buffer.count())
     {
-        emit infoLog(tr("Получено больше, чем ожидалось (") + QString::number(count) + " < " + 
-                     QString::number(m_receive_buffer.count()) + tr("). Данные обрезаны до размера: ") + 
-                     QString::number(count) + tr(" байт\n"));
+//        emit infoLog(tr("Получено больше, чем ожидалось (") + QString::number(count) + " < " +
+//                     QString::number(m_receive_buffer.count()) + tr("). Данные обрезаны до размера: ") +
+//                     QString::number(count) + tr(" байт\n"));
         
         m_receive_buffer = m_receive_buffer.remove(count, (m_receive_buffer.count() - count));
     }
@@ -323,7 +323,15 @@ void CModbus::readyRead()
         QString str2 = (crc_calculate <= 0x0FFF)?tr("0x0") + QString::number(crc_calculate, 16).toUpper():
                                                  tr("0x") + QString::number(crc_calculate, 16).toUpper();
         
-        QString error = tr("Ошибка контрольной суммы->принято(") + str1 + tr("), рассчитано(") + str2 + tr(")\n");
+        QString func_type_str =((m_request_cur.functionType() == CDataUnitType::ReadHoldingRegisters)?tr("ReadHoldingRegisters"):
+                                (m_request_cur.functionType() == CDataUnitType::ReadInputRegisters)?tr("ReadInputRegisters"):
+                                (m_request_cur.functionType() == CDataUnitType::WriteSingleRegister)?tr("WriteSingleRegister"):
+                                (m_request_cur.functionType() == CDataUnitType::WriteMultipleRegisters)?tr("WriteMultipleRegisters"):
+                                                                                                        tr("Unknown"));
+        QString error = tr("Ошибка контрольной суммы -> принято(") + str1 + tr("), рассчитано(") + str2 + tr(") -> ");
+
+        error += tr("Запрос: ") + func_type_str + tr(" (") + m_request_cur.property(tr("FIRST")).toString() + tr(", ") +
+                                                             m_request_cur.property(tr("LAST")).toString() + tr(").");
         
         emit errorDevice(error);
         emit infoLog(error + QString("\n"));
