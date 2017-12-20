@@ -72,6 +72,7 @@
             CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent = nullptr);
             void updateData();
             CDataTable& dataTable();
+            void setDataTable(CDataTable& data);
 
         private:
             int           rowCount(const QModelIndex& parent = QModelIndex()) const;

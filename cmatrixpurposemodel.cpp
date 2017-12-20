@@ -11,7 +11,7 @@ void CMatrixPurposeModel::updateData()
 {
     // обновление модели
     QModelIndex topLeft     = createIndex(0, 0);
-    QModelIndex bottomRight = createIndex(m_data.count(), m_data.columnCounts());
+    QModelIndex bottomRight = createIndex(m_data.count() - 1, m_data.columnCounts() - 1);
 
     emit dataChanged(topLeft, bottomRight);
 }
@@ -19,6 +19,11 @@ void CMatrixPurposeModel::updateData()
 CDataTable& CMatrixPurposeModel::dataTable()
 {
     return m_data;
+}
+//------------------------------------------------------
+void CMatrixPurposeModel::setDataTable(CDataTable& data)
+{
+    m_data = data;
 }
 //----------------------------------------------------------------
 int CMatrixPurposeModel::rowCount(const QModelIndex& parent) const

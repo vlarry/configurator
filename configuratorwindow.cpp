@@ -844,11 +844,11 @@ void ConfiguratorWindow::readSetCurrent()
 
         case 24: // привязки выходов (реле)
             sendPurposeReadRequest(tr("DO1"), tr("DO2"));
-//            sendPurposeReadRequest(tr("DO4"), tr("DO5"));
-//            sendPurposeReadRequest(tr("DO6"), tr("DO7"));
-//            sendPurposeReadRequest(tr("DO8"), tr("DO9"));
-//            sendPurposeReadRequest(tr("DO10"), tr("DO11"));
-//            sendPurposeReadRequest(tr("DO12"), tr("DO13"));
+            sendPurposeReadRequest(tr("DO4"), tr("DO5"));
+            sendPurposeReadRequest(tr("DO6"), tr("DO7"));
+            sendPurposeReadRequest(tr("DO8"), tr("DO9"));
+            sendPurposeReadRequest(tr("DO10"), tr("DO11"));
+            sendPurposeReadRequest(tr("DO12"), tr("DO13"));
         break;
 
         case 25: // привязки выходов (клавиатуры)
@@ -1477,36 +1477,7 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     QString first = unit.property(tr("FIRST")).toString();
     QString last  = unit.property(tr("LAST")).toString();
 
-    if(first.isEmpty() || last.isEmpty())
-        return;
-
-    QPoint indexes = indexPurposeKey(first, last);
-
-    if(indexes.x() == -1 || indexes.y() == -1)
-        return;
-
-    int size = m_purpose_list[indexes.y()].second.first - m_purpose_list[indexes.x()].second.first + 24;
-
-    if(size != unit.valueCount())
-        return;
-
-    QTableView* table = nullptr;
-
-    if(m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive) &&
-       m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive)) // входы
-    {
-        table  = ui->tablewgtDiscreteInputPurpose;
-    }
-    else if(m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive) &&
-            m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive)) // выходы: реле
-    {
-        table  = ui->tablewgtRelayPurpose;
-    }
-    else if(m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive) &&
-            m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive)) // выходы: светодиоды
-    {
-        table  = ui->tablewgtLedPurpose;
-    }
+    QTableView* table = tableMatrixFromKeys(first, last);
 
     if(!table)
         return;
@@ -1523,36 +1494,32 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(data.columnCounts()%16)
         var_count++;
 
-    int row_count = indexes.y() - indexes.x() + 1;
+    int row_count = unit.valueCount()/var_count;
 
-    for(int i = 0; i < row_count; i++)
+    for(int i = 0, offset = 0; i < row_count; i++, offset += 24 - var_count)
     {
-        qDebug() << "i: " << i;
-
-        for(int j = 0, m = 0; j < var_count*2; j += 2, m++)
+        for(int j = 0; j < var_count - 1; j += 2)
         {
-            qDebug() << "j: " << j << ", m: " << m;
+            int index = i*var_count + offset + j;
 
-            int pos = i*var_count*2;
+            quint32 value = (unit.value(index + 1) << 16) | unit.value(index);
 
-            quint32 value      = unit.value(pos + 1) | ((unit.value(pos) << 16));
-            int     size_dword = (int)sizeof(value)*8;
-
-            for(int k = 0; k < size_dword; k++)
+            for(int k = 0; k < 32; k++)
             {
-                bool state = (value >> k)&0x00000001;
+                int bit   = j/2*32 + k;
+                int limit = var_count*16 - (var_count*16 - data.columnCounts());
 
-                if(i == row_count - 1 && k >= var_count*16 - data.columnCounts())
+                if(bit >= limit)
                     break;
 
-                int column = m*32 + k;
+                bool state = (value >> k)&0x00000001;
 
-                qDebug() << "k = " << k;
-//                data[i][column].setState(state);
+                data[i][bit].setState(state);
             }
         }
     }
 
+    model->setDataTable(data);
     model->updateData();
 }
 //--------------------------------------
@@ -1785,7 +1752,7 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
     if(faddr == -1 || laddr == -1)
         return;
 
-    int size = laddr - faddr + 24;
+    int size = laddr - faddr + 24; // получаем размер считываемого блока с учетом выравнивания в 48 байт (одна строка)
 
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, faddr,
                        QVector<quint16>() << size);
@@ -1795,6 +1762,11 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
     unit.setProperty(tr("LAST"), last);
 
     m_modbusDevice->request(unit);
+}
+//------------------------------------------------
+void ConfiguratorWindow::sendPurposeWriteRequest()
+{
+
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
@@ -1908,6 +1880,35 @@ QVector<int> ConfiguratorWindow::indexVariableFromKey(const QStringList& variabl
     }
 
     return indexes;
+}
+//--------------------------------------------------------------------------------------------
+QTableView* ConfiguratorWindow::tableMatrixFromKeys(const QString& first, const QString& last)
+{
+    if(first.isEmpty() || last.isEmpty())
+        return nullptr;
+
+    QPoint indexes = indexPurposeKey(first, last);
+
+    if(indexes.x() == -1 || indexes.y() == -1)
+        return nullptr;
+
+    if(m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive) &&
+       m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive)) // входы
+    {
+        return ui->tablewgtDiscreteInputPurpose;
+    }
+    else if(m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive) &&
+            m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive)) // выходы: реле
+    {
+        return ui->tablewgtRelayPurpose;
+    }
+    else if(m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive) &&
+            m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive)) // выходы: светодиоды
+    {
+        return ui->tablewgtLedPurpose;
+    }
+
+    return nullptr;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

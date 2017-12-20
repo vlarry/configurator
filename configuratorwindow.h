@@ -127,7 +127,7 @@
                                         CDataUnitType::FunctionType type, int size);
             void sendSettingWriteRequest(const QString& first, const QString& last);
             void sendPurposeReadRequest(const QString& first, const QString& last);
-//            void sendPurposeWriteRequest();
+            void sendPurposeWriteRequest();
             
         private:
             void initConnect();
@@ -148,6 +148,7 @@
             QPoint            indexSettingKey(const QString& first, const QString& last);
             QPoint            indexPurposeKey(const QString& first, const QString& last);
             QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);
+            QTableView*       tableMatrixFromKeys(const QString& first, const QString& last);
             
         private:
             Ui::ConfiguratorWindow* ui;
