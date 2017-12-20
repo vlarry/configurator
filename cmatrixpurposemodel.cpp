@@ -122,6 +122,17 @@ int CDataTable::columnCounts() const
 {
     return m_columnHeaders.count();
 }
+//-------------------------------------------------
+int CDataTable::indexRowFromKey(const QString& key)
+{
+    for(int i = 0; i < m_rows.count(); i++)
+    {
+        if(m_rows[i].key().toUpper() == key.toUpper())
+            return i;
+    }
+
+    return -1;
+}
 //----------------------------------------------------
 const QString& CDataTable::columnName(int index) const
 {
@@ -151,13 +162,15 @@ const CRow& CDataTable::operator [](int index) const
 //-------class CRow--------
 //-----------
 CRow::CRow():
+    m_key(""),
     m_header(""),
     m_columns(QVector<CColumn>(0))
 {
 
 }
-//------------------------------------------------
-CRow::CRow(const QString& header, int columnSize):
+//--------------------------------------------------------------------
+CRow::CRow(const QString& key, const QString& header, int columnSize):
+    m_key(key),
     m_header(header),
     m_columns(QVector<CColumn>(columnSize, CColumn()))
 {
@@ -167,6 +180,11 @@ CRow::CRow(const QString& header, int columnSize):
 int CRow::columns() const
 {
     return m_columns.count();
+}
+//------------------------------
+const QString& CRow::key() const
+{
+    return m_key;
 }
 //---------------------------------
 const QString& CRow::header() const

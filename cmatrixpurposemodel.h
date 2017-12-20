@@ -29,9 +29,10 @@
     {
         public:
             CRow();
-            CRow(const QString& header, int columnSize);
+            CRow(const QString& key, const QString& header, int columnSize);
 
             int   columns() const;
+            const QString& key() const;
             const QString& header() const;
 
             void setInactiveColumnList(QVector<int>& list);
@@ -41,6 +42,7 @@
             const CColumn& operator [](int index) const;
 
         private:
+            QString          m_key;
             QString          m_header;
             QVector<CColumn> m_columns;
     };
@@ -53,6 +55,7 @@
             int count() const;
             int columnCounts() const;
 
+            int            indexRowFromKey(const QString& key);
             const QString& columnName(int index) const;
 
             void setDisableColumns(int row, QVector<int>& list);

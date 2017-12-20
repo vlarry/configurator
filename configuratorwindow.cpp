@@ -988,6 +988,23 @@ void ConfiguratorWindow::expandItemTree(bool state)
 //-----------------------------------------
 void ConfiguratorWindow::versionSowftware()
 {
+    CDataTable& data = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
+
+    qDebug() << "begin...";
+
+    for(int i = 0; i < data.count(); i++)
+    {
+        for(int j = 0; j < data.columnCounts(); j++)
+        {
+            if(data[i][j].active() && data[i][j].state())
+            {
+                qDebug() << "data[" << i << "][" << j << "] = " << data[i][j].state();
+            }
+        }
+    }
+
+    qDebug() << "end...";
+
     m_versionWidget->show();
 }
 //--------------------------------------
@@ -1344,7 +1361,7 @@ void ConfiguratorWindow::initModelTables()
         for(int i = index.x(); i <= index.y(); i++)
         {
             QVector<int> indexes = indexVariableFromKey(columns, m_purpose_list[i].first);
-            CRow row(m_purpose_list[i].second.second.first, columns.count());
+            CRow row(m_purpose_list[i].first, m_purpose_list[i].second.second.first, columns.count());
 
             row.setActiveColumnList(indexes);
 
@@ -1494,13 +1511,20 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(data.columnCounts()%16)
         var_count++;
 
+    int offset_row = data.indexRowFromKey(first);
+
+    if(offset_row == -1)
+        return;
+
     int row_count = unit.valueCount()/var_count;
 
-    for(int i = 0, offset = 0; i < row_count; i++, offset += 24 - var_count)
+    for(int i = 0, offset_data = 0; i < row_count; i++, offset_data += 24 - var_count)
     {
+        int row = i + offset_row;
+
         for(int j = 0; j < var_count - 1; j += 2)
         {
-            int index = i*var_count + offset + j;
+            int index = i*var_count + offset_data + j;
 
             quint32 value = (unit.value(index + 1) << 16) | unit.value(index);
 
@@ -1512,14 +1536,11 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
                 if(bit >= limit)
                     break;
 
-                bool state = (value >> k)&0x00000001;
-
-                data[i][bit].setState(state);
+                data[row][bit].setState((value >> k)&0x00000001);
             }
         }
     }
 
-    model->setDataTable(data);
     model->updateData();
 }
 //--------------------------------------
