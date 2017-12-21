@@ -317,6 +317,8 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         displaySettingResponse(unit);
     else if(type == PURPOSE_OUT_TYPE)
         displayPurposeResponse(unit);
+    else if(type == PURPOSE_INPUT_TYPE)
+        displayPurposeDIResponse(unit);
 }
 //-----------------------------
 void ConfiguratorWindow::show()
@@ -840,6 +842,8 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 23: // привязки входов
+            sendPurposeDIReadRequest(tr("DI01"), tr("DI10"));
+            sendPurposeDIReadRequest(tr("DI11"), tr("DI20"));
         break;
 
         case 24: // привязки выходов (реле)
@@ -969,10 +973,14 @@ void ConfiguratorWindow::writeSetCurrent()
         break;
 
         case 22: // привязки выходов (светодиодов)
-
+            sendPurposeWriteRequest(tr("LED1"), tr("LED2"));
+            sendPurposeWriteRequest(tr("LED3"), tr("LED4"));
+            sendPurposeWriteRequest(tr("LED5"), tr("LED6"));
+            sendPurposeWriteRequest(tr("LED7"), tr("LED8"));
         break;
 
         case 23: // привязки входов
+//            sendPurposeDIWriteRequest(tr("DI01"), tr("DI20"));
         break;
 
         case 24: // привязки выходов (реле)
@@ -1562,6 +1570,39 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 
     model->updateData();
 }
+//--------------------------------------------------------------------
+void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
+{
+    QString first = unit.property(tr("FIRST")).toString();
+    QString last  = unit.property(tr("LAST")).toString();
+
+    if(first.isEmpty() || last.isEmpty())
+        return;
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
+    CDataTable&          data  = model->dataTable();
+
+    int bIndex = data.indexRowFromKey(first);
+    int eIndex = data.indexRowFromKey(last);
+
+    for(int i = bIndex; i <= eIndex; i++)
+    {
+        QVector<int> list = data.columnIndexListActive(i);
+
+        if(list.count() != ((unit.valueCount()/(eIndex - bIndex + 1))/2)*16)
+            continue;
+
+        for(int j = 0; j < unit.valueCount() - 1; j += 2)
+        {
+            quint32 value = (unit.value(j + 1) << 16) | unit.value(j);
+            bool    state = (value >> i)&0x00000001;
+
+            data[i][list[j/2]].setState(state);
+        }
+    }
+
+    model->updateData();
+}
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
 {
@@ -1795,7 +1836,7 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
     int size = laddr - faddr + 24; // получаем размер считываемого блока с учетом выравнивания в 48 байт (одна строка)
 
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, faddr,
-                       QVector<quint16>() << size);
+                                                 QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), PURPOSE_OUT_TYPE);
     unit.setProperty(tr("FIRST"), first);
@@ -1857,6 +1898,41 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
 
     CDataUnitType unit(ui->sboxSlaveID->value(), funType, addressPurposeKey(first), values);
 
+    unit.setProperty(tr("FIRST"), first);
+    unit.setProperty(tr("LAST"), last);
+
+    m_modbusDevice->request(unit);
+}
+//------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendPurposeDIReadRequest(const QString& first, const QString& last)
+{
+    int faddr = addressPurposeKey(first);
+    int laddr = addressPurposeKey(last);
+
+    if(faddr == -1 || laddr == -1)
+        return;
+
+    int bPos = indexPurposeKey(first, last).x();
+
+    int var_count = 0;
+
+    if(m_purpose_list[bPos].second.second.second.isEmpty())
+        return;
+
+    var_count = m_purpose_list[bPos].second.second.second.count()/16;
+
+    if(var_count == 0)
+        return;
+
+    if(m_purpose_list[bPos].second.second.second.count()%16)
+        var_count++;
+
+    int size = (laddr - faddr + 2)*var_count;
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, faddr,
+                                                 QVector<quint16>() << size);
+
+    unit.setProperty(tr("REQUEST"), PURPOSE_INPUT_TYPE);
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
 

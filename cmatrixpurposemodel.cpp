@@ -138,6 +138,22 @@ const QString& CDataTable::columnName(int index) const
 {
     return m_columnHeaders.at(index);
 }
+//-----------------------------------------------------
+QVector<int> CDataTable::columnIndexListActive(int row)
+{
+    QVector<int> list = QVector<int>();
+
+    if(!m_rows.isEmpty())
+    {
+        for(int i = 0; i < columnCounts(); i++)
+        {
+            if(m_rows[row][i].active())
+                list << i;
+        }
+    }
+
+    return list;
+}
 //-------------------------------------------------------------
 void CDataTable::setDisableColumns(int row, QVector<int>& list)
 {

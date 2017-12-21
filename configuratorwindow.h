@@ -46,6 +46,7 @@
                 CALCULATE_TYPE, // расчетные данные
                 GENERAL_TYPE, // общие (настройки/уставки)
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
+                PURPOSE_INPUT_TYPE // матрица привязок входов
             };
             //-------------
             enum WidgetType
@@ -128,6 +129,7 @@
             void sendSettingWriteRequest(const QString& first, const QString& last);
             void sendPurposeReadRequest(const QString& first, const QString& last);
             void sendPurposeWriteRequest(const QString& first, const QString& last);
+            void sendPurposeDIReadRequest(const QString& first, const QString& last);
             
         private:
             void initConnect();
@@ -141,6 +143,7 @@
             void displayCalculateValues(QVector<quint16> values);
             void displaySettingResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
+            void displayPurposeDIResponse(CDataUnitType& unit);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
