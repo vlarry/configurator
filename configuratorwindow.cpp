@@ -842,8 +842,8 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 23: // привязки входов
-            sendPurposeDIReadRequest(tr("DI01"), tr("DI10"));
-            sendPurposeDIReadRequest(tr("DI11"), tr("DI20"));
+            sendPurposeDIReadRequest(512, 590);
+            sendPurposeDIReadRequest(592, 670);
         break;
 
         case 24: // привязки выходов (реле)
@@ -980,7 +980,8 @@ void ConfiguratorWindow::writeSetCurrent()
         break;
 
         case 23: // привязки входов
-//            sendPurposeDIWriteRequest(tr("DI01"), tr("DI20"));
+            sendPurposeDIWriteRequest(512, 590);
+            sendPurposeDIWriteRequest(592, 670);
         break;
 
         case 24: // привязки выходов (реле)
@@ -1573,31 +1574,31 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 //--------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 {
-    QString first = unit.property(tr("FIRST")).toString();
-    QString last  = unit.property(tr("LAST")).toString();
-
-    if(first.isEmpty() || last.isEmpty())
+    if(unit.is_empty())
         return;
+
+    int first_addr = unit.property(tr("FIRST_ADDRESS")).toInt();
+    int last_addr  = unit.property(tr("LAST_ADDRESS")).toInt();
+
+    if((last_addr - first_addr + 2) != unit.valueCount())
+        return;
+
+    int column_offset = (first_addr - 512)/2;
 
     CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
     CDataTable&          data  = model->dataTable();
 
-    int bIndex = data.indexRowFromKey(first);
-    int eIndex = data.indexRowFromKey(last);
-
-    for(int i = bIndex; i <= eIndex; i++)
+    for(int i = 0; i < unit.valueCount() - 1; i += 2)
     {
-        QVector<int> list = data.columnIndexListActive(i);
+        quint32 value = (unit.value(i + 1) << 16) | unit.value(i);
 
-        if(list.count() != ((unit.valueCount()/(eIndex - bIndex + 1))/2)*16)
-            continue;
-
-        for(int j = 0; j < unit.valueCount() - 1; j += 2)
+        for(int j = 0; j < data.count(); j++)
         {
-            quint32 value = (unit.value(j + 1) << 16) | unit.value(j);
-            bool    state = (value >> i)&0x00000001;
+            QVector<int> list = data.columnIndexListActive(j);
 
-            data[i][list[j/2]].setState(state);
+            bool state = (value >> j)&0x00000001;
+
+            data[j][list[i/2 + column_offset]].setState(state);
         }
     }
 
@@ -1903,38 +1904,55 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
 
     m_modbusDevice->request(unit);
 }
-//------------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendPurposeDIReadRequest(const QString& first, const QString& last)
+//------------------------------------------------------------------------------
+void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
 {
-    int faddr = addressPurposeKey(first);
-    int laddr = addressPurposeKey(last);
+    int size = last_addr - first_addr + 2;
 
-    if(faddr == -1 || laddr == -1)
-        return;
-
-    int bPos = indexPurposeKey(first, last).x();
-
-    int var_count = 0;
-
-    if(m_purpose_list[bPos].second.second.second.isEmpty())
-        return;
-
-    var_count = m_purpose_list[bPos].second.second.second.count()/16;
-
-    if(var_count == 0)
-        return;
-
-    if(m_purpose_list[bPos].second.second.second.count()%16)
-        var_count++;
-
-    int size = (laddr - faddr + 2)*var_count;
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, faddr,
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, first_addr,
                                                  QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), PURPOSE_INPUT_TYPE);
-    unit.setProperty(tr("FIRST"), first);
-    unit.setProperty(tr("LAST"), last);
+    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
+    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
+
+    m_modbusDevice->request(unit);
+}
+//-------------------------------------------------------------------------------
+void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr)
+{
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
+
+    if(!model)
+        return;
+
+    CDataTable   data        = model->dataTable();
+    QVector<int> column_list = data.columnIndexListActive(0);
+
+    int bIndex = (first_addr - 512)/2;
+    int eIndex = (670 - last_addr)/2;
+
+    QVector<quint16> values;
+
+    for(int i = bIndex; i < column_list.count() - eIndex; i++)
+    {
+        quint32 value = 0;
+
+        for(int j = 0; j < data.count(); j++)
+        {
+            value |= (data[j][column_list[i]].state()) << j;
+        }
+
+        values << (quint16)(value&0x0000FFFF) << (quint16)((value >> 16)&0x0000FF);
+    }
+
+    CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
+                                                                 CDataUnitType::WriteMultipleRegisters);
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), funType, first_addr, values);
+
+    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
+    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 
     m_modbusDevice->request(unit);
 }

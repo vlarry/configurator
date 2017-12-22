@@ -129,7 +129,8 @@
             void sendSettingWriteRequest(const QString& first, const QString& last);
             void sendPurposeReadRequest(const QString& first, const QString& last);
             void sendPurposeWriteRequest(const QString& first, const QString& last);
-            void sendPurposeDIReadRequest(const QString& first, const QString& last);
+            void sendPurposeDIReadRequest(int first_addr, int last_addr);
+            void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             
         private:
             void initConnect();
