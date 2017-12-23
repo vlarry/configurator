@@ -25,18 +25,8 @@ CTerminal::~CTerminal()
 //----------------------------------------------------------
 void CTerminal::appendData(QByteArray& data, bool isRequest)
 {
-    QString str = (isRequest)?tr("Запрос:\n"):tr("Ответ:\n");
-
-    for(int i = 0; i < data.count(); i++)
-    {
-        char ch = data.at(i);
-
-        str += QString(ch).toLocal8Bit().toHex() + " ";
-    }
-    
-    str += tr("   (") + QString::number(data.count()) + tr(" байт)\n");
-    
-    ui->pteConsole->appendPlainText(str);
+    ui->pteConsole->appendPlainText(((isRequest)?tr("Запрос: "):tr("Ответ: ")) + data.toHex(' ').toUpper() + tr("    (") +
+                                    QString::number(data.count()) + tr(" байт).\n"));
 }
 //--------------------------------------------
 void CTerminal::closeEvent(QCloseEvent* event)

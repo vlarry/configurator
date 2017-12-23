@@ -1016,23 +1016,6 @@ void ConfiguratorWindow::expandItemTree(bool state)
 //-----------------------------------------
 void ConfiguratorWindow::versionSowftware()
 {
-    CDataTable& data = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
-
-    qDebug() << "begin...";
-
-    for(int i = 0; i < data.count(); i++)
-    {
-        for(int j = 0; j < data.columnCounts(); j++)
-        {
-            if(data[i][j].active() && data[i][j].state())
-            {
-                qDebug() << "data[" << i << "][" << j << "] = " << data[i][j].state();
-            }
-        }
-    }
-
-    qDebug() << "end...";
-
     m_versionWidget->show();
 }
 //--------------------------------------
@@ -1773,7 +1756,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 
     QVector<quint16>  data;
 
-    for(int i = index.x(); i < index.y(); i++)
+    for(int i = index.x(); i <= index.y(); i++)
     {
         QString nameWgt = m_cell_list[i].second.second;
 
@@ -1818,7 +1801,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
     CDataUnitType::FunctionType funType = ((data.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                CDataUnitType::WriteMultipleRegisters);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addressPurposeKey(first), data);
+    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addressSettingKey(first), data);
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
