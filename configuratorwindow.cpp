@@ -18,7 +18,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_temperature_group(nullptr),
     m_protect_level_group(nullptr),
     m_additional_group(nullptr),
-    m_versionWidget(nullptr)
+    m_versionWidget(nullptr),
+    m_event_journal_list(event_journal_t({ -1, 0, QVector<event_t>() }))
 {
     ui->setupUi(this);
 
@@ -48,6 +49,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initCellBind(); // инициализация привязки настроек к адресам
     initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
     initModelTables();
+    initEventJournal(); // инициализация списка событий журнала
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -157,6 +159,35 @@ void ConfiguratorWindow::calculateRead()
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
                        CALCULATE_ADDRESS, QVector<quint16>() << 110);
     unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+
+    m_modbusDevice->request(unit);
+}
+//-----------------------------------------
+void ConfiguratorWindow::eventJournalRead()
+{
+    int size = 0;
+    int addr = 0;
+
+    if(m_event_journal_list.count == -1)
+    {
+        addr = 34;
+        size = 2;
+    }
+    else
+    {
+        addr            = 4096 + m_event_journal_list.offset;
+        int event_count = m_event_journal_list.count - m_event_journal_list.offset/8;
+
+        size                         = ((event_count >= 15)?15:event_count)*8;
+        m_event_journal_list.offset += size;
+    }
+
+    qDebug() << "request address: " << addr;
+    qDebug() << "request size: " << size;
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
+                       addr, QVector<quint16>() << size);
+    unit.setProperty(tr("REQUEST"), READ_EVENT_JOURNAL);
 
     m_modbusDevice->request(unit);
 }
@@ -319,6 +350,8 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         displayPurposeResponse(unit);
     else if(type == PURPOSE_INPUT_TYPE)
         displayPurposeDIResponse(unit);
+    else if(type == READ_EVENT_JOURNAL)
+        displayEventJournalResponse(unit);
 }
 //-----------------------------
 void ConfiguratorWindow::show()
@@ -813,7 +846,8 @@ void ConfiguratorWindow::readSetCurrent()
         case 14:
         break;
 
-        case 15:
+        case 15: // чтение журнала событий
+            eventJournalRead();
         break;
 
         case 16:
@@ -1387,6 +1421,63 @@ void ConfiguratorWindow::initModelTables()
         initTable(wgt, data);
     }
 }
+//-----------------------------------------
+void ConfiguratorWindow::initEventJournal()
+{
+    // инициализация списка журнала событий
+    QSqlQuery query;
+
+    if(!query.exec("SELECT code, name FROM event_t;"))
+    {
+        qDebug() << "Ошибка чтения типов журнала событий: " << query.lastError().text();
+        return;
+    }
+
+    while(query.next())
+    {
+        m_event_journal_list.event << event_t({ query.value("code").toInt(), query.value("name").toString(),
+                                                QVector<event_t>() });
+    }
+
+    if(m_event_journal_list.event.isEmpty())
+        return;
+
+    for(event_t& event: m_event_journal_list.event)
+    {
+        if(!query.exec("SELECT code, name FROM event_category WHERE event_t = " + QString::number(event.code) + ";"))
+        {
+            qDebug() << "Ошибка чтения категорий журнала событий: " << query.lastError().text();
+            return;
+        }
+
+        while(query.next())
+        {
+            event.sub_event << event_t({ query.value("code").toInt(), query.value("name").toString(), QVector<event_t>() });
+        }
+    }
+
+    for(event_t& event: m_event_journal_list.event)
+    {
+        if(event.sub_event.isEmpty())
+            continue;
+
+        for(event_t& category: event.sub_event)
+        {
+            if(!query.exec("SELECT code, name FROM event_parameter WHERE event_category = " +
+                           QString::number(category.code) + ";"))
+            {
+                qDebug() << "Ошибка чтения параметров журнала событий: " << query.lastError().text();
+                return;
+            }
+
+            while(query.next())
+            {
+                category.sub_event << event_t({ query.value("code").toInt(), query.value("name").toString(),
+                                                QVector<event_t>() });
+            }
+        }
+    }
+}
 //----------------------------------
 void ConfiguratorWindow::connectDb()
 {
@@ -1586,6 +1677,86 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
     }
 
     model->updateData();
+}
+//-----------------------------------------------------------------------
+void ConfiguratorWindow::displayEventJournalResponse(CDataUnitType& unit)
+{
+    if(m_event_journal_list.count == -1)
+    {
+        if(unit.valueCount() != 2)
+            return;
+
+        m_event_journal_list.count = (unit.value(0) << 16) | unit.value(1);
+
+        qDebug() << "event journal size: " << m_event_journal_list.count;
+
+        eventJournalRead();
+
+        return;
+    }
+
+    qDebug() << "count packet max: " << m_event_journal_list.count;
+    qDebug() << "count packet: " << m_event_journal_list.offset/8;
+
+    QVector<quint8> data;
+
+    for(int i = 0; i < unit.valueCount(); i++)
+    {
+        data << (quint8)((unit.value(i) >> 8)&0x00FF);
+        data << (quint8)(unit.value(i)&0x00FF);
+    }
+
+    for(int i = 0; i < data.count(); i += 16)
+    {
+        quint16 id = ((data[i] << 8) | data[i + 1]);
+
+        quint8 year  = (data[i + 2]&0xFC) >> 2;
+        quint8 month = (data[i + 2]&0x02) | ((data[i + 3]&0xC0) >> 6);
+        quint8 day   = (data[i + 3]&0x3E) >> 1;
+
+        quint8 hour    = (data[i + 4]&0xF0 >> 3) | (data[i + 3]&0x01);
+        quint8 minute  = (data[i + 4]&0x0F) | (data[i + 5]&0xC0 << 4);
+        quint8 second  = data[i + 5]&0x3F;
+        quint8 msecond = data[i + 6];
+
+        quint8  type_event      = data[i + 7];
+        quint8  category_event  = data[i + 8];
+        quint16 parameter_event = data[i + 9] | data[i + 10] << 8;
+
+        QString str = ((day < 10)?(QString("0") + QString::number(day)):QString::number(day)) + QString(".") +
+                      ((month < 10)?(QString("0") + QString::number(month)):QString::number(month)) + QString(".") +
+                      QString("20") + QString::number(year) + QString(" - [") + ((hour < 10)?(QString("0") +
+                      QString::number(hour)):QString::number(hour)) + QString(":") + ((minute < 10)?(QString("0") +
+                      QString::number(minute)):QString::number(minute)) + QString(":") + ((second < 10)?(QString("0") +
+                      QString::number(second)):QString::number(second)) + QString(":") + ((msecond < 10)?(QString("0") +
+                      QString::number(msecond)):QString::number(msecond)) + QString("] - ");
+
+        if(type_event < m_event_journal_list.event.count())
+        {
+            str += m_event_journal_list.event[type_event].name;
+
+            if(category_event < m_event_journal_list.event[type_event].sub_event.count())
+            {
+                str += QString(" -> ") + m_event_journal_list.event[type_event].sub_event[category_event].name;
+
+                if(parameter_event < m_event_journal_list.event[type_event].sub_event[category_event].sub_event.count())
+                {
+                    str += QString(" -> ") +
+                           m_event_journal_list.event[type_event].sub_event[category_event].sub_event[parameter_event].name;
+                }
+            }
+        }
+
+        ui->listwgtEventJournal->addItem(str);
+    }
+
+    if( m_event_journal_list.offset/8 < 510)
+        eventJournalRead();
+    else
+    {
+        m_event_journal_list.count  = -1;
+        m_event_journal_list.offset = 0;
+    }
 }
 //--------------------------------------
 void ConfiguratorWindow::versionParser()

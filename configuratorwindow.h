@@ -46,7 +46,8 @@
                 CALCULATE_TYPE, // расчетные данные
                 GENERAL_TYPE, // общие (настройки/уставки)
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
-                PURPOSE_INPUT_TYPE // матрица привязок входов
+                PURPOSE_INPUT_TYPE, // матрица привязок входов
+                READ_EVENT_JOURNAL
             };
             //-------------
             enum WidgetType
@@ -54,6 +55,20 @@
                 INT,
                 FLOAT, // QLineEdit (set validator: QDoubleValidator)
                 LIST   // QComboBox
+            };
+            //------------
+            struct event_t
+            {
+                int              code;
+                QString          name;
+                QVector<event_t> sub_event;
+            };
+            //--------------------
+            struct event_journal_t
+            {
+                int              count; // количество доступных событий в журнале
+                int              offset; // смещение (указатель на текущее событие)
+                QVector<event_t> event; // база событий (вычитаны из БД)
             };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
@@ -70,6 +85,7 @@
             void stateChanged(bool state);
             void refreshSerialPort();
             void calculateRead(); // запрос расчетных величин
+            void eventJournalRead();
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
@@ -139,12 +155,14 @@
             void initCellBind();
             void initPurposeBind();
             void initModelTables();
+            void initEventJournal();
             void connectDb();
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
             void displaySettingResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void displayPurposeDIResponse(CDataUnitType& unit);
+            void displayEventJournalResponse(CDataUnitType& unit);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
@@ -175,6 +193,7 @@
             QSqlDatabase            m_db;
             cell_t                  m_cell_list;
             purpose_t               m_purpose_list;
+            event_journal_t         m_event_journal_list;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

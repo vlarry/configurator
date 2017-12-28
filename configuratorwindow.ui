@@ -656,7 +656,7 @@
        <item>
         <widget class="QStackedWidget" name="stwgtMain">
          <property name="currentIndex">
-          <number>1</number>
+          <number>15</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -14093,7 +14093,13 @@
           </layout>
          </widget>
          <widget class="QWidget" name="pageJournalCrash"/>
-         <widget class="QWidget" name="pageJournalEvent"/>
+         <widget class="QWidget" name="pageJournalEvent">
+          <layout class="QVBoxLayout" name="verticalLayout_128">
+           <item>
+            <widget class="QListWidget" name="listwgtEventJournal"/>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="pageJournalOscilloscope"/>
          <widget class="QWidget" name="pageMeasurePrimaryValues"/>
          <widget class="QWidget" name="pageMeasureSecondaryValues"/>
