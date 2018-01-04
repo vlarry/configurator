@@ -1409,7 +1409,6 @@ void ConfiguratorWindow::initModelTables()
             CRow row(m_purpose_list[i].first, m_purpose_list[i].second.second.first, columns.count());
 
             row.setActiveColumnList(indexes);
-
             rows.append(row);
         }
 
@@ -1711,12 +1710,12 @@ void ConfiguratorWindow::displayEventJournalResponse(CDataUnitType& unit)
         quint16 id = ((data[i] << 8) | data[i + 1]);
 
         quint8 year  = (data[i + 2]&0xFC) >> 2;
-        quint8 month = (data[i + 2]&0x02) | ((data[i + 3]&0xC0) >> 6);
-        quint8 day   = (data[i + 3]&0x3E) >> 1;
+        quint8 month = ((data[i + 2]&0x03) << 2) | ((data[i + 3]&0xC0) >> 6);
+        quint8 day   = ((data[i + 3]&0x3E) >> 1);
 
-        quint8 hour    = (data[i + 4]&0xF0 >> 3) | (data[i + 3]&0x01);
-        quint8 minute  = (data[i + 4]&0x0F) | (data[i + 5]&0xC0 << 4);
-        quint8 second  = data[i + 5]&0x3F;
+        quint8 hour    = ((data[i + 3]&0x01) << 4) | ((data[i + 4]&0xF0) >> 4);
+        quint8 minute  = ((data[i + 4]&0x0F) << 2) | ((data[i + 5]&0xC0) >> 6);
+        quint8 second  = (data[i + 5]&0x3F);
         quint8 msecond = data[i + 6];
 
         quint8  type_event      = data[i + 7];
@@ -1750,7 +1749,7 @@ void ConfiguratorWindow::displayEventJournalResponse(CDataUnitType& unit)
         ui->listwgtEventJournal->addItem(str);
     }
 
-    if( m_event_journal_list.offset/8 < 510)
+    if( m_event_journal_list.offset/8 < 512)
         eventJournalRead();
     else
     {

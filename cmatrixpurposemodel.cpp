@@ -4,7 +4,48 @@ CMatrixPurposeModel::CMatrixPurposeModel(CDataTable &data, QAbstractTableModel* 
     QAbstractTableModel(parent),
     m_data(data)
 {
+    int pos = 0;
 
+    for(int i = 0; i < m_data.columnCounts(); i++) // сортировка активных ячеек - перенос в начало
+    {
+        bool pos_changed = false;
+
+        for(int j = 0; j < m_data.count(); j++) // проход по всем строкам
+        {
+            CColumn column = m_data[j][i];
+
+            if(column.active())
+            {
+                if(pos != i)
+                {
+                    CColumn tcolumn = m_data[j][pos];
+
+                    m_data[j][pos] = column;
+                    m_data[j][i] = tcolumn;
+
+                    if(!pos_changed)
+                        pos_changed = true;
+                }
+                else
+                {
+                    if(!pos_changed)
+                        pos_changed = true;
+                }
+            }
+        }
+
+        if(pos_changed)
+        {
+            QString columnName = m_data.columnName(i);
+
+            m_data.setColumnName(i, m_data.columnName(pos));
+            m_data.setColumnName(pos, columnName);
+
+            pos++;
+        }
+    }
+
+    qDebug() << "pos: " << pos;
 }
 //------------------------------------
 void CMatrixPurposeModel::updateData()
@@ -153,6 +194,11 @@ QVector<int> CDataTable::columnIndexListActive(int row)
     }
 
     return list;
+}
+//------------------------------------------------------------
+void CDataTable::setColumnName(int index, const QString& name)
+{
+    m_columnHeaders.replace(index, name);
 }
 //-------------------------------------------------------------
 void CDataTable::setDisableColumns(int row, QVector<int>& list)

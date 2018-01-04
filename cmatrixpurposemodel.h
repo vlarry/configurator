@@ -59,6 +59,7 @@
             const QString& columnName(int index) const;
             QVector<int>   columnIndexListActive(int row);
 
+            void setColumnName(int index, const QString& name);
             void setDisableColumns(int row, QVector<int>& list);
             void setEnableColumns(int row, QVector<int>& list);
 
