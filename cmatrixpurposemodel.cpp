@@ -44,8 +44,6 @@ CMatrixPurposeModel::CMatrixPurposeModel(CDataTable &data, QAbstractTableModel* 
             pos++;
         }
     }
-
-    qDebug() << "pos: " << pos;
 }
 //------------------------------------
 void CMatrixPurposeModel::updateData()

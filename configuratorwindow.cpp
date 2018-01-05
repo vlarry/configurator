@@ -5,6 +5,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
     ui(new Ui::ConfiguratorWindow),
     m_modbusDevice(nullptr),
+    m_serialPortSettings(nullptr),
     m_calculateWidget(nullptr),
     m_terminal(nullptr),
     m_logFile(nullptr),
@@ -19,7 +20,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_level_group(nullptr),
     m_additional_group(nullptr),
     m_versionWidget(nullptr),
-    m_event_journal_list(event_journal_t({ -1, 0, QVector<event_t>() }))
+    m_event_journal_list(event_journal_t({ -1, 0, 0, QVector<event_t>() }))
 {
     ui->setupUi(this);
 
@@ -38,6 +39,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_additional_group          = new QButtonGroup;
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
+    m_serialPortSettings        = new CSerialPortSetting;
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -95,13 +97,13 @@ void ConfiguratorWindow::serialPortCtrl()
     {
         m_modbusDevice->setPortName(ui->cboxPortName->currentText());
         m_modbusDevice->setBaudrate(ui->cboxBaudrate->currentText().toInt());
-        m_modbusDevice->setDatabits((QSerialPort::DataBits)ui->cboxDataBit->currentText().toInt());
+        m_modbusDevice->setDatabits((QSerialPort::DataBits)m_serialPortSettings->dataBits().toInt());
 
-        quint32 stopbits = ((ui->cboxStopBit->currentText() == "1.5")?3:ui->cboxStopBit->currentText().toInt());
-        quint32 parity   = ((ui->cboxParity->currentText().toUpper() == tr("NO"))?0:
-                           (ui->cboxParity->currentText().toUpper() == tr("EVEN"))?2:
-                           (ui->cboxParity->currentText().toUpper() == tr("ODD"))?3:
-                           (ui->cboxParity->currentText().toUpper() == tr("SPACE")))?4:5;
+        quint32 stopbits = ((m_serialPortSettings->stopBits() == "1.5")?3:m_serialPortSettings->stopBits().toInt());
+        quint32 parity   = ((m_serialPortSettings->parity().toUpper() == tr("NO"))?0:
+                           (m_serialPortSettings->parity().toUpper() == tr("EVEN"))?2:
+                           (m_serialPortSettings->parity().toUpper() == tr("ODD"))?3:
+                           (m_serialPortSettings->parity() == tr("SPACE")))?4:5;
         
         m_modbusDevice->setStopbits((QSerialPort::StopBits)stopbits);
         m_modbusDevice->setParity((QSerialPort::Parity)parity);
@@ -153,6 +155,11 @@ void ConfiguratorWindow::refreshSerialPort()
     ui->cboxPortName->clear();
     ui->cboxPortName->addItems(port_list);
 }
+//-------------------------------------------
+void ConfiguratorWindow::serialPortSettings()
+{
+    m_serialPortSettings->show();
+}
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
 {
@@ -162,28 +169,41 @@ void ConfiguratorWindow::calculateRead()
 
     m_modbusDevice->request(unit);
 }
-//-----------------------------------------
-void ConfiguratorWindow::eventJournalRead()
+//-----------------------------------------------------
+void ConfiguratorWindow::eventJournalRead(bool isShift)
 {
     int size = 0;
     int addr = 0;
 
-    if(m_event_journal_list.count == -1)
+    if(m_event_journal_list.c_event == -1)
     {
+        ui->leEventCount->clear();
+        ui->listwgtEventJournal->clear();
+
         addr = 34;
         size = 2;
     }
-    else
+    else if(!isShift)
     {
-        addr            = 4096 + m_event_journal_list.offset;
-        int event_count = m_event_journal_list.count - m_event_journal_list.offset/8;
+        addr = m_event_journal_list.count*16 + 4096;
+        size = (((m_event_journal_list.c_event - m_event_journal_list.count) > 15)?120:
+                 (m_event_journal_list.c_event - m_event_journal_list.count)*8);
+    }
+    else if(isShift) // прочитали два текущих сектора и необходим переход на новый
+    {
+        m_event_journal_list.shitf += 8192;
+        m_event_journal_list.count  = 0;
 
-        size                         = ((event_count >= 15)?15:event_count)*8;
-        m_event_journal_list.offset += size;
+        CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                           12300, QVector<quint16>() << m_event_journal_list.shitf);
+        unit.setProperty(tr("REQUEST"), READ_EVENT_JOURNAL);
+
+        m_modbusDevice->request(unit);
+
+        return;
     }
 
-    qDebug() << "request address: " << addr;
-    qDebug() << "request size: " << size;
+    qDebug() << "journal events: addr: " << addr << ", size: " << size;
 
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
                        addr, QVector<quint16>() << size);
@@ -1680,22 +1700,35 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 //-----------------------------------------------------------------------
 void ConfiguratorWindow::displayEventJournalResponse(CDataUnitType& unit)
 {
-    if(m_event_journal_list.count == -1)
+    if(m_event_journal_list.c_event == -1)
     {
         if(unit.valueCount() != 2)
             return;
 
-        m_event_journal_list.count = (unit.value(0) << 16) | unit.value(1);
+        m_event_journal_list.c_event = (unit.value(0) << 16) | unit.value(1);
 
-        qDebug() << "event journal size: " << m_event_journal_list.count;
+        eventJournalRead();
+
+        return;
+    }
+    else if(unit.valueCount() == 1) // если получен ответ в 2 байта (одна ячейка), то было произведено смещение и мы игнорим
+    {
+        eventJournalRead();
+
+        return;
+    }
+    else if(unit.valueCount() == 2) // если получено 4 байтай (int32), то это получение смещения окна чтения
+    {
+        m_event_journal_list.shitf = ((unit.value(0) << 16) | unit.value(1)); // сохраняем смещение
 
         eventJournalRead();
 
         return;
     }
 
-    qDebug() << "count packet max: " << m_event_journal_list.count;
-    qDebug() << "count packet: " << m_event_journal_list.offset/8;
+    m_event_journal_list.count += unit.valueCount()/8;
+    ui->leEventCount->setText(QString::number(m_event_journal_list.count + (m_event_journal_list.shitf/8192)*512) +
+                              QString("/") + QString::number(m_event_journal_list.c_event));
 
     QVector<quint8> data;
 
@@ -1707,7 +1740,7 @@ void ConfiguratorWindow::displayEventJournalResponse(CDataUnitType& unit)
 
     for(int i = 0; i < data.count(); i += 16)
     {
-        quint16 id = ((data[i] << 8) | data[i + 1]);
+//        quint16 id = ((data[i] << 8) | data[i + 1]);
 
         quint8 year  = (data[i + 2]&0xFC) >> 2;
         quint8 month = ((data[i + 2]&0x03) << 2) | ((data[i + 3]&0xC0) >> 6);
@@ -1749,12 +1782,11 @@ void ConfiguratorWindow::displayEventJournalResponse(CDataUnitType& unit)
         ui->listwgtEventJournal->addItem(str);
     }
 
-    if( m_event_journal_list.offset/8 < 512)
+    if( m_event_journal_list.count < 512) // если прочитано не 8192 байта, то продолжаем читать (512*16 = 8192)
         eventJournalRead();
-    else
+    else if((m_event_journal_list.count + (m_event_journal_list.shitf/0x2000)*512) < m_event_journal_list.c_event)
     {
-        m_event_journal_list.count  = -1;
-        m_event_journal_list.offset = 0;
+        eventJournalRead(true); // если прочитали не весь журнал, то смещаем окно чтения
     }
 }
 //--------------------------------------
@@ -2274,8 +2306,8 @@ void ConfiguratorWindow::initConnect()
     connect(m_switch_device_group, SIGNAL(buttonClicked(int)), this, SLOT(switchDeviceChangedID(int)));
     connect(m_additional_group, SIGNAL(buttonClicked(int)), this, SLOT(additionalChangedID(int)));
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
-    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
-    connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SLOT(numberRepeatChanged(int)));
+    connect(m_serialPortSettings, &CSerialPortSetting::timeout, this, &ConfiguratorWindow::timeoutValueChanged);
+    connect(m_serialPortSettings, &CSerialPortSetting::numberRepeat, this, &ConfiguratorWindow::numberRepeatChanged);
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
     connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
@@ -2287,4 +2319,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnWriteCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetCurrent);
     connect(ui->tbntExpandItems, &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
     connect(ui->pbtnVersionSoftware, &QPushButton::clicked, this, &ConfiguratorWindow::versionSowftware);
+    connect(ui->pbtnSerialPortSettings, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortSettings);
 }

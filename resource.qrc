@@ -6,6 +6,8 @@
         <file>resource/images/checkbox_disable.png</file>
         <file>resource/images/checkbox_enable.png</file>
         <file>resource/images/checkbox_inactive.png</file>
+        <file>resource/images/connect.png</file>
+        <file>resource/images/disconnect.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

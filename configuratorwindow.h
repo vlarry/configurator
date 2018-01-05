@@ -25,6 +25,7 @@
     #include "qcustomplot.h"
     #include "cversionsoftware.h"
     #include "cmatrixpurposemodel.h"
+    #include "cserialportsetting.h"
     //----------
     namespace Ui 
     {
@@ -66,8 +67,9 @@
             //--------------------
             struct event_journal_t
             {
-                int              count; // количество доступных событий в журнале
-                int              offset; // смещение (указатель на текущее событие)
+                int              c_event; // количество доступных событий в журнале
+                int              count; // счетчик прочитанных событий
+                int              shitf; // смещение чтения событий, когда их больше 8192 байта
                 QVector<event_t> event; // база событий (вычитаны из БД)
             };
             //------------------------------------------------------------------------------------------
@@ -84,8 +86,9 @@
             void serialPortCtrl();
             void stateChanged(bool state);
             void refreshSerialPort();
+            void serialPortSettings();
             void calculateRead(); // запрос расчетных величин
-            void eventJournalRead();
+            void eventJournalRead(bool isShift = false); // isShift - признак сдвига окна чтения
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
@@ -175,6 +178,7 @@
         private:
             Ui::ConfiguratorWindow* ui;
             CModbus*                m_modbusDevice;
+            CSerialPortSetting*     m_serialPortSettings;
             QPanel*                 m_calculateWidget;
             CTerminal*              m_terminal;
             QFile*                  m_logFile;

@@ -1,22 +1,34 @@
 #ifndef CSERIALPORTSETTING_H
-#define CSERIALPORTSETTING_H
+    #define CSERIALPORTSETTING_H
+    //----------------
+    #include <QWidget>
+    //----------
+    namespace Ui
+    {
+        class CSerialPortSetting;
+    }
+    //--------------------------------------
+    class CSerialPortSetting: public QWidget
+    {
+        Q_OBJECT
 
-#include <QWidget>
+        public:
+            explicit CSerialPortSetting(QWidget* parent = nullptr);
+            ~CSerialPortSetting();
 
-namespace Ui {
-class CSerialPortSetting;
-}
+            const QString dataBits() const;
+            const QString parity() const;
+            const QString stopBits() const;
 
-class CSerialPortSetting : public QWidget
-{
-    Q_OBJECT
+        public slots:
+            void show();
 
-public:
-    explicit CSerialPortSetting(QWidget *parent = 0);
-    ~CSerialPortSetting();
+        signals:
+            void numberRepeat(int);
+            void timeout(int);
 
-private:
-    Ui::CSerialPortSetting *ui;
-};
+        private:
+            Ui::CSerialPortSetting* ui;
+    };
 
 #endif // CSERIALPORTSETTING_H

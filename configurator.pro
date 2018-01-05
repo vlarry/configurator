@@ -34,7 +34,8 @@ SOURCES += \
     qcustomplot.cpp \
     cversionsoftware.cpp \
     cmatrixpurposemodel.cpp \
-    cheadertable.cpp
+    cheadertable.cpp \
+    cserialportsetting.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -46,13 +47,15 @@ HEADERS += \
     qcustomplot.h \
     cversionsoftware.h \
     cmatrixpurposemodel.h \
-    cheadertable.h
+    cheadertable.h \
+    cserialportsetting.h
 
 FORMS += \
         configuratorwindow.ui \
         qcell.ui \
     cterminal.ui \
-    versionform.ui
+    versionform.ui \
+    serialportsetting.ui
 
 win32::RC_FILE = \
                  resource/icon.rc
