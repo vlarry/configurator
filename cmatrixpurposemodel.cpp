@@ -1,48 +1,49 @@
 #include "cmatrixpurposemodel.h"
 //--------------------------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(CDataTable &data, QAbstractTableModel* parent):
-    QAbstractTableModel(parent),
-    m_data(data)
+CMatrixPurposeModel::CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent):
+    QAbstractTableModel(parent)
 {
-    int pos = 0;
-
-    for(int i = 0; i < m_data.columnCounts(); i++) // сортировка активных ячеек - перенос в начало
+    QVector<int> cell_active_list;
+    QVector<CColumn::column_t> headers; // список обобщенных заголовков
+    // создаем обобщенный список активных ячеек
+    for(int i = 0; i < data.count(); i++)
     {
-        bool pos_changed = false;
+        CRow row = data[i];
 
-        for(int j = 0; j < m_data.count(); j++) // проход по всем строкам
+        for(int j = 0; j < data.columnCounts(); j++)
         {
-            CColumn column = m_data[j][i];
-
-            if(column.active())
+            if(!cell_active_list.isEmpty()) // список не пуст
             {
-                if(pos != i)
+                if(row[j].active() && !cell_active_list.contains(j)) // ячейка активна и список не содержит данный индекс
                 {
-                    CColumn tcolumn = m_data[j][pos];
-
-                    m_data[j][pos] = column;
-                    m_data[j][i] = tcolumn;
-
-                    if(!pos_changed)
-                        pos_changed = true;
+                    cell_active_list << j;
+                    headers << data.columnData(j);
                 }
-                else
+            }
+            else
+            {
+                if(row[j].active()) // список пуст и ячейка активна
                 {
-                    if(!pos_changed)
-                        pos_changed = true;
+                    cell_active_list << j;
+                    headers << data.columnData(j);
                 }
             }
         }
+    }
 
-        if(pos_changed)
+    m_data.setColumnHeaders(headers);
+    // создаение представления для активных ячеек
+    for(int i = 0; i < data.count(); i++)
+    {
+        QVector<CColumn> columns;
+
+        for(int j = 0; j < cell_active_list.count(); j++)
         {
-            QString columnName = m_data.columnName(i);
-
-            m_data.setColumnName(i, m_data.columnName(pos));
-            m_data.setColumnName(pos, columnName);
-
-            pos++;
+            columns << data[i][cell_active_list[j]];
         }
+
+        CRow row(data[i].key(), data[i].header(), columns);
+        m_data.addRow(row);
     }
 }
 //------------------------------------
@@ -119,6 +120,10 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
     {
         return m_data[index.row()][index.column()].active();
     }
+    else if(role == Qt::ToolTipRole)
+    {
+        return tr("Описание");
+    }
 
     return QVariant();
 }
@@ -144,12 +149,22 @@ Qt::ItemFlags CMatrixPurposeModel::flags(const QModelIndex& index) const
 }
 //----------------------
 //---class CDataTable---
-//----------------------------------------------------------------------
-CDataTable::CDataTable(QVector<CRow>& rows, QStringList& columnHeaders):
+//----------------------
+CDataTable::CDataTable()
+{
+
+}
+//-------------------------------------------------------------------------------------
+CDataTable::CDataTable(QVector<CRow>& rows, QVector<CColumn::column_t>& columnHeaders):
     m_rows(rows),
     m_columnHeaders(columnHeaders)
 {
 
+}
+//--------------------------------
+void CDataTable::addRow(CRow& row)
+{
+    m_rows << row;
 }
 //---------------------------
 int CDataTable::count() const
@@ -172,10 +187,15 @@ int CDataTable::indexRowFromKey(const QString& key)
 
     return -1;
 }
-//----------------------------------------------------
-const QString& CDataTable::columnName(int index) const
+//--------------------------------------------------
+CColumn::column_t& CDataTable::columnData(int index)
 {
-    return m_columnHeaders.at(index);
+    return m_columnHeaders[index];
+}
+//----------------------------------------------------
+const QString &CDataTable::columnName(int index) const
+{
+    return m_columnHeaders[index].first;
 }
 //-----------------------------------------------------
 QVector<int> CDataTable::columnIndexListActive(int row)
@@ -193,10 +213,10 @@ QVector<int> CDataTable::columnIndexListActive(int row)
 
     return list;
 }
-//------------------------------------------------------------
-void CDataTable::setColumnName(int index, const QString& name)
+//--------------------------------------------------------------------
+void CDataTable::setColumnHeaders(QVector<CColumn::column_t>& headers)
 {
-    m_columnHeaders.replace(index, name);
+    m_columnHeaders = headers;
 }
 //-------------------------------------------------------------
 void CDataTable::setDisableColumns(int row, QVector<int>& list)
@@ -235,6 +255,19 @@ CRow::CRow(const QString& key, const QString& header, int columnSize):
     m_columns(QVector<CColumn>(columnSize, CColumn()))
 {
 
+}
+//-------------------------------------------------------------------------------
+CRow::CRow(const QString& key, const QString& header, QVector<CColumn>& columns):
+    m_key(key),
+    m_header(header),
+    m_columns(columns)
+{
+
+}
+//----------------------------------------------
+void CRow::addColumns(QVector<CColumn>& columns)
+{
+    m_columns = columns;
 }
 //-----------------------
 int CRow::columns() const
@@ -285,6 +318,13 @@ const CColumn& CRow::operator [](int index) const
 CColumn::CColumn():
     m_state(false),
     m_active(false)
+{
+
+}
+//----------------------------------------
+CColumn::CColumn(bool state, bool active):
+    m_state(state),
+    m_active(active)
 {
 
 }

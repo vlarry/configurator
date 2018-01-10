@@ -150,6 +150,7 @@
             void sendPurposeWriteRequest(const QString& first, const QString& last);
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
+            void clearIOTable();
             
         private:
             void initConnect();

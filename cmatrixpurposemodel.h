@@ -13,7 +13,11 @@
     class CColumn
     {
         public:
+            typedef QPair<QString, QPair<QString, QString> > column_t; // column data <key, <name, description> >
+
+        public:
             CColumn();
+            CColumn(bool state, bool active);
 
             bool active() const;
             bool state() const;
@@ -30,6 +34,9 @@
         public:
             CRow();
             CRow(const QString& key, const QString& header, int columnSize);
+            CRow(const QString& key, const QString& header, QVector<CColumn>& columns);
+
+            void addColumns(QVector<CColumn>& columns);
 
             int   columns() const;
             const QString& key() const;
@@ -50,16 +57,21 @@
     class CDataTable
     {
         public:
-            CDataTable(QVector<CRow>& rows, QStringList& columnHeaders);
+            CDataTable();
+            CDataTable(QVector<CRow>& rows, QVector<CColumn::column_t>& columnHeaders);
+
+            void addRow(CRow& row);
 
             int count() const;
             int columnCounts() const;
 
-            int            indexRowFromKey(const QString& key);
-            const QString& columnName(int index) const;
-            QVector<int>   columnIndexListActive(int row);
+            int                indexRowFromKey(const QString& key);
+            CColumn::column_t& columnData(int index);
+            const QString&     columnName(int index) const;
+            QVector<int>       columnIndexListActive(int row);
 
-            void setColumnName(int index, const QString& name);
+            void setColumnHeaders(QVector<CColumn::column_t>& headers);
+
             void setDisableColumns(int row, QVector<int>& list);
             void setEnableColumns(int row, QVector<int>& list);
 
@@ -67,8 +79,8 @@
             const CRow& operator [](int index) const;
 
         private:
-            QVector<CRow> m_rows;
-            QStringList   m_columnHeaders;
+            QVector<CRow>              m_rows;
+            QVector<CColumn::column_t> m_columnHeaders;
     };
     //---------------------------------------------------
     class CMatrixPurposeModel: public QAbstractTableModel

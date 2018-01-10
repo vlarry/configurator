@@ -20,7 +20,7 @@
    <string>Конфигуратор БЗУ-16</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_120">
     <item>
      <widget class="QTabWidget" name="tabwgtMenu">
       <property name="sizePolicy">
@@ -371,7 +371,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>15</number>
+          <number>25</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -13809,7 +13809,38 @@
          </widget>
          <widget class="QWidget" name="pageJournalCrash"/>
          <widget class="QWidget" name="pageJournalEvent">
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_101">
+             <item>
+              <widget class="QPushButton" name="pbtnEventJournalReadToTable">
+               <property name="text">
+                <string>Чтение журнала</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_9">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pbntEventJournalTableClear">
+               <property name="text">
+                <string>Очистка</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
@@ -13862,28 +13893,124 @@
          <widget class="QWidget" name="pageMonitorInputDiscret"/>
          <widget class="QWidget" name="pageMonitorOutputDiscret"/>
          <widget class="QWidget" name="pageSetLedPurpose">
-          <layout class="QVBoxLayout" name="verticalLayout_118">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_106">
+             <item>
+              <widget class="QPushButton" name="pbtnClearLedOutput">
+               <property name="text">
+                <string>Очистить</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_12">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
            <item>
             <widget class="QTableView" name="tablewgtLedPurpose"/>
            </item>
           </layout>
          </widget>
          <widget class="QWidget" name="pageSetDiscretInputPurpose">
-          <layout class="QVBoxLayout" name="verticalLayout_119">
+          <layout class="QVBoxLayout" name="verticalLayout_56">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_107">
+             <item>
+              <widget class="QPushButton" name="pbtnClearDiscreteInput">
+               <property name="text">
+                <string>Очистить</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_14">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
            <item>
             <widget class="QTableView" name="tablewgtDiscreteInputPurpose"/>
            </item>
           </layout>
          </widget>
          <widget class="QWidget" name="pageSetRelayPurpose">
-          <layout class="QVBoxLayout" name="verticalLayout_120">
+          <layout class="QVBoxLayout" name="verticalLayout_118">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_108">
+             <item>
+              <widget class="QPushButton" name="pbtnClearRelayOutput">
+               <property name="text">
+                <string>Очистить</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_50">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
            <item>
             <widget class="QTableView" name="tablewgtRelayPurpose"/>
            </item>
           </layout>
          </widget>
          <widget class="QWidget" name="pageSetKeyboardPurpose">
-          <layout class="QVBoxLayout" name="verticalLayout_124">
+          <layout class="QVBoxLayout" name="verticalLayout_119">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_109">
+             <item>
+              <widget class="QPushButton" name="pbtnClearKeyboardPurpose">
+               <property name="text">
+                <string>Очистить</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_51">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
            <item>
             <widget class="QTableView" name="tablewgtKeyboardPurpose"/>
            </item>

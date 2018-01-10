@@ -1372,13 +1372,16 @@ void ConfiguratorWindow::initModelTables()
 {
     QSqlQuery query(tr("SELECT * FROM variable"));
 
-    QStringList columns;
+    QVector<CColumn::column_t> columns;
 
     if(query.exec())
     {
         while(query.next())
         {
-            columns << query.value(tr("key")).toString();
+            CColumn::column_t column = qMakePair(query.value(tr("key")).toString(),
+                                                 qMakePair(query.value(tr("name")).toString(),
+                                                           query.value(tr("description")).toString()));
+            columns << column;
         }
     }
 
@@ -1423,9 +1426,16 @@ void ConfiguratorWindow::initModelTables()
 
         QVector<CRow> rows;
 
+        QStringList columnList;
+
+        for(CColumn::column_t& column: columns)
+        {
+            columnList << column.first;
+        }
+
         for(int i = index.x(); i <= index.y(); i++)
         {
-            QVector<int> indexes = indexVariableFromKey(columns, m_purpose_list[i].first);
+            QVector<int> indexes = indexVariableFromKey(columnList, m_purpose_list[i].first);
             CRow row(m_purpose_list[i].first, m_purpose_list[i].second.second.first, columns.count());
 
             row.setActiveColumnList(indexes);
@@ -2141,6 +2151,46 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
     m_modbusDevice->request(unit);
 }
+//-------------------------------------
+void ConfiguratorWindow::clearIOTable()
+{
+    QTableView* table = nullptr;
+
+    switch(ui->stwgtMain->currentIndex())
+    {
+        case 22:
+            table = ui->tablewgtLedPurpose;
+        break;
+
+        case 23:
+            table = ui->tablewgtDiscreteInputPurpose;
+        break;
+
+        case 24:
+            table = ui->tablewgtRelayPurpose;
+        break;
+    }
+
+    if(!table)
+        return;
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+    if(!model)
+        return;
+
+    CDataTable& data = model->dataTable();
+
+    for(int i = 0; i < data.count(); i++)
+    {
+        for(int j = 0; j < data.columnCounts(); j++)
+        {
+            data[i][j].setState(false);
+        }
+    }
+
+    model->updateData();
+}
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
@@ -2320,4 +2370,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->tbntExpandItems, &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
     connect(ui->pbtnVersionSoftware, &QPushButton::clicked, this, &ConfiguratorWindow::versionSowftware);
     connect(ui->pbtnSerialPortSettings, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortSettings);
+    connect(ui->pbtnClearLedOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
+    connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
+    connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
+    connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
 }
