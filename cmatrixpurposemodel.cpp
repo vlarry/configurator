@@ -122,7 +122,10 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
     }
     else if(role == Qt::ToolTipRole)
     {
-        return tr("Описание");
+        CColumn::column_t column  = m_data.columnData(index.column());
+        QString           tooltip = m_data[index.row()].header() + ": " + column.second.second;
+
+        return tooltip;
     }
 
     return QVariant();
@@ -187,8 +190,8 @@ int CDataTable::indexRowFromKey(const QString& key)
 
     return -1;
 }
-//--------------------------------------------------
-CColumn::column_t& CDataTable::columnData(int index)
+//-------------------------------------------------------
+CColumn::column_t CDataTable::columnData(int index) const
 {
     return m_columnHeaders[index];
 }

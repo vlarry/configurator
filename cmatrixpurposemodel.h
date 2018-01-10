@@ -65,10 +65,10 @@
             int count() const;
             int columnCounts() const;
 
-            int                indexRowFromKey(const QString& key);
-            CColumn::column_t& columnData(int index);
-            const QString&     columnName(int index) const;
-            QVector<int>       columnIndexListActive(int row);
+            int               indexRowFromKey(const QString& key);
+            CColumn::column_t columnData(int index) const;
+            const QString&    columnName(int index) const;
+            QVector<int>      columnIndexListActive(int row);
 
             void setColumnHeaders(QVector<CColumn::column_t>& headers);
 
