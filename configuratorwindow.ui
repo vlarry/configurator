@@ -371,7 +371,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>25</number>
+          <number>15</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -13833,7 +13833,7 @@
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="pbntEventJournalTableClear">
+              <widget class="QPushButton" name="pbtnEventJournalTableClear">
                <property name="text">
                 <string>Очистка</string>
                </property>
@@ -13882,7 +13882,7 @@
             </layout>
            </item>
            <item>
-            <widget class="QListWidget" name="listwgtEventJournal"/>
+            <widget class="QTableWidget" name="tablewgtEventJournal"/>
            </item>
           </layout>
          </widget>

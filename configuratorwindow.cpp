@@ -44,7 +44,17 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
-    
+
+    ui->tablewgtEventJournal->setColumnCount(5);
+    ui->tablewgtEventJournal->setHorizontalHeaderLabels(QStringList() << tr("Дата") << tr("Время") << tr("Тип") <<
+                                                                         tr("Категория") << tr("Параметр"));
+    ui->tablewgtEventJournal->setShowGrid(true);
+    ui->tablewgtEventJournal->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tablewgtEventJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tablewgtEventJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tablewgtEventJournal->horizontalHeader()->setStretchLastSection(true);
+    ui->tablewgtEventJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
     initMenuPanel();
     initButtonGroup();
     initConnect();
@@ -178,7 +188,7 @@ void ConfiguratorWindow::eventJournalRead(bool isShift)
     if(m_event_journal_list.c_event == -1)
     {
         ui->leEventCount->clear();
-        ui->listwgtEventJournal->clear();
+        ui->tablewgtEventJournal->clearContents();
 
         addr = 34;
         size = 2;
@@ -867,7 +877,7 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 15: // чтение журнала событий
-            eventJournalRead();
+//            eventJournalRead();
         break;
 
         case 16:
@@ -1765,31 +1775,65 @@ void ConfiguratorWindow::displayEventJournalResponse(CDataUnitType& unit)
         quint8  category_event  = data[i + 8];
         quint16 parameter_event = data[i + 9] | data[i + 10] << 8;
 
-        QString str = ((day < 10)?(QString("0") + QString::number(day)):QString::number(day)) + QString(".") +
-                      ((month < 10)?(QString("0") + QString::number(month)):QString::number(month)) + QString(".") +
-                      QString("20") + QString::number(year) + QString(" - [") + ((hour < 10)?(QString("0") +
-                      QString::number(hour)):QString::number(hour)) + QString(":") + ((minute < 10)?(QString("0") +
-                      QString::number(minute)):QString::number(minute)) + QString(":") + ((second < 10)?(QString("0") +
-                      QString::number(second)):QString::number(second)) + QString(":") + ((msecond < 10)?(QString("0") +
-                      QString::number(msecond)):QString::number(msecond)) + QString("] - ");
+//        if(type_event < m_event_journal_list.event.count())
+//        {
+//            str += m_event_journal_list.event[type_event].name;
 
-        if(type_event < m_event_journal_list.event.count())
+//            if(category_event < m_event_journal_list.event[type_event].sub_event.count())
+//            {
+//                str += QString(" -> ") + m_event_journal_list.event[type_event].sub_event[category_event].name;
+
+//                if(parameter_event < m_event_journal_list.event[type_event].sub_event[category_event].sub_event.count())
+//                {
+//                    str += QString(" -> ") +
+//                           m_event_journal_list.event[type_event].sub_event[category_event].sub_event[parameter_event].name;
+//                }
+//            }
+//        }
+
+        QDate d(year, month, day);
+        QTime t(hour, minute, second);
+
+        QVector<event_t> etype = ((!m_event_journal_list.event.isEmpty())?m_event_journal_list.event:QVector<event_t>());
+
+        if(!etype.isEmpty())
         {
-            str += m_event_journal_list.event[type_event].name;
+            QVector<event_t> ecategory  = QVector<event_t>();
+            QVector<event_t> eparameter = QVector<event_t>();
 
-            if(category_event < m_event_journal_list.event[type_event].sub_event.count())
-            {
-                str += QString(" -> ") + m_event_journal_list.event[type_event].sub_event[category_event].name;
+            if(etype.count() > type_event)
+                ecategory = etype[type_event].sub_event;
 
-                if(parameter_event < m_event_journal_list.event[type_event].sub_event[category_event].sub_event.count())
-                {
-                    str += QString(" -> ") +
-                           m_event_journal_list.event[type_event].sub_event[category_event].sub_event[parameter_event].name;
-                }
-            }
+            if(ecategory.count() > category_event)
+                eparameter = ecategory[category_event].sub_event;
+
+            int row = ui->tablewgtEventJournal->rowCount();
+
+            ui->tablewgtEventJournal->insertRow(row);
+
+            QString etype_str = tr("Неизвестный тип");
+
+            if(etype.count() > type_event)
+                etype_str = etype[type_event].name;
+
+            ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(d.toString("dd.MM.yyyy")));
+            ui->tablewgtEventJournal->setItem(row, 1, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") +
+                                                                           QString::number(msecond)));
+            ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (") +
+                                                                                            QString::number(type_event) +
+                                                                                            QString(")"))));
+
+            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
+            QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
+                                       tr("Неизвестный параметр"):eparameter[parameter_event].name);
+
+            ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(ecategory_str + QString(" (") +
+                                                                           QString::number(category_event) +
+                                                                           QString(")")));
+            ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(eparameter_str + QString(" (") +
+                                                                           QString::number(parameter_event) +
+                                                                           QString(")")));
         }
-
-        ui->listwgtEventJournal->addItem(str);
     }
 
     if( m_event_journal_list.count < 512) // если прочитано не 8192 байта, то продолжаем читать (512*16 = 8192)
@@ -2374,4 +2418,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
+    connect(ui->pbtnEventJournalReadToTable, &QPushButton::clicked, this, &ConfiguratorWindow::eventJournalRead);
+    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, ui->tablewgtEventJournal, &QTableWidget::clearContents);
 }
