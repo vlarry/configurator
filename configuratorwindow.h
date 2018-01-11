@@ -118,6 +118,7 @@
             void switchDeviceSetRead();
             void switchDeviceSetWrite();
             void responseRead(CDataUnitType& unit);
+            void exitFromApp();
             void show();
             void chboxCalculateTimeoutStateChanged(bool state);
             void timeCalculateChanged(int newTime);
@@ -151,6 +152,8 @@
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             void clearIOTable();
+            void menuPanelCtrl();
+            void variablePanelCtrl();
             
         private:
             void initConnect();

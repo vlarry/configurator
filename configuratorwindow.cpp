@@ -43,6 +43,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    m_calculateWidget->setWindowTitle(tr("Расчетные величины"));
     addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
 
     ui->tablewgtEventJournal->setColumnCount(5);
@@ -383,6 +384,11 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     else if(type == READ_EVENT_JOURNAL)
         displayEventJournalResponse(unit);
 }
+//------------------------------------
+void ConfiguratorWindow::exitFromApp()
+{
+    close();
+}
 //-----------------------------
 void ConfiguratorWindow::show()
 {
@@ -396,6 +402,8 @@ void ConfiguratorWindow::show()
 
     m_versionWidget = new CVersionSoftware(this);
     versionParser();
+
+    ui->tabwgtMenu->setCurrentIndex(3);
 }
 //--------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
@@ -2235,6 +2243,22 @@ void ConfiguratorWindow::clearIOTable()
 
     model->updateData();
 }
+//--------------------------------------
+void ConfiguratorWindow::menuPanelCtrl()
+{
+    if(ui->dockwgtDeviceMenu->isHidden())
+        ui->dockwgtDeviceMenu->show();
+    else
+        ui->dockwgtDeviceMenu->hide();
+}
+//------------------------------------------
+void ConfiguratorWindow::variablePanelCtrl()
+{
+    if(m_calculateWidget->isHidden())
+        m_calculateWidget->show();
+    else
+        m_calculateWidget->hide();
+}
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
@@ -2420,4 +2444,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnEventJournalReadToTable, &QPushButton::clicked, this, &ConfiguratorWindow::eventJournalRead);
     connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, ui->tablewgtEventJournal, &QTableWidget::clearContents);
+    connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
+    connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
+    connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
 }
