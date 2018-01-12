@@ -19,6 +19,8 @@
     #include <QSqlDatabase>
     #include <QSqlQuery>
     #include <QSqlError>
+    #include <QTextDocument>
+    #include <QTextCursor>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -154,6 +156,7 @@
             void clearIOTable();
             void menuPanelCtrl();
             void variablePanelCtrl();
+            void exportToPDF();
             
         private:
             void initConnect();

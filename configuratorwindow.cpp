@@ -2259,6 +2259,37 @@ void ConfiguratorWindow::variablePanelCtrl()
     else
         m_calculateWidget->hide();
 }
+//------------------------------------
+void ConfiguratorWindow::exportToPDF()
+{
+    QDir dir;
+
+    if(!dir.exists("reports"))
+    {
+        dir.mkdir("reports");
+    }
+
+    QPrinter printer(QPrinter::ScreenResolution);
+
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setPaperSize(QPrinter::A4);
+    printer.setOutputFileName("reports/report.pdf");
+
+    QTextDocument reportPDF;
+    QTextCursor   cursor(&reportPDF);
+
+    reportPDF.setPageSize(printer.pageRect().size());
+
+    QTextImageFormat imageFormat;
+    imageFormat.setName(":/images/resource/images/background_report.jpg");
+
+    cursor.movePosition(QTextCursor::Start);
+
+    imageFormat.setWidth(printer.pageRect().width());
+    cursor.insertImage(imageFormat);
+
+    reportPDF.print(&printer);
+}
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
@@ -2447,4 +2478,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
+    connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::exportToPDF);
 }
