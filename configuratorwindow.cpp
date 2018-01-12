@@ -2269,6 +2269,18 @@ void ConfiguratorWindow::exportToPDF()
         dir.mkdir("reports");
     }
 
+    QTableWidget* curTable      = nullptr;
+    QString       curReportName = "";
+
+    if(ui->stwgtMain->currentIndex() == 15)
+    {
+        curTable      = ui->tablewgtEventJournal;
+        curReportName = tr("Отчет журнала событий");
+    }
+
+    if(!curTable)
+        return;
+
     QPrinter printer(QPrinter::ScreenResolution);
 
     printer.setOutputFormat(QPrinter::PdfFormat);
@@ -2279,14 +2291,70 @@ void ConfiguratorWindow::exportToPDF()
     QTextCursor   cursor(&reportPDF);
 
     reportPDF.setPageSize(printer.pageRect().size());
-
-    QTextImageFormat imageFormat;
-    imageFormat.setName(":/images/resource/images/background_report.jpg");
-
     cursor.movePosition(QTextCursor::Start);
 
-    imageFormat.setWidth(printer.pageRect().width());
-    cursor.insertImage(imageFormat);
+    QTextBlockFormat blockFormat;
+    blockFormat.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
+    blockFormat.setAlignment(Qt::AlignCenter);
+    cursor.insertBlock(blockFormat);
+
+    QTextCharFormat charFormat;
+    charFormat.setFontPointSize(24);
+    cursor.setCharFormat(charFormat);
+
+    QDateTime dt = QDateTime::currentDateTime();
+
+    cursor.insertText(curReportName);
+    cursor.insertBlock();
+    cursor.insertText(dt.toString("dd.MM.yyyy - hh:mm:ss"));
+
+    int row_count = curTable->rowCount();
+    int col_count = curTable->columnCount();
+
+    QTextTableFormat tableFormat;
+
+    tableFormat.setCellPadding(5);
+    tableFormat.setCellSpacing(0);
+    tableFormat.setHeaderRowCount(1);
+    tableFormat.setBorderBrush(Qt::SolidPattern);
+    tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Ridge);
+    tableFormat.setBorder(1);
+    tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
+    tableFormat.setBackground(QBrush(QImage(":/images/resource/images/background_report.png")));
+
+    QTextTable* table = cursor.insertTable(1, col_count, tableFormat);
+
+    QStringList headerList;
+
+    for(int i = 0; i < col_count; i++)
+    {
+        headerList << curTable->horizontalHeaderItem(i)->text();
+    }
+
+    for(QString header: headerList)
+    {
+        cursor.insertText(header);
+        cursor.movePosition(QTextCursor::NextCell);
+    }
+
+    if(row_count != 0) // если таблица не пустая, то добавляем данные
+    {
+        for(int i = 0; i < row_count; i++)
+        {
+            if(!(i%20))
+                printer.newPage();
+
+            table->appendRows(1);
+
+            cursor.movePosition(QTextCursor::PreviousRow);
+
+            for(int j = 0; j < col_count; j++)
+            {
+                cursor.movePosition(QTextCursor::NextCell);
+                cursor.insertText(curTable->item(i, j)->text());
+            }
+        }
+    }
 
     reportPDF.print(&printer);
 }
