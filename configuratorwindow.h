@@ -157,6 +157,7 @@
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             void clearIOTable();
+            void clearEventJournal();
             void menuPanelCtrl();
             void variablePanelCtrl();
             void exportToPDF();

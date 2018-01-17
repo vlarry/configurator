@@ -2227,6 +2227,15 @@ void ConfiguratorWindow::clearIOTable()
 
     model->updateData();
 }
+//------------------------------------------
+void ConfiguratorWindow::clearEventJournal()
+{
+    ui->tablewgtEventJournal->clearContents();
+    ui->tablewgtEventJournal->setRowCount(0);
+    ui->leEventCount->clear();
+
+    m_event_journal_list = event_journal_t({ -1, 0, 0, QVector<event_t>() });
+}
 //--------------------------------------
 void ConfiguratorWindow::menuPanelCtrl()
 {
@@ -2735,7 +2744,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnEventJournalReadToTable, &QPushButton::clicked, this, &ConfiguratorWindow::eventJournalRead);
-    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, ui->tablewgtEventJournal, &QTableWidget::clearContents);
+    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearEventJournal);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
