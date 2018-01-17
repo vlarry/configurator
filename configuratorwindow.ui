@@ -20,7 +20,7 @@
    <string>Конфигуратор БЗУ-16</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_120">
+   <layout class="QVBoxLayout" name="verticalLayout_131">
     <item>
      <widget class="QTabWidget" name="tabwgtMenu">
       <property name="sizePolicy">
@@ -30,7 +30,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabFile">
        <attribute name="title">
@@ -115,7 +115,38 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pbtnExportPurpose">
+            <property name="text">
+             <string>Экспорт привязок</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_120">
+          <item>
+           <widget class="QPushButton" name="pbtnImportPurpose">
+            <property name="text">
+             <string>Импорт привязок</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_74">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
@@ -601,7 +632,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>25</number>
+          <number>24</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">

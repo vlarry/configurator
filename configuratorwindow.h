@@ -21,6 +21,9 @@
     #include <QSqlError>
     #include <QTextDocument>
     #include <QTextCursor>
+    #include <QJsonObject>
+    #include <QJsonDocument>
+    #include <QJsonArray>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -69,9 +72,9 @@
             //--------------------
             struct event_journal_t
             {
-                int              c_event; // количество доступных событий в журнале
-                int              count; // счетчик прочитанных событий
-                int              shitf; // смещение чтения событий, когда их больше 8192 байта
+                int              event_count_total; // количество доступных событий в журнале
+                int              event_count_read; // счетчик прочитанных событий
+                int              shift; // сдвиг указателя на новый блок данных
                 QVector<event_t> event; // база событий (вычитаны из БД)
             };
             //------------------------------------------------------------------------------------------
@@ -90,7 +93,7 @@
             void refreshSerialPort();
             void serialPortSettings();
             void calculateRead(); // запрос расчетных величин
-            void eventJournalRead(bool isShift = false); // isShift - признак сдвига окна чтения
+            void eventJournalRead();
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
@@ -157,6 +160,8 @@
             void menuPanelCtrl();
             void variablePanelCtrl();
             void exportToPDF();
+            void exportPurposeToJSON();
+            void importPurposeFromJSON();
             
         private:
             void initConnect();
@@ -181,30 +186,32 @@
             QPoint            indexPurposeKey(const QString& first, const QString& last);
             QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);
             QTableView*       tableMatrixFromKeys(const QString& first, const QString& last);
+            CColumn::column_t columnFromKey(const QString& key);
             
         private:
-            Ui::ConfiguratorWindow* ui;
-            CModbus*                m_modbusDevice;
-            CSerialPortSetting*     m_serialPortSettings;
-            QPanel*                 m_calculateWidget;
-            CTerminal*              m_terminal;
-            QFile*                  m_logFile;
-            QTimer*                 m_tim_calculate;
-            QButtonGroup*           m_protect_mtz_group;
-            QButtonGroup*           m_protect_earthly_group;
-            QButtonGroup*           m_protect_power_group;
-            QButtonGroup*           m_protect_motor_group;
-            QButtonGroup*           m_protect_frequency_group;
-            QButtonGroup*           m_protect_external_group;
-            QButtonGroup*           m_protect_temperature_group;
-            QButtonGroup*           m_protect_level_group;
-            QButtonGroup*           m_switch_device_group;
-            QButtonGroup*           m_additional_group;
-            CVersionSoftware*       m_versionWidget;
-            QSqlDatabase            m_db;
-            cell_t                  m_cell_list;
-            purpose_t               m_purpose_list;
-            event_journal_t         m_event_journal_list;
+            Ui::ConfiguratorWindow*    ui;
+            CModbus*                   m_modbusDevice;
+            CSerialPortSetting*        m_serialPortSettings;
+            QPanel*                    m_calculateWidget;
+            CTerminal*                 m_terminal;
+            QFile*                     m_logFile;
+            QTimer*                    m_tim_calculate;
+            QButtonGroup*              m_protect_mtz_group;
+            QButtonGroup*              m_protect_earthly_group;
+            QButtonGroup*              m_protect_power_group;
+            QButtonGroup*              m_protect_motor_group;
+            QButtonGroup*              m_protect_frequency_group;
+            QButtonGroup*              m_protect_external_group;
+            QButtonGroup*              m_protect_temperature_group;
+            QButtonGroup*              m_protect_level_group;
+            QButtonGroup*              m_switch_device_group;
+            QButtonGroup*              m_additional_group;
+            CVersionSoftware*          m_versionWidget;
+            QSqlDatabase               m_db;
+            cell_t                     m_cell_list;
+            purpose_t                  m_purpose_list;
+            event_journal_t            m_event_journal_list;
+            QVector<CColumn::column_t> m_variables;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

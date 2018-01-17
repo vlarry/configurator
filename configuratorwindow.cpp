@@ -46,9 +46,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_calculateWidget->setWindowTitle(tr("Расчетные величины"));
     addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
 
-    ui->tablewgtEventJournal->setColumnCount(5);
-    ui->tablewgtEventJournal->setHorizontalHeaderLabels(QStringList() << tr("Дата") << tr("Время") << tr("Тип") <<
-                                                                         tr("Категория") << tr("Параметр"));
+    ui->tablewgtEventJournal->setColumnCount(6);
+    ui->tablewgtEventJournal->setHorizontalHeaderLabels(QStringList() << tr("ID события") << tr("Дата") << tr("Время") <<
+                                                                         tr("Тип") << tr("Категория") << tr("Параметр"));
     ui->tablewgtEventJournal->setShowGrid(true);
     ui->tablewgtEventJournal->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tablewgtEventJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -180,44 +180,56 @@ void ConfiguratorWindow::calculateRead()
 
     m_modbusDevice->request(unit);
 }
-//-----------------------------------------------------
-void ConfiguratorWindow::eventJournalRead(bool isShift)
+//-----------------------------------------
+void ConfiguratorWindow::eventJournalRead()
 {
-    int size = 0;
-    int addr = 0;
+    QVector<quint16>            var    = QVector<quint16>();
+    int                         addr   = 0;
+    int                         count  = ((m_event_journal_list.event_count_total == -1)?0:(m_event_journal_list.shift/4096*256 +
+                                                                                            m_event_journal_list.event_count_read));
+    CDataUnitType::FunctionType f_type = CDataUnitType::ReadInputRegisters;
 
-    if(m_event_journal_list.c_event == -1)
+    if(m_event_journal_list.event_count_total == -1)
     {
         ui->leEventCount->clear();
         ui->tablewgtEventJournal->clearContents();
 
         addr = 34;
-        size = 2;
+        var  << 2;
     }
-    else if(!isShift)
+    else if(count == m_event_journal_list.event_count_total)
     {
-        addr = m_event_journal_list.count*16 + 4096;
-        size = (((m_event_journal_list.c_event - m_event_journal_list.count) > 15)?120:
-                 (m_event_journal_list.c_event - m_event_journal_list.count)*8);
-    }
-    else if(isShift) // прочитали два текущих сектора и необходим переход на новый
-    {
-        m_event_journal_list.shitf += 8192;
-        m_event_journal_list.count  = 0;
-
-        CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                           12300, QVector<quint16>() << m_event_journal_list.shitf);
-        unit.setProperty(tr("REQUEST"), READ_EVENT_JOURNAL);
-
-        m_modbusDevice->request(unit);
+        qDebug() << "Журнал вычитан полностью";
 
         return;
     }
+    else if(count > m_event_journal_list.event_count_total)
+    {
+        qDebug() << "Ошибка - выход за пределы журнала";
 
-    qDebug() << "journal events: addr: " << addr << ", size: " << size;
+        return;
+    }
+    else if(m_event_journal_list.event_count_read == 256) // прочитали очередные 256 событий - перевод внутреннего указателя на
+                                                          // новый блок
+    {
+        m_event_journal_list.shift += 4096; // абсолютное смещение указателя
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-                       addr, QVector<quint16>() << size);
+        f_type = CDataUnitType::WriteMultipleRegisters;
+        addr   = 0x300C; // адрес регистра сдвига 12300
+
+        var << ((m_event_journal_list.shift >> 16)&0xFFFF) << (m_event_journal_list.shift&0xFFFF);
+    }
+    else // иначе читаем журнал дальше
+    {
+        addr = m_event_journal_list.event_count_read*8 + 4096; // размер события 16 байт (с учетом размера ячейки
+                                                               // 2 байта - 16/2 = 8)
+        int var_count = ((m_event_journal_list.event_count_total - count) >= 8)?64:
+                         (m_event_journal_list.event_count_total - count)*8;
+
+        var << var_count;
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), f_type, addr, var);
     unit.setProperty(tr("REQUEST"), READ_EVENT_JOURNAL);
 
     m_modbusDevice->request(unit);
@@ -1390,8 +1402,6 @@ void ConfiguratorWindow::initModelTables()
 {
     QSqlQuery query(tr("SELECT * FROM variable"));
 
-    QVector<CColumn::column_t> columns;
-
     if(query.exec())
     {
         while(query.next())
@@ -1399,11 +1409,11 @@ void ConfiguratorWindow::initModelTables()
             CColumn::column_t column = qMakePair(query.value(tr("key")).toString(),
                                                  qMakePair(query.value(tr("name")).toString(),
                                                            query.value(tr("description")).toString()));
-            columns << column;
+            m_variables << column;
         }
     }
 
-    if(columns.isEmpty())
+    if(m_variables.isEmpty())
         return;
 
     QList<QTableView*> view_list = QList<QTableView*>() << ui->tablewgtLedPurpose << ui->tablewgtDiscreteInputPurpose
@@ -1446,7 +1456,7 @@ void ConfiguratorWindow::initModelTables()
 
         QStringList columnList;
 
-        for(CColumn::column_t& column: columns)
+        for(CColumn::column_t& column: m_variables)
         {
             columnList << column.first;
         }
@@ -1454,7 +1464,7 @@ void ConfiguratorWindow::initModelTables()
         for(int i = index.x(); i <= index.y(); i++)
         {
             QVector<int> indexes = indexVariableFromKey(columnList, m_purpose_list[i].first);
-            CRow row(m_purpose_list[i].first, m_purpose_list[i].second.second.first, columns.count());
+            CRow row(m_purpose_list[i].first, m_purpose_list[i].second.second.first, m_variables.count());
 
             row.setActiveColumnList(indexes);
             rows.append(row);
@@ -1463,7 +1473,7 @@ void ConfiguratorWindow::initModelTables()
         if(rows.isEmpty())
             return;
 
-        CDataTable data(rows, columns);
+        CDataTable data(rows, m_variables);
 
         initTable(wgt, data);
     }
@@ -1728,128 +1738,102 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 //-----------------------------------------------------------------------
 void ConfiguratorWindow::displayEventJournalResponse(CDataUnitType& unit)
 {
-    if(m_event_journal_list.c_event == -1)
+    if(m_event_journal_list.event_count_total == -1)
     {
         if(unit.valueCount() != 2)
             return;
 
-        m_event_journal_list.c_event = (unit.value(0) << 16) | unit.value(1);
-
-        eventJournalRead();
-
-        return;
+        m_event_journal_list.event_count_total = (unit.value(0) << 16) | unit.value(1);
     }
-    else if(unit.valueCount() == 1) // если получен ответ в 2 байта (одна ячейка), то было произведено смещение и мы игнорим
+    else if(unit.valueCount() == 1 && m_event_journal_list.event_count_read == 256) // ответ на запись указателя сдвига
     {
-        eventJournalRead();
-
-        return;
+        m_event_journal_list.event_count_read = 0; // обнуляем счетчик прочитанных событий (shift хранит переходы по которым
+                                                   // можно узнать общее количество принятых сообщений)
     }
-    else if(unit.valueCount() == 2) // если получено 4 байтай (int32), то это получение смещения окна чтения
+    else if(unit.valueCount() == 2) // если получено 4 байта (int32) - получение смещения окна чтения
     {
-        m_event_journal_list.shitf = ((unit.value(0) << 16) | unit.value(1)); // сохраняем смещение
-
-        eventJournalRead();
-
-        return;
+        m_event_journal_list.shift = ((unit.value(0) << 16) | unit.value(1)); // сохраняем смещение
     }
-
-    m_event_journal_list.count += unit.valueCount()/8;
-    ui->leEventCount->setText(QString::number(m_event_journal_list.count + (m_event_journal_list.shitf/8192)*512) +
-                              QString("/") + QString::number(m_event_journal_list.c_event));
-
-    QVector<quint8> data;
-
-    for(int i = 0; i < unit.valueCount(); i++)
+    else
     {
-        data << (quint8)((unit.value(i) >> 8)&0x00FF);
-        data << (quint8)(unit.value(i)&0x00FF);
-    }
+        m_event_journal_list.event_count_read += unit.valueCount()/8;
+        ui->leEventCount->setText(QString::number(m_event_journal_list.event_count_read +
+                                                 (m_event_journal_list.shift/4096)*256) +
+                                                  QString("/") + QString::number(m_event_journal_list.event_count_total));
 
-    for(int i = 0; i < data.count(); i += 16)
-    {
-//        quint16 id = ((data[i] << 8) | data[i + 1]);
+        QVector<quint8> data;
 
-        quint8 year  = (data[i + 2]&0xFC) >> 2;
-        quint8 month = ((data[i + 2]&0x03) << 2) | ((data[i + 3]&0xC0) >> 6);
-        quint8 day   = ((data[i + 3]&0x3E) >> 1);
-
-        quint8 hour    = ((data[i + 3]&0x01) << 4) | ((data[i + 4]&0xF0) >> 4);
-        quint8 minute  = ((data[i + 4]&0x0F) << 2) | ((data[i + 5]&0xC0) >> 6);
-        quint8 second  = (data[i + 5]&0x3F);
-        quint8 msecond = data[i + 6];
-
-        quint8  type_event      = data[i + 7];
-        quint8  category_event  = data[i + 8];
-        quint16 parameter_event = data[i + 9] | data[i + 10] << 8;
-
-//        if(type_event < m_event_journal_list.event.count())
-//        {
-//            str += m_event_journal_list.event[type_event].name;
-
-//            if(category_event < m_event_journal_list.event[type_event].sub_event.count())
-//            {
-//                str += QString(" -> ") + m_event_journal_list.event[type_event].sub_event[category_event].name;
-
-//                if(parameter_event < m_event_journal_list.event[type_event].sub_event[category_event].sub_event.count())
-//                {
-//                    str += QString(" -> ") +
-//                           m_event_journal_list.event[type_event].sub_event[category_event].sub_event[parameter_event].name;
-//                }
-//            }
-//        }
-
-        QDate d(year, month, day);
-        QTime t(hour, minute, second);
-
-        QVector<event_t> etype = ((!m_event_journal_list.event.isEmpty())?m_event_journal_list.event:QVector<event_t>());
-
-        if(!etype.isEmpty())
+        for(int i = 0; i < unit.valueCount(); i++)
         {
-            QVector<event_t> ecategory  = QVector<event_t>();
-            QVector<event_t> eparameter = QVector<event_t>();
+            data << (quint8)((unit.value(i) >> 8)&0x00FF);
+            data << (quint8)(unit.value(i)&0x00FF);
+        }
 
-            if(etype.count() > type_event)
-                ecategory = etype[type_event].sub_event;
+        for(int i = 0; i < data.count(); i += 16)
+        {
+            quint16 id = ((data[i + 1] << 8) | data[i]);
 
-            if(ecategory.count() > category_event)
-                eparameter = ecategory[category_event].sub_event;
+            quint8 year  = ((data[i + 2]&0xFC) >> 2);
+            quint8 month = ((data[i + 2]&0x03) << 2) | ((data[i + 3]&0xC0) >> 6);
+            quint8 day   = ((data[i + 3]&0x3E) >> 1);
 
-            int row = ui->tablewgtEventJournal->rowCount();
+            quint8 hour    = ((data[i + 3]&0x01) << 4) | ((data[i + 4]&0xF0) >> 4);
+            quint8 minute  = ((data[i + 4]&0x0F) << 2) | ((data[i + 5]&0xC0) >> 6);
+            quint8 second  = (data[i + 5]&0x3F);
+            quint8 msecond = data[i + 6];
 
-            ui->tablewgtEventJournal->insertRow(row);
+            quint8  type_event      = data[i + 7];
+            quint8  category_event  = data[i + 8];
+            quint16 parameter_event = data[i + 9] | data[i + 10] << 8;
 
-            QString etype_str = tr("Неизвестный тип");
+            QDate d(year, month, day);
+            QTime t(hour, minute, second);
 
-            if(etype.count() > type_event)
-                etype_str = etype[type_event].name;
+            QVector<event_t> etype = ((!m_event_journal_list.event.isEmpty())?m_event_journal_list.event:QVector<event_t>());
 
-            ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(d.toString("dd.MM.yyyy")));
-            ui->tablewgtEventJournal->setItem(row, 1, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") +
-                                                                           QString::number(msecond)));
-            ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (") +
-                                                                                            QString::number(type_event) +
-                                                                                            QString(")"))));
+            if(!etype.isEmpty())
+            {
+                QVector<event_t> ecategory  = QVector<event_t>();
+                QVector<event_t> eparameter = QVector<event_t>();
 
-            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
-            QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
-                                       tr("Неизвестный параметр"):eparameter[parameter_event].name);
+                if(etype.count() > type_event)
+                    ecategory = etype[type_event].sub_event;
 
-            ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(ecategory_str + QString(" (") +
-                                                                           QString::number(category_event) +
-                                                                           QString(")")));
-            ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(eparameter_str + QString(" (") +
-                                                                           QString::number(parameter_event) +
-                                                                           QString(")")));
+                if(ecategory.count() > category_event)
+                    eparameter = ecategory[category_event].sub_event;
+
+                int row = ui->tablewgtEventJournal->rowCount();
+
+                ui->tablewgtEventJournal->insertRow(row);
+
+                QString etype_str = tr("Неизвестный тип");
+
+                if(etype.count() > type_event)
+                    etype_str = etype[type_event].name;
+
+                ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
+                ui->tablewgtEventJournal->setItem(row, 1, new QTableWidgetItem(d.toString("dd.MM.yy")));
+                ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") +
+                                                                               QString::number(msecond)));
+                ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (") +
+                                                                                                QString::number(type_event) +
+                                                                                                QString(")"))));
+
+                QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
+                QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
+                                              tr("Неизвестный параметр"):eparameter[parameter_event].name);
+
+                ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str + QString(" (") +
+                                                                               QString::number(category_event) +
+                                                                               QString(")")));
+                ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str + QString(" (") +
+                                                                               QString::number(parameter_event) +
+                                                                               QString(")")));
+            }
         }
     }
 
-    if( m_event_journal_list.count < 512) // если прочитано не 8192 байта, то продолжаем читать (512*16 = 8192)
-        eventJournalRead();
-    else if((m_event_journal_list.count + (m_event_journal_list.shitf/0x2000)*512) < m_event_journal_list.c_event)
-    {
-        eventJournalRead(true); // если прочитали не весь журнал, то смещаем окно чтения
-    }
+    eventJournalRead();
 }
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
@@ -2285,12 +2269,11 @@ void ConfiguratorWindow::exportToPDF()
 
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setPaperSize(QPrinter::A4);
+    printer.setPageMargins(15, 0, 15, 0, QPrinter::Millimeter);
     printer.setOutputFileName("reports/report.pdf");
 
     QTextDocument reportPDF;
     QTextCursor   cursor(&reportPDF);
-
-    reportPDF.setPageSize(printer.pageRect().size());
     cursor.movePosition(QTextCursor::Start);
 
     QTextBlockFormat blockFormat;
@@ -2357,6 +2340,202 @@ void ConfiguratorWindow::exportToPDF()
     }
 
     reportPDF.print(&printer);
+}
+//--------------------------------------------
+void ConfiguratorWindow::exportPurposeToJSON()
+{
+    qDebug() << "Экспорт привязок в файл JSON";
+
+    CDataTable data;
+    QString    fileName;
+    QString    typeName;
+
+    if(ui->stwgtMain->currentIndex() == 22)
+    {
+        data     = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTable();
+        fileName = "led";
+        typeName = "LED";
+    }
+    else if(ui->stwgtMain->currentIndex() == 23)
+    {
+        data     = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTable();
+        fileName = "inputs";
+        typeName = "INPUT";
+    }
+    else if(ui->stwgtMain->currentIndex() == 24)
+    {
+        data     = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
+        fileName = "relay";
+        typeName = "RELAY";
+    }
+
+    if(data.count() == 0)
+        return;
+
+    qDebug() << "data.count: " << data.count();
+
+    QDir dir;
+
+    if(!dir.exists("profiles"))
+        dir.mkdir("profiles");
+
+    QFile file("profiles/" + fileName + ".prf");
+
+    if(!file.open(QFile::WriteOnly))
+    {
+        QMessageBox::warning(this, tr("Сохранение профиля привязок"), tr("Невозможно создать файл для записи \"") +
+                             fileName + QString("\""));
+
+        return;
+    }
+
+    QJsonObject json;
+    QJsonArray  rowArr;
+    QJsonArray  columnKeyArr;
+
+    json["type"] = typeName;
+
+    for(int i = 0; i < data.columnCounts(); i++)
+    {
+        QJsonObject tcolumnKeyObj;
+
+        tcolumnKeyObj["key"] = data.columnData(i).first;
+
+        columnKeyArr.append(tcolumnKeyObj);
+    }
+
+    json["headers"] = columnKeyArr;
+
+    for(int i = 0; i < data.count(); i++)
+    {
+        QJsonObject trowCurObj;
+        QJsonArray  columnArr;
+
+        for(int j = 0; j < data.columnCounts(); j++)
+        {
+            QJsonObject tcolumnObj;
+
+            tcolumnObj["status"] = data[i][j].status();
+            tcolumnObj["state"]  = data[i][j].state();
+
+            columnArr.append(tcolumnObj);
+        }
+
+        trowCurObj["key"]     = data[i].key();
+        trowCurObj["name"]    = data[i].header();
+        trowCurObj["columns"] = columnArr;
+
+        rowArr.append(trowCurObj);
+    }
+
+    json["data"] = rowArr;
+
+    QJsonDocument doc(json);
+
+    file.write(doc.toJson());
+    file.close();
+}
+//----------------------------------------------
+void ConfiguratorWindow::importPurposeFromJSON()
+{
+    QString fileName;
+    QString typeName;
+
+    CMatrixPurposeModel* model = nullptr;
+
+    if(ui->stwgtMain->currentIndex() == 22)
+    {
+        fileName = "led";
+        typeName = "LED";
+
+        model = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model());
+    }
+    else if(ui->stwgtMain->currentIndex() == 23)
+    {
+        fileName = "inputs";
+        typeName = "INPUT";
+
+        model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
+    }
+    else if(ui->stwgtMain->currentIndex() == 24)
+    {
+        fileName = "relay";
+        typeName = "RELAY";
+
+        model = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model());
+    }
+
+    QFile file("profiles/" + fileName + ".prf");
+
+    if(!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Невозможно открыть файл профиля привязок: ") +
+                                   file.errorString());
+
+        return;
+    }
+
+    QJsonDocument json = QJsonDocument::fromJson(file.readAll());
+
+    file.close();
+
+    QJsonObject rootObj = json.object(); // корневой объект
+
+    if(rootObj["type"].toString().toUpper() != typeName)
+        return;
+
+    QJsonArray headerArr = rootObj.value("headers").toArray(); // получение массива данных - заголовки колонок
+
+    if(headerArr.isEmpty())
+        return;
+
+    QVector<CColumn::column_t> headers;
+
+    for(int i = 0; i < headerArr.count(); i++)
+    {
+        QJsonObject headerObj = headerArr[i].toObject();
+
+        if(headerObj.isEmpty())
+            continue;
+
+        headers << columnFromKey(headerObj["key"].toString());
+    }
+
+    QJsonArray dataArr = rootObj.value("data").toArray(); // получение массива данных - строки
+
+    if(dataArr.isEmpty())
+        return;
+
+    QVector<CRow> rows;
+
+    for(int i = 0; i < dataArr.count(); i++)
+    {
+        QJsonObject rowObj = dataArr[i].toObject(); // получаем объект строки из массива
+
+        if(rowObj.isEmpty())
+            continue;
+
+        QJsonArray colArr = rowObj["columns"].toArray(); // получение массива данных - колонки
+
+        if(colArr.isEmpty())
+            continue;
+
+        QVector<CColumn> columns;
+
+        for(int j = 0; j < colArr.count(); j++)
+        {
+            QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
+
+            columns << CColumn(colObj["state"].toBool(), colObj["status"].toBool());
+        }
+
+        rows << CRow(rowObj["key"].toString(), rowObj["header"].toString(), columns);
+    }
+
+    CDataTable dataTable(rows, headers);
+
+    if(model)
+        model->setDataTable(dataTable);
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
@@ -2500,6 +2679,20 @@ QTableView* ConfiguratorWindow::tableMatrixFromKeys(const QString& first, const 
 
     return nullptr;
 }
+//---------------------------------------------------------------------
+CColumn::column_t ConfiguratorWindow::columnFromKey(const QString& key)
+{
+    if(m_variables.isEmpty())
+        return CColumn::column_t();
+
+    for(int i = 0; i < m_variables.count(); i++)
+    {
+        if(m_variables[i].first.toUpper() == key.toUpper())
+            return m_variables[i];
+    }
+
+    return CColumn::column_t();
+}
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
@@ -2547,4 +2740,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::exportToPDF);
+    connect(ui->pbtnExportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::exportPurposeToJSON);
+    connect(ui->pbtnImportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::importPurposeFromJSON);
 }

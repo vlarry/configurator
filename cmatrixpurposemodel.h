@@ -17,16 +17,16 @@
 
         public:
             CColumn();
-            CColumn(bool state, bool active);
+            CColumn(bool state, bool status);
 
-            bool active() const;
+            bool status() const;
             bool state() const;
             void setState(bool state);
-            void setActive(bool active);
+            void setStatus(bool status);
 
         private:
             bool m_state;
-            bool m_active;
+            bool m_status;
     };
     //--------
     class CRow

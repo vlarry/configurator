@@ -14,7 +14,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* 
         {
             if(!cell_active_list.isEmpty()) // список не пуст
             {
-                if(row[j].active() && !cell_active_list.contains(j)) // ячейка активна и список не содержит данный индекс
+                if(row[j].status() && !cell_active_list.contains(j)) // ячейка активна и список не содержит данный индекс
                 {
                     cell_active_list << j;
                     headers << data.columnData(j);
@@ -22,7 +22,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* 
             }
             else
             {
-                if(row[j].active()) // список пуст и ячейка активна
+                if(row[j].status()) // список пуст и ячейка активна
                 {
                     cell_active_list << j;
                     headers << data.columnData(j);
@@ -64,6 +64,8 @@ CDataTable& CMatrixPurposeModel::dataTable()
 void CMatrixPurposeModel::setDataTable(CDataTable& data)
 {
     m_data = data;
+
+    updateData();
 }
 //----------------------------------------------------------------
 int CMatrixPurposeModel::rowCount(const QModelIndex& parent) const
@@ -85,7 +87,7 @@ bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& valu
 
     if(role == Qt::CheckStateRole)
     {
-        if(!m_data[index.row()][index.column()].active())
+        if(!m_data[index.row()][index.column()].status())
             return false;
 
         bool state = ((static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked)?true:false);
@@ -109,7 +111,7 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
     {
         Qt::CheckState state;
 
-        if(m_data[index.row()][index.column()].active())
+        if(m_data[index.row()][index.column()].status())
             state = static_cast<Qt::CheckState>((m_data[index.row()][index.column()].state())?Qt::Checked:Qt::Unchecked);
         else
             state = Qt::Unchecked;
@@ -118,7 +120,7 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
     }
     else if(role == Qt::UserRole)
     {
-        return m_data[index.row()][index.column()].active();
+        return m_data[index.row()][index.column()].status();
     }
     else if(role == Qt::ToolTipRole)
     {
@@ -209,7 +211,7 @@ QVector<int> CDataTable::columnIndexListActive(int row)
     {
         for(int i = 0; i < columnCounts(); i++)
         {
-            if(m_rows[row][i].active())
+            if(m_rows[row][i].status())
                 list << i;
         }
     }
@@ -294,7 +296,7 @@ void CRow::setInactiveColumnList(QVector<int>& list)
         return;
 
     for(int index: list)
-        m_columns[index].setActive(false);
+        m_columns[index].setStatus(false);
 }
 //------------------------------------------------
 void CRow::setActiveColumnList(QVector<int>& list)
@@ -303,7 +305,7 @@ void CRow::setActiveColumnList(QVector<int>& list)
         return;
 
     for(int index: list)
-        m_columns[index].setActive(true);
+        m_columns[index].setStatus(true);
 }
 //-----------------------------------
 CColumn& CRow::operator [](int index)
@@ -320,21 +322,21 @@ const CColumn& CRow::operator [](int index) const
 //-----------------
 CColumn::CColumn():
     m_state(false),
-    m_active(false)
+    m_status(false)
 {
 
 }
 //----------------------------------------
 CColumn::CColumn(bool state, bool active):
     m_state(state),
-    m_active(active)
+    m_status(active)
 {
 
 }
 //--------------------------
-bool CColumn::active() const
+bool CColumn::status() const
 {
-    return m_active;
+    return m_status;
 }
 //-------------------------
 bool CColumn::state() const
@@ -347,9 +349,9 @@ void CColumn::setState(bool state)
     m_state = state;
 }
 //----------------------------------
-void CColumn::setActive(bool active)
+void CColumn::setStatus(bool active)
 {
-    m_active = active;
+    m_status = active;
 }
 //--------------------------------
 //------class CItemDelegate-------
