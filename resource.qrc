@@ -9,6 +9,7 @@
         <file>resource/images/connect.png</file>
         <file>resource/images/disconnect.png</file>
         <file>resource/images/background_report.png</file>
+        <file>resource/images/calendar.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

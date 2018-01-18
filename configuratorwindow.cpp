@@ -20,7 +20,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_level_group(nullptr),
     m_additional_group(nullptr),
     m_versionWidget(nullptr),
-    m_event_journal_list(event_journal_t({ -1, 0, 0, QVector<event_t>() }))
+    m_event_journal_list(event_journal_t({ -1, 0, 0, QVector<event_t>() })),
+    m_calendar_wgt(nullptr)
 {
     ui->setupUi(this);
 
@@ -40,11 +41,14 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
     m_serialPortSettings        = new CSerialPortSetting;
+    m_calendar_wgt              = new CCalendarWidget;
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     m_calculateWidget->setWindowTitle(tr("Расчетные величины"));
     addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
+
+    ui->wgtEventJournalCalendar->hide();
 
     ui->tablewgtEventJournal->setColumnCount(6);
     ui->tablewgtEventJournal->setHorizontalHeaderLabels(QStringList() << tr("ID события") << tr("Дата") << tr("Время") <<
@@ -395,6 +399,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         displayPurposeDIResponse(unit);
     else if(type == READ_EVENT_JOURNAL)
         displayEventJournalResponse(unit);
+    else if(type == READ_EVENT_COUNT)
+    {
+        qDebug() << "журнал событий: " << (((quint32)(unit.value(0) << 16)) | unit.value(1));
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -2546,6 +2554,48 @@ void ConfiguratorWindow::importPurposeFromJSON()
     if(model)
         model->setDataTable(dataTable);
 }
+//----------------------------------------------------------
+void ConfiguratorWindow::eventJournalActiveRange(bool state)
+{
+    qDebug() << "state group: " << state;
+}
+//----------------------------------------------
+void ConfiguratorWindow::eventJournalTypeRange()
+{
+    QRadioButton* rbtn = qobject_cast<QRadioButton*>(sender());
+
+    if(rbtn == ui->radiobtnEventJournalInterval)
+    {
+        ui->wgtEventJournalCalendar->hide();
+        ui->wgtEventJournalRange->show();
+    }
+    else if(rbtn == ui->radiobtnEventJournalDate)
+    {
+        ui->wgtEventJournalCalendar->show();
+        ui->wgtEventJournalRange->hide();
+
+        eventJournalDateChanged();
+    }
+}
+//---------------------------------------------
+void ConfiguratorWindow::eventJournalCalendar()
+{
+    QDate date_beg = QDate::currentDate();
+    QDate date_end = date_beg;
+
+    date_beg.setDate(date_beg.year(), date_beg.month(), 1);
+
+    m_calendar_wgt->setDateRange(date_beg, date_end);
+    m_calendar_wgt->show();
+}
+//------------------------------------------------
+void ConfiguratorWindow::eventJournalDateChanged()
+{
+    QDate date_beg = m_calendar_wgt->dateBegin();
+    QDate date_end = m_calendar_wgt->dateEnd();
+
+    ui->leJournalEventDate->setText(date_beg.toString("dd.MM.yyyy") + " - " + date_end.toString("dd.MM.yyyy"));
+}
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
@@ -2751,4 +2801,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::exportToPDF);
     connect(ui->pbtnExportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::exportPurposeToJSON);
     connect(ui->pbtnImportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::importPurposeFromJSON);
+    connect(ui->groupboxEventJournalReadInterval, &QGroupBox::toggled, this, &ConfiguratorWindow::eventJournalActiveRange);
+    connect(ui->radiobtnEventJournalInterval, &QRadioButton::clicked, this, &ConfiguratorWindow::eventJournalTypeRange);
+    connect(ui->radiobtnEventJournalDate, &QRadioButton::clicked, this, &ConfiguratorWindow::eventJournalTypeRange);
+    connect(ui->toolbtnEventJournalCalendarOpen, &QToolButton::clicked, this, &ConfiguratorWindow::eventJournalCalendar);
+    connect(m_calendar_wgt, &CCalendarWidget::dateChanged, this, &ConfiguratorWindow::eventJournalDateChanged);
 }

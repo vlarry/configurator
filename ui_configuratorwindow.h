@@ -26,6 +26,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStackedWidget>
@@ -110,7 +111,7 @@ public:
     QCheckBox *checkboxCalibTimeout;
     QSpinBox *sboxTimeoutCalc;
     QWidget *centralWgt;
-    QVBoxLayout *verticalLayout_7;
+    QVBoxLayout *verticalLayout_133;
     QStackedWidget *stwgtMain;
     QWidget *pageInAnalogMain;
     QVBoxLayout *verticalLayout_74;
@@ -1147,11 +1148,31 @@ public:
     QSpacerItem *horizontalSpacer_29;
     QWidget *pageJournalCrash;
     QWidget *pageJournalEvent;
-    QVBoxLayout *verticalLayout;
-    QHBoxLayout *horizontalLayout_101;
+    QVBoxLayout *verticalLayout_132;
+    QHBoxLayout *horizontalLayout_122;
+    QVBoxLayout *verticalLayout_7;
     QPushButton *pbtnEventJournalReadToTable;
-    QSpacerItem *horizontalSpacer_9;
     QPushButton *pbtnEventJournalTableClear;
+    QGroupBox *groupboxEventJournalReadInterval;
+    QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout_117;
+    QRadioButton *radiobtnEventJournalInterval;
+    QRadioButton *radiobtnEventJournalDate;
+    QSpacerItem *horizontalSpacer_64;
+    QHBoxLayout *horizontalLayout_121;
+    QWidget *wgtEventJournalRange;
+    QHBoxLayout *horizontalLayout_119;
+    QHBoxLayout *horizontalLayout_101;
+    QLabel *label_13;
+    QSpinBox *spinBoxEventJournalReadBegin;
+    QLabel *label_14;
+    QSpinBox *spinBoxEvenJournalReadCount;
+    QWidget *wgtEventJournalCalendar;
+    QHBoxLayout *horizontalLayout_120;
+    QHBoxLayout *horizontalLayout_118;
+    QLineEdit *leJournalEventDate;
+    QToolButton *toolbtnEventJournalCalendarOpen;
+    QSpacerItem *horizontalSpacer_9;
     QHBoxLayout *horizontalLayout_3;
     QLabel *label_11;
     QLineEdit *leEventCount;
@@ -1208,7 +1229,7 @@ public:
     {
         if (ConfiguratorWindow->objectName().isEmpty())
             ConfiguratorWindow->setObjectName(QStringLiteral("ConfiguratorWindow"));
-        ConfiguratorWindow->resize(1027, 677);
+        ConfiguratorWindow->resize(1029, 677);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -1569,11 +1590,10 @@ public:
 
         centralWgt = new QWidget(centralWidget);
         centralWgt->setObjectName(QStringLiteral("centralWgt"));
-        verticalLayout_7 = new QVBoxLayout(centralWgt);
-        verticalLayout_7->setSpacing(6);
-        verticalLayout_7->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
-        verticalLayout_7->setContentsMargins(5, 5, 5, 5);
+        verticalLayout_133 = new QVBoxLayout(centralWgt);
+        verticalLayout_133->setSpacing(6);
+        verticalLayout_133->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_133->setObjectName(QStringLiteral("verticalLayout_133"));
         stwgtMain = new QStackedWidget(centralWgt);
         stwgtMain->setObjectName(QStringLiteral("stwgtMain"));
         stwgtMain->setFrameShape(QFrame::StyledPanel);
@@ -8301,29 +8321,163 @@ public:
         stwgtMain->addWidget(pageJournalCrash);
         pageJournalEvent = new QWidget();
         pageJournalEvent->setObjectName(QStringLiteral("pageJournalEvent"));
-        verticalLayout = new QVBoxLayout(pageJournalEvent);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        horizontalLayout_101 = new QHBoxLayout();
-        horizontalLayout_101->setSpacing(6);
-        horizontalLayout_101->setObjectName(QStringLiteral("horizontalLayout_101"));
+        verticalLayout_132 = new QVBoxLayout(pageJournalEvent);
+        verticalLayout_132->setSpacing(6);
+        verticalLayout_132->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_132->setObjectName(QStringLiteral("verticalLayout_132"));
+        horizontalLayout_122 = new QHBoxLayout();
+        horizontalLayout_122->setSpacing(5);
+        horizontalLayout_122->setObjectName(QStringLiteral("horizontalLayout_122"));
+        verticalLayout_7 = new QVBoxLayout();
+        verticalLayout_7->setSpacing(0);
+        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
+        verticalLayout_7->setSizeConstraint(QLayout::SetFixedSize);
         pbtnEventJournalReadToTable = new QPushButton(pageJournalEvent);
         pbtnEventJournalReadToTable->setObjectName(QStringLiteral("pbtnEventJournalReadToTable"));
 
-        horizontalLayout_101->addWidget(pbtnEventJournalReadToTable);
-
-        horizontalSpacer_9 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_101->addItem(horizontalSpacer_9);
+        verticalLayout_7->addWidget(pbtnEventJournalReadToTable);
 
         pbtnEventJournalTableClear = new QPushButton(pageJournalEvent);
         pbtnEventJournalTableClear->setObjectName(QStringLiteral("pbtnEventJournalTableClear"));
 
-        horizontalLayout_101->addWidget(pbtnEventJournalTableClear);
+        verticalLayout_7->addWidget(pbtnEventJournalTableClear);
 
 
-        verticalLayout->addLayout(horizontalLayout_101);
+        horizontalLayout_122->addLayout(verticalLayout_7);
+
+        groupboxEventJournalReadInterval = new QGroupBox(pageJournalEvent);
+        groupboxEventJournalReadInterval->setObjectName(QStringLiteral("groupboxEventJournalReadInterval"));
+        sizePolicy5.setHeightForWidth(groupboxEventJournalReadInterval->sizePolicy().hasHeightForWidth());
+        groupboxEventJournalReadInterval->setSizePolicy(sizePolicy5);
+        groupboxEventJournalReadInterval->setAlignment(Qt::AlignCenter);
+        groupboxEventJournalReadInterval->setCheckable(true);
+        groupboxEventJournalReadInterval->setChecked(false);
+        verticalLayout = new QVBoxLayout(groupboxEventJournalReadInterval);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        horizontalLayout_117 = new QHBoxLayout();
+        horizontalLayout_117->setSpacing(6);
+        horizontalLayout_117->setObjectName(QStringLiteral("horizontalLayout_117"));
+        radiobtnEventJournalInterval = new QRadioButton(groupboxEventJournalReadInterval);
+        radiobtnEventJournalInterval->setObjectName(QStringLiteral("radiobtnEventJournalInterval"));
+        radiobtnEventJournalInterval->setChecked(true);
+
+        horizontalLayout_117->addWidget(radiobtnEventJournalInterval);
+
+        radiobtnEventJournalDate = new QRadioButton(groupboxEventJournalReadInterval);
+        radiobtnEventJournalDate->setObjectName(QStringLiteral("radiobtnEventJournalDate"));
+
+        horizontalLayout_117->addWidget(radiobtnEventJournalDate);
+
+        horizontalSpacer_64 = new QSpacerItem(1, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_117->addItem(horizontalSpacer_64);
+
+
+        verticalLayout->addLayout(horizontalLayout_117);
+
+        horizontalLayout_121 = new QHBoxLayout();
+        horizontalLayout_121->setSpacing(6);
+        horizontalLayout_121->setObjectName(QStringLiteral("horizontalLayout_121"));
+        wgtEventJournalRange = new QWidget(groupboxEventJournalReadInterval);
+        wgtEventJournalRange->setObjectName(QStringLiteral("wgtEventJournalRange"));
+        sizePolicy6.setHeightForWidth(wgtEventJournalRange->sizePolicy().hasHeightForWidth());
+        wgtEventJournalRange->setSizePolicy(sizePolicy6);
+        horizontalLayout_119 = new QHBoxLayout(wgtEventJournalRange);
+        horizontalLayout_119->setSpacing(0);
+        horizontalLayout_119->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_119->setObjectName(QStringLiteral("horizontalLayout_119"));
+        horizontalLayout_119->setContentsMargins(2, 2, 2, 2);
+        horizontalLayout_101 = new QHBoxLayout();
+        horizontalLayout_101->setSpacing(6);
+        horizontalLayout_101->setObjectName(QStringLiteral("horizontalLayout_101"));
+        label_13 = new QLabel(wgtEventJournalRange);
+        label_13->setObjectName(QStringLiteral("label_13"));
+        sizePolicy6.setHeightForWidth(label_13->sizePolicy().hasHeightForWidth());
+        label_13->setSizePolicy(sizePolicy6);
+        label_13->setScaledContents(true);
+
+        horizontalLayout_101->addWidget(label_13);
+
+        spinBoxEventJournalReadBegin = new QSpinBox(wgtEventJournalRange);
+        spinBoxEventJournalReadBegin->setObjectName(QStringLiteral("spinBoxEventJournalReadBegin"));
+        sizePolicy5.setHeightForWidth(spinBoxEventJournalReadBegin->sizePolicy().hasHeightForWidth());
+        spinBoxEventJournalReadBegin->setSizePolicy(sizePolicy5);
+        spinBoxEventJournalReadBegin->setMaximum(256000);
+
+        horizontalLayout_101->addWidget(spinBoxEventJournalReadBegin);
+
+        label_14 = new QLabel(wgtEventJournalRange);
+        label_14->setObjectName(QStringLiteral("label_14"));
+        sizePolicy6.setHeightForWidth(label_14->sizePolicy().hasHeightForWidth());
+        label_14->setSizePolicy(sizePolicy6);
+        label_14->setScaledContents(true);
+
+        horizontalLayout_101->addWidget(label_14);
+
+        spinBoxEvenJournalReadCount = new QSpinBox(wgtEventJournalRange);
+        spinBoxEvenJournalReadCount->setObjectName(QStringLiteral("spinBoxEvenJournalReadCount"));
+        sizePolicy5.setHeightForWidth(spinBoxEvenJournalReadCount->sizePolicy().hasHeightForWidth());
+        spinBoxEvenJournalReadCount->setSizePolicy(sizePolicy5);
+        spinBoxEvenJournalReadCount->setMaximum(256000);
+
+        horizontalLayout_101->addWidget(spinBoxEvenJournalReadCount);
+
+
+        horizontalLayout_119->addLayout(horizontalLayout_101);
+
+
+        horizontalLayout_121->addWidget(wgtEventJournalRange);
+
+        wgtEventJournalCalendar = new QWidget(groupboxEventJournalReadInterval);
+        wgtEventJournalCalendar->setObjectName(QStringLiteral("wgtEventJournalCalendar"));
+        QSizePolicy sizePolicy10(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy10.setHorizontalStretch(0);
+        sizePolicy10.setVerticalStretch(0);
+        sizePolicy10.setHeightForWidth(wgtEventJournalCalendar->sizePolicy().hasHeightForWidth());
+        wgtEventJournalCalendar->setSizePolicy(sizePolicy10);
+        horizontalLayout_120 = new QHBoxLayout(wgtEventJournalCalendar);
+        horizontalLayout_120->setSpacing(0);
+        horizontalLayout_120->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_120->setObjectName(QStringLiteral("horizontalLayout_120"));
+        horizontalLayout_120->setContentsMargins(2, 2, 2, 2);
+        horizontalLayout_118 = new QHBoxLayout();
+        horizontalLayout_118->setSpacing(6);
+        horizontalLayout_118->setObjectName(QStringLiteral("horizontalLayout_118"));
+        leJournalEventDate = new QLineEdit(wgtEventJournalCalendar);
+        leJournalEventDate->setObjectName(QStringLiteral("leJournalEventDate"));
+        leJournalEventDate->setMinimumSize(QSize(150, 0));
+        leJournalEventDate->setReadOnly(true);
+
+        horizontalLayout_118->addWidget(leJournalEventDate);
+
+        toolbtnEventJournalCalendarOpen = new QToolButton(wgtEventJournalCalendar);
+        toolbtnEventJournalCalendarOpen->setObjectName(QStringLiteral("toolbtnEventJournalCalendarOpen"));
+        QIcon icon1;
+        icon1.addFile(QStringLiteral(":/images/resource/images/calendar.png"), QSize(), QIcon::Normal, QIcon::Off);
+        toolbtnEventJournalCalendarOpen->setIcon(icon1);
+
+        horizontalLayout_118->addWidget(toolbtnEventJournalCalendarOpen);
+
+
+        horizontalLayout_120->addLayout(horizontalLayout_118);
+
+
+        horizontalLayout_121->addWidget(wgtEventJournalCalendar);
+
+
+        verticalLayout->addLayout(horizontalLayout_121);
+
+
+        horizontalLayout_122->addWidget(groupboxEventJournalReadInterval);
+
+        horizontalSpacer_9 = new QSpacerItem(100, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_122->addItem(horizontalSpacer_9);
+
+
+        verticalLayout_132->addLayout(horizontalLayout_122);
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
@@ -8347,12 +8501,12 @@ public:
         horizontalLayout_3->addItem(horizontalSpacer_2);
 
 
-        verticalLayout->addLayout(horizontalLayout_3);
+        verticalLayout_132->addLayout(horizontalLayout_3);
 
         tablewgtEventJournal = new QTableWidget(pageJournalEvent);
         tablewgtEventJournal->setObjectName(QStringLiteral("tablewgtEventJournal"));
 
-        verticalLayout->addWidget(tablewgtEventJournal);
+        verticalLayout_132->addWidget(tablewgtEventJournal);
 
         stwgtMain->addWidget(pageJournalEvent);
         pageJournalOscilloscope = new QWidget();
@@ -8482,7 +8636,7 @@ public:
 
         stwgtMain->addWidget(pageSetKeyboardPurpose);
 
-        verticalLayout_7->addWidget(stwgtMain);
+        verticalLayout_133->addWidget(stwgtMain);
 
         horizontalLayout_62 = new QHBoxLayout();
         horizontalLayout_62->setSpacing(6);
@@ -8522,7 +8676,7 @@ public:
         horizontalLayout_62->addWidget(pbtnWriteAllBlock);
 
 
-        verticalLayout_7->addLayout(horizontalLayout_62);
+        verticalLayout_133->addLayout(horizontalLayout_62);
 
 
         verticalLayout_131->addWidget(centralWgt);
@@ -8550,9 +8704,9 @@ public:
         tbntExpandItems->setObjectName(QStringLiteral("tbntExpandItems"));
         tbntExpandItems->setMinimumSize(QSize(24, 24));
         tbntExpandItems->setMaximumSize(QSize(24, 24));
-        QIcon icon1;
-        icon1.addFile(QStringLiteral(":/images/resource/images/branch_close.png"), QSize(), QIcon::Normal, QIcon::Off);
-        tbntExpandItems->setIcon(icon1);
+        QIcon icon2;
+        icon2.addFile(QStringLiteral(":/images/resource/images/branch_close.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tbntExpandItems->setIcon(icon2);
         tbntExpandItems->setIconSize(QSize(24, 24));
         tbntExpandItems->setCheckable(true);
 
@@ -8594,7 +8748,7 @@ public:
 
         tabwgtMenu->setCurrentIndex(1);
         cboxBaudrate->setCurrentIndex(9);
-        stwgtMain->setCurrentIndex(24);
+        stwgtMain->setCurrentIndex(15);
         stwgtProtectionPropertiesMTZ->setCurrentIndex(1);
         stwgtProtectionPropertiesEarthly->setCurrentIndex(0);
         stwgtProtectionPropertiesPower->setCurrentIndex(4);
@@ -9997,6 +10151,12 @@ public:
 
         pbtnEventJournalReadToTable->setText(QApplication::translate("ConfiguratorWindow", "\320\247\321\202\320\265\320\275\320\270\320\265 \320\266\321\203\321\200\320\275\320\260\320\273\320\260", nullptr));
         pbtnEventJournalTableClear->setText(QApplication::translate("ConfiguratorWindow", "\320\236\321\207\320\270\321\201\321\202\320\272\320\260", nullptr));
+        groupboxEventJournalReadInterval->setTitle(QApplication::translate("ConfiguratorWindow", "\320\247\321\202\320\265\320\275\320\270\320\265 \320\270\320\275\321\202\320\265\321\200\320\262\320\260\320\273\320\260 \321\201\320\276\320\261\321\213\321\202\320\270\320\271", nullptr));
+        radiobtnEventJournalInterval->setText(QApplication::translate("ConfiguratorWindow", "\320\230\320\275\321\202\320\265\321\200\320\262\320\260\320\273", nullptr));
+        radiobtnEventJournalDate->setText(QApplication::translate("ConfiguratorWindow", "\320\224\320\260\321\202\320\260", nullptr));
+        label_13->setText(QApplication::translate("ConfiguratorWindow", "\320\236\321\202", nullptr));
+        label_14->setText(QApplication::translate("ConfiguratorWindow", "\320\232\320\276\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \320\267\320\260\320\277\320\270\321\201\320\265\320\271", nullptr));
+        toolbtnEventJournalCalendarOpen->setText(QString());
         label_11->setText(QApplication::translate("ConfiguratorWindow", "\320\232\320\276\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \321\201\320\276\320\261\321\213\321\202\320\270\320\271", nullptr));
         pbtnClearLedOutput->setText(QApplication::translate("ConfiguratorWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", nullptr));
         pbtnClearDiscreteInput->setText(QApplication::translate("ConfiguratorWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", nullptr));

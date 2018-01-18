@@ -11,6 +11,7 @@ INPUT(
 ./release\cmatrixpurposemodel.o
 ./release\cheadertable.o
 ./release\cserialportsetting.o
+./release\ccalendarwidget.o
 ./release\qrc_resource.o
 ./release\moc_configuratorwindow.o
 ./release\moc_qcell.o
@@ -19,4 +20,5 @@ INPUT(
 ./release\moc_qcustomplot.o
 ./release\moc_cversionsoftware.o
 ./release\moc_cserialportsetting.o
+./release\moc_ccalendarwidget.o
 );

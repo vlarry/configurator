@@ -31,6 +31,7 @@
     #include "cversionsoftware.h"
     #include "cmatrixpurposemodel.h"
     #include "cserialportsetting.h"
+    #include "ccalendarwidget.h"
     //----------
     namespace Ui 
     {
@@ -53,7 +54,9 @@
                 GENERAL_TYPE, // общие (настройки/уставки)
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
-                READ_EVENT_JOURNAL
+                READ_EVENT_JOURNAL, // чтение журнала событий
+                READ_EVENT_COUNT, // чтение количества событий в журнале
+                READ_EVENT_SHIFT_PTR // чтение позиции указателя сдвига журнала событий
             };
             //-------------
             enum WidgetType
@@ -163,6 +166,10 @@
             void exportToPDF();
             void exportPurposeToJSON();
             void importPurposeFromJSON();
+            void eventJournalActiveRange(bool state);
+            void eventJournalTypeRange();
+            void eventJournalCalendar();
+            void eventJournalDateChanged();
             
         private:
             void initConnect();
@@ -213,6 +220,7 @@
             purpose_t                  m_purpose_list;
             event_journal_t            m_event_journal_list;
             QVector<CColumn::column_t> m_variables;
+            CCalendarWidget*           m_calendar_wgt;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

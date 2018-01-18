@@ -11,6 +11,7 @@ INPUT(
 ./debug\cmatrixpurposemodel.o
 ./debug\cheadertable.o
 ./debug\cserialportsetting.o
+./debug\ccalendarwidget.o
 ./debug\qrc_resource.o
 ./debug\moc_configuratorwindow.o
 ./debug\moc_qcell.o
@@ -19,4 +20,5 @@ INPUT(
 ./debug\moc_qcustomplot.o
 ./debug\moc_cversionsoftware.o
 ./debug\moc_cserialportsetting.o
+./debug\moc_ccalendarwidget.o
 );
