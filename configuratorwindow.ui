@@ -14086,6 +14086,13 @@
                  </property>
                 </widget>
                </item>
+               <item>
+                <widget class="QCheckBox" name="checkboxEventJournalScrollTable">
+                 <property name="text">
+                  <string>Прокрутка таблицы</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </item>
              <item>
@@ -14332,6 +14339,9 @@
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
                </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -14346,6 +14356,32 @@
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>Затраченное время</string>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="leEventProcessTime">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>

@@ -75,10 +75,11 @@
             //--------------------
             struct event_journal_t
             {
-                int              event_count_total; // количество доступных событий в журнале
-                int              event_count_read; // счетчик прочитанных событий
-                int              shift; // сдвиг указателя на новый блок данных
-                QVector<event_t> event; // база событий (вычитаны из БД)
+                int start; // событие с которого начинается чтение
+                int count; // количество событий, которые будут прочитаны
+                int read;  // количество прочитанных сообщений
+                int total; // всего событий в устройстве
+                int shift; // положение указателя сдвига
             };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
@@ -170,6 +171,11 @@
             void eventJournalTypeRange();
             void eventJournalCalendar();
             void eventJournalDateChanged();
+            void processReadJournal(CDataUnitType& unit);
+            void updateParameterEventJournal(); // обновление данных журнала событий - вычитка кол-ва событий и положение указателя
+            void widgetStackIndexChanged(int index);
+            void setEventJournalPtrShift();
+            void valueEventJournalInternalChanged(int new_value);
             
         private:
             void initConnect();
@@ -185,11 +191,13 @@
             void displaySettingResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void displayPurposeDIResponse(CDataUnitType& unit);
-            void displayEventJournalResponse(CDataUnitType& unit);
+            void displayEventJournalResponse(const QVector<quint16> &data_list);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
             int  addressPurposeKey(const QString& key) const;
+            void readShiftPrtEventJournal();
+            void readEventJournalCount();
             QPoint            indexSettingKey(const QString& first, const QString& last);
             QPoint            indexPurposeKey(const QString& first, const QString& last);
             QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);
@@ -218,9 +226,11 @@
             QSqlDatabase               m_db;
             cell_t                     m_cell_list;
             purpose_t                  m_purpose_list;
-            event_journal_t            m_event_journal_list;
+            QVector<event_t>           m_db_event; // база событий (вычитаны из БД)
+            event_journal_t            m_event_journal_parameter;
             QVector<CColumn::column_t> m_variables;
             CCalendarWidget*           m_calendar_wgt;
+            QTime                      m_time_process;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

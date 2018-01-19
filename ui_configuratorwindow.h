@@ -1153,6 +1153,7 @@ public:
     QVBoxLayout *verticalLayout_7;
     QPushButton *pbtnEventJournalReadToTable;
     QPushButton *pbtnEventJournalTableClear;
+    QCheckBox *checkboxEventJournalScrollTable;
     QGroupBox *groupboxEventJournalReadInterval;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout_117;
@@ -1177,6 +1178,8 @@ public:
     QLabel *label_11;
     QLineEdit *leEventCount;
     QSpacerItem *horizontalSpacer_2;
+    QLabel *label_15;
+    QLineEdit *leEventProcessTime;
     QTableWidget *tablewgtEventJournal;
     QWidget *pageJournalOscilloscope;
     QWidget *pageMeasurePrimaryValues;
@@ -8342,6 +8345,11 @@ public:
 
         verticalLayout_7->addWidget(pbtnEventJournalTableClear);
 
+        checkboxEventJournalScrollTable = new QCheckBox(pageJournalEvent);
+        checkboxEventJournalScrollTable->setObjectName(QStringLiteral("checkboxEventJournalScrollTable"));
+
+        verticalLayout_7->addWidget(checkboxEventJournalScrollTable);
+
 
         horizontalLayout_122->addLayout(verticalLayout_7);
 
@@ -8493,12 +8501,28 @@ public:
         sizePolicy7.setHeightForWidth(leEventCount->sizePolicy().hasHeightForWidth());
         leEventCount->setSizePolicy(sizePolicy7);
         leEventCount->setAlignment(Qt::AlignCenter);
+        leEventCount->setReadOnly(true);
 
         horizontalLayout_3->addWidget(leEventCount);
 
         horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_2);
+
+        label_15 = new QLabel(pageJournalEvent);
+        label_15->setObjectName(QStringLiteral("label_15"));
+        label_15->setScaledContents(true);
+
+        horizontalLayout_3->addWidget(label_15);
+
+        leEventProcessTime = new QLineEdit(pageJournalEvent);
+        leEventProcessTime->setObjectName(QStringLiteral("leEventProcessTime"));
+        sizePolicy7.setHeightForWidth(leEventProcessTime->sizePolicy().hasHeightForWidth());
+        leEventProcessTime->setSizePolicy(sizePolicy7);
+        leEventProcessTime->setAlignment(Qt::AlignCenter);
+        leEventProcessTime->setReadOnly(true);
+
+        horizontalLayout_3->addWidget(leEventProcessTime);
 
 
         verticalLayout_132->addLayout(horizontalLayout_3);
@@ -10151,6 +10175,7 @@ public:
 
         pbtnEventJournalReadToTable->setText(QApplication::translate("ConfiguratorWindow", "\320\247\321\202\320\265\320\275\320\270\320\265 \320\266\321\203\321\200\320\275\320\260\320\273\320\260", nullptr));
         pbtnEventJournalTableClear->setText(QApplication::translate("ConfiguratorWindow", "\320\236\321\207\320\270\321\201\321\202\320\272\320\260", nullptr));
+        checkboxEventJournalScrollTable->setText(QApplication::translate("ConfiguratorWindow", "\320\237\321\200\320\276\320\272\321\200\321\203\321\202\320\272\320\260 \321\202\320\260\320\261\320\273\320\270\321\206\321\213", nullptr));
         groupboxEventJournalReadInterval->setTitle(QApplication::translate("ConfiguratorWindow", "\320\247\321\202\320\265\320\275\320\270\320\265 \320\270\320\275\321\202\320\265\321\200\320\262\320\260\320\273\320\260 \321\201\320\276\320\261\321\213\321\202\320\270\320\271", nullptr));
         radiobtnEventJournalInterval->setText(QApplication::translate("ConfiguratorWindow", "\320\230\320\275\321\202\320\265\321\200\320\262\320\260\320\273", nullptr));
         radiobtnEventJournalDate->setText(QApplication::translate("ConfiguratorWindow", "\320\224\320\260\321\202\320\260", nullptr));
@@ -10158,6 +10183,7 @@ public:
         label_14->setText(QApplication::translate("ConfiguratorWindow", "\320\232\320\276\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \320\267\320\260\320\277\320\270\321\201\320\265\320\271", nullptr));
         toolbtnEventJournalCalendarOpen->setText(QString());
         label_11->setText(QApplication::translate("ConfiguratorWindow", "\320\232\320\276\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \321\201\320\276\320\261\321\213\321\202\320\270\320\271", nullptr));
+        label_15->setText(QApplication::translate("ConfiguratorWindow", "\320\227\320\260\321\202\321\200\320\260\321\207\320\265\320\275\320\275\320\276\320\265 \320\262\321\200\320\265\320\274\321\217", nullptr));
         pbtnClearLedOutput->setText(QApplication::translate("ConfiguratorWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", nullptr));
         pbtnClearDiscreteInput->setText(QApplication::translate("ConfiguratorWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", nullptr));
         pbtnClearRelayOutput->setText(QApplication::translate("ConfiguratorWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", nullptr));
