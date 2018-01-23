@@ -22,7 +22,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_versionWidget(nullptr),
     m_event_journal_parameter( { -1, 0, 0, 0, 0 } ),
     m_variables(QVector<CColumn::column_t>()),
-    m_calendar_wgt(nullptr)
+    m_calendar_wgt(nullptr),
+    m_status_bar(nullptr)
 {
     ui->setupUi(this);
 
@@ -43,6 +44,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_logFile                   = new QFile("Log.txt");
     m_serialPortSettings        = new CSerialPortSetting;
     m_calendar_wgt              = new CCalendarWidget;
+    m_status_bar                = new CStatusBar(statusBar());
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -61,6 +63,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->tablewgtEventJournal->horizontalHeader()->setStretchLastSection(true);
     ui->tablewgtEventJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
+    statusBar()->addPermanentWidget(m_status_bar, 100);
+
     initMenuPanel();
     initButtonGroup();
     initConnect();
@@ -71,7 +75,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
-        statusBar()->showMessage(tr("Ошибка. Невозможно открыть log-файл"));
+        m_status_bar->setStatusMessage(tr("Ошибка. Невозможно открыть log-файл"));
     }
     else
         m_logFile->write(tr("Запуск программы...").toStdString().c_str());
@@ -107,7 +111,7 @@ void ConfiguratorWindow::serialPortCtrl()
     if(!m_modbusDevice || ui->cboxPortName->count() == 0)
         return;
         
-    statusBar()->clearMessage();
+    m_status_bar->clearStatusMessage();
     
     if(ui->pbtnPortCtrl->isChecked())
     {
@@ -137,7 +141,7 @@ void ConfiguratorWindow::stateChanged(bool state)
     ui->pbtnPortCtrl->setChecked(state);
     
     ui->pbtnPortCtrl->setText(((state)?tr("Закрыть"):tr("Открыть")));
-    statusBar()->showMessage(((state)?tr("Соединение с устройством установлено"):
+    m_status_bar->setStatusMessage(((state)?tr("Соединение с устройством установлено"):
                                       tr("Соединение с устройством разорвано")), 5000);
     
     if(ui->checkboxCalibTimeout->isChecked() && state)
@@ -149,6 +153,7 @@ void ConfiguratorWindow::stateChanged(bool state)
     {
         saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> открыт."));
         updateParameterEventJournal();
+        deviceSync(true);
     }
     else
     {
@@ -156,6 +161,8 @@ void ConfiguratorWindow::stateChanged(bool state)
         ui->groupboxEventJournalReadInterval->setEnabled(true); // в случае закрытия порта или обрыве связи с устройством
                                                                 // разблокируется панель выбора интервала чтения журнала
                                                                 // событий
+        deviceSync();
+        m_status_bar->connectStateChanged(false);
     }
 }
 //------------------------------------------
@@ -432,9 +439,9 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     else if(type == PURPOSE_INPUT_TYPE)
         displayPurposeDIResponse(unit);
     else if(type == READ_EVENT_JOURNAL || type == READ_EVENT_COUNT || type == READ_EVENT_SHIFT_PTR)
-    {
         processReadJournal(unit);
-    }
+    else if(type == READ_SERIAL_NUMBER)
+        displayDeviceSerialNumber(unit.values());
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -456,6 +463,7 @@ void ConfiguratorWindow::show()
     versionParser();
 
     ui->tabwgtMenu->setCurrentIndex(3);
+    m_status_bar->connectStateChanged(false);
 }
 //--------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
@@ -711,7 +719,7 @@ void ConfiguratorWindow::additionalChangedID(int id)
 //--------------------------------------------------------
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
-    statusBar()->showMessage(error, 5000);
+    m_status_bar->setStatusMessage(error, 5000);
 }
 //---------------------------------------------------
 void ConfiguratorWindow::terminalVisiblity(int state)
@@ -1403,7 +1411,7 @@ void ConfiguratorWindow::initCellBind()
 //----------------------------------------
 void ConfiguratorWindow::initPurposeBind()
 {
-    if(!m_db.isOpen())
+    if(!m_system_db.isOpen())
         return;
 
     QSqlQuery query;
@@ -1577,14 +1585,45 @@ void ConfiguratorWindow::initEventJournal()
 //----------------------------------
 void ConfiguratorWindow::connectDb()
 {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_system_db = QSqlDatabase::addDatabase("QSQLITE");
 
-    m_db.setDatabaseName("db/db.db");
+    m_system_db.setDatabaseName("db/system.db");
 
-    if(!m_db.open())
+    if(!m_system_db.open())
     {
-        QMessageBox::critical(this, tr("База данных"), tr("Невозможно открыть базу данных: ") + m_db.lastError().text());
+        QMessageBox::critical(this, tr("Системная база данных"), tr("Невозможно открыть системную базу данных: ") +
+                              m_system_db.lastError().text());
         exit(1);
+    }
+}
+//---------------------------------------------
+void ConfiguratorWindow::createEventJournalDb()
+{
+    QString db_str = "CREATE TABLE IF NOT EXISTS event_journal ("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                     "id_event INTEGER, "
+                     "date STRING(50), "
+                     "time STRING(50), "
+                     "type STRING(255), "
+                     "category STRING(255), "
+                     "parameter STRING(255), "
+                     "id_device INTEGER NOT NULL UNIQUE);";
+
+    m_event_journal_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_event_journal_db.setDatabaseName("db/events.db");
+
+    if(!m_event_journal_db.open())
+    {
+        QMessageBox::critical(this, tr("База данных журнала событий"), tr("Невозможно открыть базу данных журнала событий: ") +
+                              m_event_journal_db.lastError().text());
+    }
+
+    QSqlQuery query;
+
+    if(!query.exec(db_str))
+    {
+        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журнала событий: ") +
+                             query.lastError().text());
     }
 }
 //---------------------------------------------------------------------
@@ -1856,6 +1895,14 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
     ui->leEventCount->setText(QString::number(m_event_journal_parameter.read) + "/" +
                               QString::number(m_event_journal_parameter.total));
 }
+//------------------------------------------------------------------------------
+void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
+{
+    if(data.count() == 8) // пришел серийный номер, иначе сообщение с ошибкой
+    {
+        m_status_bar->connectStateChanged(true); // обновляем состояние соединения с устройством
+    }
+}
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
 {
@@ -1863,7 +1910,7 @@ void ConfiguratorWindow::versionParser()
 
     if(!file.open(QFile::ReadOnly))
     {
-        statusBar()->showMessage(tr("Нет файла версии или он поврежден..."), 2000);
+        m_status_bar->setStatusMessage(tr("Нет файла версии или он поврежден..."), 2000);
         file.close();
 
         return;
@@ -2691,6 +2738,17 @@ void ConfiguratorWindow::valueEventJournalInternalChanged(int new_value)
     ui->spinBoxEvenJournalReadCount->setValue(m_event_journal_parameter.count);
     ui->spinBoxEvenJournalReadCount->setMaximum(m_event_journal_parameter.count);
 }
+//------------------------------------------------
+void ConfiguratorWindow::timeoutSyncSerialNumber()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 0x0000, QVector<quint16>() << 8);
+
+    unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
+
+    m_modbusDevice->request(unit);
+
+    m_serial_num_timer.start(1000);
+}
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
@@ -2738,6 +2796,23 @@ void ConfiguratorWindow::readEventJournalCount()
     m_modbusDevice->request(unit);
 
     qDebug() << "Запрос количества записей журнала событий";
+}
+//---------------------------------------------
+void ConfiguratorWindow::deviceSync(bool state)
+{
+    if(state)
+    {
+        if(!m_serial_num_timer.isActive())
+        {
+            m_serial_num_timer.start(1000);
+            timeoutSyncSerialNumber();
+        }
+    }
+    else
+    {
+        if(m_serial_num_timer.isActive())
+            m_serial_num_timer.stop();
+    }
 }
 //-----------------------------------------------------------------------------------
 QPoint ConfiguratorWindow::indexSettingKey(const QString& first, const QString& last)

@@ -36,7 +36,8 @@ SOURCES += \
     cmatrixpurposemodel.cpp \
     cheadertable.cpp \
     cserialportsetting.cpp \
-    ccalendarwidget.cpp
+    ccalendarwidget.cpp \
+    cstatusbar.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -50,7 +51,8 @@ HEADERS += \
     cmatrixpurposemodel.h \
     cheadertable.h \
     cserialportsetting.h \
-    ccalendarwidget.h
+    ccalendarwidget.h \
+    cstatusbar.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -58,7 +60,8 @@ FORMS += \
     cterminal.ui \
     versionform.ui \
     serialportsetting.ui \
-    calendarwidget.ui
+    calendarwidget.ui \
+    statusbar.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

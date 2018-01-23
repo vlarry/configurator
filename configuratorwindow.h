@@ -32,6 +32,7 @@
     #include "cmatrixpurposemodel.h"
     #include "cserialportsetting.h"
     #include "ccalendarwidget.h"
+    #include "cstatusbar.h"
     //----------
     namespace Ui 
     {
@@ -56,7 +57,8 @@
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
                 READ_EVENT_JOURNAL, // чтение журнала событий
                 READ_EVENT_COUNT, // чтение количества событий в журнале
-                READ_EVENT_SHIFT_PTR // чтение позиции указателя сдвига журнала событий
+                READ_EVENT_SHIFT_PTR, // чтение позиции указателя сдвига журнала событий
+                READ_SERIAL_NUMBER // чтение серийного номера
             };
             //-------------
             enum WidgetType
@@ -176,6 +178,7 @@
             void widgetStackIndexChanged(int index);
             void setEventJournalPtrShift();
             void valueEventJournalInternalChanged(int new_value);
+            void timeoutSyncSerialNumber();
             
         private:
             void initConnect();
@@ -186,18 +189,21 @@
             void initModelTables();
             void initEventJournal();
             void connectDb();
+            void createEventJournalDb();
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
             void displaySettingResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void displayPurposeDIResponse(CDataUnitType& unit);
-            void displayEventJournalResponse(const QVector<quint16> &data_list);
+            void displayEventJournalResponse(const QVector<quint16>& data_list);
+            void displayDeviceSerialNumber(const QVector<quint16>& data);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
             int  addressPurposeKey(const QString& key) const;
             void readShiftPrtEventJournal();
             void readEventJournalCount();
+            void deviceSync(bool state = false);
             QPoint            indexSettingKey(const QString& first, const QString& last);
             QPoint            indexPurposeKey(const QString& first, const QString& last);
             QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);
@@ -223,7 +229,8 @@
             QButtonGroup*              m_switch_device_group;
             QButtonGroup*              m_additional_group;
             CVersionSoftware*          m_versionWidget;
-            QSqlDatabase               m_db;
+            QSqlDatabase               m_system_db;
+            QSqlDatabase               m_event_journal_db;
             cell_t                     m_cell_list;
             purpose_t                  m_purpose_list;
             QVector<event_t>           m_db_event; // база событий (вычитаны из БД)
@@ -231,6 +238,8 @@
             QVector<CColumn::column_t> m_variables;
             CCalendarWidget*           m_calendar_wgt;
             QTime                      m_time_process;
+            QTimer                     m_serial_num_timer;
+            CStatusBar*                m_status_bar;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;
