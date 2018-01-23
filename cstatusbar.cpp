@@ -37,7 +37,7 @@ void CStatusBar::clearStatusMessage()
 //------------------------------------------------------
 void CStatusBar::setSerialNumber(const QString& sn_text)
 {
-
+    ui->lblDeviceSerialNumber->setText(sn_text);
 }
 //--------------------------------------------------------------------
 void CStatusBar::setStatusMessage(const QString& message, int timeout)

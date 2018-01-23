@@ -188,6 +188,7 @@
             void initPurposeBind();
             void initModelTables();
             void initEventJournal();
+            void initDeviceCode();
             void connectDb();
             void createEventJournalDb();
             void initTable(QTableView* table, CDataTable& data);
@@ -238,8 +239,9 @@
             QVector<CColumn::column_t> m_variables;
             CCalendarWidget*           m_calendar_wgt;
             QTime                      m_time_process;
-            QTimer                     m_serial_num_timer;
+            QTimer                     m_sync_timer;
             CStatusBar*                m_status_bar;
+            QMap<int, QString>         m_device_code_list;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

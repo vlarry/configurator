@@ -95,6 +95,12 @@ public:
     QLabel *lblTextSlaveID;
     QSpinBox *sboxSlaveID;
     QCheckBox *chboxTerminal;
+    QGroupBox *groupboxSyncDevice;
+    QVBoxLayout *verticalLayout_134;
+    QHBoxLayout *horizontalLayout_123;
+    QSpinBox *spinboxSyncTime;
+    QLabel *label_16;
+    QSpacerItem *verticalSpacer_75;
     QSpacerItem *horizontalSpacer;
     QWidget *tabHelp;
     QHBoxLayout *horizontalLayout_116;
@@ -1505,6 +1511,42 @@ public:
 
 
         horizontalLayout_114->addWidget(groupboxMenuCommunication);
+
+        groupboxSyncDevice = new QGroupBox(tabSettings);
+        groupboxSyncDevice->setObjectName(QStringLiteral("groupboxSyncDevice"));
+        groupboxSyncDevice->setAlignment(Qt::AlignCenter);
+        verticalLayout_134 = new QVBoxLayout(groupboxSyncDevice);
+        verticalLayout_134->setSpacing(6);
+        verticalLayout_134->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_134->setObjectName(QStringLiteral("verticalLayout_134"));
+        horizontalLayout_123 = new QHBoxLayout();
+        horizontalLayout_123->setSpacing(6);
+        horizontalLayout_123->setObjectName(QStringLiteral("horizontalLayout_123"));
+        spinboxSyncTime = new QSpinBox(groupboxSyncDevice);
+        spinboxSyncTime->setObjectName(QStringLiteral("spinboxSyncTime"));
+        spinboxSyncTime->setAlignment(Qt::AlignCenter);
+        spinboxSyncTime->setMinimum(500);
+        spinboxSyncTime->setMaximum(10000);
+        spinboxSyncTime->setSingleStep(100);
+        spinboxSyncTime->setValue(1000);
+
+        horizontalLayout_123->addWidget(spinboxSyncTime);
+
+        label_16 = new QLabel(groupboxSyncDevice);
+        label_16->setObjectName(QStringLiteral("label_16"));
+        label_16->setScaledContents(true);
+
+        horizontalLayout_123->addWidget(label_16);
+
+
+        verticalLayout_134->addLayout(horizontalLayout_123);
+
+        verticalSpacer_75 = new QSpacerItem(20, 41, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_134->addItem(verticalSpacer_75);
+
+
+        horizontalLayout_114->addWidget(groupboxSyncDevice);
 
         horizontalSpacer = new QSpacerItem(570, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -8770,7 +8812,7 @@ public:
 
         retranslateUi(ConfiguratorWindow);
 
-        tabwgtMenu->setCurrentIndex(1);
+        tabwgtMenu->setCurrentIndex(3);
         cboxBaudrate->setCurrentIndex(9);
         stwgtMain->setCurrentIndex(15);
         stwgtProtectionPropertiesMTZ->setCurrentIndex(1);
@@ -8873,6 +8915,8 @@ public:
         sboxSlaveID->setToolTip(QApplication::translate("ConfiguratorWindow", "\320\220\320\264\321\200\320\265\321\201 \320\262\320\265\320\264\320\276\320\274\320\276\320\263\320\276 \321\203\321\201\321\202\321\200\320\276\320\271\321\201\321\202\320\262\320\260", nullptr));
 #endif // QT_NO_TOOLTIP
         chboxTerminal->setText(QApplication::translate("ConfiguratorWindow", "\320\242\320\265\321\200\320\274\320\270\320\275\320\260\320\273", nullptr));
+        groupboxSyncDevice->setTitle(QApplication::translate("ConfiguratorWindow", "\320\241\320\270\320\275\321\205\321\200\320\276\320\275\320\270\320\267\320\260\321\206\320\270\321\217", nullptr));
+        label_16->setText(QApplication::translate("ConfiguratorWindow", "\320\276\320\277\321\200\320\276\321\201, \320\274\321\201", nullptr));
         tabwgtMenu->setTabText(tabwgtMenu->indexOf(tabSettings), QApplication::translate("ConfiguratorWindow", "\320\235\320\260\321\201\321\202\321\200\320\276\320\271\320\272\320\270", nullptr));
         pbtnMenuReference->setText(QApplication::translate("ConfiguratorWindow", "\320\241\320\277\321\200\320\260\320\262\320\272\320\260", nullptr));
         pbtnVersionSoftware->setText(QApplication::translate("ConfiguratorWindow", "\320\222\320\265\321\200\321\201\320\270\321\217", nullptr));

@@ -72,6 +72,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
     initModelTables();
     initEventJournal(); // инициализация списка событий журнала
+    initDeviceCode(); // инициализация списка кодов устройств
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -1582,6 +1583,22 @@ void ConfiguratorWindow::initEventJournal()
         }
     }
 }
+//---------------------------------------
+void ConfiguratorWindow::initDeviceCode()
+{
+    QSqlQuery query;
+
+    if(!query.exec("SELECT code, name FROM device_code;"))
+    {
+        qDebug() << "Ошибка чтения кодов устройств: " << query.lastError().text();
+        return;
+    }
+
+    while(query.next())
+    {
+        m_device_code_list[query.value("code").toInt()] = query.value("name").toString();
+    }
+}
 //----------------------------------
 void ConfiguratorWindow::connectDb()
 {
@@ -1901,6 +1918,29 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
     if(data.count() == 8) // пришел серийный номер, иначе сообщение с ошибкой
     {
         m_status_bar->connectStateChanged(true); // обновляем состояние соединения с устройством
+
+        quint16 dev_code     = data[0]; // код устройства
+        quint32 sn_code      = (quint32)(data[1] << 16) | (data[2]); // порядковый номер
+        quint16 party_num    = data[3]; // номер партии
+        quint16 firmware_var = data[4]; // вариант прошивки
+        quint8  year         = (quint8)(((data[5] >> 8)&0xFF)*10) + (quint8)(data[5]&0xFF); // год
+        quint8  month        = (quint8)(((data[6] >> 8)&0xFF)*10) + (quint8)(data[6]&0xFF); // месяц
+        quint8  day          = (quint8)(((data[7] >> 8)&0xFF)*10) + (quint8)(data[7]&0xFF); // день
+
+        QString str = "S/n: Не определен";
+
+        if(!m_device_code_list[dev_code].isEmpty())
+        {
+            QDate dt(year, month, day);
+
+            str = QString("S/n: %1-%2-%3-%4-%5").arg(m_device_code_list[dev_code]).
+                                                 arg(sn_code).
+                                                 arg(party_num).
+                                                 arg(firmware_var).
+                                                 arg(dt.toString("yy.MM.dd"));
+        }
+
+        m_status_bar->setSerialNumber(str);
     }
 }
 //--------------------------------------
@@ -2747,7 +2787,7 @@ void ConfiguratorWindow::timeoutSyncSerialNumber()
 
     m_modbusDevice->request(unit);
 
-    m_serial_num_timer.start(1000);
+    m_sync_timer.start(ui->spinboxSyncTime->value());
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
@@ -2802,16 +2842,16 @@ void ConfiguratorWindow::deviceSync(bool state)
 {
     if(state)
     {
-        if(!m_serial_num_timer.isActive())
+        if(!m_sync_timer.isActive())
         {
-            m_serial_num_timer.start(1000);
+            m_sync_timer.start(ui->spinboxSyncTime->value());
             timeoutSyncSerialNumber();
         }
     }
     else
     {
-        if(m_serial_num_timer.isActive())
-            m_serial_num_timer.stop();
+        if(m_sync_timer.isActive())
+            m_sync_timer.stop();
     }
 }
 //-----------------------------------------------------------------------------------
@@ -3001,4 +3041,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->groupboxEventJournalReadInterval, &QGroupBox::clicked, this, &ConfiguratorWindow::updateParameterEventJournal);
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(ui->spinBoxEventJournalReadBegin, SIGNAL(valueChanged(int)), this, SLOT(valueEventJournalInternalChanged(int)));
+    connect(&m_sync_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSyncSerialNumber);
 }
