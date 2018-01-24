@@ -10,3 +10,4 @@ LOG.txt
 Makefile
 configurator.pro.user.*
 ui_*.h
+events.db
