@@ -1,2 +1,12 @@
 *.user
 LOG.txt
+/debug
+/release
+/reposrt
+/profiles
+*.stash
+*.Release
+*.Debug
+Makefile
+configurator.pro.user.*
+ui_*.h
