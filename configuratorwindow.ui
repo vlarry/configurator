@@ -30,7 +30,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabFile">
        <attribute name="title">
@@ -122,6 +122,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pushbtnExportEventJournalDb">
+            <property name="text">
+             <string>Экспорт журнала событий</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -142,6 +149,13 @@
            <widget class="QPushButton" name="pbtnImportPurpose">
             <property name="text">
              <string>Импорт привязок</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushbtnImportEventDb">
+            <property name="text">
+             <string>Импорт журнала событий</string>
             </property>
            </widget>
           </item>

@@ -94,6 +94,12 @@ ConfiguratorWindow::~ConfiguratorWindow()
             m_logFile->close();
         }
     }
+
+    if(m_system_db.isOpen())
+        m_system_db.close();
+
+    if(m_event_journal_db.isOpen())
+        m_event_journal_db.close();
     
     delete m_logFile;
     m_logFile = nullptr;
@@ -154,6 +160,7 @@ void ConfiguratorWindow::stateChanged(bool state)
     {
         saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> открыт."));
         updateParameterEventJournal();
+        m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
         deviceSync(true);
     }
     else
@@ -1395,9 +1402,9 @@ void ConfiguratorWindow::initButtonGroup()
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
 {
-    QSqlQuery query(tr("SELECT * FROM iodevice WHERE type = 'SET'"));
+    QSqlQuery query(m_system_db);
 
-    if(!query.exec())
+    if(!query.exec("SELECT * FROM iodevice WHERE type = 'SET';"))
         return;
 
     while(query.next())
@@ -1415,14 +1422,14 @@ void ConfiguratorWindow::initPurposeBind()
     if(!m_system_db.isOpen())
         return;
 
-    QSqlQuery query;
+    QSqlQuery query(m_system_db);
 
     QStringList type_list;
     type_list << tr("INPUT") << tr("RELAY") << tr("LED");
 
     for(const QString& type: type_list)
     {
-        if(query.exec(tr("SELECT key, address, description FROM iodevice WHERE type = '") + type + "'"))
+        if(query.exec(tr("SELECT key, address, description FROM iodevice WHERE type = '") + type + "';"))
         {
             while(query.next())
             {
@@ -1449,9 +1456,9 @@ void ConfiguratorWindow::initPurposeBind()
 //----------------------------------------
 void ConfiguratorWindow::initModelTables()
 {
-    QSqlQuery query(tr("SELECT * FROM variable"));
+    QSqlQuery query(m_system_db);
 
-    if(query.exec())
+    if(query.exec("SELECT * FROM variable;"))
     {
         while(query.next())
         {
@@ -1531,7 +1538,7 @@ void ConfiguratorWindow::initModelTables()
 void ConfiguratorWindow::initEventJournal()
 {
     // инициализация списка журнала событий
-    QSqlQuery query;
+    QSqlQuery query(m_system_db);
 
     if(!query.exec("SELECT code, name FROM event_t;"))
     {
@@ -1541,13 +1548,13 @@ void ConfiguratorWindow::initEventJournal()
 
     while(query.next())
     {
-        m_db_event << event_t({ query.value("code").toInt(), query.value("name").toString(), QVector<event_t>() });
+        m_event_list << event_t({ query.value("code").toInt(), query.value("name").toString(), QVector<event_t>() });
     }
 
-    if(m_db_event.isEmpty())
+    if(m_event_list.isEmpty())
         return;
 
-    for(event_t& event: m_db_event)
+    for(event_t& event: m_event_list)
     {
         if(!query.exec("SELECT code, name FROM event_category WHERE event_t = " + QString::number(event.code) + ";"))
         {
@@ -1561,7 +1568,7 @@ void ConfiguratorWindow::initEventJournal()
         }
     }
 
-    for(event_t& event: m_db_event)
+    for(event_t& event: m_event_list)
     {
         if(event.sub_event.isEmpty())
             continue;
@@ -1586,7 +1593,7 @@ void ConfiguratorWindow::initEventJournal()
 //---------------------------------------
 void ConfiguratorWindow::initDeviceCode()
 {
-    QSqlQuery query;
+    QSqlQuery query(m_system_db);
 
     if(!query.exec("SELECT code, name FROM device_code;"))
     {
@@ -1599,11 +1606,10 @@ void ConfiguratorWindow::initDeviceCode()
         m_device_code_list[query.value("code").toInt()] = query.value("name").toString();
     }
 }
-//----------------------------------
-void ConfiguratorWindow::connectDb()
+//----------------------------------------
+void ConfiguratorWindow::connectSystemDb()
 {
     m_system_db = QSqlDatabase::addDatabase("QSQLITE");
-
     m_system_db.setDatabaseName("db/system.db");
 
     if(!m_system_db.open())
@@ -1613,20 +1619,10 @@ void ConfiguratorWindow::connectDb()
         exit(1);
     }
 }
-//---------------------------------------------
-void ConfiguratorWindow::createEventJournalDb()
+//----------------------------------------
+bool ConfiguratorWindow::connectEventsDb()
 {
-    QString db_str = "CREATE TABLE IF NOT EXISTS event_journal ("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                     "id_event INTEGER, "
-                     "date STRING(50), "
-                     "time STRING(50), "
-                     "type STRING(255), "
-                     "category STRING(255), "
-                     "parameter STRING(255), "
-                     "id_device INTEGER NOT NULL UNIQUE);";
-
-    m_event_journal_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_event_journal_db = QSqlDatabase::addDatabase("QSQLITE", "second");
     m_event_journal_db.setDatabaseName("db/events.db");
 
     if(!m_event_journal_db.open())
@@ -1635,13 +1631,40 @@ void ConfiguratorWindow::createEventJournalDb()
                               m_event_journal_db.lastError().text());
     }
 
-    QSqlQuery query;
+    QSqlQuery query(m_event_journal_db);
+
+    // создание таблицы для хранения имен списка журналов событий
+    QString db_str = "CREATE TABLE IF NOT EXISTS event_journal_names ("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                     "name STRING(255));";
+
+    if(!query.exec(db_str))
+    {
+        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу имен журналов событий: ") +
+                             query.lastError().text());
+
+        return false;
+    }
+
+    // создание таблицы для хранения журнала событий
+    db_str = "CREATE TABLE IF NOT EXISTS event_journal ("
+             "id_event INTEGER PRIMARY KEY UNIQUE, "
+             "date STRING(50), "
+             "time STRING(50), "
+             "type STRING(255), "
+             "category STRING(255), "
+             "parameter STRING(255), "
+             "sn_device INTEGER NOT NULL);";
 
     if(!query.exec(db_str))
     {
         QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журнала событий: ") +
                              query.lastError().text());
+
+        return false;
     }
+
+    return true;
 }
 //---------------------------------------------------------------------
 void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
@@ -1861,7 +1884,7 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
         QDate d(year, month, day);
         QTime t(hour, minute, second);
 
-        QVector<event_t> etype = ((!m_db_event.isEmpty())?m_db_event:QVector<event_t>());
+        QVector<event_t> etype = ((!m_event_list.isEmpty())?m_event_list:QVector<event_t>());
 
         if(!etype.isEmpty())
         {
@@ -1927,7 +1950,7 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
         quint8  month        = (quint8)(((data[6] >> 8)&0xFF)*10) + (quint8)(data[6]&0xFF); // месяц
         quint8  day          = (quint8)(((data[7] >> 8)&0xFF)*10) + (quint8)(data[7]&0xFF); // день
 
-        QString str = "S/n: Не определен";
+        QString str = "S/n:";
 
         if(!m_device_code_list[dev_code].isEmpty())
         {
@@ -2789,6 +2812,129 @@ void ConfiguratorWindow::timeoutSyncSerialNumber()
 
     m_sync_timer.start(ui->spinboxSyncTime->value());
 }
+//--------------------------------------------------
+void ConfiguratorWindow::importEventJournalToTable()
+{
+    if(!m_event_journal_db.isOpen()) // база журналов событий еще не подключена
+    {
+        if(!connectEventsDb()) // не получилось подключиться к бд или создать ее
+        {
+            QMessageBox::warning(this, tr("Открытие базы данных"),
+                                       tr("Не удалось открыть базу данных журнала событий"));
+            return; // выходим, т.к. если ошибка открытия/создания, то читать нечего
+        }
+    }
+
+    QSqlQuery query(m_event_journal_db);
+
+    if(m_status_bar->isState()) // если синхронизация есть, то читаем из базы данных id записи
+    {
+        QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
+
+        if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
+        {
+            QMessageBox::warning(this, tr("Чтение базы данных"),
+                                       tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
+            return;
+        }
+
+        if(query.first()) // если есть запись
+        {
+            int id = query.value("id").toInt();
+
+            if(!query.exec("SELECT * FROM event_journal WHERE sn_device=" + QString::number(id) + ";"))
+            {
+                QMessageBox::warning(this, tr("Чтение базы данных"),
+                                           tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
+            }
+
+            if(query.first())
+            {
+                while(query.next()) // заносим данные в таблицу журналов событий
+                {
+
+                }
+            }
+            else
+            {
+                QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала событий нет записей"));
+                return;
+            }
+        }
+        else // такой записи не существует в таблице имен журналов событий, то создаем
+        {
+            if(!query.exec("INSERT INTO event_journal_names (name)"
+                           "VALUES (\"" + nameJournal + "\");"))
+            {
+                QMessageBox::warning(this, tr("Запись в базу данных"),
+                                           tr("Не удалось записать название новой таблицы: ") + query.lastError().text());
+            }
+        }
+    }
+}
+//-----------------------------------------------
+void ConfiguratorWindow::exportEventJournalToDb()
+{
+    int rows = ui->tablewgtEventJournal->rowCount();
+
+    if(rows == 0) // нет записей - выходим
+        return;
+
+    if(!m_event_journal_db.isOpen())
+    {
+        connectEventsDb();
+    }
+
+    QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
+
+    QSqlQuery query(m_event_journal_db);
+
+    if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
+    {
+        QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
+                                   query.lastError().text());
+
+        return;
+    }
+
+    int id = -1;
+
+    if(query.first())
+    {
+        id = query.value("id").toInt();
+    }
+    else
+        return;
+
+    if(id == -1)
+        return;
+
+    m_event_journal_db.transaction();
+
+    for(int i = 0; i < rows; i++)
+    {
+        int     id_event  = ui->tablewgtEventJournal->item(i, 0)->text().toInt();
+        QString date      = ui->tablewgtEventJournal->item(i, 1)->text();
+        QString time      = ui->tablewgtEventJournal->item(i, 2)->text();
+        QString type      = ui->tablewgtEventJournal->item(i, 3)->text();
+        QString category  = ui->tablewgtEventJournal->item(i, 4)->text();
+        QString parameter = ui->tablewgtEventJournal->item(i, 5)->text();
+
+        query.prepare("INSERT OR REPLACE INTO event_journal (id_event, date, time, type, category, parameter, sn_device)"
+                       "VALUES(:id_event, :date, :time, :type, :category, :parameter, :sn_device)");
+        query.bindValue(":id_event", id_event);
+        query.bindValue(":date", date);
+        query.bindValue(":time", time);
+        query.bindValue(":type", type);
+        query.bindValue(":category", category);
+        query.bindValue(":parameter", parameter);
+        query.bindValue(":sn_device", id);
+
+        query.exec();
+    }
+
+    m_event_journal_db.commit();
+}
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
@@ -2852,6 +2998,8 @@ void ConfiguratorWindow::deviceSync(bool state)
     {
         if(m_sync_timer.isActive())
             m_sync_timer.stop();
+
+//        m_status_bar->clearSerialNumber(); // очистка поля серийного номера при потере синхронизации с устройством
     }
 }
 //-----------------------------------------------------------------------------------
@@ -2987,7 +3135,7 @@ CColumn::column_t ConfiguratorWindow::columnFromKey(const QString& key)
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
-    connectDb();
+    connectSystemDb();
 
     connect(ui->pbtnPortCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
     connect(m_modbusDevice, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
@@ -3042,4 +3190,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(ui->spinBoxEventJournalReadBegin, SIGNAL(valueChanged(int)), this, SLOT(valueEventJournalInternalChanged(int)));
     connect(&m_sync_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSyncSerialNumber);
+    connect(ui->pushbtnImportEventDb, &QPushButton::clicked, this, &ConfiguratorWindow::importEventJournalToTable);
+    connect(ui->pushbtnExportEventJournalDb, &QPushButton::clicked, this, &ConfiguratorWindow::exportEventJournalToDb);
 }

@@ -18,10 +18,14 @@
             explicit CStatusBar(QWidget* parent = nullptr);
             ~CStatusBar();
 
-            void connectStateChanged(bool state);
-            void clearStatusMessage();
-            void setSerialNumber(const QString& sn_text);
-            void setStatusMessage(const QString& message, int timeout = 0);
+            void    connectStateChanged(bool state);
+            void    clearSerialNumber();
+            void    clearStatusMessage();
+            bool    isState() const;
+            bool    serialNumberIsEmpty() const;
+            QString serialNumberText();
+            void    setSerialNumber(const QString& sn_text);
+            void    setStatusMessage(const QString& message, int timeout = 0);
 
         public slots:
             void timeoutStatusMessage();

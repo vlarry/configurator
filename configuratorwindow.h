@@ -179,6 +179,8 @@
             void setEventJournalPtrShift();
             void valueEventJournalInternalChanged(int new_value);
             void timeoutSyncSerialNumber();
+            void importEventJournalToTable();
+            void exportEventJournalToDb();
             
         private:
             void initConnect();
@@ -189,8 +191,8 @@
             void initModelTables();
             void initEventJournal();
             void initDeviceCode();
-            void connectDb();
-            void createEventJournalDb();
+            void connectSystemDb();
+            bool connectEventsDb();
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
             void displaySettingResponse(CDataUnitType& unit);
@@ -234,7 +236,7 @@
             QSqlDatabase               m_event_journal_db;
             cell_t                     m_cell_list;
             purpose_t                  m_purpose_list;
-            QVector<event_t>           m_db_event; // база событий (вычитаны из БД)
+            QVector<event_t>           m_event_list; // список событий (вычитаны из БД)
             event_journal_t            m_event_journal_parameter;
             QVector<CColumn::column_t> m_variables;
             CCalendarWidget*           m_calendar_wgt;

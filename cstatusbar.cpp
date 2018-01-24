@@ -28,11 +28,40 @@ void CStatusBar::connectStateChanged(bool state)
     {
         ui->lblDeviceStatus->setPixmap(QPixmap(":/images/resource/images/disconnect.png"));
     }
+
+    ui->lblDeviceStatus->setProperty("STATE", state);
+}
+//----------------------------------
+void CStatusBar::clearSerialNumber()
+{
+    ui->lblDeviceSerialNumber->clear();
 }
 //-----------------------------------
 void CStatusBar::clearStatusMessage()
 {
     ui->lblStatusMessage->clear();
+}
+//------------------------------
+bool CStatusBar::isState() const
+{
+    return ui->lblDeviceStatus->property("STATE").toBool();
+}
+//------------------------------------------
+bool CStatusBar::serialNumberIsEmpty() const
+{
+    return ui->lblDeviceSerialNumber->text().isEmpty();
+}
+//------------------------------------
+QString CStatusBar::serialNumberText()
+{
+    QString sn = ui->lblDeviceSerialNumber->text();
+    sn.remove("S/n:");
+    sn.remove(" ");
+
+    if(sn.isEmpty() || !isState())
+        return "";
+
+    return sn;
 }
 //------------------------------------------------------
 void CStatusBar::setSerialNumber(const QString& sn_text)

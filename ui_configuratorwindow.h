@@ -64,9 +64,11 @@ public:
     QVBoxLayout *verticalLayout_124;
     QPushButton *pbtnMenuExportToPDF;
     QPushButton *pbtnExportPurpose;
+    QPushButton *pushbtnExportEventJournalDb;
     QSpacerItem *verticalSpacer;
     QVBoxLayout *verticalLayout_120;
     QPushButton *pbtnImportPurpose;
+    QPushButton *pushbtnImportEventDb;
     QSpacerItem *verticalSpacer_74;
     QSpacerItem *horizontalSpacer_57;
     QWidget *tabView;
@@ -1327,6 +1329,11 @@ public:
 
         verticalLayout_124->addWidget(pbtnExportPurpose);
 
+        pushbtnExportEventJournalDb = new QPushButton(tabExport);
+        pushbtnExportEventJournalDb->setObjectName(QStringLiteral("pushbtnExportEventJournalDb"));
+
+        verticalLayout_124->addWidget(pushbtnExportEventJournalDb);
+
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout_124->addItem(verticalSpacer);
@@ -1341,6 +1348,11 @@ public:
         pbtnImportPurpose->setObjectName(QStringLiteral("pbtnImportPurpose"));
 
         verticalLayout_120->addWidget(pbtnImportPurpose);
+
+        pushbtnImportEventDb = new QPushButton(tabExport);
+        pushbtnImportEventDb->setObjectName(QStringLiteral("pushbtnImportEventDb"));
+
+        verticalLayout_120->addWidget(pushbtnImportEventDb);
 
         verticalSpacer_74 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -8812,7 +8824,7 @@ public:
 
         retranslateUi(ConfiguratorWindow);
 
-        tabwgtMenu->setCurrentIndex(3);
+        tabwgtMenu->setCurrentIndex(1);
         cboxBaudrate->setCurrentIndex(9);
         stwgtMain->setCurrentIndex(15);
         stwgtProtectionPropertiesMTZ->setCurrentIndex(1);
@@ -8875,7 +8887,9 @@ public:
         tabwgtMenu->setTabText(tabwgtMenu->indexOf(tabFile), QApplication::translate("ConfiguratorWindow", "\320\244\320\260\320\271\320\273", nullptr));
         pbtnMenuExportToPDF->setText(QApplication::translate("ConfiguratorWindow", "\320\255\320\272\321\201\320\277\320\276\321\200\321\202 \320\262 PDF", nullptr));
         pbtnExportPurpose->setText(QApplication::translate("ConfiguratorWindow", "\320\255\320\272\321\201\320\277\320\276\321\200\321\202 \320\277\321\200\320\270\320\262\321\217\320\267\320\276\320\272", nullptr));
+        pushbtnExportEventJournalDb->setText(QApplication::translate("ConfiguratorWindow", "\320\255\320\272\321\201\320\277\320\276\321\200\321\202 \320\266\321\203\321\200\320\275\320\260\320\273\320\260 \321\201\320\276\320\261\321\213\321\202\320\270\320\271", nullptr));
         pbtnImportPurpose->setText(QApplication::translate("ConfiguratorWindow", "\320\230\320\274\320\277\320\276\321\200\321\202 \320\277\321\200\320\270\320\262\321\217\320\267\320\276\320\272", nullptr));
+        pushbtnImportEventDb->setText(QApplication::translate("ConfiguratorWindow", "\320\230\320\274\320\277\320\276\321\200\321\202 \320\266\321\203\321\200\320\275\320\260\320\273\320\260 \321\201\320\276\320\261\321\213\321\202\320\270\320\271", nullptr));
         tabwgtMenu->setTabText(tabwgtMenu->indexOf(tabExport), QApplication::translate("ConfiguratorWindow", "\320\255\320\272\321\201\320\277\320\276\321\200\321\202", nullptr));
         pbtnMenuPanelMenuCtrl->setText(QApplication::translate("ConfiguratorWindow", "\320\222\320\272\320\273/\320\262\321\213\320\272\320\273 \320\277\320\260\320\275\320\265\320\273\321\214 \320\274\320\265\320\275\321\216", nullptr));
         pbtnMenuPanelVariableCtrl->setText(QApplication::translate("ConfiguratorWindow", "\320\222\320\272\320\273/\320\262\321\213\320\272\320\273 \320\277\320\260\320\275\320\265\320\273\321\214 \320\277\320\265\321\200\320\265\320\274\320\265\320\275\320\275\321\213\321\205", nullptr));
