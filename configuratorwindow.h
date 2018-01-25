@@ -207,6 +207,7 @@
             void readShiftPrtEventJournal();
             void readEventJournalCount();
             void deviceSync(bool state = false);
+            int  recordCount(const QString& table, const QString& parameter, const QString& value); // количество записей в запросе
             QPoint            indexSettingKey(const QString& first, const QString& last);
             QPoint            indexPurposeKey(const QString& first, const QString& last);
             QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);

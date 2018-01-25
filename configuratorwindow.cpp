@@ -227,6 +227,8 @@ void ConfiguratorWindow::eventJournalRead()
 
     if(m_event_journal_parameter.start == -1) // первый вызов - инициализация переменных
     {
+        clearEventJournal();
+
         m_time_process.start();
 
         ui->groupboxEventJournalReadInterval->setDisabled(true);
@@ -2683,7 +2685,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
 //----------------------------------------------------------
 void ConfiguratorWindow::eventJournalActiveRange(bool state)
 {
-    qDebug() << "state group: " << state;
+
 }
 //----------------------------------------------
 void ConfiguratorWindow::eventJournalTypeRange()
@@ -2731,7 +2733,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
     {
         if(unit.valueCount() == 1) // подтверждение записи указателя сдвига
         {
-            qDebug() << "Запись указателя сдвига произведена";
+
         }
         else if(unit.valueCount() == 2) // получение значения указателя сдвига
         {
@@ -2831,28 +2833,41 @@ void ConfiguratorWindow::importEventJournalToTable()
     {
         QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
 
-        if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
+        if(recordCount("event_journal_names", "name", "\"" + nameJournal + "\"") > 0) // если в базе есть запись
         {
-            QMessageBox::warning(this, tr("Чтение базы данных"),
-                                       tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
-            return;
-        }
-
-        if(query.first()) // если есть запись
-        {
-            int id = query.value("id").toInt();
-
-            if(!query.exec("SELECT * FROM event_journal WHERE sn_device=" + QString::number(id) + ";"))
+            if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
             {
                 QMessageBox::warning(this, tr("Чтение базы данных"),
                                            tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
+                return;
             }
 
-            if(query.first())
+            if(!query.first())
+                return;
+
+            int id   = query.value("id").toInt();
+            int rows = recordCount("event_journal", "sn_device", QString::number(id));
+
+            if(rows > 0)
             {
+                if(!query.exec("SELECT * FROM event_journal WHERE sn_device=" + QString::number(id) + ";"))
+                {
+                    QMessageBox::warning(this, tr("Чтение базы данных"),
+                                               tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
+                }
+
                 while(query.next()) // заносим данные в таблицу журналов событий
                 {
+                    int row = ui->tablewgtEventJournal->rowCount();
 
+                    ui->tablewgtEventJournal->insertRow(row);
+
+                    ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(query.value("id_event").toString()));
+                    ui->tablewgtEventJournal->setItem(row, 1, new QTableWidgetItem(query.value("date").toString()));
+                    ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(query.value("time").toString()));
+                    ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(query.value("type").toString()));
+                    ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(query.value("category").toString()));
+                    ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(query.value("parameter").toString()));
                 }
             }
             else
@@ -2882,25 +2897,29 @@ void ConfiguratorWindow::exportEventJournalToDb()
 
     if(!m_event_journal_db.isOpen())
     {
-        connectEventsDb();
+        if(!connectEventsDb())
+            return;
     }
 
     QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
 
     QSqlQuery query(m_event_journal_db);
 
-    if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
-    {
-        QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
-                                   query.lastError().text());
-
-        return;
-    }
-
     int id = -1;
 
-    if(query.first())
+    if(recordCount("event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
     {
+        if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
+        {
+            QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
+                                       query.lastError().text());
+
+            return;
+        }
+
+        if(!query.first())
+            return;
+
         id = query.value("id").toInt();
     }
     else
@@ -2969,8 +2988,6 @@ void ConfiguratorWindow::readShiftPrtEventJournal()
     unit.setProperty(tr("REQUEST"), READ_EVENT_SHIFT_PTR);
 
     m_modbusDevice->request(unit);
-
-    qDebug() << "Запрос положения указателя журнала событий";
 }
 //----------------------------------------------
 void ConfiguratorWindow::readEventJournalCount()
@@ -2980,8 +2997,6 @@ void ConfiguratorWindow::readEventJournalCount()
     unit.setProperty(tr("REQUEST"), READ_EVENT_COUNT);
 
     m_modbusDevice->request(unit);
-
-    qDebug() << "Запрос количества записей журнала событий";
 }
 //---------------------------------------------
 void ConfiguratorWindow::deviceSync(bool state)
@@ -3001,6 +3016,29 @@ void ConfiguratorWindow::deviceSync(bool state)
 
 //        m_status_bar->clearSerialNumber(); // очистка поля серийного номера при потере синхронизации с устройством
     }
+}
+//-----------------------------------
+int ConfiguratorWindow::recordCount(const QString& table, const QString& parameter, const QString& value)
+{
+    if(!m_event_journal_db.isOpen())
+    {
+        if(!connectEventsDb())
+            return -1;
+    }
+
+    QSqlQuery query(m_event_journal_db);
+
+    QString str = QString("SELECT COUNT(*) FROM %1 WHERE %2=%3;").arg(table).arg(parameter).arg(value);
+
+    if(!query.exec(str))
+    {
+        return -1;
+    }
+
+    if(!query.first())
+        return -1;
+
+    return query.value(0).toInt();
 }
 //-----------------------------------------------------------------------------------
 QPoint ConfiguratorWindow::indexSettingKey(const QString& first, const QString& last)
