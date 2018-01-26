@@ -222,12 +222,16 @@ void ConfiguratorWindow::eventJournalRead()
         ui->groupboxEventJournalReadInterval->setEnabled(true);
         ui->leEventProcessTime->setText(QString::number(m_time_process.elapsed()/1000) + tr(" сек."));
 
+        ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
+        ui->tablewgtEventJournal->setSortingEnabled(true);
+
         return;
     }
 
     if(m_event_journal_parameter.start == -1) // первый вызов - инициализация переменных
     {
 //        clearEventJournal();
+        ui->tablewgtEventJournal->setSortingEnabled(false);
 
         m_time_process.start();
 
@@ -1910,7 +1914,7 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
                 etype_str = etype[type_event].name;
 
             ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-            ui->tablewgtEventJournal->setItem(row, 1, new QTableWidgetItem(d.toString("dd.MM.yy")));
+            ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(d.toString("dd.MM.yy")));
 
             QString s = ((msecond < 10)?"00":(msecond < 100 && msecond >= 10)?"0":"") + QString::number(msecond);
 
@@ -2851,6 +2855,8 @@ void ConfiguratorWindow::importEventJournalToTable()
                                                tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
                 }
 
+                ui->tablewgtEventJournal->setSortingEnabled(false);
+
                 while(query.next()) // заносим данные в таблицу журналов событий
                 {
                     int row = ui->tablewgtEventJournal->rowCount();
@@ -2865,16 +2871,15 @@ void ConfiguratorWindow::importEventJournalToTable()
                     QString parameter = query.value("parameter").toString();
 
                     ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(id_event));
-                    ui->tablewgtEventJournal->setItem(row, 1, new QTableWidgetItem(date));
+                    ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(date));
                     ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(time));
                     ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(type));
                     ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(category));
                     ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(parameter));
                 }
 
+                ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
                 ui->tablewgtEventJournal->setSortingEnabled(true);
-                ui->tablewgtEventJournal->sortItems(1);
-                ui->tablewgtEventJournal->setSortingEnabled(false);
             }
             else
             {

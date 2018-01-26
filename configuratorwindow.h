@@ -33,6 +33,7 @@
     #include "cserialportsetting.h"
     #include "ccalendarwidget.h"
     #include "cstatusbar.h"
+    #include "ctablewidgetitem.h"
     //----------
     namespace Ui 
     {

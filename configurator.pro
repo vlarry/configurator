@@ -37,7 +37,8 @@ SOURCES += \
     cheadertable.cpp \
     cserialportsetting.cpp \
     ccalendarwidget.cpp \
-    cstatusbar.cpp
+    cstatusbar.cpp \
+    ctablewidgetitem.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -52,7 +53,8 @@ HEADERS += \
     cheadertable.h \
     cserialportsetting.h \
     ccalendarwidget.h \
-    cstatusbar.h
+    cstatusbar.h \
+    ctablewidgetitem.h
 
 FORMS += \
         configuratorwindow.ui \
