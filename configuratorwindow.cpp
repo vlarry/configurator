@@ -2791,9 +2791,6 @@ void ConfiguratorWindow::setEventJournalPtrShift()
                                                     (quint16)(m_event_journal_parameter.shift&0xFFFF);
 
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 0x300C, values);
-
-    qDebug() << "Запрос на смещение указателя: values: " << values.count() << ", shift: " << m_event_journal_parameter.shift;
-
     unit.setProperty(tr("REQUEST"), READ_EVENT_SHIFT_PTR);
 
     m_modbusDevice->request(unit);
