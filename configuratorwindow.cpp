@@ -227,7 +227,7 @@ void ConfiguratorWindow::eventJournalRead()
 
     if(m_event_journal_parameter.start == -1) // первый вызов - инициализация переменных
     {
-        clearEventJournal();
+//        clearEventJournal();
 
         m_time_process.start();
 
@@ -249,9 +249,9 @@ void ConfiguratorWindow::eventJournalRead()
             {
                 int part = m_event_journal_parameter.start/256; // получаем номер текущего сектора
                 m_event_journal_parameter.shift = part*4096; // сохраняем новое значение указателя на текущий сектор
-
-                setEventJournalPtrShift(); // вызываем метод перевода сектора
             }
+
+            setEventJournalPtrShift(); // вызываем метод перевода сектора
 
             m_event_journal_parameter.start %= 256; // получаем остаток для сохранения текущего события
         }
@@ -1650,13 +1650,14 @@ bool ConfiguratorWindow::connectEventsDb()
 
     // создание таблицы для хранения журнала событий
     db_str = "CREATE TABLE IF NOT EXISTS event_journal ("
-             "id_event INTEGER PRIMARY KEY UNIQUE, "
-             "date STRING(50), "
+             "id_event INTEGER NOT NULL, "
+             "date STRING(50) NOT NULL, "
              "time STRING(50), "
              "type STRING(255), "
              "category STRING(255), "
              "parameter STRING(255), "
-             "sn_device INTEGER NOT NULL);";
+             "sn_device INTEGER NOT NULL, "
+             "CONSTRAINT new_pk PRIMARY KEY (id_event, date, sn_device));";
 
     if(!query.exec(db_str))
     {
@@ -1952,7 +1953,7 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
         quint8  month        = (quint8)(((data[6] >> 8)&0xFF)*10) + (quint8)(data[6]&0xFF); // месяц
         quint8  day          = (quint8)(((data[7] >> 8)&0xFF)*10) + (quint8)(data[7]&0xFF); // день
 
-        QString str = "S/n:";
+        QString str;
 
         if(!m_device_code_list[dev_code].isEmpty())
         {
@@ -1964,6 +1965,8 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
                                                  arg(firmware_var).
                                                  arg(dt.toString("yy.MM.dd"));
         }
+        else
+            str = "S/n: unknown";
 
         m_status_bar->setSerialNumber(str);
     }
@@ -2367,6 +2370,7 @@ void ConfiguratorWindow::clearEventJournal()
     ui->tablewgtEventJournal->setRowCount(0);
     ui->leEventCount->clear();
     ui->spinBoxEvenJournalReadCount->clear();
+    ui->spinBoxEventJournalReadBegin->clear();
 
     m_event_journal_parameter = { -1, 0, 0, 0, 0 };
 
@@ -2682,11 +2686,6 @@ void ConfiguratorWindow::importPurposeFromJSON()
     if(model)
         model->setDataTable(dataTable);
 }
-//----------------------------------------------------------
-void ConfiguratorWindow::eventJournalActiveRange(bool state)
-{
-
-}
 //----------------------------------------------
 void ConfiguratorWindow::eventJournalTypeRange()
 {
@@ -2753,6 +2752,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
             ui->leEventCount->setText("0/" + QString::number(event_count));
             ui->spinBoxEvenJournalReadCount->setValue(event_count);
             ui->spinBoxEvenJournalReadCount->setMaximum(event_count);
+            ui->spinBoxEventJournalReadBegin->setValue(0);
             ui->spinBoxEventJournalReadBegin->setMaximum(event_count - 1);
         }
     }
@@ -2772,7 +2772,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
 void ConfiguratorWindow::updateParameterEventJournal()
 {
     readEventJournalCount();
-    readShiftPrtEventJournal();
+//    readShiftPrtEventJournal();
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
@@ -2791,6 +2791,8 @@ void ConfiguratorWindow::setEventJournalPtrShift()
                                                     (quint16)(m_event_journal_parameter.shift&0xFFFF);
 
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 0x300C, values);
+
+    qDebug() << "Запрос на смещение указателя: values: " << values.count() << ", shift: " << m_event_journal_parameter.shift;
 
     unit.setProperty(tr("REQUEST"), READ_EVENT_SHIFT_PTR);
 
@@ -2817,14 +2819,10 @@ void ConfiguratorWindow::timeoutSyncSerialNumber()
 //--------------------------------------------------
 void ConfiguratorWindow::importEventJournalToTable()
 {
-    if(!m_event_journal_db.isOpen()) // база журналов событий еще не подключена
+    if(!m_event_journal_db.isOpen())
     {
-        if(!connectEventsDb()) // не получилось подключиться к бд или создать ее
-        {
-            QMessageBox::warning(this, tr("Открытие базы данных"),
-                                       tr("Не удалось открыть базу данных журнала событий"));
-            return; // выходим, т.к. если ошибка открытия/создания, то читать нечего
-        }
+        if(!connectEventsDb())
+            return;
     }
 
     QSqlQuery query(m_event_journal_db);
@@ -2862,13 +2860,24 @@ void ConfiguratorWindow::importEventJournalToTable()
 
                     ui->tablewgtEventJournal->insertRow(row);
 
-                    ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(query.value("id_event").toString()));
-                    ui->tablewgtEventJournal->setItem(row, 1, new QTableWidgetItem(query.value("date").toString()));
-                    ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(query.value("time").toString()));
-                    ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(query.value("type").toString()));
-                    ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(query.value("category").toString()));
-                    ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(query.value("parameter").toString()));
+                    QString id_event  = query.value("id_event").toString();
+                    QString date      = query.value("date").toString();
+                    QString time      = query.value("time").toString();
+                    QString type      = query.value("type").toString();
+                    QString category  = query.value("category").toString();
+                    QString parameter = query.value("parameter").toString();
+
+                    ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(id_event));
+                    ui->tablewgtEventJournal->setItem(row, 1, new QTableWidgetItem(date));
+                    ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(time));
+                    ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(type));
+                    ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(category));
+                    ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(parameter));
                 }
+
+                ui->tablewgtEventJournal->setSortingEnabled(true);
+                ui->tablewgtEventJournal->sortItems(1);
+                ui->tablewgtEventJournal->setSortingEnabled(false);
             }
             else
             {
@@ -2876,30 +2885,21 @@ void ConfiguratorWindow::importEventJournalToTable()
                 return;
             }
         }
-        else // такой записи не существует в таблице имен журналов событий, то создаем
-        {
-            if(!query.exec("INSERT INTO event_journal_names (name)"
-                           "VALUES (\"" + nameJournal + "\");"))
-            {
-                QMessageBox::warning(this, tr("Запись в базу данных"),
-                                           tr("Не удалось записать название новой таблицы: ") + query.lastError().text());
-            }
-        }
     }
 }
 //-----------------------------------------------
 void ConfiguratorWindow::exportEventJournalToDb()
 {
-    int rows = ui->tablewgtEventJournal->rowCount();
-
-    if(rows == 0) // нет записей - выходим
-        return;
-
     if(!m_event_journal_db.isOpen())
     {
         if(!connectEventsDb())
             return;
     }
+
+    int rows = ui->tablewgtEventJournal->rowCount();
+
+    if(rows == 0) // нет записей - выходим
+        return;
 
     QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
 
@@ -2939,8 +2939,8 @@ void ConfiguratorWindow::exportEventJournalToDb()
         QString category  = ui->tablewgtEventJournal->item(i, 4)->text();
         QString parameter = ui->tablewgtEventJournal->item(i, 5)->text();
 
-        query.prepare("INSERT OR REPLACE INTO event_journal (id_event, date, time, type, category, parameter, sn_device)"
-                       "VALUES(:id_event, :date, :time, :type, :category, :parameter, :sn_device)");
+        query.prepare(QString("INSERT OR REPLACE INTO event_journal (id_event, date, time, type, category, parameter, sn_device)"
+                              "VALUES(:id_event, :date, :time, :type, :category, :parameter, :sn_device)"));
         query.bindValue(":id_event", id_event);
         query.bindValue(":date", date);
         query.bindValue(":time", time);
@@ -3008,13 +3008,31 @@ void ConfiguratorWindow::deviceSync(bool state)
             m_sync_timer.start(ui->spinboxSyncTime->value());
             timeoutSyncSerialNumber();
         }
+
+        if(!m_event_journal_db.isOpen()) // если база журналов событий еще не открыта/создана, то открываем/создаем
+        {
+            if(!connectEventsDb())
+                return;
+
+            QSqlQuery query(m_event_journal_db);
+            QString   nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
+
+            // такой записи не существует в таблице имен журналов событий, то создаем
+            if(recordCount("event_journal_names", "name", "\"" + nameJournal + "\"") < 1)
+            {
+                if(!query.exec("INSERT INTO event_journal_names (name)"
+                               "VALUES (\"" + nameJournal + "\");"))
+                {
+                    QMessageBox::warning(this, tr("Запись в базу данных"),
+                                               tr("Не удалось записать название новой таблицы: ") + query.lastError().text());
+                }
+            }
+        }
     }
     else
     {
         if(m_sync_timer.isActive())
             m_sync_timer.stop();
-
-//        m_status_bar->clearSerialNumber(); // очистка поля серийного номера при потере синхронизации с устройством
     }
 }
 //-----------------------------------
@@ -3028,7 +3046,7 @@ int ConfiguratorWindow::recordCount(const QString& table, const QString& paramet
 
     QSqlQuery query(m_event_journal_db);
 
-    QString str = QString("SELECT COUNT(*) FROM %1 WHERE %2=%3;").arg(table).arg(parameter).arg(value);
+    QString str = QString("SELECT COUNT(*) FROM %1 WHERE %2=%3 LIMIT 1;").arg(table).arg(parameter).arg(value);
 
     if(!query.exec(str))
     {
@@ -3219,7 +3237,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::exportToPDF);
     connect(ui->pbtnExportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::exportPurposeToJSON);
     connect(ui->pbtnImportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::importPurposeFromJSON);
-    connect(ui->groupboxEventJournalReadInterval, &QGroupBox::toggled, this, &ConfiguratorWindow::eventJournalActiveRange);
     connect(ui->radiobtnEventJournalInterval, &QRadioButton::clicked, this, &ConfiguratorWindow::eventJournalTypeRange);
     connect(ui->radiobtnEventJournalDate, &QRadioButton::clicked, this, &ConfiguratorWindow::eventJournalTypeRange);
     connect(ui->toolbtnEventJournalCalendarOpen, &QToolButton::clicked, this, &ConfiguratorWindow::eventJournalCalendar);

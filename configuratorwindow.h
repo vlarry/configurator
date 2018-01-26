@@ -169,7 +169,6 @@
             void exportToPDF();
             void exportPurposeToJSON();
             void importPurposeFromJSON();
-            void eventJournalActiveRange(bool state);
             void eventJournalTypeRange();
             void eventJournalCalendar();
             void eventJournalDateChanged();

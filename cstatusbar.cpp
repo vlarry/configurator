@@ -59,7 +59,7 @@ QString CStatusBar::serialNumberText()
     sn.remove(" ");
 
     if(sn.isEmpty() || !isState())
-        return "";
+        return "unknown";
 
     return sn;
 }
