@@ -4,13 +4,21 @@
 CStatusBar::CStatusBar(QWidget* parent):
     QWidget(parent),
     ui(new Ui::CStatusBar),
-    m_timer(nullptr)
+    m_timerStatusMessage(nullptr),
+    m_timerProgressbar(nullptr)
 {
     ui->setupUi(this);
 
-    m_timer = new QTimer(this);
+    m_timerStatusMessage = new QTimer(this);
+    m_timerProgressbar   = new QTimer(this);
 
-    connect(m_timer, &QTimer::timeout, this, &CStatusBar::timeoutStatusMessage);
+    ui->lblTitleProgressbar->hide();
+    ui->progressbarProcess->hide();
+    ui->progressbarProcess->setRange(0, 100);
+    ui->progressbarProcess->setValue(0);
+
+    connect(m_timerStatusMessage, &QTimer::timeout, this, &CStatusBar::timeoutStatusMessage);
+    connect(m_timerProgressbar, &QTimer::timeout, this, &CStatusBar::timeoutProgressbar);
 }
 //-----------------------
 CStatusBar::~CStatusBar()
@@ -63,6 +71,16 @@ QString CStatusBar::serialNumberText()
 
     return sn;
 }
+//--------------------------------------------------------
+void CStatusBar::setProgressbarTitle(const QString& title)
+{
+    if(title.isEmpty())
+        return;
+
+    ui->lblTitleProgressbar->show();
+    ui->progressbarProcess->show();
+    ui->lblTitleProgressbar->setText(title);
+}
 //------------------------------------------------------
 void CStatusBar::setSerialNumber(const QString& sn_text)
 {
@@ -75,12 +93,54 @@ void CStatusBar::setStatusMessage(const QString& message, int timeout)
 
     if(timeout != 0)
     {
-        m_timer->start(timeout);
+        m_timerStatusMessage->start(timeout);
     }
 }
 //-------------------------------------
 void CStatusBar::timeoutStatusMessage()
 {
-    m_timer->stop();
+    m_timerStatusMessage->stop();
     ui->lblStatusMessage->clear();
+}
+//-----------------------------------
+void CStatusBar::timeoutProgressbar()
+{
+    int value = ui->progressbarProcess->value();
+
+    if(value == 75 && m_timerProgressbar->property("MODE").toBool())
+    {
+        m_timerProgressbar->stop();
+        m_timerProgressbar->start(500);
+    }
+    else if(value == 99 && m_timerProgressbar->property("MODE").toBool())
+        return;
+    else if(value == 100 && !m_timerProgressbar->property("MODE").toBool())
+    {
+        m_timerProgressbar->stop();
+        ui->progressbarProcess->hide();
+        ui->lblTitleProgressbar->hide();
+    }
+
+    ui->progressbarProcess->setValue(++value);
+}
+//---------------------------------
+void CStatusBar::startProgressbar()
+{
+    if(m_timerProgressbar->isActive())
+        m_timerProgressbar->stop();
+
+    ui->progressbarProcess->setRange(0, 100);
+    ui->progressbarProcess->setValue(0);
+    ui->progressbarProcess->show();
+    ui->lblTitleProgressbar->show();
+
+    m_timerProgressbar->setProperty("MODE", true); // MODE = true - старт (нормальная работа таймера), false - завершение
+    m_timerProgressbar->start(100);
+}
+//--------------------------------
+void CStatusBar::stopProgressbar()
+{
+    m_timerProgressbar->stop();
+    m_timerProgressbar->setProperty("MODE", false);
+    m_timerProgressbar->start(50);
 }

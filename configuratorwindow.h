@@ -24,6 +24,9 @@
     #include <QJsonObject>
     #include <QJsonDocument>
     #include <QJsonArray>
+    #include <QProgressBar>
+    #include <QThread>
+    #include <QtConcurrent/QtConcurrent>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -34,6 +37,7 @@
     #include "ccalendarwidget.h"
     #include "cstatusbar.h"
     #include "ctablewidgetitem.h"
+    #include "cthread.h"
     //----------
     namespace Ui 
     {
@@ -132,6 +136,7 @@
             void responseRead(CDataUnitType& unit);
             void exitFromApp();
             void show();
+            void resizeEvent(QResizeEvent* event);
             void chboxCalculateTimeoutStateChanged(bool state);
             void timeCalculateChanged(int newTime);
             void timeoutValueChanged(int newTime);
@@ -181,6 +186,7 @@
             void timeoutSyncSerialNumber();
             void importEventJournalToTable();
             void exportEventJournalToDb();
+            void startExportToPDF();
             
         private:
             void initConnect();
@@ -245,6 +251,7 @@
             QTimer                     m_sync_timer;
             CStatusBar*                m_status_bar;
             QMap<int, QString>         m_device_code_list;
+            QFutureWatcher<void>*      m_watcher;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

@@ -30,7 +30,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tabFile">
        <attribute name="title">
@@ -43,6 +43,21 @@
            <string/>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_110">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="0" column="0">
@@ -107,6 +122,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_112">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_124">
+          <property name="spacing">
+           <number>2</number>
+          </property>
           <item>
            <widget class="QPushButton" name="pbtnMenuExportToPDF">
             <property name="text">
@@ -145,6 +163,9 @@
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_120">
+          <property name="spacing">
+           <number>2</number>
+          </property>
           <item>
            <widget class="QPushButton" name="pbtnImportPurpose">
             <property name="text">
@@ -196,6 +217,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_113">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_128">
+          <property name="spacing">
+           <number>2</number>
+          </property>
           <item>
            <widget class="QPushButton" name="pbtnMenuPanelMenuCtrl">
             <property name="text">
@@ -260,22 +284,28 @@
            <set>Qt::AlignCenter</set>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="spacing">
+            <number>2</number>
+           </property>
            <property name="leftMargin">
-            <number>5</number>
+            <number>2</number>
            </property>
            <property name="topMargin">
-            <number>5</number>
+            <number>2</number>
            </property>
            <property name="rightMargin">
-            <number>5</number>
+            <number>2</number>
            </property>
            <property name="bottomMargin">
-            <number>5</number>
+            <number>2</number>
            </property>
            <item>
             <layout class="QGridLayout" name="gridLayout">
              <property name="sizeConstraint">
               <enum>QLayout::SetMinimumSize</enum>
+             </property>
+             <property name="horizontalSpacing">
+              <number>2</number>
              </property>
              <property name="verticalSpacing">
               <number>0</number>
@@ -445,10 +475,31 @@
            <set>Qt::AlignCenter</set>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_115">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="leftMargin">
+            <number>2</number>
+           </property>
+           <property name="topMargin">
+            <number>2</number>
+           </property>
+           <property name="rightMargin">
+            <number>2</number>
+           </property>
+           <property name="bottomMargin">
+            <number>2</number>
+           </property>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_129">
+             <property name="spacing">
+              <number>2</number>
+             </property>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <property name="spacing">
+                <number>2</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lblTextSlaveID">
                  <property name="text">
@@ -495,6 +546,21 @@
            <set>Qt::AlignCenter</set>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_134">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="leftMargin">
+            <number>2</number>
+           </property>
+           <property name="topMargin">
+            <number>2</number>
+           </property>
+           <property name="rightMargin">
+            <number>2</number>
+           </property>
+           <property name="bottomMargin">
+            <number>2</number>
+           </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_123">
              <item>
@@ -621,23 +687,38 @@
        </sizepolicy>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="leftMargin">
+        <number>2</number>
+       </property>
        <property name="topMargin">
-        <number>5</number>
+        <number>2</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
        </property>
        <property name="bottomMargin">
-        <number>5</number>
+        <number>2</number>
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <property name="spacing">
+          <number>2</number>
+         </property>
          <item>
           <spacer name="horizontalSpacer_5">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
            <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
-             <height>20</height>
+             <height>10</height>
             </size>
            </property>
           </spacer>
@@ -14188,6 +14269,15 @@
                 <bool>false</bool>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout">
+                <property name="spacing">
+                 <number>2</number>
+                </property>
+                <property name="topMargin">
+                 <number>2</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>2</number>
+                </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_117">
                   <item>
@@ -14390,6 +14480,9 @@
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="spacing">
+              <number>2</number>
+             </property>
              <item>
               <widget class="QLabel" name="label_11">
                <property name="text">
@@ -14596,6 +14689,9 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_62">
+         <property name="spacing">
+          <number>2</number>
+         </property>
          <item>
           <widget class="QLabel" name="label_9">
            <property name="text">

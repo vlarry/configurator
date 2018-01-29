@@ -23,7 +23,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_event_journal_parameter( { -1, 0, 0, 0, 0 } ),
     m_variables(QVector<CColumn::column_t>()),
     m_calendar_wgt(nullptr),
-    m_status_bar(nullptr)
+    m_status_bar(nullptr),
+    m_watcher(nullptr)
 {
     ui->setupUi(this);
 
@@ -45,6 +46,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_serialPortSettings        = new CSerialPortSetting;
     m_calendar_wgt              = new CCalendarWidget;
     m_status_bar                = new CStatusBar(statusBar());
+    m_watcher                   = new QFutureWatcher<void>(this);
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -54,14 +56,19 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->wgtEventJournalCalendar->hide();
 
     ui->tablewgtEventJournal->setColumnCount(6);
-    ui->tablewgtEventJournal->setHorizontalHeaderLabels(QStringList() << tr("ID события") << tr("Дата") << tr("Время") <<
+    ui->tablewgtEventJournal->setHorizontalHeaderLabels(QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
                                                                          tr("Тип") << tr("Категория") << tr("Параметр"));
     ui->tablewgtEventJournal->setShowGrid(true);
     ui->tablewgtEventJournal->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tablewgtEventJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tablewgtEventJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tablewgtEventJournal->horizontalHeader()->setStretchLastSection(true);
     ui->tablewgtEventJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->tablewgtEventJournal->setColumnWidth(0, 50);
+    ui->tablewgtEventJournal->setColumnWidth(1, 75);
+    ui->tablewgtEventJournal->setColumnWidth(2, 100);
+    ui->tablewgtEventJournal->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    ui->tablewgtEventJournal->setColumnWidth(4, 200);
+    ui->tablewgtEventJournal->setColumnWidth(5, 300);
 
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
@@ -86,6 +93,12 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
 {
+    if(m_watcher->isRunning())
+    {
+        m_watcher->cancel();
+        m_watcher->waitForFinished();
+    }
+
     if(m_logFile)
     {
         if(m_logFile->isOpen())
@@ -478,6 +491,11 @@ void ConfiguratorWindow::show()
 
     ui->tabwgtMenu->setCurrentIndex(3);
     m_status_bar->connectStateChanged(false);
+}
+//-------------------------------------------------------
+void ConfiguratorWindow::resizeEvent(QResizeEvent* event)
+{
+    QMainWindow::resizeEvent(event);
 }
 //--------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
@@ -2418,15 +2436,8 @@ void ConfiguratorWindow::exportToPDF()
     if(!curTable)
         return;
 
-    QPrinter printer(QPrinter::ScreenResolution);
-
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setPaperSize(QPrinter::A4);
-    printer.setPageMargins(15, 0, 15, 0, QPrinter::Millimeter);
-    printer.setOutputFileName("reports/report.pdf");
-
-    QTextDocument reportPDF;
-    QTextCursor   cursor(&reportPDF);
+    QTextDocument* reportPDF = new QTextDocument;
+    QTextCursor    cursor(reportPDF);
     cursor.movePosition(QTextCursor::Start);
 
     QTextBlockFormat blockFormat;
@@ -2477,9 +2488,6 @@ void ConfiguratorWindow::exportToPDF()
     {
         for(int i = 0; i < row_count; i++)
         {
-            if(!(i%20))
-                printer.newPage();
-
             table->appendRows(1);
 
             cursor.movePosition(QTextCursor::PreviousRow);
@@ -2492,7 +2500,14 @@ void ConfiguratorWindow::exportToPDF()
         }
     }
 
-    reportPDF.print(&printer);
+    QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
+
+    printer->setOutputFormat(QPrinter::PdfFormat);
+    printer->setPaperSize(QPrinter::A4);
+    printer->setPageMargins(15, 0, 0, 0, QPrinter::Millimeter);
+    printer->setOutputFileName("reports/report.pdf");
+
+    reportPDF->print(printer);
 }
 //--------------------------------------------
 void ConfiguratorWindow::exportPurposeToJSON()
@@ -2828,7 +2843,7 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     QSqlQuery query(m_event_journal_db);
 
-    if(m_status_bar->isState()) // если синхронизация есть, то читаем из базы данных id записи
+    if(!m_status_bar->isState()) // если синхронизация есть, то читаем из базы данных id записи
     {
         QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
 
@@ -2955,6 +2970,17 @@ void ConfiguratorWindow::exportEventJournalToDb()
     }
 
     m_event_journal_db.commit();
+}
+//-----------------------------------------
+void ConfiguratorWindow::startExportToPDF()
+{
+    connect(m_watcher, &QFutureWatcher<void>::finished, m_status_bar, &CStatusBar::stopProgressbar);
+
+    m_status_bar->setProgressbarTitle("Экспорт в PDF");
+    m_status_bar->startProgressbar();
+
+    QFuture<void> future = QtConcurrent::run(this, &exportToPDF);
+    m_watcher->setFuture(future);
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
@@ -3236,7 +3262,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
-    connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::exportToPDF);
+//    connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::exportToPDF);
+    connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
     connect(ui->pbtnExportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::exportPurposeToJSON);
     connect(ui->pbtnImportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::importPurposeFromJSON);
     connect(ui->radiobtnEventJournalInterval, &QRadioButton::clicked, this, &ConfiguratorWindow::eventJournalTypeRange);
