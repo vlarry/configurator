@@ -1695,7 +1695,7 @@ bool ConfiguratorWindow::connectEventsDb()
 bool ConfiguratorWindow::connectDb(QSqlDatabase& db, const QString& path)
 {
     db = QSqlDatabase::addDatabase("QSQLITE", "db");
-    db.setDatabaseName(path + ".db");
+    db.setDatabaseName(path);
 
     if(!db.open())
     {
@@ -2971,9 +2971,26 @@ void ConfiguratorWindow::exportEventJournalToDb()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
                                                     dir.absolutePath() + "/db");
 
-    if(fileName.contains(".db"))
+    QFileInfo finfo;
+
+    if(finfo.exists(fileName)) // если файл существует
     {
-        fileName = fileName.remove(".db");
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, tr("Экспорт журнала событий"),
+                                      tr("Такая база уже существует. Перезаписать данные?"),
+                                      QMessageBox::Yes | QMessageBox::No);
+
+        if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
+        {
+            QFile file(fileName);
+
+            if(!file.remove())
+            {
+                QMessageBox::warning(this, tr("Удаление базы журналов событий"),
+                                     tr("Невозможно удалить базу!\nВозможно уже используется или у Вас нет прав."));
+                return;
+            }
+        }
     }
 
     if(!connectDb(db, fileName))
@@ -3029,9 +3046,46 @@ void ConfiguratorWindow::exportEventJournalToDb()
     if(id == -1)
         return;
 
+    int pos_beg = 0;
+    int pos_end = rows - 1;
+
+    // если группа выбора журнала события активна и активен переключатель выбора даты - ищем строки по дате
+    if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
+    {
+        QDate date_beg = m_calendar_wgt->dateBegin();
+        QDate date_end = m_calendar_wgt->dateEnd();
+
+        bool isBegin = false;
+
+        for(int i = 0; i < rows; i++)
+        {
+            QTableWidgetItem* item = ui->tablewgtEventJournal->item(i, 1);
+
+            if(!item)
+                continue;
+
+            QDate date = QDate::fromString(item->text(), "dd.MM.yy");
+
+            if(date.year() > 1900 && date.year() < 2000)
+                date.setDate(date.year() + 100, date.month(), date.day());
+
+            if((date == date_beg || date > date_beg) && !isBegin) // текущая дата равна искомой или больше искомой
+            {                                                     // и флаг первого совадения ложь
+                pos_beg = i; // сохраняем текущий индекс
+                isBegin = true;
+            }
+            else if(date == date_end && isBegin) // текущая дата равна искмой даты конца и флаг истина - сохраняем текущий индекс
+            {
+                pos_end = i;
+            }
+            else if(date > date_end) // текущая дата больше искомой - выходим
+                break;
+        }
+    }
+
     db.transaction();
 
-    for(int i = 0; i < rows; i++)
+    for(int i = pos_beg; i <= pos_end; i++)
     {
         int     id_event  = ui->tablewgtEventJournal->item(i, 0)->text().toInt();
         QString date      = ui->tablewgtEventJournal->item(i, 1)->text();
