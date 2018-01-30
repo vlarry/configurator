@@ -38,6 +38,7 @@
     #include "ccalendarwidget.h"
     #include "cstatusbar.h"
     #include "ctablewidgetitem.h"
+    #include "ceventlistjournals.h"
     //----------
     namespace Ui 
     {

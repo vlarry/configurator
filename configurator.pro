@@ -38,7 +38,8 @@ SOURCES += \
     cserialportsetting.cpp \
     ccalendarwidget.cpp \
     cstatusbar.cpp \
-    ctablewidgetitem.cpp
+    ctablewidgetitem.cpp \
+    ceventlistjournals.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -54,7 +55,8 @@ HEADERS += \
     cserialportsetting.h \
     ccalendarwidget.h \
     cstatusbar.h \
-    ctablewidgetitem.h
+    ctablewidgetitem.h \
+    ceventlistjournals.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -63,7 +65,8 @@ FORMS += \
     versionform.ui \
     serialportsetting.ui \
     calendarwidget.ui \
-    statusbar.ui
+    statusbar.ui \
+    eventlistjournals.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

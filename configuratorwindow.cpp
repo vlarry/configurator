@@ -2916,65 +2916,94 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     QSqlQuery query(db);
 
-    if(!m_status_bar->isState()) // если синхронизация есть, то читаем из базы данных id записи
+    if(!query.exec("SELECT * FROM event_journal_names;"))
     {
-        QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
+        QMessageBox::warning(this, tr("Импорт журнала событий"), tr("Невозможно прочитать список журналов"));
+        db.close();
 
-        if(recordCount("event_journal_names", "name", "\"" + nameJournal + "\"") > 0) // если в базе есть запись
+        return;
+    }
+
+    QVector<CEventListJournals::cell_t> list;
+
+    if(query.first())
+    {
+        list << CEventListJournals::cell_t({ query.value("name").toString(), query.value("id").toInt() });
+
+        while(query.next())
+            list << CEventListJournals::cell_t({ query.value("name").toString(), query.value("id").toInt() });
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Импорт журнала событий"), tr("База журналов пуста"));
+        db.close();
+
+        return;
+    }
+
+    if(list.isEmpty())
+        return;
+
+    CEventListJournals* journals = new CEventListJournals(list, this);
+
+    int reply = journals->exec();
+    int id    = -1;
+
+    if(reply == QDialog::Accepted)
+    {
+        id = journals->currentId();
+    }
+    else
+    {
+        db.close();
+        return;
+    }
+
+    if(id == -1)
+        return;
+
+    int rows = recordCount("event_journal", "sn_device", QString::number(id));
+
+    if(rows > 0)
+    {
+        if(!query.exec("SELECT * FROM event_journal WHERE sn_device=" + QString::number(id) + ";"))
         {
-            if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
-            {
-                QMessageBox::warning(this, tr("Чтение базы данных"),
-                                           tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
-                return;
-            }
-
-            if(!query.first())
-                return;
-
-            int id   = query.value("id").toInt();
-            int rows = recordCount("event_journal", "sn_device", QString::number(id));
-
-            if(rows > 0)
-            {
-                if(!query.exec("SELECT * FROM event_journal WHERE sn_device=" + QString::number(id) + ";"))
-                {
-                    QMessageBox::warning(this, tr("Чтение базы данных"),
-                                               tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
-                }
-
-                ui->tablewgtEventJournal->setSortingEnabled(false);
-
-                while(query.next()) // заносим данные в таблицу журналов событий
-                {
-                    int row = ui->tablewgtEventJournal->rowCount();
-
-                    ui->tablewgtEventJournal->insertRow(row);
-
-                    QString id_event  = query.value("id_event").toString();
-                    QString date      = query.value("date").toString();
-                    QString time      = query.value("time").toString();
-                    QString type      = query.value("type").toString();
-                    QString category  = query.value("category").toString();
-                    QString parameter = query.value("parameter").toString();
-
-                    ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(id_event));
-                    ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(date));
-                    ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(time));
-                    ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(type));
-                    ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(category));
-                    ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(parameter));
-                }
-
-                ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
-                ui->tablewgtEventJournal->setSortingEnabled(true);
-            }
-            else
-            {
-                QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала событий нет записей"));
-                return;
-            }
+            QMessageBox::warning(this, tr("Чтение базы данных"),
+                                       tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
         }
+
+        ui->tablewgtEventJournal->setSortingEnabled(false);
+
+        while(query.next()) // заносим данные в таблицу журналов событий
+        {
+            int row = ui->tablewgtEventJournal->rowCount();
+
+            ui->tablewgtEventJournal->insertRow(row);
+
+            QString id_event  = query.value("id_event").toString();
+            QString date      = query.value("date").toString();
+            QString time      = query.value("time").toString();
+            QString type      = query.value("type").toString();
+            QString category  = query.value("category").toString();
+            QString parameter = query.value("parameter").toString();
+
+            ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(id_event));
+            ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(date));
+            ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(time));
+            ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(type));
+            ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(category));
+            ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(parameter));
+        }
+
+        ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
+        ui->tablewgtEventJournal->setSortingEnabled(true);
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала событий нет записей"));
+        db.close();
+
+        return;
     }
 
     db.close();
