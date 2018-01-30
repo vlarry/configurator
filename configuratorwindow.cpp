@@ -1694,6 +1694,8 @@ bool ConfiguratorWindow::connectEventsDb()
 //-----------------------------------------------------------------------
 bool ConfiguratorWindow::connectDb(QSqlDatabase& db, const QString& path)
 {
+    QSqlDatabase::removeDatabase("db");
+
     db = QSqlDatabase::addDatabase("QSQLITE", "db");
     db.setDatabaseName(path);
 
@@ -2886,13 +2888,33 @@ void ConfiguratorWindow::timeoutSyncSerialNumber()
 //--------------------------------------------------
 void ConfiguratorWindow::importEventJournalToTable()
 {
-    if(!m_event_journal_db.isOpen())
+    if(ui->tablewgtEventJournal->rowCount() > 0) // если данные в таблице присутствуют, то спрашиваем пользователя
     {
-        if(!connectEventsDb())
-            return;
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, tr("Импорт журнала событий"),
+                                      tr("В таблице есть записи.\nОчистить?"),
+                                      QMessageBox::Yes | QMessageBox::No);
+
+        if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
+        {
+            clearEventJournal();
+        }
     }
 
-    QSqlQuery query(m_event_journal_db);
+    QDir dir;
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Открытие базы данных журнала событий"),
+                                                    dir.absolutePath() + "/db", "*.db");
+
+    if(fileName.isEmpty())
+        return;
+
+    QSqlDatabase db;
+
+    if(!connectDb(db, fileName))
+        return;
+
+    QSqlQuery query(db);
 
     if(!m_status_bar->isState()) // если синхронизация есть, то читаем из базы данных id записи
     {
@@ -2954,6 +2976,8 @@ void ConfiguratorWindow::importEventJournalToTable()
             }
         }
     }
+
+    db.close();
 }
 //-----------------------------------------------
 void ConfiguratorWindow::exportEventJournalToDb()
@@ -2969,7 +2993,7 @@ void ConfiguratorWindow::exportEventJournalToDb()
 
     QDir dir;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
-                                                    dir.absolutePath() + "/db");
+                                                    dir.absolutePath() + "/db", "*.db");
 
     QFileInfo finfo;
 
