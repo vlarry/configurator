@@ -1691,6 +1691,57 @@ bool ConfiguratorWindow::connectEventsDb()
 
     return true;
 }
+//-----------------------------------------------------------------------
+bool ConfiguratorWindow::connectDb(QSqlDatabase& db, const QString& path)
+{
+    db = QSqlDatabase::addDatabase("QSQLITE", "db");
+    db.setDatabaseName(path + ".db");
+
+    if(!db.open())
+    {
+        QMessageBox::critical(this, tr("База данных журнала событий"), tr("Невозможно открыть базу данных журнала событий: ") +
+                              m_event_journal_db.lastError().text());
+        db.close();
+
+        return false;
+    }
+
+    QSqlQuery query(db);
+
+    // создание таблицы для хранения имен списка журналов событий
+    QString db_str = "CREATE TABLE IF NOT EXISTS event_journal_names ("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                     "name STRING(255));";
+
+    if(!query.exec(db_str))
+    {
+        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу имен журналов событий: ") +
+                             query.lastError().text());
+
+        return false;
+    }
+
+    // создание таблицы для хранения журнала событий
+    db_str = "CREATE TABLE IF NOT EXISTS event_journal ("
+             "id_event INTEGER NOT NULL, "
+             "date STRING(50) NOT NULL, "
+             "time STRING(50), "
+             "type STRING(255), "
+             "category STRING(255), "
+             "parameter STRING(255), "
+             "sn_device INTEGER NOT NULL, "
+             "CONSTRAINT new_pk PRIMARY KEY (id_event, date, sn_device));";
+
+    if(!query.exec(db_str))
+    {
+        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журнала событий: ") +
+                             query.lastError().text());
+
+        return false;
+    }
+
+    return true;
+}
 //---------------------------------------------------------------------
 void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
 {
@@ -2907,12 +2958,6 @@ void ConfiguratorWindow::importEventJournalToTable()
 //-----------------------------------------------
 void ConfiguratorWindow::exportEventJournalToDb()
 {
-    if(!m_event_journal_db.isOpen())
-    {
-        if(!connectEventsDb())
-            return;
-    }
-
     int rows = ui->tablewgtEventJournal->rowCount();
 
     if(rows == 0) // нет записей - выходим
@@ -2920,11 +2965,27 @@ void ConfiguratorWindow::exportEventJournalToDb()
 
     QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
 
-    QSqlQuery query(m_event_journal_db);
+    QSqlDatabase db;
+
+    QDir dir;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
+                                                    dir.absolutePath() + "/db");
+
+    if(fileName.contains(".db"))
+    {
+        fileName = fileName.remove(".db");
+    }
+
+    if(!connectDb(db, fileName))
+    {
+        return;
+    }
+
+    QSqlQuery query(db);
 
     int id = -1;
 
-    if(recordCount("event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
+    if(recordCountDb(db, "event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
     {
         if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
         {
@@ -2939,13 +3000,36 @@ void ConfiguratorWindow::exportEventJournalToDb()
 
         id = query.value("id").toInt();
     }
-    else
-        return;
+    else // если нет записи в базе данных
+    {
+        if(!query.exec("INSERT INTO event_journal_names (name)"
+                       "VALUES(\"" + nameJournal + "\");"))
+        {
+            QMessageBox::warning(this, tr("Вставка записи в базу данных"), tr("Невозможно вставить запись в базу данных"));
+            return;
+        }
+
+        if(recordCount("event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
+        {
+            if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
+            {
+                QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
+                                           query.lastError().text());
+
+                return;
+            }
+
+            if(!query.first())
+                return;
+
+            id = query.value("id").toInt();
+        }
+    }
 
     if(id == -1)
         return;
 
-    m_event_journal_db.transaction();
+    db.transaction();
 
     for(int i = 0; i < rows; i++)
     {
@@ -2969,7 +3053,8 @@ void ConfiguratorWindow::exportEventJournalToDb()
         query.exec();
     }
 
-    m_event_journal_db.commit();
+    db.commit();
+    db.close();
 }
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
@@ -3075,6 +3160,29 @@ int ConfiguratorWindow::recordCount(const QString& table, const QString& paramet
     QSqlQuery query(m_event_journal_db);
 
     QString str = QString("SELECT COUNT(*) FROM %1 WHERE %2=%3 LIMIT 1;").arg(table).arg(parameter).arg(value);
+
+    if(!query.exec(str))
+    {
+        return -1;
+    }
+
+    if(!query.first())
+        return -1;
+
+    return query.value(0).toInt();
+}
+//----------------------------------------------------------------------------------------------------------
+int ConfiguratorWindow::recordCountDb(QSqlDatabase& db, const QString& table_name, const QString& parameter,
+                                                        const QString& value)
+{
+    if(!db.isOpen())
+    {
+        return -1;
+    }
+
+    QSqlQuery query(db);
+
+    QString str = QString("SELECT COUNT(*) FROM %1 WHERE %2=%3;").arg(table_name).arg(parameter).arg(value);
 
     if(!query.exec(str))
     {

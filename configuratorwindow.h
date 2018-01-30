@@ -27,6 +27,7 @@
     #include <QProgressBar>
     #include <QThread>
     #include <QtConcurrent/QtConcurrent>
+    #include <QFileDialog>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -37,7 +38,6 @@
     #include "ccalendarwidget.h"
     #include "cstatusbar.h"
     #include "ctablewidgetitem.h"
-    #include "cthread.h"
     //----------
     namespace Ui 
     {
@@ -199,6 +199,7 @@
             void initDeviceCode();
             void connectSystemDb();
             bool connectEventsDb();
+            bool connectDb(QSqlDatabase& db, const QString& path);
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
             void displaySettingResponse(CDataUnitType& unit);
@@ -214,6 +215,7 @@
             void readEventJournalCount();
             void deviceSync(bool state = false);
             int  recordCount(const QString& table, const QString& parameter, const QString& value); // количество записей в запросе
+            int  recordCountDb(QSqlDatabase& db, const QString& table_name, const QString& parameter, const QString& value);
             QPoint            indexSettingKey(const QString& first, const QString& last);
             QPoint            indexPurposeKey(const QString& first, const QString& last);
             QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);
