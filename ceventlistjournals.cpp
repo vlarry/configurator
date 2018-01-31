@@ -21,6 +21,8 @@ CEventListJournals::CEventListJournals(QVector<cell_t>& list, QWidget* parent):
     ui->listwgtListEventJournals->addItems(items);
     ui->listwgtListEventJournals->setCurrentRow(0);
 
+    setWindowTitle(tr("Список журналов событий"));
+
     connect(ui->listwgtListEventJournals, &QListWidget::itemDoubleClicked, this, &CEventListJournals::slotDoubleClicked);
 }
 //---------------------------------------

@@ -3049,7 +3049,8 @@ void ConfiguratorWindow::exportEventJournalToDb()
 
     QDir dir;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
-                                                    dir.absolutePath() + "/db", "*.db");
+                                                    dir.absolutePath() + "/db", tr("База данных (*.db)"), nullptr,
+                                                    QFileDialog::DontConfirmOverwrite);
 
     QFileInfo finfo;
 
@@ -3314,7 +3315,7 @@ QPoint ConfiguratorWindow::indexDateFilter(QTableWidget* table, const QDate& beg
         if(!item)
             continue;
 
-        QDate date = QDate::fromString(item->text(), "dd.MM.yy");
+        QDate date = QDate::fromString(item->text(), "dd.MM.yyyy");
 
         if(date.year() > 1900 && date.year() < 2000)
             date.setDate(date.year() + 100, date.month(), date.day());
