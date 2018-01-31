@@ -354,6 +354,13 @@ void CModbus::readyRead()
     
     CDataUnitType unit = m_request_cur;
 
+    if((data[1]&0x80) == 0x80) // если установлен старший бит в функции, то ведомый сообщает об ошибке
+    {
+        quint16 error = (quint16)(data[2] << 8 | data[3]); // определяем ошибку
+
+        unit.serErrorCode(error);
+    }
+
     unit.setValues(values);
 
     emit dataReady(unit);

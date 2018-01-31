@@ -455,9 +455,16 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 {
     if(unit.is_empty())
         return;
-    
-//    qDebug() << "Получен ответ: " << unit.valueCount();
+
     emit m_modbusDevice->infoLog(tr("Получен ответ: ") + QString::number(unit.valueCount()) + tr(" байт \n"));
+
+    quint16 error = unit.error();
+
+    if(error != NO_ERROR) // если ошибка, то выводим ее
+    {
+        QMessageBox::warning(this, tr("Ответ устройства"),
+                             tr("В ответе обнаружена ошибка.\n") + unit.errorStringList());
+    }
     
     RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
 

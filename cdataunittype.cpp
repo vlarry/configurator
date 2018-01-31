@@ -1,18 +1,21 @@
 #include "cdataunittype.h"
-//----------------------------
-CDataUnitType::CDataUnitType()
+//-----------------------------
+CDataUnitType::CDataUnitType():
+    m_error(NO_ERROR)
 {
     
 }
 //-------------------------------------------
 CDataUnitType::CDataUnitType(quint8 slaveID):
-    m_slaveID(slaveID)
+    m_slaveID(slaveID),
+    m_error(NO_ERROR)
 {
     m_slaveID = slaveID;
 }
 //----------------------------------------------
 CDataUnitType::CDataUnitType(FunctionType type):
-    m_type(type)
+    m_type(type),
+    m_error(NO_ERROR)
 {
     m_type = type;
 }
@@ -22,7 +25,8 @@ CDataUnitType::CDataUnitType(quint8 slaveID, CDataUnitType::FunctionType type,
     m_type(type),
     m_slaveID(slaveID),
     m_address(address),
-    m_values(values)
+    m_values(values),
+    m_error(NO_ERROR)
 {
     
 }
@@ -61,6 +65,99 @@ quint16 CDataUnitType::address() const
 {
     return m_address;
 }
+//----------------------------------
+quint16 CDataUnitType::error() const
+{
+    return m_error;
+}
+//------------------------------------------------
+QString CDataUnitType::errorToString(quint16 code)
+{
+    QString str_error = "Ошибка ";
+
+    switch(code)
+    {
+        case BKPSRAM_ERROR:
+            str_error += "Разрушена BKPSRAM.\n";
+        break;
+
+        case MAV_ERROR:
+            str_error += "МАВ.\n";
+        break;
+
+        case MDVV1_ERROR:
+            str_error += "МДВВ1.\n";
+        break;
+
+        case MDVV2_ERROR:
+            str_error += "МДВВ2.\n";
+        break;
+
+        case MIK_ERROR:
+            str_error += "МИК.\n";
+        break;
+
+        case FLASH_ERROR:
+            str_error += "FLASH.\n";
+        break;
+
+        case EVENT_JOURNAL_ERROR:
+            str_error += "журнала событий.\n";
+        break;
+
+        case CRASH_JOURNAL_ERROR:
+            str_error += "журнала аварий.\n";
+        break;
+
+        case HALF_HOUR_JOURNAL_ERROR:
+            str_error += "журнала получасовок.\n";
+        break;
+
+        case R_ISOLATOR_JOURNAL_ERROR:
+            str_error += "журнала сопротивления изоляции.\n";
+        break;
+
+        case OSCILL_JOURNAL_ERROR:
+            str_error += "журнала осциллограмм.\n";
+        break;
+
+        case SET_DEFAULT_ERROR:
+            str_error += "установки умолчаний.\n";
+        break;
+
+        case SET_DEFAULT_INCORRECT_ERROR:
+            str_error += "установки умолчаний из-за некорректности.\n";
+        break;
+
+        case NO_ERROR:
+            str_error = "";
+        break;
+
+        default:
+            str_error += "не определена.\n";
+        break;
+    }
+
+    return str_error;
+}
+//--------------------------------------
+QString CDataUnitType::errorStringList()
+{
+    QString str = "";
+
+    if(m_error != NO_ERROR)
+    {
+        for(int i = 0; i < 16; i++)
+        {
+            quint16 err = (m_error&(1 << i));
+
+            if(err)
+                str += errorToString(err);
+        }
+    }
+
+    return str;
+}
 //---------------------------------------------------
 const QVector<quint16>& CDataUnitType::values() const
 {
@@ -93,6 +190,11 @@ void CDataUnitType::setProperty(const QString& key, QVariant value)
 void CDataUnitType::setProperties(QMap<QString, QVariant>& properties)
 {
     m_properties = properties;
+}
+//--------------------------------------------
+void CDataUnitType::serErrorCode(quint16 code)
+{
+    m_error = code;
 }
 //---------------------------------------------------------
 QVariant CDataUnitType::property(const QString& key) const
