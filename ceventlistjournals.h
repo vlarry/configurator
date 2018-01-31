@@ -2,6 +2,10 @@
     #define CEVENTLISTJOURNALS_H
     //----------------
     #include <QDialog>
+    #include <QListWidget>
+    #include <QListWidgetItem>
+    #include <QModelIndex>
+    #include <QDebug>
     //----------
     namespace Ui
     {
@@ -24,6 +28,9 @@
             ~CEventListJournals();
 
             int currentId() const;
+
+        public slots:
+            void slotDoubleClicked(QListWidgetItem* item);
 
         private:
             Ui::CEventListJournals* ui;

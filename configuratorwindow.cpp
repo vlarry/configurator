@@ -66,9 +66,11 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->tablewgtEventJournal->setColumnWidth(0, 50);
     ui->tablewgtEventJournal->setColumnWidth(1, 75);
     ui->tablewgtEventJournal->setColumnWidth(2, 100);
-    ui->tablewgtEventJournal->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
     ui->tablewgtEventJournal->setColumnWidth(4, 200);
     ui->tablewgtEventJournal->setColumnWidth(5, 300);
+
+//    ui->tablewgtEventJournal->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    ui->tablewgtEventJournal->setColumnWidth(3, 500);
 
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
@@ -237,6 +239,8 @@ void ConfiguratorWindow::eventJournalRead()
 
         ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
         ui->tablewgtEventJournal->setSortingEnabled(true);
+
+        ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
 
         return;
     }
@@ -480,7 +484,6 @@ void ConfiguratorWindow::show()
 {
     QMainWindow::show();
 
-    setWindowState(Qt::WindowFullScreen);
     setWindowState(Qt::WindowMaximized);
     
     m_terminal->hide();
@@ -1726,8 +1729,8 @@ bool ConfiguratorWindow::connectDb(QSqlDatabase& db, const QString& path)
     // создание таблицы для хранения журнала событий
     db_str = "CREATE TABLE IF NOT EXISTS event_journal ("
              "id_event INTEGER NOT NULL, "
-             "date STRING(50) NOT NULL, "
-             "time STRING(50), "
+             "date STRING(25) NOT NULL, "
+             "time STRING(25), "
              "type STRING(255), "
              "category STRING(255), "
              "parameter STRING(255), "
@@ -1946,7 +1949,10 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
     {
         quint16 id = ((data[i + 1] << 8) | data[i]);
 
-        quint8 year  = ((data[i + 2]&0xFC) >> 2);
+        quint16 year = ((data[i + 2]&0xFC) >> 2);
+
+        year += ((year < 2000)?2000:0); // приводит дату к 'yyyy'
+
         quint8 month = ((data[i + 2]&0x03) << 2) | ((data[i + 3]&0xC0) >> 6);
         quint8 day   = ((data[i + 3]&0x3E) >> 1);
 
@@ -1985,7 +1991,7 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
                 etype_str = etype[type_event].name;
 
             ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-            ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(d.toString("dd.MM.yy")));
+            ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(d.toString("dd.MM.yyyy")));
 
             QString s = ((msecond < 10)?"00":(msecond < 100 && msecond >= 10)?"0":"") + QString::number(msecond);
 
@@ -2852,6 +2858,8 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
     switch(index)
     {
         case 15: // текущий журнал событий
+            int widthColumnType = ui->tablewgtEventJournal->width() - 725;
+            ui->tablewgtEventJournal->setColumnWidth(3, widthColumnType);
             updateParameterEventJournal();
         break;
     }
@@ -2966,7 +2974,17 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     if(rows > 0)
     {
-        if(!query.exec("SELECT * FROM event_journal WHERE sn_device=" + QString::number(id) + ";"))
+        QString str = QString("SELECT * FROM event_journal WHERE sn_device=%1").arg(id);
+
+        if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
+        {
+            str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(m_calendar_wgt->dateBegin().toString(Qt::ISODate)).
+                                                                  arg(m_calendar_wgt->dateEnd().toString(Qt::ISODate));
+        }
+
+        str += ";";
+
+        if(!query.exec(str))
         {
             QMessageBox::warning(this, tr("Чтение базы данных"),
                                        tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
@@ -2981,7 +2999,7 @@ void ConfiguratorWindow::importEventJournalToTable()
             ui->tablewgtEventJournal->insertRow(row);
 
             QString id_event  = query.value("id_event").toString();
-            QString date      = query.value("date").toString();
+            QString date      = QDate::fromString(query.value("date").toString(), Qt::ISODate).toString("dd.MM.yyyy");
             QString time      = query.value("time").toString();
             QString type      = query.value("type").toString();
             QString category  = query.value("category").toString();
@@ -3007,6 +3025,8 @@ void ConfiguratorWindow::importEventJournalToTable()
     }
 
     db.close();
+
+    ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
 }
 //-----------------------------------------------
 void ConfiguratorWindow::exportEventJournalToDb()
@@ -3099,49 +3119,21 @@ void ConfiguratorWindow::exportEventJournalToDb()
     if(id == -1)
         return;
 
-    int pos_beg = 0;
-    int pos_end = rows - 1;
+    QPoint pos(0, rows - 1);
 
     // если группа выбора журнала события активна и активен переключатель выбора даты - ищем строки по дате
     if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
     {
-        QDate date_beg = m_calendar_wgt->dateBegin();
-        QDate date_end = m_calendar_wgt->dateEnd();
-
-        bool isBegin = false;
-
-        for(int i = 0; i < rows; i++)
-        {
-            QTableWidgetItem* item = ui->tablewgtEventJournal->item(i, 1);
-
-            if(!item)
-                continue;
-
-            QDate date = QDate::fromString(item->text(), "dd.MM.yy");
-
-            if(date.year() > 1900 && date.year() < 2000)
-                date.setDate(date.year() + 100, date.month(), date.day());
-
-            if((date == date_beg || date > date_beg) && !isBegin) // текущая дата равна искомой или больше искомой
-            {                                                     // и флаг первого совадения ложь
-                pos_beg = i; // сохраняем текущий индекс
-                isBegin = true;
-            }
-            else if(date == date_end && isBegin) // текущая дата равна искмой даты конца и флаг истина - сохраняем текущий индекс
-            {
-                pos_end = i;
-            }
-            else if(date > date_end) // текущая дата больше искомой - выходим
-                break;
-        }
+        pos = indexDateFilter(ui->tablewgtEventJournal, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
     }
 
     db.transaction();
 
-    for(int i = pos_beg; i <= pos_end; i++)
+    for(int i = pos.x(); i <= pos.y(); i++)
     {
         int     id_event  = ui->tablewgtEventJournal->item(i, 0)->text().toInt();
-        QString date      = ui->tablewgtEventJournal->item(i, 1)->text();
+        QString date      = QDate::fromString(ui->tablewgtEventJournal->item(i, 1)->text(),
+                                              "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
         QString time      = ui->tablewgtEventJournal->item(i, 2)->text();
         QString type      = ui->tablewgtEventJournal->item(i, 3)->text();
         QString category  = ui->tablewgtEventJournal->item(i, 4)->text();
@@ -3300,6 +3292,40 @@ int ConfiguratorWindow::recordCountDb(QSqlDatabase& db, const QString& table_nam
         return -1;
 
     return query.value(0).toInt();
+}
+//---------------------------------------------------------------------------------------------------
+QPoint ConfiguratorWindow::indexDateFilter(QTableWidget* table, const QDate& begin, const QDate& end)
+{
+    int  rows    = table->rowCount();
+    bool isBegin = false;
+    QPoint res(0, rows - 1);
+
+    for(int i = 0; i < rows; i++)
+    {
+        QTableWidgetItem* item = ui->tablewgtEventJournal->item(i, 1);
+
+        if(!item)
+            continue;
+
+        QDate date = QDate::fromString(item->text(), "dd.MM.yy");
+
+        if(date.year() > 1900 && date.year() < 2000)
+            date.setDate(date.year() + 100, date.month(), date.day());
+
+        if((date == begin || date > begin) && !isBegin) // текущая дата равна искомой или больше искомой
+        {                                                     // и флаг первого совадения ложь
+            res.setX(i); // сохраняем текущий индекс
+            isBegin = true;
+        }
+        else if(date == end && isBegin) // текущая дата равна искмой даты конца и флаг истина - сохраняем текущий индекс
+        {
+            res.setY(i);
+        }
+        else if(date > end) // текущая дата больше искомой - выходим
+            break;
+    }
+
+    return res;
 }
 //-----------------------------------------------------------------------------------
 QPoint ConfiguratorWindow::indexSettingKey(const QString& first, const QString& last)

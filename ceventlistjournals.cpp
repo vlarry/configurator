@@ -20,6 +20,8 @@ CEventListJournals::CEventListJournals(QVector<cell_t>& list, QWidget* parent):
 
     ui->listwgtListEventJournals->addItems(items);
     ui->listwgtListEventJournals->setCurrentRow(0);
+
+    connect(ui->listwgtListEventJournals, &QListWidget::itemDoubleClicked, this, &CEventListJournals::slotDoubleClicked);
 }
 //---------------------------------------
 CEventListJournals::~CEventListJournals()
@@ -30,4 +32,11 @@ CEventListJournals::~CEventListJournals()
 int CEventListJournals::currentId() const
 {
     return m_cells[ui->listwgtListEventJournals->currentRow()].id;
+}
+//---------------------------------------------------------------
+void CEventListJournals::slotDoubleClicked(QListWidgetItem* item)
+{
+    ui->listwgtListEventJournals->setCurrentItem(item);
+
+    accept();
 }

@@ -28,6 +28,7 @@
     #include <QThread>
     #include <QtConcurrent/QtConcurrent>
     #include <QFileDialog>
+    #include <QShowEvent>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -217,6 +218,7 @@
             void deviceSync(bool state = false);
             int  recordCount(const QString& table, const QString& parameter, const QString& value); // количество записей в запросе
             int  recordCountDb(QSqlDatabase& db, const QString& table_name, const QString& parameter, const QString& value);
+            QPoint            indexDateFilter(QTableWidget* table, const QDate& begin, const QDate& end);
             QPoint            indexSettingKey(const QString& first, const QString& last);
             QPoint            indexPurposeKey(const QString& first, const QString& last);
             QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);
