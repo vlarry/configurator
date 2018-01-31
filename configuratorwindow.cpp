@@ -2018,6 +2018,10 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
                                                                            QString::number(parameter_event) +
                                                                            QString(")")));
 
+            ui->tablewgtEventJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+            ui->tablewgtEventJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+            ui->tablewgtEventJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+
             if(ui->checkboxEventJournalScrollTable->isChecked())
                 ui->tablewgtEventJournal->scrollToBottom();
         }
@@ -2515,6 +2519,15 @@ void ConfiguratorWindow::exportToPDF()
     charFormat.setFontPointSize(24);
     cursor.setCharFormat(charFormat);
 
+    QTextBlockFormat blockFormatCenterHeaderColumn;
+    blockFormatCenterHeaderColumn.setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+
+    QTextBlockFormat blockFormatCenterCell;
+    blockFormatCenterCell.setAlignment(Qt::AlignCenter);
+
+    QTextBlockFormat blockFormatLeftCell;
+    blockFormatLeftCell.setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
     QDateTime dt = QDateTime::currentDateTime();
 
     cursor.insertText(curReportName);
@@ -2525,7 +2538,16 @@ void ConfiguratorWindow::exportToPDF()
     int col_count = curTable->columnCount();
 
     QTextTableFormat tableFormat;
+    QVector<QTextLength> columnLength;
 
+    columnLength << QTextLength(QTextLength::PercentageLength, 1);
+    columnLength << QTextLength(QTextLength::PercentageLength, 1);
+    columnLength << QTextLength(QTextLength::PercentageLength, 1);
+    columnLength << QTextLength(QTextLength::PercentageLength, 37);
+    columnLength << QTextLength(QTextLength::PercentageLength, 30);
+    columnLength << QTextLength(QTextLength::PercentageLength, 30);
+
+    tableFormat.setColumnWidthConstraints(columnLength);
     tableFormat.setCellPadding(5);
     tableFormat.setCellSpacing(0);
     tableFormat.setHeaderRowCount(1);
@@ -2544,15 +2566,25 @@ void ConfiguratorWindow::exportToPDF()
         headerList << curTable->horizontalHeaderItem(i)->text();
     }
 
+    QTextCharFormat charFormatHeader;
+    charFormatHeader.setFontWeight(QFont::Bold);
+
     for(QString header: headerList)
     {
+        cursor.setBlockFormat(blockFormatCenterHeaderColumn);
+        cursor.setCharFormat(charFormatHeader);
         cursor.insertText(header);
         cursor.movePosition(QTextCursor::NextCell);
     }
 
     if(row_count != 0) // если таблица не пустая, то добавляем данные
     {
-        for(int i = 0; i < row_count; i++)
+        QPoint pos(0, row_count - 1);
+
+        if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
+            pos = indexDateFilter(curTable, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
+
+        for(int i = pos.x(); i <= pos.y(); i++)
         {
             table->appendRows(1);
 
@@ -3018,6 +3050,10 @@ void ConfiguratorWindow::importEventJournalToTable()
             ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(type));
             ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(category));
             ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(parameter));
+
+            ui->tablewgtEventJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+            ui->tablewgtEventJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+            ui->tablewgtEventJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
         }
 
         ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
