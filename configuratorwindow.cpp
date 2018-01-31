@@ -64,7 +64,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->tablewgtEventJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tablewgtEventJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->tablewgtEventJournal->setColumnWidth(0, 50);
-    ui->tablewgtEventJournal->setColumnWidth(1, 75);
+    ui->tablewgtEventJournal->setColumnWidth(1, 100);
     ui->tablewgtEventJournal->setColumnWidth(2, 100);
     ui->tablewgtEventJournal->setColumnWidth(4, 200);
     ui->tablewgtEventJournal->setColumnWidth(5, 300);
@@ -2858,7 +2858,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
     switch(index)
     {
         case 15: // текущий журнал событий
-            int widthColumnType = ui->tablewgtEventJournal->width() - 725;
+            int widthColumnType = ui->tablewgtEventJournal->width() - 750;
             ui->tablewgtEventJournal->setColumnWidth(3, widthColumnType);
             updateParameterEventJournal();
         break;
