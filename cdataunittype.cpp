@@ -1,21 +1,21 @@
 #include "cdataunittype.h"
 //-----------------------------
 CDataUnitType::CDataUnitType():
-    m_error(NO_ERROR)
+    m_error(NO_DEVICE_ERROR)
 {
     
 }
 //-------------------------------------------
 CDataUnitType::CDataUnitType(quint8 slaveID):
     m_slaveID(slaveID),
-    m_error(NO_ERROR)
+    m_error(NO_DEVICE_ERROR)
 {
     m_slaveID = slaveID;
 }
 //----------------------------------------------
 CDataUnitType::CDataUnitType(FunctionType type):
     m_type(type),
-    m_error(NO_ERROR)
+    m_error(NO_DEVICE_ERROR)
 {
     m_type = type;
 }
@@ -26,7 +26,7 @@ CDataUnitType::CDataUnitType(quint8 slaveID, CDataUnitType::FunctionType type,
     m_slaveID(slaveID),
     m_address(address),
     m_values(values),
-    m_error(NO_ERROR)
+    m_error(NO_DEVICE_ERROR)
 {
     
 }
@@ -129,7 +129,7 @@ QString CDataUnitType::errorToString(quint16 code)
             str_error += "установки умолчаний из-за некорректности.\n";
         break;
 
-        case NO_ERROR:
+        case NO_DEVICE_ERROR:
             str_error = "";
         break;
 
@@ -145,7 +145,7 @@ QString CDataUnitType::errorStringList()
 {
     QString str = "";
 
-    if(m_error != NO_ERROR)
+    if(m_error != NO_DEVICE_ERROR)
     {
         for(int i = 0; i < 16; i++)
         {

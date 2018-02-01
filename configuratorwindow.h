@@ -174,7 +174,8 @@
             void clearEventJournal();
             void menuPanelCtrl();
             void variablePanelCtrl();
-            void exportToPDF();
+            void exportToPDF(QTableWidget* tableWidget, const QString& reportName, const QString& sn_device,
+                                                                                   const QString& filename);
             void exportPurposeToJSON();
             void importPurposeFromJSON();
             void eventJournalTypeRange();

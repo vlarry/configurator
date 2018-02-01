@@ -67,7 +67,7 @@ QString CStatusBar::serialNumberText()
     sn.remove(" ");
 
     if(sn.isEmpty() || !isState())
-        return "unknown";
+        return "0-0-0-0-0";
 
     return sn;
 }
@@ -142,5 +142,11 @@ void CStatusBar::stopProgressbar()
 {
     m_timerProgressbar->stop();
     m_timerProgressbar->setProperty("MODE", false);
+
+    int value = ui->progressbarProcess->value();
+
+    value = (100 - value)/10;
+    value = ((value == 0)?50:value*5);
+
     m_timerProgressbar->start(50);
 }

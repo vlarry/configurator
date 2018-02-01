@@ -18,7 +18,7 @@
             //------------
             enum ErrorType
             {
-                NO_ERROR                    = ((quint16)0x0000),
+                NO_DEVICE_ERROR             = ((quint16)0x0000),
                 BKPSRAM_ERROR               = ((quint16)0x0001),
                 MAV_ERROR                   = ((quint16)0x0002),
                 MDVV1_ERROR                 = ((quint16)0x0004),

@@ -460,7 +460,7 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 
     quint16 error = unit.error();
 
-    if(error != NO_ERROR) // если ошибка, то выводим ее
+    if(error != CDataUnitType::NO_DEVICE_ERROR) // если ошибка, то выводим ее
     {
         QMessageBox::warning(this, tr("Ответ устройства"),
                              tr("В ответе обнаружена ошибка.\n") + unit.errorStringList());
@@ -2045,20 +2045,22 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
         quint8  month        = (quint8)(((data[6] >> 8)&0xFF)*10) + (quint8)(data[6]&0xFF); // месяц
         quint8  day          = (quint8)(((data[7] >> 8)&0xFF)*10) + (quint8)(data[7]&0xFF); // день
 
+        QString dev_code_str = m_device_code_list[dev_code];
+
+        if(dev_code_str.isEmpty())
+            dev_code_str = "0";
+
         QString str;
+        QString date = "0";
 
-        if(!m_device_code_list[dev_code].isEmpty())
-        {
-            QDate dt(year, month, day);
+        if(year != 0 && month != 0 && day != 0)
+            date = QDate(year, month, day).toString("yy.MM.dd");
 
-            str = QString("S/n: %1-%2-%3-%4-%5").arg(m_device_code_list[dev_code]).
-                                                 arg(sn_code).
-                                                 arg(party_num).
-                                                 arg(firmware_var).
-                                                 arg(dt.toString("yy.MM.dd"));
-        }
-        else
-            str = "S/n: unknown";
+        str = QString("S/n: %1-%2-%3-%4-%5").arg(dev_code_str).
+                                             arg(sn_code).
+                                             arg(party_num).
+                                             arg(firmware_var).
+                                             arg(date);
 
         m_status_bar->setSerialNumber(str);
     }
@@ -2484,9 +2486,24 @@ void ConfiguratorWindow::variablePanelCtrl()
     else
         m_calculateWidget->hide();
 }
-//------------------------------------
-void ConfiguratorWindow::exportToPDF()
+//-----------------------------------------
+void ConfiguratorWindow::startExportToPDF()
 {
+    QTableWidget* table      = nullptr;
+    QString       reportName = "";
+
+    if(ui->stwgtMain->currentIndex() == 15)
+    {
+        table   = ui->tablewgtEventJournal;
+        reportName = tr("Отчет жунала событий");
+    }
+
+    if(!table)
+        return;
+
+    QString sn_device = "s/n: " + m_status_bar->serialNumberText();
+    QString fileName  = QString("%1 %2.%3").arg(reportName).arg(m_status_bar->serialNumberText()).arg("pdf");
+
     QDir dir;
 
     if(!dir.exists("reports"))
@@ -2494,48 +2511,56 @@ void ConfiguratorWindow::exportToPDF()
         dir.mkdir("reports");
     }
 
-    QTableWidget* curTable      = nullptr;
-    QString       curReportName = "";
+    fileName = QFileDialog::getSaveFileName(this, tr("Экспорт в PDF"), "reports/" + fileName, tr("pdf (*.pdf)"));
 
-    if(ui->stwgtMain->currentIndex() == 15)
-    {
-        curTable      = ui->tablewgtEventJournal;
-        curReportName = tr("Отчет журнала событий");
-    }
-
-    if(!curTable)
+    if(fileName.isEmpty())
         return;
 
+    connect(m_watcher, &QFutureWatcher<void>::finished, m_status_bar, &CStatusBar::stopProgressbar);
+
+    m_status_bar->setProgressbarTitle("Экспорт в PDF");
+    m_status_bar->startProgressbar();
+
+    QFuture<void> future = QtConcurrent::run(this, &exportToPDF, table, reportName, sn_device, fileName);
+    m_watcher->setFuture(future);
+}
+//------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& reportName, const QString& sn_device,
+                                                                                           const QString& filename)
+{
     QTextDocument* reportPDF = new QTextDocument;
-    QTextCursor    cursor(reportPDF);
+    reportPDF->clear();
+
+    QTextCursor cursor(reportPDF);
     cursor.movePosition(QTextCursor::Start);
 
-    QTextBlockFormat blockFormat;
-    blockFormat.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
-    blockFormat.setAlignment(Qt::AlignCenter);
-    cursor.insertBlock(blockFormat);
+    QTextBlockFormat blockFormatLeft;
+    blockFormatLeft.setAlignment(Qt::AlignLeft);
 
     QTextCharFormat charFormat;
-    charFormat.setFontPointSize(24);
-    cursor.setCharFormat(charFormat);
+    charFormat.setFontPointSize(10);
 
-    QTextBlockFormat blockFormatCenterHeaderColumn;
-    blockFormatCenterHeaderColumn.setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    QTextBlockFormat blockFormatCenter;
+    blockFormatCenter.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
+    blockFormatCenter.setAlignment(Qt::AlignCenter);
+    cursor.insertBlock(blockFormatCenter);
 
-    QTextBlockFormat blockFormatCenterCell;
-    blockFormatCenterCell.setAlignment(Qt::AlignCenter);
+    QTextCharFormat charFormatHeader;
+    charFormatHeader.setFontPointSize(24);
 
-    QTextBlockFormat blockFormatLeftCell;
-    blockFormatLeftCell.setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
-    QDateTime dt = QDateTime::currentDateTime();
-
-    cursor.insertText(curReportName);
+    cursor.setBlockFormat(blockFormatLeft);
+    cursor.insertText(QDateTime::currentDateTime().toString("dd.MM.yyyy - hh:mm:ss"), charFormat);
     cursor.insertBlock();
-    cursor.insertText(dt.toString("dd.MM.yyyy - hh:mm:ss"));
+    cursor.insertBlock();
+    cursor.movePosition(QTextCursor::End);
+    cursor.setBlockFormat(blockFormatCenter);
+    cursor.insertText(reportName, charFormatHeader);
+    cursor.insertBlock();
+    cursor.insertText(sn_device, charFormatHeader);
+    cursor.insertBlock();
 
-    int row_count = curTable->rowCount();
-    int col_count = curTable->columnCount();
+    int row_count = tableWidget->rowCount();
+    int col_count = tableWidget->columnCount();
 
     QTextTableFormat tableFormat;
     QVector<QTextLength> columnLength;
@@ -2543,9 +2568,9 @@ void ConfiguratorWindow::exportToPDF()
     columnLength << QTextLength(QTextLength::PercentageLength, 1);
     columnLength << QTextLength(QTextLength::PercentageLength, 1);
     columnLength << QTextLength(QTextLength::PercentageLength, 1);
-    columnLength << QTextLength(QTextLength::PercentageLength, 37);
-    columnLength << QTextLength(QTextLength::PercentageLength, 30);
-    columnLength << QTextLength(QTextLength::PercentageLength, 30);
+    columnLength << QTextLength(QTextLength::VariableLength, 60);
+    columnLength << QTextLength(QTextLength::PercentageLength, 20);
+    columnLength << QTextLength(QTextLength::PercentageLength, 20);
 
     tableFormat.setColumnWidthConstraints(columnLength);
     tableFormat.setCellPadding(5);
@@ -2563,16 +2588,18 @@ void ConfiguratorWindow::exportToPDF()
 
     for(int i = 0; i < col_count; i++)
     {
-        headerList << curTable->horizontalHeaderItem(i)->text();
+        headerList << tableWidget->horizontalHeaderItem(i)->text();
     }
 
-    QTextCharFormat charFormatHeader;
-    charFormatHeader.setFontWeight(QFont::Bold);
+    QTextBlockFormat blockFormatCenterHeaderColumn;
+    blockFormatCenterHeaderColumn.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+    QTextCharFormat charFormatHeaderTable;
+    charFormatHeaderTable.setFontWeight(QFont::Bold);
 
     for(QString header: headerList)
     {
         cursor.setBlockFormat(blockFormatCenterHeaderColumn);
-        cursor.setCharFormat(charFormatHeader);
+        cursor.setCharFormat(charFormatHeaderTable);
         cursor.insertText(header);
         cursor.movePosition(QTextCursor::NextCell);
     }
@@ -2582,7 +2609,7 @@ void ConfiguratorWindow::exportToPDF()
         QPoint pos(0, row_count - 1);
 
         if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
-            pos = indexDateFilter(curTable, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
+            pos = indexDateFilter(tableWidget, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
 
         for(int i = pos.x(); i <= pos.y(); i++)
         {
@@ -2593,7 +2620,7 @@ void ConfiguratorWindow::exportToPDF()
             for(int j = 0; j < col_count; j++)
             {
                 cursor.movePosition(QTextCursor::NextCell);
-                cursor.insertText(curTable->item(i, j)->text());
+                cursor.insertText(tableWidget->item(i, j)->text());
             }
         }
     }
@@ -2603,7 +2630,7 @@ void ConfiguratorWindow::exportToPDF()
     printer->setOutputFormat(QPrinter::PdfFormat);
     printer->setPaperSize(QPrinter::A4);
     printer->setPageMargins(15, 0, 0, 0, QPrinter::Millimeter);
-    printer->setOutputFileName("reports/report.pdf");
+    printer->setOutputFileName(filename);
 
     reportPDF->print(printer);
 }
@@ -2956,6 +2983,12 @@ void ConfiguratorWindow::importEventJournalToTable()
     if(fileName.isEmpty())
         return;
 
+    if(QFileInfo(fileName).baseName() == "system")
+    {
+        QMessageBox::warning(this, tr("Открытие базы данных журнала событий"), tr("Нельзя использовть системную базу данных"));
+        return;
+    }
+
     QSqlDatabase db;
 
     if(!connectDb(db, fileName))
@@ -3085,15 +3118,26 @@ void ConfiguratorWindow::exportEventJournalToDb()
 
     QDir dir;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
-                                                    dir.absolutePath() + "/db", tr("База данных (*.db)"), nullptr,
-                                                    QFileDialog::DontConfirmOverwrite);
+                                                          dir.absolutePath() + "/db/" + nameJournal + ".db",
+                                                          tr("База данных (*.db)"), nullptr,
+                                                          QFileDialog::DontConfirmOverwrite);
+
+    if(fileName.isEmpty())
+        return;
+
+    if(QFileInfo(fileName).baseName() == "system")
+    {
+        QMessageBox::warning(this, tr("Экспорт журнала событий в базу данных"),
+                                   tr("Нельзя произвести экпорт в системную базу данных."));
+        return;
+    }
 
     QFileInfo finfo;
 
     if(finfo.exists(fileName)) // если файл существует
     {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, tr("Экспорт журнала событий"),
+        reply = QMessageBox::question(this, tr("Экспорт журнала событий в базу данных"),
                                       tr("Такая база уже существует. Перезаписать данные?"),
                                       QMessageBox::Yes | QMessageBox::No);
 
@@ -3198,17 +3242,6 @@ void ConfiguratorWindow::exportEventJournalToDb()
 
     db.commit();
     db.close();
-}
-//-----------------------------------------
-void ConfiguratorWindow::startExportToPDF()
-{
-    connect(m_watcher, &QFutureWatcher<void>::finished, m_status_bar, &CStatusBar::stopProgressbar);
-
-    m_status_bar->setProgressbarTitle("Экспорт в PDF");
-    m_status_bar->startProgressbar();
-
-    QFuture<void> future = QtConcurrent::run(this, &exportToPDF);
-    m_watcher->setFuture(future);
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
