@@ -2502,7 +2502,7 @@ void ConfiguratorWindow::startExportToPDF()
         return;
 
     QString sn_device = "s/n: " + m_status_bar->serialNumberText();
-    QString fileName  = QString("%1 %2.%3").arg(reportName).arg(m_status_bar->serialNumberText()).arg("pdf");
+    QString fileName  = QString("%1 %2").arg(reportName).arg(m_status_bar->serialNumberText());
 
     QDir dir;
 
@@ -2526,7 +2526,7 @@ void ConfiguratorWindow::startExportToPDF()
 }
 //------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& reportName, const QString& sn_device,
-                                                                                           const QString& filename)
+                                                                const QString& filename)
 {
     QTextDocument* reportPDF = new QTextDocument;
     reportPDF->clear();
@@ -2593,6 +2593,7 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 
     QTextBlockFormat blockFormatCenterHeaderColumn;
     blockFormatCenterHeaderColumn.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+
     QTextCharFormat charFormatHeaderTable;
     charFormatHeaderTable.setFontWeight(QFont::Bold);
 
@@ -2629,8 +2630,12 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 
     printer->setOutputFormat(QPrinter::PdfFormat);
     printer->setPaperSize(QPrinter::A4);
-    printer->setPageMargins(15, 0, 0, 0, QPrinter::Millimeter);
+    printer->setPageMargins(15, 10, 10, 10, QPrinter::Millimeter);
     printer->setOutputFileName(filename);
+
+    reportPDF->setPageSize(printer->pageRect().size());
+
+    qDebug() << reportPDF->pageCount();
 
     reportPDF->print(printer);
 }
@@ -2977,8 +2982,10 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     QDir dir;
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Открытие базы данных журнала событий"),
-                                                    dir.absolutePath() + "/db", "*.db");
+    QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
+    QString fileName    = QFileDialog::getOpenFileName(this, tr("Импорт журнала событий из базы данных"),
+                                                             dir.absolutePath() + "/db/" + nameJournal,
+                                                             tr("База данных (*.db)"));
 
     if(fileName.isEmpty())
         return;
@@ -3118,7 +3125,7 @@ void ConfiguratorWindow::exportEventJournalToDb()
 
     QDir dir;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
-                                                          dir.absolutePath() + "/db/" + nameJournal + ".db",
+                                                          dir.absolutePath() + "/db/" + nameJournal,
                                                           tr("База данных (*.db)"), nullptr,
                                                           QFileDialog::DontConfirmOverwrite);
 
@@ -3187,7 +3194,7 @@ void ConfiguratorWindow::exportEventJournalToDb()
             return;
         }
 
-        if(recordCount("event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
+        if(recordCountDb(db, "event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
         {
             if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
             {
