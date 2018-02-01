@@ -1,5 +1,78 @@
 #include "configuratorwindow.h"
 #include "ui_configuratorwindow.h"
+
+static const int textMargins = 12; // in millimeters
+static const int borderMargins = 10; // in millimeters
+
+double mmToPixels(QPrinter& printer, int mm)
+{
+    return mm * 0.039370147 * printer.resolution();
+}
+
+void paintPage(QPrinter& printer, int pageNumber, int pageCount,
+                      QPainter* painter, QTextDocument* doc,
+                      const QRectF& textRect, qreal footerHeight)
+{
+    //qDebug() << "Printing page" << pageNumber;
+//    const QSizeF pageSize = printer.paperRect().size();
+    //qDebug() << "pageSize=" << pageSize;
+
+//    const double bm = mmToPixels(printer, borderMargins);
+//    const QRectF borderRect(bm, bm, pageSize.width() - 2 * bm, pageSize.height() - 2 * bm);
+//    painter->drawRect(borderRect);
+
+    painter->save();
+    // textPageRect is the rectangle in the coordinate system of the QTextDocument, in pixels,
+    // and starting at (0,0) for the first page. Second page is at y=doc->pageSize().height().
+    const QRectF textPageRect(0, pageNumber * doc->pageSize().height(), doc->pageSize().width(), doc->pageSize().height());
+    // Clip the drawing so that the text of the other pages doesn't appear in the margins
+    painter->setClipRect(textRect);
+    // Translate so that 0,0 is now the page corner
+    painter->translate(0, -textPageRect.top());
+    // Translate so that 0,0 is the text rect corner
+    painter->translate(textRect.left(), textRect.top());
+    doc->drawContents(painter);
+    painter->restore();
+
+    // Footer: page number or "end"
+    QRectF footerRect = textRect;
+    footerRect.setTop(textRect.bottom());
+    footerRect.setHeight(footerHeight);
+    if (pageNumber == pageCount - 1)
+        painter->drawText(footerRect, Qt::AlignCenter, QObject::tr("Fin du Bordereau de livraison"));
+    else
+        painter->drawText(footerRect, Qt::AlignVCenter | Qt::AlignRight, QObject::tr("Страница %1 из %2").arg(pageNumber+1).arg(pageCount));
+}
+
+void printDocument(QPrinter& printer, QTextDocument* doc, QWidget* parentWidget)
+{
+    QPainter painter( &printer );
+    QSizeF pageSize = printer.pageRect().size(); // page size in pixels
+    // Calculate the rectangle where to lay out the text
+    const double tm = mmToPixels(printer, textMargins);
+    const qreal footerHeight = painter.fontMetrics().height();
+    const QRectF textRect(tm, tm, pageSize.width() - 2 * tm, pageSize.height() - 2 * tm - footerHeight);
+    //qDebug() << "textRect=" << textRect;
+    doc->setPageSize(textRect.size());
+
+    const int pageCount = doc->pageCount();
+    qDebug() << "page count: " << pageCount;
+//    QProgressDialog dialog( QObject::tr( "Printing" ), QObject::tr( "Cancel" ), 0, pageCount, parentWidget );
+//    dialog.setWindowModality( Qt::ApplicationModal );
+
+    bool firstPage = true;
+    for (int pageIndex = 0; pageIndex < pageCount; ++pageIndex) {
+//        dialog.setValue( pageIndex );
+//        if (dialog.wasCanceled())
+//             break;
+
+        if (!firstPage)
+            printer.newPage();
+
+        paintPage( printer, pageIndex, pageCount, &painter, doc, textRect, footerHeight );
+        firstPage = false;
+    }
+}
 //------------------------------------------------------
 ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
@@ -2626,18 +2699,22 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
         }
     }
 
-    QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
+//    QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
 
-    printer->setOutputFormat(QPrinter::PdfFormat);
-    printer->setPaperSize(QPrinter::A4);
-    printer->setPageMargins(15, 10, 10, 10, QPrinter::Millimeter);
-    printer->setOutputFileName(filename);
+//    printer->setOutputFormat(QPrinter::PdfFormat);
+//    printer->setPaperSize(QPrinter::A4);
+//    printer->setPageMargins(15, 10, 10, 10, QPrinter::Millimeter);
+//    printer->setOutputFileName(filename);
 
-    reportPDF->setPageSize(printer->pageRect().size());
+//    qDebug() << reportPDF->pageCount();
 
-    qDebug() << reportPDF->pageCount();
+//    reportPDF->print(printer);
 
-    reportPDF->print(printer);
+    QPrinter printer;
+    printer.setOutputFileName(filename);
+    printer.setFullPage(true);
+
+    printDocument(printer, reportPDF, 0);
 }
 //--------------------------------------------
 void ConfiguratorWindow::exportPurposeToJSON()
