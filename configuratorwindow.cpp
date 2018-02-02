@@ -2679,42 +2679,45 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 //--------------------------------------------
 void ConfiguratorWindow::exportPurposeToJSON()
 {
-    qDebug() << "Экспорт привязок в файл JSON";
-
     CDataTable data;
-    QString    fileName;
+    QString    fileNameDefault;
     QString    typeName;
 
     if(ui->stwgtMain->currentIndex() == 22)
     {
-        data     = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTable();
-        fileName = "led";
-        typeName = "LED";
+        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTable();
+        typeName        = "LED";
+        fileNameDefault = "led";
     }
     else if(ui->stwgtMain->currentIndex() == 23)
     {
-        data     = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTable();
-        fileName = "inputs";
-        typeName = "INPUT";
+        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTable();
+        typeName        = "INPUT";
+        fileNameDefault = "input";
     }
     else if(ui->stwgtMain->currentIndex() == 24)
     {
-        data     = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
-        fileName = "relay";
-        typeName = "RELAY";
+        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
+        typeName        = "RELAY";
+        fileNameDefault = "relay";
     }
 
     if(data.count() == 0)
         return;
-
-    qDebug() << "data.count: " << data.count();
 
     QDir dir;
 
     if(!dir.exists("profiles"))
         dir.mkdir("profiles");
 
-    QFile file("profiles/" + fileName + ".prf");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Открытие профиля привязок"),
+                                                    QString(dir.absolutePath() + "/%1/%2").arg("profiles").arg(fileNameDefault),
+                                                    tr("Профили привязок (*.prf)"));
+
+    if(fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
 
     if(!file.open(QFile::WriteOnly))
     {
@@ -2773,34 +2776,43 @@ void ConfiguratorWindow::exportPurposeToJSON()
 //----------------------------------------------
 void ConfiguratorWindow::importPurposeFromJSON()
 {
-    QString fileName;
+    QString fileNameDefault;
     QString typeName;
 
     CMatrixPurposeModel* model = nullptr;
 
     if(ui->stwgtMain->currentIndex() == 22)
     {
-        fileName = "led";
-        typeName = "LED";
+        fileNameDefault = "led";
+        typeName        = "LED";
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model());
     }
     else if(ui->stwgtMain->currentIndex() == 23)
     {
-        fileName = "inputs";
-        typeName = "INPUT";
+        fileNameDefault = "inputs";
+        typeName        = "INPUT";
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
     }
     else if(ui->stwgtMain->currentIndex() == 24)
     {
-        fileName = "relay";
-        typeName = "RELAY";
+        fileNameDefault = "relay";
+        typeName        = "RELAY";
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model());
     }
 
-    QFile file("profiles/" + fileName + ".prf");
+    QDir dir;
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Открытие профиля привязок"),
+                                                    QString(dir.absolutePath() + "/%1/%2").arg("profiles").arg(fileNameDefault),
+                                                    tr("Профили привязок (*.prf)"));
+
+    if(fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
 
     if(!file.open(QFile::ReadOnly | QFile::Text))
     {
