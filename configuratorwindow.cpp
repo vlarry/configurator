@@ -1,78 +1,5 @@
 #include "configuratorwindow.h"
 #include "ui_configuratorwindow.h"
-
-static const int textMargins = 12; // in millimeters
-static const int borderMargins = 10; // in millimeters
-
-double mmToPixels(QPrinter& printer, int mm)
-{
-    return mm * 0.039370147 * printer.resolution();
-}
-
-void paintPage(QPrinter& printer, int pageNumber, int pageCount,
-                      QPainter* painter, QTextDocument* doc,
-                      const QRectF& textRect, qreal footerHeight)
-{
-    //qDebug() << "Printing page" << pageNumber;
-//    const QSizeF pageSize = printer.paperRect().size();
-    //qDebug() << "pageSize=" << pageSize;
-
-//    const double bm = mmToPixels(printer, borderMargins);
-//    const QRectF borderRect(bm, bm, pageSize.width() - 2 * bm, pageSize.height() - 2 * bm);
-//    painter->drawRect(borderRect);
-
-    painter->save();
-    // textPageRect is the rectangle in the coordinate system of the QTextDocument, in pixels,
-    // and starting at (0,0) for the first page. Second page is at y=doc->pageSize().height().
-    const QRectF textPageRect(0, pageNumber * doc->pageSize().height(), doc->pageSize().width(), doc->pageSize().height());
-    // Clip the drawing so that the text of the other pages doesn't appear in the margins
-    painter->setClipRect(textRect);
-    // Translate so that 0,0 is now the page corner
-    painter->translate(0, -textPageRect.top());
-    // Translate so that 0,0 is the text rect corner
-    painter->translate(textRect.left(), textRect.top());
-    doc->drawContents(painter);
-    painter->restore();
-
-    // Footer: page number or "end"
-    QRectF footerRect = textRect;
-    footerRect.setTop(textRect.bottom());
-    footerRect.setHeight(footerHeight);
-    if (pageNumber == pageCount - 1)
-        painter->drawText(footerRect, Qt::AlignCenter, QObject::tr("Fin du Bordereau de livraison"));
-    else
-        painter->drawText(footerRect, Qt::AlignVCenter | Qt::AlignRight, QObject::tr("Страница %1 из %2").arg(pageNumber+1).arg(pageCount));
-}
-
-void printDocument(QPrinter& printer, QTextDocument* doc, QWidget* parentWidget)
-{
-    QPainter painter( &printer );
-    QSizeF pageSize = printer.pageRect().size(); // page size in pixels
-    // Calculate the rectangle where to lay out the text
-    const double tm = mmToPixels(printer, textMargins);
-    const qreal footerHeight = painter.fontMetrics().height();
-    const QRectF textRect(tm, tm, pageSize.width() - 2 * tm, pageSize.height() - 2 * tm - footerHeight);
-    //qDebug() << "textRect=" << textRect;
-    doc->setPageSize(textRect.size());
-
-    const int pageCount = doc->pageCount();
-    qDebug() << "page count: " << pageCount;
-//    QProgressDialog dialog( QObject::tr( "Printing" ), QObject::tr( "Cancel" ), 0, pageCount, parentWidget );
-//    dialog.setWindowModality( Qt::ApplicationModal );
-
-    bool firstPage = true;
-    for (int pageIndex = 0; pageIndex < pageCount; ++pageIndex) {
-//        dialog.setValue( pageIndex );
-//        if (dialog.wasCanceled())
-//             break;
-
-        if (!firstPage)
-            printer.newPage();
-
-        paintPage( printer, pageIndex, pageCount, &painter, doc, textRect, footerHeight );
-        firstPage = false;
-    }
-}
 //------------------------------------------------------
 ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
@@ -2601,39 +2528,15 @@ void ConfiguratorWindow::startExportToPDF()
 void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& reportName, const QString& sn_device,
                                                                 const QString& filename)
 {
+    QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
+
+    printer->setOutputFormat(QPrinter::PdfFormat);
+    printer->setPaperSize(QPrinter::A4);
+    printer->setPageMargins(15, 10, 10, 10, QPrinter::Millimeter);
+    printer->setOutputFileName(filename);
+
     QTextDocument* reportPDF = new QTextDocument;
-    reportPDF->clear();
-
-    QTextCursor cursor(reportPDF);
-    cursor.movePosition(QTextCursor::Start);
-
-    QTextBlockFormat blockFormatLeft;
-    blockFormatLeft.setAlignment(Qt::AlignLeft);
-
-    QTextCharFormat charFormat;
-    charFormat.setFontPointSize(10);
-
-    QTextBlockFormat blockFormatCenter;
-    blockFormatCenter.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
-    blockFormatCenter.setAlignment(Qt::AlignCenter);
-    cursor.insertBlock(blockFormatCenter);
-
-    QTextCharFormat charFormatHeader;
-    charFormatHeader.setFontPointSize(24);
-
-    cursor.setBlockFormat(blockFormatLeft);
-    cursor.insertText(QDateTime::currentDateTime().toString("dd.MM.yyyy - hh:mm:ss"), charFormat);
-    cursor.insertBlock();
-    cursor.insertBlock();
-    cursor.movePosition(QTextCursor::End);
-    cursor.setBlockFormat(blockFormatCenter);
-    cursor.insertText(reportName, charFormatHeader);
-    cursor.insertBlock();
-    cursor.insertText(sn_device, charFormatHeader);
-    cursor.insertBlock();
-
-    int row_count = tableWidget->rowCount();
-    int col_count = tableWidget->columnCount();
+    reportPDF->setPageSize(printer->pageRect().size());
 
     QTextTableFormat tableFormat;
     QVector<QTextLength> columnLength;
@@ -2653,68 +2556,80 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
     tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Ridge);
     tableFormat.setBorder(1);
     tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
-    tableFormat.setBackground(QBrush(QImage(":/images/resource/images/background_report.png")));
+//    tableFormat.setBackground(QBrush(QImage(":/images/resource/images/background_report.png")));
 
-    QTextTable* table = cursor.insertTable(1, col_count, tableFormat);
+    QTextCursor cursor(reportPDF);
+    QTextBlockFormat blockFormat;
+    blockFormat.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
 
-    QStringList headerList;
+    cursor.insertBlock(blockFormat);
 
-    for(int i = 0; i < col_count; i++)
+    int columnCount = tableWidget->columnCount();
+    int rowCount    = tableWidget->rowCount();
+
+    QTextTable* textTable = cursor.insertTable(rowCount + 1, columnCount, tableFormat);
+
+    QTextCharFormat tableHeaderFormat;
+    tableHeaderFormat.setFontWeight(QFont::Bold);
+
+    for(int i = 0; i < columnCount; i++)
     {
-        headerList << tableWidget->horizontalHeaderItem(i)->text();
+        QTextTableCell cell = textTable->cellAt(0, i);
+        Q_ASSERT(cell.isValid());
+        cell.setFormat(tableHeaderFormat);
+        QTextCursor cellCursor = cell.firstCursorPosition();
+        cellCursor.insertText(tableWidget->horizontalHeaderItem(i)->text());
     }
 
-    QTextBlockFormat blockFormatCenterHeaderColumn;
-    blockFormatCenterHeaderColumn.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
-
-    QTextCharFormat charFormatHeaderTable;
-    charFormatHeaderTable.setFontWeight(QFont::Bold);
-
-    for(QString header: headerList)
+    for(int i = 0; i < rowCount; i++)
     {
-        cursor.setBlockFormat(blockFormatCenterHeaderColumn);
-        cursor.setCharFormat(charFormatHeaderTable);
-        cursor.insertText(header);
-        cursor.movePosition(QTextCursor::NextCell);
-    }
-
-    if(row_count != 0) // если таблица не пустая, то добавляем данные
-    {
-        QPoint pos(0, row_count - 1);
-
-        if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
-            pos = indexDateFilter(tableWidget, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
-
-        for(int i = pos.x(); i <= pos.y(); i++)
+        for(int j = 0; j < columnCount; j++)
         {
-            table->appendRows(1);
-
-            cursor.movePosition(QTextCursor::PreviousRow);
-
-            for(int j = 0; j < col_count; j++)
-            {
-                cursor.movePosition(QTextCursor::NextCell);
-                cursor.insertText(tableWidget->item(i, j)->text());
-            }
+            QTextTableCell cell = textTable->cellAt(i + 1, j);
+            Q_ASSERT(cell.isValid());
+            QTextCursor cellCursor = cell.firstCursorPosition();
+            cellCursor.insertText(tableWidget->item(i, j)->text());
         }
     }
 
-//    QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
+    cursor.movePosition(QTextCursor::End);
 
-//    printer->setOutputFormat(QPrinter::PdfFormat);
-//    printer->setPaperSize(QPrinter::A4);
-//    printer->setPageMargins(15, 10, 10, 10, QPrinter::Millimeter);
-//    printer->setOutputFileName(filename);
+    QPainter painter(printer);
+    QSizeF pageSize = printer->pageRect().size();
+    const qreal footerHeight = painter.fontMetrics().height();
+    const QRectF textRect(0, 0, pageSize.width(), pageSize.height() - footerHeight);
+    reportPDF->setPageSize(textRect.size());
 
-//    qDebug() << reportPDF->pageCount();
+    const int pageCount = reportPDF->pageCount();
 
-//    reportPDF->print(printer);
+    bool firstPage = true;
+    for (int pageIndex = 0; pageIndex < pageCount; ++pageIndex)
+    {
+        if (!firstPage)
+            printer->newPage();
 
-    QPrinter printer;
-    printer.setOutputFileName(filename);
-    printer.setFullPage(true);
+        painter.drawImage(textRect, QImage(":/images/resource/images/background_report.png"));
 
-    printDocument(printer, reportPDF, 0);
+        painter.save();
+            const QRectF textPageRect(0, pageIndex*reportPDF->pageSize().height(), reportPDF->pageSize().width(),
+                                                                                   reportPDF->pageSize().height());
+            painter.setClipRect(textRect);
+            painter.translate(0, -textPageRect.top());
+            painter.translate(textRect.left(), textRect.top());
+            reportPDF->drawContents(&painter);
+        painter.restore();
+
+        QRectF footerRect = textRect;
+        footerRect.setTop(textRect.bottom());
+        footerRect.setHeight(footerHeight);
+
+        painter.drawText(footerRect, Qt::AlignVCenter|Qt::AlignLeft, QDate::currentDate().toString("dd.MM.yyyy"));
+
+        painter.drawText(footerRect, Qt::AlignVCenter|Qt::AlignRight,
+                                     QObject::tr("Страница %1 из %2").arg(pageIndex +1 ).arg(pageCount));
+
+        firstPage = false;
+    }
 }
 //--------------------------------------------
 void ConfiguratorWindow::exportPurposeToJSON()
