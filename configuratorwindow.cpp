@@ -2590,7 +2590,16 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
     int columnCount = tableWidget->columnCount();
     int rowCount    = tableWidget->rowCount();
 
-    QTextTable* textTable = cursor.insertTable(rowCount + 1, columnCount, tableFormat);
+    QPoint pos(0, rowCount - 1);
+
+    if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
+    {
+        pos = indexDateFilter(tableWidget, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
+    }
+
+    int rows = pos.y() - pos.x() + 1;
+
+    QTextTable* textTable = cursor.insertTable(rows + 1, columnCount, tableFormat);
 
     QTextBlockFormat blockTableHeaderFormat;
     blockTableHeaderFormat.setAlignment(Qt::AlignHCenter);
@@ -2608,7 +2617,7 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
         cellCursor.insertText(tableWidget->horizontalHeaderItem(i)->text());
     }
 
-    for(int i = 0; i < rowCount; i++)
+    for(int i = 0; i < rows; i++)
     {
         for(int j = 0; j < columnCount; j++)
         {
@@ -2618,7 +2627,7 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 //            charTableCellVCenterFormat.setVerticalAlignment(QTextCharFormat::AlignMiddle);
 //            cell.setFormat(charTableCellVCenterFormat);
             QTextCursor cellCursor = cell.firstCursorPosition();
-            cellCursor.insertText(tableWidget->item(i, j)->text());
+            cellCursor.insertText(tableWidget->item(pos.x() + i, j)->text());
         }
     }
 
@@ -2638,8 +2647,10 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
     bool firstPage = true;
     for (int pageIndex = 0; pageIndex < pageCount; ++pageIndex)
     {
-        if (!firstPage)
+        if(!firstPage)
+        {
             printer->newPage();
+        }
 
         painter.drawImage(textRect, QImage(":/images/resource/images/background_report.png"));
 
@@ -2649,8 +2660,8 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
             headerRect.setBottom(textRect.top());
             headerRect.setHeight(footerHeight);
 
-            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, tableWidget->item(0, 1)->text() + " - " +
-                                         tableWidget->item(tableWidget->rowCount() - 1, 1)->text());
+            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, tableWidget->item(pos.x(), 1)->text() + " - " +
+                                         tableWidget->item(pos.y(), 1)->text());
 
             painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignRight, QObject::tr("Страниц: %1").arg(pageCount));
         }
@@ -2896,6 +2907,13 @@ void ConfiguratorWindow::eventJournalTypeRange()
     }
     else if(rbtn == ui->radiobtnEventJournalDate)
     {
+        if(ui->tablewgtEventJournal->rowCount() > 0)
+        {
+            m_calendar_wgt->setDateRange(QDate::fromString(ui->tablewgtEventJournal->item(0, 1)->text(), "dd.MM.yyyy"),
+                                         QDate::fromString(ui->tablewgtEventJournal->item(ui->tablewgtEventJournal->rowCount() - 1,
+                                                           1)->text(), "dd.MM.yyyy"));
+        }
+
         ui->wgtEventJournalCalendar->show();
         ui->wgtEventJournalRange->hide();
 
@@ -2909,6 +2927,13 @@ void ConfiguratorWindow::eventJournalCalendar()
     QDate date_end = date_beg;
 
     date_beg.setDate(date_beg.year(), date_beg.month(), 1);
+
+    if(ui->tablewgtEventJournal->rowCount() > 0)
+    {
+        date_beg = QDate::fromString(ui->tablewgtEventJournal->item(0, 1)->text(), "dd.MM.yyyy");
+        date_end = QDate::fromString(ui->tablewgtEventJournal->item(ui->tablewgtEventJournal->rowCount() - 1, 1)->text(),
+                                     "dd.MM.yyyy");
+    }
 
     m_calendar_wgt->setDateRange(date_beg, date_end);
     m_calendar_wgt->show();
@@ -3033,8 +3058,8 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
     QString fileName    = QFileDialog::getOpenFileName(this, tr("Импорт журнала событий из базы данных"),
-                                                             dir.absolutePath() + "/db/" + nameJournal,
-                                                             tr("База данных (*.db)"));
+                                                       QString(dir.absolutePath() + "/%1/%2").arg("db").arg(nameJournal),
+                                                       tr("База данных (*.db)"));
 
     if(fileName.isEmpty())
         return;

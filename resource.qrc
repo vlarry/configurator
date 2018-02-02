@@ -13,6 +13,5 @@
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
-        <file>resource/images/background_report.png</file>
     </qresource>
 </RCC>
