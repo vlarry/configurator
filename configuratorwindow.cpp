@@ -2556,11 +2556,34 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
     tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Ridge);
     tableFormat.setBorder(1);
     tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
-//    tableFormat.setBackground(QBrush(QImage(":/images/resource/images/background_report.png")));
 
     QTextCursor cursor(reportPDF);
     QTextBlockFormat blockFormat;
     blockFormat.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
+
+    cursor.insertBlock(blockFormat);
+
+    QTextBlockFormat blockHeaderFormat = cursor.blockFormat();
+    blockHeaderFormat.setAlignment(Qt::AlignCenter);
+
+    QTextCharFormat charHeaderFormat = cursor.charFormat();
+    charHeaderFormat.setFontPointSize(18);
+    charHeaderFormat.setFontWeight(QFont::Bold);
+
+    QTextCharFormat charHeaderNextFormat = cursor.charFormat();
+    charHeaderNextFormat.setFontPointSize(16);
+    charHeaderNextFormat.setFontWeight(QFont::Bold);
+
+    cursor.insertBlock(blockHeaderFormat, charHeaderFormat);
+    cursor.insertText(reportName);
+
+    cursor.insertBlock();
+    cursor.setCharFormat(charHeaderNextFormat);
+    cursor.insertText(tr("Блок БЗУ-2-16"));
+
+    cursor.insertBlock();
+    cursor.setCharFormat(charHeaderNextFormat);
+    cursor.insertText(sn_device);
 
     cursor.insertBlock(blockFormat);
 
@@ -2569,15 +2592,19 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 
     QTextTable* textTable = cursor.insertTable(rowCount + 1, columnCount, tableFormat);
 
-    QTextCharFormat tableHeaderFormat;
-    tableHeaderFormat.setFontWeight(QFont::Bold);
+    QTextBlockFormat blockTableHeaderFormat;
+    blockTableHeaderFormat.setAlignment(Qt::AlignHCenter);
 
     for(int i = 0; i < columnCount; i++)
     {
         QTextTableCell cell = textTable->cellAt(0, i);
         Q_ASSERT(cell.isValid());
+        QTextCharFormat tableHeaderFormat = cell.format();
+        tableHeaderFormat.setFontWeight(QFont::Bold);
+        tableHeaderFormat.setVerticalAlignment(QTextCharFormat::AlignBottom);
         cell.setFormat(tableHeaderFormat);
         QTextCursor cellCursor = cell.firstCursorPosition();
+        cellCursor.setBlockFormat(blockTableHeaderFormat);
         cellCursor.insertText(tableWidget->horizontalHeaderItem(i)->text());
     }
 
@@ -2587,6 +2614,9 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
         {
             QTextTableCell cell = textTable->cellAt(i + 1, j);
             Q_ASSERT(cell.isValid());
+//            QTextCharFormat charTableCellVCenterFormat = cell.format();
+//            charTableCellVCenterFormat.setVerticalAlignment(QTextCharFormat::AlignMiddle);
+//            cell.setFormat(charTableCellVCenterFormat);
             QTextCursor cellCursor = cell.firstCursorPosition();
             cellCursor.insertText(tableWidget->item(i, j)->text());
         }
@@ -2595,9 +2625,12 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
     cursor.movePosition(QTextCursor::End);
 
     QPainter painter(printer);
+
     QSizeF pageSize = printer->pageRect().size();
-    const qreal footerHeight = painter.fontMetrics().height();
+
+    const qreal  footerHeight = painter.fontMetrics().height();
     const QRectF textRect(0, 0, pageSize.width(), pageSize.height() - footerHeight);
+
     reportPDF->setPageSize(textRect.size());
 
     const int pageCount = reportPDF->pageCount();
@@ -2609,6 +2642,18 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
             printer->newPage();
 
         painter.drawImage(textRect, QImage(":/images/resource/images/background_report.png"));
+
+        if(pageIndex == 0)
+        {
+            QRectF headerRect = textRect;
+            headerRect.setBottom(textRect.top());
+            headerRect.setHeight(footerHeight);
+
+            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, tableWidget->item(0, 1)->text() + " - " +
+                                         tableWidget->item(tableWidget->rowCount() - 1, 1)->text());
+
+            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignRight, QObject::tr("Страниц: %1").arg(pageCount));
+        }
 
         painter.save();
             const QRectF textPageRect(0, pageIndex*reportPDF->pageSize().height(), reportPDF->pageSize().width(),
