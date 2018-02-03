@@ -24,7 +24,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_variables(QVector<CColumn::column_t>()),
     m_calendar_wgt(nullptr),
     m_status_bar(nullptr),
-    m_watcher(nullptr)
+    m_watcher(nullptr),
+    m_progressbar(nullptr)
 {
     ui->setupUi(this);
 
@@ -47,6 +48,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_calendar_wgt              = new CCalendarWidget;
     m_status_bar                = new CStatusBar(statusBar());
     m_watcher                   = new QFutureWatcher<void>(this);
+    m_progressbar               = new CProgressBarWidget(this);
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -69,9 +71,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->tablewgtEventJournal->setColumnWidth(4, 200);
     ui->tablewgtEventJournal->setColumnWidth(5, 300);
 
-//    ui->tablewgtEventJournal->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
-    ui->tablewgtEventJournal->setColumnWidth(3, 500);
-
+    m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
     initMenuPanel();
@@ -2516,10 +2516,10 @@ void ConfiguratorWindow::startExportToPDF()
     if(fileName.isEmpty())
         return;
 
-    connect(m_watcher, &QFutureWatcher<void>::finished, m_status_bar, &CStatusBar::stopProgressbar);
+    m_progressbar->setProgressTitle(tr("Экспорт в PDF"));
+    m_progressbar->progressStart();
 
-    m_status_bar->setProgressbarTitle("Экспорт в PDF");
-    m_status_bar->startProgressbar();
+    connect(m_watcher, &QFutureWatcher<void>::finished, m_progressbar, &CProgressBarWidget::progressStop);
 
     QFuture<void> future = QtConcurrent::run(this, &exportToPDF, table, reportName, sn_device, fileName);
     m_watcher->setFuture(future);
@@ -2644,6 +2644,8 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 
     const int pageCount = reportPDF->pageCount();
 
+    emit m_progressbar->settingChanged(0, pageCount, tr("стр"));
+
     bool firstPage = true;
     for (int pageIndex = 0; pageIndex < pageCount; ++pageIndex)
     {
@@ -2683,6 +2685,8 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 
         painter.drawText(footerRect, Qt::AlignVCenter|Qt::AlignRight,
                                      QObject::tr("Страница %1 из %2").arg(pageIndex +1 ).arg(pageCount));
+
+        emit m_progressbar->increment();
 
         firstPage = false;
     }

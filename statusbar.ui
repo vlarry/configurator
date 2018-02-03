@@ -50,24 +50,11 @@
     </spacer>
    </item>
    <item>
-    <widget class="QLabel" name="lblTitleProgressbar">
-     <property name="text">
-      <string/>
+    <layout class="QHBoxLayout" name="hlayoutWidget">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QProgressBar" name="progressbarProcess">
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
+    </layout>
    </item>
    <item>
     <spacer name="horizontalSpacer">

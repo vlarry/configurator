@@ -40,6 +40,7 @@
     #include "cstatusbar.h"
     #include "ctablewidgetitem.h"
     #include "ceventlistjournals.h"
+    #include "cprogressbarwidget.h"
     //----------
     namespace Ui 
     {
@@ -258,6 +259,7 @@
             CStatusBar*                m_status_bar;
             QMap<int, QString>         m_device_code_list;
             QFutureWatcher<void>*      m_watcher;
+            CProgressBarWidget*        m_progressbar;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;
