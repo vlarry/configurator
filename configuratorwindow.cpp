@@ -3129,6 +3129,10 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     int rows = recordCount("event_journal", "sn_device", QString::number(id));
 
+    m_progressbar->setProgressTitle("Импорт журнала событий");
+    m_progressbar->progressStart();
+    m_progressbar->setSettings(0, rows, "");
+
     if(rows > 0)
     {
         QString str = QString("SELECT * FROM event_journal WHERE sn_device=%1").arg(id);
@@ -3172,6 +3176,8 @@ void ConfiguratorWindow::importEventJournalToTable()
             ui->tablewgtEventJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
             ui->tablewgtEventJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
             ui->tablewgtEventJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+
+            m_progressbar->progressIncrement();
         }
 
         ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
@@ -3188,6 +3194,8 @@ void ConfiguratorWindow::importEventJournalToTable()
     db.close();
 
     ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
+
+    m_progressbar->progressStop();
 }
 //-----------------------------------------------
 void ConfiguratorWindow::exportEventJournalToDb()
@@ -3300,6 +3308,10 @@ void ConfiguratorWindow::exportEventJournalToDb()
         pos = indexDateFilter(ui->tablewgtEventJournal, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
     }
 
+    m_progressbar->setProgressTitle(tr("Экспорт журнала событий"));
+    m_progressbar->progressStart();
+    m_progressbar->setSettings(0, (pos.y() - pos.x()) + 1, "");
+
     db.transaction();
 
     for(int i = pos.x(); i <= pos.y(); i++)
@@ -3323,10 +3335,14 @@ void ConfiguratorWindow::exportEventJournalToDb()
         query.bindValue(":sn_device", id);
 
         query.exec();
+
+        m_progressbar->progressIncrement();
     }
 
     db.commit();
     db.close();
+
+    m_progressbar->progressStop();
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
