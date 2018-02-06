@@ -271,6 +271,8 @@
             QTreeWidgetItem* itemSetAutomation;
             QTreeWidgetItem* itemJournalCrashs;
             QTreeWidgetItem* itemJournalEvents;
+            QTreeWidgetItem* itemJournalHalfHour;
+            QTreeWidgetItem* itemJournalIsolation;
             QTreeWidgetItem* itemJournalOscill;
             QTreeWidgetItem* itemMeasPrimaryValues;
             QTreeWidgetItem* itemMeasSecondaryValues;

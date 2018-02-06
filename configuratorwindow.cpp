@@ -853,45 +853,53 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
     {
         ui->stwgtMain->setCurrentIndex(15);
     }
-    else if(itemName == tr("ОСЦИЛЛОГРАФ"))
+    else if(itemName == tr("ПОЛУЧАСОВОК"))
     {
         ui->stwgtMain->setCurrentIndex(16);
     }
-    else if(itemName == tr("ПЕРВИЧНЫЕ ВЕЛИЧИНЫ"))
+    else if(itemName == tr("ИЗОЛЯЦИИ"))
     {
         ui->stwgtMain->setCurrentIndex(17);
     }
-    else if(itemName == tr("ВТОРИЧНЫЕ ВЕЛИЧИНЫ"))
+    else if(itemName == tr("ОСЦИЛЛОГРАФ"))
     {
         ui->stwgtMain->setCurrentIndex(18);
     }
-    else if(itemName == tr("ЭЛЕКТРОЭНЕРГИЯ"))
+    else if(itemName == tr("ПЕРВИЧНЫЕ ВЕЛИЧИНЫ"))
     {
         ui->stwgtMain->setCurrentIndex(19);
     }
-    else if(itemName == tr("ДИСКРЕТНЫЕ ВХОДЫ"))
+    else if(itemName == tr("ВТОРИЧНЫЕ ВЕЛИЧИНЫ"))
     {
         ui->stwgtMain->setCurrentIndex(20);
     }
-    else if(itemName == tr("ДИСКРЕТНЫЕ ВЫХОДЫ"))
+    else if(itemName == tr("ЭЛЕКТРОЭНЕРГИЯ"))
     {
         ui->stwgtMain->setCurrentIndex(21);
     }
-    else if(itemName == tr("НАЗНАЧЕНИЕ СВЕТОДИОДОВ"))
+    else if(itemName == tr("ДИСКРЕТНЫЕ ВХОДЫ"))
     {
         ui->stwgtMain->setCurrentIndex(22);
     }
-    else if(itemName == tr("НАЗНАЧЕНИЕ ДИСКРЕТНЫХ ВХОДОВ"))
+    else if(itemName == tr("ДИСКРЕТНЫЕ ВЫХОДЫ"))
     {
         ui->stwgtMain->setCurrentIndex(23);
     }
-    else if(itemName == tr("НАЗНАЧЕНИЕ РЕЛЕ"))
+    else if(itemName == tr("НАЗНАЧЕНИЕ СВЕТОДИОДОВ"))
     {
         ui->stwgtMain->setCurrentIndex(24);
     }
-    else if(itemName == tr("НАЗНАЧЕНИЕ КЛАВИАТУРЫ"))
+    else if(itemName == tr("НАЗНАЧЕНИЕ ДИСКРЕТНЫХ ВХОДОВ"))
     {
         ui->stwgtMain->setCurrentIndex(25);
+    }
+    else if(itemName == tr("НАЗНАЧЕНИЕ РЕЛЕ"))
+    {
+        ui->stwgtMain->setCurrentIndex(26);
+    }
+    else if(itemName == tr("НАЗНАЧЕНИЕ КЛАВИАТУРЫ"))
+    {
+        ui->stwgtMain->setCurrentIndex(27);
     }
 }
 //-------------------------------------
@@ -1209,9 +1217,11 @@ void ConfiguratorWindow::initMenuPanel()
     itemSetRelayPurpose     = new QTreeWidgetItem(itemSettings);
     itemSetKeyboardPurpose  = new QTreeWidgetItem(itemSettings);
 
-    itemJournalCrashs = new QTreeWidgetItem(itemJournals);
-    itemJournalEvents = new QTreeWidgetItem(itemJournals);
-    itemJournalOscill = new QTreeWidgetItem(itemJournals);
+    itemJournalCrashs    = new QTreeWidgetItem(itemJournals);
+    itemJournalEvents    = new QTreeWidgetItem(itemJournals);
+    itemJournalHalfHour  = new QTreeWidgetItem(itemJournals);
+    itemJournalIsolation = new QTreeWidgetItem(itemJournals);
+    itemJournalOscill    = new QTreeWidgetItem(itemJournals);
 
     itemMeasPrimaryValues   = new QTreeWidgetItem(itemMeasures);
     itemMeasSecondaryValues = new QTreeWidgetItem(itemMeasures);
@@ -1250,6 +1260,8 @@ void ConfiguratorWindow::initMenuPanel()
 
     itemJournalCrashs->setText(0, tr("Аварий"));
     itemJournalEvents->setText(0, tr("Событий"));
+    itemJournalHalfHour->setText(0, tr("Получасовок"));
+    itemJournalIsolation->setText(0, tr("Изоляции"));
     itemJournalOscill->setText(0, tr("Осциллограф"));
 
     itemMeasPrimaryValues->setText(0, tr("Первичные величины"));
@@ -1289,6 +1301,8 @@ void ConfiguratorWindow::initMenuPanel()
 
     itemJournals->addChild(itemJournalCrashs);
     itemJournals->addChild(itemJournalEvents);
+    itemJournals->addChild(itemJournalHalfHour);
+    itemJournals->addChild(itemJournalIsolation);
     itemJournals->addChild(itemJournalOscill);
 
     itemMeasures->addChild(itemMeasPrimaryValues);
@@ -1856,10 +1870,10 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(unit.valueCount() == 0)
         return;
 
-    QString first = unit.property(tr("FIRST")).toString();
-    QString last  = unit.property(tr("LAST")).toString();
+    QString first = unit.property(tr("FIRST")).toString(); // получаем первый ключ
+    QString last  = unit.property(tr("LAST")).toString();  // получаем второй ключ
 
-    QTableView* table = tableMatrixFromKeys(first, last);
+    QTableView* table = tableMatrixFromKeys(first, last); // поиск таблицы по ключам
 
     if(!table)
         return;
@@ -1869,39 +1883,48 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(!model)
         return;
 
-    CDataTable& data = model->dataTable();
+    CDataTable& data = model->dataTable(); // получаем ссылку на данные таблицы
 
-    int var_count = data.columnCounts()/16;
+    int var_count = data.columnCounts()/16; // получаем количество байт для хранения переменных
 
-    if(data.columnCounts()%16)
-        var_count++;
+    if(data.columnCounts()%16) // если есть остаток, значит +1 байт для хранения всех переменных
+        var_count++;           // например LED имеют 115 возможных привязок к переменным - 115/16 = 7,1875 -> 7 + 1 = 8 байт
 
     int offset_row = data.indexRowFromKey(first);
 
     if(offset_row == -1)
         return;
 
-    int row_count = unit.valueCount()/var_count;
+    int row_count = unit.valueCount()/24; // расчет количества строк из количества пришедших данных;
+                                          // полная строка со всеми переменными равна 48 байт, т.е. 24 ячейки
+                                          // привязка переменной равна 1 бит (нет/есть)
+    int limit = var_count*16 - (var_count*16 - data.columnCounts()); // предел количества переменных - т.к. всего 48 байт, т.е.
+                                                                     // максимальное число переменных - 384, а используется, н-р,
+                                                                     // для LED всего 115, то все что свыше этого значения мы
+                                                                     // игнорируем (резерв)
 
     for(int i = 0, offset_data = 0; i < row_count; i++, offset_data += 24 - var_count)
     {
-        int row = i + offset_row;
+        int row = i + offset_row; // получаем индекс текущей строки учитываю смещение, н-р: LED1 - смещение 0, и если прочитать
+                                  // LED3, то получим смещение 2, т.е. третья строка таблицы
 
         for(int j = 0; j < var_count - 1; j += 2)
         {
-            int index = i*var_count + offset_data + j;
+            int index = i*var_count + offset_data + j; // получаем индекс текущего слова (32 бита)
 
-            quint32 value = (unit.value(index + 1) << 16) | unit.value(index);
+            quint32 value = (unit.value(index + 1) << 16) | unit.value(index); // получаем значение (32 бита) с состояними 32х
+                                                                               // переменных
 
             for(int k = 0; k < 32; k++)
             {
-                int bit   = j/2*32 + k;
-                int limit = var_count*16 - (var_count*16 - data.columnCounts());
+                int bit = j/2*32 + k;
 
                 if(bit >= limit)
                     break;
 
-                data[row][bit].setState((value >> k)&0x00000001);
+                bool state = (value >> k)&0x00000001;
+
+                data[row][bit].setState(state);
             }
         }
     }
@@ -1935,7 +1958,9 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 
             bool state = (value >> j)&0x00000001;
 
-            data[j][list[i/2 + column_offset]].setState(state);
+            int column = list[i/2 + column_offset];
+
+            data[j][column].setState(state);
         }
     }
 
@@ -2698,19 +2723,19 @@ void ConfiguratorWindow::exportPurposeToJSON()
     QString    fileNameDefault;
     QString    typeName;
 
-    if(ui->stwgtMain->currentIndex() == 22)
+    if(ui->stwgtMain->currentIndex() == 24)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTable();
         typeName        = "LED";
         fileNameDefault = "led";
     }
-    else if(ui->stwgtMain->currentIndex() == 23)
+    else if(ui->stwgtMain->currentIndex() == 25)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTable();
         typeName        = "INPUT";
         fileNameDefault = "input";
     }
-    else if(ui->stwgtMain->currentIndex() == 24)
+    else if(ui->stwgtMain->currentIndex() == 26)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
         typeName        = "RELAY";
@@ -2796,21 +2821,21 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     CMatrixPurposeModel* model = nullptr;
 
-    if(ui->stwgtMain->currentIndex() == 22)
+    if(ui->stwgtMain->currentIndex() == 24)
     {
         fileNameDefault = "led";
         typeName        = "LED";
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model());
     }
-    else if(ui->stwgtMain->currentIndex() == 23)
+    else if(ui->stwgtMain->currentIndex() == 25)
     {
         fileNameDefault = "inputs";
         typeName        = "INPUT";
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
     }
-    else if(ui->stwgtMain->currentIndex() == 24)
+    else if(ui->stwgtMain->currentIndex() == 26)
     {
         fileNameDefault = "relay";
         typeName        = "RELAY";
@@ -3604,17 +3629,17 @@ QTableView* ConfiguratorWindow::tableMatrixFromKeys(const QString& first, const 
         return nullptr;
 
     if(m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive) &&
-       m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive)) // входы
+       m_purpose_list[indexes.y()].first.contains(tr("DI"), Qt::CaseInsensitive)) // входы
     {
         return ui->tablewgtDiscreteInputPurpose;
     }
     else if(m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive) &&
-            m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive)) // выходы: реле
+            m_purpose_list[indexes.y()].first.contains(tr("DO"), Qt::CaseInsensitive)) // выходы: реле
     {
         return ui->tablewgtRelayPurpose;
     }
     else if(m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive) &&
-            m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive)) // выходы: светодиоды
+            m_purpose_list[indexes.y()].first.contains(tr("LED"), Qt::CaseInsensitive)) // выходы: светодиоды
     {
         return ui->tablewgtLedPurpose;
     }

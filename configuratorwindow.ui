@@ -791,7 +791,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>15</number>
+          <number>24</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -14227,7 +14227,13 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="pageJournalCrash"/>
+         <widget class="QWidget" name="pageJournalCrash">
+          <layout class="QVBoxLayout" name="verticalLayout_136">
+           <item>
+            <widget class="QTableWidget" name="tablewgtCrashJournal"/>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="pageJournalEvent">
           <layout class="QVBoxLayout" name="verticalLayout_135">
            <item>
@@ -14620,6 +14626,20 @@
            </item>
            <item>
             <widget class="QTableWidget" name="tablewgtEventJournal"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageJournalHalfHour">
+          <layout class="QVBoxLayout" name="verticalLayout_137">
+           <item>
+            <widget class="QTableWidget" name="tablewgtHalfHourJournal"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageJournalIsolation">
+          <layout class="QVBoxLayout" name="verticalLayout_138">
+           <item>
+            <widget class="QTableWidget" name="tablewgtIsolationJournal"/>
            </item>
           </layout>
          </widget>
