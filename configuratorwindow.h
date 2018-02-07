@@ -29,6 +29,7 @@
     #include <QtConcurrent/QtConcurrent>
     #include <QFileDialog>
     #include <QShowEvent>
+    #include <QSettings>
     #include "cmodbus.h"
     #include "qpanel.h"
     #include "cterminal.h"
@@ -41,6 +42,9 @@
     #include "ctablewidgetitem.h"
     #include "ceventlistjournals.h"
     #include "cprogressbarwidget.h"
+    //-----------------------------------------------------
+    const QString ORGANIZATION_NAME   = QObject::tr("РПА");
+    const QString ORGANIZATION_DOMAIN = QObject::tr("http://www.rpa.ua/");
     //----------
     namespace Ui 
     {
@@ -193,6 +197,8 @@
             void startExportToPDF();
             
         private:
+            void loadSettings();
+            void saveSattings();
             void initConnect();
             void initMenuPanel();
             void initButtonGroup();
@@ -260,6 +266,7 @@
             QMap<int, QString>         m_device_code_list;
             QFutureWatcher<void>*      m_watcher;
             CProgressBarWidget*        m_progressbar;
+            QSettings*                 m_settings;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

@@ -27,6 +27,41 @@ const QString CSerialPortSetting::stopBits() const
 {
     return ui->cboxStopBit->currentText();
 }
+//-------------------------------------------
+int CSerialPortSetting::modbusTimeout() const
+{
+    return ui->sboxTimeout->value();
+}
+//--------------------------------------------
+int CSerialPortSetting::modbusTryCount() const
+{
+    return ui->sboxNumRepeat->value();
+}
+//-----------------------------------------------------------
+void CSerialPortSetting::setDataBits(const QString& databits)
+{
+    ui->cboxDataBit->setCurrentText(databits);
+}
+//-----------------------------------------------------------
+void CSerialPortSetting::setStopBits(const QString& stopbits)
+{
+    ui->cboxStopBit->setCurrentText(stopbits);
+}
+//-------------------------------------------------------
+void CSerialPortSetting::setParity(const QString& parity)
+{
+    ui->cboxParity->setCurrentText(parity);
+}
+//--------------------------------------------------
+void CSerialPortSetting::setModbusTimeout(int value)
+{
+    ui->sboxTimeout->setValue(value);
+}
+//---------------------------------------------------
+void CSerialPortSetting::setModbusTryCount(int value)
+{
+    ui->sboxNumRepeat->setValue(value);
+}
 //-----------------------------
 void CSerialPortSetting::show()
 {

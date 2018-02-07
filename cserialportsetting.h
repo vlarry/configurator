@@ -19,6 +19,14 @@
             const QString dataBits() const;
             const QString parity() const;
             const QString stopBits() const;
+            int           modbusTimeout() const;
+            int           modbusTryCount() const;
+
+            void setDataBits(const QString& databits);
+            void setStopBits(const QString& stopbits);
+            void setParity(const QString& parity);
+            void setModbusTimeout(int value);
+            void setModbusTryCount(int value);
 
         public slots:
             void show();

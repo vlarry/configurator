@@ -25,7 +25,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_calendar_wgt(nullptr),
     m_status_bar(nullptr),
     m_watcher(nullptr),
-    m_progressbar(nullptr)
+    m_progressbar(nullptr),
+    m_settings(nullptr)
 {
     ui->setupUi(this);
 
@@ -49,6 +50,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_status_bar                = new CStatusBar(statusBar());
     m_watcher                   = new QFutureWatcher<void>(this);
     m_progressbar               = new CProgressBarWidget(this);
+    m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator",
+                                                this);
     
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -95,6 +98,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
 {
+    saveSattings();
+
     if(m_watcher->isRunning())
     {
         m_watcher->cancel();
@@ -501,6 +506,8 @@ void ConfiguratorWindow::show()
 
     ui->tabwgtMenu->setCurrentIndex(3);
     m_status_bar->connectStateChanged(false);
+
+    loadSettings();
 }
 //-------------------------------------------------------
 void ConfiguratorWindow::resizeEvent(QResizeEvent* event)
@@ -2548,6 +2555,60 @@ void ConfiguratorWindow::startExportToPDF()
 
     QFuture<void> future = QtConcurrent::run(this, &exportToPDF, table, reportName, sn_device, fileName);
     m_watcher->setFuture(future);
+}
+//-------------------------------------
+void ConfiguratorWindow::loadSettings()
+{
+    if(m_settings)
+    {
+        m_settings->beginGroup("serial-port");
+            ui->cboxBaudrate->setCurrentText(m_settings->value("baudrate", "115200").toString());
+            m_serialPortSettings->setDataBits(m_settings->value("databits", "8").toString());
+            m_serialPortSettings->setStopBits(m_settings->value("stopbits", "1").toString());
+            m_serialPortSettings->setParity(m_settings->value("parity", "Even").toString());
+        m_settings->endGroup();
+
+        m_settings->beginGroup("modbus");
+            m_serialPortSettings->setModbusTimeout(m_settings->value("timeout", 500).toInt());
+            m_serialPortSettings->setModbusTryCount(m_settings->value("trycount", 3).toInt());
+        m_settings->endGroup();
+
+        m_settings->beginGroup("device");
+            ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
+            ui->spinboxSyncTime->setValue(m_settings->value("synctime", 1000).toInt());
+        m_settings->endGroup();
+
+        m_settings->beginGroup("mainwindow");
+            restoreGeometry(m_settings->value("geometry").toByteArray());
+        m_settings->endGroup();
+    }
+}
+//-------------------------------------
+void ConfiguratorWindow::saveSattings()
+{
+    if(m_settings)
+    {
+        m_settings->beginGroup("serial-port");
+            m_settings->setValue("baudrate", ui->cboxBaudrate->currentText());
+            m_settings->setValue("databits", m_serialPortSettings->dataBits());
+            m_settings->setValue("stopbits", m_serialPortSettings->stopBits());
+            m_settings->setValue("parity", m_serialPortSettings->parity());
+        m_settings->endGroup();
+
+        m_settings->beginGroup("modbus");
+            m_settings->setValue("timeout", m_serialPortSettings->modbusTimeout());
+            m_settings->setValue("trycount", m_serialPortSettings->modbusTryCount());
+        m_settings->endGroup();
+
+        m_settings->beginGroup("device");
+            m_settings->setValue("timeoutcalculate", ui->sboxTimeoutCalc->value());
+            m_settings->setValue("synctime", ui->spinboxSyncTime->value());
+        m_settings->endGroup();
+
+        m_settings->beginGroup("mainwindow");
+            m_settings->setValue("geometry", saveGeometry());
+        m_settings->endGroup();
+    }
 }
 //------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& reportName, const QString& sn_device,
