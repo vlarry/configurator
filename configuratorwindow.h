@@ -207,6 +207,7 @@
             void initModelTables();
             void initEventJournal();
             void initDeviceCode();
+            void initJournals();
             void connectSystemDb();
             bool connectEventsDb();
             bool connectDb(QSqlDatabase& db, const QString& path);

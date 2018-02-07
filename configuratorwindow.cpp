@@ -60,23 +60,10 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 
     ui->wgtEventJournalCalendar->hide();
 
-    ui->tablewgtEventJournal->setColumnCount(6);
-    ui->tablewgtEventJournal->setHorizontalHeaderLabels(QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
-                                                                         tr("Тип") << tr("Категория") << tr("Параметр"));
-    ui->tablewgtEventJournal->setShowGrid(true);
-    ui->tablewgtEventJournal->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->tablewgtEventJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tablewgtEventJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tablewgtEventJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    ui->tablewgtEventJournal->setColumnWidth(0, 50);
-    ui->tablewgtEventJournal->setColumnWidth(1, 100);
-    ui->tablewgtEventJournal->setColumnWidth(2, 100);
-    ui->tablewgtEventJournal->setColumnWidth(4, 200);
-    ui->tablewgtEventJournal->setColumnWidth(5, 300);
-
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
+    initJournals();
     initMenuPanel();
     initButtonGroup();
     initConnect();
@@ -1661,6 +1648,70 @@ void ConfiguratorWindow::initDeviceCode()
         m_device_code_list[query.value("code").toInt()] = query.value("name").toString();
     }
 }
+//-------------------------------------
+void ConfiguratorWindow::initJournals()
+{
+    QStringList journalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип") << tr("Категория") <<
+                                                  tr("Параметр");
+
+    int columnWidth0 = 50;
+    int columnWidth1 = 100;
+    int columnWidth2 = 100;
+    int columnWidth4 = 200;
+    int columnWidth5 = 300;
+
+    ui->tablewgtEventJournal->setColumnCount(6);
+    ui->tablewgtEventJournal->setHorizontalHeaderLabels(journalHeaders);
+    ui->tablewgtEventJournal->setShowGrid(true);
+    ui->tablewgtEventJournal->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tablewgtEventJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tablewgtEventJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tablewgtEventJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->tablewgtEventJournal->setColumnWidth(0, columnWidth0);
+    ui->tablewgtEventJournal->setColumnWidth(1, columnWidth1);
+    ui->tablewgtEventJournal->setColumnWidth(2, columnWidth2);
+    ui->tablewgtEventJournal->setColumnWidth(4, columnWidth4);
+    ui->tablewgtEventJournal->setColumnWidth(5, columnWidth5);
+
+    ui->tablewgtCrashJournal->setColumnCount(6);
+    ui->tablewgtCrashJournal->setHorizontalHeaderLabels(journalHeaders);
+    ui->tablewgtCrashJournal->setShowGrid(true);
+    ui->tablewgtCrashJournal->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tablewgtCrashJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tablewgtCrashJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tablewgtCrashJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->tablewgtCrashJournal->setColumnWidth(0, columnWidth0);
+    ui->tablewgtCrashJournal->setColumnWidth(1, columnWidth1);
+    ui->tablewgtCrashJournal->setColumnWidth(2, columnWidth2);
+    ui->tablewgtCrashJournal->setColumnWidth(4, columnWidth4);
+    ui->tablewgtCrashJournal->setColumnWidth(5, columnWidth5);
+
+    ui->tablewgtHalfHourJournal->setColumnCount(6);
+    ui->tablewgtHalfHourJournal->setHorizontalHeaderLabels(journalHeaders);
+    ui->tablewgtHalfHourJournal->setShowGrid(true);
+    ui->tablewgtHalfHourJournal->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tablewgtHalfHourJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tablewgtHalfHourJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tablewgtHalfHourJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->tablewgtHalfHourJournal->setColumnWidth(0, columnWidth0);
+    ui->tablewgtHalfHourJournal->setColumnWidth(1, columnWidth1);
+    ui->tablewgtHalfHourJournal->setColumnWidth(2, columnWidth2);
+    ui->tablewgtHalfHourJournal->setColumnWidth(4, columnWidth4);
+    ui->tablewgtHalfHourJournal->setColumnWidth(5, columnWidth5);
+
+    ui->tablewgtIsolationJournal->setColumnCount(6);
+    ui->tablewgtIsolationJournal->setHorizontalHeaderLabels(journalHeaders);
+    ui->tablewgtIsolationJournal->setShowGrid(true);
+    ui->tablewgtIsolationJournal->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tablewgtIsolationJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tablewgtIsolationJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tablewgtIsolationJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->tablewgtIsolationJournal->setColumnWidth(0, columnWidth0);
+    ui->tablewgtIsolationJournal->setColumnWidth(1, columnWidth1);
+    ui->tablewgtIsolationJournal->setColumnWidth(2, columnWidth2);
+    ui->tablewgtIsolationJournal->setColumnWidth(4, columnWidth4);
+    ui->tablewgtIsolationJournal->setColumnWidth(5, columnWidth5);
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -3090,12 +3141,29 @@ void ConfiguratorWindow::updateParameterEventJournal()
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
 {
+    int widthColumnType = 0;
+
     switch(index)
     {
+        case 14: // текущий журнал аварий
+            widthColumnType = ui->tablewgtCrashJournal->width() - 750;
+            ui->tablewgtCrashJournal->setColumnWidth(3, widthColumnType);
+        break;
+
         case 15: // текущий журнал событий
-            int widthColumnType = ui->tablewgtEventJournal->width() - 750;
+            widthColumnType = ui->tablewgtEventJournal->width() - 750;
             ui->tablewgtEventJournal->setColumnWidth(3, widthColumnType);
             updateParameterEventJournal();
+        break;
+
+        case 16: // текущий журнал получасовок
+            widthColumnType = ui->tablewgtHalfHourJournal->width() - 750;
+            ui->tablewgtHalfHourJournal->setColumnWidth(3, widthColumnType);
+        break;
+
+        case 17: // текущий журнал изоляций
+            widthColumnType = ui->tablewgtIsolationJournal->width() - 750;
+            ui->tablewgtIsolationJournal->setColumnWidth(3, widthColumnType);
         break;
     }
 }
