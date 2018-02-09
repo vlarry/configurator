@@ -22,7 +22,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_versionWidget(nullptr),
     m_event_journal_parameter( { -1, 0, 0, 0, 0 } ),
     m_variables(QVector<CColumn::column_t>()),
-    m_calendar_wgt(nullptr),
     m_status_bar(nullptr),
     m_watcher(nullptr),
     m_progressbar(nullptr),
@@ -46,7 +45,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
     m_serialPortSettings        = new CSerialPortSetting;
-    m_calendar_wgt              = new CCalendarWidget;
     m_status_bar                = new CStatusBar(statusBar());
     m_watcher                   = new QFutureWatcher<void>(this);
     m_progressbar               = new CProgressBarWidget(this);
@@ -57,8 +55,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     m_calculateWidget->setWindowTitle(tr("Расчетные величины"));
     addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
-
-    ui->wgtEventJournalCalendar->hide();
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -173,9 +169,6 @@ void ConfiguratorWindow::stateChanged(bool state)
     else
     {
         saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> закрыт."));
-        ui->groupboxEventJournalReadInterval->setEnabled(true); // в случае закрытия порта или обрыве связи с устройством
-                                                                // разблокируется панель выбора интервала чтения журнала
-                                                                // событий
         deviceSync();
         m_status_bar->connectStateChanged(false);
     }
@@ -226,7 +219,6 @@ void ConfiguratorWindow::eventJournalRead()
         m_event_journal_parameter.read  = 0;
         m_event_journal_parameter.count = 0;
 
-        ui->groupboxEventJournalReadInterval->setEnabled(true);
         ui->leEventProcessTime->setText(QString::number(m_time_process.elapsed()/1000) + tr(" сек."));
 
         ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
@@ -244,19 +236,12 @@ void ConfiguratorWindow::eventJournalRead()
 
         m_time_process.start();
 
-        ui->groupboxEventJournalReadInterval->setDisabled(true);
+        QPoint readCount = m_filter_row["EVENT"];
 
-        if(ui->groupboxEventJournalReadInterval->isChecked()) // вкладка с выбором интервала активана
+        if(readCount.x() > 0) // если читать не с нуля
         {
-            if(ui->radiobtnEventJournalInterval->isChecked()) // выбран режим счтитывания по интервалу
-            {
-                m_event_journal_parameter.start = ui->spinBoxEventJournalReadBegin->value();
-                m_event_journal_parameter.count = ui->spinBoxEvenJournalReadCount->value();
-            }
-            else if(ui->radiobtnEventJournalDate->isChecked()) // выбран режим считывания по календарю
-            {
-
-            }
+            m_event_journal_parameter.start = readCount.x();
+            m_event_journal_parameter.count = readCount.y() - readCount.x() + 1;
 
             if(m_event_journal_parameter.start >= 256) // если начальная точка больше или равна размеру сектора (256*16=4096)
             {
@@ -493,6 +478,8 @@ void ConfiguratorWindow::show()
 
     ui->tabwgtMenu->setCurrentIndex(3);
     m_status_bar->connectStateChanged(false);
+
+    ui->tabwgtMenu->setTabEnabled(4, false);
 
     loadSettings();
 }
@@ -780,6 +767,13 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
 {
     if(!item)
         return;
+
+//    if(ui->treewgtDeviceMenu->indexOfTopLevelItem(item) == 1) // если выбран пункт меню "Журналы"
+//    {
+//        ui->tabwgtMenu->setTabEnabled(4, true);
+//    }
+//    else
+//        ui->tabwgtMenu->setTabEnabled(4, false);
 
     QString itemName = item->text(col).toUpper();
 
@@ -2546,8 +2540,6 @@ void ConfiguratorWindow::clearEventJournal()
     ui->tablewgtEventJournal->clearContents();
     ui->tablewgtEventJournal->setRowCount(0);
     ui->leEventCount->clear();
-    ui->spinBoxEvenJournalReadCount->clear();
-    ui->spinBoxEventJournalReadBegin->clear();
 
     m_event_journal_parameter = { -1, 0, 0, 0, 0 };
 
@@ -2608,6 +2600,67 @@ void ConfiguratorWindow::startExportToPDF()
     m_watcher->setFuture(future);
 }
 //-------------------------------------
+void ConfiguratorWindow::filterDialog()
+{
+    QString       key   = "";
+    QTableWidget* table = nullptr;
+
+    switch(ui->stwgtMain->currentIndex())
+    {
+        case 14:
+            key   = "CRASH";
+            table = ui->tablewgtCrashJournal;
+        break;
+
+        case 15:
+            key   = "EVENT";
+            table = ui->tablewgtEventJournal;
+        break;
+
+        case 16:
+            key   = "HALFHOUR";
+            table = ui->tablewgtHalfHourJournal;
+        break;
+
+        case 17:
+            key   = "ISOLATION";
+            table = ui->tablewgtIsolationJournal;
+        break;
+    }
+
+    if(key.isEmpty() || table == nullptr || (table && table->rowCount() == 0))
+        return;
+
+    CFilterDialog::FilterValueType filter_value;
+
+    int   rowCount  = table->rowCount();
+    QString str_dt1 = table->item(0, 1)->text();
+    QString str_dt2 = table->item(rowCount - 1, 1)->text();
+    QDate dtBegin   = QDate::fromString(str_dt1, "dd.MM.yyyy");
+    QDate dtEnd     = QDate::fromString(str_dt2, "dd.MM.yyyy");
+
+    filter_value = CFilterDialog::FilterValueType({ CFilterDialog::FilterType::INTERVAL_TYPE, table->rowCount(), 0, rowCount,
+                                                    dtBegin, dtEnd });
+
+    CFilterDialog* filter = new CFilterDialog(filter_value, this);
+
+    if(filter->exec() == QDialog::Accepted)
+    {
+        filter_value = filter->value();
+
+        if(filter_value.type == CFilterDialog::FilterType::INTERVAL_TYPE)
+        {
+            m_filter_row[key] = QPoint(filter_value.intervalBegin, filter_value.intervalCount + filter_value.intervalBegin - 1);
+        }
+        else
+        {
+            m_filter_row[key] = indexDateFilter(table, filter_value.dateBegin, filter_value.dateEnd);
+        }
+    }
+
+    delete filter;
+}
+//-------------------------------------
 void ConfiguratorWindow::loadSettings()
 {
     if(m_settings)
@@ -2626,6 +2679,7 @@ void ConfiguratorWindow::loadSettings()
 
         m_settings->beginGroup("device");
             ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
+            ui->checkboxCalibTimeout->setChecked(m_settings->value("timeoutcalculateenable", true).toBool());
             ui->spinboxSyncTime->setValue(m_settings->value("synctime", 1000).toInt());
         m_settings->endGroup();
 
@@ -2653,6 +2707,7 @@ void ConfiguratorWindow::saveSattings()
 
         m_settings->beginGroup("device");
             m_settings->setValue("timeoutcalculate", ui->sboxTimeoutCalc->value());
+            m_settings->setValue("timeoutcalculateenable", ui->checkboxCalibTimeout->isChecked());
             m_settings->setValue("synctime", ui->spinboxSyncTime->value());
         m_settings->endGroup();
 
@@ -2725,14 +2780,8 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
     cursor.insertBlock(blockFormat);
 
     int columnCount = tableWidget->columnCount();
-    int rowCount    = tableWidget->rowCount();
 
-    QPoint pos(0, rowCount - 1);
-
-    if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
-    {
-        pos = indexDateFilter(tableWidget, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
-    }
+    QPoint pos = m_filter_row["EVENT"];
 
     int rows = pos.y() - pos.x() + 1;
 
@@ -3036,57 +3085,6 @@ void ConfiguratorWindow::importPurposeFromJSON()
     if(model)
         model->setDataTable(dataTable);
 }
-//----------------------------------------------
-void ConfiguratorWindow::eventJournalTypeRange()
-{
-    QRadioButton* rbtn = qobject_cast<QRadioButton*>(sender());
-
-    if(rbtn == ui->radiobtnEventJournalInterval)
-    {
-        ui->wgtEventJournalCalendar->hide();
-        ui->wgtEventJournalRange->show();
-    }
-    else if(rbtn == ui->radiobtnEventJournalDate)
-    {
-        if(ui->tablewgtEventJournal->rowCount() > 0)
-        {
-            m_calendar_wgt->setDateRange(QDate::fromString(ui->tablewgtEventJournal->item(0, 1)->text(), "dd.MM.yyyy"),
-                                         QDate::fromString(ui->tablewgtEventJournal->item(ui->tablewgtEventJournal->rowCount() - 1,
-                                                           1)->text(), "dd.MM.yyyy"));
-        }
-
-        ui->wgtEventJournalCalendar->show();
-        ui->wgtEventJournalRange->hide();
-
-        eventJournalDateChanged();
-    }
-}
-//---------------------------------------------
-void ConfiguratorWindow::eventJournalCalendar()
-{
-    QDate date_beg = QDate::currentDate();
-    QDate date_end = date_beg;
-
-    date_beg.setDate(date_beg.year(), date_beg.month(), 1);
-
-    if(ui->tablewgtEventJournal->rowCount() > 0)
-    {
-        date_beg = QDate::fromString(ui->tablewgtEventJournal->item(0, 1)->text(), "dd.MM.yyyy");
-        date_end = QDate::fromString(ui->tablewgtEventJournal->item(ui->tablewgtEventJournal->rowCount() - 1, 1)->text(),
-                                     "dd.MM.yyyy");
-    }
-
-    m_calendar_wgt->setDateRange(date_beg, date_end);
-    m_calendar_wgt->show();
-}
-//------------------------------------------------
-void ConfiguratorWindow::eventJournalDateChanged()
-{
-    QDate date_beg = m_calendar_wgt->dateBegin();
-    QDate date_end = m_calendar_wgt->dateEnd();
-
-    ui->leJournalEventDate->setText(date_beg.toString("dd.MM.yyyy") + " - " + date_end.toString("dd.MM.yyyy"));
-}
 //--------------------------------------------------------------
 void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
 {
@@ -3114,10 +3112,8 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
             m_event_journal_parameter.total = event_count;
 
             ui->leEventCount->setText("0/" + QString::number(event_count));
-            ui->spinBoxEvenJournalReadCount->setValue(event_count);
-            ui->spinBoxEvenJournalReadCount->setMaximum(event_count);
-            ui->spinBoxEventJournalReadBegin->setValue(0);
-            ui->spinBoxEventJournalReadBegin->setMaximum(event_count - 1);
+
+            m_filter_row["EVENT"] = QPoint(0, event_count);
         }
     }
     else if(type == READ_EVENT_JOURNAL)
@@ -3136,12 +3132,16 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
 void ConfiguratorWindow::updateParameterEventJournal()
 {
     readEventJournalCount();
-//    readShiftPrtEventJournal();
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
 {
     int widthColumnType = 0;
+
+    if(ui->stwgtMain->currentIndex() >= 14 && ui->stwgtMain->currentIndex() <= 18)
+        ui->tabwgtMenu->setTabEnabled(4, true);
+    else
+        ui->tabwgtMenu->setTabEnabled(4, false);
 
     switch(index)
     {
@@ -3182,8 +3182,6 @@ void ConfiguratorWindow::setEventJournalPtrShift()
 void ConfiguratorWindow::valueEventJournalInternalChanged(int new_value)
 {
     m_event_journal_parameter.count = m_event_journal_parameter.total - new_value;
-    ui->spinBoxEvenJournalReadCount->setValue(m_event_journal_parameter.count);
-    ui->spinBoxEvenJournalReadCount->setMaximum(m_event_journal_parameter.count);
 }
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSyncSerialNumber()
@@ -3291,11 +3289,11 @@ void ConfiguratorWindow::importEventJournalToTable()
     {
         QString str = QString("SELECT * FROM event_journal WHERE sn_device=%1").arg(id);
 
-        if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
-        {
-            str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(m_calendar_wgt->dateBegin().toString(Qt::ISODate)).
-                                                                  arg(m_calendar_wgt->dateEnd().toString(Qt::ISODate));
-        }
+//        if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
+//        {
+//            str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(m_calendar_wgt->dateBegin().toString(Qt::ISODate)).
+//                                                                  arg(m_calendar_wgt->dateEnd().toString(Qt::ISODate));
+//        }
 
         str += ";";
 
@@ -3333,6 +3331,8 @@ void ConfiguratorWindow::importEventJournalToTable()
 
             m_progressbar->progressIncrement();
         }
+
+        m_filter_row["EVENT"] = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
 
         ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
         ui->tablewgtEventJournal->setSortingEnabled(true);
@@ -3454,13 +3454,7 @@ void ConfiguratorWindow::exportEventJournalToDb()
     if(id == -1)
         return;
 
-    QPoint pos(0, rows - 1);
-
-    // если группа выбора журнала события активна и активен переключатель выбора даты - ищем строки по дате
-    if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
-    {
-        pos = indexDateFilter(ui->tablewgtEventJournal, m_calendar_wgt->dateBegin(), m_calendar_wgt->dateEnd());
-    }
+    QPoint pos = m_filter_row["EVENT"];
 
     m_progressbar->setProgressTitle(tr("Экспорт журнала событий"));
     m_progressbar->progressStart();
@@ -3835,18 +3829,12 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
-//    connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::exportToPDF);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
     connect(ui->pbtnExportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::exportPurposeToJSON);
     connect(ui->pbtnImportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::importPurposeFromJSON);
-    connect(ui->radiobtnEventJournalInterval, &QRadioButton::clicked, this, &ConfiguratorWindow::eventJournalTypeRange);
-    connect(ui->radiobtnEventJournalDate, &QRadioButton::clicked, this, &ConfiguratorWindow::eventJournalTypeRange);
-    connect(ui->toolbtnEventJournalCalendarOpen, &QToolButton::clicked, this, &ConfiguratorWindow::eventJournalCalendar);
-    connect(m_calendar_wgt, &CCalendarWidget::dateChanged, this, &ConfiguratorWindow::eventJournalDateChanged);
-    connect(ui->groupboxEventJournalReadInterval, &QGroupBox::clicked, this, &ConfiguratorWindow::updateParameterEventJournal);
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
-    connect(ui->spinBoxEventJournalReadBegin, SIGNAL(valueChanged(int)), this, SLOT(valueEventJournalInternalChanged(int)));
     connect(&m_sync_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSyncSerialNumber);
     connect(ui->pushbtnImportEventDb, &QPushButton::clicked, this, &ConfiguratorWindow::importEventJournalToTable);
     connect(ui->pushbtnExportEventJournalDb, &QPushButton::clicked, this, &ConfiguratorWindow::exportEventJournalToDb);
+    connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
 }

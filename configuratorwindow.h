@@ -37,11 +37,11 @@
     #include "cversionsoftware.h"
     #include "cmatrixpurposemodel.h"
     #include "cserialportsetting.h"
-    #include "ccalendarwidget.h"
     #include "cstatusbar.h"
     #include "ctablewidgetitem.h"
     #include "ceventlistjournals.h"
     #include "cprogressbarwidget.h"
+    #include "cfilterdialog.h"
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");
     const QString ORGANIZATION_DOMAIN = QObject::tr("http://www.rpa.ua/");
@@ -183,9 +183,6 @@
                                                                                    const QString& filename);
             void exportPurposeToJSON();
             void importPurposeFromJSON();
-            void eventJournalTypeRange();
-            void eventJournalCalendar();
-            void eventJournalDateChanged();
             void processReadJournal(CDataUnitType& unit);
             void updateParameterEventJournal(); // обновление данных журнала событий - вычитка кол-ва событий и положение указателя
             void widgetStackIndexChanged(int index);
@@ -195,6 +192,7 @@
             void importEventJournalToTable();
             void exportEventJournalToDb();
             void startExportToPDF();
+            void filterDialog();
             
         private:
             void loadSettings();
@@ -260,7 +258,6 @@
             QVector<event_t>           m_event_list; // список событий (вычитаны из БД)
             event_journal_t            m_event_journal_parameter;
             QVector<CColumn::column_t> m_variables;
-            CCalendarWidget*           m_calendar_wgt;
             QTime                      m_time_process;
             QTimer                     m_sync_timer;
             CStatusBar*                m_status_bar;
@@ -268,6 +265,7 @@
             QFutureWatcher<void>*      m_watcher;
             CProgressBarWidget*        m_progressbar;
             QSettings*                 m_settings;
+            QMap<QString, QPoint>      m_filter_row;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

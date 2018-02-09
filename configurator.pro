@@ -36,11 +36,11 @@ SOURCES += \
     cmatrixpurposemodel.cpp \
     cheadertable.cpp \
     cserialportsetting.cpp \
-    ccalendarwidget.cpp \
     cstatusbar.cpp \
     ctablewidgetitem.cpp \
     ceventlistjournals.cpp \
-    cprogressbarwidget.cpp
+    cprogressbarwidget.cpp \
+    cfilterdialog.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -54,11 +54,11 @@ HEADERS += \
     cmatrixpurposemodel.h \
     cheadertable.h \
     cserialportsetting.h \
-    ccalendarwidget.h \
     cstatusbar.h \
     ctablewidgetitem.h \
     ceventlistjournals.h \
-    cprogressbarwidget.h
+    cprogressbarwidget.h \
+    cfilterdialog.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -66,10 +66,10 @@ FORMS += \
     cterminal.ui \
     versionform.ui \
     serialportsetting.ui \
-    calendarwidget.ui \
     statusbar.ui \
     eventlistjournals.ui \
-    progressbarwidget.ui
+    progressbarwidget.ui \
+    filterdialog.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

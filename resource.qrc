@@ -14,6 +14,17 @@
         <file>resource/images/write.png</file>
         <file>resource/images/read.png</file>
         <file>resource/images/write_all.png</file>
+        <file>resource/images/filter.png</file>
+        <file>resource/images/new.png</file>
+        <file>resource/images/open.png</file>
+        <file>resource/images/save_as.png</file>
+        <file>resource/images/save.png</file>
+        <file>resource/images/exit.png</file>
+        <file>resource/images/export_pdf.png</file>
+        <file>resource/images/export_journal.png</file>
+        <file>resource/images/export_purpose.png</file>
+        <file>resource/images/import_journal.png</file>
+        <file>resource/images/import_purpose.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
