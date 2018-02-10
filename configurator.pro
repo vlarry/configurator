@@ -40,7 +40,8 @@ SOURCES += \
     ctablewidgetitem.cpp \
     ceventlistjournals.cpp \
     cprogressbarwidget.cpp \
-    cfilterdialog.cpp
+    cfilterdialog.cpp \
+    cfilter.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -58,7 +59,8 @@ HEADERS += \
     ctablewidgetitem.h \
     ceventlistjournals.h \
     cprogressbarwidget.h \
-    cfilterdialog.h
+    cfilterdialog.h \
+    cfilter.h
 
 FORMS += \
         configuratorwindow.ui \

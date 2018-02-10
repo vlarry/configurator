@@ -231,17 +231,28 @@ void ConfiguratorWindow::eventJournalRead()
 
     if(m_event_journal_parameter.start == -1) // первый вызов - инициализация переменных
     {
-//        clearEventJournal();
         ui->tablewgtEventJournal->setSortingEnabled(false);
 
         m_time_process.start();
 
-        QPoint readCount = m_filter_row["EVENT"];
+        CFilter filter;
 
-        if(readCount.x() > 0) // если читать не с нуля
+        if(m_filter.find("EVENT") != m_filter.end())
         {
-            m_event_journal_parameter.start = readCount.x();
-            m_event_journal_parameter.count = readCount.y() - readCount.x() + 1;
+            filter = m_filter["EVENT"];
+        }
+
+        if(filter) // вкладка с выбором интервала активана
+        {
+            if(filter.type() == CFilter::INTERVAL) // выбран режим счтитывания по интервалу
+            {
+                m_event_journal_parameter.start = filter.interval().begin;
+                m_event_journal_parameter.count = filter.interval().begin - filter.interval().end;
+            }
+            else if(filter.type() == CFilter::DATE) // выбран режим считывания по календарю
+            {
+
+            }
 
             if(m_event_journal_parameter.start >= 256) // если начальная точка больше или равна размеру сектора (256*16=4096)
             {
@@ -2628,37 +2639,36 @@ void ConfiguratorWindow::filterDialog()
         break;
     }
 
-    if(key.isEmpty() || table == nullptr || (table && table->rowCount() == 0))
+    if(key.isEmpty() || table == nullptr)
         return;
 
-    CFilterDialog::FilterValueType filter_value;
-
-    int   rowCount  = table->rowCount();
-    QString str_dt1 = table->item(0, 1)->text();
-    QString str_dt2 = table->item(rowCount - 1, 1)->text();
-    QDate dtBegin   = QDate::fromString(str_dt1, "dd.MM.yyyy");
-    QDate dtEnd     = QDate::fromString(str_dt2, "dd.MM.yyyy");
-
-    filter_value = CFilterDialog::FilterValueType({ CFilterDialog::FilterType::INTERVAL_TYPE, table->rowCount(), 0, rowCount,
-                                                    dtBegin, dtEnd });
-
-    CFilterDialog* filter = new CFilterDialog(filter_value, this);
-
-    if(filter->exec() == QDialog::Accepted)
+    if(m_filter.find(key) == m_filter.end()) // если запись уже присутствует
     {
-        filter_value = filter->value();
-
-        if(filter_value.type == CFilterDialog::FilterType::INTERVAL_TYPE)
-        {
-            m_filter_row[key] = QPoint(filter_value.intervalBegin, filter_value.intervalCount + filter_value.intervalBegin - 1);
-        }
-        else
-        {
-            m_filter_row[key] = indexDateFilter(table, filter_value.dateBegin, filter_value.dateEnd);
-        }
+        m_filter.take(key); // удаляем запись по ключу
     }
 
-    delete filter;
+    QDate dBegin = QDate::currentDate();
+    QDate dEnd   = QDate::currentDate();
+
+    if(table->rowCount() > 0)
+    {
+        dBegin = QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy");
+        dEnd   = QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy");
+    }
+
+    CFilter::FilterIntervalType tinterval = { ui->leEventCount->text().toInt(), 0, ui->leEventCount->text().toInt() };
+    CFilter::FilterDateType     tdate     = { dBegin, dEnd };
+
+    m_filter[key] = CFilter(tinterval, tdate);
+
+    CFilterDialog* filterDlg = new CFilterDialog(m_filter[key], this);
+
+    if(filterDlg->exec() == QDialog::Accepted)
+    {
+        m_filter[key] = filterDlg->filter();
+    }
+
+    delete filterDlg;
 }
 //-------------------------------------
 void ConfiguratorWindow::loadSettings()
@@ -2781,7 +2791,20 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 
     int columnCount = tableWidget->columnCount();
 
-    QPoint pos = m_filter_row["EVENT"];
+    QPoint pos = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
+
+    if(m_filter.find("EVENT") != m_filter.end())
+    {
+        CFilter filter = m_filter["EVENT"];
+
+        if(filter) // если фильтр активен
+        {
+            if(filter.type() == CFilter::DATE) // если выбранный фильтр по дате
+            {
+                pos = indexDateFilter(ui->tablewgtEventJournal, filter.date().begin, filter.date().end);
+            }
+        }
+    }
 
     int rows = pos.y() - pos.x() + 1;
 
@@ -2809,9 +2832,6 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
         {
             QTextTableCell cell = textTable->cellAt(i + 1, j);
             Q_ASSERT(cell.isValid());
-//            QTextCharFormat charTableCellVCenterFormat = cell.format();
-//            charTableCellVCenterFormat.setVerticalAlignment(QTextCharFormat::AlignMiddle);
-//            cell.setFormat(charTableCellVCenterFormat);
             QTextCursor cellCursor = cell.firstCursorPosition();
             cellCursor.insertText(tableWidget->item(pos.x() + i, j)->text());
         }
@@ -2848,8 +2868,8 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
             headerRect.setBottom(textRect.top());
             headerRect.setHeight(footerHeight);
 
-            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, tableWidget->item(pos.x(), 1)->text() + " - " +
-                                         tableWidget->item(pos.y(), 1)->text());
+            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, tableWidget->item(pos.x(), 1)->text() +
+                                         " - " + tableWidget->item(pos.y(), 1)->text());
 
             painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignRight, QObject::tr("Страниц: %1").arg(pageCount));
         }
@@ -3112,8 +3132,6 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
             m_event_journal_parameter.total = event_count;
 
             ui->leEventCount->setText("0/" + QString::number(event_count));
-
-            m_filter_row["EVENT"] = QPoint(0, event_count);
         }
     }
     else if(type == READ_EVENT_JOURNAL)
@@ -3289,11 +3307,16 @@ void ConfiguratorWindow::importEventJournalToTable()
     {
         QString str = QString("SELECT * FROM event_journal WHERE sn_device=%1").arg(id);
 
-//        if(ui->groupboxEventJournalReadInterval->isChecked() && ui->radiobtnEventJournalDate->isChecked())
-//        {
-//            str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(m_calendar_wgt->dateBegin().toString(Qt::ISODate)).
-//                                                                  arg(m_calendar_wgt->dateEnd().toString(Qt::ISODate));
-//        }
+        if(m_filter.find("EVENT") != m_filter.end())
+        {
+            CFilter filter = m_filter["EVENT"];
+
+            if(filter)
+            {
+                str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(filter.date().begin.toString(Qt::ISODate)).
+                        arg(filter.date().end.toString(Qt::ISODate));
+            }
+        }
 
         str += ";";
 
@@ -3332,7 +3355,12 @@ void ConfiguratorWindow::importEventJournalToTable()
             m_progressbar->progressIncrement();
         }
 
-        m_filter_row["EVENT"] = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
+        if(m_filter.find("EVENT") != m_filter.end())
+        {
+            CFilter::FilterDateType d = { QDate::fromString(ui->tablewgtEventJournal->item(0, 1)->text(), "dd.MM.yyyy"),
+                                          QDate::fromString(ui->tablewgtEventJournal->item(ui->tablewgtEventJournal->rowCount() - 1, 1)->text(), "dd.MM.yyyy")};
+            m_filter["EVENT"].setDate(d);
+        }
 
         ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
         ui->tablewgtEventJournal->setSortingEnabled(true);
@@ -3454,7 +3482,20 @@ void ConfiguratorWindow::exportEventJournalToDb()
     if(id == -1)
         return;
 
-    QPoint pos = m_filter_row["EVENT"];
+    QPoint pos = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
+
+    if(m_filter.find("EVENT") != m_filter.end())
+    {
+        CFilter filter = m_filter["EVENT"];
+
+        if(filter) // если фильтр активен
+        {
+            if(filter.type() == CFilter::DATE) // если выбранный фильтр по дате
+            {
+                pos = indexDateFilter(ui->tablewgtEventJournal, filter.date().begin, filter.date().end);
+            }
+        }
+    }
 
     m_progressbar->setProgressTitle(tr("Экспорт журнала событий"));
     m_progressbar->progressStart();

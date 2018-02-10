@@ -166,7 +166,7 @@
          <widget class="QWidget" name="pageFilterDate">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
-            <widget class="QGroupBox" name="groupboxFilterDate_2">
+            <widget class="QGroupBox" name="groupboxFilterDate">
              <property name="title">
               <string>Дата</string>
              </property>

@@ -265,7 +265,7 @@
             QFutureWatcher<void>*      m_watcher;
             CProgressBarWidget*        m_progressbar;
             QSettings*                 m_settings;
-            QMap<QString, QPoint>      m_filter_row;
+            QMap<QString, CFilter>     m_filter;
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

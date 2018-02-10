@@ -1,64 +1,23 @@
 #include "cfilterdialog.h"
 #include "ui_filterdialog.h"
-//--------------------------------------------------------------------------
-CFilterDialog::CFilterDialog(const FilterValueType& value, QWidget* parent):
+//-------------------------------------------------------------------
+CFilterDialog::CFilterDialog(const CFilter& filter, QWidget* parent):
     QDialog(parent),
     ui(new Ui::CFilterDialog),
     m_btnGroup(nullptr)
-{
-    initFilter();
-    setValue(value);
-}
-//--------------------------------------------
-CFilterDialog::CFilterDialog(QWidget* parent):
-    QDialog(parent),
-    ui(new Ui::CFilterDialog),
-    m_btnGroup(nullptr)
-{
-    initFilter();
-}
-//-----------------------------
-CFilterDialog::~CFilterDialog()
-{
-    delete ui;
-}
-//---------------------------------------------------
-CFilterDialog::FilterValueType CFilterDialog::value()
-{
-    return FilterValueType({ FilterType(ui->stackwgtFilter->currentIndex()), m_intervalMax, ui->spinboxIntervalBegin->value(),
-                             ui->spinboxIntervalCount->value(), ui->calendarwgtBegin->selectedDate(),
-                                                                ui->calendarwgtEnd->selectedDate() });
-}
-//--------------------------------------------------------
-void CFilterDialog::setValue(const FilterValueType& value)
-{
-    m_intervalMax = value.intervalMax;
-
-    ui->spinboxIntervalBegin->setValue(value.intervalBegin);
-    ui->spinboxIntervalCount->setValue(value.intervalCount);
-    ui->spinboxIntervalCount->setMaximum(value.intervalMax - value.intervalBegin);
-    ui->calendarwgtBegin->setSelectedDate(value.dateBegin);
-    ui->calendarwgtEnd->setSelectedDate(value.dateEnd);
-
-    ui->stackwgtFilter->setCurrentIndex(int(value.type));
-}
-//--------------------------------------------------------
-void CFilterDialog::filterChanged(QAbstractButton* button)
-{
-    ui->stackwgtFilter->setCurrentIndex(m_btnGroup->id(button));
-}
-//--------------------------------------------
-void CFilterDialog::intervalChanged(int value)
-{
-    int count = m_intervalMax - value;
-
-    ui->spinboxIntervalCount->setMaximum(count);
-    ui->spinboxIntervalCount->setValue(count);
-}
-//------------------------------
-void CFilterDialog::initFilter()
 {
     ui->setupUi(this);
+
+    int count = filter.interval().begin - filter.interval().end;
+
+    ui->spinboxIntervalBegin->setValue(filter.interval().begin);
+    ui->spinboxIntervalCount->setValue(((count > 0)?count - 1:0));
+    ui->spinboxIntervalCount->setMaximum(((count > 0)?count - 1:0));
+    ui->calendarwgtBegin->setSelectedDate(filter.date().begin);
+    ui->calendarwgtEnd->setSelectedDate(filter.date().end);
+
+    if(ui->spinboxIntervalBegin->value() == 0 && ui->spinboxIntervalCount->value() == 0)
+        ui->groupboxFilterInterval->setDisabled(true);
 
     m_btnGroup = new QButtonGroup;
 
@@ -75,8 +34,55 @@ void CFilterDialog::initFilter()
     connect(ui->spinboxIntervalBegin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this,
                                                                            &CFilterDialog::intervalChanged);
 }
-//----------------------------------------------
-void CFilterDialog::showEvent(QShowEvent* event)
+//--------------------------------------------------------
+void CFilterDialog::filterChanged(QAbstractButton* button)
 {
-    QDialog::showEvent(event);
+    ui->stackwgtFilter->setCurrentIndex(m_btnGroup->id(button));
+}
+//--------------------------------------------
+void CFilterDialog::intervalChanged(int value)
+{
+    int count = m_intervalMax - value;
+
+    ui->spinboxIntervalCount->setMaximum(count);
+    ui->spinboxIntervalCount->setValue(count);
+}
+//-----------------------------------
+const CFilter CFilterDialog::filter()
+{
+    CFilter::FilterDateType     date;
+    CFilter::FilterIntervalType interval;
+
+    date.begin = ui->calendarwgtBegin->selectedDate();
+    date.end   = ui->calendarwgtEnd->selectedDate();
+
+    interval.begin = ui->spinboxIntervalBegin->value();
+    interval.end   = ui->spinboxIntervalBegin->value() + ui->spinboxIntervalCount->value();
+
+    CFilter cfilter(interval, date);
+
+    cfilter.setType(((ui->stackwgtFilter->currentIndex() == 0)?CFilter::INTERVAL:CFilter::DATE));
+    cfilter.setState(true);
+
+    return cfilter;
+}
+//---------------------------------------------------------
+const CFilter::FilterIntervalType CFilterDialog::interval()
+{
+    CFilter::FilterIntervalType i;
+
+    i.begin = ui->spinboxIntervalBegin->value();
+    i.end   = ui->spinboxIntervalBegin->value() + ui->spinboxIntervalCount->value();
+
+    return i;
+}
+//-------------------------------------------------
+const CFilter::FilterDateType CFilterDialog::date()
+{
+    CFilter::FilterDateType d;
+
+    d.begin = ui->calendarwgtBegin->selectedDate();
+    d.end   = ui->calendarwgtEnd->selectedDate();
+
+    return d;
 }

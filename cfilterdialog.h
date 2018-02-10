@@ -4,9 +4,8 @@
     #include <QDialog>
     #include <QButtonGroup>
     #include <QPushButton>
-    #include <QShowEvent>
-    #include <QDate>
     #include <QDebug>
+    #include "cfilter.h"
     //----------
     namespace Ui
     {
@@ -18,38 +17,15 @@
         Q_OBJECT
 
         public:
-            //-------------
-            enum FilterType
-            {
-                INTERVAL_TYPE = 0,
-                DATE_TYPE
-            };
-            //--------------------
-            struct FilterValueType
-            {
-                FilterType type;
-                int        intervalMax;
-                int        intervalBegin;
-                int        intervalCount;
-                QDate      dateBegin;
-                QDate      dateEnd;
-            };
+            explicit CFilterDialog(const CFilter& filter, QWidget* parent = nullptr);
 
-        public:
-            explicit CFilterDialog(const FilterValueType& value, QWidget* parent = nullptr);
-            explicit CFilterDialog(QWidget* parent = nullptr);
-            ~CFilterDialog();
-
-            FilterValueType value();
-            void            setValue(const FilterValueType& value);
+            const CFilter                     filter();
+            const CFilter::FilterIntervalType interval();
+            const CFilter::FilterDateType     date();
 
         private slots:
             void filterChanged(QAbstractButton* button);
             void intervalChanged(int value);
-
-        private:
-            void initFilter();
-            void showEvent(QShowEvent* event);
 
         private:
             Ui::CFilterDialog* ui;
