@@ -79,6 +79,14 @@
                 FLOAT, // QLineEdit (set validator: QDoubleValidator)
                 LIST   // QComboBox
             };
+
+            enum JournalIndexType
+            {
+                JOURNAL_INDEX_CRASH = 14,
+                JOURNAL_INDEX_EVENT,
+                JOURNAL_INDEX_HALFHOUR,
+                JOURNAL_INDEX_ISOLATION
+            };
             //------------
             struct event_t
             {
@@ -176,7 +184,7 @@
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             void clearIOTable();
-            void clearEventJournal();
+            void clearJournal();
             void menuPanelCtrl();
             void variablePanelCtrl();
             void exportToPDF(QTableWidget* tableWidget, const QString& reportName, const QString& sn_device,
@@ -189,12 +197,13 @@
             void setEventJournalPtrShift();
             void valueEventJournalInternalChanged(int new_value);
             void timeoutSyncSerialNumber();
-            void importEventJournalToTable();
+            void importJournalToTable();
             void exportEventJournalToDb();
             void startExportToPDF();
             void filterDialog();
             
         private:
+            bool currentJournal(QTableWidget*& table, QString& journal);
             void loadSettings();
             void saveSattings();
             void initConnect();

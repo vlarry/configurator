@@ -1,5 +1,6 @@
 #include "configuratorwindow.h"
 #include "ui_configuratorwindow.h"
+#include "ui_configuratorwindow.h"
 //------------------------------------------------------
 ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
@@ -2545,14 +2546,22 @@ void ConfiguratorWindow::clearIOTable()
 
     model->updateData();
 }
-//------------------------------------------
-void ConfiguratorWindow::clearEventJournal()
+//-------------------------------------
+void ConfiguratorWindow::clearJournal()
 {
-    ui->tablewgtEventJournal->clearContents();
-    ui->tablewgtEventJournal->setRowCount(0);
+    QTableWidget* table   = nullptr;
+    QString       journal = "";
+
+    if(!currentJournal(table, journal))
+        return;
+
+    table->clearContents();
+    table->setRowCount(0);
     ui->leEventCount->clear();
 
     m_event_journal_parameter = { -1, 0, 0, 0, 0 };
+
+    m_status_bar->setStatusMessage(tr("Очистка таблицы журнала %1").arg(journal), 2000);
 
     updateParameterEventJournal();
 }
@@ -2669,6 +2678,52 @@ void ConfiguratorWindow::filterDialog()
     }
 
     delete filterDlg;
+}
+/*!
+ * \brief   Метод проверяет ведется ли работа с каким-либо журналом
+ * \param   table - указатель на QTableWidget, если используется какой-либо журнал, то указывает на него
+ * \param   journal - ссылка на строку с именем журнала, если используется какой-либо журнал, то содержит его название
+ * \return  истина - в текущий момент открыт один из журналов
+ */
+bool ConfiguratorWindow::currentJournal(QTableWidget*& table, QString& journal)
+{
+    int  index  = ui->stwgtMain->currentIndex();
+    bool result = false;
+
+    switch(index)
+    {
+        case JOURNAL_INDEX_CRASH:
+            table   = ui->tablewgtCrashJournal;
+            journal = tr("аварий");
+            result  = true;
+        break;
+
+        case JOURNAL_INDEX_EVENT:
+            table   = ui->tablewgtEventJournal;
+            journal = tr("событий");
+            result  = true;
+        break;
+
+        case JOURNAL_INDEX_HALFHOUR:
+            table   = ui->tablewgtHalfHourJournal;
+            journal = tr("получасовок");
+            result  = true;
+        break;
+
+        case JOURNAL_INDEX_ISOLATION:
+            table   = ui->tablewgtIsolationJournal;
+            journal = tr("изоляций");
+            result  = true;
+        break;
+
+        default:
+            table   = nullptr;
+            journal = "";
+            result  = false;
+        break;
+    };
+
+    return result;
 }
 //-------------------------------------
 void ConfiguratorWindow::loadSettings()
@@ -3212,26 +3267,35 @@ void ConfiguratorWindow::timeoutSyncSerialNumber()
 
     m_sync_timer.start(ui->spinboxSyncTime->value());
 }
-//--------------------------------------------------
-void ConfiguratorWindow::importEventJournalToTable()
+//---------------------------------------------
+void ConfiguratorWindow::importJournalToTable()
 {
+    QTableWidget* table   = nullptr;
+    QString       journal = "";
+
+    if(!currentJournal(table, journal))
+    {
+        QMessageBox::warning(this, tr("Импорт журналов"), tr("Нельзя произвести импорт,\nт.к. не выбран ни один из журналов"));
+        return;
+    }
+
     if(ui->tablewgtEventJournal->rowCount() > 0) // если данные в таблице присутствуют, то спрашиваем пользователя
     {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, tr("Импорт журнала событий"),
+        reply = QMessageBox::question(this, tr("Импорт журнала %1").arg(journal),
                                       tr("В таблице есть записи.\nОчистить?"),
                                       QMessageBox::Yes | QMessageBox::No);
 
         if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
         {
-            clearEventJournal();
+            clearJournal();
         }
     }
 
     QDir dir;
 
-    QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
-    QString fileName    = QFileDialog::getOpenFileName(this, tr("Импорт журнала событий из базы данных"),
+    QString nameJournal = QString("Журнал %1-%2").arg(journal).arg(m_status_bar->serialNumberText());
+    QString fileName    = QFileDialog::getOpenFileName(this, tr("Импорт журнала %1 из базы данных").arg(journal),
                                                        QString(dir.absolutePath() + "/%1/%2").arg("db").arg(nameJournal),
                                                        tr("База данных (*.db)"));
 
@@ -3240,7 +3304,7 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     if(QFileInfo(fileName).baseName() == "system")
     {
-        QMessageBox::warning(this, tr("Открытие базы данных журнала событий"), tr("Нельзя использовть системную базу данных"));
+        QMessageBox::warning(this, tr("Открытие базы данных журнала %1").arg(journal), tr("Нельзя использовть системную базу данных"));
         return;
     }
 
@@ -3253,7 +3317,7 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     if(!query.exec("SELECT * FROM event_journal_names;"))
     {
-        QMessageBox::warning(this, tr("Импорт журнала событий"), tr("Невозможно прочитать список журналов"));
+        QMessageBox::warning(this, tr("Импорт журнала %1").arg(journal), tr("Невозможно прочитать список журналов"));
         db.close();
 
         return;
@@ -3270,7 +3334,7 @@ void ConfiguratorWindow::importEventJournalToTable()
     }
     else
     {
-        QMessageBox::warning(this, tr("Импорт журнала событий"), tr("База журналов пуста"));
+        QMessageBox::warning(this, tr("Импорт журнала %1").arg(journal), tr("База журналов пуста"));
         db.close();
 
         return;
@@ -3299,12 +3363,12 @@ void ConfiguratorWindow::importEventJournalToTable()
 
     int rows = recordCount("event_journal", "sn_device", QString::number(id));
 
-    m_progressbar->setProgressTitle("Импорт журнала событий");
-    m_progressbar->progressStart();
-    m_progressbar->setSettings(0, rows, "");
-
     if(rows > 0)
     {
+        m_progressbar->setProgressTitle("Импорт журнала событий");
+        m_progressbar->progressStart();
+        m_progressbar->setSettings(0, rows, "");
+
         QString str = QString("SELECT * FROM event_journal WHERE sn_device=%1").arg(id);
 
         if(m_filter.find("EVENT") != m_filter.end())
@@ -3323,16 +3387,16 @@ void ConfiguratorWindow::importEventJournalToTable()
         if(!query.exec(str))
         {
             QMessageBox::warning(this, tr("Чтение базы данных"),
-                                       tr("Не удалось прочитать базу журнала событий: ") + query.lastError().text());
+                                       tr("Не удалось прочитать базу журнала %1: %2").arg(journal).arg(query.lastError().text()));
         }
 
-        ui->tablewgtEventJournal->setSortingEnabled(false);
+        table->setSortingEnabled(false);
 
         while(query.next()) // заносим данные в таблицу журналов событий
         {
-            int row = ui->tablewgtEventJournal->rowCount();
+            int row = table->rowCount();
 
-            ui->tablewgtEventJournal->insertRow(row);
+            table->insertRow(row);
 
             QString id_event  = query.value("id_event").toString();
             QString date      = QDate::fromString(query.value("date").toString(), Qt::ISODate).toString("dd.MM.yyyy");
@@ -3341,43 +3405,43 @@ void ConfiguratorWindow::importEventJournalToTable()
             QString category  = query.value("category").toString();
             QString parameter = query.value("parameter").toString();
 
-            ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(id_event));
-            ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(date));
-            ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(time));
-            ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(type));
-            ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(category));
-            ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(parameter));
+            table->setItem(row, 0, new QTableWidgetItem(id_event));
+            table->setItem(row, 1, new CTableWidgetItem(date));
+            table->setItem(row, 2, new QTableWidgetItem(time));
+            table->setItem(row, 3, new QTableWidgetItem(type));
+            table->setItem(row, 4, new QTableWidgetItem(category));
+            table->setItem(row, 5, new QTableWidgetItem(parameter));
 
-            ui->tablewgtEventJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-            ui->tablewgtEventJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-            ui->tablewgtEventJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
 
             m_progressbar->progressIncrement();
         }
 
         if(m_filter.find("EVENT") != m_filter.end())
         {
-            CFilter::FilterDateType d = { QDate::fromString(ui->tablewgtEventJournal->item(0, 1)->text(), "dd.MM.yyyy"),
-                                          QDate::fromString(ui->tablewgtEventJournal->item(ui->tablewgtEventJournal->rowCount() - 1, 1)->text(), "dd.MM.yyyy")};
+            CFilter::FilterDateType d = { QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy"),
+                                          QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy")};
             m_filter["EVENT"].setDate(d);
         }
 
-        ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
-        ui->tablewgtEventJournal->setSortingEnabled(true);
+        table->sortByColumn(1, Qt::AscendingOrder);
+        table->setSortingEnabled(true);
+
+        ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
+
+        m_progressbar->progressStop();
     }
     else
     {
-        QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала событий нет записей"));
+        QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала %1 нет записей").arg(journal));
         db.close();
 
         return;
     }
 
     db.close();
-
-    ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
-
-    m_progressbar->progressStop();
 }
 //-----------------------------------------------
 void ConfiguratorWindow::exportEventJournalToDb()
@@ -3866,7 +3930,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnEventJournalReadToTable, &QPushButton::clicked, this, &ConfiguratorWindow::eventJournalRead);
-    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearEventJournal);
+    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
@@ -3875,7 +3939,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnImportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::importPurposeFromJSON);
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(&m_sync_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSyncSerialNumber);
-    connect(ui->pushbtnImportEventDb, &QPushButton::clicked, this, &ConfiguratorWindow::importEventJournalToTable);
+    connect(ui->pushbtnImportEventDb, &QPushButton::clicked, this, &ConfiguratorWindow::importJournalToTable);
     connect(ui->pushbtnExportEventJournalDb, &QPushButton::clicked, this, &ConfiguratorWindow::exportEventJournalToDb);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
 }
