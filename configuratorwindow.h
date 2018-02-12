@@ -42,6 +42,7 @@
     #include "ceventlistjournals.h"
     #include "cprogressbarwidget.h"
     #include "cfilterdialog.h"
+    #include "cjournalwidget.h"
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");
     const QString ORGANIZATION_DOMAIN = QObject::tr("http://www.rpa.ua/");
@@ -85,7 +86,8 @@
                 JOURNAL_INDEX_CRASH = 14,
                 JOURNAL_INDEX_EVENT,
                 JOURNAL_INDEX_HALFHOUR,
-                JOURNAL_INDEX_ISOLATION
+                JOURNAL_INDEX_ISOLATION,
+                JOURNAL_INDEX_OSCILLOSCOPE
             };
             //------------
             struct event_t
@@ -203,7 +205,7 @@
             void filterDialog();
             
         private:
-            bool currentJournal(QTableWidget*& table, QString& journal);
+            bool currentJournal(const CJournalWidget*& widget);
             void loadSettings();
             void saveSattings();
             void initConnect();

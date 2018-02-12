@@ -220,19 +220,19 @@ void ConfiguratorWindow::eventJournalRead()
         m_event_journal_parameter.read  = 0;
         m_event_journal_parameter.count = 0;
 
-        ui->leEventProcessTime->setText(QString::number(m_time_process.elapsed()/1000) + tr(" сек."));
+//        ui->leEventProcessTime->setText(QString::number(m_time_process.elapsed()/1000) + tr(" сек."));
 
-        ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
-        ui->tablewgtEventJournal->setSortingEnabled(true);
+//        ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
+//        ui->tablewgtEventJournal->setSortingEnabled(true);
 
-        ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
+//        ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
 
         return;
     }
 
     if(m_event_journal_parameter.start == -1) // первый вызов - инициализация переменных
     {
-        ui->tablewgtEventJournal->setSortingEnabled(false);
+//        ui->tablewgtEventJournal->setSortingEnabled(false);
 
         m_time_process.start();
 
@@ -1660,63 +1660,22 @@ void ConfiguratorWindow::initJournals()
     QStringList journalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип") << tr("Категория") <<
                                                   tr("Параметр");
 
-    int columnWidth0 = 50;
-    int columnWidth1 = 100;
-    int columnWidth2 = 100;
-    int columnWidth4 = 200;
-    int columnWidth5 = 300;
+    ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
+    ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
+    ui->widgetJournalHalfHour->setProperty("NAME", tr("получасовок"));
+    ui->widgetJournalIsolation->setProperty("NAME", tr("изоляций"));
 
-    ui->tablewgtEventJournal->setColumnCount(6);
-    ui->tablewgtEventJournal->setHorizontalHeaderLabels(journalHeaders);
-    ui->tablewgtEventJournal->setShowGrid(true);
-    ui->tablewgtEventJournal->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->tablewgtEventJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tablewgtEventJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tablewgtEventJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    ui->tablewgtEventJournal->setColumnWidth(0, columnWidth0);
-    ui->tablewgtEventJournal->setColumnWidth(1, columnWidth1);
-    ui->tablewgtEventJournal->setColumnWidth(2, columnWidth2);
-    ui->tablewgtEventJournal->setColumnWidth(4, columnWidth4);
-    ui->tablewgtEventJournal->setColumnWidth(5, columnWidth5);
+    ui->widgetJournalCrash->setTableHeaders(journalHeaders);
+    ui->widgetJournalEvent->setTableHeaders(journalHeaders);
+    ui->widgetJournalHalfHour->setTableHeaders(journalHeaders);
+    ui->widgetJournalIsolation->setTableHeaders(journalHeaders);
 
-    ui->tablewgtCrashJournal->setColumnCount(6);
-    ui->tablewgtCrashJournal->setHorizontalHeaderLabels(journalHeaders);
-    ui->tablewgtCrashJournal->setShowGrid(true);
-    ui->tablewgtCrashJournal->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->tablewgtCrashJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tablewgtCrashJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tablewgtCrashJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    ui->tablewgtCrashJournal->setColumnWidth(0, columnWidth0);
-    ui->tablewgtCrashJournal->setColumnWidth(1, columnWidth1);
-    ui->tablewgtCrashJournal->setColumnWidth(2, columnWidth2);
-    ui->tablewgtCrashJournal->setColumnWidth(4, columnWidth4);
-    ui->tablewgtCrashJournal->setColumnWidth(5, columnWidth5);
+    QVector<int> length_list = QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300;
 
-    ui->tablewgtHalfHourJournal->setColumnCount(6);
-    ui->tablewgtHalfHourJournal->setHorizontalHeaderLabels(journalHeaders);
-    ui->tablewgtHalfHourJournal->setShowGrid(true);
-    ui->tablewgtHalfHourJournal->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->tablewgtHalfHourJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tablewgtHalfHourJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tablewgtHalfHourJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    ui->tablewgtHalfHourJournal->setColumnWidth(0, columnWidth0);
-    ui->tablewgtHalfHourJournal->setColumnWidth(1, columnWidth1);
-    ui->tablewgtHalfHourJournal->setColumnWidth(2, columnWidth2);
-    ui->tablewgtHalfHourJournal->setColumnWidth(4, columnWidth4);
-    ui->tablewgtHalfHourJournal->setColumnWidth(5, columnWidth5);
-
-    ui->tablewgtIsolationJournal->setColumnCount(6);
-    ui->tablewgtIsolationJournal->setHorizontalHeaderLabels(journalHeaders);
-    ui->tablewgtIsolationJournal->setShowGrid(true);
-    ui->tablewgtIsolationJournal->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->tablewgtIsolationJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tablewgtIsolationJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tablewgtIsolationJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    ui->tablewgtIsolationJournal->setColumnWidth(0, columnWidth0);
-    ui->tablewgtIsolationJournal->setColumnWidth(1, columnWidth1);
-    ui->tablewgtIsolationJournal->setColumnWidth(2, columnWidth2);
-    ui->tablewgtIsolationJournal->setColumnWidth(4, columnWidth4);
-    ui->tablewgtIsolationJournal->setColumnWidth(5, columnWidth5);
+    ui->widgetJournalCrash->setTableColumnWidth(length_list);
+    ui->widgetJournalEvent->setTableColumnWidth(length_list);
+    ui->widgetJournalHalfHour->setTableColumnWidth(length_list);
+    ui->widgetJournalIsolation->setTableColumnWidth(length_list);
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -2077,47 +2036,47 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
             if(ecategory.count() > category_event)
                 eparameter = ecategory[category_event].sub_event;
 
-            int row = ui->tablewgtEventJournal->rowCount();
+//            int row = ui->tablewgtEventJournal->rowCount();
 
-            ui->tablewgtEventJournal->insertRow(row);
+//            ui->tablewgtEventJournal->insertRow(row);
 
-            QString etype_str = tr("Неизвестный тип");
+//            QString etype_str = tr("Неизвестный тип");
 
-            if(etype.count() > type_event)
-                etype_str = etype[type_event].name;
+//            if(etype.count() > type_event)
+//                etype_str = etype[type_event].name;
 
-            ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-            ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(d.toString("dd.MM.yyyy")));
+//            ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
+//            ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(d.toString("dd.MM.yyyy")));
 
-            QString s = ((msecond < 10)?"00":(msecond < 100 && msecond >= 10)?"0":"") + QString::number(msecond);
+//            QString s = ((msecond < 10)?"00":(msecond < 100 && msecond >= 10)?"0":"") + QString::number(msecond);
 
-            ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") + s));
-            ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (") +
-                                                                                            QString::number(type_event) +
-                                                                                            QString(")"))));
+//            ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") + s));
+//            ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (") +
+//                                                                                            QString::number(type_event) +
+//                                                                                            QString(")"))));
 
-            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
-            QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
-                                          tr("Неизвестный параметр"):eparameter[parameter_event].name);
+//            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
+//            QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
+//                                          tr("Неизвестный параметр"):eparameter[parameter_event].name);
 
-            ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str + QString(" (") +
-                                                                           QString::number(category_event) +
-                                                                           QString(")")));
-            ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str + QString(" (") +
-                                                                           QString::number(parameter_event) +
-                                                                           QString(")")));
+//            ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str + QString(" (") +
+//                                                                           QString::number(category_event) +
+//                                                                           QString(")")));
+//            ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str + QString(" (") +
+//                                                                           QString::number(parameter_event) +
+//                                                                           QString(")")));
 
-            ui->tablewgtEventJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-            ui->tablewgtEventJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-            ui->tablewgtEventJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+//            ui->tablewgtEventJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+//            ui->tablewgtEventJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+//            ui->tablewgtEventJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
 
-            if(ui->checkboxEventJournalScrollTable->isChecked())
-                ui->tablewgtEventJournal->scrollToBottom();
+//            if(ui->checkboxEventJournalScrollTable->isChecked())
+//                ui->tablewgtEventJournal->scrollToBottom();
         }
     }
 
-    ui->leEventCount->setText(QString::number(m_event_journal_parameter.read) + "/" +
-                              QString::number(m_event_journal_parameter.total));
+//    ui->leEventCount->setText(QString::number(m_event_journal_parameter.read) + "/" +
+//                              QString::number(m_event_journal_parameter.total));
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
@@ -2552,12 +2511,12 @@ void ConfiguratorWindow::clearJournal()
     QTableWidget* table   = nullptr;
     QString       journal = "";
 
-    if(!currentJournal(table, journal))
-        return;
+//    if(!currentJournal(table, journal))
+//        return;
 
-    table->clearContents();
-    table->setRowCount(0);
-    ui->leEventCount->clear();
+//    table->clearContents();
+//    table->setRowCount(0);
+//    ui->leEventCount->clear();
 
     m_event_journal_parameter = { -1, 0, 0, 0, 0 };
 
@@ -2589,7 +2548,7 @@ void ConfiguratorWindow::startExportToPDF()
 
     if(ui->stwgtMain->currentIndex() == 15)
     {
-        table   = ui->tablewgtEventJournal;
+//        table   = ui->tablewgtEventJournal;
         reportName = tr("Отчет жунала событий");
     }
 
@@ -2629,22 +2588,22 @@ void ConfiguratorWindow::filterDialog()
     {
         case 14:
             key   = "CRASH";
-            table = ui->tablewgtCrashJournal;
+//            table = ui->tablewgtCrashJournal;
         break;
 
         case 15:
             key   = "EVENT";
-            table = ui->tablewgtEventJournal;
+//            table = ui->tablewgtEventJournal;
         break;
 
         case 16:
             key   = "HALFHOUR";
-            table = ui->tablewgtHalfHourJournal;
+//            table = ui->tablewgtHalfHourJournal;
         break;
 
         case 17:
             key   = "ISOLATION";
-            table = ui->tablewgtIsolationJournal;
+//            table = ui->tablewgtIsolationJournal;
         break;
     }
 
@@ -2665,63 +2624,43 @@ void ConfiguratorWindow::filterDialog()
         dEnd   = QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy");
     }
 
-    CFilter::FilterIntervalType tinterval = { ui->leEventCount->text().toInt(), 0, ui->leEventCount->text().toInt() };
-    CFilter::FilterDateType     tdate     = { dBegin, dEnd };
+//    CFilter::FilterIntervalType tinterval = { ui->leEventCount->text().toInt(), 0, ui->leEventCount->text().toInt() };
+//    CFilter::FilterDateType     tdate     = { dBegin, dEnd };
 
-    m_filter[key] = CFilter(tinterval, tdate);
+//    m_filter[key] = CFilter(tinterval, tdate);
 
-    CFilterDialog* filterDlg = new CFilterDialog(m_filter[key], this);
+//    CFilterDialog* filterDlg = new CFilterDialog(m_filter[key], this);
 
-    if(filterDlg->exec() == QDialog::Accepted)
-    {
-        m_filter[key] = filterDlg->filter();
-    }
+//    if(filterDlg->exec() == QDialog::Accepted)
+//    {
+//        m_filter[key] = filterDlg->filter();
+//    }
 
-    delete filterDlg;
+//    delete filterDlg;
 }
 /*!
  * \brief   Метод проверяет ведется ли работа с каким-либо журналом
- * \param   table - указатель на QTableWidget, если используется какой-либо журнал, то указывает на него
- * \param   journal - ссылка на строку с именем журнала, если используется какой-либо журнал, то содержит его название
+ * \param   widget - указатель на CJournalWidget, если используется какой-либо журнал, то указывает на него
  * \return  истина - в текущий момент открыт один из журналов
  */
-bool ConfiguratorWindow::currentJournal(QTableWidget*& table, QString& journal)
+bool ConfiguratorWindow::currentJournal(const CJournalWidget*& widget)
 {
     int  index  = ui->stwgtMain->currentIndex();
     bool result = false;
 
-    switch(index)
+    if(index < JOURNAL_INDEX_CRASH || index > JOURNAL_INDEX_OSCILLOSCOPE)
+        return false;
+
+    QWidget* curWgt = ui->stwgtMain->currentWidget();
+
+    for(const QObject* obj: curWgt->children())
     {
-        case JOURNAL_INDEX_CRASH:
-            table   = ui->tablewgtCrashJournal;
-            journal = tr("аварий");
-            result  = true;
-        break;
-
-        case JOURNAL_INDEX_EVENT:
-            table   = ui->tablewgtEventJournal;
-            journal = tr("событий");
-            result  = true;
-        break;
-
-        case JOURNAL_INDEX_HALFHOUR:
-            table   = ui->tablewgtHalfHourJournal;
-            journal = tr("получасовок");
-            result  = true;
-        break;
-
-        case JOURNAL_INDEX_ISOLATION:
-            table   = ui->tablewgtIsolationJournal;
-            journal = tr("изоляций");
-            result  = true;
-        break;
-
-        default:
-            table   = nullptr;
-            journal = "";
-            result  = false;
-        break;
-    };
+        if(obj->isWidgetType() && QString(obj->metaObject()->className()) == "CJournalWidget")
+        {
+            widget = qobject_cast<const CJournalWidget*>(obj);
+            result = true;
+        }
+    }
 
     return result;
 }
@@ -2846,111 +2785,111 @@ void ConfiguratorWindow::exportToPDF(QTableWidget* tableWidget, const QString& r
 
     int columnCount = tableWidget->columnCount();
 
-    QPoint pos = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
+//    QPoint pos = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
 
-    if(m_filter.find("EVENT") != m_filter.end())
-    {
-        CFilter filter = m_filter["EVENT"];
+//    if(m_filter.find("EVENT") != m_filter.end())
+//    {
+//        CFilter filter = m_filter["EVENT"];
 
-        if(filter) // если фильтр активен
-        {
-            if(filter.type() == CFilter::DATE) // если выбранный фильтр по дате
-            {
-                pos = indexDateFilter(ui->tablewgtEventJournal, filter.date().begin, filter.date().end);
-            }
-        }
-    }
+//        if(filter) // если фильтр активен
+//        {
+//            if(filter.type() == CFilter::DATE) // если выбранный фильтр по дате
+//            {
+//                pos = indexDateFilter(ui->tablewgtEventJournal, filter.date().begin, filter.date().end);
+//            }
+//        }
+//    }
 
-    int rows = pos.y() - pos.x() + 1;
+//    int rows = pos.y() - pos.x() + 1;
 
-    QTextTable* textTable = cursor.insertTable(rows + 1, columnCount, tableFormat);
+//    QTextTable* textTable = cursor.insertTable(rows + 1, columnCount, tableFormat);
 
-    QTextBlockFormat blockTableHeaderFormat;
-    blockTableHeaderFormat.setAlignment(Qt::AlignHCenter);
+//    QTextBlockFormat blockTableHeaderFormat;
+//    blockTableHeaderFormat.setAlignment(Qt::AlignHCenter);
 
-    for(int i = 0; i < columnCount; i++)
-    {
-        QTextTableCell cell = textTable->cellAt(0, i);
-        Q_ASSERT(cell.isValid());
-        QTextCharFormat tableHeaderFormat = cell.format();
-        tableHeaderFormat.setFontWeight(QFont::Bold);
-        tableHeaderFormat.setVerticalAlignment(QTextCharFormat::AlignBottom);
-        cell.setFormat(tableHeaderFormat);
-        QTextCursor cellCursor = cell.firstCursorPosition();
-        cellCursor.setBlockFormat(blockTableHeaderFormat);
-        cellCursor.insertText(tableWidget->horizontalHeaderItem(i)->text());
-    }
+//    for(int i = 0; i < columnCount; i++)
+//    {
+//        QTextTableCell cell = textTable->cellAt(0, i);
+//        Q_ASSERT(cell.isValid());
+//        QTextCharFormat tableHeaderFormat = cell.format();
+//        tableHeaderFormat.setFontWeight(QFont::Bold);
+//        tableHeaderFormat.setVerticalAlignment(QTextCharFormat::AlignBottom);
+//        cell.setFormat(tableHeaderFormat);
+//        QTextCursor cellCursor = cell.firstCursorPosition();
+//        cellCursor.setBlockFormat(blockTableHeaderFormat);
+//        cellCursor.insertText(tableWidget->horizontalHeaderItem(i)->text());
+//    }
 
-    for(int i = 0; i < rows; i++)
-    {
-        for(int j = 0; j < columnCount; j++)
-        {
-            QTextTableCell cell = textTable->cellAt(i + 1, j);
-            Q_ASSERT(cell.isValid());
-            QTextCursor cellCursor = cell.firstCursorPosition();
-            cellCursor.insertText(tableWidget->item(pos.x() + i, j)->text());
-        }
-    }
+//    for(int i = 0; i < rows; i++)
+//    {
+//        for(int j = 0; j < columnCount; j++)
+//        {
+//            QTextTableCell cell = textTable->cellAt(i + 1, j);
+//            Q_ASSERT(cell.isValid());
+//            QTextCursor cellCursor = cell.firstCursorPosition();
+//            cellCursor.insertText(tableWidget->item(pos.x() + i, j)->text());
+//        }
+//    }
 
-    cursor.movePosition(QTextCursor::End);
+//    cursor.movePosition(QTextCursor::End);
 
-    QPainter painter(printer);
+//    QPainter painter(printer);
 
-    QSizeF pageSize = printer->pageRect().size();
+//    QSizeF pageSize = printer->pageRect().size();
 
-    const qreal  footerHeight = painter.fontMetrics().height();
-    const QRectF textRect(0, 0, pageSize.width(), pageSize.height() - footerHeight);
+//    const qreal  footerHeight = painter.fontMetrics().height();
+//    const QRectF textRect(0, 0, pageSize.width(), pageSize.height() - footerHeight);
 
-    reportPDF->setPageSize(textRect.size());
+//    reportPDF->setPageSize(textRect.size());
 
-    const int pageCount = reportPDF->pageCount();
+//    const int pageCount = reportPDF->pageCount();
 
-    emit m_progressbar->settingChanged(0, pageCount, tr("стр"));
+//    emit m_progressbar->settingChanged(0, pageCount, tr("стр"));
 
-    bool firstPage = true;
-    for (int pageIndex = 0; pageIndex < pageCount; ++pageIndex)
-    {
-        if(!firstPage)
-        {
-            printer->newPage();
-        }
+//    bool firstPage = true;
+//    for (int pageIndex = 0; pageIndex < pageCount; ++pageIndex)
+//    {
+//        if(!firstPage)
+//        {
+//            printer->newPage();
+//        }
 
-        painter.drawImage(textRect, QImage(":/images/resource/images/background_report.png"));
+//        painter.drawImage(textRect, QImage(":/images/resource/images/background_report.png"));
 
-        if(pageIndex == 0)
-        {
-            QRectF headerRect = textRect;
-            headerRect.setBottom(textRect.top());
-            headerRect.setHeight(footerHeight);
+//        if(pageIndex == 0)
+//        {
+//            QRectF headerRect = textRect;
+//            headerRect.setBottom(textRect.top());
+//            headerRect.setHeight(footerHeight);
 
-            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, tableWidget->item(pos.x(), 1)->text() +
-                                         " - " + tableWidget->item(pos.y(), 1)->text());
+//            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, tableWidget->item(pos.x(), 1)->text() +
+//                                         " - " + tableWidget->item(pos.y(), 1)->text());
 
-            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignRight, QObject::tr("Страниц: %1").arg(pageCount));
-        }
+//            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignRight, QObject::tr("Страниц: %1").arg(pageCount));
+//        }
 
-        painter.save();
-            const QRectF textPageRect(0, pageIndex*reportPDF->pageSize().height(), reportPDF->pageSize().width(),
-                                                                                   reportPDF->pageSize().height());
-            painter.setClipRect(textRect);
-            painter.translate(0, -textPageRect.top());
-            painter.translate(textRect.left(), textRect.top());
-            reportPDF->drawContents(&painter);
-        painter.restore();
+//        painter.save();
+//            const QRectF textPageRect(0, pageIndex*reportPDF->pageSize().height(), reportPDF->pageSize().width(),
+//                                                                                   reportPDF->pageSize().height());
+//            painter.setClipRect(textRect);
+//            painter.translate(0, -textPageRect.top());
+//            painter.translate(textRect.left(), textRect.top());
+//            reportPDF->drawContents(&painter);
+//        painter.restore();
 
-        QRectF footerRect = textRect;
-        footerRect.setTop(textRect.bottom());
-        footerRect.setHeight(footerHeight);
+//        QRectF footerRect = textRect;
+//        footerRect.setTop(textRect.bottom());
+//        footerRect.setHeight(footerHeight);
 
-        painter.drawText(footerRect, Qt::AlignVCenter|Qt::AlignLeft, QDate::currentDate().toString("dd.MM.yyyy"));
+//        painter.drawText(footerRect, Qt::AlignVCenter|Qt::AlignLeft, QDate::currentDate().toString("dd.MM.yyyy"));
 
-        painter.drawText(footerRect, Qt::AlignVCenter|Qt::AlignRight,
-                                     QObject::tr("Страница %1 из %2").arg(pageIndex +1 ).arg(pageCount));
+//        painter.drawText(footerRect, Qt::AlignVCenter|Qt::AlignRight,
+//                                     QObject::tr("Страница %1 из %2").arg(pageIndex +1 ).arg(pageCount));
 
-        emit m_progressbar->increment();
+//        emit m_progressbar->increment();
 
-        firstPage = false;
-    }
+//        firstPage = false;
+//    }
 }
 //--------------------------------------------
 void ConfiguratorWindow::exportPurposeToJSON()
@@ -3186,7 +3125,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
 
             m_event_journal_parameter.total = event_count;
 
-            ui->leEventCount->setText("0/" + QString::number(event_count));
+//            ui->leEventCount->setText("0/" + QString::number(event_count));
         }
     }
     else if(type == READ_EVENT_JOURNAL)
@@ -3209,36 +3148,24 @@ void ConfiguratorWindow::updateParameterEventJournal()
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
 {
-    int widthColumnType = 0;
-
-    if(ui->stwgtMain->currentIndex() >= 14 && ui->stwgtMain->currentIndex() <= 18)
+    if(ui->stwgtMain->currentIndex() >= JOURNAL_INDEX_CRASH && ui->stwgtMain->currentIndex() <= JOURNAL_INDEX_ISOLATION)
+    {
         ui->tabwgtMenu->setTabEnabled(4, true);
+
+        QTableWidget* table = ui->widgetJournalCrash->table();
+
+        if(table)
+        {
+            int width = table->width() - 750;
+
+            ui->widgetJournalCrash->setTableColumnWidth(3, width);
+            ui->widgetJournalEvent->setTableColumnWidth(3, width);
+            ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
+            ui->widgetJournalIsolation->setTableColumnWidth(3, width);
+        }
+    }
     else
         ui->tabwgtMenu->setTabEnabled(4, false);
-
-    switch(index)
-    {
-        case 14: // текущий журнал аварий
-            widthColumnType = ui->tablewgtCrashJournal->width() - 750;
-            ui->tablewgtCrashJournal->setColumnWidth(3, widthColumnType);
-        break;
-
-        case 15: // текущий журнал событий
-            widthColumnType = ui->tablewgtEventJournal->width() - 750;
-            ui->tablewgtEventJournal->setColumnWidth(3, widthColumnType);
-            updateParameterEventJournal();
-        break;
-
-        case 16: // текущий журнал получасовок
-            widthColumnType = ui->tablewgtHalfHourJournal->width() - 750;
-            ui->tablewgtHalfHourJournal->setColumnWidth(3, widthColumnType);
-        break;
-
-        case 17: // текущий журнал изоляций
-            widthColumnType = ui->tablewgtIsolationJournal->width() - 750;
-            ui->tablewgtIsolationJournal->setColumnWidth(3, widthColumnType);
-        break;
-    }
 }
 //------------------------------------------------
 void ConfiguratorWindow::setEventJournalPtrShift()
@@ -3270,19 +3197,26 @@ void ConfiguratorWindow::timeoutSyncSerialNumber()
 //---------------------------------------------
 void ConfiguratorWindow::importJournalToTable()
 {
-    QTableWidget* table   = nullptr;
-    QString       journal = "";
+    const CJournalWidget* widget = nullptr;
 
-    if(!currentJournal(table, journal))
+    if(!currentJournal(widget))
     {
         QMessageBox::warning(this, tr("Импорт журналов"), tr("Нельзя произвести импорт,\nт.к. не выбран ни один из журналов"));
         return;
     }
 
-    if(ui->tablewgtEventJournal->rowCount() > 0) // если данные в таблице присутствуют, то спрашиваем пользователя
+    QTableWidget*   table  = widget->table();
+    CHeaderJournal* header = widget->header();
+
+    if(!table || !header)
+        return;
+
+    QString journal_name = widget->property("NAME").toString();
+
+    if(table->rowCount() > 0) // если данные в таблице присутствуют, то спрашиваем пользователя
     {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, tr("Импорт журнала %1").arg(journal),
+        reply = QMessageBox::question(this, tr("Импорт журнала %1").arg(journal_name),
                                       tr("В таблице есть записи.\nОчистить?"),
                                       QMessageBox::Yes | QMessageBox::No);
 
@@ -3294,8 +3228,8 @@ void ConfiguratorWindow::importJournalToTable()
 
     QDir dir;
 
-    QString nameJournal = QString("Журнал %1-%2").arg(journal).arg(m_status_bar->serialNumberText());
-    QString fileName    = QFileDialog::getOpenFileName(this, tr("Импорт журнала %1 из базы данных").arg(journal),
+    QString nameJournal = QString("Журнал %1-%2").arg(journal_name).arg(m_status_bar->serialNumberText());
+    QString fileName    = QFileDialog::getOpenFileName(this, tr("Импорт журнала %1 из базы данных").arg(journal_name),
                                                        QString(dir.absolutePath() + "/%1/%2").arg("db").arg(nameJournal),
                                                        tr("База данных (*.db)"));
 
@@ -3304,7 +3238,7 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(QFileInfo(fileName).baseName() == "system")
     {
-        QMessageBox::warning(this, tr("Открытие базы данных журнала %1").arg(journal), tr("Нельзя использовть системную базу данных"));
+        QMessageBox::warning(this, tr("Открытие базы данных журнала %1").arg(journal_name), tr("Нельзя использовть системную базу данных"));
         return;
     }
 
@@ -3317,7 +3251,7 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(!query.exec("SELECT * FROM event_journal_names;"))
     {
-        QMessageBox::warning(this, tr("Импорт журнала %1").arg(journal), tr("Невозможно прочитать список журналов"));
+        QMessageBox::warning(this, tr("Импорт журнала %1").arg(journal_name), tr("Невозможно прочитать список журналов"));
         db.close();
 
         return;
@@ -3334,14 +3268,17 @@ void ConfiguratorWindow::importJournalToTable()
     }
     else
     {
-        QMessageBox::warning(this, tr("Импорт журнала %1").arg(journal), tr("База журналов пуста"));
+        QMessageBox::warning(this, tr("Импорт журнала %1").arg(journal_name), tr("База журналов пуста"));
         db.close();
 
         return;
     }
 
     if(list.isEmpty())
+    {
+        db.close();
         return;
+    }
 
     CEventListJournals* journals = new CEventListJournals(list, this);
 
@@ -3359,7 +3296,10 @@ void ConfiguratorWindow::importJournalToTable()
     }
 
     if(id == -1)
+    {
+        db.close();
         return;
+    }
 
     int rows = recordCount("event_journal", "sn_device", QString::number(id));
 
@@ -3387,7 +3327,7 @@ void ConfiguratorWindow::importJournalToTable()
         if(!query.exec(str))
         {
             QMessageBox::warning(this, tr("Чтение базы данных"),
-                                       tr("Не удалось прочитать базу журнала %1: %2").arg(journal).arg(query.lastError().text()));
+                                       tr("Не удалось прочитать базу журнала %1: %2").arg(journal_name).arg(query.lastError().text()));
         }
 
         table->setSortingEnabled(false);
@@ -3428,14 +3368,13 @@ void ConfiguratorWindow::importJournalToTable()
 
         table->sortByColumn(1, Qt::AscendingOrder);
         table->setSortingEnabled(true);
-
-        ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
+        header->setTextTableCountMessages(rows);
 
         m_progressbar->progressStop();
     }
     else
     {
-        QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала %1 нет записей").arg(journal));
+        QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала %1 нет записей").arg(journal_name));
         db.close();
 
         return;
@@ -3446,156 +3385,156 @@ void ConfiguratorWindow::importJournalToTable()
 //-----------------------------------------------
 void ConfiguratorWindow::exportEventJournalToDb()
 {
-    int rows = ui->tablewgtEventJournal->rowCount();
+//    int rows = ui->tablewgtEventJournal->rowCount();
 
-    if(rows == 0) // нет записей - выходим
-        return;
+//    if(rows == 0) // нет записей - выходим
+//        return;
 
-    QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
+//    QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
 
-    QSqlDatabase db;
+//    QSqlDatabase db;
 
-    QDir dir;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
-                                                          dir.absolutePath() + "/db/" + nameJournal,
-                                                          tr("База данных (*.db)"), nullptr,
-                                                          QFileDialog::DontConfirmOverwrite);
+//    QDir dir;
+//    QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
+//                                                          dir.absolutePath() + "/db/" + nameJournal,
+//                                                          tr("База данных (*.db)"), nullptr,
+//                                                          QFileDialog::DontConfirmOverwrite);
 
-    if(fileName.isEmpty())
-        return;
+//    if(fileName.isEmpty())
+//        return;
 
-    if(QFileInfo(fileName).baseName() == "system")
-    {
-        QMessageBox::warning(this, tr("Экспорт журнала событий в базу данных"),
-                                   tr("Нельзя произвести экпорт в системную базу данных."));
-        return;
-    }
+//    if(QFileInfo(fileName).baseName() == "system")
+//    {
+//        QMessageBox::warning(this, tr("Экспорт журнала событий в базу данных"),
+//                                   tr("Нельзя произвести экпорт в системную базу данных."));
+//        return;
+//    }
 
-    QFileInfo finfo;
+//    QFileInfo finfo;
 
-    if(finfo.exists(fileName)) // если файл существует
-    {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, tr("Экспорт журнала событий в базу данных"),
-                                      tr("Такая база уже существует. Перезаписать данные?"),
-                                      QMessageBox::Yes | QMessageBox::No);
+//    if(finfo.exists(fileName)) // если файл существует
+//    {
+//        QMessageBox::StandardButton reply;
+//        reply = QMessageBox::question(this, tr("Экспорт журнала событий в базу данных"),
+//                                      tr("Такая база уже существует. Перезаписать данные?"),
+//                                      QMessageBox::Yes | QMessageBox::No);
 
-        if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
-        {
-            QFile file(fileName);
+//        if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
+//        {
+//            QFile file(fileName);
 
-            if(!file.remove())
-            {
-                QMessageBox::warning(this, tr("Удаление базы журналов событий"),
-                                     tr("Невозможно удалить базу!\nВозможно уже используется или у Вас нет прав."));
-                return;
-            }
-        }
-    }
+//            if(!file.remove())
+//            {
+//                QMessageBox::warning(this, tr("Удаление базы журналов событий"),
+//                                     tr("Невозможно удалить базу!\nВозможно уже используется или у Вас нет прав."));
+//                return;
+//            }
+//        }
+//    }
 
-    if(!connectDb(db, fileName))
-    {
-        return;
-    }
+//    if(!connectDb(db, fileName))
+//    {
+//        return;
+//    }
 
-    QSqlQuery query(db);
+//    QSqlQuery query(db);
 
-    int id = -1;
+//    int id = -1;
 
-    if(recordCountDb(db, "event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
-    {
-        if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
-        {
-            QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
-                                       query.lastError().text());
+//    if(recordCountDb(db, "event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
+//    {
+//        if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
+//        {
+//            QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
+//                                       query.lastError().text());
 
-            return;
-        }
+//            return;
+//        }
 
-        if(!query.first())
-            return;
+//        if(!query.first())
+//            return;
 
-        id = query.value("id").toInt();
-    }
-    else // если нет записи в базе данных
-    {
-        if(!query.exec("INSERT INTO event_journal_names (name)"
-                       "VALUES(\"" + nameJournal + "\");"))
-        {
-            QMessageBox::warning(this, tr("Вставка записи в базу данных"), tr("Невозможно вставить запись в базу данных"));
-            return;
-        }
+//        id = query.value("id").toInt();
+//    }
+//    else // если нет записи в базе данных
+//    {
+//        if(!query.exec("INSERT INTO event_journal_names (name)"
+//                       "VALUES(\"" + nameJournal + "\");"))
+//        {
+//            QMessageBox::warning(this, tr("Вставка записи в базу данных"), tr("Невозможно вставить запись в базу данных"));
+//            return;
+//        }
 
-        if(recordCountDb(db, "event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
-        {
-            if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
-            {
-                QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
-                                           query.lastError().text());
+//        if(recordCountDb(db, "event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
+//        {
+//            if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
+//            {
+//                QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
+//                                           query.lastError().text());
 
-                return;
-            }
+//                return;
+//            }
 
-            if(!query.first())
-                return;
+//            if(!query.first())
+//                return;
 
-            id = query.value("id").toInt();
-        }
-    }
+//            id = query.value("id").toInt();
+//        }
+//    }
 
-    if(id == -1)
-        return;
+//    if(id == -1)
+//        return;
 
-    QPoint pos = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
+//    QPoint pos = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
 
-    if(m_filter.find("EVENT") != m_filter.end())
-    {
-        CFilter filter = m_filter["EVENT"];
+//    if(m_filter.find("EVENT") != m_filter.end())
+//    {
+//        CFilter filter = m_filter["EVENT"];
 
-        if(filter) // если фильтр активен
-        {
-            if(filter.type() == CFilter::DATE) // если выбранный фильтр по дате
-            {
-                pos = indexDateFilter(ui->tablewgtEventJournal, filter.date().begin, filter.date().end);
-            }
-        }
-    }
+//        if(filter) // если фильтр активен
+//        {
+//            if(filter.type() == CFilter::DATE) // если выбранный фильтр по дате
+//            {
+//                pos = indexDateFilter(ui->tablewgtEventJournal, filter.date().begin, filter.date().end);
+//            }
+//        }
+//    }
 
-    m_progressbar->setProgressTitle(tr("Экспорт журнала событий"));
-    m_progressbar->progressStart();
-    m_progressbar->setSettings(0, (pos.y() - pos.x()) + 1, "");
+//    m_progressbar->setProgressTitle(tr("Экспорт журнала событий"));
+//    m_progressbar->progressStart();
+//    m_progressbar->setSettings(0, (pos.y() - pos.x()) + 1, "");
 
-    db.transaction();
+//    db.transaction();
 
-    for(int i = pos.x(); i <= pos.y(); i++)
-    {
-        int     id_event  = ui->tablewgtEventJournal->item(i, 0)->text().toInt();
-        QString date      = QDate::fromString(ui->tablewgtEventJournal->item(i, 1)->text(),
-                                              "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
-        QString time      = ui->tablewgtEventJournal->item(i, 2)->text();
-        QString type      = ui->tablewgtEventJournal->item(i, 3)->text();
-        QString category  = ui->tablewgtEventJournal->item(i, 4)->text();
-        QString parameter = ui->tablewgtEventJournal->item(i, 5)->text();
+//    for(int i = pos.x(); i <= pos.y(); i++)
+//    {
+//        int     id_event  = ui->tablewgtEventJournal->item(i, 0)->text().toInt();
+//        QString date      = QDate::fromString(ui->tablewgtEventJournal->item(i, 1)->text(),
+//                                              "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
+//        QString time      = ui->tablewgtEventJournal->item(i, 2)->text();
+//        QString type      = ui->tablewgtEventJournal->item(i, 3)->text();
+//        QString category  = ui->tablewgtEventJournal->item(i, 4)->text();
+//        QString parameter = ui->tablewgtEventJournal->item(i, 5)->text();
 
-        query.prepare(QString("INSERT OR REPLACE INTO event_journal (id_event, date, time, type, category, parameter, sn_device)"
-                              "VALUES(:id_event, :date, :time, :type, :category, :parameter, :sn_device)"));
-        query.bindValue(":id_event", id_event);
-        query.bindValue(":date", date);
-        query.bindValue(":time", time);
-        query.bindValue(":type", type);
-        query.bindValue(":category", category);
-        query.bindValue(":parameter", parameter);
-        query.bindValue(":sn_device", id);
+//        query.prepare(QString("INSERT OR REPLACE INTO event_journal (id_event, date, time, type, category, parameter, sn_device)"
+//                              "VALUES(:id_event, :date, :time, :type, :category, :parameter, :sn_device)"));
+//        query.bindValue(":id_event", id_event);
+//        query.bindValue(":date", date);
+//        query.bindValue(":time", time);
+//        query.bindValue(":type", type);
+//        query.bindValue(":category", category);
+//        query.bindValue(":parameter", parameter);
+//        query.bindValue(":sn_device", id);
 
-        query.exec();
+//        query.exec();
 
-        m_progressbar->progressIncrement();
-    }
+//        m_progressbar->progressIncrement();
+//    }
 
-    db.commit();
-    db.close();
+//    db.commit();
+//    db.close();
 
-    m_progressbar->progressStop();
+//    m_progressbar->progressStop();
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
@@ -3733,7 +3672,7 @@ QPoint ConfiguratorWindow::indexDateFilter(QTableWidget* table, const QDate& beg
 
     for(int i = 0; i < rows; i++)
     {
-        QTableWidgetItem* item = ui->tablewgtEventJournal->item(i, 1);
+        /*QTableWidgetItem* item = ui->tablewgtEventJournal->item(i, 1);
 
         if(!item)
             continue;
@@ -3752,7 +3691,7 @@ QPoint ConfiguratorWindow::indexDateFilter(QTableWidget* table, const QDate& beg
         {
             res.setY(i);
         }
-        else if(date > end) // текущая дата больше искомой - выходим
+        else if(date > end) // текущая дата больше искомой - выходим*/
             break;
     }
 
@@ -3929,8 +3868,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
-    connect(ui->pbtnEventJournalReadToTable, &QPushButton::clicked, this, &ConfiguratorWindow::eventJournalRead);
-    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
+//    connect(ui->pbtnEventJournalReadToTable, &QPushButton::clicked, this, &ConfiguratorWindow::eventJournalRead);
+//    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);

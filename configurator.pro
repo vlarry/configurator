@@ -41,7 +41,9 @@ SOURCES += \
     ceventlistjournals.cpp \
     cprogressbarwidget.cpp \
     cfilterdialog.cpp \
-    cfilter.cpp
+    cfilter.cpp \
+    cheaderjournal.cpp \
+    cjournalwidget.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -60,7 +62,9 @@ HEADERS += \
     ceventlistjournals.h \
     cprogressbarwidget.h \
     cfilterdialog.h \
-    cfilter.h
+    cfilter.h \
+    cheaderjournal.h \
+    cjournalwidget.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -71,7 +75,9 @@ FORMS += \
     statusbar.ui \
     eventlistjournals.ui \
     progressbarwidget.ui \
-    filterdialog.ui
+    filterdialog.ui \
+    headerjournal.ui \
+    journalwidget.ui
 
 win32::RC_FILE = \
                  resource/icon.rc
