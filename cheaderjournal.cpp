@@ -6,11 +6,20 @@ CHeaderJournal::CHeaderJournal(QWidget* parent):
     ui(new Ui::CHeaderJournal)
 {
     ui->setupUi(this);
+
+    clear();
 }
 //-------------------------------
 CHeaderJournal::~CHeaderJournal()
 {
     delete ui;
+}
+//--------------------------
+void CHeaderJournal::clear()
+{
+    ui->lineEditDeviceMessages->setText("0");
+    ui->lineEditElapsedTime->setText("0");
+    ui->lineEditTableMessages->setText("0");
 }
 /*!
  * \brief CHeaderJournal::setTextDeviceCountMessages
@@ -29,7 +38,7 @@ void CHeaderJournal::setTextElapsedTime(int value)
 {
     float time = value/1000;
 
-    ui->lineEditElapsedTime->setText(QString::number(time, 'f', 2));
+    ui->lineEditElapsedTime->setText(QString::number(time, 'f', 2) + tr(" сек."));
 }
 /*!
  * \brief CHeaderJournal::setTextTableCountMessages
@@ -38,4 +47,12 @@ void CHeaderJournal::setTextElapsedTime(int value)
 void CHeaderJournal::setTextTableCountMessages(int value)
 {
     ui->lineEditTableMessages->setText(QString::number(value));
+}
+/*!
+ * \brief CHeaderJournal::stateCheckbox
+ * \return истина, если чекбокс установлен
+ */
+bool CHeaderJournal::stateCheckbox()
+{
+    return ui->checkboxJournalTableScroll->isChecked();
 }

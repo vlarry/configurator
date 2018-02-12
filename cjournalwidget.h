@@ -20,11 +20,14 @@
             ~CJournalWidget();
 
             CHeaderJournal* header() const;
+            void            headerClear() const;
             QTableWidget*   table() const;
 
             void setTableHeaders(const QStringList& headers);
             void setTableColumnWidth(const QVector<int>& list);
             void setTableColumnWidth(int column, int width);
+
+            void tableClear() const;
 
         private:
             Ui::CJournalWidget* ui;

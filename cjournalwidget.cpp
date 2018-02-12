@@ -17,6 +17,11 @@ CHeaderJournal* CJournalWidget::header() const
 {
     return ui->widgetJournalHeader;
 }
+//--------------------------------------
+void CJournalWidget::headerClear() const
+{
+    ui->widgetJournalHeader->clear();
+}
 //-----------------------------------------
 QTableWidget* CJournalWidget::table() const
 {
@@ -46,4 +51,10 @@ void CJournalWidget::setTableColumnWidth(int column, int width)
         return;
 
     ui->tableWidgetJournal->setColumnWidth(column, width);
+}
+//-------------------------------------
+void CJournalWidget::tableClear() const
+{
+    ui->tableWidgetJournal->clearContents();
+    ui->tableWidgetJournal->setRowCount(0);
 }

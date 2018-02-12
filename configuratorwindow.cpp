@@ -1665,6 +1665,11 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalHalfHour->setProperty("NAME", tr("получасовок"));
     ui->widgetJournalIsolation->setProperty("NAME", tr("изоляций"));
 
+    ui->widgetJournalCrash->setProperty("TYPE", tr("CRASH"));
+    ui->widgetJournalEvent->setProperty("TYPE", tr("EVENT"));
+    ui->widgetJournalHalfHour->setProperty("TYPE", tr("HALFHOUR"));
+    ui->widgetJournalIsolation->setProperty("TYPE", tr("ISOLATION"));
+
     ui->widgetJournalCrash->setTableHeaders(journalHeaders);
     ui->widgetJournalEvent->setTableHeaders(journalHeaders);
     ui->widgetJournalHalfHour->setTableHeaders(journalHeaders);
@@ -2508,19 +2513,19 @@ void ConfiguratorWindow::clearIOTable()
 //-------------------------------------
 void ConfiguratorWindow::clearJournal()
 {
-    QTableWidget* table   = nullptr;
-    QString       journal = "";
+    const CJournalWidget* widget = nullptr;
 
-//    if(!currentJournal(table, journal))
-//        return;
+    if(!currentJournal(widget))
+        return;
 
-//    table->clearContents();
-//    table->setRowCount(0);
-//    ui->leEventCount->clear();
+    QString journal_name = widget->property("NAME").toString();
+
+    widget->tableClear();
+    widget->headerClear();
 
     m_event_journal_parameter = { -1, 0, 0, 0, 0 };
 
-    m_status_bar->setStatusMessage(tr("Очистка таблицы журнала %1").arg(journal), 2000);
+    m_status_bar->setStatusMessage(tr("Очистка таблицы журнала %1").arg(journal_name), 2000);
 
     updateParameterEventJournal();
 }
@@ -3148,21 +3153,16 @@ void ConfiguratorWindow::updateParameterEventJournal()
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
 {
-    if(ui->stwgtMain->currentIndex() >= JOURNAL_INDEX_CRASH && ui->stwgtMain->currentIndex() <= JOURNAL_INDEX_ISOLATION)
+    if(index >= JOURNAL_INDEX_CRASH && index <= JOURNAL_INDEX_ISOLATION)
     {
         ui->tabwgtMenu->setTabEnabled(4, true);
 
-        QTableWidget* table = ui->widgetJournalCrash->table();
+        int width = ui->stwgtMain->width() - 760;
 
-        if(table)
-        {
-            int width = table->width() - 750;
-
-            ui->widgetJournalCrash->setTableColumnWidth(3, width);
-            ui->widgetJournalEvent->setTableColumnWidth(3, width);
-            ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
-            ui->widgetJournalIsolation->setTableColumnWidth(3, width);
-        }
+        ui->widgetJournalCrash->setTableColumnWidth(3, width);
+        ui->widgetJournalEvent->setTableColumnWidth(3, width);
+        ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
+        ui->widgetJournalIsolation->setTableColumnWidth(3, width);
     }
     else
         ui->tabwgtMenu->setTabEnabled(4, false);
@@ -3212,6 +3212,7 @@ void ConfiguratorWindow::importJournalToTable()
         return;
 
     QString journal_name = widget->property("NAME").toString();
+    QString journal_type = widget->property("TYPE").toString();
 
     if(table->rowCount() > 0) // если данные в таблице присутствуют, то спрашиваем пользователя
     {
@@ -3305,15 +3306,18 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(rows > 0)
     {
+        QTime timer;
+        timer.start();
+
         m_progressbar->setProgressTitle("Импорт журнала событий");
         m_progressbar->progressStart();
         m_progressbar->setSettings(0, rows, "");
 
         QString str = QString("SELECT * FROM event_journal WHERE sn_device=%1").arg(id);
 
-        if(m_filter.find("EVENT") != m_filter.end())
+        if(m_filter.find(journal_type) != m_filter.end())
         {
-            CFilter filter = m_filter["EVENT"];
+            CFilter filter = m_filter[journal_type];
 
             if(filter)
             {
@@ -3359,18 +3363,22 @@ void ConfiguratorWindow::importJournalToTable()
             m_progressbar->progressIncrement();
         }
 
-        if(m_filter.find("EVENT") != m_filter.end())
+        if(m_filter.find(journal_type) != m_filter.end())
         {
             CFilter::FilterDateType d = { QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy"),
                                           QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy")};
-            m_filter["EVENT"].setDate(d);
+            m_filter[journal_type].setDate(d);
         }
 
         table->sortByColumn(1, Qt::AscendingOrder);
         table->setSortingEnabled(true);
         header->setTextTableCountMessages(rows);
+        header->setTextElapsedTime(timer.elapsed());
 
         m_progressbar->progressStop();
+
+        if(header->stateCheckbox())
+            table->scrollToBottom();
     }
     else
     {

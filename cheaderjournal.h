@@ -16,9 +16,12 @@
             explicit CHeaderJournal(QWidget* parent = nullptr);
             ~CHeaderJournal();
 
+            void clear();
+
             void setTextDeviceCountMessages(int value, int total);
             void setTextElapsedTime(int value);
             void setTextTableCountMessages(int value);
+            bool stateCheckbox();
 
         private:
             Ui::CHeaderJournal* ui;
