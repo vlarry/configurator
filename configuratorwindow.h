@@ -281,6 +281,8 @@
             QSettings*                 m_settings;
             QMap<QString, CFilter>     m_filter;
 
+            CJournalWidget::JournalElementType m_journal_read_current; // элементы текущей таблицы при чтении из блока
+
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;
             QTreeWidgetItem* itemMeasures;

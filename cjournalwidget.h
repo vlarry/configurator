@@ -16,6 +16,13 @@
         Q_OBJECT
 
         public:
+            struct JournalElementType
+            {
+                CHeaderJournal* header;
+                QTableWidget*   table;
+            };
+
+        public:
             explicit CJournalWidget(QWidget* parent = nullptr);
             ~CJournalWidget();
 

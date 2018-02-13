@@ -26,7 +26,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_status_bar(nullptr),
     m_watcher(nullptr),
     m_progressbar(nullptr),
-    m_settings(nullptr)
+    m_settings(nullptr),
+    m_journal_read_current({ nullptr, nullptr })
 {
     ui->setupUi(this);
 
@@ -220,27 +221,45 @@ void ConfiguratorWindow::eventJournalRead()
         m_event_journal_parameter.read  = 0;
         m_event_journal_parameter.count = 0;
 
-//        ui->leEventProcessTime->setText(QString::number(m_time_process.elapsed()/1000) + tr(" сек."));
+        m_journal_read_current.header->setTextElapsedTime(m_time_process.elapsed());
+        m_journal_read_current.header->setTextTableCountMessages(m_journal_read_current.table->rowCount());
+        m_journal_read_current.table->sortByColumn(1, Qt::AscendingOrder);
+        m_journal_read_current.table->setSortingEnabled(true);
 
-//        ui->tablewgtEventJournal->sortByColumn(1, Qt::AscendingOrder);
-//        ui->tablewgtEventJournal->setSortingEnabled(true);
-
-//        ui->leRowCount->setText(QString::number(ui->tablewgtEventJournal->rowCount()));
+        m_journal_read_current = CJournalWidget::JournalElementType({ nullptr, nullptr });
 
         return;
     }
 
     if(m_event_journal_parameter.start == -1) // первый вызов - инициализация переменных
     {
-//        ui->tablewgtEventJournal->setSortingEnabled(false);
+        const CJournalWidget* journal = nullptr;
+
+        if(!currentJournal(journal))
+        {
+            return;
+        }
+
+        m_journal_read_current.table  = journal->table();
+        m_journal_read_current.header = journal->header();
+
+        QString journal_type = journal->property("TYPE").toString();
+
+        if(!m_journal_read_current.table || !m_journal_read_current.header || journal_type.isEmpty())
+            return;
+
+        if(m_journal_read_current.table->rowCount() > 0)
+            clearJournal();
+
+        m_journal_read_current.table->setSortingEnabled(false);
 
         m_time_process.start();
 
         CFilter filter;
 
-        if(m_filter.find("EVENT") != m_filter.end())
+        if(m_filter.find(journal_type) != m_filter.end())
         {
-            filter = m_filter["EVENT"];
+            filter = m_filter[journal_type];
         }
 
         if(filter) // вкладка с выбором интервала активана
@@ -294,7 +313,6 @@ void ConfiguratorWindow::eventJournalRead()
                                                          // если осталось больше или равно 8ми событий иначе считаем количество
                                                          // событий из разницы общего их количества и прочитанного
 
-    qDebug() << "read";
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, addr, QVector<quint16>() << var_count);
     unit.setProperty(tr("REQUEST"), READ_EVENT_JOURNAL);
 
@@ -423,7 +441,6 @@ void ConfiguratorWindow::protectionVacuumSetWrite()
 //------------------------------------------------------------
 void ConfiguratorWindow::processReadJournalEvent(bool checked)
 {
-    qDebug() << "process";
     eventJournalRead();
 }
 //------------------------------------------
@@ -2022,47 +2039,44 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
             if(ecategory.count() > category_event)
                 eparameter = ecategory[category_event].sub_event;
 
-//            int row = ui->tablewgtEventJournal->rowCount();
+            int row = m_journal_read_current.table->rowCount();
 
-//            ui->tablewgtEventJournal->insertRow(row);
+            m_journal_read_current.table->insertRow(row);
 
-//            QString etype_str = tr("Неизвестный тип");
+            QString etype_str = tr("Неизвестный тип");
 
-//            if(etype.count() > type_event)
-//                etype_str = etype[type_event].name;
+            if(etype.count() > type_event)
+                etype_str = etype[type_event].name;
 
-//            ui->tablewgtEventJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-//            ui->tablewgtEventJournal->setItem(row, 1, new CTableWidgetItem(d.toString("dd.MM.yyyy")));
+            m_journal_read_current.table->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
+            m_journal_read_current.table->setItem(row, 1, new CTableWidgetItem(d.toString("dd.MM.yyyy")));
 
-//            QString s = ((msecond < 10)?"00":(msecond < 100 && msecond >= 10)?"0":"") + QString::number(msecond);
+            QString s = ((msecond < 10)?"00":(msecond < 100 && msecond >= 10)?"0":"") + QString::number(msecond);
 
-//            ui->tablewgtEventJournal->setItem(row, 2, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") + s));
-//            ui->tablewgtEventJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (") +
-//                                                                                            QString::number(type_event) +
-//                                                                                            QString(")"))));
+            m_journal_read_current.table->setItem(row, 2, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") + s));
+            m_journal_read_current.table->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (") +
+                                                                               QString::number(type_event) +
+                                                                               QString(")"))));
 
-//            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
-//            QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
-//                                          tr("Неизвестный параметр"):eparameter[parameter_event].name);
+            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
+            QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
+                                       tr("Неизвестный параметр"):eparameter[parameter_event].name);
 
-//            ui->tablewgtEventJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str + QString(" (") +
-//                                                                           QString::number(category_event) +
-//                                                                           QString(")")));
-//            ui->tablewgtEventJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str + QString(" (") +
-//                                                                           QString::number(parameter_event) +
-//                                                                           QString(")")));
+            m_journal_read_current.table->setItem(row, 4, new QTableWidgetItem(ecategory_str +
+                                                                               QString(" (%1)").arg(QString::number(category_event))));
+            m_journal_read_current.table->setItem(row, 5, new QTableWidgetItem(eparameter_str +
+                                                                               QString(" (%1)").arg(QString::number(parameter_event))));
 
-//            ui->tablewgtEventJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-//            ui->tablewgtEventJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-//            ui->tablewgtEventJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+            m_journal_read_current.table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+            m_journal_read_current.table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+            m_journal_read_current.table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
 
-//            if(ui->checkboxEventJournalScrollTable->isChecked())
-//                ui->tablewgtEventJournal->scrollToBottom();
+            if(m_journal_read_current.header->stateCheckbox())
+                m_journal_read_current.table->scrollToBottom();
         }
     }
 
-//    ui->leEventCount->setText(QString::number(m_event_journal_parameter.read) + "/" +
-//                              QString::number(m_event_journal_parameter.total));
+    m_journal_read_current.header->setTextDeviceCountMessages(m_event_journal_parameter.read, m_event_journal_parameter.total);
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
@@ -3513,7 +3527,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
     for(int i = pos.x(); i <= pos.y(); i++)
     {
-        int     id_event  = table->item(i, 0)->text().toInt();
+        int     id_msg    = table->item(i, 0)->text().toInt();
         QString date      = QDate::fromString(table->item(i, 1)->text(),
                                               "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
         QString time      = table->item(i, 2)->text();
@@ -3521,9 +3535,9 @@ void ConfiguratorWindow::exportJournalToDb()
         QString category  = table->item(i, 4)->text();
         QString parameter = table->item(i, 5)->text();
 
-        query.prepare(QString("INSERT OR REPLACE INTO event_journal (id_event, date, time, type, category, parameter, sn_device)"
-                              "VALUES(:id_event, :date, :time, :type, :category, :parameter, :sn_device)"));
-        query.bindValue(":id_event", id_event);
+        query.prepare(QString("INSERT OR REPLACE INTO journals (id_msg, date, time, type, category, parameter, sn_device)"
+                              "VALUES(:id_msg, :date, :time, :type, :category, :parameter, :sn_device)"));
+        query.bindValue(":id_msg", id_msg);
         query.bindValue(":date", date);
         query.bindValue(":time", time);
         query.bindValue(":type", type);
@@ -3874,6 +3888,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->widgetJournalEvent, &CJournalWidget::clickedButtonRead, this, &ConfiguratorWindow::processReadJournalEvent);
+    connect(m_modbusDevice, &CModbus::connectDeviceState, ui->widgetJournalEvent->header(),
+                                                          &CHeaderJournal::stateEnabledButtonReadChanged);
 //    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);

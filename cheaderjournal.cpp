@@ -9,7 +9,10 @@ CHeaderJournal::CHeaderJournal(QWidget* parent):
 
     clear();
 
-    connect(ui->pushbtnJournalRead, &QPushButton::clicked, this, &CHeaderJournal::clickedButtonRead);
+    ui->pushbtnJournalRead->setEnabled(false);
+
+    connect(ui->pushbtnJournalRead, &QPushButton::toggled, this, &CHeaderJournal::clickedButtonRead);
+    connect(ui->pushbtnJournalRead, &QPushButton::toggled, this, &CHeaderJournal::stateButtonReadChanged);
 }
 //-------------------------------
 CHeaderJournal::~CHeaderJournal()
@@ -57,4 +60,27 @@ void CHeaderJournal::setTextTableCountMessages(int value)
 bool CHeaderJournal::stateCheckbox()
 {
     return ui->checkboxJournalTableScroll->isChecked();
+}
+/*!
+ * \brief CHeaderJournal::stateButtonReadChanged
+ * \param checked Текущее состояние кнопки
+ *
+ * Слот для изменения напдписи на кнопке при изменении ее состояния (нажата/отжата)
+ */
+void CHeaderJournal::stateButtonReadChanged(bool checked)
+{
+    if(checked)
+        ui->pushbtnJournalRead->setText(tr("Прервать чтение"));
+    else
+        ui->pushbtnJournalRead->setText(tr("Прочитать журнал"));
+}
+/*!
+ * \brief CHeaderJournal::stateEnabledButtonReadChanged
+ * \param checked Текущее состояния активности кнопки
+ *
+ * Слот для изменения состояния активности кнопки (отслеживает состояние COM-порта)
+ */
+void CHeaderJournal::stateEnabledButtonReadChanged(bool checked)
+{
+    ui->pushbtnJournalRead->setEnabled(checked);
 }

@@ -37,7 +37,10 @@
      <item>
       <widget class="QPushButton" name="pushbtnJournalRead">
        <property name="text">
-        <string>Чтение журнала</string>
+        <string>Прочитать журнал</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
