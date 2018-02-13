@@ -146,6 +146,7 @@
             void protectionBruSetWrite();
             void protectionVacuumSetRead();
             void protectionVacuumSetWrite();
+            void processReadJournalEvent(bool checked);
             void automationSetRead();
             void automationSetWrite();
             void switchDeviceSetRead();
@@ -200,11 +201,12 @@
             void valueEventJournalInternalChanged(int new_value);
             void timeoutSyncSerialNumber();
             void importJournalToTable();
-            void exportEventJournalToDb();
+            void exportJournalToDb();
             void startExportToPDF();
             void filterDialog();
             
         private:
+            bool createJournalTable(QSqlDatabase* db);
             bool currentJournal(const CJournalWidget*& widget);
             void loadSettings();
             void saveSattings();
@@ -219,7 +221,8 @@
             void initJournals();
             void connectSystemDb();
             bool connectEventsDb();
-            bool connectDb(QSqlDatabase& db, const QString& path);
+            bool connectDb(QSqlDatabase*& db, const QString& path);
+            void disconnectDb(QSqlDatabase* db);
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
             void displaySettingResponse(CDataUnitType& unit);
@@ -235,7 +238,7 @@
             void readEventJournalCount();
             void deviceSync(bool state = false);
             int  recordCount(const QString& table, const QString& parameter, const QString& value); // количество записей в запросе
-            int  recordCountDb(QSqlDatabase& db, const QString& table_name, const QString& parameter, const QString& value);
+            int  recordCountDb(QSqlDatabase *db, const QString& table_name, const QString& parameter, const QString& value);
             QPoint            indexDateFilter(QTableWidget* table, const QDate& begin, const QDate& end);
             QPoint            indexSettingKey(const QString& first, const QString& last);
             QPoint            indexPurposeKey(const QString& first, const QString& last);

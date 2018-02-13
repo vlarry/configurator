@@ -6,6 +6,8 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui(new Ui::CJournalWidget)
 {
     ui->setupUi(this);
+
+    connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
 }
 //-------------------------------
 CJournalWidget::~CJournalWidget()

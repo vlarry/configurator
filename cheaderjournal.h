@@ -2,6 +2,7 @@
     #define CHEADERJOURNAL_H
     //----------------
     #include <QWidget>
+    #include <QDebug>
     //----------
     namespace Ui
     {
@@ -22,6 +23,9 @@
             void setTextElapsedTime(int value);
             void setTextTableCountMessages(int value);
             bool stateCheckbox();
+
+        signals:
+            void clickedButtonRead(bool = false);
 
         private:
             Ui::CHeaderJournal* ui;

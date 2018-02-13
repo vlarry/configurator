@@ -29,6 +29,9 @@
 
             void tableClear() const;
 
+        signals:
+            void clickedButtonRead(bool = false);
+
         private:
             Ui::CJournalWidget* ui;
     };

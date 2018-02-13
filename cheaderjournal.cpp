@@ -8,6 +8,8 @@ CHeaderJournal::CHeaderJournal(QWidget* parent):
     ui->setupUi(this);
 
     clear();
+
+    connect(ui->pushbtnJournalRead, &QPushButton::clicked, this, &CHeaderJournal::clickedButtonRead);
 }
 //-------------------------------
 CHeaderJournal::~CHeaderJournal()

@@ -294,6 +294,7 @@ void ConfiguratorWindow::eventJournalRead()
                                                          // если осталось больше или равно 8ми событий иначе считаем количество
                                                          // событий из разницы общего их количества и прочитанного
 
+    qDebug() << "read";
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, addr, QVector<quint16>() << var_count);
     unit.setProperty(tr("REQUEST"), READ_EVENT_JOURNAL);
 
@@ -418,6 +419,12 @@ void ConfiguratorWindow::protectionVacuumSetRead()
 void ConfiguratorWindow::protectionVacuumSetWrite()
 {
     sendSettingWriteRequest(tr("M91"), tr("X23"));
+}
+//------------------------------------------------------------
+void ConfiguratorWindow::processReadJournalEvent(bool checked)
+{
+    qDebug() << "process";
+    eventJournalRead();
 }
 //------------------------------------------
 void ConfiguratorWindow::automationSetRead()
@@ -1743,58 +1750,32 @@ bool ConfiguratorWindow::connectEventsDb()
 
     return true;
 }
-//-----------------------------------------------------------------------
-bool ConfiguratorWindow::connectDb(QSqlDatabase& db, const QString& path)
+//------------------------------------------------------------------------
+bool ConfiguratorWindow::connectDb(QSqlDatabase*& db, const QString& path)
 {
-    QSqlDatabase::removeDatabase("db");
+    db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "db"));
+    db->setDatabaseName(path);
 
-    db = QSqlDatabase::addDatabase("QSQLITE", "db");
-    db.setDatabaseName(path);
-
-    if(!db.open())
+    if(!db->open())
     {
         QMessageBox::critical(this, tr("База данных журнала событий"), tr("Невозможно открыть базу данных журнала событий: ") +
                               m_event_journal_db.lastError().text());
-        db.close();
-
-        return false;
-    }
-
-    QSqlQuery query(db);
-
-    // создание таблицы для хранения имен списка журналов событий
-    QString db_str = "CREATE TABLE IF NOT EXISTS event_journal_names ("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                     "name STRING(255));";
-
-    if(!query.exec(db_str))
-    {
-        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу имен журналов событий: ") +
-                             query.lastError().text());
-
-        return false;
-    }
-
-    // создание таблицы для хранения журнала событий
-    db_str = "CREATE TABLE IF NOT EXISTS event_journal ("
-             "id_event INTEGER NOT NULL, "
-             "date STRING(25) NOT NULL, "
-             "time STRING(25), "
-             "type STRING(255), "
-             "category STRING(255), "
-             "parameter STRING(255), "
-             "sn_device INTEGER NOT NULL, "
-             "CONSTRAINT new_pk PRIMARY KEY (id_event, date, sn_device));";
-
-    if(!query.exec(db_str))
-    {
-        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журнала событий: ") +
-                             query.lastError().text());
+        disconnectDb(db);
 
         return false;
     }
 
     return true;
+}
+//-----------------------------------------------------
+void ConfiguratorWindow::disconnectDb(QSqlDatabase* db)
+{
+    if(db->isOpen())
+        db->close();
+
+    delete db;
+
+    QSqlDatabase::removeDatabase("db");
 }
 //---------------------------------------------------------------------
 void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
@@ -2641,7 +2622,60 @@ void ConfiguratorWindow::filterDialog()
 //        m_filter[key] = filterDlg->filter();
 //    }
 
-//    delete filterDlg;
+    //    delete filterDlg;
+}
+/*!
+ * \brief ConfiguratorWindow::createJournalTable
+ * \return Возвращает true, если таблица успешно создана
+ */
+bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db)
+{
+    QSqlQuery query(*db);
+
+    // создание cлужебной таблицы для хранения скрытых от пользователя данных
+    QString db_str = "CREATE TABLE table_info ("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                     "journal_type STRING(255) NOT NULL);";
+
+    if(!query.exec(db_str))
+    {
+        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать служебную таблицу журналов: ") +
+                                   query.lastError().text());
+        return false;
+    }
+
+    // создание таблицы для хранения имен списка журналов
+    db_str = "CREATE TABLE journal_list ("
+             "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+             "name STRING(255), "
+             "sn_device STRING(255));";
+
+    if(!query.exec(db_str))
+    {
+        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу списка журналов: ") +
+                                   query.lastError().text());
+        return false;
+    }
+
+    // создание таблицы для хранения журналов
+    db_str = "CREATE TABLE journals ("
+             "id_msg INTEGER NOT NULL, "
+             "date STRING(25) NOT NULL, "
+             "time STRING(25), "
+             "type STRING(255), "
+             "category STRING(255), "
+             "parameter STRING(255), "
+             "sn_device INTEGER NOT NULL, "
+             "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, sn_device));";
+
+    if(!query.exec(db_str))
+    {
+        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журналов: ") +
+                                   query.lastError().text());
+        return false;
+    }
+
+    return true;
 }
 /*!
  * \brief   Метод проверяет ведется ли работа с каким-либо журналом
@@ -3197,352 +3231,315 @@ void ConfiguratorWindow::timeoutSyncSerialNumber()
 //---------------------------------------------
 void ConfiguratorWindow::importJournalToTable()
 {
-    const CJournalWidget* widget = nullptr;
+    // Получаем текущий журнал, если он выбран
+    const CJournalWidget* journal = nullptr;
 
-    if(!currentJournal(widget))
+//    if(rows > 0)
+//    {
+//        QTime timer;
+//        timer.start();
+
+//        m_progressbar->setProgressTitle("Импорт журнала событий");
+//        m_progressbar->progressStart();
+//        m_progressbar->setSettings(0, rows, "");
+
+//        QString str = QString("SELECT * FROM event_journal WHERE sn_device=%1").arg(id);
+
+//        if(m_filter.find(journal_type) != m_filter.end())
+//        {
+//            CFilter filter = m_filter[journal_type];
+
+//            if(filter)
+//            {
+//                str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(filter.date().begin.toString(Qt::ISODate)).
+//                        arg(filter.date().end.toString(Qt::ISODate));
+//            }
+//        }
+
+//        str += ";";
+
+//        if(!query.exec(str))
+//        {
+//            QMessageBox::warning(this, tr("Чтение базы данных"),
+//                                       tr("Не удалось прочитать базу журнала %1: %2").arg(journal_name).arg(query.lastError().text()));
+//        }
+
+//        table->setSortingEnabled(false);
+
+//        while(query.next()) // заносим данные в таблицу журналов событий
+//        {
+//            int row = table->rowCount();
+
+//            table->insertRow(row);
+
+//            QString id_event  = query.value("id_event").toString();
+//            QString date      = QDate::fromString(query.value("date").toString(), Qt::ISODate).toString("dd.MM.yyyy");
+//            QString time      = query.value("time").toString();
+//            QString type      = query.value("type").toString();
+//            QString category  = query.value("category").toString();
+//            QString parameter = query.value("parameter").toString();
+
+//            table->setItem(row, 0, new QTableWidgetItem(id_event));
+//            table->setItem(row, 1, new CTableWidgetItem(date));
+//            table->setItem(row, 2, new QTableWidgetItem(time));
+//            table->setItem(row, 3, new QTableWidgetItem(type));
+//            table->setItem(row, 4, new QTableWidgetItem(category));
+//            table->setItem(row, 5, new QTableWidgetItem(parameter));
+
+//            table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+//            table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+//            table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+
+//            m_progressbar->progressIncrement();
+//        }
+
+//        if(m_filter.find(journal_type) != m_filter.end())
+//        {
+//            CFilter::FilterDateType d = { QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy"),
+//                                          QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy")};
+//            m_filter[journal_type].setDate(d);
+//        }
+
+//        table->sortByColumn(1, Qt::AscendingOrder);
+//        table->setSortingEnabled(true);
+//        header->setTextTableCountMessages(rows);
+//        header->setTextElapsedTime(timer.elapsed());
+
+//        m_progressbar->progressStop();
+
+//        if(header->stateCheckbox())
+//            table->scrollToBottom();
+//    }
+//    else
+//    {
+//        QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала %1 нет записей").arg(journal_name));
+//        disconnectDb(db);
+
+//        return;
+//    }
+
+//    disconnectDb(db);
+}
+//------------------------------------------
+void ConfiguratorWindow::exportJournalToDb()
+{
+    // Получение виджета текущего журнала
+    const CJournalWidget* journal = nullptr;
+
+    if(!currentJournal(journal)) // текущий виджет не является журналом
     {
-        QMessageBox::warning(this, tr("Импорт журналов"), tr("Нельзя произвести импорт,\nт.к. не выбран ни один из журналов"));
+        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Выберите пожалуйста журнал из которого необходимо произвести экспорт"));
         return;
     }
 
-    QTableWidget*   table  = widget->table();
-    CHeaderJournal* header = widget->header();
+    // Получение таблицы и заголовка текущего журнала
+    QTableWidget*   table  = journal->table();
+    CHeaderJournal* header = journal->header();
 
     if(!table || !header)
         return;
 
-    QString journal_name = widget->property("NAME").toString();
-    QString journal_type = widget->property("TYPE").toString();
+//    if(table->rowCount() == 0) // таблица пуста
+//    {
+//        QMessageBox::information(this, tr("Экспорт журнала"), tr("Текущий журнал пуст"));
+//        return;
+//    }
 
-    if(table->rowCount() > 0) // если данные в таблице присутствуют, то спрашиваем пользователя
+    QString journal_name = journal->property("NAME").toString();
+    QString journal_type = journal->property("TYPE").toString();
+
+    if(journal_name.isEmpty() || journal_type.isEmpty())
+    {
+        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Не удалось определить имя или тип журнала"));
+        return;
+    }
+
+    // выбираем файл для экспорта
+    QDir dir;
+    QString selectedFilter    = tr("Базы данных (*.db)");
+    QString journal_full_name = tr("Журнал %1-%2").arg(journal_name).arg(m_status_bar->serialNumberText());
+    QString journal_path      = QFileDialog::getSaveFileName(this, tr("Экспорт журнала %1 в базу данных").arg(journal_name),
+                                                             dir.absolutePath() + QString("/db/%1.%2").
+                                                             arg(journal_full_name).arg("db"),
+                                                             tr("Базы данных (*.db);;Все файлы (*.*)"), &selectedFilter,
+                                                             QFileDialog::DontConfirmOverwrite);
+
+    if(journal_path.isEmpty())
+        return;
+
+    QSqlDatabase* db           = nullptr;
+    QString       baseNameFile = QFileInfo(journal_path).baseName();
+
+    QFileInfo fi;
+    bool      isNewBase = true;
+
+    if(fi.exists(journal_path)) // Файл уже существует
     {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, tr("Импорт журнала %1").arg(journal_name),
-                                      tr("В таблице есть записи.\nОчистить?"),
+        reply = QMessageBox::question(this, tr("Экспорт журнала"),
+                                      tr("Такая база уже существует. Перезаписать данные?"),
                                       QMessageBox::Yes | QMessageBox::No);
 
         if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
         {
-            clearJournal();
+            QFile file(journal_path);
+
+            if(!file.remove())
+            {
+                QMessageBox::warning(this, tr("Удаление базы журналов"),
+                                     tr("Невозможно удалить базу %1!\nВозможно уже используется или у Вас нет прав.").arg(baseNameFile));
+                return;
+            }
+        }
+        else // дописываем данные в существующий файл
+        {
+            isNewBase = false;
         }
     }
 
-    QDir dir;
-
-    QString nameJournal = QString("Журнал %1-%2").arg(journal_name).arg(m_status_bar->serialNumberText());
-    QString fileName    = QFileDialog::getOpenFileName(this, tr("Импорт журнала %1 из базы данных").arg(journal_name),
-                                                       QString(dir.absolutePath() + "/%1/%2").arg("db").arg(nameJournal),
-                                                       tr("База данных (*.db)"));
-
-    if(fileName.isEmpty())
-        return;
-
-    if(QFileInfo(fileName).baseName() == "system")
+    if(!connectDb(db, journal_path))
     {
-        QMessageBox::warning(this, tr("Открытие базы данных журнала %1").arg(journal_name), tr("Нельзя использовть системную базу данных"));
+        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно открыть/создать файл \"%1\".").arg(baseNameFile));
+        disconnectDb(db);
         return;
     }
 
-    QSqlDatabase db;
+    QSqlQuery query(*db);
+    QString   query_str;
 
-    if(!connectDb(db, fileName))
-        return;
-
-    QSqlQuery query(db);
-
-    if(!query.exec("SELECT * FROM event_journal_names;"))
+    if(!isNewBase) // дозаписываем данные в существующий журнал
     {
-        QMessageBox::warning(this, tr("Импорт журнала %1").arg(journal_name), tr("Невозможно прочитать список журналов"));
-        db.close();
+        query_str = "SELECT journal_type FROM table_info;";
 
+        if(!query.exec(query_str)) // читаем служебную информацию о типе журнала
+        {
+            QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно открыть базу \"%1\" для дозаписи новых данных").
+                                       arg(baseNameFile));
+            disconnectDb(db);
+            return;
+        }
+
+        if(query.first())
+        {
+            QString type = query.value("journal_type").toString();
+
+            if(type.toUpper() != journal_type.toUpper()) // типы журналов не совпадают
+            {
+                QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно выполнить запись журнала в эту базу.\n"
+                                                                     "Требуется тип журнала \"%1\", а текущий имеет тип \"%2\"").
+                                                                     arg(type.toLower()).arg(journal_type.toLower()));
+                disconnectDb(db);
+                return;
+            }
+        }
+    }
+    else // создаем новую базу данных
+    {
+        if(!createJournalTable(db)) // создаем таблицы
+        {
+            disconnectDb(db);
+            return;
+        }
+
+        query_str = "INSERT INTO table_info (journal_type)"
+                    "VALUES (\"" + journal_type + "\");";
+
+        if(!query.exec(query_str)) // вставляем служебную информацию о типе журнала
+        {
+            QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно вставить служебную информацию в базу данных: %1").
+                                                              arg(query.lastError().text()));
+            disconnectDb(db);
+            return;
+        }
+    }
+
+    QString type_format = journal_type.toLower(); // форматируем тип журнала в его название в базе данных
+    type_format[0] = type_format[0].toUpper();    // например: если тип "EVENT", то после получим "Event"
+
+    QString name_db = QString("%1Journal-%2").arg(type_format).arg(m_status_bar->serialNumberText());
+
+    if(recordCountDb(db, "journal_list", "name", QString("\"%1\"").arg(name_db)) == 0) // если такого имени в таблице журналов нет,
+    {                                                                                  // то создаем такую запись
+        query_str = "INSERT INTO journal_list (name, sn_device)" +
+                    QString("VALUES (\"%1\", \"%2\");").arg(name_db).arg(m_status_bar->serialNumberText());
+
+        if(!query.exec(query_str))
+        {
+            QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно записать новый журнал в базу данных: %1").
+                                       arg(query.lastError().text()));
+            disconnectDb(db);
+            return;
+        }
+    }
+
+    // получаем id записи из базы данных с текущим именем
+    query_str = QString("SELECT id FROM journal_list WHERE name=\"%1\";").arg(name_db);
+
+    if(!query.exec(query_str))
+    {
+        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно прочитать id записи \"%1\"").arg(query_str));
+        disconnectDb(db);
         return;
     }
 
-    QVector<CEventListJournals::cell_t> list;
+    int id = -1;
 
     if(query.first())
     {
-        list << CEventListJournals::cell_t({ query.value("name").toString(), query.value("id").toInt() });
-
-        while(query.next())
-            list << CEventListJournals::cell_t({ query.value("name").toString(), query.value("id").toInt() });
+        id = query.value("id").toInt();
     }
-    else
-    {
-        QMessageBox::warning(this, tr("Импорт журнала %1").arg(journal_name), tr("База журналов пуста"));
-        db.close();
 
+    if(id == -1) // не смогли прочитать id - на выход
         return;
-    }
 
-    if(list.isEmpty())
+    QPoint pos(0, table->rowCount() - 1);
+
+    if(m_filter.find(journal_type) != m_filter.end()) // фильтр для текущего журнала существует
     {
-        db.close();
-        return;
-    }
+        CFilter filter = m_filter[journal_type]; // получаем фильтр
 
-    CEventListJournals* journals = new CEventListJournals(list, this);
-
-    int reply = journals->exec();
-    int id    = -1;
-
-    if(reply == QDialog::Accepted)
-    {
-        id = journals->currentId();
-    }
-    else
-    {
-        db.close();
-        return;
-    }
-
-    if(id == -1)
-    {
-        db.close();
-        return;
-    }
-
-    int rows = recordCount("event_journal", "sn_device", QString::number(id));
-
-    if(rows > 0)
-    {
-        QTime timer;
-        timer.start();
-
-        m_progressbar->setProgressTitle("Импорт журнала событий");
-        m_progressbar->progressStart();
-        m_progressbar->setSettings(0, rows, "");
-
-        QString str = QString("SELECT * FROM event_journal WHERE sn_device=%1").arg(id);
-
-        if(m_filter.find(journal_type) != m_filter.end())
+        if(filter) // фильтр активен
         {
-            CFilter filter = m_filter[journal_type];
-
-            if(filter)
-            {
-                str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(filter.date().begin.toString(Qt::ISODate)).
-                        arg(filter.date().end.toString(Qt::ISODate));
-            }
+            CFilter::FilterDateType date = filter.date();
+            pos = indexDateFilter(table, date.begin, date.end); // получаем новые позиции начала/конца записей (фильтруем)
         }
-
-        str += ";";
-
-        if(!query.exec(str))
-        {
-            QMessageBox::warning(this, tr("Чтение базы данных"),
-                                       tr("Не удалось прочитать базу журнала %1: %2").arg(journal_name).arg(query.lastError().text()));
-        }
-
-        table->setSortingEnabled(false);
-
-        while(query.next()) // заносим данные в таблицу журналов событий
-        {
-            int row = table->rowCount();
-
-            table->insertRow(row);
-
-            QString id_event  = query.value("id_event").toString();
-            QString date      = QDate::fromString(query.value("date").toString(), Qt::ISODate).toString("dd.MM.yyyy");
-            QString time      = query.value("time").toString();
-            QString type      = query.value("type").toString();
-            QString category  = query.value("category").toString();
-            QString parameter = query.value("parameter").toString();
-
-            table->setItem(row, 0, new QTableWidgetItem(id_event));
-            table->setItem(row, 1, new CTableWidgetItem(date));
-            table->setItem(row, 2, new QTableWidgetItem(time));
-            table->setItem(row, 3, new QTableWidgetItem(type));
-            table->setItem(row, 4, new QTableWidgetItem(category));
-            table->setItem(row, 5, new QTableWidgetItem(parameter));
-
-            table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-            table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-            table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
-
-            m_progressbar->progressIncrement();
-        }
-
-        if(m_filter.find(journal_type) != m_filter.end())
-        {
-            CFilter::FilterDateType d = { QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy"),
-                                          QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy")};
-            m_filter[journal_type].setDate(d);
-        }
-
-        table->sortByColumn(1, Qt::AscendingOrder);
-        table->setSortingEnabled(true);
-        header->setTextTableCountMessages(rows);
-        header->setTextElapsedTime(timer.elapsed());
-
-        m_progressbar->progressStop();
-
-        if(header->stateCheckbox())
-            table->scrollToBottom();
     }
-    else
+
+    m_progressbar->setProgressTitle(tr("Экспорт журнала %1").arg(journal_name));
+    m_progressbar->progressStart();
+    m_progressbar->setSettings(0, (pos.y() - pos.x()) + 1, "");
+
+    db->transaction();
+
+    for(int i = pos.x(); i <= pos.y(); i++)
     {
-        QMessageBox::warning(this, tr("Чтение базы данных"), tr("В базе данных журнала %1 нет записей").arg(journal_name));
-        db.close();
+        int     id_event  = table->item(i, 0)->text().toInt();
+        QString date      = QDate::fromString(table->item(i, 1)->text(),
+                                              "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
+        QString time      = table->item(i, 2)->text();
+        QString type      = table->item(i, 3)->text();
+        QString category  = table->item(i, 4)->text();
+        QString parameter = table->item(i, 5)->text();
 
-        return;
+        query.prepare(QString("INSERT OR REPLACE INTO event_journal (id_event, date, time, type, category, parameter, sn_device)"
+                              "VALUES(:id_event, :date, :time, :type, :category, :parameter, :sn_device)"));
+        query.bindValue(":id_event", id_event);
+        query.bindValue(":date", date);
+        query.bindValue(":time", time);
+        query.bindValue(":type", type);
+        query.bindValue(":category", category);
+        query.bindValue(":parameter", parameter);
+        query.bindValue(":sn_device", id);
+
+        query.exec();
+
+        m_progressbar->progressIncrement();
     }
 
-    db.close();
-}
-//-----------------------------------------------
-void ConfiguratorWindow::exportEventJournalToDb()
-{
-//    int rows = ui->tablewgtEventJournal->rowCount();
+    db->commit();
+    disconnectDb(db);
 
-//    if(rows == 0) // нет записей - выходим
-//        return;
-
-//    QString nameJournal = QString("EventJournal-%1").arg(m_status_bar->serialNumberText());
-
-//    QSqlDatabase db;
-
-//    QDir dir;
-//    QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт журнала событий в базу данных"),
-//                                                          dir.absolutePath() + "/db/" + nameJournal,
-//                                                          tr("База данных (*.db)"), nullptr,
-//                                                          QFileDialog::DontConfirmOverwrite);
-
-//    if(fileName.isEmpty())
-//        return;
-
-//    if(QFileInfo(fileName).baseName() == "system")
-//    {
-//        QMessageBox::warning(this, tr("Экспорт журнала событий в базу данных"),
-//                                   tr("Нельзя произвести экпорт в системную базу данных."));
-//        return;
-//    }
-
-//    QFileInfo finfo;
-
-//    if(finfo.exists(fileName)) // если файл существует
-//    {
-//        QMessageBox::StandardButton reply;
-//        reply = QMessageBox::question(this, tr("Экспорт журнала событий в базу данных"),
-//                                      tr("Такая база уже существует. Перезаписать данные?"),
-//                                      QMessageBox::Yes | QMessageBox::No);
-
-//        if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
-//        {
-//            QFile file(fileName);
-
-//            if(!file.remove())
-//            {
-//                QMessageBox::warning(this, tr("Удаление базы журналов событий"),
-//                                     tr("Невозможно удалить базу!\nВозможно уже используется или у Вас нет прав."));
-//                return;
-//            }
-//        }
-//    }
-
-//    if(!connectDb(db, fileName))
-//    {
-//        return;
-//    }
-
-//    QSqlQuery query(db);
-
-//    int id = -1;
-
-//    if(recordCountDb(db, "event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
-//    {
-//        if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
-//        {
-//            QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
-//                                       query.lastError().text());
-
-//            return;
-//        }
-
-//        if(!query.first())
-//            return;
-
-//        id = query.value("id").toInt();
-//    }
-//    else // если нет записи в базе данных
-//    {
-//        if(!query.exec("INSERT INTO event_journal_names (name)"
-//                       "VALUES(\"" + nameJournal + "\");"))
-//        {
-//            QMessageBox::warning(this, tr("Вставка записи в базу данных"), tr("Невозможно вставить запись в базу данных"));
-//            return;
-//        }
-
-//        if(recordCountDb(db, "event_journal_names", "name", "\"" + nameJournal + "\"") > 0)
-//        {
-//            if(!query.exec("SELECT id FROM event_journal_names WHERE name=\"" + nameJournal + "\";"))
-//            {
-//                QMessageBox::warning(this, tr("Чтение базы данных"), tr("Не удалось прочить id по имени журнала событий: ") +
-//                                           query.lastError().text());
-
-//                return;
-//            }
-
-//            if(!query.first())
-//                return;
-
-//            id = query.value("id").toInt();
-//        }
-//    }
-
-//    if(id == -1)
-//        return;
-
-//    QPoint pos = QPoint(0, ui->tablewgtEventJournal->rowCount() - 1);
-
-//    if(m_filter.find("EVENT") != m_filter.end())
-//    {
-//        CFilter filter = m_filter["EVENT"];
-
-//        if(filter) // если фильтр активен
-//        {
-//            if(filter.type() == CFilter::DATE) // если выбранный фильтр по дате
-//            {
-//                pos = indexDateFilter(ui->tablewgtEventJournal, filter.date().begin, filter.date().end);
-//            }
-//        }
-//    }
-
-//    m_progressbar->setProgressTitle(tr("Экспорт журнала событий"));
-//    m_progressbar->progressStart();
-//    m_progressbar->setSettings(0, (pos.y() - pos.x()) + 1, "");
-
-//    db.transaction();
-
-//    for(int i = pos.x(); i <= pos.y(); i++)
-//    {
-//        int     id_event  = ui->tablewgtEventJournal->item(i, 0)->text().toInt();
-//        QString date      = QDate::fromString(ui->tablewgtEventJournal->item(i, 1)->text(),
-//                                              "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
-//        QString time      = ui->tablewgtEventJournal->item(i, 2)->text();
-//        QString type      = ui->tablewgtEventJournal->item(i, 3)->text();
-//        QString category  = ui->tablewgtEventJournal->item(i, 4)->text();
-//        QString parameter = ui->tablewgtEventJournal->item(i, 5)->text();
-
-//        query.prepare(QString("INSERT OR REPLACE INTO event_journal (id_event, date, time, type, category, parameter, sn_device)"
-//                              "VALUES(:id_event, :date, :time, :type, :category, :parameter, :sn_device)"));
-//        query.bindValue(":id_event", id_event);
-//        query.bindValue(":date", date);
-//        query.bindValue(":time", time);
-//        query.bindValue(":type", type);
-//        query.bindValue(":category", category);
-//        query.bindValue(":parameter", parameter);
-//        query.bindValue(":sn_device", id);
-
-//        query.exec();
-
-//        m_progressbar->progressIncrement();
-//    }
-
-//    db.commit();
-//    db.close();
-
-//    m_progressbar->progressStop();
+    m_progressbar->progressStop();
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
@@ -3649,15 +3646,15 @@ int ConfiguratorWindow::recordCount(const QString& table, const QString& paramet
     return query.value(0).toInt();
 }
 //----------------------------------------------------------------------------------------------------------
-int ConfiguratorWindow::recordCountDb(QSqlDatabase& db, const QString& table_name, const QString& parameter,
+int ConfiguratorWindow::recordCountDb(QSqlDatabase* db, const QString& table_name, const QString& parameter,
                                                         const QString& value)
 {
-    if(!db.isOpen())
+    if(!db->isOpen())
     {
         return -1;
     }
 
-    QSqlQuery query(db);
+    QSqlQuery query(*db);
 
     QString str = QString("SELECT COUNT(*) FROM %1 WHERE %2=%3;").arg(table_name).arg(parameter).arg(value);
 
@@ -3876,7 +3873,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
-//    connect(ui->pbtnEventJournalReadToTable, &QPushButton::clicked, this, &ConfiguratorWindow::eventJournalRead);
+    connect(ui->widgetJournalEvent, &CJournalWidget::clickedButtonRead, this, &ConfiguratorWindow::processReadJournalEvent);
 //    connect(ui->pbtnEventJournalTableClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
@@ -3887,6 +3884,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(&m_sync_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSyncSerialNumber);
     connect(ui->pushbtnImportEventDb, &QPushButton::clicked, this, &ConfiguratorWindow::importJournalToTable);
-    connect(ui->pushbtnExportEventJournalDb, &QPushButton::clicked, this, &ConfiguratorWindow::exportEventJournalToDb);
+    connect(ui->pushbtnExportEventJournalDb, &QPushButton::clicked, this, &ConfiguratorWindow::exportJournalToDb);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
 }
