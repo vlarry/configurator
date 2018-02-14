@@ -162,7 +162,7 @@ void ConfiguratorWindow::stateChanged(bool state)
     if(state)
     {
         saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> открыт."));
-        updateParameterEventJournal();
+        updateParameterJournal();
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
         deviceSync(true);
     }
@@ -276,7 +276,7 @@ void ConfiguratorWindow::eventJournalRead()
                 m_event_journal_parameter.shift = part*4096; // сохраняем новое значение указателя на текущий сектор
             }
 
-            setEventJournalPtrShift(); // вызываем метод перевода сектора
+            setJournalPtrShift(); // вызываем метод перевода сектора
 
             m_event_journal_parameter.start %= 256; // получаем остаток для сохранения текущего события
         }
@@ -289,7 +289,7 @@ void ConfiguratorWindow::eventJournalRead()
             {
                 m_event_journal_parameter.shift = 0;
 
-                setEventJournalPtrShift();
+                setJournalPtrShift();
             }
         }
     }
@@ -299,7 +299,7 @@ void ConfiguratorWindow::eventJournalRead()
         m_event_journal_parameter.shift += 4096;
         m_event_journal_parameter.start  = 0;
 
-        setEventJournalPtrShift();
+        setJournalPtrShift();
     }
 
     int addr = m_event_journal_parameter.start*8 + 4096; // 8 - количество ячеек на событие, т.е. размер события 16 байт
@@ -2470,7 +2470,8 @@ void ConfiguratorWindow::clearJournal()
 
     m_status_bar->setStatusMessage(tr("Очистка таблицы журнала %1").arg(journal_name), 2000);
 
-    updateParameterEventJournal();
+    updateParameterJournal();
+    setJournalPtrShift();
 }
 //--------------------------------------
 void ConfiguratorWindow::menuPanelCtrl()
@@ -2611,7 +2612,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db)
              "category STRING(255), "
              "parameter STRING(255), "
              "sn_device INTEGER NOT NULL, "
-             "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, sn_device));";
+             "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
 
     if(!query.exec(db_str))
     {
@@ -3124,8 +3125,8 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         eventJournalRead();
     }
 }
-//----------------------------------------------------
-void ConfiguratorWindow::updateParameterEventJournal()
+//-----------------------------------------------
+void ConfiguratorWindow::updateParameterJournal()
 {
     readEventJournalCount();
 }
@@ -3154,8 +3155,8 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
         m_active_journal_current = nullptr;
     }
 }
-//------------------------------------------------
-void ConfiguratorWindow::setEventJournalPtrShift()
+//-------------------------------------------
+void ConfiguratorWindow::setJournalPtrShift()
 {
     QVector<quint16> values = QVector<quint16>() << (quint16)((m_event_journal_parameter.shift >> 16)&0xFFFF) <<
                                                     (quint16)(m_event_journal_parameter.shift&0xFFFF);
@@ -3599,7 +3600,9 @@ void ConfiguratorWindow::exportJournalToDb()
 
     db->transaction();
 
-    for(int i = pos.x(); i <= pos.y(); i++)
+    int i = 0;
+
+    for(i = pos.x(); i <= pos.y(); i++)
     {
         int     id_msg    = table->item(i, 0)->text().toInt();
         QString date      = QDate::fromString(table->item(i, 1)->text(),
@@ -3619,7 +3622,8 @@ void ConfiguratorWindow::exportJournalToDb()
         query.bindValue(":parameter", parameter);
         query.bindValue(":sn_device", id);
 
-        query.exec();
+        if(!query.exec())
+            saveLog(query.lastError().text());
 
         m_progressbar->progressIncrement();
     }

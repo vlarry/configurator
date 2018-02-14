@@ -195,9 +195,9 @@
             void exportPurposeToJSON();
             void importPurposeFromJSON();
             void processReadJournal(CDataUnitType& unit);
-            void updateParameterEventJournal(); // обновление данных журнала событий - вычитка кол-ва событий и положение указателя
+            void updateParameterJournal(); // обновление данных журнала событий - вычитка кол-ва событий и положение указателя
             void widgetStackIndexChanged(int index);
-            void setEventJournalPtrShift();
+            void setJournalPtrShift();
             void valueEventJournalInternalChanged(int new_value);
             void timeoutSyncSerialNumber();
             void importJournalToTable();
