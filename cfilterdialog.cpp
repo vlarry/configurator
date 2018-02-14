@@ -4,19 +4,20 @@
 CFilterDialog::CFilterDialog(const CFilter& filter, QWidget* parent):
     QDialog(parent),
     ui(new Ui::CFilterDialog),
-    m_btnGroup(nullptr)
+    m_btnGroup(nullptr),
+    m_intervalMax(filter.interval().max)
 {
     ui->setupUi(this);
 
-    int count = filter.interval().begin - filter.interval().end;
+    int count = filter.interval().end - filter.interval().begin;
 
     ui->spinboxIntervalBegin->setValue(filter.interval().begin);
-    ui->spinboxIntervalCount->setValue(((count > 0)?count - 1:0));
-    ui->spinboxIntervalCount->setMaximum(((count > 0)?count - 1:0));
+    ui->spinboxIntervalCount->setValue(((count > 0)?count:0));
+    ui->spinboxIntervalCount->setMaximum(((count > 0)?count:0));
     ui->calendarwgtBegin->setSelectedDate(filter.date().begin);
     ui->calendarwgtEnd->setSelectedDate(filter.date().end);
 
-    if(ui->spinboxIntervalBegin->value() == 0 && ui->spinboxIntervalCount->value() == 0)
+    if(filter.interval().begin == 0 && filter.interval().end == 0)
         ui->groupboxFilterInterval->setDisabled(true);
 
     m_btnGroup = new QButtonGroup;

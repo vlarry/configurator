@@ -1,7 +1,7 @@
 #include "ceventlistjournals.h"
 #include "ui_eventlistjournals.h"
-//-----------------------------------------------------------------------------
-CEventListJournals::CEventListJournals(QVector<cell_t>& list, QWidget* parent):
+//----------------------------------------------------------------------------------------------------------
+CEventListJournals::CEventListJournals(const QString& journal_name, QVector<cell_t>& list, QWidget* parent):
     QDialog(parent),
     ui(new Ui::CEventListJournals),
     m_cells(list)
@@ -21,7 +21,7 @@ CEventListJournals::CEventListJournals(QVector<cell_t>& list, QWidget* parent):
     ui->listwgtListEventJournals->addItems(items);
     ui->listwgtListEventJournals->setCurrentRow(0);
 
-    setWindowTitle(tr("Список журналов событий"));
+    setWindowTitle(tr("Список журналов %1").arg(journal_name));
 
     connect(ui->listwgtListEventJournals, &QListWidget::itemDoubleClicked, this, &CEventListJournals::slotDoubleClicked);
 }
@@ -34,6 +34,11 @@ CEventListJournals::~CEventListJournals()
 int CEventListJournals::currentId() const
 {
     return m_cells[ui->listwgtListEventJournals->currentRow()].id;
+}
+//-----------------------------------------------------
+QString CEventListJournals::currentSerialNumber() const
+{
+    return m_cells[ui->listwgtListEventJournals->currentRow()].sn;
 }
 //---------------------------------------------------------------
 void CEventListJournals::slotDoubleClicked(QListWidgetItem* item)

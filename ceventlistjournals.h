@@ -19,15 +19,17 @@
         public:
             typedef struct
             {
-                QString name;
-                int     id;
+                QString name; // имя журнала
+                QString sn; // серийный номер устройства
+                int     id; // id журнала
             } cell_t;
 
         public:
-            explicit CEventListJournals(QVector<cell_t>& list, QWidget* parent = nullptr);
+            explicit CEventListJournals(const QString& journal_name, QVector<cell_t>& list, QWidget* parent = nullptr);
             ~CEventListJournals();
 
-            int currentId() const;
+            int      currentId() const;
+            QString currentSerialNumber() const;
 
         public slots:
             void slotDoubleClicked(QListWidgetItem* item);

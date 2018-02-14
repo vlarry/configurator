@@ -190,8 +190,8 @@
             void clearJournal();
             void menuPanelCtrl();
             void variablePanelCtrl();
-            void exportToPDF(QTableWidget* tableWidget, const QString& reportName, const QString& sn_device,
-                                                                                   const QString& filename);
+            void exportToPDF(const CJournalWidget* widget, const QString& reportName, const QString& sn_device,
+                                                                                      const QString& filename);
             void exportPurposeToJSON();
             void importPurposeFromJSON();
             void processReadJournal(CDataUnitType& unit);
@@ -220,7 +220,6 @@
             void initDeviceCode();
             void initJournals();
             void connectSystemDb();
-            bool connectEventsDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
             void initTable(QTableView* table, CDataTable& data);
@@ -237,8 +236,8 @@
             void readShiftPrtEventJournal();
             void readEventJournalCount();
             void deviceSync(bool state = false);
-            int  recordCount(const QString& table, const QString& parameter, const QString& value); // количество записей в запросе
-            int  recordCountDb(QSqlDatabase *db, const QString& table_name, const QString& parameter, const QString& value);
+            int  recordCountDb(QSqlDatabase *db, const QString& table_name, const QString& parameter, const QString& value,
+                                                 const QString& subparamter = "", const QStringList& range = QStringList());
             QPoint            indexDateFilter(QTableWidget* table, const QDate& begin, const QDate& end);
             QPoint            indexSettingKey(const QString& first, const QString& last);
             QPoint            indexPurposeKey(const QString& first, const QString& last);
@@ -266,7 +265,6 @@
             QButtonGroup*              m_additional_group;
             CVersionSoftware*          m_versionWidget;
             QSqlDatabase               m_system_db;
-            QSqlDatabase               m_event_journal_db;
             cell_t                     m_cell_list;
             purpose_t                  m_purpose_list;
             QVector<event_t>           m_event_list; // список событий (вычитаны из БД)
@@ -280,8 +278,8 @@
             CProgressBarWidget*        m_progressbar;
             QSettings*                 m_settings;
             QMap<QString, CFilter>     m_filter;
-
-            CJournalWidget::JournalElementType m_journal_read_current; // элементы текущей таблицы при чтении из блока
+            const CJournalWidget*      m_active_journal_current; // текущий активный журнал
+            const CJournalWidget*      m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

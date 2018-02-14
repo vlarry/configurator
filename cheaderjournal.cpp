@@ -12,6 +12,7 @@ CHeaderJournal::CHeaderJournal(QWidget* parent):
     ui->pushbtnJournalRead->setEnabled(false);
 
     connect(ui->pushbtnJournalRead, &QPushButton::toggled, this, &CHeaderJournal::clickedButtonRead);
+    connect(ui->pushbtnJournalClear, &QPushButton::clicked, this, &CHeaderJournal::clickedButtonClear);
     connect(ui->pushbtnJournalRead, &QPushButton::toggled, this, &CHeaderJournal::stateButtonReadChanged);
 }
 //-------------------------------
@@ -41,7 +42,7 @@ void CHeaderJournal::setTextDeviceCountMessages(int value, int total)
  */
 void CHeaderJournal::setTextElapsedTime(int value)
 {
-    float time = value/1000;
+    float time = float(value/1000.0f);
 
     ui->lineEditElapsedTime->setText(QString::number(time, 'f', 2) + tr(" сек."));
 }
