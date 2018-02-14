@@ -1940,8 +1940,8 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 
     model->updateData();
 }
-//-------------------------------------------------------------------------------------
-void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& data_list)
+//--------------------------------------------------------------------------------
+void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_list)
 {
     QVector<quint8> data;
 
@@ -1950,6 +1950,17 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
         data << (quint8)((data_list[i] >> 8)&0x00FF);
         data << (quint8)(data_list[i]&0x00FF);
     }
+
+    QDir dir;
+
+    if(!dir.exists("log"))
+        dir.mkdir("log");
+
+    QFile file("log/displayJournalResponce.log");
+
+    file.open(QFile::WriteOnly);
+
+    QTextStream out(&file);
 
     for(int i = 0; i < data.count(); i += 16)
     {
@@ -2002,9 +2013,8 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
             QString s = ((msecond < 10)?"00":(msecond < 100 && msecond >= 10)?"0":"") + QString::number(msecond);
 
             m_journal_read_current->table()->setItem(row, 2, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") + s));
-            m_journal_read_current->table()->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (") +
-                                                                               QString::number(type_event) +
-                                                                               QString(")"))));
+            m_journal_read_current->table()->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
+                                                                                  arg(type_event))));
 
             QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
             QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
@@ -2019,12 +2029,21 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
             m_journal_read_current->table()->item(row, 1)->setTextAlignment(Qt::AlignCenter);
             m_journal_read_current->table()->item(row, 2)->setTextAlignment(Qt::AlignCenter);
 
+            out << i << ": " << m_journal_read_current->table()->item(row, 0)->text() << "\t" <<
+                                m_journal_read_current->table()->item(row, 1)->text() << "\t" <<
+                                m_journal_read_current->table()->item(row, 2)->text() << "\t" <<
+                                m_journal_read_current->table()->item(row, 3)->text() << "\t" <<
+                                m_journal_read_current->table()->item(row, 4)->text() << "\t" <<
+                                m_journal_read_current->table()->item(row, 5)->text() << "\n";
+
             if(m_journal_read_current->header()->stateCheckbox())
                 m_journal_read_current->table()->scrollToBottom();
         }
     }
 
     m_journal_read_current->header()->setTextDeviceCountMessages(m_event_journal_parameter.read, m_event_journal_parameter.total);
+
+    file.close();
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
@@ -3121,7 +3140,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         m_event_journal_parameter.start += unit.valueCount()/8; // увеличиваем локальный счетчик прочитанных сообщений
         m_event_journal_parameter.read  += unit.valueCount()/8; // увеличиваем глобальный счетчик прочитанных сообщений
 
-        displayEventJournalResponse(unit.values());
+        displayJournalResponse(unit.values());
         eventJournalRead();
     }
 }
@@ -3412,7 +3431,7 @@ void ConfiguratorWindow::importJournalToTable()
 
     disconnectDb(db);
 }
-//-----------------------------------------
+//------------------------------------------
 void ConfiguratorWindow::exportJournalToDb()
 {
     if(!m_active_journal_current) // не выбран текущий журнал
@@ -3602,6 +3621,21 @@ void ConfiguratorWindow::exportJournalToDb()
 
     int i = 0;
 
+    if(!dir.exists("log"))
+        dir.mkdir("log");
+
+    QFile file1("log/exportJournalToDb.log");
+
+    file1.open(QFile::WriteOnly);
+
+    QTextStream out1(&file1);
+
+    QFile file2("log/exportJournalToDb_values.log");
+
+    file2.open(QFile::WriteOnly);
+
+    QTextStream out2(&file2);
+
     for(i = pos.x(); i <= pos.y(); i++)
     {
         int     id_msg    = table->item(i, 0)->text().toInt();
@@ -3622,8 +3656,17 @@ void ConfiguratorWindow::exportJournalToDb()
         query.bindValue(":parameter", parameter);
         query.bindValue(":sn_device", id);
 
+        out2 << "id_msg = " << id_msg << "; date = " << date << "; time = " << time << "; type = " << type << "; category = " <<
+                category << "; parameter = " << parameter << "; sn_device = " << id << "\n";
+
         if(!query.exec())
-            saveLog(query.lastError().text());
+        {
+            out1 << "\n-\t" << query.lastError().text() << "\n\n";
+            out2 << "\n-\t" << "id_msg = " << id_msg << "; date = " << date << "; time = " << time << "; type = " << type <<
+                    "; category = " << category << "; parameter = " << parameter << "; sn_device = " << id << "\n\n";
+        }
+
+        out1 << i << ": " << query.lastQuery() << "\n";
 
         m_progressbar->progressIncrement();
     }
@@ -3632,6 +3675,9 @@ void ConfiguratorWindow::exportJournalToDb()
     disconnectDb(db);
 
     m_progressbar->progressStop();
+
+    file2.close();
+    file1.close();
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const

@@ -227,7 +227,7 @@
             void displaySettingResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void displayPurposeDIResponse(CDataUnitType& unit);
-            void displayEventJournalResponse(const QVector<quint16>& data_list);
+            void displayJournalResponse(const QVector<quint16>& data_list);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
