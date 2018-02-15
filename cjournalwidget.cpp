@@ -7,6 +7,12 @@ CJournalWidget::CJournalWidget(QWidget* parent):
 {
     ui->setupUi(this);
 
+    ui->tableWidgetJournal->setShowGrid(true);
+    ui->tableWidgetJournal->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tableWidgetJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
 }
 //-------------------------------

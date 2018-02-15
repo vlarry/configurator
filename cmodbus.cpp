@@ -343,7 +343,7 @@ void CModbus::readyRead()
     }
 
     QVector<quint16> values;
-    
+
     for(quint8 i = 3; i < data.count() - 1; i += 2)
     {
         quint8 mbs = data.at(i);
@@ -351,14 +351,17 @@ void CModbus::readyRead()
         
         values.append((quint16)(mbs << 8) | lbs);
     }
-    
+
     CDataUnitType unit = m_request_cur;
 
-    if((data[1]&0x80) == 0x80) // если установлен старший бит в функции, то ведомый сообщает об ошибке
+    if(data.count() >= 4)
     {
-        quint16 error = (quint16)(data[2] << 8 | data[3]); // определяем ошибку
+        if((data[1]&0x80) == 0x80) // если установлен старший бит в функции, то ведомый сообщает об ошибке
+        {
+            quint16 error = (quint16)(data[2] << 8 | data[3]); // определяем ошибку
 
-        unit.serErrorCode(error);
+            unit.serErrorCode(error);
+        }
     }
 
     unit.setValues(values);

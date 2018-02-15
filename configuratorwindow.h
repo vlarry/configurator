@@ -121,7 +121,7 @@
             void refreshSerialPort();
             void serialPortSettings();
             void calculateRead(); // запрос расчетных величин
-            void eventJournalRead();
+            void journalRead();
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
@@ -268,7 +268,7 @@
             cell_t                     m_cell_list;
             purpose_t                  m_purpose_list;
             QVector<event_t>           m_event_list; // список событий (вычитаны из БД)
-            event_journal_t            m_event_journal_parameter;
+            event_journal_t            m_journal_parameters;
             QVector<CColumn::column_t> m_variables;
             QTime                      m_time_process;
             QTimer                     m_sync_timer;
