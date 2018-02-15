@@ -14,6 +14,7 @@ CHeaderJournal::CHeaderJournal(QWidget* parent):
     connect(ui->pushbtnJournalRead, &QPushButton::toggled, this, &CHeaderJournal::clickedButtonRead);
     connect(ui->pushbtnJournalClear, &QPushButton::clicked, this, &CHeaderJournal::clickedButtonClear);
     connect(ui->pushbtnJournalRead, &QPushButton::toggled, this, &CHeaderJournal::stateButtonReadChanged);
+    connect(this, &CHeaderJournal::stateButtonReadOff, this, &CHeaderJournal::stateButtonReadChanged);
 }
 //-------------------------------
 CHeaderJournal::~CHeaderJournal()
@@ -70,10 +71,16 @@ bool CHeaderJournal::stateCheckbox()
  */
 void CHeaderJournal::stateButtonReadChanged(bool checked)
 {
+    ui->pushbtnJournalRead->setChecked(checked);
+
     if(checked)
+    {
         ui->pushbtnJournalRead->setText(tr("Прервать чтение"));
+    }
     else
+    {
         ui->pushbtnJournalRead->setText(tr("Прочитать журнал"));
+    }
 }
 /*!
  * \brief CHeaderJournal::stateEnabledButtonReadChanged

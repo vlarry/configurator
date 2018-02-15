@@ -24,7 +24,7 @@
             const CFilter::FilterDateType     date();
 
         private slots:
-            void filterChanged(QAbstractButton* button);
+            void filterChanged(int index);
             void intervalChanged(int value);
 
         private:

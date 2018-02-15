@@ -225,6 +225,9 @@ void ConfiguratorWindow::journalRead()
 //        m_journal_read_current->table()->sortByColumn(1, Qt::AscendingOrder);
 //        m_journal_read_current->table()->setSortingEnabled(true);
 
+        if(m_journal_read_current)
+            emit m_journal_read_current->header()->stateButtonReadOff();
+
         m_journal_read_current = nullptr;
 
         updateParameterJournal();
@@ -268,10 +271,10 @@ void ConfiguratorWindow::journalRead()
                 m_journal_parameters.start = filter.interval().begin;
                 m_journal_parameters.count = filter.interval().end - filter.interval().begin;
             }
-            else if(filter.type() == CFilter::DATE) // выбран режим считывания по календарю
-            {
+//            else if(filter.type() == CFilter::DATE) // выбран режим считывания по календарю
+//            {
 
-            }
+//            }
 
             if(m_journal_parameters.start >= 256) // если начальная точка больше или равна размеру сектора (256*16=4096)
             {
@@ -440,6 +443,21 @@ void ConfiguratorWindow::protectionVacuumSetWrite()
 //------------------------------------------------------------
 void ConfiguratorWindow::processReadJournalEvent(bool checked)
 {
+    if(!checked)
+    {
+        m_journal_parameters.start = -1;
+        m_journal_parameters.read  = 0;
+        m_journal_parameters.count = 0;
+        m_journal_parameters.shift = 0;
+
+        if(m_journal_read_current)
+            emit m_journal_read_current->header()->stateButtonReadOff();
+
+        m_journal_read_current = nullptr;
+
+        return;
+    }
+
     journalRead();
 }
 //------------------------------------------
@@ -1946,6 +1964,11 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 //--------------------------------------------------------------------------------
 void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_list)
 {
+    if(!m_journal_read_current)
+    {
+        return;
+    }
+
     QVector<quint8> data;
 
     for(int i = 0; i < data_list.count(); i++)
@@ -2487,13 +2510,13 @@ void ConfiguratorWindow::clearIOTable()
 //-------------------------------------
 void ConfiguratorWindow::clearJournal()
 {
-    if(!m_journal_read_current)
+    if(!m_active_journal_current)
         return;
 
-    QString journal_name = m_journal_read_current->property("NAME").toString();
+    QString journal_name = m_active_journal_current->property("NAME").toString();
 
-    m_journal_read_current->tableClear();
-    m_journal_read_current->headerClear();
+    m_active_journal_current->tableClear();
+    m_active_journal_current->headerClear();
 
     m_status_bar->setStatusMessage(tr("Очистка таблицы журнала %1").arg(journal_name), 2000);
 }
@@ -2802,12 +2825,9 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
     {
         CFilter filter = m_filter[key];
 
-        if(filter) // если фильтр активен
+        if(filter && filter.type() == CFilter::DATE) // если фильтр активен
         {
-            if(filter.type() == CFilter::DATE) // если выбранный фильтр по дате
-            {
-                pos = indexDateFilter(widget->table(), filter.date().begin, filter.date().end);
-            }
+            pos = indexDateFilter(widget->table(), filter.date().begin, filter.date().end);
         }
     }
 
@@ -3139,6 +3159,9 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
     }
     else if(type == READ_EVENT_JOURNAL)
     {
+        if(!m_journal_read_current)
+            return;
+
         if(unit.valueCount() < 8)
             return;
 
@@ -3362,7 +3385,7 @@ void ConfiguratorWindow::importJournalToTable()
     {
         CFilter filter = m_filter[journal_type];
 
-        if(filter)
+        if(filter && filter.type() == CFilter::DATE)
         {
             str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(filter.date().begin.toString(Qt::ISODate)).
                     arg(filter.date().end.toString(Qt::ISODate));
@@ -3612,7 +3635,7 @@ void ConfiguratorWindow::exportJournalToDb()
     {
         CFilter filter = m_filter[journal_type]; // получаем фильтр
 
-        if(filter) // фильтр активен
+        if(filter && filter.type() == CFilter::DATE) // фильтр активен
         {
             CFilter::FilterDateType date = filter.date();
             pos = indexDateFilter(table, date.begin, date.end); // получаем новые позиции начала/конца записей (фильтруем)
@@ -3732,8 +3755,6 @@ void ConfiguratorWindow::readEventJournalCount()
 //---------------------------------------------
 void ConfiguratorWindow::deviceSync(bool state)
 {
-    return;
-
     if(state)
     {
         if(!m_sync_timer.isActive())

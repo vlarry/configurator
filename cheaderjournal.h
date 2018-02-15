@@ -27,6 +27,7 @@
         signals:
             void clickedButtonRead(bool = false);
             void clickedButtonClear(bool = false);
+            void stateButtonReadOff(bool = false);
 
         private slots:
             void stateButtonReadChanged(bool checked = false);

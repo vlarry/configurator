@@ -17,28 +17,31 @@ CFilterDialog::CFilterDialog(const CFilter& filter, QWidget* parent):
     ui->calendarwgtBegin->setSelectedDate(filter.date().begin);
     ui->calendarwgtEnd->setSelectedDate(filter.date().end);
 
+    ui->listWidgetFilterButton->addItems(QStringList() << tr("Интервал") << tr("Дата"));
+    ui->listWidgetFilterButton->setCurrentRow(0);
+
     if(filter.interval().begin == 0 && filter.interval().end == 0)
-        ui->groupboxFilterInterval->setDisabled(true);
-
-    m_btnGroup = new QButtonGroup;
-
-    m_btnGroup->addButton(ui->pushbtnFilterInterval, 0);
-    m_btnGroup->addButton(ui->pushbtnFilterDate, 1);
+    {
+        ui->spinboxIntervalBegin->setDisabled(true);
+        ui->spinboxIntervalCount->setDisabled(true);
+    }
 
     ui->stackwgtFilter->setCurrentIndex(0);
 
     ui->calendarwgtBegin->setSelectionMode(QCalendarWidget::SingleSelection);
     ui->calendarwgtEnd->setSelectionMode(QCalendarWidget::SingleSelection);
 
-    connect(m_btnGroup, static_cast<void (QButtonGroup::*)(QAbstractButton*)>(&QButtonGroup::buttonClicked), this,
-                                                                              &CFilterDialog::filterChanged);
+    connect(ui->listWidgetFilterButton, &QListWidget::currentRowChanged, this, &CFilterDialog::filterChanged);
     connect(ui->spinboxIntervalBegin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this,
                                                                            &CFilterDialog::intervalChanged);
 }
-//--------------------------------------------------------
-void CFilterDialog::filterChanged(QAbstractButton* button)
+//------------------------------------------
+void CFilterDialog::filterChanged(int index)
 {
-    ui->stackwgtFilter->setCurrentIndex(m_btnGroup->id(button));
+    if(index < 0 || index >= ui->stackwgtFilter->count())
+        return;
+
+    ui->stackwgtFilter->setCurrentIndex(index);
 }
 //--------------------------------------------
 void CFilterDialog::intervalChanged(int value)
