@@ -2083,19 +2083,24 @@ void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_lis
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
 {
-    if(data.count() == 8) // пришел серийный номер, иначе сообщение с ошибкой
+    if(data.count() == 4) // пришел серийный номер, иначе сообщение с ошибкой
     {
         m_status_bar->connectStateChanged(true); // обновляем состояние соединения с устройством
 
-        quint16 dev_code     = data[0]; // код устройства
-        quint32 sn_code      = (quint32)(data[1] << 16) | (data[2]); // порядковый номер
-        quint16 party_num    = data[3]; // номер партии
-        quint16 firmware_var = data[4]; // вариант прошивки
-        quint8  year         = (quint8)(((data[5] >> 8)&0xFF)*10) + (quint8)(data[5]&0xFF); // год
-        quint8  month        = (quint8)(((data[6] >> 8)&0xFF)*10) + (quint8)(data[6]&0xFF); // месяц
-        quint8  day          = (quint8)(((data[7] >> 8)&0xFF)*10) + (quint8)(data[7]&0xFF); // день
+        quint16 value0 = data[0];
+        quint16 value1 = data[1];
+        quint16 value2 = data[2];
+        quint16 value3 = data[3];
 
-        QString dev_code_str = m_device_code_list[dev_code];
+        quint8  device_code  = quint8((value0 >> 8)&0xFF); // получаем код изделия РПА
+        quint16 index_number = quint16(quint8(quint8(value0&0xFF) << 8) | quint8((value1 >> 8)&0xFF)); // получаем порядковый номер
+        quint8  party_number = quint8(value1&0xFF); // получаем номер партии
+        quint8  firmware_var = quint8((value2 >> 8)&0xFF); // получаем вариант прошивки
+        quint8  year         = quint8(value2&0xFF); // получаем год
+        quint8  month        = quint8((value3 >> 8)&0xFF); // получаем месяц
+        quint8  day          = quint8(value3&0xFF); // получаем день
+
+        QString dev_code_str = m_device_code_list[device_code];
 
         if(dev_code_str.isEmpty())
             dev_code_str = "0";
@@ -2103,12 +2108,12 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
         QString str;
         QString date = "0";
 
-        if(year != 0 && month != 0 && day != 0)
+        if(year != 0 && month != 0 && day != 0 && month <= 12 && day <= 31)
             date = QDate(year, month, day).toString("yy.MM.dd");
 
         str = QString("S/n: %1-%2-%3-%4-%5").arg(dev_code_str).
-                                             arg(sn_code).
-                                             arg(party_num).
+                                             arg(index_number).
+                                             arg(party_number).
                                              arg(firmware_var).
                                              arg(date);
 
@@ -3222,7 +3227,7 @@ void ConfiguratorWindow::valueEventJournalInternalChanged(int new_value)
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSyncSerialNumber()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 0x0000, QVector<quint16>() << 8);
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
 
     unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
 
