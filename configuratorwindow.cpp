@@ -460,6 +460,32 @@ void ConfiguratorWindow::processReadJournalEvent(bool checked)
 
     journalRead();
 }
+//--------------------------------------
+void ConfiguratorWindow::processExport()
+{
+    DeviceMenuIndexType index = menuIndex();
+
+    if(index == DEVICE_MENU_INDEX_NONE)
+        return;
+
+    if(index >= DEVICE_MENU_INDEX_CRASH && index <= DEVICE_MENU_INDEX_ISOLATION)
+        exportJournalToDb();
+    else if(index >= DEVICE_MENU_INDEX_LED && index <= DEVICE_MENU_INDEX_KEYBOARD)
+        exportPurposeToJSON();
+}
+//--------------------------------------
+void ConfiguratorWindow::processImport()
+{
+    DeviceMenuIndexType index = menuIndex();
+
+    if(index == DEVICE_MENU_INDEX_NONE)
+        return;
+
+    if(index >= DEVICE_MENU_INDEX_CRASH && index <= DEVICE_MENU_INDEX_ISOLATION)
+        importJournalToTable();
+    else if(index >= DEVICE_MENU_INDEX_LED && index <= DEVICE_MENU_INDEX_KEYBOARD)
+        importPurposeFromJSON();
+}
 //------------------------------------------
 void ConfiguratorWindow::automationSetRead()
 {
@@ -2479,16 +2505,20 @@ void ConfiguratorWindow::clearIOTable()
 
     switch(ui->stwgtMain->currentIndex())
     {
-        case 22:
+        case PURPOSE_INDEX_LED:
             table = ui->tablewgtLedPurpose;
         break;
 
-        case 23:
+        case PURPOSE_INDEX_INPUT:
             table = ui->tablewgtDiscreteInputPurpose;
         break;
 
-        case 24:
+        case PURPOSE_INDEX_RELAY:
             table = ui->tablewgtRelayPurpose;
+        break;
+
+        case PURPOSE_INDEX_KEYBOARD:
+
         break;
     }
 
@@ -3981,6 +4011,57 @@ CColumn::column_t ConfiguratorWindow::columnFromKey(const QString& key)
 
     return CColumn::column_t();
 }
+//---------------------------------------------------------------------
+ConfiguratorWindow::DeviceMenuIndexType ConfiguratorWindow::menuIndex()
+{
+    QModelIndex         index  = ui->treewgtDeviceMenu->currentIndex();
+    DeviceMenuIndexType result = DEVICE_MENU_INDEX_NONE;
+
+    if(index.parent().row() == 0)
+    {
+        switch(index.row())
+        {
+            case 4:
+                result = DEVICE_MENU_INDEX_LED;
+            break;
+
+            case 5:
+                result = DEVICE_MENU_INDEX_INPUT;
+            break;
+
+            case 6:
+                result = DEVICE_MENU_INDEX_RELAY;
+            break;
+
+            case 7:
+                result = DEVICE_MENU_INDEX_KEYBOARD;
+            break;
+        }
+    }
+    else if(index.parent().row() == 1) // второй пункт меню (родитель)
+    {
+        switch(index.row())
+        {
+            case 0:
+                result = DEVICE_MENU_INDEX_CRASH;
+            break;
+
+            case 1:
+                result = DEVICE_MENU_INDEX_EVENT;
+            break;
+
+            case 2:
+                result = DEVICE_MENU_INDEX_HALFHOUR;
+            break;
+
+            case 3:
+                result = DEVICE_MENU_INDEX_ISOLATION;
+            break;
+        }
+    }
+
+    return result;
+}
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
@@ -4030,11 +4111,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
-    connect(ui->pbtnExportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::exportPurposeToJSON);
-    connect(ui->pbtnImportPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::importPurposeFromJSON);
+    connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
+    connect(ui->pushButtonImport, &QPushButton::clicked, this, &ConfiguratorWindow::processImport);
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(&m_sync_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSyncSerialNumber);
-    connect(ui->pushbtnImportEventDb, &QPushButton::clicked, this, &ConfiguratorWindow::importJournalToTable);
-    connect(ui->pushbtnExportEventJournalDb, &QPushButton::clicked, this, &ConfiguratorWindow::exportJournalToDb);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
 }

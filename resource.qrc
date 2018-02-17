@@ -21,10 +21,8 @@
         <file>resource/images/save.png</file>
         <file>resource/images/exit.png</file>
         <file>resource/images/export_pdf.png</file>
-        <file>resource/images/export_journal.png</file>
-        <file>resource/images/export_purpose.png</file>
-        <file>resource/images/import_journal.png</file>
-        <file>resource/images/import_purpose.png</file>
+        <file>resource/images/export.png</file>
+        <file>resource/images/import.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

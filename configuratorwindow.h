@@ -80,7 +80,7 @@
                 FLOAT, // QLineEdit (set validator: QDoubleValidator)
                 LIST   // QComboBox
             };
-
+            //-------------------
             enum JournalIndexType
             {
                 JOURNAL_INDEX_CRASH = 14,
@@ -88,6 +88,31 @@
                 JOURNAL_INDEX_HALFHOUR,
                 JOURNAL_INDEX_ISOLATION,
                 JOURNAL_INDEX_OSCILLOSCOPE
+            };
+            //----------------------
+            enum DeviceMenuIndexType
+            {
+                DEVICE_MENU_INDEX_NONE = -1,
+                DEVICE_MENU_INDEX_LED  = 4,
+                DEVICE_MENU_INDEX_INPUT,
+                DEVICE_MENU_INDEX_RELAY,
+                DEVICE_MENU_INDEX_KEYBOARD,
+                DEVICE_MENU_INDEX_CRASH = 0,
+                DEVICE_MENU_INDEX_EVENT,
+                DEVICE_MENU_INDEX_HALFHOUR,
+                DEVICE_MENU_INDEX_ISOLATION
+            };
+            /*!
+             * \brief The PurposeIndexType enum
+             *
+             *  Индексы таблиц привязок для определения выбранной таблицы
+             */
+            enum PurposeIndexType
+            {
+                PURPOSE_INDEX_LED = 24,
+                PURPOSE_INDEX_INPUT,
+                PURPOSE_INDEX_RELAY,
+                PURPOSE_INDEX_KEYBOARD
             };
             //------------
             struct event_t
@@ -147,6 +172,8 @@
             void protectionVacuumSetRead();
             void protectionVacuumSetWrite();
             void processReadJournalEvent(bool checked);
+            void processExport();
+            void processImport();
             void automationSetRead();
             void automationSetWrite();
             void switchDeviceSetRead();
@@ -238,12 +265,13 @@
             void deviceSync(bool state = false);
             int  recordCountDb(QSqlDatabase *db, const QString& table_name, const QString& parameter, const QString& value,
                                                  const QString& subparamter = "", const QStringList& range = QStringList());
-            QPoint            indexDateFilter(QTableWidget* table, const QDate& begin, const QDate& end);
-            QPoint            indexSettingKey(const QString& first, const QString& last);
-            QPoint            indexPurposeKey(const QString& first, const QString& last);
-            QVector<int>      indexVariableFromKey(const QStringList& variables, const QString& key);
-            QTableView*       tableMatrixFromKeys(const QString& first, const QString& last);
-            CColumn::column_t columnFromKey(const QString& key);
+            QPoint              indexDateFilter(QTableWidget* table, const QDate& begin, const QDate& end);
+            QPoint              indexSettingKey(const QString& first, const QString& last);
+            QPoint              indexPurposeKey(const QString& first, const QString& last);
+            QVector<int>        indexVariableFromKey(const QStringList& variables, const QString& key);
+            QTableView*         tableMatrixFromKeys(const QString& first, const QString& last);
+            CColumn::column_t   columnFromKey(const QString& key);
+            DeviceMenuIndexType menuIndex();
             
         private:
             Ui::ConfiguratorWindow*    ui;

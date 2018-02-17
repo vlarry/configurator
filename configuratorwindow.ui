@@ -103,8 +103,8 @@
                </property>
                <property name="iconSize">
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
               </widget>
@@ -123,8 +123,8 @@
                </property>
                <property name="iconSize">
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
               </widget>
@@ -143,8 +143,8 @@
                </property>
                <property name="iconSize">
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
               </widget>
@@ -163,8 +163,8 @@
                </property>
                <property name="iconSize">
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
               </widget>
@@ -196,109 +196,168 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_101">
+          <property name="spacing">
+           <number>2</number>
+          </property>
           <item>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="1">
-             <widget class="QPushButton" name="pushbtnExportEventJournalDb">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Экспорт журнала в базу данных&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="resource.qrc">
-                <normaloff>:/images/resource/images/export_journal.png</normaloff>:/images/resource/images/export_journal.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QPushButton" name="pbtnExportPurpose">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Экспорт привязок во внешний файл&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="resource.qrc">
-                <normaloff>:/images/resource/images/export_purpose.png</normaloff>:/images/resource/images/export_purpose.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QPushButton" name="pbtnMenuExportToPDF">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Эксорт в PDF&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="resource.qrc">
-                <normaloff>:/images/resource/images/export_pdf.png</normaloff>:/images/resource/images/export_pdf.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QPushButton" name="pushbtnImportEventDb">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Импорт журнала из базы данных&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="resource.qrc">
-                <normaloff>:/images/resource/images/import_journal.png</normaloff>:/images/resource/images/import_journal.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="pbtnImportPurpose">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Импорт привязок из внешнего файла&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="resource.qrc">
-                <normaloff>:/images/resource/images/import_purpose.png</normaloff>:/images/resource/images/import_purpose.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QGroupBox" name="groupBoxExport">
+            <property name="title">
+             <string>Экспорт</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_135">
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_4">
+               <item row="0" column="1">
+                <widget class="QPushButton" name="pushButtonExport">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Экспорт журнала в базу данных&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resource.qrc">
+                   <normaloff>:/images/resource/images/export.png</normaloff>:/images/resource/images/export.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>24</width>
+                   <height>24</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QPushButton" name="pbtnMenuExportToPDF">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Эксорт в PDF&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resource.qrc">
+                   <normaloff>:/images/resource/images/export_pdf.png</normaloff>:/images/resource/images/export_pdf.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>24</width>
+                   <height>24</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBoxImport">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>44</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Импорт</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_136">
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="0">
+                <widget class="QPushButton" name="pushButtonImport">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Экспорт привязок во внешний файл&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resource.qrc">
+                   <normaloff>:/images/resource/images/import.png</normaloff>:/images/resource/images/import.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>24</width>
+                   <height>24</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <spacer name="verticalSpacer_74">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer_57">
@@ -1032,7 +1091,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>14</number>
+          <number>24</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">

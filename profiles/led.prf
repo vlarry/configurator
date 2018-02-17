@@ -459,16 +459,20 @@
                     "status": true
                 },
                 {
-                    "state": true,
+                    "state": false,
                     "status": true
                 }
             ],
             "key": "LED1",
-            "name": ""
+            "name": "Светодиод 1"
         },
         {
             "columns": [
                 {
+                    "state": false,
+                    "status": true
+                },
+                {
                     "state": true,
                     "status": true
                 },
@@ -922,463 +926,15 @@
                 },
                 {
                     "state": false,
-                    "status": true
-                },
-                {
-                    "state": true,
                     "status": true
                 }
             ],
             "key": "LED2",
-            "name": ""
+            "name": "Светодиод 2"
         },
         {
             "columns": [
                 {
-                    "state": true,
-                    "status": true
-                },
-                {
-                    "state": true,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
                     "state": false,
                     "status": true
                 },
@@ -1391,456 +947,460 @@
                     "status": true
                 },
                 {
-                    "state": true,
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
                     "status": true
                 }
             ],
             "key": "LED3",
-            "name": ""
+            "name": "Светодиод 3"
         },
         {
             "columns": [
                 {
-                    "state": true,
-                    "status": true
-                },
-                {
-                    "state": true,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
                     "state": false,
                     "status": true
                 },
@@ -1857,452 +1417,456 @@
                     "status": true
                 },
                 {
-                    "state": true,
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
                     "status": true
                 }
             ],
             "key": "LED4",
-            "name": ""
+            "name": "Светодиод 4"
         },
         {
             "columns": [
                 {
-                    "state": true,
-                    "status": true
-                },
-                {
-                    "state": true,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
                     "state": false,
                     "status": true
                 },
@@ -2323,448 +1887,452 @@
                     "status": true
                 },
                 {
-                    "state": true,
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
                     "status": true
                 }
             ],
             "key": "LED5",
-            "name": ""
+            "name": "Светодиод 5"
         },
         {
             "columns": [
                 {
-                    "state": true,
-                    "status": true
-                },
-                {
-                    "state": true,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
                     "state": false,
                     "status": true
                 },
@@ -2789,16 +2357,472 @@
                     "status": true
                 },
                 {
-                    "state": true,
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
                     "status": true
                 }
             ],
             "key": "LED6",
-            "name": ""
+            "name": "Светодиод 6"
         },
         {
             "columns": [
                 {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
                     "state": true,
                     "status": true
                 },
@@ -3232,39 +3256,43 @@
                 },
                 {
                     "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": true,
                     "status": true
                 }
             ],
             "key": "LED7",
-            "name": ""
+            "name": "Светодиод 7"
         },
         {
             "columns": [
                 {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
+                    "state": false,
+                    "status": true
+                },
+                {
                     "state": true,
                     "status": true
                 },
@@ -3694,39 +3722,11 @@
                 },
                 {
                     "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": false,
-                    "status": true
-                },
-                {
-                    "state": true,
                     "status": true
                 }
             ],
             "key": "LED8",
-            "name": ""
+            "name": "Светодиод 8"
         }
     ],
     "headers": [
