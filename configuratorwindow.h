@@ -71,7 +71,10 @@
                 READ_EVENT_JOURNAL, // чтение журнала событий
                 READ_EVENT_COUNT, // чтение количества событий в журнале
                 READ_EVENT_SHIFT_PTR, // чтение позиции указателя сдвига журнала событий
-                READ_SERIAL_NUMBER // чтение серийного номера
+                READ_SERIAL_NUMBER, // чтение серийного номера
+                READ_JOURNAL,
+                READ_JOURNAL_COUNT,
+                READ_JOURNAL_SHIFT_PTR
             };
             //-------------
             enum WidgetType
@@ -130,6 +133,45 @@
                 int total; // всего событий в устройстве
                 int shift; // положение указателя сдвига
             };
+            /*!
+             * \brief The journal_address_t struct
+             *
+             *  Структура адресов журнала (используется при чтении)
+             */
+            struct journal_address_t
+            {
+                long msg_count;  // адрес чтения количества сообщений
+                long set_shift;  // адрес установки указателя свдига (установка текущего окна для чтения)
+                long start_page; // начальный адрес страницы
+            };
+            /*!
+             * \brief The journal_message_t struct
+             *
+             *  Структура опсывающая сообщения (параметры)
+             */
+            struct journal_message_t
+            {
+                long read_number;  // количество сообщений читаемых в одном запросе
+                long read_count;   // счетчик прочитанных сообщений
+                long read_limit;   // сообщение до которого читаем (по умолчанию последнее, но изменяется фильром)
+                long read_total;   // всего сообщений доступных для чтения
+                long read_current; // текущее читаемое сообщение
+                long size;         // размер одного сообщения
+                long start;        // сообщение с которого начинается чтение
+            };
+            /*!
+             * \brief The journal_set struct
+             *
+             *  Структура описывающая установки чтения журнала
+             */
+            struct journal_set_t
+            {
+                long              shitp_ptr; // текущее положение указателя сдвига
+                bool              isStart;   // чтение первого сообщения
+                journal_address_t address;
+                journal_message_t message;
+                QVector<quint16>  buffer;    // буфер сообщений
+            };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
             typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;
@@ -147,6 +189,7 @@
             void serialPortSettings();
             void calculateRead(); // запрос расчетных величин
             void journalRead();
+            void journalReadNew(const QString& key);
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
@@ -172,6 +215,7 @@
             void protectionVacuumSetRead();
             void protectionVacuumSetWrite();
             void processReadJournalEvent(bool checked);
+            void processReadJournals(bool state);
             void processExport();
             void processImport();
             void automationSetRead();
@@ -224,7 +268,7 @@
             void processReadJournal(CDataUnitType& unit);
             void updateParameterJournal(); // обновление данных журнала событий - вычитка кол-ва событий и положение указателя
             void widgetStackIndexChanged(int index);
-            void setJournalPtrShift();
+            void setJournalPtrShift(const QString& key, long pos);
             void valueEventJournalInternalChanged(int new_value);
             void timeoutSyncSerialNumber();
             void importJournalToTable();
@@ -308,6 +352,7 @@
             QMap<QString, CFilter>     m_filter;
             const CJournalWidget*      m_active_journal_current; // текущий активный журнал
             const CJournalWidget*      m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
+            QMap<QString, journal_set_t> m_journal_set; // установки журналов
 
             QTreeWidgetItem* itemSettings;
             QTreeWidgetItem* itemJournals;

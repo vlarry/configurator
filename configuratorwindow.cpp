@@ -282,7 +282,7 @@ void ConfiguratorWindow::journalRead()
                 m_journal_parameters.shift = part*4096; // сохраняем новое значение указателя на текущий сектор
             }
 
-            setJournalPtrShift(); // вызываем метод перевода сектора
+//            setJournalPtrShift(); // вызываем метод перевода сектора
 
             m_journal_parameters.start %= 256; // получаем остаток для сохранения текущего события
         }
@@ -295,7 +295,7 @@ void ConfiguratorWindow::journalRead()
             {
                 m_journal_parameters.shift = 0;
 
-                setJournalPtrShift();
+//                setJournalPtrShift();
             }
         }
     }
@@ -305,7 +305,7 @@ void ConfiguratorWindow::journalRead()
         m_journal_parameters.shift += 4096;
         m_journal_parameters.start  = 0;
 
-        setJournalPtrShift();
+//        setJournalPtrShift();
     }
 
     int addr = m_journal_parameters.start*8 + 4096; // 8 - количество ячеек на событие, т.е. размер события 16 байт
@@ -317,6 +317,93 @@ void ConfiguratorWindow::journalRead()
 
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, addr, QVector<quint16>() << var_count);
     unit.setProperty(tr("REQUEST"), READ_EVENT_JOURNAL);
+
+    m_modbusDevice->request(unit);
+}
+//---------------------------------------------------------
+void ConfiguratorWindow::journalReadNew(const QString& key)
+{
+    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
+        return;
+
+    journal_set_t& set = m_journal_set[key];
+
+    if(set.isStart && set.message.read_limit == set.message.read_count)
+    {
+        m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
+        m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
+
+        m_journal_read_current = nullptr;
+
+        set.isStart = false;
+
+        return;
+    }
+
+    if(!set.isStart) // если это первый запрос сообщения
+    {
+        m_journal_read_current = m_active_journal_current; // сохраняем текущий виджет таблицы
+
+        if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
+        {
+            clearJournal(); // очищаем таблицу
+        }
+
+        m_journal_read_current->header()->setTextDeviceCountMessages(0, set.message.read_total);
+
+        set.isStart = true;
+        set.shitp_ptr = 0;
+        set.buffer.clear();
+        set.message.read_count = 0;
+        set.message.read_current = 0;
+        set.message.start = 0;
+        set.message.read_limit = set.message.read_total;
+
+        if(m_filter.find(key) != m_filter.end()) // если фильтр журнала существует
+        {
+            CFilter filter = m_filter[key]; // получаем фильтр журнала
+
+            if(filter) // фильтр активен
+            {
+                if(filter.type() == CFilter::INTERVAL) // если выбран фильр по интервалу
+                {
+                    int pos_beg = filter.interval().begin;
+                    int pos_end = filter.interval().end;
+
+                    set.message.start      = pos_beg; // устанавливаем номер сообщения с которого будем читать
+                    set.message.read_limit = pos_end - pos_beg; // устанавливаем сообщение до которого будем читать
+                }
+            }
+        }
+
+        if(set.message.start >= 256) // если начальное сообщение находится не в на первой странице
+        {
+            set.shitp_ptr            = (set.message.start%256)*4096; // получаем смещение указателя
+            set.message.read_current = set.message.start%256; // устанавливаем текущее сообщение (для определения перехода указатеяля)
+        }
+
+        setJournalPtrShift(key, set.shitp_ptr);
+
+        m_time_process.start();
+    }
+
+    if(set.message.read_current == 256) // дочитали до конца очередной страницы - переводим указатель
+    {
+        set.shitp_ptr += 4096;
+        set.message.read_current = 0;
+    }
+
+    // адрес = начальное сообщение текущий номер сообщения умножить на количество сообщений в запросе + начальная страница для чтения
+    int addr = (set.message.start - 1)*(set.message.size/2) + set.message.read_current*set.message.read_number +
+                                                                                       set.address.start_page;
+    int msg_count = (((set.message.read_limit - set.message.read_count) >= set.message.read_number)?
+                                                set.message.read_number*(set.message.size/2):
+                                                (set.message.read_limit - set.message.read_count)*(set.message.size/2));
+    qDebug() << msg_count;
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, addr, QVector<quint16>() << msg_count);
+    unit.setProperty(tr("REQUEST"), READ_JOURNAL);
+    unit.setProperty(tr("JOURNAL"), key);
 
     m_modbusDevice->request(unit);
 }
@@ -460,6 +547,21 @@ void ConfiguratorWindow::processReadJournalEvent(bool checked)
 
     journalRead();
 }
+//------------------------------------------------------
+void ConfiguratorWindow::processReadJournals(bool state)
+{
+    Q_UNUSED(state);
+
+    if(!m_active_journal_current) // если активынй журнал не выбран, значит ошибка
+    {
+        QMessageBox::critical(this, tr("Чтение журнала"), tr("Не выбран текущий активный журнал.\nПоробуйте еще раз."));
+        return;
+    }
+
+    QString key = m_active_journal_current->property("TYPE").toString();
+
+    journalReadNew(key);
+}
 //--------------------------------------
 void ConfiguratorWindow::processExport()
 {
@@ -532,7 +634,7 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         displayPurposeResponse(unit);
     else if(type == PURPOSE_INPUT_TYPE)
         displayPurposeDIResponse(unit);
-    else if(type == READ_EVENT_JOURNAL || type == READ_EVENT_COUNT || type == READ_EVENT_SHIFT_PTR)
+    else if(type == READ_JOURNAL || type == READ_JOURNAL_COUNT || type == READ_JOURNAL_SHIFT_PTR)
         processReadJournal(unit);
     else if(type == READ_SERIAL_NUMBER)
         displayDeviceSerialNumber(unit.values());
@@ -1748,6 +1850,11 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalEvent->setTableColumnWidth(length_list);
     ui->widgetJournalHalfHour->setTableColumnWidth(length_list);
     ui->widgetJournalIsolation->setTableColumnWidth(length_list);
+
+    m_journal_set["CRASH"] = journal_set_t({ 0, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
+                                                       journal_message_t({ 1, 0, 0, 0, 0, 256, 0 }), QVector<quint16>()});
+    m_journal_set["EVENT"] = journal_set_t({ 0, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
+                                                       journal_message_t({ 8, 0, 0, 0, 0, 16, 0 }), QVector<quint16>()});
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -2008,12 +2115,6 @@ void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_lis
     if(!dir.exists("log"))
         dir.mkdir("log");
 
-    QFile file1("log/displayJournalResponce.log");
-
-    file1.open(QFile::WriteOnly);
-
-    QTextStream out1(&file1);
-
     for(int i = 0; i < data.count(); i += 16)
     {
         quint16 id = ((data[i + 1] << 8) | data[i]);
@@ -2081,30 +2182,20 @@ void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_lis
             m_journal_read_current->table()->item(row, 1)->setTextAlignment(Qt::AlignCenter);
             m_journal_read_current->table()->item(row, 2)->setTextAlignment(Qt::AlignCenter);
 
-            out1 << i << ": " << m_journal_read_current->table()->item(row, 0)->text() << "\t" <<
-                                m_journal_read_current->table()->item(row, 1)->text() << "\t" <<
-                                m_journal_read_current->table()->item(row, 2)->text() << "\t" <<
-                                m_journal_read_current->table()->item(row, 3)->text() << "\t" <<
-                                m_journal_read_current->table()->item(row, 4)->text() << "\t" <<
-                                m_journal_read_current->table()->item(row, 5)->text() << "\n";
-
             if(m_journal_read_current->header()->stateCheckbox())
                 m_journal_read_current->table()->scrollToBottom();
         }
     }
 
-    m_journal_read_current->header()->setTextDeviceCountMessages(m_journal_parameters.read, m_journal_parameters.total);
+    QString key = m_journal_read_current->property("TYPE").toString();
 
-    QFile file2("log/displayJournalResponce_parameters.log");
-    file2.open(QFile::WriteOnly);
-    QTextStream out2(&file2);
+    if(m_journal_set.find(key) != m_journal_set.end())
+    {
+        int read  = m_journal_set[key].message.read_count;
+        int total = m_journal_set[key].message.read_total;
 
-    out2 << "count = " << m_journal_parameters.count << ", read = " << m_journal_parameters.read << ", shift = " <<
-                          m_journal_parameters.shift << ", start = " << m_journal_parameters.start << ", total = " <<
-                          m_journal_parameters.total << ";\n";
-
-    file2.close();
-    file1.close();
+        m_journal_read_current->header()->setTextDeviceCountMessages(read, total);
+    }
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
@@ -2638,7 +2729,14 @@ void ConfiguratorWindow::filterDialog()
         dEnd   = QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy");
     }
 
-    CFilter::FilterIntervalType tinterval = { m_journal_parameters.total, 0, m_journal_parameters.total };
+    int count = 0;
+
+    if(m_journal_set.find(key) != m_journal_set.end())
+    {
+        count = m_journal_set[key].message.read_total;
+    }
+
+    CFilter::FilterIntervalType tinterval = { count, 0, count };
     CFilter::FilterDateType     tdate     = { dBegin, dEnd };
 
     m_filter[key] = CFilter(tinterval, tdate);
@@ -3170,48 +3268,63 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
 {
     RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
 
-    if(type == READ_EVENT_SHIFT_PTR)
+    QString key = unit.property(tr("JOURNAL")).toString();
+
+    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
+        return;
+
+    journal_set_t& journal_set = m_journal_set[key];
+
+    switch(type)
     {
-        if(unit.valueCount() == 1) // подтверждение записи указателя сдвига
+        case READ_JOURNAL_SHIFT_PTR:
+        break;
+
+        case READ_JOURNAL_COUNT:
+            if(unit.valueCount() == 2)
+            {
+                journal_set.message.read_total = long(long((unit.value(0) << 16)&0xFFFF) | long(unit.value(1)&0xFFFF));
+            }
+        break;
+
+        case READ_JOURNAL:
         {
+            long count = unit.valueCount()/journal_set.message.read_number;
 
+            if(unit.valueCount()*2 < journal_set.message.size) // принятые данные меньше, чем размер одного сообщения
+            {
+                if(journal_set.buffer.isEmpty()) // буфер сообщений пуст
+                {
+                    journal_set.buffer.append(unit.values()); // сохраняем сообщения в буфер
+                }
+                else
+                {
+                    if((unit.valueCount()*2 + journal_set.buffer.count()*2) == journal_set.message.size) // данные приняты полностью
+                    {
+                        break;
+                    }
+                }
+            }
+
+            journal_set.message.read_count   += count;
+            journal_set.message.read_current += count;
+
+            if(!journal_set.buffer.isEmpty())
+                journal_set.buffer.clear();
+
+            displayJournalResponse(unit.values());
+            journalReadNew(key);
         }
-        else if(unit.valueCount() == 2) // получение значения указателя сдвига
-        {
-            qint32 ptr_value = (((unit.value(0) << 16)&0xFFFF) | (unit.value(1)&0xFFFF));
+        break;
 
-            m_journal_parameters.shift = ptr_value;
-        }
-    }
-    else if(type == READ_EVENT_COUNT)
-    {
-        if(unit.valueCount() == 2)
-        {
-            qint32 msg_count = (((unit.value(0) << 16)&0xFFFF) | (unit.value(1)&0xFFFF));
-
-            m_journal_parameters.total = msg_count;
-        }
-    }
-    else if(type == READ_EVENT_JOURNAL)
-    {
-        if(!m_journal_read_current)
-            return;
-
-        if(unit.valueCount() < 8)
-            return;
-
-        m_journal_parameters.start += unit.valueCount()/8; // увеличиваем локальный счетчик прочитанных сообщений
-        m_journal_parameters.read  += unit.valueCount()/8; // увеличиваем глобальный счетчик прочитанных сообщений
-
-        displayJournalResponse(unit.values());
-        journalRead();
+        default: break;
     }
 }
 //-----------------------------------------------
 void ConfiguratorWindow::updateParameterJournal()
 {
     readEventJournalCount();
-    setJournalPtrShift();
+//    setJournalPtrShift();
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
@@ -3238,14 +3351,19 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
         m_active_journal_current = nullptr;
     }
 }
-//-------------------------------------------
-void ConfiguratorWindow::setJournalPtrShift()
+//-----------------------------------------------------------------------
+void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
 {
-    QVector<quint16> values = QVector<quint16>() << (quint16)((m_journal_parameters.shift >> 16)&0xFFFF) <<
-                                                    (quint16)(m_journal_parameters.shift&0xFFFF);
+    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
+        return;
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 0x300C, values);
-    unit.setProperty(tr("REQUEST"), READ_EVENT_SHIFT_PTR);
+    journal_set_t set = m_journal_set[key];
+
+    QVector<quint16> values = QVector<quint16>() << (quint16)((pos >> 16)&0xFFFF) << (quint16)(pos&0xFFFF);
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, set.address.set_shift, values);
+    unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
+    unit.setProperty(tr("JOURNAL"), key);
 
     m_modbusDevice->request(unit);
 }
@@ -3772,20 +3890,44 @@ int ConfiguratorWindow::addressPurposeKey(const QString& key) const
 //-------------------------------------------------
 void ConfiguratorWindow::readShiftPrtEventJournal()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 0x300C, QVector<quint16>() << 2);
+    if(m_journal_set.isEmpty())
+        return;
 
-    unit.setProperty(tr("REQUEST"), READ_EVENT_SHIFT_PTR);
+    for(const QString key: m_journal_set.keys())
+    {
+        journal_set_t set = m_journal_set[key];
 
-    m_modbusDevice->request(unit);
+        CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, set.address.set_shift,
+                                                     QVector<quint16>() << 2);
+
+        unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
+        unit.setProperty(tr("JOURNAL"), key);
+
+        m_modbusDevice->request(unit);
+    }
 }
 //----------------------------------------------
 void ConfiguratorWindow::readEventJournalCount()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 34, QVector<quint16>() << 2);
+    if(m_journal_set.isEmpty())
+        return;
 
-    unit.setProperty(tr("REQUEST"), READ_EVENT_COUNT);
+    for(const QString key: m_journal_set.keys())
+    {
+        journal_set_t set = m_journal_set[key];
 
-    m_modbusDevice->request(unit);
+        CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, set.address.msg_count,
+                                                     QVector<quint16>() << 2);
+        unit.setProperty(tr("REQUEST"), READ_JOURNAL_COUNT);
+        unit.setProperty(tr("JOURNAL"), key);
+
+        m_modbusDevice->request(unit);
+    }
+//    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 34, QVector<quint16>() << 2);
+
+//    unit.setProperty(tr("REQUEST"), READ_EVENT_COUNT);
+
+//    m_modbusDevice->request(unit);
 }
 //---------------------------------------------
 void ConfiguratorWindow::deviceSync(bool state)
@@ -4103,9 +4245,13 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
-    connect(ui->widgetJournalEvent, &CJournalWidget::clickedButtonRead, this, &ConfiguratorWindow::processReadJournalEvent);
+    connect(ui->widgetJournalEvent, &CJournalWidget::clickedButtonRead, this, &ConfiguratorWindow::processReadJournals);
+    connect(ui->widgetJournalCrash, &CJournalWidget::clickedButtonRead, this, &ConfiguratorWindow::processReadJournals);
     connect(ui->widgetJournalEvent->header(), &CHeaderJournal::clickedButtonClear, this, &ConfiguratorWindow::clearJournal);
+    connect(ui->widgetJournalCrash->header(), &CHeaderJournal::clickedButtonClear, this, &ConfiguratorWindow::clearJournal);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->widgetJournalEvent->header(),
+                                                          &CHeaderJournal::stateEnabledButtonReadChanged);
+    connect(m_modbusDevice, &CModbus::connectDeviceState, ui->widgetJournalCrash->header(),
                                                           &CHeaderJournal::stateEnabledButtonReadChanged);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
