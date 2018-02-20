@@ -5,20 +5,6 @@ CDataUnitType::CDataUnitType():
 {
     
 }
-//-------------------------------------------
-CDataUnitType::CDataUnitType(quint8 slaveID):
-    m_slaveID(slaveID),
-    m_error(NO_DEVICE_ERROR)
-{
-    m_slaveID = slaveID;
-}
-//----------------------------------------------
-CDataUnitType::CDataUnitType(FunctionType type):
-    m_type(type),
-    m_error(NO_DEVICE_ERROR)
-{
-    m_type = type;
-}
 //----------------------------------------------------------------------------
 CDataUnitType::CDataUnitType(quint8 slaveID, CDataUnitType::FunctionType type, 
                              uint16_t address, QVector<quint16> values):

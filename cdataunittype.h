@@ -36,8 +36,6 @@
             
         public:
             CDataUnitType();
-            CDataUnitType(quint8 slaveID);
-            CDataUnitType(FunctionType type);
             CDataUnitType(quint8 slaveID, FunctionType type, uint16_t address, 
                           QVector<quint16> values);
             

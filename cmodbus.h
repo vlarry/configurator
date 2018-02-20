@@ -28,6 +28,7 @@
             QSerialPort::StopBits stopbits() const;
             QSerialPort::Parity   parity() const;
             
+            void     removeRequest(const QString& key, const QString& value);
             quint32  requestQueueCount() const;
             bool     is_open() const;
             quint16  timeoutRepeat() const;

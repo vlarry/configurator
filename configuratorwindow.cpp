@@ -328,14 +328,17 @@ void ConfiguratorWindow::journalReadNew(const QString& key)
 
     journal_set_t& set = m_journal_set[key];
 
-    if(set.isStart && set.message.read_limit == set.message.read_count)
+    if((set.isStart && set.message.read_limit == set.message.read_count) || (set.isStart && set.isStop))
     {
         m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
         m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
 
+        emit m_journal_read_current->header()->stateButtonReadChanged(false);
+
         m_journal_read_current = nullptr;
 
         set.isStart = false;
+        set.isStop  = false;
 
         return;
     }
@@ -352,11 +355,11 @@ void ConfiguratorWindow::journalReadNew(const QString& key)
         m_journal_read_current->header()->setTextDeviceCountMessages(0, set.message.read_total);
 
         set.isStart = true;
-        set.shitp_ptr = 0;
+        set.shift_ptr = 0;
         set.buffer.clear();
         set.message.read_count = 0;
         set.message.read_current = 0;
-        set.message.start = 0;
+        set.message.read_start = 0;
         set.message.read_limit = set.message.read_total;
 
         if(m_filter.find(key) != m_filter.end()) // если фильтр журнала существует
@@ -370,38 +373,56 @@ void ConfiguratorWindow::journalReadNew(const QString& key)
                     int pos_beg = filter.interval().begin;
                     int pos_end = filter.interval().end;
 
-                    set.message.start      = pos_beg; // устанавливаем номер сообщения с которого будем читать
+                    set.message.read_start = pos_beg; // устанавливаем номер сообщения с которого будем читать
                     set.message.read_limit = pos_end - pos_beg; // устанавливаем сообщение до которого будем читать
                 }
             }
         }
 
-        if(set.message.start >= 256) // если начальное сообщение находится не в на первой странице
+        if(set.message.read_start >= 256) // если начальное сообщение находится не в на первой странице
         {
-            set.shitp_ptr            = (set.message.start%256)*4096; // получаем смещение указателя
-            set.message.read_current = set.message.start%256; // устанавливаем текущее сообщение (для определения перехода указатеяля)
+            set.shift_ptr            = (set.message.read_start/256)*4096; // получаем смещение указателя
+            set.message.read_current = set.message.read_start%256; // устанавливаем текущее сообщение (для определения перехода указатеяля)
         }
 
-        setJournalPtrShift(key, set.shitp_ptr);
+        setJournalPtrShift(key, set.shift_ptr);
 
         m_time_process.start();
     }
 
     if(set.message.read_current == 256) // дочитали до конца очередной страницы - переводим указатель
     {
-        set.shitp_ptr += 4096;
+        set.shift_ptr += 4096;
         set.message.read_current = 0;
+
+        setJournalPtrShift(key, set.shift_ptr);
     }
 
-    // адрес = начальное сообщение текущий номер сообщения умножить на количество сообщений в запросе + начальная страница для чтения
-    int addr = (set.message.start - 1)*(set.message.size/2) + set.message.read_current*set.message.read_number +
-                                                                                       set.address.start_page;
-    int msg_count = (((set.message.read_limit - set.message.read_count) >= set.message.read_number)?
-                                                set.message.read_number*(set.message.size/2):
-                                                (set.message.read_limit - set.message.read_count)*(set.message.size/2));
-    qDebug() << msg_count;
+    // Расчет адреса
+    int request_size = set.message.read_number*set.message.size;
+    int msg_size     = (((set.message.read_limit - set.message.read_count) >= set.message.read_number)?request_size/2:
+                         (set.message.read_limit - set.message.read_count)*(set.message.size/2));
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, addr, QVector<quint16>() << msg_count);
+    if(request_size > 250) // максимальный размер сообщения 255 байт, и из них 5 байт накладные расходы
+    {
+        if(set.msg_part == 0) // если это первая часть сообщения, то
+            set.msg_part = msg_size/2; // сохраняем размер отправляемого сообщения
+        else // если это оставшаяся часть сообщения
+        {
+            msg_size -= set.msg_part; // получаем остаток
+            set.msg_part = 0; // обнуляем переменную в которой хранится размер отправленного сообщения
+        }
+    }
+
+    // Расчет адреса
+    int address = set.message.read_current*set.message.read_number + set.address.start_page;
+
+    if(set.msg_part != 0 && !set.buffer.isEmpty())
+    {
+        address += set.msg_part*2;
+    }
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, address, QVector<quint16>() << msg_size);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
     unit.setProperty(tr("JOURNAL"), key);
 
@@ -559,6 +580,20 @@ void ConfiguratorWindow::processReadJournals(bool state)
     }
 
     QString key = m_active_journal_current->property("TYPE").toString();
+
+    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
+    {
+        return;
+    }
+
+    if(!state)
+    {
+        journal_set_t& set = m_journal_set[key];
+
+        m_modbusDevice->removeRequest(tr("JOURNAL"), key);
+
+        set.isStop = true;
+    }
 
     journalReadNew(key);
 }
@@ -1372,46 +1407,46 @@ void ConfiguratorWindow::versionSowftware()
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
 {
-    itemSettings   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    itemJournals   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    itemMeasures   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    itemMonitoring = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    QTreeWidgetItem* itemSettings   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    QTreeWidgetItem* itemJournals   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    QTreeWidgetItem* itemMeasures   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    QTreeWidgetItem* itemMonitoring = new QTreeWidgetItem(ui->treewgtDeviceMenu);
 
-    itemSetInputAnalogs     = new QTreeWidgetItem(itemSettings);
-    itemSetProtections      = new QTreeWidgetItem(itemSettings);
-    itemSetDevConnections   = new QTreeWidgetItem(itemSettings);
-    itemSetAutomation       = new QTreeWidgetItem(itemSettings);
-    itemSetLedPurpose       = new QTreeWidgetItem(itemSettings);
-    itemSetDiscretInPurpose = new QTreeWidgetItem(itemSettings);
-    itemSetRelayPurpose     = new QTreeWidgetItem(itemSettings);
-    itemSetKeyboardPurpose  = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetInputAnalogs     = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetProtections      = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetDevConnections   = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetAutomation       = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetLedPurpose       = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetDiscretInPurpose = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetRelayPurpose     = new QTreeWidgetItem(itemSettings);
+    QTreeWidgetItem* itemSetKeyboardPurpose  = new QTreeWidgetItem(itemSettings);
 
-    itemJournalCrashs    = new QTreeWidgetItem(itemJournals);
-    itemJournalEvents    = new QTreeWidgetItem(itemJournals);
-    itemJournalHalfHour  = new QTreeWidgetItem(itemJournals);
-    itemJournalIsolation = new QTreeWidgetItem(itemJournals);
-    itemJournalOscill    = new QTreeWidgetItem(itemJournals);
+    QTreeWidgetItem* itemJournalCrashs    = new QTreeWidgetItem(itemJournals);
+    QTreeWidgetItem* itemJournalEvents    = new QTreeWidgetItem(itemJournals);
+    QTreeWidgetItem* itemJournalHalfHour  = new QTreeWidgetItem(itemJournals);
+    QTreeWidgetItem* itemJournalIsolation = new QTreeWidgetItem(itemJournals);
+    QTreeWidgetItem* itemJournalOscill    = new QTreeWidgetItem(itemJournals);
 
-    itemMeasPrimaryValues   = new QTreeWidgetItem(itemMeasures);
-    itemMeasSecondaryValues = new QTreeWidgetItem(itemMeasures);
-    itemMeasPowerElectric   = new QTreeWidgetItem(itemMeasures);
+    QTreeWidgetItem* itemMeasPrimaryValues   = new QTreeWidgetItem(itemMeasures);
+    QTreeWidgetItem* itemMeasSecondaryValues = new QTreeWidgetItem(itemMeasures);
+    QTreeWidgetItem* itemMeasPowerElectric   = new QTreeWidgetItem(itemMeasures);
 
-    itemMonitorInputDiscrets  = new QTreeWidgetItem(itemMonitoring);
-    itemMonitorOutputDiscrets = new QTreeWidgetItem(itemMonitoring);
+    QTreeWidgetItem* itemMonitorInputDiscrets  = new QTreeWidgetItem(itemMonitoring);
+    QTreeWidgetItem* itemMonitorOutputDiscrets = new QTreeWidgetItem(itemMonitoring);
 
-    itemInAnalogMain        = new QTreeWidgetItem(itemSetInputAnalogs);
-    itemInAnalogCalibration = new QTreeWidgetItem(itemSetInputAnalogs);
+    QTreeWidgetItem* itemInAnalogMain        = new QTreeWidgetItem(itemSetInputAnalogs);
+    QTreeWidgetItem* itemInAnalogCalibration = new QTreeWidgetItem(itemSetInputAnalogs);
 
-    itemProtectCurrentMax  = new QTreeWidgetItem(itemSetProtections);
-    itemProtectEarthy      = new QTreeWidgetItem(itemSetProtections);
-    itemProtectPower       = new QTreeWidgetItem(itemSetProtections);
-    itemProtectMotor       = new QTreeWidgetItem(itemSetProtections);
-    itemProtectFrequency   = new QTreeWidgetItem(itemSetProtections);
-    itemProtectExternal    = new QTreeWidgetItem(itemSetProtections);
-    itemProtectTemperature = new QTreeWidgetItem(itemSetProtections);
-    itemProtectLevel       = new QTreeWidgetItem(itemSetProtections);
-    itemProtectBRU         = new QTreeWidgetItem(itemSetProtections);
-    itemProtectVacuum      = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectCurrentMax  = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectEarthy      = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectPower       = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectMotor       = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectFrequency   = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectExternal    = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectTemperature = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectLevel       = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectBRU         = new QTreeWidgetItem(itemSetProtections);
+    QTreeWidgetItem* itemProtectVacuum      = new QTreeWidgetItem(itemSetProtections);
 
     itemSettings->setText(0, tr("Настройки"));
     itemJournals->setText(0, tr("Журналы"));
@@ -1851,10 +1886,10 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalHalfHour->setTableColumnWidth(length_list);
     ui->widgetJournalIsolation->setTableColumnWidth(length_list);
 
-    m_journal_set["CRASH"] = journal_set_t({ 0, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
-                                                       journal_message_t({ 1, 0, 0, 0, 0, 256, 0 }), QVector<quint16>()});
-    m_journal_set["EVENT"] = journal_set_t({ 0, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
-                                                       journal_message_t({ 8, 0, 0, 0, 0, 16, 0 }), QVector<quint16>()});
+    m_journal_set["CRASH"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
+                                                                 journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
+    m_journal_set["EVENT"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
+                                                                 journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -2126,14 +2161,14 @@ void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_lis
         quint8 month = ((data[i + 2]&0x03) << 2) | ((data[i + 3]&0xC0) >> 6);
         quint8 day   = ((data[i + 3]&0x3E) >> 1);
 
-        quint8 hour    = ((data[i + 3]&0x01) << 4) | ((data[i + 4]&0xF0) >> 4);
-        quint8 minute  = ((data[i + 4]&0x0F) << 2) | ((data[i + 5]&0xC0) >> 6);
-        quint8 second  = (data[i + 5]&0x3F);
-        quint8 msecond = data[i + 6];
+        quint8  hour    = ((data[i + 3]&0x01) << 4) | ((data[i + 4]&0xF0) >> 4);
+        quint8  minute  = ((data[i + 4]&0x0F) << 2) | ((data[i + 5]&0xC0) >> 6);
+        quint8  second  = (data[i + 5]&0x3F);
+        quint16 msecond = quint16(data[i + 6]*3.90625f); // перевод 256 долей секунды в мс, т.е. 1000/256 = 3.90625
 
         quint8  type_event      = data[i + 7];
         quint8  category_event  = data[i + 8];
-        quint16 parameter_event = data[i + 9] | data[i + 10] << 8;
+        quint16 parameter_event = data[i + 9] | (data[i + 10] << 8);
 
         QDate d(year, month, day);
         QTime t(hour, minute, second);

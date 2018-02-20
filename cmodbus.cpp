@@ -95,6 +95,23 @@ QSerialPort::Parity CModbus::parity() const
 {
     return m_parity;
 }
+//-------------------------------------------------------------------
+void CModbus::removeRequest(const QString& key, const QString& value)
+{
+    if(m_request_cur.property(key).toString() == value)
+        m_request_cur = CDataUnitType();
+
+    if(m_request_queue.isEmpty())
+        return;
+
+    for(auto it = m_request_queue.begin(); it != m_request_queue.end(); ++it)
+    {
+        if(it->property(key).toInt() == value)
+        {
+            delete it;
+        }
+    }
+}
 //----------------------------------------
 quint32 CModbus::requestQueueCount() const
 {

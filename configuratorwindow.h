@@ -156,8 +156,8 @@
                 long read_limit;   // сообщение до которого читаем (по умолчанию последнее, но изменяется фильром)
                 long read_total;   // всего сообщений доступных для чтения
                 long read_current; // текущее читаемое сообщение
+                long read_start;   // сообщение с которого начинается чтение
                 long size;         // размер одного сообщения
-                long start;        // сообщение с которого начинается чтение
             };
             /*!
              * \brief The journal_set struct
@@ -166,17 +166,19 @@
              */
             struct journal_set_t
             {
-                long              shitp_ptr; // текущее положение указателя сдвига
+                long              shift_ptr; // текущее положение указателя сдвига
+                long              msg_part;
                 bool              isStart;   // чтение первого сообщения
+                bool              isStop;    // останвка чтения сообщений
                 journal_address_t address;
-                journal_message_t message;
+                journal_message_t message; 
                 QVector<quint16>  buffer;    // буфер сообщений
             };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
             typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;
-            //---------------------------------key, addres, widget name------------------------------
-            typedef QVector<QPair<QString, QPair<int, QString> > >                            cell_t;
+            //-------------------key, addres, widget name-----------------
+            typedef QVector<QPair<QString, QPair<int, QString> > > cell_t;
 
         public:
             explicit ConfiguratorWindow(QWidget* parent = Q_NULLPTR);
@@ -318,75 +320,40 @@
             DeviceMenuIndexType menuIndex();
             
         private:
-            Ui::ConfiguratorWindow*    ui;
-            CModbus*                   m_modbusDevice;
-            CSerialPortSetting*        m_serialPortSettings;
-            QPanel*                    m_calculateWidget;
-            CTerminal*                 m_terminal;
-            QFile*                     m_logFile;
-            QTimer*                    m_tim_calculate;
-            QButtonGroup*              m_protect_mtz_group;
-            QButtonGroup*              m_protect_earthly_group;
-            QButtonGroup*              m_protect_power_group;
-            QButtonGroup*              m_protect_motor_group;
-            QButtonGroup*              m_protect_frequency_group;
-            QButtonGroup*              m_protect_external_group;
-            QButtonGroup*              m_protect_temperature_group;
-            QButtonGroup*              m_protect_level_group;
-            QButtonGroup*              m_switch_device_group;
-            QButtonGroup*              m_additional_group;
-            CVersionSoftware*          m_versionWidget;
-            QSqlDatabase               m_system_db;
-            cell_t                     m_cell_list;
-            purpose_t                  m_purpose_list;
-            QVector<event_t>           m_event_list; // список событий (вычитаны из БД)
-            event_journal_t            m_journal_parameters;
-            QVector<CColumn::column_t> m_variables;
-            QTime                      m_time_process;
-            QTimer                     m_sync_timer;
-            CStatusBar*                m_status_bar;
-            QMap<int, QString>         m_device_code_list;
-            QFutureWatcher<void>*      m_watcher;
-            CProgressBarWidget*        m_progressbar;
-            QSettings*                 m_settings;
-            QMap<QString, CFilter>     m_filter;
-            const CJournalWidget*      m_active_journal_current; // текущий активный журнал
-            const CJournalWidget*      m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
+            Ui::ConfiguratorWindow*      ui;
+            CModbus*                     m_modbusDevice;
+            CSerialPortSetting*          m_serialPortSettings;
+            QPanel*                      m_calculateWidget;
+            CTerminal*                   m_terminal;
+            QFile*                       m_logFile;
+            QTimer*                      m_tim_calculate;
+            QButtonGroup*                m_protect_mtz_group;
+            QButtonGroup*                m_protect_earthly_group;
+            QButtonGroup*                m_protect_power_group;
+            QButtonGroup*                m_protect_motor_group;
+            QButtonGroup*                m_protect_frequency_group;
+            QButtonGroup*                m_protect_external_group;
+            QButtonGroup*                m_protect_temperature_group;
+            QButtonGroup*                m_protect_level_group;
+            QButtonGroup*                m_switch_device_group;
+            QButtonGroup*                m_additional_group;
+            CVersionSoftware*            m_versionWidget;
+            QSqlDatabase                 m_system_db;
+            cell_t                       m_cell_list;
+            purpose_t                    m_purpose_list;
+            QVector<event_t>             m_event_list; // список событий (вычитаны из БД)
+            event_journal_t              m_journal_parameters;
+            QVector<CColumn::column_t>   m_variables;
+            QTime                        m_time_process;
+            QTimer                       m_sync_timer;
+            CStatusBar*                  m_status_bar;
+            QMap<int, QString>           m_device_code_list;
+            QFutureWatcher<void>*        m_watcher;
+            CProgressBarWidget*          m_progressbar;
+            QSettings*                   m_settings;
+            QMap<QString, CFilter>       m_filter;
+            const CJournalWidget*        m_active_journal_current; // текущий активный журнал
+            const CJournalWidget*        m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
             QMap<QString, journal_set_t> m_journal_set; // установки журналов
-
-            QTreeWidgetItem* itemSettings;
-            QTreeWidgetItem* itemJournals;
-            QTreeWidgetItem* itemMeasures;
-            QTreeWidgetItem* itemMonitoring;
-            QTreeWidgetItem* itemSetInputAnalogs;
-            QTreeWidgetItem* itemSetProtections;
-            QTreeWidgetItem* itemSetDevConnections;
-            QTreeWidgetItem* itemSetAutomation;
-            QTreeWidgetItem* itemJournalCrashs;
-            QTreeWidgetItem* itemJournalEvents;
-            QTreeWidgetItem* itemJournalHalfHour;
-            QTreeWidgetItem* itemJournalIsolation;
-            QTreeWidgetItem* itemJournalOscill;
-            QTreeWidgetItem* itemMeasPrimaryValues;
-            QTreeWidgetItem* itemMeasSecondaryValues;
-            QTreeWidgetItem* itemMeasPowerElectric;
-            QTreeWidgetItem* itemMonitorInputDiscrets;
-            QTreeWidgetItem* itemMonitorOutputDiscrets;
-            QTreeWidgetItem* itemInAnalogMain;
-            QTreeWidgetItem* itemInAnalogCalibration;
-            QTreeWidgetItem* itemProtectCurrentMax;
-            QTreeWidgetItem* itemProtectEarthy;
-            QTreeWidgetItem* itemProtectPower;
-            QTreeWidgetItem* itemProtectMotor;
-            QTreeWidgetItem* itemProtectFrequency;
-            QTreeWidgetItem* itemProtectExternal;
-            QTreeWidgetItem* itemProtectTemperature;
-            QTreeWidgetItem* itemProtectLevel;
-            QTreeWidgetItem* itemProtectBRU;
-            QTreeWidgetItem* itemProtectVacuum;
-            QTreeWidgetItem* itemSetLedPurpose;
-            QTreeWidgetItem* itemSetDiscretInPurpose;
-            QTreeWidgetItem* itemSetRelayPurpose;
-            QTreeWidgetItem* itemSetKeyboardPurpose;
     };
 #endif // CONFIGURATORWINDOW_H
