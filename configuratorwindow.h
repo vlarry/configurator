@@ -190,8 +190,7 @@
             void refreshSerialPort();
             void serialPortSettings();
             void calculateRead(); // запрос расчетных величин
-            void journalRead();
-            void journalReadNew(const QString& key);
+            void journalRead(const QString& key);
             void inAnalogRead();
             void inAnalogWrite();
             void controlStateRead();
@@ -216,7 +215,6 @@
             void protectionBruSetWrite();
             void protectionVacuumSetRead();
             void protectionVacuumSetWrite();
-            void processReadJournalEvent(bool checked);
             void processReadJournals(bool state);
             void processExport();
             void processImport();

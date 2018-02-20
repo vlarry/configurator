@@ -208,120 +208,8 @@ void ConfiguratorWindow::calculateRead()
 
     m_modbusDevice->request(unit);
 }
-//------------------------------------
-void ConfiguratorWindow::journalRead()
-{
-    if(m_journal_parameters.start != -1 && m_journal_parameters.count == m_journal_parameters.read)
-    {
-        // если это не первый вызов метода чтения и количество прочитанных сообщений равно общему числу сообщений,
-        // которое необходимо получить, то значит все события вычитаны и мы обнуляем счетчики
-        m_journal_parameters.start = -1;
-        m_journal_parameters.read  = 0;
-        m_journal_parameters.count = 0;
-        m_journal_parameters.shift = 0;
-
-        m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
-        m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
-//        m_journal_read_current->table()->sortByColumn(1, Qt::AscendingOrder);
-//        m_journal_read_current->table()->setSortingEnabled(true);
-
-        if(m_journal_read_current)
-            emit m_journal_read_current->header()->stateButtonReadOff();
-
-        m_journal_read_current = nullptr;
-
-        updateParameterJournal();
-
-        return;
-    }
-
-    if(m_journal_parameters.start == -1) // первый вызов - инициализация переменных
-    {
-        if(!m_active_journal_current) // если активынй журнал не выбран, значит ошибка
-        {
-            QMessageBox::critical(this, tr("Чтение журнала"), tr("Не выбран текущий активный журнал.\nПоробуйте еще раз."));
-            return;
-        }
-
-        m_journal_read_current = m_active_journal_current; // устанавливаем текущий активный журнал текущим журналом чтения
-
-        QString journal_type = m_journal_read_current->property("TYPE").toString();
-
-        if(!m_journal_read_current || journal_type.isEmpty())
-            return;
-
-        if(m_journal_read_current->table()->rowCount() > 0)
-            clearJournal();
-
-        m_journal_read_current->header()->setTextDeviceCountMessages(0, m_journal_parameters.total);
-
-        m_time_process.start();
-
-        CFilter filter;
-
-        if(m_filter.find(journal_type) != m_filter.end())
-        {
-            filter = m_filter[journal_type];
-        }
-
-        if(filter) // вкладка с выбором интервала активана
-        {
-            if(filter.type() == CFilter::INTERVAL) // выбран режим счтитывания по интервалу
-            {
-                m_journal_parameters.start = filter.interval().begin;
-                m_journal_parameters.count = filter.interval().end - filter.interval().begin;
-            }
-//            else if(filter.type() == CFilter::DATE) // выбран режим считывания по календарю
-//            {
-
-//            }
-
-            if(m_journal_parameters.start >= 256) // если начальная точка больше или равна размеру сектора (256*16=4096)
-            {
-                int part = m_journal_parameters.start/256; // получаем номер текущего сектора
-                m_journal_parameters.shift = part*4096; // сохраняем новое значение указателя на текущий сектор
-            }
-
-//            setJournalPtrShift(); // вызываем метод перевода сектора
-
-            m_journal_parameters.start %= 256; // получаем остаток для сохранения текущего события
-        }
-        else
-        {
-            m_journal_parameters.start = 0;
-            m_journal_parameters.count = m_journal_parameters.total;
-
-            if(m_journal_parameters.shift != 0)
-            {
-                m_journal_parameters.shift = 0;
-
-//                setJournalPtrShift();
-            }
-        }
-    }
-
-    if(m_journal_parameters.start == 256) // прочитали до конца очередного сектора - переводим указатель
-    {
-        m_journal_parameters.shift += 4096;
-        m_journal_parameters.start  = 0;
-
-//        setJournalPtrShift();
-    }
-
-    int addr = m_journal_parameters.start*8 + 4096; // 8 - количество ячеек на событие, т.е. размер события 16 байт
-                                                         // 4096 смещение регистра для получения начальной страницы событий
-    int var_count = (((m_journal_parameters.count - m_journal_parameters.read) >= 8)?64:
-                      (m_journal_parameters.count - m_journal_parameters.read)*8); // 64/8 = 8 событий в запросе
-                                                         // если осталось больше или равно 8ми событий иначе считаем количество
-                                                         // событий из разницы общего их количества и прочитанного
-
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, addr, QVector<quint16>() << var_count);
-    unit.setProperty(tr("REQUEST"), READ_EVENT_JOURNAL);
-
-    m_modbusDevice->request(unit);
-}
-//---------------------------------------------------------
-void ConfiguratorWindow::journalReadNew(const QString& key)
+//------------------------------------------------------
+void ConfiguratorWindow::journalRead(const QString& key)
 {
     if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
         return;
@@ -548,26 +436,6 @@ void ConfiguratorWindow::protectionVacuumSetWrite()
 {
     sendSettingWriteRequest(tr("M91"), tr("X23"));
 }
-//------------------------------------------------------------
-void ConfiguratorWindow::processReadJournalEvent(bool checked)
-{
-    if(!checked)
-    {
-        m_journal_parameters.start = -1;
-        m_journal_parameters.read  = 0;
-        m_journal_parameters.count = 0;
-        m_journal_parameters.shift = 0;
-
-        if(m_journal_read_current)
-            emit m_journal_read_current->header()->stateButtonReadOff();
-
-        m_journal_read_current = nullptr;
-
-        return;
-    }
-
-    journalRead();
-}
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
 {
@@ -595,7 +463,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
         set.isStop = true;
     }
 
-    journalReadNew(key);
+    journalRead(key);
 }
 //--------------------------------------
 void ConfiguratorWindow::processExport()
@@ -1199,7 +1067,6 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case 15: // чтение журнала событий
-//            eventJournalRead();
         break;
 
         case 16:
@@ -3348,7 +3215,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
                 journal_set.buffer.clear();
 
             displayJournalResponse(unit.values());
-            journalReadNew(key);
+            journalRead(key);
         }
         break;
 

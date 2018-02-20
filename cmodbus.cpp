@@ -98,19 +98,25 @@ QSerialPort::Parity CModbus::parity() const
 //-------------------------------------------------------------------
 void CModbus::removeRequest(const QString& key, const QString& value)
 {
+    block();
+
     if(m_request_cur.property(key).toString() == value)
         m_request_cur = CDataUnitType();
 
     if(m_request_queue.isEmpty())
         return;
 
-    for(auto it = m_request_queue.begin(); it != m_request_queue.end(); ++it)
+    QMutableVectorIterator<CDataUnitType> it(m_request_queue);
+
+    while(it.hasNext())
     {
-        if(it->property(key).toInt() == value)
-        {
-            delete it;
-        }
+        QString val = it.next().property(key).toString();
+
+        if(val == value)
+            it.remove();
     }
+
+    unblock();
 }
 //----------------------------------------
 quint32 CModbus::requestQueueCount() const
@@ -350,7 +356,7 @@ void CModbus::readyRead()
         error += tr("Запрос: ") + func_type_str + tr(" (") + m_request_cur.property(tr("FIRST")).toString() + tr(", ") +
                                                              m_request_cur.property(tr("LAST")).toString() + tr(").");
         
-        emit errorDevice(error);
+//        emit errorDevice(error);
         emit infoLog(error + QString("\n"));
         
         unblock();
