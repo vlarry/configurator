@@ -54,12 +54,18 @@
             quint8                  valueCount() const;
             
             bool                    is_empty() const;
+            bool                    is_valid() const;
 
             void                     setProperty(const QString& key, QVariant value);
             void                     setProperties(QMap<QString, QVariant> &properties);
             void                     serErrorCode(quint16 code);
             QVariant                 property(const QString& key) const;
             QMap<QString, QVariant>& properties();
+
+            operator bool() const
+            {
+                return m_ok;
+            }
 
         private:
             QString errorToString(quint16 code);
@@ -71,5 +77,6 @@
             QVector<quint16>        m_values;
             QMap<QString, QVariant> m_properties;
             quint16                 m_error;
+            bool                    m_ok; // true - unit является валидным
     };
 #endif // CDATAUNITTYPE_H

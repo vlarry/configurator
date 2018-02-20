@@ -28,6 +28,7 @@
             QSerialPort::StopBits stopbits() const;
             QSerialPort::Parity   parity() const;
             
+            void     clearQueueRequest();
             void     removeRequest(const QString& key, const QString& value);
             quint32  requestQueueCount() const;
             bool     is_open() const;
@@ -35,8 +36,7 @@
             quint8   requestCountRepeat() const;
             void     setTimeoutRepeat(quint16 newTimeout);
             void     setRequestCountRepeat(quint8 newCount);
-            
-            quint32 sizeQueue() const;
+            quint32  sizeQueue() const;
             
         signals:
             void errorDevice(const QString&);

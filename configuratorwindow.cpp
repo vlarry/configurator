@@ -77,7 +77,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
         m_status_bar->setStatusMessage(tr("Ошибка. Невозможно открыть log-файл"));
     }
     else
-        m_logFile->write(tr("Запуск программы...").toStdString().c_str());
+        saveLog(tr("Запуск программы..."));
 
     refreshSerialPort();
 }
@@ -94,11 +94,9 @@ ConfiguratorWindow::~ConfiguratorWindow()
 
     if(m_logFile)
     {
-        if(m_logFile->isOpen())
-        {
-            m_logFile->write("Завершение работы программы...\n\n");
-            m_logFile->close();
-        }
+        saveLog(tr("Завершение работы программы."));
+
+        m_logFile->close();
     }
 
     if(m_system_db.isOpen())
@@ -286,28 +284,34 @@ void ConfiguratorWindow::journalRead(const QString& key)
         setJournalPtrShift(key, set.shift_ptr);
     }
 
-    // Расчет адреса
+    // Расчет размера сообещния
     int request_size = set.message.read_number*set.message.size;
-    int msg_size     = (((set.message.read_limit - set.message.read_count) >= set.message.read_number)?request_size/2:
-                         (set.message.read_limit - set.message.read_count)*(set.message.size/2));
+    int msg_size     = 0;
 
-    if(request_size > 250) // максимальный размер сообщения 255 байт, и из них 5 байт накладные расходы
+    if(request_size > 250) // размер запроса превышает 250 байт (максимальный размер запроса 250 байт + 5 байт накладные расходы
     {
-        if(set.msg_part == 0) // если это первая часть сообщения, то
-            set.msg_part = msg_size/2; // сохраняем размер отправляемого сообщения
-        else // если это оставшаяся часть сообщения
+        if(!set.buffer.isEmpty()) // буфер данных не пустой
         {
-            msg_size -= set.msg_part; // получаем остаток
-            set.msg_part = 0; // обнуляем переменную в которой хранится размер отправленного сообщения
+            msg_size = request_size/2 - set.msg_part; // высчитываем разницу между отправленными данными и оставшимися
         }
+        else
+        {
+            msg_size = request_size/4; // запрос делится на две части (делитель 4, т.к. request_size в байтах, а запрос в двухбайтовых
+            set.msg_part = msg_size; // размер запроса заносится в переменную, которая хранит размеры частей запроса
+        }
+    }
+    else // иначе отправляем одним запросом
+    {
+        msg_size = (((set.message.read_limit - set.message.read_count) >= set.message.read_number)?request_size/2:
+                     (set.message.read_limit - set.message.read_count)*(set.message.size/2));
     }
 
     // Расчет адреса
     int address = set.message.read_current*set.message.read_number + set.address.start_page;
 
-    if(set.msg_part != 0 && !set.buffer.isEmpty())
+    if(set.msg_part > 0 && set.buffer.count() > 0) // размер части запроса не равен нулю и буфер хранящий часть ответа не пустой
     {
-        address += set.msg_part*2;
+        address += set.msg_part;
     }
 
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, address, QVector<quint16>() << msg_size);
@@ -458,7 +462,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
     {
         journal_set_t& set = m_journal_set[key];
 
-        m_modbusDevice->removeRequest(tr("JOURNAL"), key);
+        m_modbusDevice->clearQueueRequest();
 
         set.isStop = true;
     }
@@ -517,7 +521,7 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     if(unit.is_empty())
         return;
 
-    emit m_modbusDevice->infoLog(tr("Получен ответ: ") + QString::number(unit.valueCount()) + tr(" байт \n"));
+//    emit m_modbusDevice->infoLog(tr("Получен ответ: ") + QString::number(unit.valueCount()) + tr(" байт \n"));
 
     quint16 error = unit.error();
 
@@ -843,7 +847,10 @@ void ConfiguratorWindow::saveLog(const QString& info)
 {
     if(m_logFile->isOpen())
     {
-        m_logFile->write(info.toStdString().c_str());
+        QDateTime dt = QDateTime::currentDateTime();
+
+        QString str = QString("[%1] - %3\n").arg(dt.toString("dd.MM.yyyy - hh.mm.ss")).arg(info);
+        m_logFile->write(str.toStdString().c_str());
     }
 }
 //------------------------------------------------------------------
@@ -1996,8 +2003,8 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 
     model->updateData();
 }
-//--------------------------------------------------------------------------------
-void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_list)
+//-------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& data_list)
 {
     if(!m_journal_read_current)
     {
@@ -2011,11 +2018,6 @@ void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_lis
         data << (quint8)((data_list[i] >> 8)&0x00FF);
         data << (quint8)(data_list[i]&0x00FF);
     }
-
-    QDir dir;
-
-    if(!dir.exists("log"))
-        dir.mkdir("log");
 
     for(int i = 0; i < data.count(); i += 16)
     {
@@ -2088,6 +2090,22 @@ void ConfiguratorWindow::displayJournalResponse(const QVector<quint16>& data_lis
                 m_journal_read_current->table()->scrollToBottom();
         }
     }
+
+    QString key = m_journal_read_current->property("TYPE").toString();
+
+    if(m_journal_set.find(key) != m_journal_set.end())
+    {
+        int read  = m_journal_set[key].message.read_count;
+        int total = m_journal_set[key].message.read_total;
+
+        m_journal_read_current->header()->setTextDeviceCountMessages(read, total);
+    }
+}
+//-------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayCrashJournalResponse(const QVector<quint16>& data_list)
+{
+    if(!m_journal_read_current)
+        return;
 
     QString key = m_journal_read_current->property("TYPE").toString();
 
@@ -3175,7 +3193,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
     if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
         return;
 
-    journal_set_t& journal_set = m_journal_set[key];
+    journal_set_t& set = m_journal_set[key];
 
     switch(type)
     {
@@ -3185,36 +3203,46 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         case READ_JOURNAL_COUNT:
             if(unit.valueCount() == 2)
             {
-                journal_set.message.read_total = long(long((unit.value(0) << 16)&0xFFFF) | long(unit.value(1)&0xFFFF));
+                set.message.read_total = long(long((unit.value(0) << 16)&0xFFFF) | long(unit.value(1)&0xFFFF));
             }
         break;
 
         case READ_JOURNAL:
         {
-            long count = unit.valueCount()/journal_set.message.read_number;
+            QVector<quint16> data = unit.values();
 
-            if(unit.valueCount()*2 < journal_set.message.size) // принятые данные меньше, чем размер одного сообщения
+            if(unit.valueCount()*2 < set.message.size) // принятые данные меньше, чем размер одного сообщения
             {
-                if(journal_set.buffer.isEmpty()) // буфер сообщений пуст
+                if(set.buffer.isEmpty()) // буфер сообщений пуст
                 {
-                    journal_set.buffer.append(unit.values()); // сохраняем сообщения в буфер
+                    set.buffer.append(unit.values()); // сохраняем сообщения в буфер
+                    journalRead(key);
+
+                    return;
                 }
                 else
                 {
-                    if((unit.valueCount()*2 + journal_set.buffer.count()*2) == journal_set.message.size) // данные приняты полностью
+                    if((unit.valueCount()*2 + set.buffer.count()*2) == set.message.size) // данные приняты полностью
                     {
-                        break;
+                        data = set.buffer;
+                        data.append(unit.values());
+
+                        set.buffer.clear(); // чистим буфер
+                        set.msg_part = 0; // обнуляем счетчик частей
                     }
                 }
             }
 
-            journal_set.message.read_count   += count;
-            journal_set.message.read_current += count;
+            long count = data.count()/(set.message.size/2);
 
-            if(!journal_set.buffer.isEmpty())
-                journal_set.buffer.clear();
+            set.message.read_count   += count;
+            set.message.read_current += count;
 
-            displayJournalResponse(unit.values());
+            if(key == "EVENT")
+                displayEventJournalResponse(data);
+            else if(key == "CRASH")
+                displayCrashJournalResponse(data);
+
             journalRead(key);
         }
         break;
@@ -3225,8 +3253,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
 //-----------------------------------------------
 void ConfiguratorWindow::updateParameterJournal()
 {
-    readEventJournalCount();
-//    setJournalPtrShift();
+    readJournalCount();
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
@@ -3808,8 +3835,8 @@ void ConfiguratorWindow::readShiftPrtEventJournal()
         m_modbusDevice->request(unit);
     }
 }
-//----------------------------------------------
-void ConfiguratorWindow::readEventJournalCount()
+//-----------------------------------------
+void ConfiguratorWindow::readJournalCount()
 {
     if(m_journal_set.isEmpty())
         return;
@@ -3825,11 +3852,6 @@ void ConfiguratorWindow::readEventJournalCount()
 
         m_modbusDevice->request(unit);
     }
-//    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 34, QVector<quint16>() << 2);
-
-//    unit.setProperty(tr("REQUEST"), READ_EVENT_COUNT);
-
-//    m_modbusDevice->request(unit);
 }
 //---------------------------------------------
 void ConfiguratorWindow::deviceSync(bool state)

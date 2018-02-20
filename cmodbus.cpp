@@ -95,13 +95,16 @@ QSerialPort::Parity CModbus::parity() const
 {
     return m_parity;
 }
+//-------------------------------
+void CModbus::clearQueueRequest()
+{
+    m_request_cur = CDataUnitType();
+    m_request_queue.clear();
+}
 //-------------------------------------------------------------------
 void CModbus::removeRequest(const QString& key, const QString& value)
 {
     block();
-
-    if(m_request_cur.property(key).toString() == value)
-        m_request_cur = CDataUnitType();
 
     if(m_request_queue.isEmpty())
         return;
@@ -171,7 +174,7 @@ void CModbus::connectDevice()
     else
         emit connectDeviceState(true);
     
-    emit infoLog(tr("Последовательный порт <") + m_device->portName() + tr("> открыт\n"));
+    emit infoLog(tr("Последовательный порт <%1> открыт").arg(m_device->portName()));
 }
 //------------------------------
 void CModbus::disconnectDevice()
@@ -188,7 +191,10 @@ void CModbus::disconnectDevice()
         unblock();
         
         emit connectDeviceState(false);
-        emit infoLog(tr("Последовательный порт <") + m_device->portName() + tr("> закрыт\n"));
+
+        QString str = tr("Последовательный порт <%1> закрыт.").arg(m_device->portName());
+
+        emit infoLog(str);
     }
 }
 //----------------------------------------
@@ -310,9 +316,6 @@ void CModbus::readyRead()
     }
     else if(count < m_receive_buffer.count())
     {
-//        emit infoLog(tr("Получено больше, чем ожидалось (") + QString::number(count) + " < " +
-//                     QString::number(m_receive_buffer.count()) + tr("). Данные обрезаны до размера: ") +
-//                     QString::number(count) + tr(" байт\n"));
         
         m_receive_buffer = m_receive_buffer.remove(count, (m_receive_buffer.count() - count));
     }
@@ -351,13 +354,12 @@ void CModbus::readyRead()
                                 (m_request_cur.functionType() == CDataUnitType::WriteSingleRegister)?tr("WriteSingleRegister"):
                                 (m_request_cur.functionType() == CDataUnitType::WriteMultipleRegisters)?tr("WriteMultipleRegisters"):
                                                                                                         tr("Unknown"));
-        QString error = tr("Ошибка контрольной суммы -> принято(") + str1 + tr("), рассчитано(") + str2 + tr(") -> ");
+        QString error = tr("Ошибка контрольной суммы -> принято(%1), расчитано (%2): тип функции (%3): размер ожидаемых данных: "
+                           "(%4) байт, получили: (%5) байт").
+                           arg(str1).arg(str2).arg(func_type_str).arg(m_request_cur.valueCount()).arg(m_receive_buffer.count());
 
-        error += tr("Запрос: ") + func_type_str + tr(" (") + m_request_cur.property(tr("FIRST")).toString() + tr(", ") +
-                                                             m_request_cur.property(tr("LAST")).toString() + tr(").");
-        
 //        emit errorDevice(error);
-        emit infoLog(error + QString("\n"));
+        emit infoLog(error);
         
         unblock();
         process_request_queue();

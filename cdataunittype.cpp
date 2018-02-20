@@ -1,7 +1,8 @@
 #include "cdataunittype.h"
 //-----------------------------
 CDataUnitType::CDataUnitType():
-    m_error(NO_DEVICE_ERROR)
+    m_error(NO_DEVICE_ERROR),
+    m_ok(false)
 {
     
 }
@@ -12,7 +13,8 @@ CDataUnitType::CDataUnitType(quint8 slaveID, CDataUnitType::FunctionType type,
     m_slaveID(slaveID),
     m_address(address),
     m_values(values),
-    m_error(NO_DEVICE_ERROR)
+    m_error(NO_DEVICE_ERROR),
+    m_ok(true)
 {
     
 }
@@ -165,7 +167,12 @@ quint8 CDataUnitType::valueCount() const
 //----------------------------------
 bool CDataUnitType::is_empty() const
 {
-    return (m_slaveID == 0xFF);
+    return !m_ok;
+}
+//----------------------------------
+bool CDataUnitType::is_valid() const
+{
+    return m_ok;
 }
 //------------------------------------------------------------------
 void CDataUnitType::setProperty(const QString& key, QVariant value)

@@ -298,14 +298,15 @@
             void displaySettingResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void displayPurposeDIResponse(CDataUnitType& unit);
-            void displayJournalResponse(const QVector<quint16>& data_list);
+            void displayEventJournalResponse(const QVector<quint16>& data_list);
+            void displayCrashJournalResponse(const QVector<quint16>& data_list);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
             int  addressPurposeKey(const QString& key) const;
             void readShiftPrtEventJournal();
-            void readEventJournalCount();
+            void readJournalCount();
             void deviceSync(bool state = false);
             int  recordCountDb(QSqlDatabase *db, const QString& table_name, const QString& parameter, const QString& value,
                                                  const QString& subparamter = "", const QStringList& range = QStringList());
