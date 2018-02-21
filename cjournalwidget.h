@@ -3,6 +3,7 @@
     //----------------
     #include <QWidget>
     #include <QTableWidget>
+    #include <QTextEdit>
     #include <QDebug>
     #include "cheaderjournal.h"
     //----------
@@ -29,6 +30,7 @@
             CHeaderJournal* header() const;
             void            headerClear() const;
             QTableWidget*   table() const;
+            QTextEdit*      propertyJournal() const;
 
             void setTableHeaders(const QStringList& headers);
             void setTableColumnWidth(const QVector<int>& list);

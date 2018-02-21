@@ -1735,8 +1735,8 @@ void ConfiguratorWindow::initDeviceCode()
 //-------------------------------------
 void ConfiguratorWindow::initJournals()
 {
-    QStringList journalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип") << tr("Категория") <<
-                                                  tr("Параметр");
+    QStringList eventJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип") << tr("Категория") <<
+                                                       tr("Параметр");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
@@ -1748,10 +1748,10 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalHalfHour->setProperty("TYPE", tr("HALFHOUR"));
     ui->widgetJournalIsolation->setProperty("TYPE", tr("ISOLATION"));
 
-    ui->widgetJournalCrash->setTableHeaders(journalHeaders);
-    ui->widgetJournalEvent->setTableHeaders(journalHeaders);
-    ui->widgetJournalHalfHour->setTableHeaders(journalHeaders);
-    ui->widgetJournalIsolation->setTableHeaders(journalHeaders);
+    ui->widgetJournalCrash->setTableHeaders(eventJournalHeaders);
+    ui->widgetJournalEvent->setTableHeaders(eventJournalHeaders);
+    ui->widgetJournalHalfHour->setTableHeaders(eventJournalHeaders);
+    ui->widgetJournalIsolation->setTableHeaders(eventJournalHeaders);
 
     QVector<int> length_list = QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300;
 
@@ -2013,34 +2013,17 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
 
     QVector<quint8> data;
 
-    for(int i = 0; i < data_list.count(); i++)
-    {
-        data << (quint8)((data_list[i] >> 8)&0x00FF);
-        data << (quint8)(data_list[i]&0x00FF);
-    }
+    convertDataHalfwordToBytes(data_list, data);
 
     for(int i = 0; i < data.count(); i += 16)
     {
         quint16 id = ((data[i + 1] << 8) | data[i]);
 
-        quint16 year = ((data[i + 2]&0xFC) >> 2);
-
-        year += ((year < 2000)?2000:0); // приводит дату к 'yyyy'
-
-        quint8 month = ((data[i + 2]&0x03) << 2) | ((data[i + 3]&0xC0) >> 6);
-        quint8 day   = ((data[i + 3]&0x3E) >> 1);
-
-        quint8  hour    = ((data[i + 3]&0x01) << 4) | ((data[i + 4]&0xF0) >> 4);
-        quint8  minute  = ((data[i + 4]&0x0F) << 2) | ((data[i + 5]&0xC0) >> 6);
-        quint8  second  = (data[i + 5]&0x3F);
-        quint16 msecond = quint16(data[i + 6]*3.90625f); // перевод 256 долей секунды в мс, т.е. 1000/256 = 3.90625
+        QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
 
         quint8  type_event      = data[i + 7];
         quint8  category_event  = data[i + 8];
         quint16 parameter_event = data[i + 9] | (data[i + 10] << 8);
-
-        QDate d(year, month, day);
-        QTime t(hour, minute, second);
 
         QVector<event_t> etype = ((!m_event_list.isEmpty())?m_event_list:QVector<event_t>());
 
@@ -2065,11 +2048,9 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
                 etype_str = etype[type_event].name;
 
             m_journal_read_current->table()->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-            m_journal_read_current->table()->setItem(row, 1, new CTableWidgetItem(d.toString("dd.MM.yyyy")));
+            m_journal_read_current->table()->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
 
-            QString s = ((msecond < 10)?"00":(msecond < 100 && msecond >= 10)?"0":"") + QString::number(msecond);
-
-            m_journal_read_current->table()->setItem(row, 2, new QTableWidgetItem(t.toString("HH:mm:ss") + QString(":") + s));
+            m_journal_read_current->table()->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
             m_journal_read_current->table()->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
                                                                                   arg(type_event))));
 
@@ -4127,6 +4108,43 @@ ConfiguratorWindow::DeviceMenuIndexType ConfiguratorWindow::menuIndex()
     }
 
     return result;
+}
+/*!
+ * \brief  ConfiguratorWindow::unpackDateTime
+ * \param  data Данные в кототых хранятся упакованные дата и время сообщения
+ * \return Возвращает либо пустую дату/время, либо дату/время сообщения
+ *
+ *  Метод применяется для распаковки даты/времени сообщений от журналов, которые хранятся в упакованном виде
+ */
+QDateTime ConfiguratorWindow::unpackDateTime(QVector<quint8>& data)
+{
+    if(data.isEmpty() || data.count() != 5) // упакованная дата размещается в 5ти байтах
+        return QDateTime(); // возвращаем пусту дату, если нет данных или их размер меньше или больше 5ти байт
+
+    quint16 year = ((data[0]&0xFC) >> 2);
+
+    year += ((year < 2000)?2000:0); // приводит дату к 'yyyy'
+
+    quint8 month = ((data[0]&0x03) << 2) | ((data[1]&0xC0) >> 6);
+    quint8 day   = ((data[1]&0x3E) >> 1);
+
+    quint8  hour    = ((data[1]&0x01) << 4) | ((data[2]&0xF0) >> 4);
+    quint8  minute  = ((data[2]&0x0F) << 2) | ((data[3]&0xC0) >> 6);
+    quint8  second  = (data[3]&0x3F);
+    quint16 msecond = quint16(data[4]*3.90625f); // перевод 256 долей секунды в мс, т.е. 1000/256 = 3.90625
+
+    QDateTime dt(QDate(year, month, day), QTime(hour, minute, second, msecond));
+
+    return dt;
+}
+//--------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest)
+{
+    for(int i = 0; i < source.count(); i++)
+    {
+        dest.append(quint8(((source[i] >> 8)&0x00FF)));
+        dest.append(quint8((source[i]&0x00FF)));
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

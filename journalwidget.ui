@@ -33,7 +33,24 @@
     <widget class="CHeaderJournal" name="widgetJournalHeader" native="true"/>
    </item>
    <item>
-    <widget class="QTableWidget" name="tableWidgetJournal"/>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
+     <item>
+      <widget class="QTableWidget" name="tableWidgetJournal"/>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="textEditPropertyJournal">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -41,7 +58,7 @@
   <customwidget>
    <class>CHeaderJournal</class>
    <extends>QWidget</extends>
-   <header location="global">cheaderjournal.h</header>
+   <header>cheaderjournal.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

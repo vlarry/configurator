@@ -13,6 +13,8 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
+    ui->textEditPropertyJournal->hide(); // по умолчанию окно свойств скрыто
+
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
 }
 //-------------------------------
@@ -34,6 +36,11 @@ void CJournalWidget::headerClear() const
 QTableWidget* CJournalWidget::table() const
 {
     return ui->tableWidgetJournal;
+}
+//------------------------------------------------
+QTextEdit* CJournalWidget::propertyJournal() const
+{
+    return ui->textEditPropertyJournal;
 }
 //--------------------------------------------------------------
 void CJournalWidget::setTableHeaders(const QStringList& headers)
