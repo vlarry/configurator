@@ -62,6 +62,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
+    connectSystemDb();
     initJournals();
     initMenuPanel();
     initButtonGroup();
@@ -69,7 +70,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initCellBind(); // инициализация привязки настроек к адресам
     initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
     initModelTables();
-    initEventJournal(); // инициализация списка событий журнала
     initDeviceCode(); // инициализация списка кодов устройств
 
     if(!m_logFile->open(QFile::ReadWrite))
@@ -1674,13 +1674,14 @@ void ConfiguratorWindow::initEventJournal()
 
     while(query.next())
     {
-        m_event_list << event_t({ query.value("code").toInt(), query.value("name").toString(), QVector<event_t>() });
+        m_event_list << CJournalWidget::event_t({ query.value("code").toInt(), query.value("name").toString(),
+                                                  QVector<CJournalWidget::event_t>() });
     }
 
     if(m_event_list.isEmpty())
         return;
 
-    for(event_t& event: m_event_list)
+    for(CJournalWidget::event_t& event: m_event_list)
     {
         if(!query.exec("SELECT code, name FROM event_category WHERE event_t = " + QString::number(event.code) + ";"))
         {
@@ -1690,16 +1691,17 @@ void ConfiguratorWindow::initEventJournal()
 
         while(query.next())
         {
-            event.sub_event << event_t({ query.value("code").toInt(), query.value("name").toString(), QVector<event_t>() });
+            event.sub_event << CJournalWidget::event_t({ query.value("code").toInt(), query.value("name").toString(),
+                                                         QVector<CJournalWidget::event_t>() });
         }
     }
 
-    for(event_t& event: m_event_list)
+    for(CJournalWidget::event_t& event: m_event_list)
     {
         if(event.sub_event.isEmpty())
             continue;
 
-        for(event_t& category: event.sub_event)
+        for(CJournalWidget::event_t& category: event.sub_event)
         {
             if(!query.exec("SELECT code, name FROM event_parameter WHERE event_category = " +
                            QString::number(category.code) + ";"))
@@ -1710,8 +1712,8 @@ void ConfiguratorWindow::initEventJournal()
 
             while(query.next())
             {
-                category.sub_event << event_t({ query.value("code").toInt(), query.value("name").toString(),
-                                                QVector<event_t>() });
+                category.sub_event << CJournalWidget::event_t({ query.value("code").toInt(), query.value("name").toString(),
+                                                                QVector<CJournalWidget::event_t>() });
             }
         }
     }
@@ -1735,8 +1737,13 @@ void ConfiguratorWindow::initDeviceCode()
 //-------------------------------------
 void ConfiguratorWindow::initJournals()
 {
+    initEventJournal();
+
     QStringList eventJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип") << tr("Категория") <<
                                                        tr("Параметр");
+
+    QStringList crashJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Номер защиты") <<
+                                                       tr("Настройки защиты");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
@@ -1748,17 +1755,20 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalHalfHour->setProperty("TYPE", tr("HALFHOUR"));
     ui->widgetJournalIsolation->setProperty("TYPE", tr("ISOLATION"));
 
-    ui->widgetJournalCrash->setTableHeaders(eventJournalHeaders);
+    ui->widgetJournalCrash->setTableHeaders(crashJournalHeaders);
     ui->widgetJournalEvent->setTableHeaders(eventJournalHeaders);
     ui->widgetJournalHalfHour->setTableHeaders(eventJournalHeaders);
     ui->widgetJournalIsolation->setTableHeaders(eventJournalHeaders);
 
     QVector<int> length_list = QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300;
 
-    ui->widgetJournalCrash->setTableColumnWidth(length_list);
+    ui->widgetJournalCrash->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 200 << 100);
     ui->widgetJournalEvent->setTableColumnWidth(length_list);
     ui->widgetJournalHalfHour->setTableColumnWidth(length_list);
     ui->widgetJournalIsolation->setTableColumnWidth(length_list);
+
+    ui->widgetJournalCrash->setVisibleProperty(true);
+    ui->widgetJournalEvent->setEventList(m_event_list);
 
     m_journal_set["CRASH"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
                                                                  journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
@@ -2003,74 +2013,15 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 
     model->updateData();
 }
-//-------------------------------------------------------------------------------------
-void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& data_list)
+//--------------------------------------------------------------------------
+void ConfiguratorWindow::displayEventJournalResponse(QVector<quint16>& data)
 {
     if(!m_journal_read_current)
     {
         return;
     }
 
-    QVector<quint8> data;
-
-    convertDataHalfwordToBytes(data_list, data);
-
-    for(int i = 0; i < data.count(); i += 16)
-    {
-        quint16 id = ((data[i + 1] << 8) | data[i]);
-
-        QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
-
-        quint8  type_event      = data[i + 7];
-        quint8  category_event  = data[i + 8];
-        quint16 parameter_event = data[i + 9] | (data[i + 10] << 8);
-
-        QVector<event_t> etype = ((!m_event_list.isEmpty())?m_event_list:QVector<event_t>());
-
-        if(!etype.isEmpty())
-        {
-            QVector<event_t> ecategory  = QVector<event_t>();
-            QVector<event_t> eparameter = QVector<event_t>();
-
-            if(etype.count() > type_event)
-                ecategory = etype[type_event].sub_event;
-
-            if(ecategory.count() > category_event)
-                eparameter = ecategory[category_event].sub_event;
-
-            int row = m_journal_read_current->table()->rowCount();
-
-            m_journal_read_current->table()->insertRow(row);
-
-            QString etype_str = tr("Неизвестный тип");
-
-            if(etype.count() > type_event)
-                etype_str = etype[type_event].name;
-
-            m_journal_read_current->table()->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-            m_journal_read_current->table()->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
-
-            m_journal_read_current->table()->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
-            m_journal_read_current->table()->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
-                                                                                  arg(type_event))));
-
-            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
-            QString eparameter_str = ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
-                                       tr("Неизвестный параметр"):eparameter[parameter_event].name);
-
-            m_journal_read_current->table()->setItem(row, 4, new QTableWidgetItem(ecategory_str +
-                                                                               QString(" (%1)").arg(QString::number(category_event))));
-            m_journal_read_current->table()->setItem(row, 5, new QTableWidgetItem(eparameter_str +
-                                                                               QString(" (%1)").arg(QString::number(parameter_event))));
-
-            m_journal_read_current->table()->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-            m_journal_read_current->table()->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-            m_journal_read_current->table()->item(row, 2)->setTextAlignment(Qt::AlignCenter);
-
-            if(m_journal_read_current->header()->stateCheckbox())
-                m_journal_read_current->table()->scrollToBottom();
-        }
-    }
+    m_journal_read_current->print(data);
 
     QString key = m_journal_read_current->property("TYPE").toString();
 
@@ -2082,11 +2033,13 @@ void ConfiguratorWindow::displayEventJournalResponse(const QVector<quint16>& dat
         m_journal_read_current->header()->setTextDeviceCountMessages(read, total);
     }
 }
-//-------------------------------------------------------------------------------------
-void ConfiguratorWindow::displayCrashJournalResponse(const QVector<quint16>& data_list)
+//--------------------------------------------------------------------------------
+void ConfiguratorWindow::displayCrashJournalResponse(const QVector<quint16>& data)
 {
     if(!m_journal_read_current)
         return;
+
+    m_journal_read_current->print(data);
 
     QString key = m_journal_read_current->property("TYPE").toString();
 
@@ -2598,7 +2551,9 @@ void ConfiguratorWindow::startExportToPDF()
 
     connect(m_watcher, &QFutureWatcher<void>::finished, m_progressbar, &CProgressBarWidget::progressStop);
 
-    QFuture<void> future = QtConcurrent::run(this, &exportToPDF, m_active_journal_current, journal_name, sn_device, journal_path);
+    QFuture<void> future = QtConcurrent::run(this, &exportToPDF, m_active_journal_current,
+                                             QString(tr("Журнал %1")).arg(journal_name),
+                                             sn_device, journal_path);
     m_watcher->setFuture(future);
 }
 //-------------------------------------
@@ -3245,7 +3200,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
 
         int width = ui->stwgtMain->width() - 760;
 
-        ui->widgetJournalCrash->setTableColumnWidth(3, width);
+        ui->widgetJournalCrash->setTableColumnWidth(4, 200);
         ui->widgetJournalEvent->setTableColumnWidth(3, width);
         ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
         ui->widgetJournalIsolation->setTableColumnWidth(3, width);
@@ -4149,8 +4104,6 @@ void ConfiguratorWindow::convertDataHalfwordToBytes(const QVector<quint16>& sour
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
-    connectSystemDb();
-
     connect(ui->pbtnPortCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
     connect(m_modbusDevice, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
     connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);

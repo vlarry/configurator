@@ -38,7 +38,6 @@
     #include "cmatrixpurposemodel.h"
     #include "cserialportsetting.h"
     #include "cstatusbar.h"
-    #include "ctablewidgetitem.h"
     #include "ceventlistjournals.h"
     #include "cprogressbarwidget.h"
     #include "cfilterdialog.h"
@@ -116,13 +115,6 @@
                 PURPOSE_INDEX_INPUT,
                 PURPOSE_INDEX_RELAY,
                 PURPOSE_INDEX_KEYBOARD
-            };
-            //------------
-            struct event_t
-            {
-                int              code;
-                QString          name;
-                QVector<event_t> sub_event;
             };
             //--------------------
             struct event_journal_t
@@ -298,8 +290,8 @@
             void displaySettingResponse(CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void displayPurposeDIResponse(CDataUnitType& unit);
-            void displayEventJournalResponse(const QVector<quint16>& data_list);
-            void displayCrashJournalResponse(const QVector<quint16>& data_list);
+            void displayEventJournalResponse(QVector<quint16>& data);
+            void displayCrashJournalResponse(const QVector<quint16>& data);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
@@ -321,40 +313,40 @@
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
             
         private:
-            Ui::ConfiguratorWindow*      ui;
-            CModbus*                     m_modbusDevice;
-            CSerialPortSetting*          m_serialPortSettings;
-            QPanel*                      m_calculateWidget;
-            CTerminal*                   m_terminal;
-            QFile*                       m_logFile;
-            QTimer*                      m_tim_calculate;
-            QButtonGroup*                m_protect_mtz_group;
-            QButtonGroup*                m_protect_earthly_group;
-            QButtonGroup*                m_protect_power_group;
-            QButtonGroup*                m_protect_motor_group;
-            QButtonGroup*                m_protect_frequency_group;
-            QButtonGroup*                m_protect_external_group;
-            QButtonGroup*                m_protect_temperature_group;
-            QButtonGroup*                m_protect_level_group;
-            QButtonGroup*                m_switch_device_group;
-            QButtonGroup*                m_additional_group;
-            CVersionSoftware*            m_versionWidget;
-            QSqlDatabase                 m_system_db;
-            cell_t                       m_cell_list;
-            purpose_t                    m_purpose_list;
-            QVector<event_t>             m_event_list; // список событий (вычитаны из БД)
-            event_journal_t              m_journal_parameters;
-            QVector<CColumn::column_t>   m_variables;
-            QTime                        m_time_process;
-            QTimer                       m_sync_timer;
-            CStatusBar*                  m_status_bar;
-            QMap<int, QString>           m_device_code_list;
-            QFutureWatcher<void>*        m_watcher;
-            CProgressBarWidget*          m_progressbar;
-            QSettings*                   m_settings;
-            QMap<QString, CFilter>       m_filter;
-            const CJournalWidget*        m_active_journal_current; // текущий активный журнал
-            const CJournalWidget*        m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
-            QMap<QString, journal_set_t> m_journal_set; // установки журналов
+            Ui::ConfiguratorWindow*          ui;
+            CModbus*                         m_modbusDevice;
+            CSerialPortSetting*              m_serialPortSettings;
+            QPanel*                          m_calculateWidget;
+            CTerminal*                       m_terminal;
+            QFile*                           m_logFile;
+            QTimer*                          m_tim_calculate;
+            QButtonGroup*                    m_protect_mtz_group;
+            QButtonGroup*                    m_protect_earthly_group;
+            QButtonGroup*                    m_protect_power_group;
+            QButtonGroup*                    m_protect_motor_group;
+            QButtonGroup*                    m_protect_frequency_group;
+            QButtonGroup*                    m_protect_external_group;
+            QButtonGroup*                    m_protect_temperature_group;
+            QButtonGroup*                    m_protect_level_group;
+            QButtonGroup*                    m_switch_device_group;
+            QButtonGroup*                    m_additional_group;
+            CVersionSoftware*                m_versionWidget;
+            QSqlDatabase                     m_system_db;
+            cell_t                           m_cell_list;
+            purpose_t                        m_purpose_list;
+            QVector<CJournalWidget::event_t> m_event_list; // список событий (вычитаны из БД)
+            event_journal_t                  m_journal_parameters;
+            QVector<CColumn::column_t>       m_variables;
+            QTime                            m_time_process;
+            QTimer                           m_sync_timer;
+            CStatusBar*                      m_status_bar;
+            QMap<int, QString>               m_device_code_list;
+            QFutureWatcher<void>*            m_watcher;
+            CProgressBarWidget*              m_progressbar;
+            QSettings*                       m_settings;
+            QMap<QString, CFilter>           m_filter;
+            const CJournalWidget*            m_active_journal_current; // текущий активный журнал
+            const CJournalWidget*            m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
+            QMap<QString, journal_set_t>     m_journal_set; // установки журналов
     };
 #endif // CONFIGURATORWINDOW_H
