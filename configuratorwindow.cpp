@@ -212,6 +212,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
         return;
 
     journal_set_t& set = m_journal_set[key];
+    int sector_size = 4096/set.message.size; // размер сектора в сообщениях, т.е. сколько можно сообщений считать без перехода
 
     if((set.isStart && set.message.read_limit == set.message.read_count) || (set.isStart && set.isStop))
     {
@@ -264,10 +265,10 @@ void ConfiguratorWindow::journalRead(const QString& key)
             }
         }
 
-        if(set.message.read_start >= 256) // если начальное сообщение находится не в на первой странице
+        if(set.message.read_start >= sector_size) // если начальное сообщение находится не в на первой странице
         {
-            set.shift_ptr            = (set.message.read_start/256)*4096; // получаем смещение указателя
-            set.message.read_current = set.message.read_start%256; // устанавливаем текущее сообщение (для определения перехода указатеяля)
+            set.shift_ptr            = (set.message.read_start/sector_size)*4096; // получаем смещение указателя
+            set.message.read_current = set.message.read_start%sector_size; // устанавливаем текущее сообщение (для определения перехода указатеяля)
         }
 
         setJournalPtrShift(key, set.shift_ptr);
@@ -275,7 +276,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
         m_time_process.start();
     }
 
-    if(set.message.read_current == 4096/set.message.size) // дочитали до конца очередной страницы - переводим указатель
+    if(set.message.read_current == sector_size) // дочитали до конца очередной страницы - переводим указатель
     {
         set.shift_ptr += 4096;
         set.message.read_current = 0;
@@ -3789,7 +3790,6 @@ void ConfiguratorWindow::readJournalCount()
 //---------------------------------------------
 void ConfiguratorWindow::deviceSync(bool state)
 {
-    return;
     if(state)
     {
         if(!m_sync_timer.isActive())
