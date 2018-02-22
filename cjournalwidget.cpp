@@ -153,19 +153,16 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
     if(data.count() != 256)
         return;
 
-    for(int i = 0; i < data.count(); i += 16)
-    {
-        quint16 id = ((data[i + 1] << 8) | data[i]);
+    quint16 id = ((data[1] << 8) | data[0]);
 
-        QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
+    QDateTime dt = unpackDateTime(QVector<quint8>() << data[2] << data[3] << data[4] << data[5] << data[6]);
 
-        int row = ui->tableWidgetJournal->rowCount();
+    int row = ui->tableWidgetJournal->rowCount();
 
-        ui->tableWidgetJournal->insertRow(row);
-        ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-        ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
-        ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
-    }
+    ui->tableWidgetJournal->insertRow(row);
+    ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
+    ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+    ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
 }
 //----------------------------------------------------------
 void CJournalWidget::printEvent(const QVector<quint8>& data) const

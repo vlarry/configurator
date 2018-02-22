@@ -21,7 +21,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_protect_level_group(nullptr),
     m_additional_group(nullptr),
     m_versionWidget(nullptr),
-    m_journal_parameters( { -1, 0, 0, 0, 0 } ),
     m_variables(QVector<CColumn::column_t>()),
     m_status_bar(nullptr),
     m_watcher(nullptr),
@@ -276,7 +275,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
         m_time_process.start();
     }
 
-    if(set.message.read_current == 256) // дочитали до конца очередной страницы - переводим указатель
+    if(set.message.read_current == 4096/set.message.size) // дочитали до конца очередной страницы - переводим указатель
     {
         set.shift_ptr += 4096;
         set.message.read_current = 0;
@@ -307,7 +306,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
     }
 
     // Расчет адреса
-    int address = set.message.read_current*set.message.read_number + set.address.start_page;
+    int address = set.message.read_current*(set.message.size/2) + set.address.start_page;
 
     if(set.msg_part > 0 && set.buffer.count() > 0) // размер части запроса не равен нулю и буфер хранящий часть ответа не пустой
     {
@@ -1672,16 +1671,18 @@ void ConfiguratorWindow::initEventJournal()
         return;
     }
 
+    QVector<CJournalWidget::event_t> events;
+
     while(query.next())
     {
-        m_event_list << CJournalWidget::event_t({ query.value("code").toInt(), query.value("name").toString(),
+        events << CJournalWidget::event_t({ query.value("code").toInt(), query.value("name").toString(),
                                                   QVector<CJournalWidget::event_t>() });
     }
 
-    if(m_event_list.isEmpty())
+    if(events.isEmpty())
         return;
 
-    for(CJournalWidget::event_t& event: m_event_list)
+    for(CJournalWidget::event_t& event: events)
     {
         if(!query.exec("SELECT code, name FROM event_category WHERE event_t = " + QString::number(event.code) + ";"))
         {
@@ -1696,7 +1697,7 @@ void ConfiguratorWindow::initEventJournal()
         }
     }
 
-    for(CJournalWidget::event_t& event: m_event_list)
+    for(CJournalWidget::event_t& event: events)
     {
         if(event.sub_event.isEmpty())
             continue;
@@ -1717,6 +1718,8 @@ void ConfiguratorWindow::initEventJournal()
             }
         }
     }
+
+    ui->widgetJournalEvent->setEventList(events);
 }
 //---------------------------------------
 void ConfiguratorWindow::initDeviceCode()
@@ -1768,7 +1771,6 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalIsolation->setTableColumnWidth(length_list);
 
     ui->widgetJournalCrash->setVisibleProperty(true);
-    ui->widgetJournalEvent->setEventList(m_event_list);
 
     m_journal_set["CRASH"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
                                                                  journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
@@ -3208,7 +3210,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
         if(!currentJournal(m_active_journal_current))
             m_active_journal_current = nullptr;
 
-        m_active_journal_current->header()->setTextDeviceCountMessages(0, m_journal_parameters.total);
+        m_active_journal_current->header()->setTextDeviceCountMessages(0, 0);
     }
     else
     {
@@ -3231,11 +3233,6 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
     unit.setProperty(tr("JOURNAL"), key);
 
     m_modbusDevice->request(unit);
-}
-//----------------------------------------------------------------------
-void ConfiguratorWindow::valueEventJournalInternalChanged(int new_value)
-{
-    m_journal_parameters.count = m_journal_parameters.total - new_value;
 }
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSyncSerialNumber()
@@ -3792,6 +3789,7 @@ void ConfiguratorWindow::readJournalCount()
 //---------------------------------------------
 void ConfiguratorWindow::deviceSync(bool state)
 {
+    return;
     if(state)
     {
         if(!m_sync_timer.isActive())

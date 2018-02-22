@@ -116,15 +116,6 @@
                 PURPOSE_INDEX_RELAY,
                 PURPOSE_INDEX_KEYBOARD
             };
-            //--------------------
-            struct event_journal_t
-            {
-                int start; // событие с которого начинается чтение
-                int count; // количество событий, которые будут прочитаны
-                int read;  // количество прочитанных сообщений
-                int total; // всего событий в устройстве
-                int shift; // положение указателя сдвига
-            };
             /*!
              * \brief The journal_address_t struct
              *
@@ -261,7 +252,6 @@
             void updateParameterJournal(); // обновление данных журнала событий - вычитка кол-ва событий и положение указателя
             void widgetStackIndexChanged(int index);
             void setJournalPtrShift(const QString& key, long pos);
-            void valueEventJournalInternalChanged(int new_value);
             void timeoutSyncSerialNumber();
             void importJournalToTable();
             void exportJournalToDb();
@@ -334,8 +324,6 @@
             QSqlDatabase                     m_system_db;
             cell_t                           m_cell_list;
             purpose_t                        m_purpose_list;
-            QVector<CJournalWidget::event_t> m_event_list; // список событий (вычитаны из БД)
-            event_journal_t                  m_journal_parameters;
             QVector<CColumn::column_t>       m_variables;
             QTime                            m_time_process;
             QTimer                           m_sync_timer;
