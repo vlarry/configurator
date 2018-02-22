@@ -5,6 +5,13 @@
     #include <QTableWidget>
     #include <QTextEdit>
     #include <QDateTime>
+    #include <QKeyEvent>
+    #include <QMessageBox>
+    #include <QTableWidgetSelectionRange>
+    #include <QClipboard>
+    #include <QList>
+    #include <QTableWidgetItem>
+    #include <QEvent>
     #include <QDebug>
     #include "cheaderjournal.h"
     #include "ctablewidgetitem.h"
@@ -55,6 +62,7 @@
         protected:
             void printCrash(const QVector<quint8>& data) const;
             void printEvent(const QVector<quint8>& data) const;
+            bool eventFilter(QObject* object, QEvent* event);
 
         signals:
             void clickedButtonRead(bool = false);

@@ -8,10 +8,11 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->setupUi(this);
 
     ui->tableWidgetJournal->setShowGrid(true);
-    ui->tableWidgetJournal->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableWidgetJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+    ui->tableWidgetJournal->installEventFilter(this);
 
     ui->textEditPropertyJournal->hide(); // по умолчанию окно свойств скрыто
 
@@ -223,4 +224,51 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
                 ui->tableWidgetJournal->scrollToBottom();
         }
     }
+}
+//--------------------------------------------------------------
+bool CJournalWidget::eventFilter(QObject* object, QEvent* event)
+{
+    if(object->metaObject()->className() == QString("QTableWidget") && event->type() == QEvent::KeyPress)
+    {
+        QTableWidget* table    = qobject_cast<QTableWidget*>(object);
+        QKeyEvent*    keyEvent = (QKeyEvent*)event;
+
+        if(keyEvent->modifiers() == Qt::ControlModifier && keyEvent->key() == Qt::Key_C)
+        {
+            if(table->rowCount() != 0)
+            {
+                QList<QTableWidgetSelectionRange> selected = table->selectedRanges();
+
+                if(!selected.isEmpty())
+                {
+                    QString clipboard_str = "";
+
+                    for(const QTableWidgetSelectionRange range: selected)
+                    {
+                        for(int i = range.topRow(); i <= range.bottomRow(); i++)
+                        {
+                            for(int j = 0; j < table->columnCount(); j++)
+                            {
+                                clipboard_str += table->item(i, j)->text() + "\t";
+                            }
+
+                            clipboard_str += "\n";
+                        }
+                    }
+
+                    QApplication::clipboard()->setText(clipboard_str);
+                }
+                else
+                {
+                    QMessageBox::warning(this, tr("Копирование данных из таблицы"), tr("В таблице нет выделенных строк."));
+                }
+            }
+            else
+            {
+                QMessageBox::warning(this, tr("Копирование данных из таблицы"), tr("Таблица пуста."));
+            }
+        }
+    }
+
+    return true;
 }
