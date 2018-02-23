@@ -12,8 +12,6 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-    ui->tableWidgetJournal->installEventFilter(this);
-
     ui->textEditPropertyJournal->hide(); // по умолчанию окно свойств скрыто
 
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
@@ -61,7 +59,9 @@ void CJournalWidget::print(const QVector<quint16>& data) const
     convertHalfwordToBytes(data, bytes);
 
     if(journal_type == "CRASH")
+    {
         printCrash(bytes);
+    }
     else if(journal_type == "EVENT")
         printEvent(bytes);
 }
@@ -90,10 +90,10 @@ void CJournalWidget::setTableColumnWidth(int column, int width)
 
     ui->tableWidgetJournal->setColumnWidth(column, width);
 }
-//-------------------------------------------------------------------------------
-void CJournalWidget::setEventList(const QVector<CJournalWidget::event_t>& events)
+//----------------------------------------------------
+void CJournalWidget::setJournalDataType(QVariant data)
 {
-    m_event_list = events;
+    m_journal_data = data;
 }
 //-------------------------------------------------
 void CJournalWidget::setVisibleProperty(bool state)
@@ -164,6 +164,25 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
     ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
     ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
     ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+
+    int protect_code = data[7]; // код защиты
+
+    protection_set_t protect_set = qvariant_cast<protection_set_t>(m_journal_data);
+
+    if(protect_set.find(protect_code) != protect_set.end()) // защита существует
+    {
+        protection_t protection = protect_set[protect_code];
+
+        QTableWidgetItem* item = new QTableWidgetItem(protection.first);
+
+        item->setTextAlignment(Qt::AlignCenter);
+
+//        QVariant protect_type = QVariant::fromValue(m_protection_set);
+
+//        ui->tableWidgetJournal->setRowData(row, protect_type);  Необходим формат для вставки данных в строку таблицы
+
+        ui->tableWidgetJournal->setItem(row, 3, item);
+    }
 }
 //----------------------------------------------------------
 void CJournalWidget::printEvent(const QVector<quint8>& data) const
@@ -178,7 +197,7 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
         quint8  category_event  = data[i + 8];
         quint16 parameter_event = data[i + 9] | (data[i + 10] << 8);
 
-        QVector<event_t> etype = ((!m_event_list.isEmpty())?m_event_list:QVector<event_t>());
+        QVector<event_t> etype = qvariant_cast<QVector<event_t> >(m_journal_data);
 
         if(!etype.isEmpty())
         {
@@ -225,50 +244,51 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
         }
     }
 }
-//--------------------------------------------------------------
-bool CJournalWidget::eventFilter(QObject* object, QEvent* event)
+//--------------------------------------------------
+void CJournalWidget::keyPressEvent(QKeyEvent* event)
 {
-    if(object->metaObject()->className() == QString("QTableWidget") && event->type() == QEvent::KeyPress)
+    if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_C)
     {
-        QTableWidget* table    = qobject_cast<QTableWidget*>(object);
-        QKeyEvent*    keyEvent = (QKeyEvent*)event;
-
-        if(keyEvent->modifiers() == Qt::ControlModifier && keyEvent->key() == Qt::Key_C)
+        if(ui->tableWidgetJournal->rowCount() != 0)
         {
-            if(table->rowCount() != 0)
+            QList<QTableWidgetSelectionRange> selected = ui->tableWidgetJournal->selectedRanges();
+
+            if(!selected.isEmpty())
             {
-                QList<QTableWidgetSelectionRange> selected = table->selectedRanges();
+                QString clipboard_str = "";
 
-                if(!selected.isEmpty())
+                for(const QTableWidgetSelectionRange range: selected)
                 {
-                    QString clipboard_str = "";
-
-                    for(const QTableWidgetSelectionRange range: selected)
+                    for(int i = range.topRow(); i <= range.bottomRow(); i++)
                     {
-                        for(int i = range.topRow(); i <= range.bottomRow(); i++)
+                        for(int j = 0; j < ui->tableWidgetJournal->columnCount(); j++)
                         {
-                            for(int j = 0; j < table->columnCount(); j++)
-                            {
-                                clipboard_str += table->item(i, j)->text() + "\t";
-                            }
-
-                            clipboard_str += "\n";
+                            clipboard_str += ui->tableWidgetJournal->item(i, j)->text() + "\t";
                         }
-                    }
 
-                    QApplication::clipboard()->setText(clipboard_str);
+                        clipboard_str += "\n";
+                    }
                 }
-                else
-                {
-                    QMessageBox::warning(this, tr("Копирование данных из таблицы"), tr("В таблице нет выделенных строк."));
-                }
+
+                QApplication::clipboard()->setText(clipboard_str);
             }
             else
             {
-                QMessageBox::warning(this, tr("Копирование данных из таблицы"), tr("Таблица пуста."));
+                QMessageBox::warning(this, tr("Копирование данных из таблицы"), tr("В таблице нет выделенных строк."));
             }
         }
+        else
+        {
+            QMessageBox::warning(this, tr("Копирование данных из таблицы"), tr("Таблица пуста."));
+        }
     }
-
-    return true;
+}
+//------------------------------------------------------
+void CJournalWidget::mousePressEvent(QMouseEvent* event)
+{
+    qDebug() << event->button();
+    if(event->button() == Qt::LeftButton)
+    {
+        qDebug() << ui->tableWidgetJournal->item(ui->tableWidgetJournal->currentRow(), 3);
+    }
 }

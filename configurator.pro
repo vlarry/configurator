@@ -43,7 +43,8 @@ SOURCES += \
     cfilterdialog.cpp \
     cfilter.cpp \
     cheaderjournal.cpp \
-    cjournalwidget.cpp
+    cjournalwidget.cpp \
+    cjournaltable.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -64,7 +65,8 @@ HEADERS += \
     cfilterdialog.h \
     cfilter.h \
     cheaderjournal.h \
-    cjournalwidget.h
+    cjournalwidget.h \
+    cjournaltable.h
 
 FORMS += \
         configuratorwindow.ui \

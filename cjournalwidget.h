@@ -11,10 +11,14 @@
     #include <QClipboard>
     #include <QList>
     #include <QTableWidgetItem>
+    #include <QMouseEvent>
     #include <QEvent>
+    #include <QMetaType>
     #include <QDebug>
+    #include <QVariant>
     #include "cheaderjournal.h"
     #include "ctablewidgetitem.h"
+    #include "cjournaltable.h"
     //----------
     namespace Ui
     {
@@ -24,19 +28,6 @@
     class CJournalWidget: public QWidget
     {
         Q_OBJECT
-
-        public:
-            /*!
-             * \brief Стурктура event_t
-             *
-             * Хранение данных о событиях (код события, имя события и вектор подсобытий)
-             */
-            struct event_t
-            {
-                int              code;
-                QString          name;
-                QVector<event_t> sub_event;
-            };
 
         public:
             explicit CJournalWidget(QWidget* parent = nullptr);
@@ -51,7 +42,7 @@
             void setTableHeaders(const QStringList& headers);
             void setTableColumnWidth(const QVector<int>& list);
             void setTableColumnWidth(int column, int width);
-            void setEventList(const QVector<event_t>& events);
+            void setJournalDataType(QVariant data);
             void setVisibleProperty(bool state = false);
 
             void tableClear() const;
@@ -62,13 +53,14 @@
         protected:
             void printCrash(const QVector<quint8>& data) const;
             void printEvent(const QVector<quint8>& data) const;
-            bool eventFilter(QObject* object, QEvent* event);
+            void keyPressEvent(QKeyEvent* event);
+            void mousePressEvent(QMouseEvent* event);
 
         signals:
             void clickedButtonRead(bool = false);
 
         private:
             Ui::CJournalWidget* ui;
-            QVector<event_t>    m_event_list;
+            QVariant            m_journal_data;
     };
 #endif // CJOURNALWIDGET_H

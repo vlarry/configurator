@@ -70,6 +70,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
     initModelTables();
     initDeviceCode(); // инициализация списка кодов устройств
+    initEventJournal(); // инициализация параметров журнала событий
+    initCrashJournal(); // инициализация параметров журнала аварий
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -1663,6 +1665,9 @@ void ConfiguratorWindow::initModelTables()
 //-----------------------------------------
 void ConfiguratorWindow::initEventJournal()
 {
+    if(!m_system_db.isOpen())
+        return;
+
     // инициализация списка журнала событий
     QSqlQuery query(m_system_db);
 
@@ -1672,18 +1677,17 @@ void ConfiguratorWindow::initEventJournal()
         return;
     }
 
-    QVector<CJournalWidget::event_t> events;
+    QVector<event_t> events;
 
     while(query.next())
     {
-        events << CJournalWidget::event_t({ query.value("code").toInt(), query.value("name").toString(),
-                                                  QVector<CJournalWidget::event_t>() });
+        events << event_t({ query.value("code").toInt(), query.value("name").toString(), QVector<event_t>() });
     }
 
     if(events.isEmpty())
         return;
 
-    for(CJournalWidget::event_t& event: events)
+    for(event_t& event: events)
     {
         if(!query.exec("SELECT code, name FROM event_category WHERE event_t = " + QString::number(event.code) + ";"))
         {
@@ -1693,17 +1697,16 @@ void ConfiguratorWindow::initEventJournal()
 
         while(query.next())
         {
-            event.sub_event << CJournalWidget::event_t({ query.value("code").toInt(), query.value("name").toString(),
-                                                         QVector<CJournalWidget::event_t>() });
+            event.sub_event << event_t({ query.value("code").toInt(), query.value("name").toString(), QVector<event_t>() });
         }
     }
 
-    for(CJournalWidget::event_t& event: events)
+    for(event_t& event: events)
     {
         if(event.sub_event.isEmpty())
             continue;
 
-        for(CJournalWidget::event_t& category: event.sub_event)
+        for(event_t& category: event.sub_event)
         {
             if(!query.exec("SELECT code, name FROM event_parameter WHERE event_category = " +
                            QString::number(category.code) + ";"))
@@ -1714,13 +1717,63 @@ void ConfiguratorWindow::initEventJournal()
 
             while(query.next())
             {
-                category.sub_event << CJournalWidget::event_t({ query.value("code").toInt(), query.value("name").toString(),
-                                                                QVector<CJournalWidget::event_t>() });
+                category.sub_event << event_t({ query.value("code").toInt(), query.value("name").toString(),
+                                                                             QVector<event_t>() });
             }
         }
     }
 
-    ui->widgetJournalEvent->setEventList(events);
+    QVariant event_variant = QVariant::fromValue(events);
+    ui->widgetJournalEvent->setJournalDataType(event_variant);
+}
+//-----------------------------------------
+void ConfiguratorWindow::initCrashJournal()
+{
+    if(!m_system_db.isOpen())
+        return;
+
+    QSqlQuery query(m_system_db);
+
+    if(!query.exec("SELECT code, name FROM protection;"))
+    {
+        QMessageBox::warning(this, tr("Иницилизация БД настроек защит"), tr("Не удалось прочитать список защит: %1").
+                                                                         arg(query.lastError().text()));
+        return;
+    }
+
+    protection_set_t protect_set;
+
+    while(query.next())
+    {
+        int     protect_code = query.value("code").toInt();
+        QString protect_name = query.value("name").toString();
+
+        QSqlQuery tquery;
+
+        if(!tquery.exec(QString("SELECT * FROM protection_items WHERE protect_id=%1;").arg(protect_code)))
+        {
+            QMessageBox::warning(this, tr("Иницилизация БД настроек защит"), tr("Не удалось получить настройки защиты: %1 -> %2").
+                                                                             arg(protect_name).arg(tquery.lastError().text()));
+            return;
+        }
+
+        protection_item protect_items;
+
+        while(tquery.next())
+        {
+            QString item_name  = tquery.value("name").toString();
+            QString item_index = tquery.value("index").toString();
+
+            protect_items << qMakePair(item_name, item_index);
+        }
+
+        protection_t protect = qMakePair(protect_name, protect_items);
+
+        protect_set[protect_code] = protect;
+    }
+
+    QVariant protect_variant = QVariant::fromValue(protect_set);
+    ui->widgetJournalCrash->setJournalDataType(protect_variant);
 }
 //---------------------------------------
 void ConfiguratorWindow::initDeviceCode()
@@ -1741,13 +1794,12 @@ void ConfiguratorWindow::initDeviceCode()
 //-------------------------------------
 void ConfiguratorWindow::initJournals()
 {
-    initEventJournal();
+//    initCrashJournal();
 
     QStringList eventJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип") << tr("Категория") <<
                                                        tr("Параметр");
 
-    QStringList crashJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Номер защиты") <<
-                                                       tr("Настройки защиты");
+    QStringList crashJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Защита");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
@@ -1766,7 +1818,7 @@ void ConfiguratorWindow::initJournals()
 
     QVector<int> length_list = QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300;
 
-    ui->widgetJournalCrash->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 200 << 100);
+    ui->widgetJournalCrash->setTableColumnWidth(QVector<int>() << 75 << 100 << 100 << 175);
     ui->widgetJournalEvent->setTableColumnWidth(length_list);
     ui->widgetJournalHalfHour->setTableColumnWidth(length_list);
     ui->widgetJournalIsolation->setTableColumnWidth(length_list);
@@ -3203,7 +3255,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
 
         int width = ui->stwgtMain->width() - 760;
 
-        ui->widgetJournalCrash->setTableColumnWidth(4, 200);
+        ui->widgetJournalCrash->table()->setFixedWidth(475);
         ui->widgetJournalEvent->setTableColumnWidth(3, width);
         ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
         ui->widgetJournalIsolation->setTableColumnWidth(3, width);

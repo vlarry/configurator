@@ -270,6 +270,7 @@
             void initPurposeBind();
             void initModelTables();
             void initEventJournal();
+            void initCrashJournal();
             void initDeviceCode();
             void initJournals();
             void connectSystemDb();
