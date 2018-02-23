@@ -53,11 +53,12 @@
         protected:
             void printCrash(const QVector<quint8>& data) const;
             void printEvent(const QVector<quint8>& data) const;
-            void keyPressEvent(QKeyEvent* event);
-            void mousePressEvent(QMouseEvent* event);
 
         signals:
             void clickedButtonRead(bool = false);
+
+        private slots:
+            void clickedItemTable(const QModelIndex& index);
 
         private:
             Ui::CJournalWidget* ui;

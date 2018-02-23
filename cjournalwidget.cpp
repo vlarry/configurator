@@ -15,6 +15,7 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->textEditPropertyJournal->hide(); // по умолчанию окно свойств скрыто
 
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
+    connect(ui->tableWidgetJournal, &CJournalTable::clicked, this, &CJournalWidget::clickedItemTable);
 }
 //-------------------------------
 CJournalWidget::~CJournalWidget()
@@ -177,14 +178,13 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
 
         item->setTextAlignment(Qt::AlignCenter);
 
-//        QVariant protect_type = QVariant::fromValue(m_protection_set);
-
-//        ui->tableWidgetJournal->setRowData(row, protect_type);  Необходим формат для вставки данных в строку таблицы
+        QVariant protect_variant = QVariant::fromValue(protection);
 
         ui->tableWidgetJournal->setItem(row, 3, item);
+        ui->tableWidgetJournal->setRowData(row, protect_variant);
     }
 }
-//----------------------------------------------------------
+//----------------------------------------------------------------
 void CJournalWidget::printEvent(const QVector<quint8>& data) const
 {
     for(int i = 0; i < data.count(); i += 16)
@@ -244,51 +244,23 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
         }
     }
 }
-//--------------------------------------------------
-void CJournalWidget::keyPressEvent(QKeyEvent* event)
+//-------------------------------------------------------------
+void CJournalWidget::clickedItemTable(const QModelIndex& index)
 {
-    if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_C)
+    QString journal_type = property("TYPE").toString();
+
+    if(!index.isValid() || journal_type.isEmpty())
+        return;
+
+    if(journal_type == "CRASH")
     {
-        if(ui->tableWidgetJournal->rowCount() != 0)
-        {
-            QList<QTableWidgetSelectionRange> selected = ui->tableWidgetJournal->selectedRanges();
+        QVariant protect_variant = ui->tableWidgetJournal->rowData(index.row());
 
-            if(!selected.isEmpty())
-            {
-                QString clipboard_str = "";
+        if(protect_variant.isNull())
+            return;
 
-                for(const QTableWidgetSelectionRange range: selected)
-                {
-                    for(int i = range.topRow(); i <= range.bottomRow(); i++)
-                    {
-                        for(int j = 0; j < ui->tableWidgetJournal->columnCount(); j++)
-                        {
-                            clipboard_str += ui->tableWidgetJournal->item(i, j)->text() + "\t";
-                        }
+        protection_t protection = qvariant_cast<protection_t>(protect_variant);
 
-                        clipboard_str += "\n";
-                    }
-                }
-
-                QApplication::clipboard()->setText(clipboard_str);
-            }
-            else
-            {
-                QMessageBox::warning(this, tr("Копирование данных из таблицы"), tr("В таблице нет выделенных строк."));
-            }
-        }
-        else
-        {
-            QMessageBox::warning(this, tr("Копирование данных из таблицы"), tr("Таблица пуста."));
-        }
-    }
-}
-//------------------------------------------------------
-void CJournalWidget::mousePressEvent(QMouseEvent* event)
-{
-    qDebug() << event->button();
-    if(event->button() == Qt::LeftButton)
-    {
-        qDebug() << ui->tableWidgetJournal->item(ui->tableWidgetJournal->currentRow(), 3);
+        ui->textEditPropertyJournal->setText(tr("Защита %1:").arg(protection.first));
     }
 }

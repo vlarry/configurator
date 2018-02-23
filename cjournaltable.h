@@ -3,7 +3,11 @@
     //---------------------
     #include <QTableWidget>
     #include <QWidget>
+    #include <QClipboard>
+    #include <QMessageBox>
     #include <QMetaType>
+    #include <QKeyEvent>
+    #include <QApplication>
     #include <QDebug>
     /*!
      * \brief protection_set_t
@@ -42,7 +46,11 @@
         public:
             CJournalTable(QWidget* parent = nullptr);
 
-            void setRowData(int row, QVariant value);
+            QVariant rowData(int row) const;
+            void     setRowData(int row, QVariant value);
+
+        protected:
+            void keyPressEvent(QKeyEvent* event);
 
         private:
             QMap<int, QVariant> m_data_rows;
