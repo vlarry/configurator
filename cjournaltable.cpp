@@ -5,7 +5,11 @@ CJournalTable::CJournalTable(QWidget* parent):
 {
 
 }
-//--------------------------------------------
+/*!
+ * \brief CJournalTable::rowData
+ * \param row - номер строки
+ * \return Возвращает значение QVariant (хранится структура описывающая определенный журнал)
+ */
 QVariant CJournalTable::rowData(int row) const
 {
     if(m_data_rows.find(row) != m_data_rows.end())
@@ -13,7 +17,11 @@ QVariant CJournalTable::rowData(int row) const
 
     return QVariant();
 }
-//-----------------------------------------------------
+/*!
+ * \brief CJournalTable::setRowData
+ * \param row - номер строки, которая является ключом
+ * \param value - данные журнала (структура данных зависит от журнала)
+ */
 void CJournalTable::setRowData(int row, QVariant value)
 {
     m_data_rows[row] = value;
@@ -21,7 +29,7 @@ void CJournalTable::setRowData(int row, QVariant value)
 //-------------------------------------------------
 void CJournalTable::keyPressEvent(QKeyEvent* event)
 {
-    if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_C)
+    if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_C) // копирование данных из журнала
     {
         if(rowCount() != 0)
         {

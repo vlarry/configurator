@@ -91,8 +91,8 @@ void CJournalWidget::setTableColumnWidth(int column, int width)
 
     ui->tableWidgetJournal->setColumnWidth(column, width);
 }
-//----------------------------------------------------
-void CJournalWidget::setJournalDataType(QVariant data)
+//-------------------------------------------------------
+void CJournalWidget::setJournalDescription(QVariant data)
 {
     m_journal_data = data;
 }
@@ -149,7 +149,7 @@ void CJournalWidget::convertHalfwordToBytes(const QVector<quint16>& source, QVec
         dest << (quint8(((value >> 8)&0x00FF))) << (quint8((value&0x00FF)));
     }
 }
-//----------------------------------------------------------
+//----------------------------------------------------------------
 void CJournalWidget::printCrash(const QVector<quint8>& data) const
 {
     if(data.count() != 256)
@@ -168,21 +168,20 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
 
     int protect_code = data[7]; // код защиты
 
-    protection_set_t protect_set = qvariant_cast<protection_set_t>(m_journal_data);
+    protection_t protection = qvariant_cast<protection_t>(m_journal_data);
 
-    if(protect_set.find(protect_code) != protect_set.end()) // защита существует
+    QString protection_name = tr("Не определена");
+
+    if(protection.items.find(protect_code) != protection.items.end()) // код защиты обнаружен
     {
-        protection_t protection = protect_set[protect_code];
+        QPair<QString, QVector<protection_item_t> > pair = protection.items[protect_code];
 
-        QTableWidgetItem* item = new QTableWidgetItem(protection.first);
-
-        item->setTextAlignment(Qt::AlignCenter);
-
-        QVariant protect_variant = QVariant::fromValue(protection);
-
-        ui->tableWidgetJournal->setItem(row, 3, item);
-        ui->tableWidgetJournal->setRowData(row, protect_variant);
+        protection_name = pair.first;
     }
+
+    ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(protection_name));
+
+    ui->tableWidgetJournal->setRowData(row, protect_code);
 }
 //----------------------------------------------------------------
 void CJournalWidget::printEvent(const QVector<quint8>& data) const
@@ -254,13 +253,36 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
 
     if(journal_type == "CRASH")
     {
-        QVariant protect_variant = ui->tableWidgetJournal->rowData(index.row());
+        int protect_code = ui->tableWidgetJournal->rowData(index.row()).toInt();
 
-        if(protect_variant.isNull())
+        if(protect_code < 0 || protect_code > 25)
             return;
 
-        protection_t protection = qvariant_cast<protection_t>(protect_variant);
+        protection_t protection = qvariant_cast<protection_t>(m_journal_data);
 
-        ui->textEditPropertyJournal->setText(tr("Защита %1:").arg(protection.first));
+        if(protection.items.isEmpty())
+            return;
+
+        if(protection.items.find(protect_code) != protection.items.end()) // код защиты обнаружен
+        {
+            QPair<QString, QVector<protection_item_t> > pair = protection.items[protect_code];
+            QString                    protect_name = pair.first;
+            QVector<protection_item_t> protect_var  = pair.second;
+
+            QString property_str = tr("Защита %1:\n").arg(protect_name);
+
+            for(const protection_item_t& var: protect_var)
+            {
+                property_str += var.name + "\n";
+
+                if(var.type == "LIST")
+                {
+                    QVector<QString> variant = protection.sets[var.index];
+                }
+
+            }
+
+            ui->textEditPropertyJournal->setText(property_str);
+        }
     }
 }

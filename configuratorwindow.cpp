@@ -1724,7 +1724,7 @@ void ConfiguratorWindow::initEventJournal()
     }
 
     QVariant event_variant = QVariant::fromValue(events);
-    ui->widgetJournalEvent->setJournalDataType(event_variant);
+    ui->widgetJournalEvent->setJournalDescription(event_variant);
 }
 //-----------------------------------------
 void ConfiguratorWindow::initCrashJournal()
@@ -1733,47 +1733,96 @@ void ConfiguratorWindow::initCrashJournal()
         return;
 
     QSqlQuery query(m_system_db);
+    QString   title_msg = tr("Загрузка настроек защиты из БД");
 
-    if(!query.exec("SELECT code, name FROM protection;"))
+    // Загружаем список защит
+    if(!query.exec(QString("SELECT code, name FROM protection;")))
     {
-        QMessageBox::warning(this, tr("Иницилизация БД настроек защит"), tr("Не удалось прочитать список защит: %1").
-                                                                         arg(query.lastError().text()));
+        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список доступных защит: %1").arg(query.lastError().text()));
         return;
     }
 
-    protection_set_t protect_set;
+    protection_list_item list_item;
+    protection_list_set  list_set;
 
     while(query.next())
     {
-        int     protect_code = query.value("code").toInt();
-        QString protect_name = query.value("name").toString();
+        int     code         = query.value("code").toInt();
+        QString name_protect = query.value("name").toString();
 
-        QSqlQuery tquery;
+        QSqlQuery query_item(m_system_db);
 
-        if(!tquery.exec(QString("SELECT * FROM protection_items WHERE protect_id=%1;").arg(protect_code)))
+        // Загружаем переменные списка защит по коду защиты
+        if(!query_item.exec(QString("SELECT name, index_var, type, first FROM protection_items WHERE protect_id=%1").arg(code)))
         {
-            QMessageBox::warning(this, tr("Иницилизация БД настроек защит"), tr("Не удалось получить настройки защиты: %1 -> %2").
-                                                                             arg(protect_name).arg(tquery.lastError().text()));
+            QMessageBox::warning(this, title_msg, tr("Не удалось загрузить переменные защит: %1").arg(query_item.lastError().text()));
             return;
         }
 
-        protection_item protect_items;
+        QVector<protection_item_t> items;
 
-        while(tquery.next())
+        while(query_item.next())
         {
-            QString item_name  = tquery.value("name").toString();
-            QString item_index = tquery.value("index").toString();
+            QString name      = query_item.value("name").toString();
+            QString index_var = query_item.value("index_var").toString();
+            QString type      = query_item.value("type").toString();
+            int     first     = query_item.value("first").toInt();
 
-            protect_items << qMakePair(item_name, item_index);
+            items << protection_item_t({ name, index_var, type, first });
         }
 
-        protection_t protect = qMakePair(protect_name, protect_items);
-
-        protect_set[protect_code] = protect;
+        list_item.insert(code, qMakePair(name_protect, items));
     }
 
-    QVariant protect_variant = QVariant::fromValue(protect_set);
-    ui->widgetJournalCrash->setJournalDataType(protect_variant);
+    // Перебираем список защит и ищем переменные с типом LIST (список)
+    for(int key: list_item.keys())
+    {
+        QPair<QString, QVector<protection_item_t> > pair = list_item[key];
+
+        for(const protection_item_t& item: pair.second)
+        {
+            if(item.type == "LIST") // тип переменной является списком
+            {
+                if(!query.exec(QString("SELECT number FROM protection_set WHERE index_var=\"%1\";").arg(item.index)))
+                {
+                    QMessageBox::warning(this, title_msg, tr("Не удалось загрузить перечень списов вариантов переменных типа LIST: %1").
+                                         arg(query.lastError().text()));
+                    break;
+                }
+
+                while(query.next())
+                {
+                    int number = query.value("number").toInt();
+
+                    QSqlQuery query_set(m_system_db);
+
+                    QVector<QString> set_list;
+
+                    if(!query_set.exec(QString("SELECT name FROM protection_set_list WHERE set_number=%1;").arg(number)))
+                    {
+                        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить варианты переменных типа LIST: %1").
+                                                              arg(query_set.lastError().text()));
+                        break;
+                    }
+
+                    while(query_set.next())
+                    {
+                        QString name = query_set.value("name").toString();
+
+                        set_list << name;
+                    }
+
+                    list_set.insert(item.index, set_list);
+                }
+            }
+        }
+    }
+
+    protection_t protection = { list_item, list_set };
+
+    QVariant protection_variant = QVariant::fromValue(protection);
+
+    ui->widgetJournalCrash->setJournalDescription(protection_variant);
 }
 //---------------------------------------
 void ConfiguratorWindow::initDeviceCode()
@@ -1794,8 +1843,6 @@ void ConfiguratorWindow::initDeviceCode()
 //-------------------------------------
 void ConfiguratorWindow::initJournals()
 {
-//    initCrashJournal();
-
     QStringList eventJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип") << tr("Категория") <<
                                                        tr("Параметр");
 
