@@ -66,6 +66,22 @@
      */
     typedef QVector<variable_t> variable_list_t;
     /*!
+     * \brief The io_t struct
+     *
+     * Структура описывающая выходы.
+     */
+    struct io_t
+    {
+        QString index;
+        QString description;
+    };
+    /*!
+     * \brief io_list_t
+     *
+     * Список выходов
+     */
+    typedef QVector<io_t> io_list_t;
+    /*!
      * \brief calc_value_list_t
      *
      * Список расчетных величин
@@ -115,6 +131,8 @@
         protection_list_item items;
         protection_list_set  sets;
         variable_list_t      variable;
+        io_list_t            out;
+        io_list_t            input;
         calc_value_list_t    calc;
     };
     //----------------------------------

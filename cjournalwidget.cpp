@@ -153,6 +153,9 @@ void CJournalWidget::convertHalfwordToBytes(const QVector<quint16>& source, QVec
 //----------------------------------------------------------------
 void CJournalWidget::printCrash(const QVector<quint8>& data) const
 {
+    // Полный АТАС с журналом событий - в некоторых местах пришлось делать реализацию в ЛОБ переступив через себя
+    // (как впрочем и вся программа - задача сделать черновик для настроек, а вылилась в полнофункциональную и для клиента -
+    // ПОЗОР НА МОЮ СЕДУЮ ГОЛОВУ - СПЛОШНОЙ ГОВНОКОД!!!).
     if(data.count() != 256)
         return;
 
@@ -233,12 +236,78 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
 
     variable_list_t variable_list = protection.variable;
 
-    for(int i = 0; i < 48; i += 4) // переход через 4 байта (32 бита) - 32*12 = 384 максимальное количество переменных, но их пока
-                                   // всего 358
+    if(!variable_list.isEmpty())
+    {
+        for(int i = 0; i < 48; i += 4) // переход через 4 байта (32 бита) - 32*12 = 384 максимальное количество переменных,
+                                       // но их пока всего 358
+        {
+            for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
+            {
+                int pos = 36 + i + j;
+
+                val.bytes[j] = data[pos];
+            }
+
+            quint32 value = val._int;
+
+            for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
+            {
+                int ivar = i*8 + k; // вычисляем индекс переменной
+
+                if(ivar >= 358)
+                    break;
+
+                bool    state = (value&(1 << k));
+                QString str   = ((state)?tr("Да"):tr("Нет"));
+
+                property_list << property_data_item_t({ QString("%1 (%2)").arg(variable_list[ivar].index).arg(variable_list[ivar].name),
+                                                        str });
+            }
+        }
+    }
+
+    property_list << property_data_item_t({ ";", tr("Реле, светодиоды, модифицируемые переменные") });
+
+    io_list_t out_list = protection.out;
+
+    if(!out_list.isEmpty())
+    {
+        for(int i = 0; i < 8; i += 4)
+        {
+            for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
+            {
+                int pos = 84 + i + j;
+
+                val.bytes[j] = data[pos];
+            }
+
+            quint32 value = val._int;
+
+            for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
+            {
+                int ivar = i*8 + k; // вычисляем индекс переменной
+
+                if(ivar >= 50)
+                    break;
+
+                bool    state = (value&(1 << k));
+                QString str   = ((state)?tr("Да"):tr("Нет"));
+
+                property_list << property_data_item_t({ QString("%1 (%2)").arg(out_list[ivar].index).arg(out_list[ivar].description),
+                                                        str });
+            }
+        }
+    }
+
+    property_list << property_data_item_t({ ";", tr("Входы") });
+
+    io_list_t input_list = protection.input;
+
+    if(!input_list.isEmpty())
     {
         for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
         {
-            int pos = 36 + i + j;
+            int pos = 92 + j;
 
             val.bytes[j] = data[pos];
         }
@@ -247,15 +316,14 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
 
         for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
         {
-            int ivar = i*8 + k; // вычисляем индекс переменной
-
-            if(ivar >= 358)
+            if(k >= 20)
                 break;
 
             bool    state = (value&(1 << k));
             QString str   = ((state)?tr("Да"):tr("Нет"));
 
-            property_list << property_data_item_t({ variable_list[ivar].name, str });
+            property_list << property_data_item_t({ QString("%1 (%2)").arg(input_list[k].index).arg(input_list[k].description),
+                                                    str });
         }
     }
 

@@ -1833,6 +1833,35 @@ void ConfiguratorWindow::initCrashJournal()
                                                                      query.value("description").toString() });
     }
 
+    // загружаем выходы (светодиоды, реле и модифицируемые переменные)
+    if(!query.exec("SELECT key, description FROM iodevice WHERE type=\"RELAY\" OR type=\"LED\" OR type=\"EMPTY\";"))
+    {
+        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список выходов и модифицируемых переменных: %1").
+                                              arg(query.lastError().text()));
+        return;
+    }
+
+    io_list_t out_list;
+
+    while(query.next())
+    {
+        out_list << io_t({ query.value("key").toString(), query.value("description").toString() });
+    }
+
+    // загружаем входы
+    if(!query.exec("SELECT key, description FROM iodevice WHERE type=\"INPUT\";"))
+    {
+        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список входов: %1").arg(query.lastError().text()));
+        return;
+    }
+
+    io_list_t input_list;
+
+    while(query.next())
+    {
+        input_list << io_t({ query.value("key").toString(), query.value("description").toString() });
+    }
+
     // загружаем список расчетных величин из БД
     if(!query.exec("SELECT name, first FROM calc_value;"))
     {
@@ -1847,7 +1876,7 @@ void ConfiguratorWindow::initCrashJournal()
         calc_value_list << calc_value_t({ query.value("name").toString(), query.value("first").toInt() });
     }
 
-    protection_t protection = { list_item, list_set, variable_list, calc_value_list };
+    protection_t protection = { list_item, list_set, variable_list, out_list, input_list, calc_value_list };
 
     ui->widgetJournalCrash->setJournalDescription(QVariant::fromValue(protection));
 }
