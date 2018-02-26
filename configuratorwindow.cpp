@@ -1818,11 +1818,38 @@ void ConfiguratorWindow::initCrashJournal()
         }
     }
 
-    protection_t protection = { list_item, list_set };
+    // загружаем список внутренних переменных (358 шт)
+    if(!query.exec("SELECT key, name, description FROM variable;"))
+    {
+        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список внутренних переменных: %1").arg(query.lastError().text()));
+        return;
+    }
 
-    QVariant protection_variant = QVariant::fromValue(protection);
+    variable_list_t variable_list;
 
-    ui->widgetJournalCrash->setJournalDescription(protection_variant);
+    while(query.next())
+    {
+        variable_list << variable_t({ query.value("key").toString(), query.value("name").toString(),
+                                                                     query.value("description").toString() });
+    }
+
+    // загружаем список расчетных величин из БД
+    if(!query.exec("SELECT name, first FROM calc_value;"))
+    {
+        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список расчетных величин: %1").arg(query.lastError().text()));
+        return;
+    }
+
+    calc_value_list_t calc_value_list;
+
+    while(query.next())
+    {
+        calc_value_list << calc_value_t({ query.value("name").toString(), query.value("first").toInt() });
+    }
+
+    protection_t protection = { list_item, list_set, variable_list, calc_value_list };
+
+    ui->widgetJournalCrash->setJournalDescription(QVariant::fromValue(protection));
 }
 //---------------------------------------
 void ConfiguratorWindow::initDeviceCode()
@@ -2004,11 +2031,10 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
 
             if(box)
             {
-                quint16 i = unit.values().at(index);
+                quint16 i = unit.values().at(index++);
 
-                box->setCurrentIndex(i);
-
-                index++;
+                if(i != 0)
+                    box->setCurrentIndex(i - 1);
             }
         }
     }
@@ -2071,7 +2097,7 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
                 if(bit >= limit)
                     break;
 
-                bool state = (value >> k)&0x00000001;
+                bool state = (value&(1 << k));
 
                 data[row][bit].setState(state);
             }
@@ -2597,7 +2623,7 @@ void ConfiguratorWindow::clearJournal()
 
     QString journal_name = m_active_journal_current->property("NAME").toString();
 
-    m_active_journal_current->tableClear();
+    m_active_journal_current->journalClear();
     m_active_journal_current->headerClear();
 
     m_status_bar->setStatusMessage(tr("Очистка таблицы журнала %1").arg(journal_name), 2000);

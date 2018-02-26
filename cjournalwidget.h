@@ -3,7 +3,8 @@
     //----------------
     #include <QWidget>
     #include <QTableWidget>
-    #include <QTextEdit>
+    #include <QListWidget>
+    #include <QListWidgetItem>
     #include <QDateTime>
     #include <QKeyEvent>
     #include <QMessageBox>
@@ -14,11 +15,13 @@
     #include <QMouseEvent>
     #include <QEvent>
     #include <QMetaType>
+    #include <QLabel>
     #include <QDebug>
     #include <QVariant>
     #include "cheaderjournal.h"
     #include "ctablewidgetitem.h"
     #include "cjournaltable.h"
+    #include "clistwidgetitem.h"
     //----------
     namespace Ui
     {
@@ -35,6 +38,39 @@
         QString          name;
         QVector<event_t> sub_event;
     };
+    /*!
+     * \brief The calc_value_t struct
+     *
+     * Стуктура описывающая расчетные величины.
+     */
+    struct calc_value_t
+    {
+        QString name; // имя расчетной величины
+        int     first; // позиция первого байта
+    };
+    /*!
+     * \brief The variable_t struct
+     *
+     * Структура описывает внутреннюю переменную.
+     */
+    struct variable_t
+    {
+        QString index; // индекс переменной
+        QString name; // имя переменной
+        QString description; // описание переменной
+    };
+    /*!
+     * \brief variable_list_t
+     *
+     * Список внутренних переменных
+     */
+    typedef QVector<variable_t> variable_list_t;
+    /*!
+     * \brief calc_value_list_t
+     *
+     * Список расчетных величин
+     */
+    typedef QVector<calc_value_t> calc_value_list_t;
     /*!
      * \brief set_item_t
      *
@@ -78,6 +114,8 @@
     {
         protection_list_item items;
         protection_list_set  sets;
+        variable_list_t      variable;
+        calc_value_list_t    calc;
     };
     //----------------------------------
     class CJournalWidget: public QWidget
@@ -91,7 +129,7 @@
             CHeaderJournal* header() const;
             void            headerClear() const;
             QTableWidget*   table() const;
-            QTextEdit*      propertyJournal() const;
+            QListWidget*    propertyJournal() const;
             void            print(const QVector<quint16>& data) const;
 
             void setTableHeaders(const QStringList& headers);
@@ -100,7 +138,7 @@
             void setJournalDescription(QVariant data);
             void setVisibleProperty(bool state = false);
 
-            void tableClear() const;
+            void journalClear() const;
 
             static QDateTime unpackDateTime(QVector<quint8>& data);
             static void      convertHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);

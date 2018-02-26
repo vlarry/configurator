@@ -12,7 +12,7 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-    ui->textEditPropertyJournal->hide(); // по умолчанию окно свойств скрыто
+    ui->listWidgetPropertyJournal->hide(); // по умолчанию окно свойств скрыто
 
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
     connect(ui->tableWidgetJournal, &CJournalTable::clicked, this, &CJournalWidget::clickedItemTable);
@@ -38,9 +38,9 @@ QTableWidget* CJournalWidget::table() const
     return ui->tableWidgetJournal;
 }
 //------------------------------------------------
-QTextEdit* CJournalWidget::propertyJournal() const
+QListWidget* CJournalWidget::propertyJournal() const
 {
-    return ui->textEditPropertyJournal;
+    return ui->listWidgetPropertyJournal;
 }
 /*!
  * \brief CJournalWidget::print
@@ -99,13 +99,14 @@ void CJournalWidget::setJournalDescription(QVariant data)
 //-------------------------------------------------
 void CJournalWidget::setVisibleProperty(bool state)
 {
-    ui->textEditPropertyJournal->setVisible(state);
+    ui->listWidgetPropertyJournal->setVisible(state);
 }
-//-------------------------------------
-void CJournalWidget::tableClear() const
+//---------------------------------------
+void CJournalWidget::journalClear() const
 {
     ui->tableWidgetJournal->clearContents();
     ui->tableWidgetJournal->setRowCount(0);
+    ui->listWidgetPropertyJournal->clear();
 }
 /*!
  * \brief CJournalWidget::unpackDateTime
@@ -170,18 +171,114 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
 
     protection_t protection = qvariant_cast<protection_t>(m_journal_data);
 
-    QString protection_name = tr("Не определена");
+    if(protection.items.find(protect_code) == protection.items.end()) // код защиты не обнаружен
+        return;
 
-    if(protection.items.find(protect_code) != protection.items.end()) // код защиты обнаружен
+    QPair<QString, QVector<protection_item_t> > pair = protection.items[protect_code];
+
+    ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(pair.first)); // вывод в таблицу имени защиты
+
+    // парсинг свойств (настроек защиты, переменные, расчетные значения) и занесение их в хранилище таблицы
+    // Настройки защиты - хрантятся в 28 байтах с 8го по 35й включительно
+    QVector<protection_item_t> items = pair.second; // получаем список переменных защиты
+
+    if(items.isEmpty())
+        return;
+
+    property_list_t property_list;
+
+    union // объединение для преобразования в тип float
     {
-        QPair<QString, QVector<protection_item_t> > pair = protection.items[protect_code];
+        quint8  bytes[4];
+        float   _float;
+        quint32 _int;
+    } val;
 
-        protection_name = pair.first;
+    // добавление в свойства настроек защит
+    property_list << property_data_item_t({ ";", tr("Настройки защиты") });
+
+    for(const protection_item_t& item: items)
+    {
+        if(item.type == "LIST") // если тип является списком, то получаем номер варианта настройки
+        {
+            int row = data[item.first];
+
+            if(protection.sets.find(item.index) != protection.sets.end()) // если такой набор настроек существует
+            {
+                int     count    = protection.sets[item.index].count();
+                QString set_item = tr("Не определена");
+
+                if(count >= 0 && row < count)
+                {
+                    set_item = protection.sets[item.index][row]; // получаем название варианта настройки
+                }
+
+                property_list << property_data_item_t({ item.name, set_item });
+            }
+        }
+        else if(item.type == "FLOAT") // если тип является вещественным типом, то высчитываем значение
+        {
+            for(int i = 0; i < 4; i++) // размерность типа FLOAT 4 байта
+            {
+                int pos = item.first + i;
+
+                val.bytes[i] = data[pos];
+            }
+
+            property_list << property_data_item_t({ item.name, QString::number(val._float, 'f', 6) });
+        }
     }
 
-    ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(protection_name));
+    property_list << property_data_item_t({ ";", tr("Внутренние переменные: выходы") }); // добавление разделителя между блоками переменных
 
-    ui->tableWidgetJournal->setRowData(row, protect_code);
+    variable_list_t variable_list = protection.variable;
+
+    for(int i = 0; i < 48; i += 4) // переход через 4 байта (32 бита) - 32*12 = 384 максимальное количество переменных, но их пока
+                                   // всего 358
+    {
+        for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
+        {
+            int pos = 36 + i + j;
+
+            val.bytes[j] = data[pos];
+        }
+
+        quint32 value = val._int;
+
+        for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
+        {
+            int ivar = i*8 + k; // вычисляем индекс переменной
+
+            if(ivar >= 358)
+                break;
+
+            bool    state = (value&(1 << k));
+            QString str   = ((state)?tr("Да"):tr("Нет"));
+
+            property_list << property_data_item_t({ variable_list[ivar].name, str });
+        }
+    }
+
+    property_list << property_data_item_t({ ";", tr("Расчетные величины") }); // добавление разделителя между блоками переменных
+
+    // добавление в свойства расчетных величин
+    calc_value_list_t calc_value_list = protection.calc;
+
+    if(!calc_value_list.isEmpty())
+    {
+        for(const calc_value_t& value: calc_value_list)
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                int pos = value.first + i;
+                val.bytes[i] = data[pos];
+            }
+
+            property_list << property_data_item_t({ value.name, QString::number(val._float, 'f', 6) });
+        }
+    }
+
+    ui->tableWidgetJournal->setRowData(row, QVariant::fromValue(property_list));
 }
 //----------------------------------------------------------------
 void CJournalWidget::printEvent(const QVector<quint8>& data) const
@@ -246,6 +343,8 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
 //-------------------------------------------------------------
 void CJournalWidget::clickedItemTable(const QModelIndex& index)
 {
+    ui->listWidgetPropertyJournal->clear(); // очищаем список свойств
+
     QString journal_type = property("TYPE").toString();
 
     if(!index.isValid() || journal_type.isEmpty())
@@ -253,36 +352,40 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
 
     if(journal_type == "CRASH")
     {
-        int protect_code = ui->tableWidgetJournal->rowData(index.row()).toInt();
+        property_list_t property_list = qvariant_cast<property_list_t>(ui->tableWidgetJournal->rowData(index.row()));
 
-        if(protect_code < 0 || protect_code > 25)
+        if(property_list.isEmpty())
             return;
 
-        protection_t protection = qvariant_cast<protection_t>(m_journal_data);
-
-        if(protection.items.isEmpty())
-            return;
-
-        if(protection.items.find(protect_code) != protection.items.end()) // код защиты обнаружен
+        for(const property_data_item_t& item: property_list)
         {
-            QPair<QString, QVector<protection_item_t> > pair = protection.items[protect_code];
-            QString                    protect_name = pair.first;
-            QVector<protection_item_t> protect_var  = pair.second;
-
-            QString property_str = tr("Защита %1:\n").arg(protect_name);
-
-            for(const protection_item_t& var: protect_var)
+            if(item.name == ";") // если точка с запятой, то конец раздела
             {
-                property_str += var.name + "\n";
+                QListWidgetItem* titem = new QListWidgetItem(ui->listWidgetPropertyJournal);
+                QLabel*          label = new QLabel(item.value, ui->listWidgetPropertyJournal);
 
-                if(var.type == "LIST")
-                {
-                    QVector<QString> variant = protection.sets[var.index];
-                }
+                label->setAlignment(Qt::AlignCenter);
+                label->setStyleSheet("background-color: #FAFAFA;");
 
+                QFont f(label->font());
+
+                f.setPointSize(10);
+                f.setBold(true);
+
+                label->setFont(f);
+
+                ui->listWidgetPropertyJournal->setItemWidget(titem, label);
+
+                continue;
             }
 
-            ui->textEditPropertyJournal->setText(property_str);
+            CListWidgetItem* list_item      = new CListWidgetItem(ui->listWidgetPropertyJournal);
+            QListWidgetItem* item_container = new QListWidgetItem(ui->listWidgetPropertyJournal);
+
+            list_item->setPropertyData(item.name, item.value);
+            item_container->setSizeHint(list_item->sizeHint());
+
+            ui->listWidgetPropertyJournal->setItemWidget(item_container, list_item);
         }
     }
 }

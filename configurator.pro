@@ -44,7 +44,8 @@ SOURCES += \
     cfilter.cpp \
     cheaderjournal.cpp \
     cjournalwidget.cpp \
-    cjournaltable.cpp
+    cjournaltable.cpp \
+    clistwidgetitem.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -66,7 +67,8 @@ HEADERS += \
     cfilter.h \
     cheaderjournal.h \
     cjournalwidget.h \
-    cjournaltable.h
+    cjournaltable.h \
+    clistwidgetitem.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -79,7 +81,8 @@ FORMS += \
     progressbarwidget.ui \
     filterdialog.ui \
     headerjournal.ui \
-    journalwidget.ui
+    journalwidget.ui \
+    listwidgetitem.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

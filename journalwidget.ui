@@ -20,7 +20,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>2</number>
+    <number>5</number>
    </property>
    <property name="leftMargin">
     <number>0</number>
@@ -65,20 +65,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QTextEdit" name="textEditPropertyJournal">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="undoRedoEnabled">
-        <bool>false</bool>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
+      <widget class="QListWidget" name="listWidgetPropertyJournal"/>
      </item>
     </layout>
    </item>
