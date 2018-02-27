@@ -259,7 +259,7 @@
             void filterDialog();
             
         private:
-            bool createJournalTable(QSqlDatabase* db);
+            bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
             bool currentJournal(const CJournalWidget*& widget);
             void loadSettings();
             void saveSattings();

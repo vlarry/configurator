@@ -2389,6 +2389,8 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
 
     int addr = addressSettingKey(first);
 
+    qDebug() << "address: " << addr << ", size: " << size;
+
     CDataUnitType unit(ui->sboxSlaveID->value(), type, addr, QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), GENERAL_TYPE);
@@ -2767,7 +2769,7 @@ void ConfiguratorWindow::filterDialog()
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
  */
-bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db)
+bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& journal_type)
 {
     QSqlQuery query(*db);
 
@@ -2796,16 +2798,30 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db)
         return false;
     }
 
-    // создание таблицы для хранения журналов
-    db_str = "CREATE TABLE journals ("
-             "id_msg INTEGER NOT NULL, "
-             "date STRING(25) NOT NULL, "
-             "time STRING(25), "
-             "type STRING(255), "
-             "category STRING(255), "
-             "parameter STRING(255), "
-             "sn_device INTEGER NOT NULL, "
-             "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
+    if(journal_type == "EVENT")
+    {
+        // создание таблицы для хранения журналов событий
+        db_str = "CREATE TABLE journals ("
+                 "id_msg INTEGER NOT NULL, "
+                 "date STRING(25) NOT NULL, "
+                 "time STRING(25), "
+                 "type STRING(255), "
+                 "category STRING(255), "
+                 "parameter STRING(255), "
+                 "sn_device INTEGER NOT NULL, "
+                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
+    }
+    else if(journal_type == "CRASH")
+    {
+        // создание таблицы для хранения журналов аварий
+        db_str = "CREATE TABLE journals ("
+                 "id_msg INTEGER NOT NULL, "
+                 "date STRING(25) NOT NULL, "
+                 "time STRING(25), "
+                 "protection STRING(255), "
+                 "sn_device INTEGER NOT NULL, "
+                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
+    }
 
     if(!query.exec(db_str))
     {
@@ -3582,6 +3598,8 @@ void ConfiguratorWindow::importJournalToTable()
 
     int msg_count = 0;
 
+    table->setSortingEnabled(false);
+
     while(query.next()) // заносим данные в таблицу журналов событий
     {
         int row = table->rowCount();
@@ -3611,6 +3629,10 @@ void ConfiguratorWindow::importJournalToTable()
         msg_count++;
     }
 
+    table->sortByColumn(1, Qt::AscendingOrder);
+    table->setSortingEnabled(true);
+    table->setSortingEnabled(false);
+
     if(m_filter.find(journal_type) != m_filter.end())
     {
         CFilter::FilterDateType d = { QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy"),
@@ -3618,8 +3640,7 @@ void ConfiguratorWindow::importJournalToTable()
         m_filter[journal_type].setDate(d);
     }
 
-//    table->sortByColumn(1, Qt::AscendingOrder);
-//    table->setSortingEnabled(true);
+
     header->setTextTableCountMessages(msg_count);
     header->setTextElapsedTime(timer.elapsed());
 
@@ -3742,7 +3763,7 @@ void ConfiguratorWindow::exportJournalToDb()
     }
     else // создаем новую базу данных
     {
-        if(!createJournalTable(db)) // создаем таблицы
+        if(!createJournalTable(db, journal_type)) // создаем таблицы
         {
             disconnectDb(db);
             return;
@@ -3820,52 +3841,30 @@ void ConfiguratorWindow::exportJournalToDb()
 
     int i = 0;
 
-    if(!dir.exists("log"))
-        dir.mkdir("log");
-
-    QFile file1("log/exportJournalToDb.log");
-
-    file1.open(QFile::WriteOnly);
-
-    QTextStream out1(&file1);
-
-    QFile file2("log/exportJournalToDb_values.log");
-
-    file2.open(QFile::WriteOnly);
-
-    QTextStream out2(&file2);
-
     for(i = pos.x(); i <= pos.y(); i++)
     {
-        int     id_msg    = table->item(i, 0)->text().toInt();
-        QString date      = QDate::fromString(table->item(i, 1)->text(),
-                                              "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
-        QString time      = table->item(i, 2)->text();
-        QString type      = table->item(i, 3)->text();
-        QString category  = table->item(i, 4)->text();
-        QString parameter = table->item(i, 5)->text();
-
-        query.prepare(QString("INSERT OR REPLACE INTO journals (id_msg, date, time, type, category, parameter, sn_device)"
-                              "VALUES(:id_msg, :date, :time, :type, :category, :parameter, :sn_device)"));
-        query.bindValue(":id_msg", id_msg);
-        query.bindValue(":date", date);
-        query.bindValue(":time", time);
-        query.bindValue(":type", type);
-        query.bindValue(":category", category);
-        query.bindValue(":parameter", parameter);
-        query.bindValue(":sn_device", id);
-
-        out2 << "id_msg = " << id_msg << "; date = " << date << "; time = " << time << "; type = " << type << "; category = " <<
-                category << "; parameter = " << parameter << "; sn_device = " << id << "\n";
-
-        if(!query.exec())
+        if(journal_type == "EVENT")
         {
-            out1 << "\n-\t" << query.lastError().text() << "\n\n";
-            out2 << "\n-\t" << "id_msg = " << id_msg << "; date = " << date << "; time = " << time << "; type = " << type <<
-                    "; category = " << category << "; parameter = " << parameter << "; sn_device = " << id << "\n\n";
-        }
+            int     id_msg    = table->item(i, 0)->text().toInt();
+            QString date      = QDate::fromString(table->item(i, 1)->text(),
+                                                  "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
+            QString time      = table->item(i, 2)->text();
+            QString type      = table->item(i, 3)->text();
+            QString category  = table->item(i, 4)->text();
+            QString parameter = table->item(i, 5)->text();
 
-        out1 << i << ": " << query.lastQuery() << "\n";
+            query.prepare(QString("INSERT OR REPLACE INTO journals (id_msg, date, time, type, category, parameter, sn_device)"
+                                  "VALUES(:id_msg, :date, :time, :type, :category, :parameter, :sn_device)"));
+            query.bindValue(":id_msg", id_msg);
+            query.bindValue(":date", date);
+            query.bindValue(":time", time);
+            query.bindValue(":type", type);
+            query.bindValue(":category", category);
+            query.bindValue(":parameter", parameter);
+            query.bindValue(":sn_device", id);
+
+            query.exec();
+        }
 
         m_progressbar->progressIncrement();
     }
@@ -3874,9 +3873,6 @@ void ConfiguratorWindow::exportJournalToDb()
     disconnectDb(db);
 
     m_progressbar->progressStop();
-
-    file2.close();
-    file1.close();
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
