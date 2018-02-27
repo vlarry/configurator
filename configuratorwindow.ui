@@ -1076,7 +1076,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>18</number>
+          <number>13</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -3473,7 +3473,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pageProtectionPropertiesOZZ1">
                 <layout class="QVBoxLayout" name="verticalLayout_92">
@@ -4679,7 +4679,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>4</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pageProtectionPropertiesUmax1">
                 <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -5965,7 +5965,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pagePotectionPropertiesStarting">
                 <layout class="QVBoxLayout" name="verticalLayout_101">
@@ -6506,7 +6506,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pageProtectionPropertiesACHR1">
                 <layout class="QVBoxLayout" name="verticalLayout_102">
@@ -8204,7 +8204,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="pageProtectionPropertiesTemp1">
                 <layout class="QVBoxLayout" name="verticalLayout_55">

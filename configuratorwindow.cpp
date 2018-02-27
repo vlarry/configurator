@@ -326,121 +326,177 @@ void ConfiguratorWindow::journalRead(const QString& key)
 void ConfiguratorWindow::inAnalogRead()
 {
     sendSettingReadRequest(tr("M01"), tr("KU0X_"), CDataUnitType::ReadHoldingRegisters, 42);
+    sendSettingControlReadRequest("M04"); // чтение состояния настройки
 }
 //--------------------------------------
 void ConfiguratorWindow::inAnalogWrite()
 {
     sendSettingWriteRequest(tr("M01"), tr("KU0X_"));
-}
-//-----------------------------------------
-void ConfiguratorWindow::controlStateRead()
-{
-    sendSettingReadRequest(tr("K01"), tr("M95"), CDataUnitType::ReadHoldingRegisters, 54);
-}
-//------------------------------------------
-void ConfiguratorWindow::controlStateWrite()
-{
-    sendSettingWriteRequest(tr("K01"), tr("M95"));
+    sendSettingControlWriteRequest("M04"); // запись состояния настройки
 }
 //---------------------------------------------
 void ConfiguratorWindow::protectionMTZSetRead()
 {
     sendSettingReadRequest(tr("M06"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 38);
+    sendSettingControlReadRequest("M09");
+    sendSettingControlReadRequest("M13");
+    sendSettingControlReadRequest("M16");
+    sendSettingControlReadRequest("M05");
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionMTZSetWrite()
 {
     sendSettingWriteRequest(tr("M06"), tr("X05a"));
+    sendSettingControlWriteRequest("M09");
+    sendSettingControlWriteRequest("M13");
+    sendSettingControlWriteRequest("M16");
+    sendSettingControlWriteRequest("M05");
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetRead()
 {
     sendSettingReadRequest(tr("M23"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 36);
+    sendSettingControlReadRequest("M22");
+    sendSettingControlReadRequest("K23");
+    sendSettingControlReadRequest("M25");
+    sendSettingControlReadRequest("K26");
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetWrite()
 {
     sendSettingWriteRequest(tr("M23"), tr("X09a"));
+    sendSettingControlWriteRequest("M22");
+    sendSettingControlWriteRequest("K23");
+    sendSettingControlWriteRequest("M25");
+    sendSettingControlWriteRequest("K26");
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionPowerSetRead()
 {
     sendSettingReadRequest(tr("M49"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 30);
+    sendSettingControlReadRequest("M32");
+    sendSettingControlReadRequest("M35");
+    sendSettingControlReadRequest("M38");
+    sendSettingControlReadRequest("M39");
+    sendSettingControlReadRequest("M40");
+    sendSettingControlReadRequest("M43");
+    sendSettingControlReadRequest("M44");
+    sendSettingControlReadRequest("M45");
+    sendSettingControlReadRequest("M48");
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionPowerSetWrite()
 {
     sendSettingWriteRequest(tr("M49"), tr("X14"));
+    sendSettingControlWriteRequest("M32");
+    sendSettingControlWriteRequest("M35");
+    sendSettingControlWriteRequest("M38");
+    sendSettingControlWriteRequest("M39");
+    sendSettingControlWriteRequest("M40");
+    sendSettingControlWriteRequest("M43");
+    sendSettingControlWriteRequest("M44");
+    sendSettingControlWriteRequest("M45");
+    sendSettingControlWriteRequest("M48");
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionMotorSetRead()
 {
     sendSettingReadRequest(tr("M20"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingControlReadRequest("M19");
+    sendSettingControlReadRequest("M29");
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionMotorSetWrite()
 {
     sendSettingWriteRequest(tr("M20"), tr("X10"));
+    sendSettingControlWriteRequest("M19");
+    sendSettingControlWriteRequest("M29");
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetRead()
 {
     sendSettingReadRequest(tr("M52"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 24);
+    sendSettingControlReadRequest("M51");
+    sendSettingControlReadRequest("M55");
+    sendSettingControlReadRequest("M59");
 }
 //----------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetWrite()
 {
     sendSettingWriteRequest(tr("M52"), tr("X18"));
+    sendSettingControlWriteRequest("M51");
+    sendSettingControlWriteRequest("M55");
+    sendSettingControlWriteRequest("M59");
 }
 //--------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetRead()
 {
     sendSettingReadRequest(tr("M64"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 10);
+    sendSettingControlReadRequest("M63");
+    sendSettingControlReadRequest("M71");
+    sendSettingControlReadRequest("M73");
+    sendSettingControlReadRequest("M75");
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetWrite()
 {
     sendSettingWriteRequest(tr("M64"), tr("M76"));
+    sendSettingControlWriteRequest("M63");
+    sendSettingControlWriteRequest("M71");
+    sendSettingControlWriteRequest("M73");
+    sendSettingControlWriteRequest("M75");
 }
 //-----------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetRead()
 {
     sendSettingReadRequest(tr("M67"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingControlReadRequest("M65");
+    sendSettingControlReadRequest("M66");
 }
 //------------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetWrite()
 {
     sendSettingWriteRequest(tr("M67"), tr("X21"));
+    sendSettingControlWriteRequest("M65");
+    sendSettingControlWriteRequest("M66");
 }
 //-----------------------------------------------
 void ConfiguratorWindow::protectionLevelSetRead()
 {
     sendSettingReadRequest(tr("M78"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingControlReadRequest("M77");
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionLevelSetWrite()
 {
     sendSettingWriteRequest(tr("M78"), tr("M79"));
+    sendSettingControlWriteRequest("M77");
 }
 //---------------------------------------------
 void ConfiguratorWindow::protectionBruSetRead()
 {
     sendSettingReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendSettingControlReadRequest("M93");
+    sendSettingControlReadRequest("M95");
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionBruSetWrite()
 {
     sendSettingWriteRequest(tr("M96"), tr("M99"));
+    sendSettingControlWriteRequest("M93");
+    sendSettingControlWriteRequest("M95");
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetRead()
 {
     sendSettingReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendSettingControlReadRequest("M90");
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetWrite()
 {
     sendSettingWriteRequest(tr("M91"), tr("X23"));
+    sendSettingControlWriteRequest("M90");
 }
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
@@ -511,19 +567,53 @@ void ConfiguratorWindow::automationSetWrite()
 void ConfiguratorWindow::switchDeviceSetRead()
 {
     sendSettingReadRequest(tr("K02"), tr("K10"), CDataUnitType::ReadHoldingRegisters, 30);
+    sendSettingControlReadRequest("K32");
+    sendSettingControlReadRequest("K01");
+    sendSettingControlReadRequest("K03");
+    sendSettingControlReadRequest("K06");
+    sendSettingControlReadRequest("K17");
+    sendSettingControlReadRequest("K07");
+    sendSettingControlReadRequest("K13");
+    sendSettingControlReadRequest("K14");
+    sendSettingControlReadRequest("K15");
+    sendSettingControlReadRequest("K34");
+    sendSettingControlReadRequest("K38");
+    sendSettingControlReadRequest("K35");
+    sendSettingControlReadRequest("K39");
+    sendSettingControlReadRequest("K36");
+    sendSettingControlReadRequest("K40");
+    sendSettingControlReadRequest("K37");
+    sendSettingControlReadRequest("K41");
+    sendSettingControlReadRequest("K18");
 }
 //---------------------------------------------
 void ConfiguratorWindow::switchDeviceSetWrite()
 {
     sendSettingWriteRequest(tr("K02"), tr("K10"));
+    sendSettingControlWriteRequest("K32");
+    sendSettingControlWriteRequest("K01");
+    sendSettingControlWriteRequest("K03");
+    sendSettingControlWriteRequest("K06");
+    sendSettingControlWriteRequest("K17");
+    sendSettingControlWriteRequest("K07");
+    sendSettingControlWriteRequest("K13");
+    sendSettingControlWriteRequest("K14");
+    sendSettingControlWriteRequest("K15");
+    sendSettingControlWriteRequest("K34");
+    sendSettingControlWriteRequest("K38");
+    sendSettingControlWriteRequest("K35");
+    sendSettingControlWriteRequest("K39");
+    sendSettingControlWriteRequest("K36");
+    sendSettingControlWriteRequest("K40");
+    sendSettingControlWriteRequest("K37");
+    sendSettingControlWriteRequest("K41");
+    sendSettingControlWriteRequest("K18");
 }
 //--------------------------------------------------------
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 {
     if(unit.is_empty())
         return;
-
-//    emit m_modbusDevice->infoLog(tr("Получен ответ: ") + QString::number(unit.valueCount()) + tr(" байт \n"));
 
     quint16 error = unit.error();
 
@@ -539,6 +629,8 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         displayCalculateValues(unit.values());
     else if(type == GENERAL_TYPE)
         displaySettingResponse(unit);
+    else if(type == GENERAL_CONTROL_TYPE)
+        displaySettingControlResponce(unit);
     else if(type == PURPOSE_OUT_TYPE)
         displayPurposeResponse(unit);
     else if(type == PURPOSE_INPUT_TYPE)
@@ -993,7 +1085,6 @@ void ConfiguratorWindow::readSettings()
 
     if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
-        controlStateRead(); // чтение настроек состояний
         inAnalogRead(); // чтение настроек "Основные" и "Калибровки"
         protectionMTZSetRead(); // чтение настроек токовых защит
         protectionEarthySetRead(); // чтение настроек земляных защит
@@ -1096,19 +1187,19 @@ void ConfiguratorWindow::readSetCurrent()
         case 21:
         break;
 
-        case 22: // привязки выходов (светодиодов)
+        case 24: // привязки выходов (светодиодов)
             sendPurposeReadRequest(tr("LED1"), tr("LED2"));
             sendPurposeReadRequest(tr("LED3"), tr("LED4"));
             sendPurposeReadRequest(tr("LED5"), tr("LED6"));
             sendPurposeReadRequest(tr("LED7"), tr("LED8"));
         break;
 
-        case 23: // привязки входов
+        case 25: // привязки входов
             sendPurposeDIReadRequest(512, 590);
             sendPurposeDIReadRequest(592, 670);
         break;
 
-        case 24: // привязки выходов (реле)
+        case 26: // привязки выходов (реле)
             sendPurposeReadRequest(tr("DO1"), tr("DO2"));
             sendPurposeReadRequest(tr("DO4"), tr("DO5"));
             sendPurposeReadRequest(tr("DO6"), tr("DO7"));
@@ -1117,7 +1208,7 @@ void ConfiguratorWindow::readSetCurrent()
             sendPurposeReadRequest(tr("DO12"), tr("DO13"));
         break;
 
-        case 25: // привязки выходов (клавиатуры)
+        case 27: // привязки выходов (клавиатуры)
         break;
     }
 }
@@ -1131,7 +1222,6 @@ void ConfiguratorWindow::writeSettings()
 
     if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
-        controlStateWrite(); // запись настроек состояния
         inAnalogWrite(); // запись настроек "Основные" и "Калибровки"
         protectionMTZSetWrite(); // запись настроек токовых защит
         protectionEarthySetWrite(); // запись настроек земляных защит
@@ -1234,19 +1324,19 @@ void ConfiguratorWindow::writeSetCurrent()
         case 21:
         break;
 
-        case 22: // привязки выходов (светодиодов)
+        case 24: // привязки выходов (светодиодов)
             sendPurposeWriteRequest(tr("LED1"), tr("LED2"));
             sendPurposeWriteRequest(tr("LED3"), tr("LED4"));
             sendPurposeWriteRequest(tr("LED5"), tr("LED6"));
             sendPurposeWriteRequest(tr("LED7"), tr("LED8"));
         break;
 
-        case 23: // привязки входов
+        case 25: // привязки входов
             sendPurposeDIWriteRequest(512, 590);
             sendPurposeDIWriteRequest(592, 670);
         break;
 
-        case 24: // привязки выходов (реле)
+        case 26: // привязки выходов (реле)
             sendPurposeWriteRequest(tr("DO1"), tr("DO2"));
             sendPurposeWriteRequest(tr("DO4"), tr("DO5"));
             sendPurposeWriteRequest(tr("DO6"), tr("DO7"));
@@ -1255,7 +1345,7 @@ void ConfiguratorWindow::writeSetCurrent()
             sendPurposeWriteRequest(tr("DO12"), tr("DO13"));
         break;
 
-        case 25: // привязки выходов (клавиатуры)
+        case 27: // привязки выходов (клавиатуры)
         break;
     }
 }
@@ -2068,6 +2158,49 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
         }
     }
 }
+//-------------------------------------------------------------------------------
+void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit)
+{
+    if(unit.is_empty() || unit.valueCount() > 1 || unit.valueCount() == 0)
+        return;
+
+    QString indexName = unit.property("INDEX").toString();
+
+    QPoint index = indexSettingKey(indexName, indexName);
+
+    if(index.x() == -1 || index.x() >= m_cell_list.count())
+        return;
+
+    QString nameWgt = m_cell_list[index.x()].second.second;
+
+    if(nameWgt.isEmpty())
+        return;
+
+    QWidget* widget   = findChild<QWidget*>(nameWgt);
+    QString  classWgt = widget->metaObject()->className();
+
+    if(classWgt != "QComboBox")
+        return;
+
+    QComboBox* box = qobject_cast<QComboBox*>(widget);
+
+    if(box)
+    {
+        quint16 i = unit.value(0);
+
+        if(i != 0 && (i - 1) < box->count())
+        {
+            box->setCurrentIndex(i - 1);
+
+            if(indexName == "M65")
+                ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(i - 1);
+            else if(indexName == "M66")
+                ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(i - 1);
+            else if(indexName == "M77")
+                ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(i - 1);
+        }
+    }
+}
 //------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 {
@@ -2389,8 +2522,6 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
 
     int addr = addressSettingKey(first);
 
-    qDebug() << "address: " << addr << ", size: " << size;
-
     CDataUnitType unit(ui->sboxSlaveID->value(), type, addr, QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), GENERAL_TYPE);
@@ -2398,6 +2529,57 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
     unit.setProperty(tr("LAST"), last);
 
     m_modbusDevice->request(unit);
+}
+//--------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
+{
+    int addr = addressSettingKey(index);
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 1);
+
+    unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
+    unit.setProperty("INDEX", index);
+
+    m_modbusDevice->request(unit);
+}
+//---------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
+{
+    if(index.isEmpty())
+        return;
+
+    QPoint key = indexSettingKey(index, index);
+
+    if(key.x() == -1 || key.x() >= m_cell_list.count())
+        return;
+
+    QString nameWgt = m_cell_list[key.x()].second.second;
+
+    if(nameWgt.isEmpty())
+        return;
+
+    QWidget* widget   = findChild<QWidget*>(nameWgt);
+    QString  classWgt = widget->metaObject()->className();
+
+    if(classWgt != "QComboBox")
+        return;
+
+    QComboBox* box = qobject_cast<QComboBox*>(widget);
+
+    if(box)
+    {
+        int addr = addressSettingKey(index);
+
+        if(addr == -1)
+            return;
+
+        CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, addr,
+                                                     QVector<quint16>() << (box->currentIndex() + 1));
+        unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
+        unit.setProperty("INDEX", index);
+
+        m_modbusDevice->request(unit);
+    }
 }
 //-----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QString& last)
@@ -2457,7 +2639,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
             if(!box)
                 continue;
 
-            data.append((quint16)box->currentIndex());
+            data.append((quint16)box->currentIndex() + 1);
         }
     }
 

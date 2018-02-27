@@ -65,6 +65,7 @@
             {
                 CALCULATE_TYPE, // расчетные данные
                 GENERAL_TYPE, // общие (настройки/уставки)
+                GENERAL_CONTROL_TYPE, // общие настройки (выбор варианта, т.е. комбобокс) - отдельный запрос
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
                 READ_EVENT_JOURNAL, // чтение журнала событий
@@ -176,8 +177,6 @@
             void journalRead(const QString& key);
             void inAnalogRead();
             void inAnalogWrite();
-            void controlStateRead();
-            void controlStateWrite();
             void protectionMTZSetRead();
             void protectionMTZSetWrite();
             void protectionEarthySetRead();
@@ -235,6 +234,8 @@
             void versionSowftware();
             void sendSettingReadRequest(const QString& first, const QString& last,
                                         CDataUnitType::FunctionType type, int size);
+            void sendSettingControlReadRequest(const QString& index);
+            void sendSettingControlWriteRequest(const QString& index);
             void sendSettingWriteRequest(const QString& first, const QString& last);
             void sendPurposeReadRequest(const QString& first, const QString& last);
             void sendPurposeWriteRequest(const QString& first, const QString& last);
@@ -279,6 +280,7 @@
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
             void displaySettingResponse(CDataUnitType& unit);
+            void displaySettingControlResponce(const CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
             void displayPurposeDIResponse(CDataUnitType& unit);
             void displayEventJournalResponse(QVector<quint16>& data);
