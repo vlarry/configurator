@@ -663,6 +663,9 @@ void ConfiguratorWindow::show()
 
     ui->tabwgtMenu->setTabEnabled(4, false);
 
+    ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
+    ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
+
     loadSettings();
 }
 //-------------------------------------------------------
@@ -3390,27 +3393,31 @@ void ConfiguratorWindow::importPurposeFromJSON()
 {
     QString fileNameDefault;
     QString typeName;
+    QString typeNameDescription;
 
     CMatrixPurposeModel* model = nullptr;
 
     if(ui->stwgtMain->currentIndex() == 24)
     {
-        fileNameDefault = "led";
-        typeName        = "LED";
+        fileNameDefault     = "led";
+        typeName            = "LED";
+        typeNameDescription = tr("Светодиоды");
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model());
     }
     else if(ui->stwgtMain->currentIndex() == 25)
     {
-        fileNameDefault = "inputs";
-        typeName        = "INPUT";
+        fileNameDefault     = "inputs";
+        typeName            = "INPUT";
+        typeNameDescription = tr("Дискретные входы");
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
     }
     else if(ui->stwgtMain->currentIndex() == 26)
     {
-        fileNameDefault = "relay";
-        typeName        = "RELAY";
+        fileNameDefault     = "relay";
+        typeName            = "RELAY";
+        typeNameDescription = tr("Реле");
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model());
     }
@@ -3441,7 +3448,11 @@ void ConfiguratorWindow::importPurposeFromJSON()
     QJsonObject rootObj = json.object(); // корневой объект
 
     if(rootObj["type"].toString().toUpper() != typeName)
+    {
+        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Неправильный тип привязок. Ожидаются: %1").
+                                                                  arg(typeNameDescription));
         return;
+    }
 
     QJsonArray headerArr = rootObj.value("headers").toArray(); // получение массива данных - заголовки колонок
 
@@ -3488,7 +3499,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
             columns << CColumn(colObj["state"].toBool(), colObj["status"].toBool());
         }
 
-        rows << CRow(rowObj["key"].toString(), rowObj["header"].toString(), columns);
+        rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);
     }
 
     CDataTable dataTable(rows, headers);
@@ -3586,11 +3597,15 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
             m_active_journal_current = nullptr;
 
         m_active_journal_current->header()->setTextDeviceCountMessages(0, 0);
+        ui->pushButtonJournalRead->setVisible(true);
+        ui->pushButtonJournalClear->setVisible(true);
     }
     else
     {
         ui->tabwgtMenu->setTabEnabled(4, false);
         m_active_journal_current = nullptr;
+        ui->pushButtonJournalRead->setVisible(false);
+        ui->pushButtonJournalClear->setVisible(false);
     }
 }
 //-----------------------------------------------------------------------
@@ -4585,14 +4600,10 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
-    connect(ui->widgetJournalEvent, &CJournalWidget::clickedButtonRead, this, &ConfiguratorWindow::processReadJournals);
-    connect(ui->widgetJournalCrash, &CJournalWidget::clickedButtonRead, this, &ConfiguratorWindow::processReadJournals);
-    connect(ui->widgetJournalEvent->header(), &CHeaderJournal::clickedButtonClear, this, &ConfiguratorWindow::clearJournal);
-    connect(ui->widgetJournalCrash->header(), &CHeaderJournal::clickedButtonClear, this, &ConfiguratorWindow::clearJournal);
-    connect(m_modbusDevice, &CModbus::connectDeviceState, ui->widgetJournalEvent->header(),
-                                                          &CHeaderJournal::stateEnabledButtonReadChanged);
-    connect(m_modbusDevice, &CModbus::connectDeviceState, ui->widgetJournalCrash->header(),
-                                                          &CHeaderJournal::stateEnabledButtonReadChanged);
+    connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
+    connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
+    connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalRead, &QPushButton::setEnabled);
+    connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalClear, &QPushButton::setEnabled);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);

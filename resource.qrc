@@ -23,6 +23,8 @@
         <file>resource/images/export_pdf.png</file>
         <file>resource/images/export.png</file>
         <file>resource/images/import.png</file>
+        <file>resource/images/journal_clear.png</file>
+        <file>resource/images/journal_read.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
