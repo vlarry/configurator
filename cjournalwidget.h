@@ -146,7 +146,7 @@
 
             CHeaderJournal* header() const;
             void            headerClear() const;
-            QTableWidget*   table() const;
+            CJournalTable*  table() const;
             QListWidget*    propertyJournal() const;
             void            print(const QVector<quint16>& data) const;
 

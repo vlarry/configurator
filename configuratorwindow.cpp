@@ -2810,6 +2810,13 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
                  "parameter STRING(255), "
                  "sn_device INTEGER NOT NULL, "
                  "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
+
+        if(!query.exec(db_str))
+        {
+            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журналов событий: ") +
+                                       query.lastError().text());
+            return false;
+        }
     }
     else if(journal_type == "CRASH")
     {
@@ -2819,15 +2826,30 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
                  "date STRING(25) NOT NULL, "
                  "time STRING(25), "
                  "protection STRING(255), "
+                 "id_journal INTEGER NOT NULL, " // идентификатор для привязки записей из таблицы свойств
                  "sn_device INTEGER NOT NULL, "
                  "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
-    }
 
-    if(!query.exec(db_str))
-    {
-        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журналов: ") +
-                                   query.lastError().text());
-        return false;
+        if(!query.exec(db_str))
+        {
+            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журналов аварий: ") +
+                                       query.lastError().text());
+            return false;
+        }
+
+        // создание таблицы для хранения свойств журналов аварий
+        db_str = "CREATE TABLE property ("
+                 "name STRING(255) NOT NULL, "
+                 "value STRING(255) NOT NULL, "
+                 "id_journal INTEGER NOT NULL, "
+                 "CONSTRAINT new_pk PRIMARY KEY (name, value, id_journal));";
+
+        if(!query.exec(db_str))
+        {
+            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу свойств журналов аварий: ") +
+                                       query.lastError().text());
+            return false;
+        }
     }
 
     return true;
@@ -3426,7 +3448,7 @@ void ConfiguratorWindow::importJournalToTable()
     }
 
     // Получение таблицы и заголовка текущего журнала
-    QTableWidget*   table  = m_active_journal_current->table();
+    CJournalTable*  table  = m_active_journal_current->table();
     CHeaderJournal* header = m_active_journal_current->header();
 
     if(!table || !header)
@@ -3590,9 +3612,7 @@ void ConfiguratorWindow::importJournalToTable()
                                    tr("Не возможно получить записи журнала %1: %2").arg(journal_name).arg(query.lastError().text()));
     }
 
-//    table->setSortingEnabled(false);
-
-    m_progressbar->setProgressTitle("Импорт журнала событий");
+    m_progressbar->setProgressTitle(QString("Импорт журнала %1").arg(journal_name));
     m_progressbar->progressStart();
     m_progressbar->setSettings(0, max_read_msg, "");
 
@@ -3600,29 +3620,62 @@ void ConfiguratorWindow::importJournalToTable()
 
     table->setSortingEnabled(false);
 
-    while(query.next()) // заносим данные в таблицу журналов событий
+    while(query.next()) // заносим данные в таблицу журналов
     {
         int row = table->rowCount();
 
         table->insertRow(row);
 
-        QString id_msg    = query.value("id_msg").toString();
-        QString date      = QDate::fromString(query.value("date").toString(), Qt::ISODate).toString("dd.MM.yyyy");
-        QString time      = query.value("time").toString();
-        QString type      = query.value("type").toString();
-        QString category  = query.value("category").toString();
-        QString parameter = query.value("parameter").toString();
+        QString id_msg = query.value("id_msg").toString();
+        QString date   = QDate::fromString(query.value("date").toString(), Qt::ISODate).toString("dd.MM.yyyy");
+        QString time   = query.value("time").toString();
 
         table->setItem(row, 0, new QTableWidgetItem(id_msg));
         table->setItem(row, 1, new CTableWidgetItem(date));
         table->setItem(row, 2, new QTableWidgetItem(time));
-        table->setItem(row, 3, new QTableWidgetItem(type));
-        table->setItem(row, 4, new QTableWidgetItem(category));
-        table->setItem(row, 5, new QTableWidgetItem(parameter));
 
-        table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-        table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-        table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        if(journal_type == "EVENT")
+        {
+            QString type      = query.value("type").toString();
+            QString category  = query.value("category").toString();
+            QString parameter = query.value("parameter").toString();
+
+            table->setItem(row, 3, new QTableWidgetItem(type));
+            table->setItem(row, 4, new QTableWidgetItem(category));
+            table->setItem(row, 5, new QTableWidgetItem(parameter));
+
+            table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        }
+        else if(journal_type == "CRASH")
+        {
+            QString protection = query.value("protection").toString();
+            int     id_journal = query.value("id_journal").toInt();
+
+            table->setItem(row, 3, new QTableWidgetItem(protection));
+
+            // формирование запроса для получения свойств записи
+            QSqlQuery query_property(*db);
+
+            if(!query_property.exec(QString("SELECT name, value FROM property WHERE id_journal=%1;").arg(id_journal)))
+            {
+                QMessageBox::warning(this, tr("Импорт журнала"), tr("Не удалось прочитать свойства журнала аварий: %1").
+                                                                 arg(query_property.lastError().text()));
+                continue;
+            }
+
+            property_list_t property_list;
+
+            while(query_property.next())
+            {
+                property_list << property_data_item_t({ query_property.value("name").toString(),
+                                                        query_property.value("value").toString() });
+            }
+
+            if(!property_list.isEmpty())
+                table->setRowData(row, QVariant::fromValue(property_list));
+        }
 
         m_progressbar->progressIncrement();
 
@@ -3661,7 +3714,7 @@ void ConfiguratorWindow::exportJournalToDb()
     }
 
     // Получение таблицы и заголовка текущего журнала
-    QTableWidget*   table  = m_active_journal_current->table();
+    CJournalTable*  table  = m_active_journal_current->table();
     CHeaderJournal* header = m_active_journal_current->header();
 
     if(!table || !header)
@@ -3735,6 +3788,8 @@ void ConfiguratorWindow::exportJournalToDb()
     QSqlQuery query(*db);
     QString   query_str;
 
+    int id_journal = 0; // id записи в журнале - используется для журнала аварий - привязка свойств к записи
+
     if(!isNewBase) // дозаписываем данные в существующий журнал
     {
         query_str = "SELECT journal_type FROM table_info;";
@@ -3760,6 +3815,11 @@ void ConfiguratorWindow::exportJournalToDb()
                 return;
             }
         }
+
+        QString res = recordLastDb(db, "property", "id_journal"); // читаем id журнала для свойств
+
+        if(!res.isEmpty())
+            id_journal = res.toInt() + 1; // присваиваем начальный номер для свойств
     }
     else // создаем новую базу данных
     {
@@ -3843,12 +3903,13 @@ void ConfiguratorWindow::exportJournalToDb()
 
     for(i = pos.x(); i <= pos.y(); i++)
     {
+        int     id_msg = table->item(i, 0)->text().toInt();
+        QString date   = QDate::fromString(table->item(i, 1)->text(),
+                                           "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
+        QString time   = table->item(i, 2)->text();
+
         if(journal_type == "EVENT")
         {
-            int     id_msg    = table->item(i, 0)->text().toInt();
-            QString date      = QDate::fromString(table->item(i, 1)->text(),
-                                                  "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
-            QString time      = table->item(i, 2)->text();
             QString type      = table->item(i, 3)->text();
             QString category  = table->item(i, 4)->text();
             QString parameter = table->item(i, 5)->text();
@@ -3864,6 +3925,41 @@ void ConfiguratorWindow::exportJournalToDb()
             query.bindValue(":sn_device", id);
 
             query.exec();
+        }
+        else if(journal_type == "CRASH")
+        {
+            QString protect_name = table->item(i, 3)->text();
+
+            query.prepare("INSERT OR REPLACE INTO journals (id_msg, date, time, protection, id_journal, sn_device)"
+                          "VALUES(:id_msg, :date, :time, :protection, :id_journal, :sn_device)");
+            query.bindValue(":id_msg", id_msg);
+            query.bindValue(":date", date);
+            query.bindValue(":time", time);
+            query.bindValue(":protection", protect_name);
+            query.bindValue(":id_journal", id_journal);
+            query.bindValue(":sn_device", id);
+
+            query.exec();
+
+            property_list_t property_list = qvariant_cast<property_list_t>(table->rowData(i));
+
+            if(!property_list.isEmpty())
+            {
+                for(const property_data_item_t& item: property_list)
+                {
+                    QSqlQuery query_property(*db);
+
+                    query_property.prepare("INSERT OR REPLACE INTO property (name, value, id_journal)"
+                                           "VALUES(:name, :value, :id_journal)");
+                    query_property.bindValue(":name", item.name);
+                    query_property.bindValue(":value", item.value);
+                    query_property.bindValue(":id_journal", id_journal);
+
+                    query_property.exec();
+                }
+
+                id_journal++;
+            }
         }
 
         m_progressbar->progressIncrement();
@@ -3995,6 +4091,25 @@ int ConfiguratorWindow::recordCountDb(QSqlDatabase* db, const QString& table_nam
         return -1;
 
     return query.value(0).toInt();
+}
+//-------------------------------------------------------------------------------------------------------------
+QString ConfiguratorWindow::recordLastDb(QSqlDatabase* db, const QString& table_name, const QString& parameter)
+{
+    QSqlQuery query(*db);
+
+    QString str = QString("SELECT %1 FROM %2 ORDER BY %3 DESC LIMIT 1;").arg(parameter).arg(table_name).arg(parameter);
+
+    if(!query.exec(str))
+    {
+        return "";
+    }
+
+    if(query.first())
+    {
+        return query.value(0).toString();
+    }
+
+    return "";
 }
 //---------------------------------------------------------------------------------------------------
 QPoint ConfiguratorWindow::indexDateFilter(QTableWidget* table, const QDate& begin, const QDate& end)

@@ -291,8 +291,9 @@
             void readShiftPrtEventJournal();
             void readJournalCount();
             void deviceSync(bool state = false);
-            int  recordCountDb(QSqlDatabase *db, const QString& table_name, const QString& parameter, const QString& value,
+            int  recordCountDb(QSqlDatabase* db, const QString& table_name, const QString& parameter, const QString& value,
                                                  const QString& subparamter = "", const QStringList& range = QStringList());
+            QString             recordLastDb(QSqlDatabase* db, const QString& table_name, const QString& parameter);
             QPoint              indexDateFilter(QTableWidget* table, const QDate& begin, const QDate& end);
             QPoint              indexSettingKey(const QString& first, const QString& last);
             QPoint              indexPurposeKey(const QString& first, const QString& last);

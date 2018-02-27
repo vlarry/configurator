@@ -33,7 +33,7 @@ void CJournalWidget::headerClear() const
     ui->widgetJournalHeader->clear();
 }
 //-----------------------------------------
-QTableWidget* CJournalWidget::table() const
+CJournalTable* CJournalWidget::table() const
 {
     return ui->tableWidgetJournal;
 }
