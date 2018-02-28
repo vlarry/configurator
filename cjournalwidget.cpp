@@ -12,12 +12,17 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-    ui->listWidgetPropertyJournal->hide(); // по умолчанию окно свойств скрыто
+    ui->listViewPropertyJournal->hide(); // по умолчанию окно свойств скрыто
 
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
     connect(ui->tableWidgetJournal, &CJournalTable::clicked, this, &CJournalWidget::clickedItemTable);
 
     setAutoFillBackground(true);
+
+    CJournalPropertyModel* model = new CJournalPropertyModel(ui->listViewPropertyJournal);
+
+    ui->listViewPropertyJournal->setModel(model);
+    ui->listViewPropertyJournal->setItemDelegate(new CJournalPropertyDelegate(ui->listViewPropertyJournal));
 }
 //-------------------------------
 CJournalWidget::~CJournalWidget()
@@ -42,7 +47,7 @@ CJournalTable* CJournalWidget::table() const
 //------------------------------------------------
 QListWidget* CJournalWidget::propertyJournal() const
 {
-    return ui->listWidgetPropertyJournal;
+    return /*ui->listWidgetPropertyJournal*/nullptr;
 }
 /*!
  * \brief CJournalWidget::print
@@ -101,14 +106,21 @@ void CJournalWidget::setJournalDescription(QVariant data)
 //-------------------------------------------------
 void CJournalWidget::setVisibleProperty(bool state)
 {
-    ui->listWidgetPropertyJournal->setVisible(state);
+    ui->listViewPropertyJournal->setVisible(state);
 }
 //---------------------------------------
 void CJournalWidget::journalClear() const
 {
     ui->tableWidgetJournal->clearContents();
     ui->tableWidgetJournal->setRowCount(0);
-    ui->listWidgetPropertyJournal->clear();
+
+    CJournalPropertyModel* model = qobject_cast<CJournalPropertyModel*>(ui->listViewPropertyJournal->model());
+
+    if(model)
+    {
+        QVector<QPair<QString, QString> > pair;
+        model->setDataModel(pair);
+    }
 }
 /*!
  * \brief CJournalWidget::unpackDateTime
@@ -413,8 +425,6 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
 //-------------------------------------------------------------
 void CJournalWidget::clickedItemTable(const QModelIndex& index)
 {
-    ui->listWidgetPropertyJournal->clear(); // очищаем список свойств
-
     QString journal_type = property("TYPE").toString();
 
     if(!index.isValid() || journal_type.isEmpty())
@@ -427,35 +437,21 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
         if(property_list.isEmpty())
             return;
 
+        QVector<QPair<QString, QString> > list;
+
         for(const property_data_item_t& item: property_list)
         {
-            if(item.name == ";") // если точка с запятой, то конец раздела
+            list << qMakePair(item.name, item.value);
+        }
+
+        if(!list.isEmpty())
+        {
+            CJournalPropertyModel* model = qobject_cast<CJournalPropertyModel*>(ui->listViewPropertyJournal->model());
+
+            if(model)
             {
-                QListWidgetItem* titem = new QListWidgetItem(ui->listWidgetPropertyJournal);
-                QLabel*          label = new QLabel(item.value, ui->listWidgetPropertyJournal);
-
-                label->setAlignment(Qt::AlignCenter);
-                label->setStyleSheet("background-color: #FAFAFA;");
-
-                QFont f(label->font());
-
-                f.setPointSize(10);
-                f.setBold(true);
-
-                label->setFont(f);
-
-                ui->listWidgetPropertyJournal->setItemWidget(titem, label);
-
-                continue;
+                model->setDataModel(list);
             }
-
-            CListWidgetItem* list_item      = new CListWidgetItem(ui->listWidgetPropertyJournal);
-            QListWidgetItem* item_container = new QListWidgetItem(ui->listWidgetPropertyJournal);
-
-            list_item->setPropertyData(item.name, item.value);
-            item_container->setSizeHint(list_item->sizeHint());
-
-            ui->listWidgetPropertyJournal->setItemWidget(item_container, list_item);
         }
     }
 }

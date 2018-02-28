@@ -1024,7 +1024,7 @@
          <item>
           <widget class="QPushButton" name="pushButtonJournalClear">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Очистка текущего журнала&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

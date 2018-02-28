@@ -21,7 +21,8 @@
     #include "cheaderjournal.h"
     #include "ctablewidgetitem.h"
     #include "cjournaltable.h"
-    #include "clistwidgetitem.h"
+    #include <cjournalpropertymodel.h>
+    #include <cjournalpropertydelegate.h>
     //----------
     namespace Ui
     {

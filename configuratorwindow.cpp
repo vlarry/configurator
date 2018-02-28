@@ -4603,7 +4603,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
     connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalRead, &QPushButton::setEnabled);
-    connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalClear, &QPushButton::setEnabled);
     connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
