@@ -29,10 +29,6 @@
             void clickedButtonClear(bool = false);
             void stateButtonReadOff(bool = false);
 
-        public slots:
-            void stateEnabledButtonReadChanged(bool checked = false);
-            void stateButtonReadChanged(bool checked = false);
-
         private:
             Ui::CHeaderJournal* ui;
     };

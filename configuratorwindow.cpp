@@ -221,12 +221,12 @@ void ConfiguratorWindow::journalRead(const QString& key)
         m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
         m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
 
-        emit m_journal_read_current->header()->stateButtonReadChanged(false);
-
         m_journal_read_current = nullptr;
 
         set.isStart = false;
         set.isStop  = false;
+
+        emit buttonReadJournalStateChanged(); // отключаем кнопку чтения журналов
 
         return;
     }
@@ -4604,6 +4604,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalClear, &QPushButton::setEnabled);
+    connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
     connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);

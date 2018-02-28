@@ -16,6 +16,8 @@ CJournalWidget::CJournalWidget(QWidget* parent):
 
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
     connect(ui->tableWidgetJournal, &CJournalTable::clicked, this, &CJournalWidget::clickedItemTable);
+
+    setAutoFillBackground(true);
 }
 //-------------------------------
 CJournalWidget::~CJournalWidget()

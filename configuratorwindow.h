@@ -305,7 +305,10 @@
             DeviceMenuIndexType menuIndex();
             QDateTime           unpackDateTime(QVector<quint8>& data);
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
-            
+
+        signals:
+            void buttonReadJournalStateChanged(bool = false);
+
         private:
             Ui::ConfiguratorWindow*          ui;
             CModbus*                         m_modbusDevice;

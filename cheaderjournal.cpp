@@ -9,12 +9,11 @@ CHeaderJournal::CHeaderJournal(QWidget* parent):
 
     clear();
 
-    ui->pushbtnJournalRead->setEnabled(false);
+    QPalette pal(palette());
 
-    connect(ui->pushbtnJournalRead, &QPushButton::toggled, this, &CHeaderJournal::clickedButtonRead);
-    connect(ui->pushbtnJournalClear, &QPushButton::clicked, this, &CHeaderJournal::clickedButtonClear);
-    connect(ui->pushbtnJournalRead, &QPushButton::toggled, this, &CHeaderJournal::stateButtonReadChanged);
-    connect(this, &CHeaderJournal::stateButtonReadOff, this, &CHeaderJournal::stateButtonReadChanged);
+    pal.setColor(QPalette::Background, Qt::gray);
+    setAutoFillBackground(true);
+    setPalette(pal);
 }
 //-------------------------------
 CHeaderJournal::~CHeaderJournal()
@@ -62,33 +61,4 @@ void CHeaderJournal::setTextTableCountMessages(int value)
 bool CHeaderJournal::stateCheckbox()
 {
     return ui->checkboxJournalTableScroll->isChecked();
-}
-/*!
- * \brief CHeaderJournal::stateButtonReadChanged
- * \param checked Текущее состояние кнопки
- *
- * Слот для изменения напдписи на кнопке при изменении ее состояния (нажата/отжата)
- */
-void CHeaderJournal::stateButtonReadChanged(bool checked)
-{
-    ui->pushbtnJournalRead->setChecked(checked);
-
-    if(checked)
-    {
-        ui->pushbtnJournalRead->setText(tr("Прервать чтение"));
-    }
-    else
-    {
-        ui->pushbtnJournalRead->setText(tr("Прочитать журнал"));
-    }
-}
-/*!
- * \brief CHeaderJournal::stateEnabledButtonReadChanged
- * \param checked Текущее состояния активности кнопки
- *
- * Слот для изменения состояния активности кнопки (отслеживает состояние COM-порта)
- */
-void CHeaderJournal::stateEnabledButtonReadChanged(bool checked)
-{
-    ui->pushbtnJournalRead->setEnabled(checked);
 }
