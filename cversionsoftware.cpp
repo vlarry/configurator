@@ -24,15 +24,15 @@ CVersionSoftware::~CVersionSoftware()
 {
     delete ui;
 }
-//----------------------------------------------------------------
-void CVersionSoftware::setText(const QMap<QString, QString>& data)
+//---------------------------------------------------------------------------
+void CVersionSoftware::setText(const QVector<QPair<QString, QString> >& data)
 {
-    for(int i = 0; i < data.keys().count(); i++)
+    for(int i = 0; i < data.count(); i++)
     {
-        QString key = data.keys().at(i);
-        QString str = key + tr(":\n") + data.value(key) + tr("\n");
+        QString key = data[i].first;
+        QString str = key + tr(":\n") + data[i].second + tr("\n");
 
-        if(i == data.keys().count() - 1)
+        if(i == data.count() - 1)
             ui->textEdit->setTextColor(Qt::green);
         else
             ui->textEdit->setTextColor(Qt::gray);

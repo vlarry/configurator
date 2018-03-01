@@ -306,7 +306,15 @@ void CModbus::readyRead()
         count = m_request_cur.value(0)*2 + 5;   
     }
     else
-        count = 8;
+    {
+        if(m_receive_buffer.count() == 5 && m_receive_buffer.at(1)&0x80) // если размер буфера 5 байт (в случае ошибки) и старший бит
+                                                                         // второго байта выставлен
+        {
+            count = 5;
+        }
+        else
+            count = 8;
+    }
     
     if(count != m_receive_buffer.count() && count > m_receive_buffer.count()) 
     // сообщение передается в однобайтовых значениях + 
@@ -379,13 +387,11 @@ void CModbus::readyRead()
 
     CDataUnitType unit = m_request_cur;
 
-    if(data.count() >= 4)
+    if(data.count() >= 3) // в случае ошибки возвращается 5 байт (id, функциональный код со старшим битом, байт ошибки и crc)
     {
         if((data[1]&0x80) == 0x80) // если установлен старший бит в функции, то ведомый сообщает об ошибке
         {
-            quint16 error = (quint16)(data[2] << 8 | data[3]); // определяем ошибку
-
-            unit.serErrorCode(error);
+            unit.serErrorCode(data[2]);
         }
     }
 

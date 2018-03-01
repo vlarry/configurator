@@ -615,12 +615,12 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     if(unit.is_empty())
         return;
 
-    quint16 error = unit.error();
+    quint8 error = unit.error();
 
-    if(error != CDataUnitType::NO_DEVICE_ERROR) // если ошибка, то выводим ее
+    if(error != CDataUnitType::ERROR_NO) // если ошибка, то выводим ее
     {
         QMessageBox::warning(this, tr("Ответ устройства"),
-                             tr("В ответе обнаружена ошибка.\n") + unit.errorStringList());
+                             tr("В ответе обнаружена ошибка:\n") + unit.errorStringList());
     }
     
     RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
@@ -665,6 +665,7 @@ void ConfiguratorWindow::show()
 
     ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
     ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
+    ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
 
     loadSettings();
 }
@@ -2408,7 +2409,7 @@ void ConfiguratorWindow::versionParser()
     QString desc    = "";
     QString param   = tr("MAJOR");
 
-    QMap<QString, QString> ver;
+    QVector<QPair<QString, QString> > ver;
 
     while(!in.atEnd())
     {
@@ -2442,7 +2443,7 @@ void ConfiguratorWindow::versionParser()
                     }
                     else if(fMajor && !fMinor)
                     {
-                        version += ((temp.toInt() < 10)?tr("0") + temp:temp) + tr(" build ");
+                        version += ((temp.toFloat() < 10.0f)?tr("0") + temp:temp) + tr(" build ");
                         fMinor   = true;
                         param    = tr("BUILD");
 
@@ -2472,7 +2473,7 @@ void ConfiguratorWindow::versionParser()
                 desc += line + "\n";
             else
             {
-                ver.insert(version, desc);
+                ver << qMakePair(version, desc);
 
                 fMajor = fMinor = fBuild = fDesc = false;
 
@@ -2491,7 +2492,7 @@ void ConfiguratorWindow::versionParser()
     QString title = this->windowTitle();
 
     if(!ver.isEmpty())
-        title += tr(" ") + ver.lastKey();
+        title += tr(" ") + ver.last().first;
 
     this->setWindowTitle(title);
 }
@@ -2787,6 +2788,19 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
     m_modbusDevice->request(unit);
 }
+/*!
+ * \brief ConfiguratorWindow::sendDeviceCommand
+ *
+ * Отправка команды устройству
+ */
+void ConfiguratorWindow::sendDeviceCommand(int cmd)
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, 0x3000, QVector<quint16>() << cmd);
+
+    unit.setProperty("CMD", cmd);
+
+    m_modbusDevice->request(unit);
+}
 //-------------------------------------
 void ConfiguratorWindow::clearIOTable()
 {
@@ -2949,6 +2963,20 @@ void ConfiguratorWindow::filterDialog()
     }
 
     delete filterDlg;
+}
+//----------------------------------------------
+void ConfiguratorWindow::deviceDefaultSettings()
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("Отправка команды"),
+                                  tr("Вы действительно хотите сбросить настройки устройства по умолчанию?"),
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if(reply == QMessageBox::Yes)
+    {
+        sendDeviceCommand(0x0001); // отправка команды на сброс настроек по умолчанию
+        readSetCurrent(); // читаем настройки после сброса
+    }
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
@@ -3127,6 +3155,8 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
 {
     QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
 
+    printer->setResolution(180);
+    printer->setColorMode(QPrinter::GrayScale);
     printer->setOutputFormat(QPrinter::PdfFormat);
     printer->setPaperSize(QPrinter::A4);
     printer->setPageMargins(15, 10, 10, 10, QPrinter::Millimeter);
@@ -3599,14 +3629,21 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
         m_active_journal_current->header()->setTextDeviceCountMessages(0, 0);
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
+
+        return;
     }
-    else
+    else if(index >= PURPOSE_INDEX_LED && index <= PURPOSE_INDEX_KEYBOARD)
     {
-        ui->tabwgtMenu->setTabEnabled(4, false);
-        m_active_journal_current = nullptr;
-        ui->pushButtonJournalRead->setVisible(false);
-        ui->pushButtonJournalClear->setVisible(false);
+        ui->pushButtonDefaultSettings->setVisible(true);
+
+        return;
     }
+
+    ui->tabwgtMenu->setTabEnabled(4, false);
+    m_active_journal_current = nullptr;
+    ui->pushButtonJournalRead->setVisible(false);
+    ui->pushButtonJournalClear->setVisible(false);
+    ui->pushButtonDefaultSettings->setVisible(false);
 }
 //-----------------------------------------------------------------------
 void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
@@ -4613,4 +4650,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(&m_sync_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSyncSerialNumber);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
+    connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
+    connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
 }

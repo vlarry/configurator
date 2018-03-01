@@ -17,7 +17,7 @@
             explicit CVersionSoftware(QWidget* parent = nullptr);
             ~CVersionSoftware();
 
-            void setText(const QMap<QString, QString>& data);
+            void setText(const QVector<QPair<QString, QString> >& data);
 
         private:
             Ui::CVersionSoftware* ui;

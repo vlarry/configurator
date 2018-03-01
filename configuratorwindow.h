@@ -241,6 +241,7 @@
             void sendPurposeWriteRequest(const QString& first, const QString& last);
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
+            void sendDeviceCommand(int cmd);
             void clearIOTable();
             void clearJournal();
             void menuPanelCtrl();
@@ -258,6 +259,7 @@
             void exportJournalToDb();
             void startExportToPDF();
             void filterDialog();
+            void deviceDefaultSettings();
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);

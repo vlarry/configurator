@@ -18,20 +18,15 @@
             //------------
             enum ErrorType
             {
-                NO_DEVICE_ERROR             = ((quint16)0x0000),
-                BKPSRAM_ERROR               = ((quint16)0x0001),
-                MAV_ERROR                   = ((quint16)0x0002),
-                MDVV1_ERROR                 = ((quint16)0x0004),
-                MDVV2_ERROR                 = ((quint16)0x0008),
-                MIK_ERROR                   = ((quint16)0x0010),
-                FLASH_ERROR                 = ((quint16)0x0020),
-                EVENT_JOURNAL_ERROR         = ((quint16)0x0040),
-                CRASH_JOURNAL_ERROR         = ((quint16)0x0080),
-                HALF_HOUR_JOURNAL_ERROR     = ((quint16)0x0100),
-                R_ISOLATOR_JOURNAL_ERROR    = ((quint16)0x0200),
-                OSCILL_JOURNAL_ERROR        = ((quint16)0x0400),
-                SET_DEFAULT_ERROR           = ((quint16)0x0800),
-                SET_DEFAULT_INCORRECT_ERROR = ((quint16)0x1000)
+                ERROR_FUNCTION_NO_SUPPORT    = quint8(0x00), // функция не поддерживается
+                ERROR_REGISTER_NUMBER        = quint8(0x01), // кол-во регистров превышает 255
+                ERROR_PACKET_LENGTH          = quint8(0x02), // ошибка длины пакета
+                ERROR_BYTES_COUNT            = quint8(0x04), // счетчик байтов не бьется с заявленным кол-вом регистров
+                ERROR_CRC                    = quint8(0x08), // ошибка CRC
+                ERROR_REGISTER_ADDRESS_RANGE = quint8(0x10), // адреса регистров вне диапазона
+                ERROR_FORMAT_DATA_WRITE      = quint8(0x20), // ошибка формата записываемых данных
+                ERROR_DATA                   = quint8(0x40), // неверный код активации (ошибка данных)
+                ERROR_NO                     = quint8(0xFF)  // нет ошибок
             };
             
         public:
@@ -58,7 +53,7 @@
 
             void                     setProperty(const QString& key, QVariant value);
             void                     setProperties(QMap<QString, QVariant> &properties);
-            void                     serErrorCode(quint16 code);
+            void                     serErrorCode(quint8 code);
             QVariant                 property(const QString& key) const;
             QMap<QString, QVariant>& properties();
 
@@ -68,7 +63,7 @@
             }
 
         private:
-            QString errorToString(quint16 code);
+            QString errorToString(quint8 code);
             
         private:
             FunctionType            m_type;
@@ -76,7 +71,7 @@
             quint16                 m_address;
             QVector<quint16>        m_values;
             QMap<QString, QVariant> m_properties;
-            quint16                 m_error;
+            quint8                  m_error;
             bool                    m_ok; // true - unit является валидным
     };
 #endif // CDATAUNITTYPE_H

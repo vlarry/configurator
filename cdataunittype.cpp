@@ -1,7 +1,7 @@
 #include "cdataunittype.h"
 //-----------------------------
 CDataUnitType::CDataUnitType():
-    m_error(NO_DEVICE_ERROR),
+    m_error(ERROR_NO),
     m_ok(false)
 {
     
@@ -13,7 +13,7 @@ CDataUnitType::CDataUnitType(quint8 slaveID, CDataUnitType::FunctionType type,
     m_slaveID(slaveID),
     m_address(address),
     m_values(values),
-    m_error(NO_DEVICE_ERROR),
+    m_error(ERROR_NO),
     m_ok(true)
 {
     
@@ -58,71 +58,51 @@ quint16 CDataUnitType::error() const
 {
     return m_error;
 }
-//------------------------------------------------
-QString CDataUnitType::errorToString(quint16 code)
+//-----------------------------------------------
+QString CDataUnitType::errorToString(quint8 code)
 {
-    QString str_error = "Ошибка ";
+    QString str_error = "";
 
     switch(code)
     {
-        case BKPSRAM_ERROR:
-            str_error += "Разрушена BKPSRAM.\n";
+        case ERROR_FUNCTION_NO_SUPPORT:
+            str_error += QObject::tr("Функция не поддерживается.\n");
         break;
 
-        case MAV_ERROR:
-            str_error += "МАВ.\n";
+        case ERROR_REGISTER_NUMBER:
+            str_error += QObject::tr("Количество регистров превышает 255.\n");
         break;
 
-        case MDVV1_ERROR:
-            str_error += "МДВВ1.\n";
+        case ERROR_PACKET_LENGTH:
+            str_error += QObject::tr("Ошибка длины пакета.\n");
         break;
 
-        case MDVV2_ERROR:
-            str_error += "МДВВ2.\n";
+        case ERROR_BYTES_COUNT:
+            str_error += QObject::tr("Счетчик байтов не бьется с заявленным количеством регистров.\n");
         break;
 
-        case MIK_ERROR:
-            str_error += "МИК.\n";
+        case ERROR_CRC:
+            str_error += QObject::tr("Ошибка CRC.\n");
         break;
 
-        case FLASH_ERROR:
-            str_error += "FLASH.\n";
+        case ERROR_REGISTER_ADDRESS_RANGE:
+            str_error += QObject::tr("Адреса регистров вне диапазона.\n");
         break;
 
-        case EVENT_JOURNAL_ERROR:
-            str_error += "журнала событий.\n";
+        case ERROR_FORMAT_DATA_WRITE:
+            str_error += QObject::tr("Ошибка формата записываемых данных.\n");
         break;
 
-        case CRASH_JOURNAL_ERROR:
-            str_error += "журнала аварий.\n";
+        case ERROR_DATA:
+            str_error += QObject::tr("Неверный код активации (ошибка данных).\n");
         break;
 
-        case HALF_HOUR_JOURNAL_ERROR:
-            str_error += "журнала получасовок.\n";
-        break;
-
-        case R_ISOLATOR_JOURNAL_ERROR:
-            str_error += "журнала сопротивления изоляции.\n";
-        break;
-
-        case OSCILL_JOURNAL_ERROR:
-            str_error += "журнала осциллограмм.\n";
-        break;
-
-        case SET_DEFAULT_ERROR:
-            str_error += "установки умолчаний.\n";
-        break;
-
-        case SET_DEFAULT_INCORRECT_ERROR:
-            str_error += "установки умолчаний из-за некорректности.\n";
-        break;
-
-        case NO_DEVICE_ERROR:
+        case ERROR_NO:
             str_error = "";
         break;
 
         default:
-            str_error += "не определена.\n";
+            str_error += QObject::tr("Не определена.\n");
         break;
     }
 
@@ -133,9 +113,9 @@ QString CDataUnitType::errorStringList()
 {
     QString str = "";
 
-    if(m_error != NO_DEVICE_ERROR)
+    if(m_error != ERROR_NO)
     {
-        for(int i = 0; i < 16; i++)
+        for(int i = 0; i < 8; i++)
         {
             quint16 err = (m_error&(1 << i));
 
@@ -185,7 +165,7 @@ void CDataUnitType::setProperties(QMap<QString, QVariant>& properties)
     m_properties = properties;
 }
 //--------------------------------------------
-void CDataUnitType::serErrorCode(quint16 code)
+void CDataUnitType::serErrorCode(quint8 code)
 {
     m_error = code;
 }

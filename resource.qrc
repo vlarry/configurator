@@ -25,6 +25,7 @@
         <file>resource/images/journal_clear.png</file>
         <file>resource/images/journal_read.png</file>
         <file>resource/images/background_report.jpg</file>
+        <file>resource/images/set_default.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
