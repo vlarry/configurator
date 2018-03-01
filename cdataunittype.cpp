@@ -65,36 +65,16 @@ QString CDataUnitType::errorToString(quint8 code)
 
     switch(code)
     {
-        case ERROR_FUNCTION_NO_SUPPORT:
-            str_error += QObject::tr("Функция не поддерживается.\n");
+        case ERROR_CODE:
+            str_error += QObject::tr("Принятый код функции не может быть обработан.\n");
         break;
 
-        case ERROR_REGISTER_NUMBER:
-            str_error += QObject::tr("Количество регистров превышает 255.\n");
+        case ERROR_DATA_ADDRESS:
+            str_error += QObject::tr("Адрес данных, указанный в запросе, недоступен.\n");
         break;
 
-        case ERROR_PACKET_LENGTH:
-            str_error += QObject::tr("Ошибка длины пакета.\n");
-        break;
-
-        case ERROR_BYTES_COUNT:
-            str_error += QObject::tr("Счетчик байтов не бьется с заявленным количеством регистров.\n");
-        break;
-
-        case ERROR_CRC:
-            str_error += QObject::tr("Ошибка CRC.\n");
-        break;
-
-        case ERROR_REGISTER_ADDRESS_RANGE:
-            str_error += QObject::tr("Адреса регистров вне диапазона.\n");
-        break;
-
-        case ERROR_FORMAT_DATA_WRITE:
-            str_error += QObject::tr("Ошибка формата записываемых данных.\n");
-        break;
-
-        case ERROR_DATA:
-            str_error += QObject::tr("Неверный код активации (ошибка данных).\n");
+        case ERROR_VALUE_REQUEST:
+            str_error += QObject::tr("Значение, содержащееся в поле данных запроса, является недопустимой величиной.\n");
         break;
 
         case ERROR_NO:

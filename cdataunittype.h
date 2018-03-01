@@ -18,15 +18,11 @@
             //------------
             enum ErrorType
             {
-                ERROR_FUNCTION_NO_SUPPORT    = quint8(0x00), // функция не поддерживается
-                ERROR_REGISTER_NUMBER        = quint8(0x01), // кол-во регистров превышает 255
-                ERROR_PACKET_LENGTH          = quint8(0x02), // ошибка длины пакета
-                ERROR_BYTES_COUNT            = quint8(0x04), // счетчик байтов не бьется с заявленным кол-вом регистров
-                ERROR_CRC                    = quint8(0x08), // ошибка CRC
-                ERROR_REGISTER_ADDRESS_RANGE = quint8(0x10), // адреса регистров вне диапазона
-                ERROR_FORMAT_DATA_WRITE      = quint8(0x20), // ошибка формата записываемых данных
-                ERROR_DATA                   = quint8(0x40), // неверный код активации (ошибка данных)
-                ERROR_NO                     = quint8(0xFF)  // нет ошибок
+                ERROR_NO            = quint8(0x00), // Ошибок нет
+                ERROR_CODE          = quint8(0x01), // Принятый код функции не может быть обработан
+                ERROR_DATA_ADDRESS  = quint8(0x02), // Адрес данных, указанный в запросе, недоступен
+                ERROR_VALUE_REQUEST = quint8(0x03), // Значение, содержащееся в поле данных запроса, является
+                                                    // недопустимой величиной
             };
             
         public:
