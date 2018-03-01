@@ -9,7 +9,6 @@
         <file>resource/images/connect.png</file>
         <file>resource/images/disconnect.png</file>
         <file>resource/images/calendar.png</file>
-        <file>resource/images/background_report.png</file>
         <file>resource/images/read_all.png</file>
         <file>resource/images/write.png</file>
         <file>resource/images/read.png</file>
@@ -25,6 +24,7 @@
         <file>resource/images/import.png</file>
         <file>resource/images/journal_clear.png</file>
         <file>resource/images/journal_read.png</file>
+        <file>resource/images/background_report.jpg</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

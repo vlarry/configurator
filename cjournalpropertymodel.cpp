@@ -8,6 +8,7 @@ CJournalPropertyModel::CJournalPropertyModel(QObject* parent):
 //------------------------------------------------------------------
 int CJournalPropertyModel::rowCount(const QModelIndex& parent) const
 {
+    Q_UNUSED(parent);
     return m_data.count();
 }
 //----------------------------------------------------------------------------

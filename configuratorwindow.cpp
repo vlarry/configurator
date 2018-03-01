@@ -3254,7 +3254,7 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
             printer->newPage();
         }
 
-        painter.drawImage(textRect, QImage(":/images/resource/images/background_report.png"));
+        painter.drawImage(textRect, QImage(":/images/resource/images/background_report.jpg"));
 
         if(pageIndex == 0)
         {

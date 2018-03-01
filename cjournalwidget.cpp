@@ -246,6 +246,25 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
         }
     }
 
+    property_list << property_data_item_t({ ";", tr("Расчетные величины") }); // добавление разделителя между блоками переменных
+
+    // добавление в свойства расчетных величин
+    calc_value_list_t calc_value_list = protection.calc;
+
+    if(!calc_value_list.isEmpty())
+    {
+        for(const calc_value_t& value: calc_value_list)
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                int pos = value.first + i;
+                val.bytes[i] = data[pos];
+            }
+
+            property_list << property_data_item_t({ value.name, QString::number(val._float, 'f', 6) });
+        }
+    }
+
     property_list << property_data_item_t({ ";", tr("Внутренние переменные: выходы") }); // добавление разделителя между блоками переменных
 
     variable_list_t variable_list = protection.variable;
@@ -338,25 +357,6 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
 
             property_list << property_data_item_t({ QString("%1 (%2)").arg(input_list[k].index).arg(input_list[k].description),
                                                     str });
-        }
-    }
-
-    property_list << property_data_item_t({ ";", tr("Расчетные величины") }); // добавление разделителя между блоками переменных
-
-    // добавление в свойства расчетных величин
-    calc_value_list_t calc_value_list = protection.calc;
-
-    if(!calc_value_list.isEmpty())
-    {
-        for(const calc_value_t& value: calc_value_list)
-        {
-            for(int i = 0; i < 4; i++)
-            {
-                int pos = value.first + i;
-                val.bytes[i] = data[pos];
-            }
-
-            property_list << property_data_item_t({ value.name, QString::number(val._float, 'f', 6) });
         }
     }
 
