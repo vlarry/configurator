@@ -3155,7 +3155,6 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
 {
     QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
 
-    printer->setResolution(180);
     printer->setColorMode(QPrinter::GrayScale);
     printer->setOutputFormat(QPrinter::PdfFormat);
     printer->setPaperSize(QPrinter::A4);
@@ -3299,12 +3298,14 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
         }
 
         painter.save();
+            painter.setRenderHint(QPainter::TextAntialiasing,true);
+            painter.setRenderHint(QPainter::HighQualityAntialiasing,false);
             const QRectF textPageRect(0, pageIndex*reportPDF->pageSize().height(), reportPDF->pageSize().width(),
                                                                                    reportPDF->pageSize().height());
             painter.setClipRect(textRect);
             painter.translate(0, -textPageRect.top());
             painter.translate(textRect.left(), textRect.top());
-            reportPDF->drawContents(&painter);
+            reportPDF->drawContents(&painter, textPageRect);
         painter.restore();
 
         QRectF footerRect = textRect;
