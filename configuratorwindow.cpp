@@ -625,6 +625,12 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     
     RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
 
+    if(unit.property("FIRST").toString() == "M06")
+    {
+        qDebug() << "first: " << unit.property("FIRST").toString() << ", last: " << unit.property("LAST").toString() << " = " <<
+                    unit.value(0);
+    }
+
     if(type == CALCULATE_TYPE)
         displayCalculateValues(unit.values());
     else if(type == GENERAL_TYPE)
@@ -3613,6 +3619,12 @@ void ConfiguratorWindow::updateParameterJournal()
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
 {
+    ui->tabwgtMenu->setTabEnabled(4, false);
+    m_active_journal_current = nullptr;
+    ui->pushButtonJournalRead->setVisible(false);
+    ui->pushButtonJournalClear->setVisible(false);
+    ui->pushButtonDefaultSettings->setVisible(false);
+
     if(index >= JOURNAL_INDEX_CRASH && index <= JOURNAL_INDEX_ISOLATION)
     {
         ui->tabwgtMenu->setTabEnabled(4, true);
@@ -3630,21 +3642,11 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
         m_active_journal_current->header()->setTextDeviceCountMessages(0, 0);
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
-
-        return;
     }
     else if(index >= PURPOSE_INDEX_LED && index <= PURPOSE_INDEX_KEYBOARD)
     {
         ui->pushButtonDefaultSettings->setVisible(true);
-
-        return;
     }
-
-    ui->tabwgtMenu->setTabEnabled(4, false);
-    m_active_journal_current = nullptr;
-    ui->pushButtonJournalRead->setVisible(false);
-    ui->pushButtonJournalClear->setVisible(false);
-    ui->pushButtonDefaultSettings->setVisible(false);
 }
 //-----------------------------------------------------------------------
 void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
@@ -4271,6 +4273,10 @@ void ConfiguratorWindow::readJournalCount()
 //---------------------------------------------
 void ConfiguratorWindow::deviceSync(bool state)
 {
+    #ifdef DEBUG_REQUEST // проверка связи (отключение синхронизации)
+        return;
+    #endif
+
     if(state)
     {
         if(!m_sync_timer.isActive())

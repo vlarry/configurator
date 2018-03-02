@@ -1148,7 +1148,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>13</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -2323,7 +2323,7 @@
                   </sizepolicy>
                  </property>
                  <property name="currentIndex">
-                  <number>1</number>
+                  <number>3</number>
                  </property>
                  <widget class="QWidget" name="pageProtectionPropertiesMTZ1">
                   <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -3157,9 +3157,9 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLabel" name="lblTextProtectionMTZ_DirStart">
+                           <widget class="QLabel" name="lblTextProtectionMTZ_Angle_2">
                             <property name="text">
-                             <string>Напр. пуска</string>
+                             <string>Задержка</string>
                             </property>
                             <property name="scaledContents">
                              <bool>true</bool>
@@ -3177,9 +3177,9 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLabel" name="lblTextProtectionMTZ_Angle_2">
+                           <widget class="QLabel" name="lblTextProtectionMTZ_DirStart">
                             <property name="text">
-                             <string>Задержка</string>
+                             <string>Напр. пуска</string>
                             </property>
                             <property name="scaledContents">
                              <bool>true</bool>
@@ -3267,7 +3267,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leM07">
+                           <widget class="QLineEdit" name="leM18">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
@@ -3323,7 +3323,7 @@
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="leM18">
+                           <widget class="QLineEdit" name="leM07">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                               <horstretch>0</horstretch>
