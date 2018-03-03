@@ -516,6 +516,8 @@ void ConfiguratorWindow::processReadJournals(bool state)
         return;
     }
 
+    readJournalCount();
+
     if(!state)
     {
         journal_set_t& set = m_journal_set[key];
@@ -2259,7 +2261,7 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
         {
             int index = i*var_count + offset_data + j; // получаем индекс текущего слова (32 бита)
 
-            quint32 value = (unit.value(index + 1) << 16) | unit.value(index); // получаем значение (32 бита) с состояними 32х
+            quint32 value = (unit.value(index) << 16) | unit.value(index + 1); // получаем значение (32 бита) с состояними 32х
                                                                                // переменных
 
             for(int k = 0; k < 32; k++)
@@ -2297,7 +2299,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 
     for(int i = 0; i < unit.valueCount() - 1; i += 2)
     {
-        quint32 value = (unit.value(i + 1) << 16) | unit.value(i);
+        quint32 value = (unit.value(i) << 16) | unit.value(i + 1);
 
         for(int j = 0; j < data.count(); j++)
         {
