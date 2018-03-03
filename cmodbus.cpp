@@ -202,7 +202,11 @@ void CModbus::request(CDataUnitType& unit)
 {
     if(!m_device->isOpen())
     {
-        emit errorDevice(tr("Порт <") + m_device->portName() + tr("> закрыт."));
+        if(!m_device->portName().isEmpty())
+            emit errorDevice(tr("Порт <") + m_device->portName() + tr("> закрыт."));
+
+        emit noConnect();
+
         return;
     }
 
