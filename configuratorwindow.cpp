@@ -2239,39 +2239,37 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(data.columnCounts()%16) // если есть остаток, значит +1 байт для хранения всех переменных
         var_count++;           // например LED имеют 115 возможных привязок к переменным - 115/16 = 7,1875 -> 7 + 1 = 8 байт
 
-    int offset_row = data.indexRowFromKey(first);
+    int offset_row = data.indexRowFromKey(first); // смещение строки таблицы, т.к. данные разбиты на несколько блоков и
+                                                  // запрашиваются не для всех строк (для реле и светодиодов по 2 строки за раз)
 
     if(offset_row == -1)
         return;
 
     int row_count = unit.valueCount()/24; // расчет количества строк из количества пришедших данных;
-                                          // полная строка со всеми переменными равна 48 байт, т.е. 24 ячейки
-                                          // привязка переменной равна 1 бит (нет/есть)
+                                              // полная строка со всеми переменными равна 48 байт, т.е. 24 ячейки
+                                              // привязка переменной равна 1 бит (нет/есть)
     int limit = var_count*16 - (var_count*16 - data.columnCounts()); // предел количества переменных - т.к. всего 48 байт, т.е.
                                                                      // максимальное число переменных - 384, а используется, н-р,
                                                                      // для LED всего 115, то все что свыше этого значения мы
                                                                      // игнорируем (резерв)
 
-    for(int i = 0, offset_data = 0; i < row_count; i++, offset_data += 24 - var_count)
+    for(int i = 0; i < row_count; i++) // обработка строк
     {
-        int row = i + offset_row; // получаем индекс текущей строки учитываю смещение, н-р: LED1 - смещение 0, и если прочитать
-                                  // LED3, то получим смещение 2, т.е. третья строка таблицы
+        int col_bytes = unit.valueCount()/row_count; // количество байт на строку
+        int row       = i + offset_row; // абсолютный номер строки
 
-        for(int j = 0; j < var_count - 1; j += 2)
+        for(int j = 0; j < col_bytes - 1; j += 2) // обработка колонок
         {
-            int index = i*var_count + offset_data + j; // получаем индекс текущего слова (32 бита)
+            int index = i*col_bytes + j;
+            int value = (unit.value(index) << 16) | unit.value(index + 1);
 
-            quint32 value = (unit.value(index) << 16) | unit.value(index + 1); // получаем значение (32 бита) с состояними 32х
-                                                                               // переменных
-
-            for(int k = 0; k < 32; k++)
+            for(int k = 0; k < 32; k++) // проверяем побитно состояние привязки
             {
-                int bit = j/2*32 + k;
+                bool state = (value&(1 << k)); // состояние привязки
+                int  bit   = j/2*32 + k; // номер колонки
 
                 if(bit >= limit)
                     break;
-
-                bool state = (value&(1 << k));
 
                 data[row][bit].setState(state);
             }
@@ -4518,6 +4516,23 @@ CColumn::column_t ConfiguratorWindow::columnFromKey(const QString& key)
     }
 
     return CColumn::column_t();
+}
+/*!
+ * \brief ConfiguratorWindow::indexColumnFromKey
+ * \param  key ключ (имя переменной)
+ * \return позиция ключа в списке переменных
+ *
+ * Метод ищет позицию ключа в списке переменных, т.е. абсолютная позиция переменной. Если ключ не найден, то возвращается -1.
+ */
+int ConfiguratorWindow::indexColumnFromKey(const QString& key)
+{
+    for(int i = 0; i < m_variables.count(); i++)
+    {
+        if(m_variables[i].first.toUpper() == key.toUpper())
+            return i;
+    }
+
+    return -1;
 }
 //---------------------------------------------------------------------
 ConfiguratorWindow::DeviceMenuIndexType ConfiguratorWindow::menuIndex()
