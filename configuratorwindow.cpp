@@ -1091,7 +1091,10 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
 void ConfiguratorWindow::readSettings()
 {
     if(!m_modbusDevice->is_open())
+    {
+        noConnectMessage();
         return;
+    }
 
     qint32 index = ui->stwgtMain->currentIndex();
 
@@ -1116,7 +1119,10 @@ void ConfiguratorWindow::readSettings()
 void ConfiguratorWindow::readSetCurrent()
 {
     if(!m_modbusDevice->is_open())
+    {
+        noConnectMessage();
         return;
+    }
 
     qint32 index = ui->stwgtMain->currentIndex();
 
@@ -1228,7 +1234,10 @@ void ConfiguratorWindow::readSetCurrent()
 void ConfiguratorWindow::writeSettings()
 {
     if(!m_modbusDevice->is_open())
+    {
+        noConnectMessage();
         return;
+    }
 
     qint32 index = ui->stwgtMain->currentIndex();
 
@@ -1253,7 +1262,10 @@ void ConfiguratorWindow::writeSettings()
 void ConfiguratorWindow::writeSetCurrent()
 {
     if(!m_modbusDevice->is_open())
+    {
+        noConnectMessage();
         return;
+    }
 
     qint32 index = ui->stwgtMain->currentIndex();
 
@@ -2984,6 +2996,11 @@ void ConfiguratorWindow::deviceDefaultSettings()
         readSetCurrent(); // читаем настройки после сброса
     }
 }
+//-----------------------------------------
+void ConfiguratorWindow::noConnectMessage()
+{
+    QMessageBox::warning(this, tr("Отправка данных"), tr("Невозможно отправить запрос. Нет соединения с устройством"));
+}
 /*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
@@ -4676,4 +4693,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
     connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
+    connect(m_modbusDevice, &CModbus::noConnect, this, &ConfiguratorWindow::noConnectMessage);
 }

@@ -262,6 +262,7 @@
             void startExportToPDF();
             void filterDialog();
             void deviceDefaultSettings();
+            void noConnectMessage();
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
