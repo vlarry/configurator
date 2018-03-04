@@ -253,10 +253,9 @@
             void exportPurposeToJSON();
             void importPurposeFromJSON();
             void processReadJournal(CDataUnitType& unit);
-            void updateParameterJournal(); // обновление данных журнала событий - вычитка кол-ва событий и положение указателя
             void widgetStackIndexChanged(int index);
             void setJournalPtrShift(const QString& key, long pos);
-            void timeoutSyncSerialNumber();
+            void timeoutSynchronization();
             void importJournalToTable();
             void exportJournalToDb();
             void startExportToPDF();
@@ -297,7 +296,7 @@
             int  addressPurposeKey(const QString& key) const;
             void readShiftPrtEventJournal();
             void readJournalCount();
-            void deviceSync(bool state = false);
+            void synchronization(bool state = false);
             int  recordCountDb(QSqlDatabase* db, const QString& table_name, const QString& parameter, const QString& value,
                                                  const QString& subparamter = "", const QStringList& range = QStringList());
             QString             recordLastDb(QSqlDatabase* db, const QString& table_name, const QString& parameter);
@@ -339,7 +338,7 @@
             purpose_t                        m_purpose_list;
             QVector<CColumn::column_t>       m_variables;
             QTime                            m_time_process;
-            QTimer                           m_sync_timer;
+            QTimer*                          m_timer_synchronization;
             CStatusBar*                      m_status_bar;
             QMap<int, QString>               m_device_code_list;
             QFutureWatcher<void>*            m_watcher;

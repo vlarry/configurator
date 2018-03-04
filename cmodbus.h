@@ -5,6 +5,7 @@
     #include <QSerialPort>
     #include <QVector>
     #include <QTimer>
+    #include <QMetaMethod>
     #include <QDebug>
     #include <cdataunittype.h>
     //---------------------------
@@ -53,7 +54,7 @@
             void request(CDataUnitType& unit);
             void readyRead();
             void errorPort(QSerialPort::SerialPortError error);
-            void timeout();
+            void timeoutReadWait();
             
         private:
             void    process_request_queue();

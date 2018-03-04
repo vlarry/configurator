@@ -22,6 +22,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_additional_group(nullptr),
     m_versionWidget(nullptr),
     m_variables(QVector<CColumn::column_t>()),
+    m_timer_synchronization(nullptr),
     m_status_bar(nullptr),
     m_watcher(nullptr),
     m_progressbar(nullptr),
@@ -52,6 +53,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_progressbar               = new CProgressBarWidget(this);
     m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator",
                                                 this);
+    m_timer_synchronization     = new QTimer(this);
 
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -86,6 +88,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 ConfiguratorWindow::~ConfiguratorWindow()
 {
     saveSattings();
+
+    if(m_timer_synchronization->isActive())
+        m_timer_synchronization->stop();
 
     if(m_watcher->isRunning())
     {
@@ -161,14 +166,14 @@ void ConfiguratorWindow::stateChanged(bool state)
     if(state)
     {
         saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> открыт."));
-        updateParameterJournal();
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
-        deviceSync(true);
+        synchronization(true); // запускаем синхронизацию
+        readJournalCount(); // читаем количество сообщений в каждом журнале
     }
     else
     {
         saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> закрыт."));
-        deviceSync();
+        synchronization(); // отключение синхронизации
         m_status_bar->connectStateChanged(false);
     }
 }
@@ -3649,11 +3654,6 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         default: break;
     }
 }
-//-----------------------------------------------
-void ConfiguratorWindow::updateParameterJournal()
-{
-    readJournalCount();
-}
 //---------------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int index)
 {
@@ -3680,6 +3680,9 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
         m_active_journal_current->header()->setTextDeviceCountMessages(0, 0);
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
+
+        if(m_active_journal_current)
+            readJournalCount();
     }
     else if(index >= PURPOSE_INDEX_LED && index <= PURPOSE_INDEX_KEYBOARD)
     {
@@ -3703,15 +3706,13 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
     m_modbusDevice->request(unit);
 }
 //------------------------------------------------
-void ConfiguratorWindow::timeoutSyncSerialNumber()
+void ConfiguratorWindow::timeoutSynchronization()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
 
     unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
 
     m_modbusDevice->request(unit);
-
-    m_sync_timer.start(ui->spinboxSyncTime->value());
 }
 //---------------------------------------------
 void ConfiguratorWindow::importJournalToTable()
@@ -4308,8 +4309,8 @@ void ConfiguratorWindow::readJournalCount()
         m_modbusDevice->request(unit);
     }
 }
-//---------------------------------------------
-void ConfiguratorWindow::deviceSync(bool state)
+//--------------------------------------------------
+void ConfiguratorWindow::synchronization(bool state)
 {
     #ifdef DEBUG_REQUEST // проверка связи (отключение синхронизации)
         return;
@@ -4317,16 +4318,12 @@ void ConfiguratorWindow::deviceSync(bool state)
 
     if(state)
     {
-        if(!m_sync_timer.isActive())
-        {
-            m_sync_timer.start(ui->spinboxSyncTime->value());
-            timeoutSyncSerialNumber();
-        }
+        timeoutSynchronization();
     }
     else
     {
-        if(m_sync_timer.isActive())
-            m_sync_timer.stop();
+        if(m_timer_synchronization->isActive())
+            m_timer_synchronization->stop();
     }
 }
 /*!
@@ -4710,7 +4707,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
     connect(ui->pushButtonImport, &QPushButton::clicked, this, &ConfiguratorWindow::processImport);
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
-    connect(&m_sync_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSyncSerialNumber);
+    connect(m_timer_synchronization, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSynchronization);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
     connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);

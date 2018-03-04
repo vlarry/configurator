@@ -25,7 +25,7 @@ CModbus::CModbus(QObject *parent):
     
     connect(m_device, &QSerialPort::readyRead, this, &CModbus::readyRead);
     connect(m_device, &QSerialPort::errorOccurred, this, &CModbus::errorPort);
-    connect(m_timeout_timer, &QTimer::timeout, this, &CModbus::timeout, Qt::DirectConnection);
+    connect(m_timeout_timer, &QTimer::timeout, this, &CModbus::timeoutReadWait, Qt::DirectConnection);
 }
 //-----------------
 CModbus::~CModbus()
@@ -205,14 +205,12 @@ void CModbus::request(CDataUnitType& unit)
         if(!m_device->portName().isEmpty())
             emit errorDevice(tr("Порт <") + m_device->portName() + tr("> закрыт."));
 
-        emit noConnect();
-
         return;
     }
 
     if(unit.is_empty())
         return;
-    
+
     quint16 size;
     
     if(unit.functionType() == CDataUnitType::ReadHoldingRegisters || 
@@ -234,7 +232,7 @@ void CModbus::request(CDataUnitType& unit)
     {
         m_request_queue.append(unit);
         m_sizeQuery++;
-        
+
         return;
     }
     
@@ -282,7 +280,7 @@ void CModbus::request(CDataUnitType& unit)
     m_request_cur = unit;
     m_timeout_timer->start(m_timeout_repeat);
     m_device->write(ba);
-    
+
     emit rawData(ba);
 }
 //-----------------------
@@ -328,7 +326,6 @@ void CModbus::readyRead()
     }
     else if(count < m_receive_buffer.count())
     {
-        
         m_receive_buffer = m_receive_buffer.remove(count, (m_receive_buffer.count() - count));
     }
     
@@ -415,8 +412,8 @@ void CModbus::errorPort(QSerialPort::SerialPortError error)
         emit errorDevice(m_device->errorString());
     }
 }
-//---------------------
-void CModbus::timeout()
+//-----------------------------
+void CModbus::timeoutReadWait()
 {
     m_timeout_timer->stop();
     
