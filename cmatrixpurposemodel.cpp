@@ -1,50 +1,10 @@
 #include "cmatrixpurposemodel.h"
 //--------------------------------------------------------------------------------------
 CMatrixPurposeModel::CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent):
-    QAbstractTableModel(parent)
+    QAbstractTableModel(parent),
+    m_data(data)
 {
-    QVector<int> cell_active_list;
-    QVector<CColumn::column_t> headers; // список обобщенных заголовков
-    // создаем обобщенный список активных ячеек
-    for(int i = 0; i < data.count(); i++)
-    {
-        CRow row = data[i];
 
-        for(int j = 0; j < data.columnCounts(); j++)
-        {
-            if(!cell_active_list.isEmpty()) // список не пуст
-            {
-                if(row[j].status() && !cell_active_list.contains(j)) // ячейка активна и список не содержит данный индекс
-                {
-                    cell_active_list << j;
-                    headers << data.columnData(j);
-                }
-            }
-            else
-            {
-                if(row[j].status()) // список пуст и ячейка активна
-                {
-                    cell_active_list << j;
-                    headers << data.columnData(j);
-                }
-            }
-        }
-    }
-
-    m_data.setColumnHeaders(headers);
-    // создаение представления для активных ячеек
-    for(int i = 0; i < data.count(); i++)
-    {
-        QVector<CColumn> columns;
-
-        for(int j = 0; j < cell_active_list.count(); j++)
-        {
-            columns << data[i][cell_active_list[j]];
-        }
-
-        CRow row(data[i].key(), data[i].header(), columns);
-        m_data.addRow(row);
-    }
 }
 //------------------------------------
 void CMatrixPurposeModel::updateData()
@@ -212,6 +172,22 @@ QVector<int> CDataTable::columnIndexListActive(int row)
         for(int i = 0; i < columnCounts(); i++)
         {
             if(m_rows[row][i].status())
+                list << i;
+        }
+    }
+
+    return list;
+}
+//-------------------------------------------------------
+QVector<int> CDataTable::columnIndexListInactive(int row)
+{
+    QVector<int> list = QVector<int>();
+
+    if(!m_rows.isEmpty())
+    {
+        for(int i = 0; i < columnCounts(); i++)
+        {
+            if(!m_rows[row][i].status())
                 list << i;
         }
     }

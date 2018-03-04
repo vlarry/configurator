@@ -69,6 +69,7 @@
             CColumn::column_t columnData(int index) const;
             const QString&    columnName(int index) const;
             QVector<int>      columnIndexListActive(int row);
+            QVector<int>      columnIndexListInactive(int row);
 
             void setColumnHeaders(QVector<CColumn::column_t>& headers);
 

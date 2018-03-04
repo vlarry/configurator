@@ -25,7 +25,7 @@ CModbus::CModbus(QObject *parent):
     
     connect(m_device, &QSerialPort::readyRead, this, &CModbus::readyRead);
     connect(m_device, &QSerialPort::errorOccurred, this, &CModbus::errorPort);
-    connect(m_timeout_timer, &QTimer::timeout, this, &CModbus::timeout);
+    connect(m_timeout_timer, &QTimer::timeout, this, &CModbus::timeout, Qt::DirectConnection);
 }
 //-----------------
 CModbus::~CModbus()
@@ -334,7 +334,7 @@ void CModbus::readyRead()
     
     m_timeout_timer->stop();
     m_counter_request_error = 0;
-    
+
     // приняли все сообщение
     // расчет и проверка контрольной суммы
     quint8 mbs = m_receive_buffer.at(m_receive_buffer.count() - 2);

@@ -52,7 +52,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_progressbar               = new CProgressBarWidget(this);
     m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator",
                                                 this);
-    
+
     m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     m_calculateWidget->setWindowTitle(tr("Расчетные величины"));
@@ -615,7 +615,10 @@ void ConfiguratorWindow::switchDeviceSetWrite()
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 {
     if(unit.is_empty())
+    {
+        noConnectMessage();
         return;
+    }
 
     quint8 error = unit.error();
 
@@ -2102,6 +2105,11 @@ void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
     table->setModel(model);
     table->resizeColumnsToContents();
     table->resizeRowsToContents();
+
+    for(int index: data.columnIndexListInactive(0))
+    {
+        table->setColumnHidden(index, true);
+    }
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -2112,7 +2120,10 @@ void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
 {
     if(unit.is_empty())
+    {
+        noConnectMessage();
         return;
+    }
 
     QString first = unit.property("FIRST").toString();
     QString last  = unit.property("LAST").toString();
@@ -2186,7 +2197,10 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
 void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit)
 {
     if(unit.is_empty() || unit.valueCount() > 1 || unit.valueCount() == 0)
+    {
+        noConnectMessage();
         return;
+    }
 
     QString indexName = unit.property("INDEX").toString();
 
@@ -2284,6 +2298,13 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
                     break;
 
                 data[row][bit].setState(state);
+
+                if(state)
+                {
+                    qDebug() << "ячейка [" << row << ", " << bit << "] = переменная(" << data.columnData(bit).first <<
+                                "); состояние ячейки = " <<
+                                ((data[row][bit].status())?"активная привязка":"неактивная привязка");
+                }
             }
         }
     }
@@ -2294,7 +2315,10 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 {
     if(unit.is_empty())
+    {
+        noConnectMessage();
         return;
+    }
 
     int first_addr = unit.property(tr("FIRST_ADDRESS")).toInt();
     int last_addr  = unit.property(tr("LAST_ADDRESS")).toInt();
@@ -2713,10 +2737,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
 
     QVector<quint16> values;
 
-    int var_count = data.columnCounts()/16;
-
-    if(data.columnCounts()%16)
-        var_count++;
+    int var_count = 24; // 24 ячейки 384 переменных максимум (у нас 358)
 
     for(int i = bIndex; i <= eIndex; i++)
     {
@@ -2740,7 +2761,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
             quint16 lbs = (quint16)value&0x0000FFFF;
             quint16 mbs = (quint16)((value >> 16)&0x0000FFFF);
 
-            values << lbs << mbs;
+            values << mbs << lbs;
         }
     }
 
@@ -2793,7 +2814,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
             value |= (data[j][column_list[i]].state()) << j;
         }
 
-        values << (quint16)(value&0x0000FFFF) << (quint16)((value >> 16)&0x0000FF);
+        values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
     }
 
     CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
@@ -4693,5 +4714,4 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
     connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
-    connect(m_modbusDevice, &CModbus::noConnect, this, &ConfiguratorWindow::noConnectMessage);
 }
