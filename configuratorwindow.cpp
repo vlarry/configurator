@@ -2284,15 +2284,44 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
                                                                      // для LED всего 115, то все что свыше этого значения мы
                                                                      // игнорируем (резерв)
 
+    QFile file("purpose.log");
+
+    file.open(QFile::Append);
+
+    QTextStream out(&file);
+
     for(int i = 0; i < row_count; i++) // обработка строк
     {
         int col_bytes = unit.valueCount()/row_count; // количество байт на строку
         int row       = i + offset_row; // абсолютный номер строки
 
+        out << QString("Строка №%1\n").arg(row + 1);
+
         for(int j = 0; j < col_bytes - 1; j += 2) // обработка колонок
         {
             int index = i*col_bytes + j;
             int value = (unit.value(index) << 16) | unit.value(index + 1);
+
+            QString val_hex = QString::number(value, 16);
+            QString val_bin = QString::number(value, 2);
+
+            int len_hex = 8 - val_hex.length();
+            int len_bin = 32 - val_bin.length();
+
+            QString str_hex;
+            QString str_bin;
+
+            if(val_hex.length() == 0)
+                str_hex = "0x" + QString(8, '0');
+            else
+                str_hex = "0x" + QString(len_hex, '0') + val_hex;
+
+            if(val_bin.length() == 0)
+                str_bin = "0b" + QString(32, '0');
+            else
+                str_bin = "0b" + QString(len_bin, '0') + val_bin;
+
+            out << QString("hex: %1\nbin: %2\n").arg(str_hex).arg(str_bin);
 
             for(int k = 0; k < 32; k++) // проверяем побитно состояние привязки
             {
@@ -2306,14 +2335,16 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 
                 if(state)
                 {
-                    qDebug() << "ячейка [" << row << ", " << bit << "] = переменная(" << data.columnData(bit).first <<
-                                "); состояние ячейки = " <<
-                                ((data[row][bit].status())?"активная привязка":"неактивная привязка");
+                    out << QString("Бит №%1 -> переменная \"%2\" = %3\n").arg(k).arg(data.columnData(bit).first).
+                           arg(((data[row][bit].status())?"допустимая привязка":"недопустимая привязка"));
                 }
             }
         }
     }
 
+    out << QString(80, '*') << "\n";
+
+    file.close();
     model->updateData();
 }
 //--------------------------------------------------------------------
@@ -3713,6 +3744,9 @@ void ConfiguratorWindow::timeoutSynchronization()
     unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
 
     m_modbusDevice->request(unit);
+
+    if(!m_timer_synchronization->isActive())
+        m_timer_synchronization->start(ui->spinboxSyncTime->value());
 }
 //---------------------------------------------
 void ConfiguratorWindow::importJournalToTable()
