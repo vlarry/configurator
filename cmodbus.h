@@ -22,6 +22,7 @@
             struct AutoConnectType
             {
                 bool            is_connect;
+                bool            baud_reconnect;
                 int             baudrate_init;
                 int             index_current;
                 int             index_start;
@@ -64,6 +65,8 @@
             void infoLog(const QString&);
             void noConnect();
             void baudrateChanged(int);
+            void newBaudrate(int);
+            void saveSettings();
             
         public slots:
             void connectDevice();

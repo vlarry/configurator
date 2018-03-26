@@ -13,7 +13,7 @@ CModbus::CModbus(const baudrate_list_t& baudrate_list, QObject *parent):
     m_counter_request_error(0),
     m_request_count_repeat(3),
     m_timeout_repeat(1000),
-    m_connect({ false, m_baudrate, 0, 0, baudrate_list })
+    m_connect({ false, false, m_baudrate, 0, 0, baudrate_list })
 {
     m_device = new QSerialPort(this);
     m_timeout_timer = new QTimer(this);
@@ -54,7 +54,7 @@ void CModbus::setPortName(const QString& name)
 //----------------------------------------
 void CModbus::setBaudrate(qint32 baudrate)
 {
-    m_baudrate = baudrate;
+    m_baudrate = m_connect.baudrate_init = baudrate;
 }
 //-------------------------------------------------------
 void CModbus::setDatabits(QSerialPort::DataBits databits)
@@ -197,6 +197,21 @@ void CModbus::disconnectDevice()
 
         emit infoLog(str);
     }
+
+    if(m_connect.baud_reconnect)
+    {
+        m_connect.baud_reconnect = false;
+
+        for(int i = 0; i < m_connect.baudrate_list.count(); i++)
+        {
+            if(m_baudrate == m_connect.baudrate_list[i])
+                emit baudrateChanged(i);
+        }
+
+        connectDevice();
+
+        emit saveSettings();
+    }
 }
 //----------------------------------------
 void CModbus::request(CDataUnitType& unit)
@@ -337,6 +352,20 @@ void CModbus::readyRead()
     if(!m_connect.is_connect)
     {
         m_connect.is_connect = true;
+
+        if(m_connect.baudrate_init != m_baudrate)
+        {
+            m_baudrate = m_connect.baudrate_init;
+
+            for(int i = 0; i < m_connect.baudrate_list.count(); i++)
+            {
+                if(m_baudrate == m_connect.baudrate_list[i])
+                {
+                    m_connect.baud_reconnect = true;
+                    emit newBaudrate(i);
+                }
+            }
+        }
     }
 
     // расчет и проверка контрольной суммы
@@ -442,7 +471,7 @@ void CModbus::timeoutReadWait()
                 // Поиск индекса скорости в списке иначе он будет равен 0, т.е. началу списка
                 int br = m_connect.baudrate_list[i];
 
-                if(br == m_baudrate && i < (m_connect.baudrate_list.count() - 2))
+                if(br == m_baudrate && i <= (m_connect.baudrate_list.count() - 2))
                 {
                     index = i + 1;
                     break;
@@ -489,7 +518,7 @@ void CModbus::timeoutReadWait()
 
         if(m_connect.is_connect) // если соединение было активным, то значит обрыв
         {
-            str = tr("Ошибка: время ожидания ответа от устройства истекло -> попытка №" + QString::number(m_counter_request_error));
+            str = tr("Ошибка: время ожидания ответа от устройства истекло -> попытка №") + QString::number(m_counter_request_error);
         }
         else
         {

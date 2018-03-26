@@ -30,7 +30,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tabFile">
        <attribute name="title">
@@ -545,17 +545,7 @@
                </item>
                <item>
                 <property name="text">
-                 <string>14400</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
                  <string>19200</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>28800</string>
                 </property>
                </item>
                <item>

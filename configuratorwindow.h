@@ -263,6 +263,8 @@
             void filterDialog();
             void deviceDefaultSettings();
             void noConnectMessage();
+            void setNewBaudrate(int baudrate_index);
+            void saveDeviceSettings();
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);

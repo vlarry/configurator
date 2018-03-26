@@ -3071,6 +3071,24 @@ void ConfiguratorWindow::noConnectMessage()
     QMessageBox::warning(this, tr("Отправка данных"), tr("Невозможно отправить запрос. Нет соединения с устройством"));
 }
 /*!
+ * \brief ConfiguratorWindow::setNewBaudrate
+ * \param baudrate_index индекс скорости из списка
+ * Отправка команды устройству для установки новой скорости
+ */
+void ConfiguratorWindow::setNewBaudrate(int baudrate_index)
+{
+    sendDeviceCommand(baudrate_index + 6);
+}
+/*!
+ * \brief ConfiguratorWindow::saveDeviceSettings
+ *
+ * Отправка команды устройству на сохранение настроек в энергонезависимой памяти
+ */
+void ConfiguratorWindow::saveDeviceSettings()
+{
+    sendDeviceCommand(2);
+}
+/*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
  */
@@ -4759,4 +4777,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
     connect(m_modbusDevice, &CModbus::baudrateChanged, ui->cboxBaudrate, &QComboBox::setCurrentIndex);
     connect(m_modbusDevice, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
+    connect(m_modbusDevice, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
+    connect(m_modbusDevice, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
 }
