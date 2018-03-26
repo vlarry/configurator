@@ -32,7 +32,14 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 {
     ui->setupUi(this);
 
-    m_modbusDevice              = new CModbus(this);
+    CModbus::baudrate_list_t baudrate_list;
+
+    for(int i = 0; i < ui->cboxBaudrate->count(); i++)
+    {
+        baudrate_list << ui->cboxBaudrate->itemText(i).toInt();
+    }
+
+    m_modbusDevice              = new CModbus(baudrate_list, this);
     m_calculateWidget           = new QPanel(this);
     m_tim_calculate             = new QTimer(this);
     m_protect_mtz_group         = new QButtonGroup;
@@ -945,6 +952,11 @@ void ConfiguratorWindow::additionalChangedID(int id)
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
     m_status_bar->setStatusMessage(error, 5000);
+}
+//---------------------------------------------------------
+void ConfiguratorWindow::errorConnect(const QString& error)
+{
+    QMessageBox::warning(this, tr("Ошибка подлкючения"), error);
 }
 //---------------------------------------------------
 void ConfiguratorWindow::terminalVisiblity(int state)
@@ -4745,4 +4757,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
     connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
+    connect(m_modbusDevice, &CModbus::baudrateChanged, ui->cboxBaudrate, &QComboBox::setCurrentIndex);
+    connect(m_modbusDevice, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
 }

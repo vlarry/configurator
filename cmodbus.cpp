@@ -1,6 +1,6 @@
 #include "cmodbus.h"
-//--------------------------------
-CModbus::CModbus(QObject *parent):
+//----------------------------------------------------------------------
+CModbus::CModbus(const baudrate_list_t& baudrate_list, QObject *parent):
     QObject(parent),
     m_device(nullptr),
     m_port_name(tr("")),
@@ -12,7 +12,8 @@ CModbus::CModbus(QObject *parent):
     m_timeout_timer(nullptr),
     m_counter_request_error(0),
     m_request_count_repeat(3),
-    m_timeout_repeat(1000)
+    m_timeout_repeat(1000),
+    m_connect({ false, m_baudrate, 0, 0, baudrate_list })
 {
     m_device = new QSerialPort(this);
     m_timeout_timer = new QTimer(this);
@@ -333,6 +334,11 @@ void CModbus::readyRead()
     m_counter_request_error = 0;
 
     // приняли все сообщение
+    if(!m_connect.is_connect)
+    {
+        m_connect.is_connect = true;
+    }
+
     // расчет и проверка контрольной суммы
     quint8 mbs = m_receive_buffer.at(m_receive_buffer.count() - 2);
     quint8 lbs = m_receive_buffer.at(m_receive_buffer.count() - 1);
@@ -423,12 +429,75 @@ void CModbus::timeoutReadWait()
     if(m_counter_request_error == m_request_count_repeat)
     {
         disconnectDevice();
+
+        bool isRepeat = false;
+
+        if(!m_connect.is_connect && m_connect.index_start == 0 &&
+                                    m_connect.index_current == 0) // инициализация структуры подбора скорости
+        {
+            int index = 0;
+
+            for(int i = 0; i < m_connect.baudrate_list.count(); i++)
+            {
+                // Поиск индекса скорости в списке иначе он будет равен 0, т.е. началу списка
+                int br = m_connect.baudrate_list[i];
+
+                if(br == m_baudrate && i < (m_connect.baudrate_list.count() - 2))
+                {
+                    index = i + 1;
+                    break;
+                }
+            }
+
+            m_connect.index_start = m_connect.index_current = index;
+
+            isRepeat = true;
+        }
+        else if(!m_connect.is_connect && (m_connect.index_current != 0 || m_connect.index_start != 0))
+        {
+            if(m_connect.index_current == m_connect.baudrate_list.count())
+                m_connect.index_current = 0;
+
+            if(m_connect.index_current == m_connect.index_start - 1)
+            {
+                emit baudrateChanged(m_connect.index_start - 1);
+
+                m_connect.index_current = m_connect.index_start = 0;
+
+                emit error(tr("Не удалось произвести подключение к устройству.\nПроверьте соединение."));
+
+                return;
+            }
+
+            isRepeat = true;
+        }
+
+        if(isRepeat)
+        {
+            m_baudrate = m_connect.baudrate_list[m_connect.index_current++];
+
+            emit baudrateChanged(m_connect.index_current - 1);
+
+            connectDevice();
+        }
     }
     else
     {
         unblock();
-        emit errorDevice(tr("Ошибка: время ожидания ответа от устройства истекло -> попытка №") + 
-                         QString::number(m_counter_request_error));
+
+        QString str;
+
+        if(m_connect.is_connect) // если соединение было активным, то значит обрыв
+        {
+            str = tr("Ошибка: время ожидания ответа от устройства истекло -> попытка №" + QString::number(m_counter_request_error));
+        }
+        else
+        {
+            str = tr("Идет автоматический подбор скорости...");
+        }
+
+        emit errorDevice(str);
+
         request(m_request_cur);
     }
 }

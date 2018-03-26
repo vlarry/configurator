@@ -12,9 +12,24 @@
     class CModbus: public QObject
     {
         Q_OBJECT
+
+        public:
+            typedef QVector<int> baudrate_list_t;
+            /*!
+             *  \brief The AutoConnectType struct
+             *  Определяет необходимые переменные для автоподлкючения
+             */
+            struct AutoConnectType
+            {
+                bool            is_connect;
+                int             baudrate_init;
+                int             index_current;
+                int             index_start;
+                baudrate_list_t baudrate_list;
+            };
         
         public:
-            explicit CModbus(QObject* parent = nullptr);
+            explicit CModbus(const baudrate_list_t& baudrate_list, QObject* parent = nullptr);
             ~CModbus();
         
             void     setPortName(const QString& name);
@@ -41,12 +56,14 @@
             
         signals:
             void errorDevice(const QString&);
+            void error(const QString&);
             void connectDeviceState(bool);
             void dataReady(CDataUnitType&);
             void timeoutResponse();
             void rawData(QByteArray& data, bool = true);
             void infoLog(const QString&);
             void noConnect();
+            void baudrateChanged(int);
             
         public slots:
             void connectDevice();
@@ -82,5 +99,6 @@
                                                      // m_request_count_repeat раз порт отключается и очередь сообщений
                                                      // чистится
             quint32                m_sizeQuery;
+            AutoConnectType        m_connect;
     };
 #endif // CMODBUS_H

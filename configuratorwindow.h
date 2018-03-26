@@ -224,7 +224,8 @@
             void protectLevelChangedID(int id);
             void switchDeviceChangedID(int id);
             void additionalChangedID(int id);
-            void errorDevice(const QString& error);
+            void errorDevice(const QString& errorConnect);
+            void errorConnect(const QString& errorConnect);
             void terminalVisiblity(int state);
             void saveLog(const QString& info);
             void itemClicked(QTreeWidgetItem* item, int col);
