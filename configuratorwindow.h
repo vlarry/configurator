@@ -108,6 +108,82 @@
                 DEVICE_MENU_INDEX_ISOLATION
             };
             /*!
+             * \brief The DeviceMenuItemType enum
+             * Описание перечислений пунктов меню устройства
+             */
+            enum DeviceMenuItemType
+            {
+                DEVICE_MENU_ITEM_PROTECTION_ROOT                 = 1000,
+                DEVICE_MENU_ITEM_AUTOMATION_ROOT                 = 2000,
+                DEVICE_MENU_ITEM_JOURNALS_ROOT                   = 3000,
+                DEVICE_MENU_ITEM_MEASURES_ROOT                   = 4000,
+                DEVICE_MENU_ITEM_SETTINGS_ROOT                   = 5000,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT                 = 1010,
+                DEVICE_MENU_PROTECT_ITEM_POWER                   = 1020,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED                = 1030,
+                DEVICE_MENU_PROTECT_ITEM_FREQUENCY               = 1040,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL                = 1050,
+                DEVICE_MENU_PROTECT_ITEM_MOTOR                   = 1060,
+                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE             = 1070,
+                DEVICE_MENU_PROTECT_ITEM_RESERVE                 = 1080,
+                DEVICE_MENU_PROTECT_ITEM_CONTROL                 = 1090,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1            = 1011,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2            = 1012,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3            = 1013,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4            = 1014,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1             = 1021,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2             = 1022,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1             = 1023,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2             = 1024,
+                DEVICE_MENU_PROTECT_ITEM_POWER_3UO               = 1025,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1           = 1031,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2           = 1032,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1           = 1033,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2           = 1034,
+                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1         = 1041,
+                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2         = 1042,
+                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3         = 1043,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC            = 1051,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1           = 1052,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2           = 1053,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3           = 1054,
+                DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING          = 1061,
+                DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN              = 1062,
+                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1       = 1071,
+                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2       = 1072,
+                DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1          = 1081,
+                DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2          = 1082,
+                DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START       = 1083,
+                DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU             = 1091,
+                DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM          = 1092,
+                DEVICE_MENU_ITEM_AUTOMATION_SWITCH               = 2011,
+                DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK         = 2012,
+                DEVICE_MENU_ITEM_AUTOMATION_BLOCKS               = 2013,
+                DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS        = 2014,
+                DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN              = 2015,
+                DEVICE_MENU_ITEM_AUTOMATION_AVR                  = 2016,
+                DEVICE_MENU_ITEM_AUTOMATION_APV                  = 2017,
+                DEVICE_MENU_ITEM_JOURNALS_CRASHES                = 3011,
+                DEVICE_MENU_ITEM_JOURNALS_EVENTS                 = 3012,
+                DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS             = 3013,
+                DEVICE_MENU_ITEM_JOURNALS_ISOLATION              = 3014,
+                DEVICE_MENU_ITEM_MEASURES_INPUTS                 = 4011,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG         = 5100,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS    = 5200,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME          = 5300,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD          = 5400,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS              = 5500,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO                = 5600,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL = 5111,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB   = 5112,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01         = 5610,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02         = 5620,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY   = 5611,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS  = 5612,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY   = 5021,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS  = 5022
+            };
+            /*!
              * \brief The PurposeIndexType enum
              *
              *  Индексы таблиц привязок для определения выбранной таблицы
@@ -119,6 +195,11 @@
                 PURPOSE_INDEX_RELAY,
                 PURPOSE_INDEX_KEYBOARD
             };
+            /*!
+             * \brief device_menu_item_key_t
+             * Карта ключей QMap<номер пункта меню, QPair<номер в стеке виджетов root, номер в стеке виджетов подпунктов> >
+             */
+            typedef QMap<DeviceMenuItemType, QPair<int, int> > device_menu_item_key_t;
             /*!
              * \brief The journal_address_t struct
              *
@@ -351,5 +432,6 @@
             const CJournalWidget*            m_active_journal_current; // текущий активный журнал
             const CJournalWidget*            m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
             QMap<QString, journal_set_t>     m_journal_set; // установки журналов
+            device_menu_item_key_t           m_menu_items; // карта пунктов меню устройства
     };
 #endif // CONFIGURATORWINDOW_H

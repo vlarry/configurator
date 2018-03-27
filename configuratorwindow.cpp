@@ -1417,128 +1417,230 @@ void ConfiguratorWindow::versionSowftware()
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
 {
-    QTreeWidgetItem* itemSettings   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    QTreeWidgetItem* itemJournals   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    QTreeWidgetItem* itemMeasures   = new QTreeWidgetItem(ui->treewgtDeviceMenu);
-    QTreeWidgetItem* itemMonitoring = new QTreeWidgetItem(ui->treewgtDeviceMenu);
+    QTreeWidgetItem* itemProtections = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_PROTECTION_ROOT); // Защиты
+    QTreeWidgetItem* itemAutomation  = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_AUTOMATION_ROOT); // Автоматика
+    QTreeWidgetItem* itemJournals    = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_JOURNALS_ROOT); // Журналы
+    QTreeWidgetItem* itemMeasures    = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_MEASURES_ROOT); // Измерения
+    QTreeWidgetItem* itemSettings    = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_SETTINGS_ROOT); // Настройки
 
-    QTreeWidgetItem* itemSetInputAnalogs     = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetProtections      = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetDevConnections   = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetAutomation       = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetLedPurpose       = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetDiscretInPurpose = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetRelayPurpose     = new QTreeWidgetItem(itemSettings);
-    QTreeWidgetItem* itemSetKeyboardPurpose  = new QTreeWidgetItem(itemSettings);
-
-    QTreeWidgetItem* itemJournalCrashs    = new QTreeWidgetItem(itemJournals);
-    QTreeWidgetItem* itemJournalEvents    = new QTreeWidgetItem(itemJournals);
-    QTreeWidgetItem* itemJournalHalfHour  = new QTreeWidgetItem(itemJournals);
-    QTreeWidgetItem* itemJournalIsolation = new QTreeWidgetItem(itemJournals);
-    QTreeWidgetItem* itemJournalOscill    = new QTreeWidgetItem(itemJournals);
-
-    QTreeWidgetItem* itemMeasPrimaryValues   = new QTreeWidgetItem(itemMeasures);
-    QTreeWidgetItem* itemMeasSecondaryValues = new QTreeWidgetItem(itemMeasures);
-    QTreeWidgetItem* itemMeasPowerElectric   = new QTreeWidgetItem(itemMeasures);
-
-    QTreeWidgetItem* itemMonitorInputDiscrets  = new QTreeWidgetItem(itemMonitoring);
-    QTreeWidgetItem* itemMonitorOutputDiscrets = new QTreeWidgetItem(itemMonitoring);
-
-    QTreeWidgetItem* itemInAnalogMain        = new QTreeWidgetItem(itemSetInputAnalogs);
-    QTreeWidgetItem* itemInAnalogCalibration = new QTreeWidgetItem(itemSetInputAnalogs);
-
-    QTreeWidgetItem* itemProtectCurrentMax  = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectEarthy      = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectPower       = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectMotor       = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectFrequency   = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectExternal    = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectTemperature = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectLevel       = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectBRU         = new QTreeWidgetItem(itemSetProtections);
-    QTreeWidgetItem* itemProtectVacuum      = new QTreeWidgetItem(itemSetProtections);
-
-    itemSettings->setText(0, tr("Настройки"));
+    itemProtections->setText(0, tr("Защиты"));
+    itemAutomation->setText(0, tr("Автоматика"));
     itemJournals->setText(0, tr("Журналы"));
     itemMeasures->setText(0, tr("Измерения"));
-    itemMonitoring->setText(0, tr("Мониторинг"));
+    itemSettings->setText(0, tr("Настройки"));
 
-    itemSetInputAnalogs->setText(0, tr("Аналоговые входы"));
-    itemSetProtections->setText(0, tr("Защита"));
-    itemSetDevConnections->setText(0, tr("Коммутационные аппараты"));
-    itemSetAutomation->setText(0, tr("Автоматика"));
-    itemSetLedPurpose->setText(0, tr("Назначение светодиодов"));
-    itemSetDiscretInPurpose->setText(0, tr("Назначение дискретных входов"));
-    itemSetRelayPurpose->setText(0, tr("Назначение реле"));
-    itemSetKeyboardPurpose->setText(0, tr("Назначение клавиатуры"));
+    // ЗАЩИТЫ
+    QTreeWidgetItem* protectItemCurrent     = new QTreeWidgetItem(itemProtections, QStringList() << tr("По току"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_CURRENT); // по току
+    QTreeWidgetItem* protectItemPower       = new QTreeWidgetItem(itemProtections, QStringList() << tr("По напряжению"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_POWER); // по напряжению
+    QTreeWidgetItem* protectItemDirected    = new QTreeWidgetItem(itemProtections, QStringList() << tr("Направленные"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_DIRECTED); // направленные
+    QTreeWidgetItem* protectItemFrequency   = new QTreeWidgetItem(itemProtections, QStringList() << tr("По частоте"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_FREQUENCY); // по частоте
+    QTreeWidgetItem* protectItemExternal    = new QTreeWidgetItem(itemProtections, QStringList() << tr("Внешние"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_EXTERNAL); // внешние
+    QTreeWidgetItem* protectItemMotor       = new QTreeWidgetItem(itemProtections, QStringList() << tr("Для двигателя"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_MOTOR); // для двигателя
+    QTreeWidgetItem* protectItemTemperature = new QTreeWidgetItem(itemProtections, QStringList() << tr("По температуре"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_TEMPERATURE); // по температуре
+    QTreeWidgetItem* protectItemReserve     = new QTreeWidgetItem(itemProtections, QStringList() << tr("Резервные"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE); // резервные
+    QTreeWidgetItem* protectItemControl     = new QTreeWidgetItem(itemProtections, QStringList() << tr("Предварительного контроля"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_CONTROL); // предварительного контроля
 
-    itemJournalCrashs->setText(0, tr("Аварий"));
-    itemJournalEvents->setText(0, tr("Событий"));
-    itemJournalHalfHour->setText(0, tr("Получасовок"));
-    itemJournalIsolation->setText(0, tr("Изоляции"));
-    itemJournalOscill->setText(0, tr("Осциллограф"));
+    itemProtections->addChildren(QList<QTreeWidgetItem*>() << protectItemCurrent << protectItemPower << protectItemDirected <<
+                                                              protectItemFrequency << protectItemExternal << protectItemMotor <<
+                                                              protectItemTemperature << protectItemReserve <<protectItemControl);
+    // пункты защиты "по току"
+    QTreeWidgetItem* currentItemMTZ1 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ1"),
+                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1); // защита МТЗ1
+    QTreeWidgetItem* currentItemMTZ2 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ2"),
+                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2); // защита МТЗ2
+    QTreeWidgetItem* currentItemMTZ3 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ3"),
+                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3); // защита МТЗ3
+    QTreeWidgetItem* currentItemMTZ4 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ4"),
+                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4); // защита МТЗ4
 
-    itemMeasPrimaryValues->setText(0, tr("Первичные величины"));
-    itemMeasSecondaryValues->setText(0, tr("Вторичные величины"));
-    itemMeasPowerElectric->setText(0, tr("Электроэнергия"));
+    protectItemCurrent->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ1 << currentItemMTZ2 << currentItemMTZ3 <<
+                                                                 currentItemMTZ4);
 
-    itemMonitorInputDiscrets->setText(0, tr("Дискретные входы"));
-    itemMonitorOutputDiscrets->setText(0, tr("Дискретные выходы"));
+    // пункты защиты "по напряжению"
+    QTreeWidgetItem* powerItemUmax1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax1"),
+                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1); // защита Umax1
+    QTreeWidgetItem* powerItemUmax2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax2"),
+                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2); // защита Umax2
+    QTreeWidgetItem* powerItemUmin1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin1"),
+                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1); // защита Umin1
+    QTreeWidgetItem* powerItemUmin2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin2"),
+                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2); // защита Umin2
+    QTreeWidgetItem* powerItem3UO   = new QTreeWidgetItem(protectItemPower, QStringList() << tr("3UO"),
+                                                          DEVICE_MENU_PROTECT_ITEM_POWER_3UO); // защита 3UO
 
-    itemInAnalogMain->setText(0, tr("Основные"));
-    itemInAnalogCalibration->setText(0, tr("Калибровки"));
+    protectItemPower->addChildren(QList<QTreeWidgetItem*>() << powerItemUmax1 << powerItemUmax2 << powerItemUmin1 <<
+                                                               powerItemUmin2 << powerItem3UO);
 
-    itemProtectCurrentMax->setText(0, tr("Максимальные токовые"));
-    itemProtectEarthy->setText(0, tr("Земляные"));
-    itemProtectPower->setText(0, tr("Защиты по напряжению"));
-    itemProtectMotor->setText(0, tr("Защиты двигателя"));
-    itemProtectFrequency->setText(0, tr("Защиты по частоте"));
-    itemProtectExternal->setText(0, tr("Внешние защиты"));
-    itemProtectTemperature->setText(0, tr("Температурные защиты"));
-    itemProtectLevel->setText(0, tr("Уровневые защиты"));
-    itemProtectBRU->setText(0, tr("Защиты БРУ"));
-    itemProtectVacuum->setText(0, tr("Вакуумные защиты"));
+    // пункты защиты "направленные"
+    QTreeWidgetItem* directItemOZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ1"),
+                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1); // защита ОЗЗ1
+    QTreeWidgetItem* directItemOZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ2"),
+                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2); // защита ОЗЗ2
+    QTreeWidgetItem* directItemNZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ1"),
+                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1); // защита НЗЗ1
+    QTreeWidgetItem* directItemNZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ2"),
+                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2); // защита НЗЗ2
 
-    ui->treewgtDeviceMenu->addTopLevelItem(itemSettings);
+    protectItemDirected->addChildren(QList<QTreeWidgetItem*>() << directItemOZZ1 << directItemOZZ2 << directItemNZZ1 <<
+                                                                  directItemNZZ2);
+
+    // пункты защиты "по частоте"
+    QTreeWidgetItem* freqItemACHR1 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР1"),
+                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1); // защита АЧР1
+    QTreeWidgetItem* freqItemACHR2 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР2"),
+                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2); // защита АЧР2
+    QTreeWidgetItem* freqItemACHR3 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР3"),
+                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3); // защита АЧР3
+
+    protectItemFrequency->addChildren(QList<QTreeWidgetItem*>() << freqItemACHR1 << freqItemACHR2 << freqItemACHR3);
+
+    // пункты защиты "внешние"
+    QTreeWidgetItem* extItemARC       = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Дуговая"),
+                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC); // защита Дуговая
+    QTreeWidgetItem* extItemExternal1 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя1"),
+                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1); // защита Внешняя1
+    QTreeWidgetItem* extItemExternal2 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя2"),
+                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2); // защита Внешняя2
+    QTreeWidgetItem* extItemExternal3 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя3"),
+                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3); // защита Внешняя3
+
+    protectItemExternal->addChildren(QList<QTreeWidgetItem*>() << extItemARC << extItemExternal1 << extItemExternal2 <<
+                                                                  extItemExternal3);
+
+    // пункты защиты "для двигателя"
+    QTreeWidgetItem* motorItemStarting = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Пусковая"),
+                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING); // защита Пусковая
+    QTreeWidgetItem* motorItemImin     = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Imin"),
+                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN); // защита Imin
+
+    protectItemMotor->addChildren(QList<QTreeWidgetItem*>() << motorItemStarting << motorItemImin);
+
+    // пункты защиты "по температуре"
+    QTreeWidgetItem* tempItemTemperature1 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная1"),
+                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1); // защита Температурная1
+    QTreeWidgetItem* tempItemTemperature2 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная2"),
+                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2); // защита Температурная2
+
+    protectItemTemperature->addChildren(QList<QTreeWidgetItem*>() << tempItemTemperature1 << tempItemTemperature2);
+
+    // пункты защиты "резервные"
+    QTreeWidgetItem* reserveItemLevel1      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров1"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1); // защита Уров1
+    QTreeWidgetItem* reserveItemLevel2      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров2"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2); // защита Уров2
+    QTreeWidgetItem* reserveItemSignalStart = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Сигнал пуска"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START); // защита Сигнал пуска
+
+    protectItemReserve->addChildren(QList<QTreeWidgetItem*>() << reserveItemLevel1 << reserveItemLevel2 << reserveItemSignalStart);
+
+    // пункты защиты "предварительного контроля"
+    QTreeWidgetItem* ctrlItemBRU    = new QTreeWidgetItem(protectItemControl, QStringList() << tr("БРУ"),
+                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU); // защита БРУ
+    QTreeWidgetItem* ctrlItemVacuum = new QTreeWidgetItem(protectItemControl, QStringList() << tr("Вакууум"),
+                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM); // защита Вакуум
+
+    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << ctrlItemBRU << ctrlItemVacuum);
+
+    // АВТОМАТИКА
+    QTreeWidgetItem* automationSwitch        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Выключатель"),
+                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH); // автоматика Выключатель
+    QTreeWidgetItem* automationSwitchTruck   = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Тележка выключателя"),
+                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK); // автоматика Выключатель
+    QTreeWidgetItem* automationBlocks        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Блокировки"),
+                                                                   DEVICE_MENU_ITEM_AUTOMATION_BLOCKS); // автоматика Выключатель
+    QTreeWidgetItem* automationDisconnectors = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Разъединители"),
+                                                                   DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS); // автоматика Выключатель
+    QTreeWidgetItem* automationCtrlTN        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Контроль ТН"),
+                                                                   DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN); // автоматика Выключатель
+    QTreeWidgetItem* automationAVR           = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АВР"),
+                                                                   DEVICE_MENU_ITEM_AUTOMATION_AVR); // автоматика Выключатель
+    QTreeWidgetItem* automationAPV           = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АПВ"),
+                                                                   DEVICE_MENU_ITEM_AUTOMATION_APV); // автоматика Выключатель
+
+    itemAutomation->addChildren(QList<QTreeWidgetItem*>() << automationSwitch << automationSwitchTruck << automationBlocks <<
+                                                             automationDisconnectors << automationCtrlTN << automationAVR <<
+                                                             automationAPV);
+
+    // ЖУРНАЛЫ
+    QTreeWidgetItem* journalCrash     = new QTreeWidgetItem(itemJournals, QStringList() << tr("Аварий"),
+                                                            DEVICE_MENU_ITEM_JOURNALS_CRASHES);
+    QTreeWidgetItem* journalEvents    = new QTreeWidgetItem(itemJournals, QStringList() << tr("Событий"),
+                                                            DEVICE_MENU_ITEM_JOURNALS_EVENTS);
+    QTreeWidgetItem* journalHalfHour  = new QTreeWidgetItem(itemJournals, QStringList() << tr("Получасовок"),
+                                                            DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS);
+    QTreeWidgetItem* journalIsolation = new QTreeWidgetItem(itemJournals, QStringList() << tr("Изоляции"),
+                                                            DEVICE_MENU_ITEM_JOURNALS_ISOLATION);
+
+    itemAutomation->addChildren(QList<QTreeWidgetItem*>() << journalCrash << journalEvents << journalHalfHour << journalIsolation);
+
+    // ИЗМЕРЕНИЯ
+    QTreeWidgetItem* measureInputs = new QTreeWidgetItem(itemMeasures,
+                                                         QStringList() << tr("Напряжения и токи на измерительных входах"),
+                                                         DEVICE_MENU_ITEM_MEASURES_INPUTS);
+
+    itemMeasures->addChild(measureInputs);
+
+    // НАСТРОЙКИ
+    QTreeWidgetItem* settingInputAnalog    = new QTreeWidgetItem(itemSettings, QStringList() << tr("Аналоговые входы"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    QTreeWidgetItem* settingCommunications = new QTreeWidgetItem(itemSettings, QStringList() << tr("Связь"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS);
+    QTreeWidgetItem* settingDateTime       = new QTreeWidgetItem(itemSettings, QStringList() << tr("Дата и время"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME);
+    QTreeWidgetItem* settingKeyboard       = new QTreeWidgetItem(itemSettings, QStringList() << tr("Клавиатура"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD);
+    QTreeWidgetItem* settingLeds           = new QTreeWidgetItem(itemSettings, QStringList() << tr("Светодиоды"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS);
+    QTreeWidgetItem* settingIO             = new QTreeWidgetItem(itemSettings, QStringList() << tr("Входы и выходы"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO);
+
+    itemSettings->addChildren(QList<QTreeWidgetItem*>() << settingInputAnalog << settingCommunications << settingDateTime <<
+                                                           settingKeyboard << settingLeds << settingIO);
+
+    // пункты настройки "Аналоговые входы"
+    QTreeWidgetItem* inputAnalogGeneral     = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Основные"),
+                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL);
+    QTreeWidgetItem* inputAnalogCalibration = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Основные"),
+                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB);
+
+    settingInputAnalog->addChildren(QList<QTreeWidgetItem*>() << inputAnalogGeneral << inputAnalogCalibration);
+
+    // пункты настройки "входы и выходы"
+    QTreeWidgetItem* ioMDVV01 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-01"),
+                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01);
+    QTreeWidgetItem* ioMDVV02 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-02"),
+                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02);
+
+    settingIO->addChildren(QList<QTreeWidgetItem*>() << ioMDVV01 << ioMDVV02);
+
+    QTreeWidgetItem* ioRelayMDVV01   = new QTreeWidgetItem(ioMDVV01, QStringList() << tr("Реле"),
+                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
+    QTreeWidgetItem* ioDSInputMDVV01 = new QTreeWidgetItem(ioMDVV01, QStringList() << tr("Дискретные входы"),
+                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS);
+
+    ioMDVV01->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01);
+
+    QTreeWidgetItem* ioRelayMDVV02   = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Реле"),
+                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY);
+    QTreeWidgetItem* ioDSInputMDVV02 = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Дискретные входы"),
+                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS);
+
+    ioMDVV02->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV02 << ioDSInputMDVV02);
+
+    ui->treewgtDeviceMenu->addTopLevelItem(itemProtections);
+    ui->treewgtDeviceMenu->addTopLevelItem(itemAutomation);
     ui->treewgtDeviceMenu->addTopLevelItem(itemJournals);
     ui->treewgtDeviceMenu->addTopLevelItem(itemMeasures);
-    ui->treewgtDeviceMenu->addTopLevelItem(itemMonitoring);
-
-    itemSettings->addChild(itemSetInputAnalogs);
-    itemSettings->addChild(itemSetProtections);
-    itemSettings->addChild(itemSetDevConnections);
-    itemSettings->addChild(itemSetAutomation);
-    itemSettings->addChild(itemSetLedPurpose);
-    itemSettings->addChild(itemSetDiscretInPurpose);
-    itemSettings->addChild(itemSetRelayPurpose);
-    itemSettings->addChild(itemSetKeyboardPurpose);
-
-    itemJournals->addChild(itemJournalCrashs);
-    itemJournals->addChild(itemJournalEvents);
-    itemJournals->addChild(itemJournalHalfHour);
-    itemJournals->addChild(itemJournalIsolation);
-    itemJournals->addChild(itemJournalOscill);
-
-    itemMeasures->addChild(itemMeasPrimaryValues);
-    itemMeasures->addChild(itemMeasSecondaryValues);
-    itemMeasures->addChild(itemMeasPowerElectric);
-
-    itemMonitoring->addChild(itemMonitorInputDiscrets);
-    itemMonitoring->addChild(itemMonitorOutputDiscrets);
-
-    itemSetInputAnalogs->addChild(itemInAnalogMain);
-    itemSetInputAnalogs->addChild(itemInAnalogCalibration);
-
-    itemSetProtections->addChild(itemProtectCurrentMax);
-    itemSetProtections->addChild(itemProtectEarthy);
-    itemSetProtections->addChild(itemProtectPower);
-    itemSetProtections->addChild(itemProtectMotor);
-    itemSetProtections->addChild(itemProtectFrequency);
-    itemSetProtections->addChild(itemProtectExternal);
-    itemSetProtections->addChild(itemProtectTemperature);
-    itemSetProtections->addChild(itemProtectLevel);
-    itemSetProtections->addChild(itemProtectBRU);
-    itemSetProtections->addChild(itemProtectVacuum);
+    ui->treewgtDeviceMenu->addTopLevelItem(itemSettings);
 }
 //----------------------------------------
 void ConfiguratorWindow::initButtonGroup()
