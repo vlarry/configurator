@@ -11,15 +11,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_terminal(nullptr),
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
-    m_protect_mtz_group(nullptr),
-    m_protect_earthly_group(nullptr),
-    m_protect_power_group(nullptr),
-    m_protect_motor_group(nullptr),
-    m_protect_frequency_group(nullptr),
-    m_protect_external_group(nullptr),
-    m_protect_temperature_group(nullptr),
-    m_protect_level_group(nullptr),
-    m_additional_group(nullptr),
     m_versionWidget(nullptr),
     m_variables(QVector<CColumn::column_t>()),
     m_timer_synchronization(nullptr),
@@ -42,16 +33,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_modbusDevice              = new CModbus(baudrate_list, this);
     m_calculateWidget           = new QPanel(this);
     m_tim_calculate             = new QTimer(this);
-    m_protect_mtz_group         = new QButtonGroup;
-    m_protect_earthly_group     = new QButtonGroup;
-    m_protect_power_group       = new QButtonGroup;
-    m_protect_motor_group       = new QButtonGroup;
-    m_protect_frequency_group   = new QButtonGroup;
-    m_protect_external_group    = new QButtonGroup;
-    m_protect_temperature_group = new QButtonGroup;
-    m_protect_level_group       = new QButtonGroup;
-    m_switch_device_group       = new QButtonGroup;
-    m_additional_group          = new QButtonGroup;
     m_terminal                  = new CTerminal(this);
     m_logFile                   = new QFile("Log.txt");
     m_serialPortSettings        = new CSerialPortSetting;
@@ -73,7 +54,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     connectSystemDb();
     initJournals();
     initMenuPanel();
-    initButtonGroup();
     initConnect();
     initCellBind(); // инициализация привязки настроек к адресам
     initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
@@ -728,226 +708,6 @@ void ConfiguratorWindow::numberRepeatChanged(int number)
 {
     m_modbusDevice->setRequestCountRepeat(number);
 }
-//--------------------------------------------------
-void ConfiguratorWindow::protectMTZChangedID(int id)
-{
-    quint8 count = m_protect_mtz_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_mtz_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtProtectionPropertiesMTZ->setCurrentIndex(id);
-    }
-}
-//------------------------------------------------------
-void ConfiguratorWindow::protectEarthlyChangedID(int id)
-{
-    quint8 count = m_protect_earthly_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_earthly_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtProtectionPropertiesEarthly->setCurrentIndex(id);
-    }
-}
-//----------------------------------------------------
-void ConfiguratorWindow::protectPowerChangedID(int id)
-{
-    quint8 count = m_protect_power_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_power_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtProtectionPropertiesPower->setCurrentIndex(id);
-    }
-}
-//----------------------------------------------------
-void ConfiguratorWindow::protectMotorChangedID(int id)
-{
-    quint8 count = m_protect_motor_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_motor_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtProtectionPropertiesMotor->setCurrentIndex(id);
-    }
-}
-//--------------------------------------------------------
-void ConfiguratorWindow::protectFrequencyChangedID(int id)
-{
-    quint8 count = m_protect_frequency_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_frequency_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtProtectionPropertiesFrequency->setCurrentIndex(id);
-    }
-}
-//-------------------------------------------------------
-void ConfiguratorWindow::protectExternalChangedID(int id)
-{
-    quint8 count = m_protect_external_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_external_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtProtectionPropertiesExternal->setCurrentIndex(id);
-    }
-}
-//----------------------------------------------------------
-void ConfiguratorWindow::protectTemperatureChangedID(int id)
-{
-    quint8 count = m_protect_temperature_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_temperature_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtProtectionPropertiesTemperature->setCurrentIndex(id);
-    }
-}
-//----------------------------------------------------
-void ConfiguratorWindow::protectLevelChangedID(int id)
-{
-    quint8 count = m_protect_level_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_protect_level_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtProtectionPropertiesLevel->setCurrentIndex(id);
-    }
-}
-//----------------------------------------------------
-void ConfiguratorWindow::switchDeviceChangedID(int id)
-{
-    quint8 count = m_switch_device_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_switch_device_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtSwitchDevice->setCurrentIndex(id);
-    }
-}
-//--------------------------------------------------
-void ConfiguratorWindow::additionalChangedID(int id)
-{
-    quint8 count = m_additional_group->buttons().count();
-
-    if(id >= 0 && id < count)
-    {
-        for(quint8 i = 0; i < count; i++)
-        {
-           QPushButton* btn = qobject_cast<QPushButton*>(m_additional_group->button(i));
-
-           if(i == id)
-           {
-               btn->setStyleSheet(tr("QPushButton { background: green; color: yellow }"));
-           }
-           else
-               btn->setStyleSheet(tr("QPushButton { background: none }"));
-        }
-
-        ui->stwgtAdditional->setCurrentIndex(id);
-    }
-}
 //--------------------------------------------------------
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
@@ -979,132 +739,19 @@ void ConfiguratorWindow::saveLog(const QString& info)
         m_logFile->write(str.toStdString().c_str());
     }
 }
-//------------------------------------------------------------------
-void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int col)
+//--------------------------------------------------------------
+void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
 {
     if(!item)
         return;
 
-//    if(ui->treewgtDeviceMenu->indexOfTopLevelItem(item) == 1) // если выбран пункт меню "Журналы"
-//    {
-//        ui->tabwgtMenu->setTabEnabled(4, true);
-//    }
-//    else
-//        ui->tabwgtMenu->setTabEnabled(4, false);
+    DeviceMenuItemType type = DeviceMenuItemType(item->type());
 
-    QString itemName = item->text(col).toUpper();
+    int menu_item = m_menu_items.value(type, -1);
 
-    if(itemName == tr("ОСНОВНЫЕ"))
+    if(menu_item != -1)
     {
-        ui->stwgtMain->setCurrentIndex(0);
-    }
-    else if(itemName == tr("КАЛИБРОВКИ"))
-    {
-        ui->stwgtMain->setCurrentIndex(1);
-    }
-    else if(itemName == tr("МАКСИМАЛЬНЫЕ ТОКОВЫЕ"))
-    {
-        ui->stwgtMain->setCurrentIndex(2);
-    }
-    else if(itemName == tr("ЗЕМЛЯНЫЕ"))
-    {
-        ui->stwgtMain->setCurrentIndex(3);
-    }
-    else if(itemName == tr("ЗАЩИТЫ ПО НАПРЯЖЕНИЮ"))
-    {
-        ui->stwgtMain->setCurrentIndex(4);
-    }
-    else if(itemName == tr("ЗАЩИТЫ ДВИГАТЕЛЯ"))
-    {
-        ui->stwgtMain->setCurrentIndex(5);
-    }
-    else if(itemName == tr("ЗАЩИТЫ ПО ЧАСТОТЕ"))
-    {
-        ui->stwgtMain->setCurrentIndex(6);
-    }
-    else if(itemName == tr("ВНЕШНИЕ ЗАЩИТЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(7);
-    }
-    else if(itemName == tr("ТЕМПЕРАТУРНЫЕ ЗАЩИТЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(8);
-    }
-    else if(itemName == tr("УРОВНЕВЫЕ ЗАЩИТЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(9);
-    }
-    else if(itemName == tr("ЗАЩИТЫ БРУ"))
-    {
-        ui->stwgtMain->setCurrentIndex(10);
-    }
-    else if(itemName == tr("ВАКУУМНЫЕ ЗАЩИТЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(11);
-    }
-    else if(itemName == tr("КОММУТАЦИОННЫЕ АППАРАТЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(12);
-    }
-    else if(itemName == tr("АВТОМАТИКА"))
-    {
-        ui->stwgtMain->setCurrentIndex(13);
-    }
-    else if(itemName == tr("АВАРИЙ"))
-    {
-        ui->stwgtMain->setCurrentIndex(14);
-    }
-    else if(itemName == tr("СОБЫТИЙ"))
-    {
-        ui->stwgtMain->setCurrentIndex(15);
-    }
-    else if(itemName == tr("ПОЛУЧАСОВОК"))
-    {
-        ui->stwgtMain->setCurrentIndex(16);
-    }
-    else if(itemName == tr("ИЗОЛЯЦИИ"))
-    {
-        ui->stwgtMain->setCurrentIndex(17);
-    }
-    else if(itemName == tr("ОСЦИЛЛОГРАФ"))
-    {
-        ui->stwgtMain->setCurrentIndex(18);
-    }
-    else if(itemName == tr("ПЕРВИЧНЫЕ ВЕЛИЧИНЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(19);
-    }
-    else if(itemName == tr("ВТОРИЧНЫЕ ВЕЛИЧИНЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(20);
-    }
-    else if(itemName == tr("ЭЛЕКТРОЭНЕРГИЯ"))
-    {
-        ui->stwgtMain->setCurrentIndex(21);
-    }
-    else if(itemName == tr("ДИСКРЕТНЫЕ ВХОДЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(22);
-    }
-    else if(itemName == tr("ДИСКРЕТНЫЕ ВЫХОДЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(23);
-    }
-    else if(itemName == tr("НАЗНАЧЕНИЕ СВЕТОДИОДОВ"))
-    {
-        ui->stwgtMain->setCurrentIndex(24);
-    }
-    else if(itemName == tr("НАЗНАЧЕНИЕ ДИСКРЕТНЫХ ВХОДОВ"))
-    {
-        ui->stwgtMain->setCurrentIndex(25);
-    }
-    else if(itemName == tr("НАЗНАЧЕНИЕ РЕЛЕ"))
-    {
-        ui->stwgtMain->setCurrentIndex(26);
-    }
-    else if(itemName == tr("НАЗНАЧЕНИЕ КЛАВИАТУРЫ"))
-    {
-        ui->stwgtMain->setCurrentIndex(27);
+        ui->stwgtMain->setCurrentIndex(menu_item);
     }
 }
 //-------------------------------------
@@ -1459,6 +1106,34 @@ void ConfiguratorWindow::initMenuPanel()
                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2); // защита МТЗ2
     QTreeWidgetItem* currentItemMTZ3 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ3"),
                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3); // защита МТЗ3
+
+    QTreeWidgetItem* currentItemMTZ3_charact_steep   = new QTreeWidgetItem(currentItemMTZ3, QStringList() << tr("Крутая"),
+                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP);
+    QTreeWidgetItem* currentItemMTZ3_charact_sloping = new QTreeWidgetItem(currentItemMTZ3, QStringList() << tr("Пологая"),
+                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP);
+    QTreeWidgetItem* currentItemMTZ3_charact_inverse = new QTreeWidgetItem(currentItemMTZ3, QStringList() << tr("Инверсная"),
+                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV);
+    QTreeWidgetItem* currentItemMTZ3_charact_dur_inv = new QTreeWidgetItem(currentItemMTZ3,
+                                                                           QStringList() << tr("Длительно инверсная"),
+                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV);
+    QTreeWidgetItem* currentItemMTZ3_charact_back    = new QTreeWidgetItem(currentItemMTZ3,
+                                                                           QStringList() << tr("Обратно зависимая"),
+                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK);
+    QTreeWidgetItem* currentItemMTZ3_charact_str_inv = new QTreeWidgetItem(currentItemMTZ3,
+                                                                           QStringList() << tr("Сильно инверсная"),
+                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV);
+    QTreeWidgetItem* currentItemMTZ3_charact_ext_inv = new QTreeWidgetItem(currentItemMTZ3,
+                                                                           QStringList() << tr("Экстремально инверсная"),
+                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV);
+
+    currentItemMTZ3->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ3_charact_steep <<
+                                                              currentItemMTZ3_charact_sloping <<
+                                                              currentItemMTZ3_charact_inverse <<
+                                                              currentItemMTZ3_charact_dur_inv <<
+                                                              currentItemMTZ3_charact_back <<
+                                                              currentItemMTZ3_charact_str_inv <<
+                                                              currentItemMTZ3_charact_ext_inv);
+
     QTreeWidgetItem* currentItemMTZ4 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ4"),
                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4); // защита МТЗ4
 
@@ -1559,12 +1234,31 @@ void ConfiguratorWindow::initMenuPanel()
                                                                    DEVICE_MENU_ITEM_AUTOMATION_BLOCKS); // автоматика Выключатель
     QTreeWidgetItem* automationDisconnectors = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Разъединители"),
                                                                    DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS); // автоматика Выключатель
-    QTreeWidgetItem* automationCtrlTN        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Контроль ТН"),
+
+    QTreeWidgetItem* automationDisconnectorsBus   = new QTreeWidgetItem(automationDisconnectors,
+                                                                        QStringList() << tr("Шинный разъединитель"),
+                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS);
+    QTreeWidgetItem* automationDisconnectorsLine  = new QTreeWidgetItem(automationDisconnectors,
+                                                                        QStringList() << tr("Линейный разъединитель"),
+                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE);
+    QTreeWidgetItem* automationDisconnectorsEarth = new QTreeWidgetItem(automationDisconnectors,
+                                                                        QStringList() << tr("Заземляющий разъединитель"),
+                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH);
+
+    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << automationDisconnectorsBus << automationDisconnectorsLine <<
+                                                                 automationDisconnectorsEarth);
+
+    QTreeWidgetItem* automationCtrlTN = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Контроль ТН"),
                                                                    DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN); // автоматика Выключатель
-    QTreeWidgetItem* automationAVR           = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АВР"),
+    QTreeWidgetItem* automationAVR    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АВР"),
                                                                    DEVICE_MENU_ITEM_AUTOMATION_AVR); // автоматика Выключатель
-    QTreeWidgetItem* automationAPV           = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АПВ"),
+    QTreeWidgetItem* automationAPV    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АПВ"),
                                                                    DEVICE_MENU_ITEM_AUTOMATION_APV); // автоматика Выключатель
+
+    QTreeWidgetItem* automationAPVSignalStart = new QTreeWidgetItem(automationAPV, QStringList() << tr("АПВ сигналы пуска"),
+                                                                    DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START);
+
+    automationAPV->addChild(automationAPVSignalStart);
 
     itemAutomation->addChildren(QList<QTreeWidgetItem*>() << automationSwitch << automationSwitchTruck << automationBlocks <<
                                                              automationDisconnectors << automationCtrlTN << automationAVR <<
@@ -1609,7 +1303,7 @@ void ConfiguratorWindow::initMenuPanel()
     // пункты настройки "Аналоговые входы"
     QTreeWidgetItem* inputAnalogGeneral     = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Основные"),
                                                                   DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL);
-    QTreeWidgetItem* inputAnalogCalibration = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Основные"),
+    QTreeWidgetItem* inputAnalogCalibration = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Калибровка"),
                                                                   DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB);
 
     settingInputAnalog->addChildren(QList<QTreeWidgetItem*>() << inputAnalogGeneral << inputAnalogCalibration);
@@ -1641,127 +1335,54 @@ void ConfiguratorWindow::initMenuPanel()
     ui->treewgtDeviceMenu->addTopLevelItem(itemJournals);
     ui->treewgtDeviceMenu->addTopLevelItem(itemMeasures);
     ui->treewgtDeviceMenu->addTopLevelItem(itemSettings);
-}
-//----------------------------------------
-void ConfiguratorWindow::initButtonGroup()
-{
-    // группа токовых защит
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ1);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ2);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ3);
-    m_protect_mtz_group->addButton(ui->pbtnProtectionMTZ4);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ1, 0);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ2, 1);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ3, 2);
-    m_protect_mtz_group->setId(ui->pbtnProtectionMTZ4, 3);
-    
-    // группа земляных защит
-    m_protect_earthly_group->addButton(ui->pbtnProtectionEarthly_OZZ1);
-    m_protect_earthly_group->addButton(ui->pbtnProtectionEarthly_OZZ2);
-    m_protect_earthly_group->addButton(ui->pbtnProtectionEarthly_NZZ1);
-    m_protect_earthly_group->addButton(ui->pbtnProtectionEarthly_NZZ2);
-    m_protect_earthly_group->setId(ui->pbtnProtectionEarthly_OZZ1, 0);
-    m_protect_earthly_group->setId(ui->pbtnProtectionEarthly_OZZ2, 1);
-    m_protect_earthly_group->setId(ui->pbtnProtectionEarthly_NZZ1, 2);
-    m_protect_earthly_group->setId(ui->pbtnProtectionEarthly_NZZ2, 3);
-    
-    // группа защит по напряжению
-    m_protect_power_group->addButton(ui->pbtnProtectionPower_Umax1);
-    m_protect_power_group->addButton(ui->pbtnProtectionPower_Umax2);
-    m_protect_power_group->addButton(ui->pbtnProtectionPower_Umin1);
-    m_protect_power_group->addButton(ui->pbtnProtectionPower_Umin2);
-    m_protect_power_group->addButton(ui->pbtnProtectionPower_3UO);
-    m_protect_power_group->setId(ui->pbtnProtectionPower_Umax1, 0);
-    m_protect_power_group->setId(ui->pbtnProtectionPower_Umax2, 1);
-    m_protect_power_group->setId(ui->pbtnProtectionPower_Umin1, 2);
-    m_protect_power_group->setId(ui->pbtnProtectionPower_Umin2, 3);
-    m_protect_power_group->setId(ui->pbtnProtectionPower_3UO, 4);
-    
-    // группа защиты двигателей
-    m_protect_motor_group->addButton(ui->pbtnProtectionMotorStarting);
-    m_protect_motor_group->addButton(ui->pbtnProtectionMotorImin);
-    m_protect_motor_group->setId(ui->pbtnProtectionMotorStarting, 0);
-    m_protect_motor_group->setId(ui->pbtnProtectionMotorImin, 1);
-    
-    // группа частотных защит
-    m_protect_frequency_group->addButton(ui->pbtnProtectionFrequency_ACR1);
-    m_protect_frequency_group->addButton(ui->pbtnProtectionFrequency_ACR2);
-    m_protect_frequency_group->addButton(ui->pbtnProtectionFrequency_ACR3);
-    m_protect_frequency_group->setId(ui->pbtnProtectionFrequency_ACR1, 0);
-    m_protect_frequency_group->setId(ui->pbtnProtectionFrequency_ACR2, 1);
-    m_protect_frequency_group->setId(ui->pbtnProtectionFrequency_ACR3, 2);
-    
-    // группа внешних защит
-    m_protect_external_group->addButton(ui->pbtnProtectionExternal_Arc);
-    m_protect_external_group->addButton(ui->pbtnProtectionExternal1);
-    m_protect_external_group->addButton(ui->pbtnProtectionExternal2);
-    m_protect_external_group->addButton(ui->pbtnProtectionExternal3);
-    m_protect_external_group->addButton(ui->pbtnProtectionExternal_Arc, 0);
-    m_protect_external_group->addButton(ui->pbtnProtectionExternal1, 1);
-    m_protect_external_group->addButton(ui->pbtnProtectionExternal2, 2);
-    m_protect_external_group->addButton(ui->pbtnProtectionExternal3, 3);
-    
-    // группа температурных защит
-    m_protect_temperature_group->addButton(ui->pbtnProtectionTemp1);
-    m_protect_temperature_group->addButton(ui->pbtnProtectionTemp2);
-    m_protect_temperature_group->setId(ui->pbtnProtectionTemp1, 0);
-    m_protect_temperature_group->setId(ui->pbtnProtectionTemp2, 1);
-    
-    // группа уровневых защит
-    m_protect_level_group->addButton(ui->pbtnProtectionLevel1);
-    m_protect_level_group->addButton(ui->pbtnProtectionLevel2);
-    m_protect_level_group->addButton(ui->pbtnProtectionLevelSignStart);
-    m_protect_level_group->setId(ui->pbtnProtectionLevel1, 0);
-    m_protect_level_group->setId(ui->pbtnProtectionLevel2, 1);
-    m_protect_level_group->setId(ui->pbtnProtectionLevelSignStart, 2);
 
-    // группа коммутационных устройств
-    m_switch_device_group->addButton(ui->pbtnSwDevBreaker);
-    m_switch_device_group->addButton(ui->pbtnSwDevBlock);
-    m_switch_device_group->addButton(ui->pbtnSwDevSCHR);
-    m_switch_device_group->addButton(ui->pbtnSwDevLR);
-    m_switch_device_group->addButton(ui->pbtnSwDevZR);
-    m_switch_device_group->addButton(ui->pbtnSwDevTruck);
-    m_switch_device_group->addButton(ui->pbtnSwDevCtrl);
-    m_switch_device_group->setId(ui->pbtnSwDevBreaker, 0);
-    m_switch_device_group->setId(ui->pbtnSwDevBlock, 1);
-    m_switch_device_group->setId(ui->pbtnSwDevSCHR, 2);
-    m_switch_device_group->setId(ui->pbtnSwDevLR, 3);
-    m_switch_device_group->setId(ui->pbtnSwDevZR, 4);
-    m_switch_device_group->setId(ui->pbtnSwDevTruck, 5);
-    m_switch_device_group->setId(ui->pbtnSwDevCtrl, 6);
-
-    // группа дополнительных настроек
-    m_additional_group->addButton(ui->pbtnAddAVR);
-    m_additional_group->addButton(ui->pbtnAddAVRSection);
-    m_additional_group->addButton(ui->pbtnAddAPV);
-    m_additional_group->addButton(ui->pbtnAddAPV_Start);
-    m_additional_group->setId(ui->pbtnAddAVR, 0);
-    m_additional_group->setId(ui->pbtnAddAVRSection, 1);
-    m_additional_group->setId(ui->pbtnAddAPV, 2);
-    m_additional_group->setId(ui->pbtnAddAPV_Start, 3);
-    
-    protectMTZChangedID(0);
-    protectEarthlyChangedID(0);
-    protectPowerChangedID(0);
-    protectMotorChangedID(0);
-    protectFrequencyChangedID(0);
-    protectExternalChangedID(0);
-    protectTemperatureChangedID(0);
-    protectLevelChangedID(0);
-    switchDeviceChangedID(0);
-    additionalChangedID(0);
-    
-    m_protect_mtz_group->setExclusive(true);
-    m_protect_earthly_group->setExclusive(true);
-    m_protect_power_group->setExclusive(true);
-    m_protect_motor_group->setExclusive(true);
-    m_protect_frequency_group->setExclusive(true);
-    m_protect_external_group->setExclusive(true);
-    m_protect_temperature_group->setExclusive(true);
-    m_protect_level_group->setExclusive(true);
-    m_switch_device_group->setExclusive(true);
-    m_additional_group->setExclusive(true);
+    // заполнение карты меню устройства для доступа к настройкам при клике по пункту
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2]            = 3;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3]            = 4;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP] = 5;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP]  = 6;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV]   = 7;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV]  = 8;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK]  = 9;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV]  = 10;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV]  = 11;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4]            = 12;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1]           = 13;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2]           = 14;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1]           = 15;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2]           = 16;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1]             = 17;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2]             = 18;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1]             = 19;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2]             = 20;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_3UO]               = 21;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING]          = 22;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN]              = 23;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1]         = 24;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2]         = 25;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3]         = 26;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC]            = 27;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1]           = 28;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2]           = 29;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3]           = 30;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1]       = 31;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2]       = 32;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1]          = 33;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2]          = 34;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START]       = 35;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU]             = 36;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM]          = 37;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_SWITCH]               = 38;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK]         = 39;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_BLOCKS]               = 40;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS]    = 41;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE]   = 42;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH]  = 43;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN]              = 44;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_AVR]                  = 45;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV]                  = 46;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START]     = 47;
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -3289,7 +2910,7 @@ bool ConfiguratorWindow::currentJournal(const CJournalWidget*& widget)
     int  index  = ui->stwgtMain->currentIndex();
     bool result = false;
 
-    if(index < JOURNAL_INDEX_CRASH || index > JOURNAL_INDEX_OSCILLOSCOPE)
+    if(index < JOURNAL_INDEX_CRASH || index > JOURNAL_INDEX_ISOLATION)
         return false;
 
     QWidget* curWgt = ui->stwgtMain->currentWidget();
@@ -4833,16 +4454,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
-    connect(m_protect_mtz_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMTZChangedID(int)));
-    connect(m_protect_earthly_group, SIGNAL(buttonClicked(int)), this, SLOT(protectEarthlyChangedID(int)));
-    connect(m_protect_power_group, SIGNAL(buttonClicked(int)), this, SLOT(protectPowerChangedID(int)));
-    connect(m_protect_motor_group, SIGNAL(buttonClicked(int)), this, SLOT(protectMotorChangedID(int)));
-    connect(m_protect_frequency_group, SIGNAL(buttonClicked(int)), this, SLOT(protectFrequencyChangedID(int)));
-    connect(m_protect_external_group, SIGNAL(buttonClicked(int)), this, SLOT(protectExternalChangedID(int)));
-    connect(m_protect_temperature_group, SIGNAL(buttonClicked(int)), this, SLOT(protectTemperatureChangedID(int)));
-    connect(m_protect_level_group, SIGNAL(buttonClicked(int)), this, SLOT(protectLevelChangedID(int)));
-    connect(m_switch_device_group, SIGNAL(buttonClicked(int)), this, SLOT(switchDeviceChangedID(int)));
-    connect(m_additional_group, SIGNAL(buttonClicked(int)), this, SLOT(additionalChangedID(int)));
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(m_serialPortSettings, &CSerialPortSetting::timeout, this, &ConfiguratorWindow::timeoutValueChanged);
     connect(m_serialPortSettings, &CSerialPortSetting::numberRepeat, this, &ConfiguratorWindow::numberRepeatChanged);

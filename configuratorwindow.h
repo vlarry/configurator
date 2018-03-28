@@ -88,11 +88,10 @@
             //-------------------
             enum JournalIndexType
             {
-                JOURNAL_INDEX_CRASH = 14,
+                JOURNAL_INDEX_CRASH = 48,
                 JOURNAL_INDEX_EVENT,
                 JOURNAL_INDEX_HALFHOUR,
-                JOURNAL_INDEX_ISOLATION,
-                JOURNAL_INDEX_OSCILLOSCOPE
+                JOURNAL_INDEX_ISOLATION
             };
             //----------------------
             enum DeviceMenuIndexType
@@ -118,51 +117,62 @@
                 DEVICE_MENU_ITEM_JOURNALS_ROOT                   = 3000,
                 DEVICE_MENU_ITEM_MEASURES_ROOT                   = 4000,
                 DEVICE_MENU_ITEM_SETTINGS_ROOT                   = 5000,
-                DEVICE_MENU_PROTECT_ITEM_CURRENT                 = 1010,
-                DEVICE_MENU_PROTECT_ITEM_POWER                   = 1020,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED                = 1030,
-                DEVICE_MENU_PROTECT_ITEM_FREQUENCY               = 1040,
-                DEVICE_MENU_PROTECT_ITEM_EXTERNAL                = 1050,
-                DEVICE_MENU_PROTECT_ITEM_MOTOR                   = 1060,
-                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE             = 1070,
-                DEVICE_MENU_PROTECT_ITEM_RESERVE                 = 1080,
-                DEVICE_MENU_PROTECT_ITEM_CONTROL                 = 1090,
-                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1            = 1011,
-                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2            = 1012,
-                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3            = 1013,
-                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4            = 1014,
-                DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1             = 1021,
-                DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2             = 1022,
-                DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1             = 1023,
-                DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2             = 1024,
-                DEVICE_MENU_PROTECT_ITEM_POWER_3UO               = 1025,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1           = 1031,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2           = 1032,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1           = 1033,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2           = 1034,
-                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1         = 1041,
-                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2         = 1042,
-                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3         = 1043,
-                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC            = 1051,
-                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1           = 1052,
-                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2           = 1053,
-                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3           = 1054,
-                DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING          = 1061,
-                DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN              = 1062,
-                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1       = 1071,
-                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2       = 1072,
-                DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1          = 1081,
-                DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2          = 1082,
-                DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START       = 1083,
-                DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU             = 1091,
-                DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM          = 1092,
-                DEVICE_MENU_ITEM_AUTOMATION_SWITCH               = 2011,
-                DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK         = 2012,
-                DEVICE_MENU_ITEM_AUTOMATION_BLOCKS               = 2013,
-                DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS        = 2014,
-                DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN              = 2015,
-                DEVICE_MENU_ITEM_AUTOMATION_AVR                  = 2016,
-                DEVICE_MENU_ITEM_AUTOMATION_APV                  = 2017,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT                 = 1100,
+                DEVICE_MENU_PROTECT_ITEM_POWER                   = 1200,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED                = 1300,
+                DEVICE_MENU_PROTECT_ITEM_FREQUENCY               = 1400,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL                = 1500,
+                DEVICE_MENU_PROTECT_ITEM_MOTOR                   = 1600,
+                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE             = 1700,
+                DEVICE_MENU_PROTECT_ITEM_RESERVE                 = 1800,
+                DEVICE_MENU_PROTECT_ITEM_CONTROL                 = 1900,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1            = 1111,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2            = 1112,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3            = 1113,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP = 1101, // крутая
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP  = 1102, // пологая
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV   = 1103, // инверсная
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV  = 1104, // длительно инверсная
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK  = 1105, // обратно зависимая
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV  = 1106, // сильно инверсная
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV  = 1107, // экстремально инверсная
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4            = 1114,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1             = 1201,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2             = 1202,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1             = 1203,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2             = 1204,
+                DEVICE_MENU_PROTECT_ITEM_POWER_3UO               = 1205,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1           = 1301,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2           = 1302,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1           = 1303,
+                DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2           = 1304,
+                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1         = 1401,
+                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2         = 1402,
+                DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3         = 1403,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC            = 1501,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1           = 1502,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2           = 1503,
+                DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3           = 1504,
+                DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING          = 1601,
+                DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN              = 1602,
+                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1       = 1701,
+                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2       = 1702,
+                DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1          = 1801,
+                DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2          = 1802,
+                DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START       = 1803,
+                DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU             = 1901,
+                DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM          = 1902,
+                DEVICE_MENU_ITEM_AUTOMATION_SWITCH               = 2111,
+                DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK         = 2221,
+                DEVICE_MENU_ITEM_AUTOMATION_BLOCKS               = 2331,
+                DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS        = 2440,
+                DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS    = 2441,
+                DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE   = 2442,
+                DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH  = 2443,
+                DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN              = 2551,
+                DEVICE_MENU_ITEM_AUTOMATION_AVR                  = 2661,
+                DEVICE_MENU_ITEM_AUTOMATION_APV                  = 2770,
+                DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START     = 2771,
                 DEVICE_MENU_ITEM_JOURNALS_CRASHES                = 3011,
                 DEVICE_MENU_ITEM_JOURNALS_EVENTS                 = 3012,
                 DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS             = 3013,
@@ -197,9 +207,9 @@
             };
             /*!
              * \brief device_menu_item_key_t
-             * Карта ключей QMap<номер пункта меню, QPair<номер в стеке виджетов root, номер в стеке виджетов подпунктов> >
+             * Карта ключей QMap<номер пункта меню, номер в стеке виджетов>
              */
-            typedef QMap<DeviceMenuItemType, QPair<int, int> > device_menu_item_key_t;
+            typedef QMap<DeviceMenuItemType, int> device_menu_item_key_t;
             /*!
              * \brief The journal_address_t struct
              *
@@ -295,21 +305,11 @@
             void timeCalculateChanged(int newTime);
             void timeoutValueChanged(int newTime);
             void numberRepeatChanged(int number);
-            void protectMTZChangedID(int id);
-            void protectEarthlyChangedID(int id);
-            void protectPowerChangedID(int id);
-            void protectMotorChangedID(int id);
-            void protectFrequencyChangedID(int id);
-            void protectExternalChangedID(int id);
-            void protectTemperatureChangedID(int id);
-            void protectLevelChangedID(int id);
-            void switchDeviceChangedID(int id);
-            void additionalChangedID(int id);
             void errorDevice(const QString& errorConnect);
             void errorConnect(const QString& errorConnect);
             void terminalVisiblity(int state);
             void saveLog(const QString& info);
-            void itemClicked(QTreeWidgetItem* item, int col);
+            void itemClicked(QTreeWidgetItem* item, int);
             void readSettings();
             void readSetCurrent();
             void writeSettings();
@@ -354,7 +354,6 @@
             void saveSattings();
             void initConnect();
             void initMenuPanel();
-            void initButtonGroup();
             void initCellBind();
             void initPurposeBind();
             void initModelTables();
@@ -406,16 +405,6 @@
             CTerminal*                       m_terminal;
             QFile*                           m_logFile;
             QTimer*                          m_tim_calculate;
-            QButtonGroup*                    m_protect_mtz_group;
-            QButtonGroup*                    m_protect_earthly_group;
-            QButtonGroup*                    m_protect_power_group;
-            QButtonGroup*                    m_protect_motor_group;
-            QButtonGroup*                    m_protect_frequency_group;
-            QButtonGroup*                    m_protect_external_group;
-            QButtonGroup*                    m_protect_temperature_group;
-            QButtonGroup*                    m_protect_level_group;
-            QButtonGroup*                    m_switch_device_group;
-            QButtonGroup*                    m_additional_group;
             CVersionSoftware*                m_versionWidget;
             QSqlDatabase                     m_system_db;
             cell_t                           m_cell_list;
