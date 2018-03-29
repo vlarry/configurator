@@ -813,110 +813,231 @@ void ConfiguratorWindow::readSetCurrent()
         return;
     }
 
-    qint32 index = ui->stwgtMain->currentIndex();
+    DeviceMenuItemType index = DeviceMenuItemType(ui->treewgtDeviceMenu->currentItem()->type());
 
     switch(index)
     {
-        case 0:
-        case 1:
-            inAnalogRead(); // чтение настроек "Основные" и "Калибровки"
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL:
+            inAnalogRead(); // чтение настроек "Основные"
         break;
 
-        case 2:
-            protectionMTZSetRead(); // чтение настроек токовых защит
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB:
         break;
 
-        case 3:
-            protectionEarthySetRead(); // чтение настроек земляных защит
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1: // чтение защиты МТЗ1
         break;
 
-        case 4:
-            protectionPowerSetRead(); // чтение настроек защит по напряжению
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2: // чтение защиты МТЗ2
         break;
 
-        case 5:
-            protectionMotorSetRead(); // чтение настроек защит двигателей
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3: // чтение защиты МТЗ3
         break;
 
-        case 6:
-            protectionFrequencySetRead(); // чтение настроек частотных защит
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4: // чтение защиты МТЗ4
+//            protectionMTZSetRead();
         break;
 
-        case 7:
-            protectionExternalSetRead(); // чтение настроек внешних защит
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1: // чтение защиты Umax1
         break;
 
-        case 8:
-            protectionTemperatureSetRead(); // чтение настроек температурных защит
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2: // чтение защиты Umax2
         break;
 
-        case 9:
-            protectionLevelSetRead(); // чтение настроек уровневых защит
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1: // чтение защиты Umin1
         break;
 
-        case 10:
-            protectionBruSetRead(); // чтение настроек защит БРУ
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2: // чтение защиты Umin2
         break;
 
-        case 11:
-            protectionVacuumSetRead(); // чтение настроек вакуумных защит
+        case DEVICE_MENU_PROTECT_ITEM_POWER_3UO: // чтение защиты 3UO
         break;
 
-        case 12:
-            switchDeviceSetRead(); // чтение настроек коммутационных аппаратов
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1: // чтение защиты ОЗЗ1
         break;
 
-        case 13:
-            automationSetRead(); // чтение настроек автоматики
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2: // чтение защиты ОЗЗ2
         break;
 
-        case 14:
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1: // чтение защиты НЗЗ1
         break;
 
-        case 15: // чтение журнала событий
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2: // чтение защиты НЗЗ2
         break;
 
-        case 16:
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1: // чтение защиты АЧР1
         break;
 
-        case 17:
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2: // чтение защиты АЧР2
         break;
 
-        case 18:
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3: // чтение защиты АЧР3
         break;
 
-        case 19:
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC: // чтение защиты Дуговая
         break;
 
-        case 20:
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1: // чтение защиты Внешняя1
         break;
 
-        case 21:
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2: // чтение защиты Внешняя2
         break;
 
-        case 24: // привязки выходов (светодиодов)
-            sendPurposeReadRequest(tr("LED1"), tr("LED2"));
-            sendPurposeReadRequest(tr("LED3"), tr("LED4"));
-            sendPurposeReadRequest(tr("LED5"), tr("LED6"));
-            sendPurposeReadRequest(tr("LED7"), tr("LED8"));
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3: // чтение защиты Внешняя3
         break;
 
-        case 25: // привязки входов
-            sendPurposeDIReadRequest(512, 590);
-            sendPurposeDIReadRequest(592, 670);
+        case DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING: // чтение защиты Пусковая
         break;
 
-        case 26: // привязки выходов (реле)
-            sendPurposeReadRequest(tr("DO1"), tr("DO2"));
-            sendPurposeReadRequest(tr("DO4"), tr("DO5"));
-            sendPurposeReadRequest(tr("DO6"), tr("DO7"));
-            sendPurposeReadRequest(tr("DO8"), tr("DO9"));
-            sendPurposeReadRequest(tr("DO10"), tr("DO11"));
-            sendPurposeReadRequest(tr("DO12"), tr("DO13"));
+        case DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN: // чтение защиты Imin
         break;
 
-        case 27: // привязки выходов (клавиатуры)
+        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1: // чтение защиты Температурная1
         break;
+
+        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2: // чтение защиты Температурная2
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1: // чтение защиты Уровневая1
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2: // чтение защиты Уровневая2
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START: // чтение защиты Сигнал пуска
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU: // чтение защиты БРУ
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM: // чтение пзащиты Вакуум
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH: // автоматики защиты Выключатель
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK: // автоматики защиты Тележка выключателя
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_BLOCKS: // чтение автоматики Блокировки
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS: // чтение автоматики Шинный разъединитель
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE: // чтение автоматики Линейный разъединитель
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH: // чтение автоматики Заземляющий разъединитель
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN: // чтение автоматики Контроль ТН
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_AVR: // чтение автоматики АВР
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_APV: // чтение автоматики АПВ
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START: // чтение автоматики АПВ сигналы пуска
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // чтение настройки Светодиоды
+        break;
+
+        default: break;
+
+//        case 3:
+//            protectionEarthySetRead(); // чтение настроек земляных защит
+//        break;
+
+//        case 4:
+//            protectionPowerSetRead(); // чтение настроек защит по напряжению
+//        break;
+
+//        case 5:
+//            protectionMotorSetRead(); // чтение настроек защит двигателей
+//        break;
+
+//        case 6:
+//            protectionFrequencySetRead(); // чтение настроек частотных защит
+//        break;
+
+//        case 7:
+//            protectionExternalSetRead(); // чтение настроек внешних защит
+//        break;
+
+//        case 8:
+//            protectionTemperatureSetRead(); // чтение настроек температурных защит
+//        break;
+
+//        case 9:
+//            protectionLevelSetRead(); // чтение настроек уровневых защит
+//        break;
+
+//        case 10:
+//            protectionBruSetRead(); // чтение настроек защит БРУ
+//        break;
+
+//        case 11:
+//            protectionVacuumSetRead(); // чтение настроек вакуумных защит
+//        break;
+
+//        case 12:
+//            switchDeviceSetRead(); // чтение настроек коммутационных аппаратов
+//        break;
+
+//        case 13:
+//            automationSetRead(); // чтение настроек автоматики
+//        break;
+
+//        case 14:
+//        break;
+
+//        case 15: // чтение журнала событий
+//        break;
+
+//        case 16:
+//        break;
+
+//        case 17:
+//        break;
+
+//        case 18:
+//        break;
+
+//        case 19:
+//        break;
+
+//        case 20:
+//        break;
+
+//        case 21:
+//        break;
+
+//        case 24: // привязки выходов (светодиодов)
+//            sendPurposeReadRequest(tr("LED1"), tr("LED2"));
+//            sendPurposeReadRequest(tr("LED3"), tr("LED4"));
+//            sendPurposeReadRequest(tr("LED5"), tr("LED6"));
+//            sendPurposeReadRequest(tr("LED7"), tr("LED8"));
+//        break;
+
+//        case 25: // привязки входов
+//            sendPurposeDIReadRequest(512, 590);
+//            sendPurposeDIReadRequest(592, 670);
+//        break;
+
+//        case 26: // привязки выходов (реле)
+//            sendPurposeReadRequest(tr("DO1"), tr("DO2"));
+//            sendPurposeReadRequest(tr("DO4"), tr("DO5"));
+//            sendPurposeReadRequest(tr("DO6"), tr("DO7"));
+//            sendPurposeReadRequest(tr("DO8"), tr("DO9"));
+//            sendPurposeReadRequest(tr("DO10"), tr("DO11"));
+//            sendPurposeReadRequest(tr("DO12"), tr("DO13"));
+//        break;
+
+//        case 27: // привязки выходов (клавиатуры)
+//        break;
     }
 }
 //--------------------------------------
