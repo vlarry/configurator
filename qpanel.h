@@ -6,6 +6,7 @@
     #include <QScrollArea>
     #include <QListWidget>
     #include <QListWidgetItem>
+    #include "cjournalwidget.h"
     #include "qcell.h"
     //------------------------------
     class QPanel: public QDockWidget
@@ -13,6 +14,7 @@
         public:
             QPanel(QWidget* parent = Q_NULLPTR);
             void setData(const QVector<quint16>& data);
+            void setVariableNames(const calc_value_list_t& calc_list);
         
         private:
             QListWidget*    m_central_wgt;

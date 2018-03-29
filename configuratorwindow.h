@@ -60,7 +60,8 @@
         public:
             enum RegisterAddress
             {
-                CALCULATE_ADDRESS = 64
+                CALCULATE_ADDRESS_PART1 = 64,
+                CALCULATE_ADDRESS_PART2 = 164
             };
             //--------------
             enum RequestType
@@ -316,6 +317,7 @@
             void writeSetCurrent();
             void expandItemTree(bool state);
             void versionSowftware();
+            void sendCalculateRead();
             void sendSettingReadRequest(const QString& first, const QString& last,
                                         CDataUnitType::FunctionType type, int size);
             void sendSettingControlReadRequest(const QString& index);

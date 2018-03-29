@@ -1138,7 +1138,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>47</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -13286,12 +13286,10 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="pageJournalOscilloscope"/>
-         <widget class="QWidget" name="pageMeasurePrimaryValues"/>
-         <widget class="QWidget" name="pageMeasureSecondaryValues"/>
-         <widget class="QWidget" name="pageMeasureElectricPower"/>
-         <widget class="QWidget" name="pageMonitorInputDiscret"/>
-         <widget class="QWidget" name="pageMonitorOutputDiscret"/>
+         <widget class="QWidget" name="pageIUMeasureInputs"/>
+         <widget class="QWidget" name="pageDeviceCommunication"/>
+         <widget class="QWidget" name="pageDateTime"/>
+         <widget class="QWidget" name="pageKeyboard"/>
          <widget class="QWidget" name="pageSetLedPurpose">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>

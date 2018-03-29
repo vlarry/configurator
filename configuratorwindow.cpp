@@ -194,10 +194,20 @@ void ConfiguratorWindow::serialPortSettings()
 void ConfiguratorWindow::calculateRead()
 {
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-                       CALCULATE_ADDRESS, QVector<quint16>() << 110);
+                       CALCULATE_ADDRESS_PART1, QVector<quint16>() << 110);
     unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+    unit.setProperty("PART", CALCULATE_ADDRESS_PART1);
 
     m_modbusDevice->request(unit);
+
+    sendCalculateRead();
+
+//    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
+//                       CALCULATE_ADDRESS_PART2, QVector<quint16>() << 110);
+//    unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+//    unit.setProperty("PART", CALCULATE_ADDRESS_PART2);
+
+//    m_modbusDevice->request(unit);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::journalRead(const QString& key)
@@ -1061,6 +1071,11 @@ void ConfiguratorWindow::versionSowftware()
 {
     m_versionWidget->show();
 }
+//------------------------------------------
+void ConfiguratorWindow::sendCalculateRead()
+{
+
+}
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
 {
@@ -1337,6 +1352,8 @@ void ConfiguratorWindow::initMenuPanel()
     ui->treewgtDeviceMenu->addTopLevelItem(itemSettings);
 
     // заполнение карты меню устройства для доступа к настройкам при клике по пункту
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL] = 0;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB]   = 1;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2]            = 3;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3]            = 4;
@@ -1383,6 +1400,19 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_AVR]                  = 45;
     m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV]                  = 46;
     m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START]     = 47;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 48;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 49;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 50;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 51;
+    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 52;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 53;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 54;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 55;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 56;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 57;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS]  = 57;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 58;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -1720,7 +1750,7 @@ void ConfiguratorWindow::initCrashJournal()
     }
 
     // загружаем список расчетных величин из БД
-    if(!query.exec("SELECT name, first FROM calc_value;"))
+    if(!query.exec("SELECT name, first, description FROM calc_value;"))
     {
         QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список расчетных величин: %1").arg(query.lastError().text()));
         return;
@@ -1730,8 +1760,12 @@ void ConfiguratorWindow::initCrashJournal()
 
     while(query.next())
     {
-        calc_value_list << calc_value_t({ query.value("name").toString(), query.value("first").toInt() });
+        calc_value_list << calc_value_t({ query.value("name").toString(), query.value("first").toInt(),
+                                          query.value("description").toString() });
     }
+
+    if(m_calculateWidget)
+        m_calculateWidget->setVariableNames(calc_value_list); // добавляем в виджет имена переменных
 
     protection_t protection = { list_item, list_set, variable_list, out_list, input_list, calc_value_list };
 

@@ -52,7 +52,7 @@
         <string>TextLabel</string>
        </property>
        <property name="scaledContents">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -81,7 +81,7 @@
         </sizepolicy>
        </property>
        <property name="maxLength">
-        <number>6</number>
+        <number>8</number>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
