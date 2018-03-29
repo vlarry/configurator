@@ -317,7 +317,7 @@
             void writeSetCurrent();
             void expandItemTree(bool state);
             void versionSowftware();
-            void sendCalculateRead();
+            void sendCalculateRead(CDataUnitType& unit);
             void sendSettingReadRequest(const QString& first, const QString& last,
                                         CDataUnitType::FunctionType type, int size);
             void sendSettingControlReadRequest(const QString& index);
@@ -424,5 +424,6 @@
             const CJournalWidget*            m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
             QMap<QString, journal_set_t>     m_journal_set; // установки журналов
             device_menu_item_key_t           m_menu_items; // карта пунктов меню устройства
+            QVector<quint16>                 m_calculate_buffer; // буфер расчетных величи (два запроса, поэтому необходимо клеить)
     };
 #endif // CONFIGURATORWINDOW_H

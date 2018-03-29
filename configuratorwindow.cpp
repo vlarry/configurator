@@ -193,21 +193,19 @@ void ConfiguratorWindow::serialPortSettings()
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-                       CALCULATE_ADDRESS_PART1, QVector<quint16>() << 110);
-    unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
-    unit.setProperty("PART", CALCULATE_ADDRESS_PART1);
+    CDataUnitType unit_part1(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
+                             CALCULATE_ADDRESS_PART1, QVector<quint16>() << 66);
+    unit_part1.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+    unit_part1.setProperty("PART", CALCULATE_ADDRESS_PART1);
 
-    m_modbusDevice->request(unit);
+    sendCalculateRead(unit_part1);
 
-    sendCalculateRead();
+    CDataUnitType unit_part2(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
+                             CALCULATE_ADDRESS_PART2, QVector<quint16>() << 8);
+    unit_part2.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+    unit_part2.setProperty("PART", CALCULATE_ADDRESS_PART2);
 
-//    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-//                       CALCULATE_ADDRESS_PART2, QVector<quint16>() << 110);
-//    unit.setProperty(tr("REQUEST"), CALCULATE_TYPE);
-//    unit.setProperty("PART", CALCULATE_ADDRESS_PART2);
-
-//    m_modbusDevice->request(unit);
+    sendCalculateRead(unit_part2);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::journalRead(const QString& key)
@@ -639,7 +637,19 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     }
 
     if(type == CALCULATE_TYPE)
-        displayCalculateValues(unit.values());
+    {
+        RegisterAddress addr = RegisterAddress(unit.property("PART").toInt());
+
+        if(addr == CALCULATE_ADDRESS_PART1)
+            m_calculate_buffer = unit.values();
+        else if(addr == CALCULATE_ADDRESS_PART2 && !m_calculate_buffer.isEmpty())
+        {
+            m_calculate_buffer += unit.values();
+            displayCalculateValues(m_calculate_buffer);
+        }
+        else
+            m_calculate_buffer.clear();
+    }
     else if(type == GENERAL_TYPE)
         displaySettingResponse(unit);
     else if(type == GENERAL_CONTROL_TYPE)
@@ -1071,10 +1081,10 @@ void ConfiguratorWindow::versionSowftware()
 {
     m_versionWidget->show();
 }
-//------------------------------------------
-void ConfiguratorWindow::sendCalculateRead()
+//-------------------------------------------------------------
+void ConfiguratorWindow::sendCalculateRead(CDataUnitType& unit)
 {
-
+    m_modbusDevice->request(unit);
 }
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
@@ -1888,7 +1898,10 @@ void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
-    m_calculateWidget->setData(values);
+    if(values.size() == 74)
+        m_calculateWidget->setData(values);
+
+    m_calculate_buffer.clear();
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)

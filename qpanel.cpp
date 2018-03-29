@@ -10,7 +10,7 @@ QPanel::QPanel(QWidget* parent):
 //------------------------------------------------
 void QPanel::setData(const QVector<quint16>& data)
 {
-    if(data.isEmpty() || data.count() != 0x6E)
+    if(data.isEmpty() || data.count() != 74)
         return;
     
     union
@@ -51,6 +51,6 @@ void QPanel::setVariableNames(const calc_value_list_t& calc_list)
         item->setSizeHint(QSize(cell->fontMetrics().width(cell_str), cell->sizeHint().height()));
         m_central_wgt->setItemWidget(item, cell);
 
-        m_cell_list.append(cell);
+//        m_cell_list.append(cell);
     }
 }
