@@ -532,28 +532,30 @@ void ConfiguratorWindow::processReadJournals(bool state)
 //--------------------------------------
 void ConfiguratorWindow::processExport()
 {
-    DeviceMenuIndexType index = menuIndex();
+    DeviceMenuItemType index = menuIndex();
 
-    if(index == DEVICE_MENU_INDEX_NONE)
-        return;
-
-    if(index >= DEVICE_MENU_INDEX_CRASH && index <= DEVICE_MENU_INDEX_ISOLATION)
+    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
         exportJournalToDb();
-    else if(index >= DEVICE_MENU_INDEX_LED && index <= DEVICE_MENU_INDEX_KEYBOARD)
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY)
+    {
         exportPurposeToJSON();
+    }
 }
 //--------------------------------------
 void ConfiguratorWindow::processImport()
 {
-    DeviceMenuIndexType index = menuIndex();
+    DeviceMenuItemType index = menuIndex();
 
-    if(index == DEVICE_MENU_INDEX_NONE)
-        return;
-
-    if(index >= DEVICE_MENU_INDEX_CRASH && index <= DEVICE_MENU_INDEX_ISOLATION)
+    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
         importJournalToTable();
-    else if(index >= DEVICE_MENU_INDEX_LED && index <= DEVICE_MENU_INDEX_KEYBOARD)
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY)
+    {
         importPurposeFromJSON();
+    }
 }
 //------------------------------------------
 void ConfiguratorWindow::automationSetRead()
@@ -4403,56 +4405,10 @@ int ConfiguratorWindow::indexColumnFromKey(const QString& key)
 
     return -1;
 }
-//---------------------------------------------------------------------
-ConfiguratorWindow::DeviceMenuIndexType ConfiguratorWindow::menuIndex()
+//--------------------------------------------------------------------
+ConfiguratorWindow::DeviceMenuItemType ConfiguratorWindow::menuIndex()
 {
-    QModelIndex         index  = ui->treewgtDeviceMenu->currentIndex();
-    DeviceMenuIndexType result = DEVICE_MENU_INDEX_NONE;
-
-    if(index.parent().row() == 0)
-    {
-        switch(index.row())
-        {
-            case 4:
-                result = DEVICE_MENU_INDEX_LED;
-            break;
-
-            case 5:
-                result = DEVICE_MENU_INDEX_INPUT;
-            break;
-
-            case 6:
-                result = DEVICE_MENU_INDEX_RELAY;
-            break;
-
-            case 7:
-                result = DEVICE_MENU_INDEX_KEYBOARD;
-            break;
-        }
-    }
-    else if(index.parent().row() == 1) // второй пункт меню (родитель)
-    {
-        switch(index.row())
-        {
-            case 0:
-                result = DEVICE_MENU_INDEX_CRASH;
-            break;
-
-            case 1:
-                result = DEVICE_MENU_INDEX_EVENT;
-            break;
-
-            case 2:
-                result = DEVICE_MENU_INDEX_HALFHOUR;
-            break;
-
-            case 3:
-                result = DEVICE_MENU_INDEX_ISOLATION;
-            break;
-        }
-    }
-
-    return result;
+    return DeviceMenuItemType(ui->treewgtDeviceMenu->currentItem()->type());
 }
 /*!
  * \brief  ConfiguratorWindow::unpackDateTime

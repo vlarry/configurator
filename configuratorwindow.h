@@ -392,7 +392,7 @@
             QTableView*         tableMatrixFromKeys(const QString& first, const QString& last);
             CColumn::column_t   columnFromKey(const QString& key);
             int                 indexColumnFromKey(const QString& key);
-            DeviceMenuIndexType menuIndex();
+            DeviceMenuItemType  menuIndex();
             QDateTime           unpackDateTime(QVector<quint8>& data);
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
 
