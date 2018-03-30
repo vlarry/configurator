@@ -1283,12 +1283,24 @@ void ConfiguratorWindow::readSettings()
         return;
     }
 
-    qint32 index = ui->stwgtMain->currentIndex();
-
-    if(index >= 0 && index < 22) // выбрана группа "Настройки"
-    {
-        inputAnalogGeneralRead(); // чтение настроек "Основные" и "Калибровки"
-    }
+    // чтение всех настроек
+    inputAnalogGroupRead();
+    protectionMTZGroupRead();
+    protectionPowerGroupRead();
+    protectionDirectedGroupRead();
+    protectionFrequencyRead();
+    protectionExternal();
+    protectionMotorRead();
+    protectionTemperatureRead();
+    protectionReserveRead();
+    protectionControlRead();
+    automationSwitchRead();
+    automationSwitchTruckRead();
+    automationBlockRead();
+    automationDisconnectorsRead();
+    automationCtrlTNRead();
+    automationAVRRead();
+    automationAPVRead();
 }
 //---------------------------------------
 void ConfiguratorWindow::readSetCurrent()
@@ -1527,98 +1539,6 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         default: break;
-
-//        case 3:
-//            protectionEarthySetRead(); // чтение настроек земляных защит
-//        break;
-
-//        case 4:
-//            protectionPowerSetRead(); // чтение настроек защит по напряжению
-//        break;
-
-//        case 5:
-//            protectionMotorSetRead(); // чтение настроек защит двигателей
-//        break;
-
-//        case 6:
-//            protectionFrequencySetRead(); // чтение настроек частотных защит
-//        break;
-
-//        case 7:
-//            protectionExternalSetRead(); // чтение настроек внешних защит
-//        break;
-
-//        case 8:
-//            protectionTemperatureSetRead(); // чтение настроек температурных защит
-//        break;
-
-//        case 9:
-//            protectionLevelSetRead(); // чтение настроек уровневых защит
-//        break;
-
-//        case 10:
-//            protectionBruSetRead(); // чтение настроек защит БРУ
-//        break;
-
-//        case 11:
-//            protectionVacuumSetRead(); // чтение настроек вакуумных защит
-//        break;
-
-//        case 12:
-//            switchDeviceSetRead(); // чтение настроек коммутационных аппаратов
-//        break;
-
-//        case 13:
-//            automationSetRead(); // чтение настроек автоматики
-//        break;
-
-//        case 14:
-//        break;
-
-//        case 15: // чтение журнала событий
-//        break;
-
-//        case 16:
-//        break;
-
-//        case 17:
-//        break;
-
-//        case 18:
-//        break;
-
-//        case 19:
-//        break;
-
-//        case 20:
-//        break;
-
-//        case 21:
-//        break;
-
-//        case 24: // привязки выходов (светодиодов)
-//            sendPurposeReadRequest(tr("LED1"), tr("LED2"));
-//            sendPurposeReadRequest(tr("LED3"), tr("LED4"));
-//            sendPurposeReadRequest(tr("LED5"), tr("LED6"));
-//            sendPurposeReadRequest(tr("LED7"), tr("LED8"));
-//        break;
-
-//        case 25: // привязки входов
-//            sendPurposeDIReadRequest(512, 590);
-//            sendPurposeDIReadRequest(592, 670);
-//        break;
-
-//        case 26: // привязки выходов (реле)
-//            sendPurposeReadRequest(tr("DO1"), tr("DO2"));
-//            sendPurposeReadRequest(tr("DO4"), tr("DO5"));
-//            sendPurposeReadRequest(tr("DO6"), tr("DO7"));
-//            sendPurposeReadRequest(tr("DO8"), tr("DO9"));
-//            sendPurposeReadRequest(tr("DO10"), tr("DO11"));
-//            sendPurposeReadRequest(tr("DO12"), tr("DO13"));
-//        break;
-
-//        case 27: // привязки выходов (клавиатуры)
-//        break;
     }
 }
 //--------------------------------------
