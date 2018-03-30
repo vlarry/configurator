@@ -1,6 +1,5 @@
 #include "configuratorwindow.h"
 #include "ui_configuratorwindow.h"
-#include "ui_configuratorwindow.h"
 //------------------------------------------------------
 ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
@@ -322,26 +321,98 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
     m_modbusDevice->request(unit);
 }
-//-------------------------------------
-void ConfiguratorWindow::inAnalogRead()
+/*!
+ * \brief ConfiguratorWindow::inputAnalogGeneralRead
+ *
+ * Чтение настроек "Настройки-аналоговые-основные"
+ */
+void ConfiguratorWindow::inputAnalogGeneralRead()
 {
-    sendSettingReadRequest(tr("M01"), tr("KU0X_"), CDataUnitType::ReadHoldingRegisters, 42);
+    sendSettingReadRequest(tr("M01"), tr("M03"), CDataUnitType::ReadHoldingRegisters, 6);
     sendSettingControlReadRequest("M04"); // чтение состояния настройки
 }
-//--------------------------------------
-void ConfiguratorWindow::inAnalogWrite()
+/*!
+ * \brief ConfiguratorWindow::inputAnalogCalibrateRead
+ * Чтение настроек "Настройки-аналоговые-калибровки"
+ */
+void ConfiguratorWindow::inputAnalogCalibrateRead()
+{
+    sendSettingReadRequest(tr("KIA"), tr("KU0X_"), CDataUnitType::ReadHoldingRegisters, 36);
+}
+/*!
+ * \brief ConfiguratorWindow::inputAnalogGroupRead
+ *
+ * Чтение группы настроек "Настройки-аналоговые"
+ */
+void ConfiguratorWindow::inputAnalogGroupRead()
+{
+    inputAnalogCalibrateRead();
+    inputAnalogGeneralRead();
+}
+/*!
+ * \brief ConfiguratorWindow::inputAnalogGeneralWrite
+ *
+ * Запись настроек "Настройки-аналоговые-основные"
+ */
+void ConfiguratorWindow::inputAnalogGeneralWrite()
 {
     sendSettingWriteRequest(tr("M01"), tr("KU0X_"));
     sendSettingControlWriteRequest("M04"); // запись состояния настройки
 }
-//---------------------------------------------
-void ConfiguratorWindow::protectionMTZSetRead()
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ1Read
+ *
+ * Чтение защиты МТЗ1
+ */
+void ConfiguratorWindow::protectionMTZ1Read()
 {
-    sendSettingReadRequest(tr("M06"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 38);
-    sendSettingControlReadRequest("M09");
-    sendSettingControlReadRequest("M13");
-    sendSettingControlReadRequest("M16");
     sendSettingControlReadRequest("M05");
+    sendSettingReadRequest(tr("M06"), tr("X01"), CDataUnitType::ReadHoldingRegisters, 8);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ2Read
+ *
+ * Чтение защиты МТЗ2
+ */
+void ConfiguratorWindow::protectionMTZ2Read()
+{
+    sendSettingControlReadRequest("M09");
+    sendSettingReadRequest(tr("M10"), tr("X03"), CDataUnitType::ReadHoldingRegisters, 8);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3Read
+ *
+ * Чтение защиты МТЗ3
+ */
+void ConfiguratorWindow::protectionMTZ3Read()
+{
+    sendSettingControlReadRequest("M13");
+    sendSettingControlReadRequest("TZ");
+    sendSettingReadRequest(tr("M14"), tr("K22"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest(tr("X04"), tr("X04"), CDataUnitType::ReadHoldingRegisters, 2);
+    sendSettingReadRequest(tr("TZ1"), tr("TZ7"), CDataUnitType::ReadHoldingRegisters, 14);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ4Read
+ *
+ * Чтение защиты МТЗ4
+ */
+void ConfiguratorWindow::protectionMTZ4Read()
+{
+    sendSettingControlReadRequest("M16");
+    sendSettingReadRequest(tr("M17"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 12);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZGroupRead
+ *
+ * Чтение группы защит МТЗ
+ */
+void ConfiguratorWindow::protectionMTZGroupRead()
+{
+    protectionMTZ1Read();
+    protectionMTZ2Read();
+    protectionMTZ3Read();
+    protectionMTZ4Read();
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionMTZSetWrite()
@@ -351,6 +422,84 @@ void ConfiguratorWindow::protectionMTZSetWrite()
     sendSettingControlWriteRequest("M13");
     sendSettingControlWriteRequest("M16");
     sendSettingControlWriteRequest("M05");
+}
+/*!
+ * \brief ConfiguratorWindow::protectionUmax1Read
+ *
+ * Чтение защиты Umax1
+ */
+void ConfiguratorWindow::protectionUmax1Read()
+{
+//    sendSettingReadRequest(tr("M49"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 30);
+//    sendSettingControlReadRequest("M32");
+//    sendSettingControlReadRequest("M35");
+//    sendSettingControlReadRequest("M38");
+//    sendSettingControlReadRequest("M39");
+//    sendSettingControlReadRequest("M40");
+//    sendSettingControlReadRequest("M43");
+//    sendSettingControlReadRequest("M44");
+//    sendSettingControlReadRequest("M45");
+//    sendSettingControlReadRequest("M48");
+
+    sendSettingControlReadRequest("M32");
+    sendSettingReadRequest(tr("M33"), tr("X11"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionUmax2Read
+ *
+ * Чтение защиты Umax2
+ */
+void ConfiguratorWindow::protectionUmax2Read()
+{
+    sendSettingControlReadRequest("M35");
+    sendSettingReadRequest(tr("M36"), tr("X12"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionUmin1Read
+ *
+ * Чтение защиты Umin1
+ */
+void ConfiguratorWindow::protectionUmin1Read()
+{
+    sendSettingControlReadRequest("M38");
+    sendSettingControlReadRequest("M39");
+    sendSettingControlReadRequest("M40");
+    sendSettingReadRequest(tr("M41"), tr("X13"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionUmin2Read
+ *
+ * Чтение защиты Umin2
+ */
+void ConfiguratorWindow::protectionUmin2Read()
+{
+    sendSettingControlReadRequest("M43");
+    sendSettingControlReadRequest("M44");
+    sendSettingControlReadRequest("M45");
+    sendSettingReadRequest(tr("M46"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protection3UORead
+ *
+ * Чтение защиты 3UO
+ */
+void ConfiguratorWindow::protection3UORead()
+{
+    sendSettingControlReadRequest("M48");
+    sendSettingReadRequest(tr("M49"), tr("X15"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionPowerGroupRead
+ *
+ * Чтение группы защит по напряжению
+ */
+void ConfiguratorWindow::protectionPowerGroupRead()
+{
+    protectionUmax1Read();
+    protectionUmax2Read();
+    protectionUmin1Read();
+    protectionUmin2Read();
+    protection3UORead();
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetRead()
@@ -369,20 +518,6 @@ void ConfiguratorWindow::protectionEarthySetWrite()
     sendSettingControlWriteRequest("K23");
     sendSettingControlWriteRequest("M25");
     sendSettingControlWriteRequest("K26");
-}
-//-----------------------------------------------
-void ConfiguratorWindow::protectionPowerSetRead()
-{
-    sendSettingReadRequest(tr("M49"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 30);
-    sendSettingControlReadRequest("M32");
-    sendSettingControlReadRequest("M35");
-    sendSettingControlReadRequest("M38");
-    sendSettingControlReadRequest("M39");
-    sendSettingControlReadRequest("M40");
-    sendSettingControlReadRequest("M43");
-    sendSettingControlReadRequest("M44");
-    sendSettingControlReadRequest("M45");
-    sendSettingControlReadRequest("M48");
 }
 //------------------------------------------------
 void ConfiguratorWindow::protectionPowerSetWrite()
@@ -632,12 +767,6 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     
     RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
 
-    if(unit.property("FIRST").toString() == "M06")
-    {
-        qDebug() << "first: " << unit.property("FIRST").toString() << ", last: " << unit.property("LAST").toString() << " = " <<
-                    unit.value(0);
-    }
-
     if(type == CALCULATE_TYPE)
     {
         RegisterAddress addr = RegisterAddress(unit.property("PART").toInt());
@@ -789,10 +918,8 @@ void ConfiguratorWindow::readSettings()
 
     if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
-        inAnalogRead(); // чтение настроек "Основные" и "Калибровки"
-        protectionMTZSetRead(); // чтение настроек токовых защит
+        inputAnalogGeneralRead(); // чтение настроек "Основные" и "Калибровки"
         protectionEarthySetRead(); // чтение настроек земляных защит
-        protectionPowerSetRead(); // чтение настроек защит по напряжению
         protectionMotorSetRead(); // чтение настроек защит двигателей
         protectionFrequencySetRead(); // чтение настроек частотных защит
         protectionExternalSetRead(); // чтение настроек внешних защит
@@ -818,38 +945,59 @@ void ConfiguratorWindow::readSetCurrent()
     switch(index)
     {
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL:
-            inAnalogRead(); // чтение настроек "Основные"
+            inputAnalogGeneralRead(); // чтение настроек "Основные"
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB:
+            inputAnalogCalibrateRead(); // чтение настроек "Калибровки"
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG:
+            inputAnalogGroupRead(); // чтение группы настроек "Аналоговые"
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1: // чтение защиты МТЗ1
+            protectionMTZ1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2: // чтение защиты МТЗ2
+            protectionMTZ2Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3: // чтение защиты МТЗ3
+            protectionMTZ3Read();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4: // чтение защиты МТЗ4
-//            protectionMTZSetRead();
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4: // чтение защиты По току
+            protectionMTZ4Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT: // чтение группы защит МТЗ
+            protectionMTZGroupRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1: // чтение защиты Umax1
+            protectionUmax1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2: // чтение защиты Umax2
+            protectionUmax2Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1: // чтение защиты Umin1
+            protectionUmin1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2: // чтение защиты Umin2
+            protectionUmin2Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_3UO: // чтение защиты 3UO
+            protection3UORead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_POWER: // чтение группы защит По напряжению
+            protectionPowerGroupRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1: // чтение защиты ОЗЗ1
@@ -1053,7 +1201,7 @@ void ConfiguratorWindow::writeSettings()
 
     if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
-        inAnalogWrite(); // запись настроек "Основные" и "Калибровки"
+        inputAnalogGeneralWrite(); // запись настроек "Основные" и "Калибровки"
         protectionMTZSetWrite(); // запись настроек токовых защит
         protectionEarthySetWrite(); // запись настроек земляных защит
         protectionPowerSetWrite(); // запись настроек защит по напряжению
@@ -1083,7 +1231,7 @@ void ConfiguratorWindow::writeSetCurrent()
     {
         case 0:
         case 1:
-            inAnalogWrite(); // запись настроек "Основные" и "Калибровки"
+            inputAnalogGeneralWrite(); // запись настроек "Основные" и "Калибровки"
         break;
 
         case 2:

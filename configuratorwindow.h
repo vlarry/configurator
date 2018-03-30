@@ -269,13 +269,24 @@
             void serialPortSettings();
             void calculateRead(); // запрос расчетных величин
             void journalRead(const QString& key);
-            void inAnalogRead();
-            void inAnalogWrite();
-            void protectionMTZSetRead();
+            void inputAnalogGeneralRead();
+            void inputAnalogCalibrateRead();
+            void inputAnalogGroupRead();
+            void inputAnalogGeneralWrite();
+            void protectionMTZ1Read();
+            void protectionMTZ2Read();
+            void protectionMTZ3Read();
+            void protectionMTZ4Read();
+            void protectionMTZGroupRead();
             void protectionMTZSetWrite();
+            void protectionUmax1Read();
+            void protectionUmax2Read();
+            void protectionUmin1Read();
+            void protectionUmin2Read();
+            void protection3UORead();
+            void protectionPowerGroupRead();
             void protectionEarthySetRead();
             void protectionEarthySetWrite();
-            void protectionPowerSetRead();
             void protectionPowerSetWrite();
             void protectionMotorSetRead();
             void protectionMotorSetWrite();
