@@ -86,33 +86,13 @@
                 FLOAT, // QLineEdit (set validator: QDoubleValidator)
                 LIST   // QComboBox
             };
-            //-------------------
-            enum JournalIndexType
-            {
-                JOURNAL_INDEX_CRASH = 48,
-                JOURNAL_INDEX_EVENT,
-                JOURNAL_INDEX_HALFHOUR,
-                JOURNAL_INDEX_ISOLATION
-            };
-            //----------------------
-            enum DeviceMenuIndexType
-            {
-                DEVICE_MENU_INDEX_NONE = -1,
-                DEVICE_MENU_INDEX_LED  = 4,
-                DEVICE_MENU_INDEX_INPUT,
-                DEVICE_MENU_INDEX_RELAY,
-                DEVICE_MENU_INDEX_KEYBOARD,
-                DEVICE_MENU_INDEX_CRASH = 0,
-                DEVICE_MENU_INDEX_EVENT,
-                DEVICE_MENU_INDEX_HALFHOUR,
-                DEVICE_MENU_INDEX_ISOLATION
-            };
             /*!
              * \brief The DeviceMenuItemType enum
              * Описание перечислений пунктов меню устройства
              */
             enum DeviceMenuItemType
             {
+                DEVICE_MENU_ITEM_NONE                            = 0,
                 DEVICE_MENU_ITEM_PROTECTION_ROOT                 = 1000,
                 DEVICE_MENU_ITEM_AUTOMATION_ROOT                 = 2000,
                 DEVICE_MENU_ITEM_JOURNALS_ROOT                   = 3000,
@@ -193,18 +173,6 @@
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS  = 5612,
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY   = 5021,
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS  = 5022
-            };
-            /*!
-             * \brief The PurposeIndexType enum
-             *
-             *  Индексы таблиц привязок для определения выбранной таблицы
-             */
-            enum PurposeIndexType
-            {
-                PURPOSE_INDEX_LED = 24,
-                PURPOSE_INDEX_INPUT,
-                PURPOSE_INDEX_RELAY,
-                PURPOSE_INDEX_KEYBOARD
             };
             /*!
              * \brief device_menu_item_key_t
@@ -322,6 +290,9 @@
             void automationCtrlTNRead();
             void automationAVRRead();
             void automationAPVRead();
+            void purposeLedsRead();
+            void purposeInputRead();
+            void purposeRelayRead();
             void protectionEarthySetWrite();
             void protectionPowerSetWrite();
             void protectionMotorSetWrite();
@@ -377,7 +348,7 @@
             void exportPurposeToJSON();
             void importPurposeFromJSON();
             void processReadJournal(CDataUnitType& unit);
-            void widgetStackIndexChanged(int index);
+            void widgetStackIndexChanged(int);
             void setJournalPtrShift(const QString& key, long pos);
             void timeoutSynchronization();
             void importJournalToTable();

@@ -890,6 +890,30 @@ void ConfiguratorWindow::automationAPVRead()
     sendSettingControlReadRequest("M87");
     sendSettingReadRequest(tr("M88"), tr("M89"), CDataUnitType::ReadHoldingRegisters, 4);
 }
+//----------------------------------------
+void ConfiguratorWindow::purposeLedsRead()
+{
+    sendPurposeReadRequest(tr("LED1"), tr("LED2"));
+    sendPurposeReadRequest(tr("LED3"), tr("LED4"));
+    sendPurposeReadRequest(tr("LED5"), tr("LED6"));
+    sendPurposeReadRequest(tr("LED7"), tr("LED8"));
+}
+//-----------------------------------------
+void ConfiguratorWindow::purposeInputRead()
+{
+    sendPurposeDIReadRequest(512, 590);
+    sendPurposeDIReadRequest(592, 670);
+}
+//-----------------------------------------
+void ConfiguratorWindow::purposeRelayRead()
+{
+    sendPurposeReadRequest(tr("DO1"), tr("DO2"));
+    sendPurposeReadRequest(tr("DO4"), tr("DO5"));
+    sendPurposeReadRequest(tr("DO6"), tr("DO7"));
+    sendPurposeReadRequest(tr("DO8"), tr("DO9"));
+    sendPurposeReadRequest(tr("DO10"), tr("DO11"));
+    sendPurposeReadRequest(tr("DO12"), tr("DO13"));
+}
 //-------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetWrite()
 {
@@ -1007,6 +1031,8 @@ void ConfiguratorWindow::processExport()
     {
         exportPurposeToJSON();
     }
+    else
+        QMessageBox::warning(this, tr("Экспорт"), tr("Не выбран допустимый пункт меню"));
 }
 //--------------------------------------
 void ConfiguratorWindow::processImport()
@@ -1021,6 +1047,8 @@ void ConfiguratorWindow::processImport()
     {
         importPurposeFromJSON();
     }
+    else
+        QMessageBox::warning(this, tr("Импорт"), tr("Не выбран допустимый пункт меню"));
 }
 //------------------------------------------
 void ConfiguratorWindow::automationSetRead()
@@ -1472,6 +1500,15 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // чтение настройки Светодиоды
+            purposeLedsRead();
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS:
+            purposeInputRead();
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY:
+            purposeRelayRead();
         break;
 
         default: break;
@@ -1986,26 +2023,26 @@ void ConfiguratorWindow::initMenuPanel()
     settingInputAnalog->addChildren(QList<QTreeWidgetItem*>() << inputAnalogGeneral << inputAnalogCalibration);
 
     // пункты настройки "входы и выходы"
-    QTreeWidgetItem* ioMDVV01 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-01"),
-                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01);
-    QTreeWidgetItem* ioMDVV02 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-02"),
-                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02);
+//    QTreeWidgetItem* ioMDVV01 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-01"),
+//                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01);
+//    QTreeWidgetItem* ioMDVV02 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-02"),
+//                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02);
 
-    settingIO->addChildren(QList<QTreeWidgetItem*>() << ioMDVV01 << ioMDVV02);
+//    settingIO->addChildren(QList<QTreeWidgetItem*>() << ioMDVV01 << ioMDVV02);
 
-    QTreeWidgetItem* ioRelayMDVV01   = new QTreeWidgetItem(ioMDVV01, QStringList() << tr("Реле"),
+    QTreeWidgetItem* ioRelayMDVV01   = new QTreeWidgetItem(settingIO, QStringList() << tr("Реле"),
                                                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
-    QTreeWidgetItem* ioDSInputMDVV01 = new QTreeWidgetItem(ioMDVV01, QStringList() << tr("Дискретные входы"),
+    QTreeWidgetItem* ioDSInputMDVV01 = new QTreeWidgetItem(settingIO, QStringList() << tr("Дискретные входы"),
                                                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS);
 
-    ioMDVV01->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01);
+    settingIO->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01);
 
-    QTreeWidgetItem* ioRelayMDVV02   = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Реле"),
-                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY);
-    QTreeWidgetItem* ioDSInputMDVV02 = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Дискретные входы"),
-                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS);
+//    QTreeWidgetItem* ioRelayMDVV02   = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Реле"),
+//                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY);
+//    QTreeWidgetItem* ioDSInputMDVV02 = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Дискретные входы"),
+//                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS);
 
-    ioMDVV02->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV02 << ioDSInputMDVV02);
+//    ioMDVV02->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV02 << ioDSInputMDVV02);
 
     ui->treewgtDeviceMenu->addTopLevelItem(itemProtections);
     ui->treewgtDeviceMenu->addTopLevelItem(itemAutomation);
@@ -2072,9 +2109,9 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 55;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 56;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 57;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS]  = 57;
+//    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS]  = 57;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 58;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
+//    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -3313,25 +3350,28 @@ void ConfiguratorWindow::sendDeviceCommand(int cmd)
 //-------------------------------------
 void ConfiguratorWindow::clearIOTable()
 {
-    QTableView* table = nullptr;
+    QTableView*        table = nullptr;
+    DeviceMenuItemType index = menuIndex();
 
-    switch(ui->stwgtMain->currentIndex())
+    switch(index)
     {
-        case PURPOSE_INDEX_LED:
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS:
             table = ui->tablewgtLedPurpose;
         break;
 
-        case PURPOSE_INDEX_INPUT:
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS:
             table = ui->tablewgtDiscreteInputPurpose;
         break;
 
-        case PURPOSE_INDEX_RELAY:
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY:
             table = ui->tablewgtRelayPurpose;
         break;
 
-        case PURPOSE_INDEX_KEYBOARD:
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD:
 
         break;
+
+        default: return;
     }
 
     if(!table)
@@ -3606,10 +3646,10 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
  */
 bool ConfiguratorWindow::currentJournal(const CJournalWidget*& widget)
 {
-    int  index  = ui->stwgtMain->currentIndex();
-    bool result = false;
+    DeviceMenuItemType  index  = menuIndex();
+    bool                result = false;
 
-    if(index < JOURNAL_INDEX_CRASH || index > JOURNAL_INDEX_ISOLATION)
+    if(index < DEVICE_MENU_ITEM_JOURNALS_CRASHES || index > DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
         return false;
 
     QWidget* curWgt = ui->stwgtMain->currentWidget();
@@ -3861,19 +3901,21 @@ void ConfiguratorWindow::exportPurposeToJSON()
     QString    fileNameDefault;
     QString    typeName;
 
-    if(ui->stwgtMain->currentIndex() == 24)
+    DeviceMenuItemType index = menuIndex();
+
+    if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTable();
         typeName        = "LED";
         fileNameDefault = "led";
     }
-    else if(ui->stwgtMain->currentIndex() == 25)
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTable();
         typeName        = "INPUT";
         fileNameDefault = "input";
     }
-    else if(ui->stwgtMain->currentIndex() == 26)
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
         typeName        = "RELAY";
@@ -3959,8 +4001,9 @@ void ConfiguratorWindow::importPurposeFromJSON()
     QString typeNameDescription;
 
     CMatrixPurposeModel* model = nullptr;
+    DeviceMenuItemType   index = menuIndex();
 
-    if(ui->stwgtMain->currentIndex() == 24)
+    if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
     {
         fileNameDefault     = "led";
         typeName            = "LED";
@@ -3968,7 +4011,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model());
     }
-    else if(ui->stwgtMain->currentIndex() == 25)
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
         fileNameDefault     = "inputs";
         typeName            = "INPUT";
@@ -3976,7 +4019,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
     }
-    else if(ui->stwgtMain->currentIndex() == 26)
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
     {
         fileNameDefault     = "relay";
         typeName            = "RELAY";
@@ -4137,8 +4180,8 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         default: break;
     }
 }
-//---------------------------------------------------------
-void ConfiguratorWindow::widgetStackIndexChanged(int index)
+//---------------------------------------------------
+void ConfiguratorWindow::widgetStackIndexChanged(int)
 {
     ui->tabwgtMenu->setTabEnabled(4, false);
     m_active_journal_current = nullptr;
@@ -4146,7 +4189,9 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
     ui->pushButtonJournalClear->setVisible(false);
     ui->pushButtonDefaultSettings->setVisible(false);
 
-    if(index >= JOURNAL_INDEX_CRASH && index <= JOURNAL_INDEX_ISOLATION)
+    DeviceMenuItemType index = menuIndex();
+
+    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
     {
         ui->tabwgtMenu->setTabEnabled(4, true);
 
@@ -4167,7 +4212,8 @@ void ConfiguratorWindow::widgetStackIndexChanged(int index)
         if(m_active_journal_current)
             readJournalCount();
     }
-    else if(index >= PURPOSE_INDEX_LED && index <= PURPOSE_INDEX_KEYBOARD)
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD)
     {
         ui->pushButtonDefaultSettings->setVisible(true);
     }
@@ -5065,7 +5111,14 @@ int ConfiguratorWindow::indexColumnFromKey(const QString& key)
 //--------------------------------------------------------------------
 ConfiguratorWindow::DeviceMenuItemType ConfiguratorWindow::menuIndex()
 {
-    return DeviceMenuItemType(ui->treewgtDeviceMenu->currentItem()->type());
+    QTreeWidgetItem* item = ui->treewgtDeviceMenu->currentItem();
+
+    if(!item)
+    {
+        return DEVICE_MENU_ITEM_NONE;
+    }
+
+    return DeviceMenuItemType(item->type());
 }
 /*!
  * \brief  ConfiguratorWindow::unpackDateTime
