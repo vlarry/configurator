@@ -241,7 +241,6 @@
             void inputAnalogGeneralRead();
             void inputAnalogCalibrateRead();
             void inputAnalogGroupRead();
-            void inputAnalogGeneralWrite();
             void protectionMTZ1Read();
             void protectionMTZ2Read();
             void protectionMTZ3Read();
@@ -295,6 +294,9 @@
             void purposeInputRead();
             void purposeRelayRead();
             void dateTimeRead();
+            void inputAnalogGeneralWrite();
+            void inputAnalogCalibrateWrite();
+            void inputAnalogGroupWrite();
             void protectionEarthySetWrite();
             void protectionPowerSetWrite();
             void protectionMotorSetWrite();

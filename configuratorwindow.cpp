@@ -352,12 +352,31 @@ void ConfiguratorWindow::inputAnalogGroupRead()
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralWrite
  *
- * Запись настроек "Настройки-аналоговые-основные"
+ * Запись настроек основные
  */
 void ConfiguratorWindow::inputAnalogGeneralWrite()
 {
-    sendSettingWriteRequest(tr("M01"), tr("KU0X_"));
+    sendSettingWriteRequest("M01", "M03");
     sendSettingControlWriteRequest("M04"); // запись состояния настройки
+}
+/*!
+ * \brief ConfiguratorWindow::inputAnalogCalibrateWrite
+ *
+ * Запись настроек калибровки
+ */
+void ConfiguratorWindow::inputAnalogCalibrateWrite()
+{
+    sendSettingWriteRequest("KIA", "KU0X_");
+}
+/*!
+ * \brief ConfiguratorWindow::inputAnalogGroupWrite
+ *
+ * Запись настроек группы аналоговые
+ */
+void ConfiguratorWindow::inputAnalogGroupWrite()
+{
+    inputAnalogGeneralWrite();
+    inputAnalogCalibrateWrite();
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Read
@@ -1311,7 +1330,7 @@ void ConfiguratorWindow::readSetCurrent()
         return;
     }
 
-    DeviceMenuItemType index = DeviceMenuItemType(ui->treewgtDeviceMenu->currentItem()->type());
+    DeviceMenuItemType index = menuIndex();
 
     switch(index)
     {
@@ -1578,113 +1597,369 @@ void ConfiguratorWindow::writeSetCurrent()
         return;
     }
 
-    qint32 index = ui->stwgtMain->currentIndex();
+    DeviceMenuItemType index = menuIndex();
 
     switch(index)
     {
-        case 0:
-        case 1:
-            inputAnalogGeneralWrite(); // запись настроек "Основные" и "Калибровки"
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL:
+            inputAnalogGeneralWrite(); // запись настроек "Основные"
         break;
 
-        case 2:
-            protectionMTZSetWrite(); // запись настроек токовых защит
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB:
+            inputAnalogCalibrateWrite(); // запись настроек "Калибровки"
         break;
 
-        case 3:
-            protectionEarthySetWrite(); // запись настроек земляных защит
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG:
+            inputAnalogGroupWrite(); // запись группы настроек "Аналоговые"
         break;
 
-        case 4:
-            protectionPowerSetWrite(); // запись настроек защит по напряжению
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1: // чтение защиты МТЗ1
+            protectionMTZ1Read();
         break;
 
-        case 5:
-            protectionMotorSetWrite(); // запись настроек защит двигателей
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2: // чтение защиты МТЗ2
+            protectionMTZ2Read();
         break;
 
-        case 6:
-            protectionFrequencySetWrite(); // запись настроек частотных защит
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3: // чтение защиты МТЗ3
+            protectionMTZ3Read();
         break;
 
-        case 7:
-            protectionExternalSetWrite(); // запись настроек внешних защит
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4: // чтение защиты По току
+            protectionMTZ4Read();
         break;
 
-        case 8:
-            protectionTemperatureSetWrite(); // запись настроек температурных защит
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT: // чтение группы защит МТЗ
+            protectionMTZGroupRead();
         break;
 
-        case 9:
-            protectionLevelSetWrite(); // запись настроек уровневых защит
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1: // чтение защиты Umax1
+            protectionUmax1Read();
         break;
 
-        case 10:
-            protectionBruSetWrite(); // запись настроек защит БРУ
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2: // чтение защиты Umax2
+            protectionUmax2Read();
         break;
 
-        case 11:
-            protectionVacuumSetWrite(); // запись настроек вакуумных защит
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1: // чтение защиты Umin1
+            protectionUmin1Read();
         break;
 
-        case 12:
-            switchDeviceSetWrite(); // запись настроек коммутационных аппаратов
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2: // чтение защиты Umin2
+            protectionUmin2Read();
         break;
 
-        case 13:
-            automationSetWrite(); // запись настроек автоматики
+        case DEVICE_MENU_PROTECT_ITEM_POWER_3UO: // чтение защиты 3UO
+            protection3UORead();
         break;
 
-        case 14:
+        case DEVICE_MENU_PROTECT_ITEM_POWER: // чтение группы защит По напряжению
+            protectionPowerGroupRead();
         break;
 
-        case 15:
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1: // чтение защиты ОЗЗ1
+            protectionOZZ1Read();
         break;
 
-        case 16:
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2: // чтение защиты ОЗЗ2
+            protectionOZZ2Read();
         break;
 
-        case 17:
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1: // чтение защиты НЗЗ1
+            protectionNZZ1Read();
         break;
 
-        case 18:
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2: // чтение защиты НЗЗ2
+            protectionNZZ2Read();
         break;
 
-        case 19:
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED: // чтение направленных защит
+            protectionDirectedGroupRead();
         break;
 
-        case 20:
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1: // чтение защиты АЧР1
+            protectionAchr1Read();
         break;
 
-        case 21:
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2: // чтение защиты АЧР2
+            protectionAchr2Read();
         break;
 
-        case 24: // привязки выходов (светодиодов)
-            sendPurposeWriteRequest(tr("LED1"), tr("LED2"));
-            sendPurposeWriteRequest(tr("LED3"), tr("LED4"));
-            sendPurposeWriteRequest(tr("LED5"), tr("LED6"));
-            sendPurposeWriteRequest(tr("LED7"), tr("LED8"));
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3: // чтение защиты АЧР3
+            protectionAchr3Read();
         break;
 
-        case 25: // привязки входов
-            sendPurposeDIWriteRequest(512, 590);
-            sendPurposeDIWriteRequest(592, 670);
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY: // чтение защит по частоте
+            protectionFrequencyRead();
         break;
 
-        case 26: // привязки выходов (реле)
-            sendPurposeWriteRequest(tr("DO1"), tr("DO2"));
-            sendPurposeWriteRequest(tr("DO4"), tr("DO5"));
-            sendPurposeWriteRequest(tr("DO6"), tr("DO7"));
-            sendPurposeWriteRequest(tr("DO8"), tr("DO9"));
-            sendPurposeWriteRequest(tr("DO10"), tr("DO11"));
-            sendPurposeWriteRequest(tr("DO12"), tr("DO13"));
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC: // чтение защиты Дуговая
+            protectionArcRead();
         break;
 
-        case 27: // привязки выходов (клавиатуры)
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1: // чтение защиты Внешняя1
+            protectionExt1Read();
         break;
+
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2: // чтение защиты Внешняя2
+            protectionExt2Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3: // чтение защиты Внешняя3
+            protectionExt3Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL: // чтение Внешних защит
+            protectionExternal();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING: // чтение защиты Пусковая
+            protectionStartingRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN: // чтение защиты Imin
+            protectionIminRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_MOTOR: // чтение защит для двигателя
+            protectionMotorRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1: // чтение защиты Температурная1
+            protectionTemp1Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2: // чтение защиты Температурная2
+            protectionTemp2Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE: // чтение защит по Температуре
+            protectionTemperatureRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1: // чтение защиты Уровневая1
+            protectionLevel1Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2: // чтение защиты Уровневая2
+            protectionLevel2Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START: // чтение защиты Сигнал пуска
+            protectionSignalStartRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE: // чтение резервных защит
+            protectionReserveRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU: // чтение защиты БРУ
+            protectionBRURead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM: // чтение пзащиты Вакуум
+            protectionVacuumRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CONTROL: // чтение группы защит Предварительного контроля
+            protectionControlRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH: // автоматики защиты Выключатель
+            automationSwitchRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK: // автоматики защиты Тележка выключателя
+            automationSwitchTruckRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_BLOCKS: // чтение автоматики Блокировки
+            automationBlockRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS: // чтение автоматики Шинный разъединитель
+            automationBusRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE: // чтение автоматики Линейный разъединитель
+            automationLineRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH: // чтение автоматики Заземляющий разъединитель
+            automationEarthRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS: // чтение группы автоматики Разъединители
+            automationDisconnectorsRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN: // чтение автоматики Контроль ТН
+            automationCtrlTNRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_AVR: // чтение автоматики АВР
+            automationAVRRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_APV: // чтение автоматики АПВ
+            automationAPVRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START: // чтение автоматики АПВ сигналы пуска
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // чтение настройки Светодиоды
+            purposeLedsRead();
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS:
+            purposeInputRead();
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY:
+            purposeRelayRead();
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME:
+            dateTimeRead();
+        break;
+
+        default: break;
     }
+//    if(!m_modbusDevice->is_open())
+//    {
+//        noConnectMessage();
+//        return;
+//    }
+
+//    qint32 index = ui->stwgtMain->currentIndex();
+
+//    switch(index)
+//    {
+//        case 0:
+//        case 1:
+//            inputAnalogGeneralWrite(); // запись настроек "Основные" и "Калибровки"
+//        break;
+
+//        case 2:
+//            protectionMTZSetWrite(); // запись настроек токовых защит
+//        break;
+
+//        case 3:
+//            protectionEarthySetWrite(); // запись настроек земляных защит
+//        break;
+
+//        case 4:
+//            protectionPowerSetWrite(); // запись настроек защит по напряжению
+//        break;
+
+//        case 5:
+//            protectionMotorSetWrite(); // запись настроек защит двигателей
+//        break;
+
+//        case 6:
+//            protectionFrequencySetWrite(); // запись настроек частотных защит
+//        break;
+
+//        case 7:
+//            protectionExternalSetWrite(); // запись настроек внешних защит
+//        break;
+
+//        case 8:
+//            protectionTemperatureSetWrite(); // запись настроек температурных защит
+//        break;
+
+//        case 9:
+//            protectionLevelSetWrite(); // запись настроек уровневых защит
+//        break;
+
+//        case 10:
+//            protectionBruSetWrite(); // запись настроек защит БРУ
+//        break;
+
+//        case 11:
+//            protectionVacuumSetWrite(); // запись настроек вакуумных защит
+//        break;
+
+//        case 12:
+//            switchDeviceSetWrite(); // запись настроек коммутационных аппаратов
+//        break;
+
+//        case 13:
+//            automationSetWrite(); // запись настроек автоматики
+//        break;
+
+//        case 14:
+//        break;
+
+//        case 15:
+//        break;
+
+//        case 16:
+//        break;
+
+//        case 17:
+//        break;
+
+//        case 18:
+//        break;
+
+//        case 19:
+//        break;
+
+//        case 20:
+//        break;
+
+//        case 21:
+//        break;
+
+//        case 24: // привязки выходов (светодиодов)
+//            sendPurposeWriteRequest(tr("LED1"), tr("LED2"));
+//            sendPurposeWriteRequest(tr("LED3"), tr("LED4"));
+//            sendPurposeWriteRequest(tr("LED5"), tr("LED6"));
+//            sendPurposeWriteRequest(tr("LED7"), tr("LED8"));
+//        break;
+
+//        case 25: // привязки входов
+//            sendPurposeDIWriteRequest(512, 590);
+//            sendPurposeDIWriteRequest(592, 670);
+//        break;
+
+//        case 26: // привязки выходов (реле)
+//            sendPurposeWriteRequest(tr("DO1"), tr("DO2"));
+//            sendPurposeWriteRequest(tr("DO4"), tr("DO5"));
+//            sendPurposeWriteRequest(tr("DO6"), tr("DO7"));
+//            sendPurposeWriteRequest(tr("DO8"), tr("DO9"));
+//            sendPurposeWriteRequest(tr("DO10"), tr("DO11"));
+//            sendPurposeWriteRequest(tr("DO12"), tr("DO13"));
+//        break;
+
+//        case 27: // привязки выходов (клавиатуры)
+//        break;
+//    }
+//}
+////-------------------------------------------------
+//void ConfiguratorWindow::expandItemTree(bool state)
+//{
+//    if(state)
+//    {
+//        ui->treewgtDeviceMenu->expandAll();
+//        ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_open.png")));
+//        ui->tbntExpandItems->setToolTip(tr("Свернуть меню"));
+//    }
+//    else
+//    {
+//        ui->treewgtDeviceMenu->collapseAll();
+//        ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_close.png")));
+//        ui->tbntExpandItems->setToolTip(tr("Развернуть меню"));
+    //    }
 }
-//-------------------------------------------------
+/*!
+ * \brief ConfiguratorWindow::expandItemTree
+ * \param state Состояние кнопки разворачивания
+ *
+ * Разворачивает и сворачивает дерево меню устройства
+ */
 void ConfiguratorWindow::expandItemTree(bool state)
 {
     if(state)
