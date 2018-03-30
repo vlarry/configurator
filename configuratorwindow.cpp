@@ -501,14 +501,394 @@ void ConfiguratorWindow::protectionPowerGroupRead()
     protectionUmin2Read();
     protection3UORead();
 }
-//------------------------------------------------
-void ConfiguratorWindow::protectionEarthySetRead()
+/*!
+ * \brief ConfiguratorWindow::protectionDirectedOZZ1Read
+ *
+ * Чтение защиты ОЗЗ1
+ */
+void ConfiguratorWindow::protectionOZZ1Read()
 {
-    sendSettingReadRequest(tr("M23"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 36);
     sendSettingControlReadRequest("M22");
+    sendSettingReadRequest(tr("M23"), tr("X07"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionDirectedOZZ2Read
+ *
+ * Чтение защиты ОЗЗ2
+ */
+void ConfiguratorWindow::protectionOZZ2Read()
+{
     sendSettingControlReadRequest("K23");
+    sendSettingReadRequest(tr("K24"), tr("X07a"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionDirectedNZZ1Read
+ *
+ * Чтение защиты НЗЗ1
+ */
+void ConfiguratorWindow::protectionNZZ1Read()
+{
     sendSettingControlReadRequest("M25");
+    sendSettingReadRequest(tr("M26"), tr("X09"), CDataUnitType::ReadHoldingRegisters, 12);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionDirectedNZZ2Read
+ *
+ * Чтение защиты НЗЗ2
+ */
+void ConfiguratorWindow::protectionNZZ2Read()
+{
     sendSettingControlReadRequest("K26");
+    sendSettingReadRequest(tr("K27"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 12);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionDirectedGroupRead
+ *
+ * Чтение группы направленных защит
+ */
+void ConfiguratorWindow::protectionDirectedGroupRead()
+{
+    protectionOZZ1Read();
+    protectionOZZ2Read();
+    protectionNZZ1Read();
+    protectionNZZ2Read();
+}
+/*!
+ * \brief ConfiguratorWindow::protectionAchr1Read
+ *
+ * Чтение защиты АЧР1
+ */
+void ConfiguratorWindow::protectionAchr1Read()
+{
+    sendSettingControlReadRequest("M51");
+    sendSettingReadRequest(tr("M52"), tr("X16"), CDataUnitType::ReadHoldingRegisters, 8);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionAchr2Read
+ *
+ * Чтение защиты АЧР2
+ */
+void ConfiguratorWindow::protectionAchr2Read()
+{
+    sendSettingControlReadRequest("M55");
+    sendSettingReadRequest(tr("M56"), tr("X17"), CDataUnitType::ReadHoldingRegisters, 8);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionAchr3Read
+ *
+ * Чтение защиты АЧР3
+ */
+void ConfiguratorWindow::protectionAchr3Read()
+{
+    sendSettingControlReadRequest("M59");
+    sendSettingReadRequest(tr("M60"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 8);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionFrequencyRead
+ *
+ * Чтение группы защит по частоте
+ */
+void ConfiguratorWindow::protectionFrequencyRead()
+{
+    protectionAchr1Read();
+    protectionAchr2Read();
+    protectionAchr3Read();
+}
+/*!
+ * \brief ConfiguratorWindow::protectionArc
+ *
+ * Чтение защиты Дуговая
+ */
+void ConfiguratorWindow::protectionArcRead()
+{
+    sendSettingControlReadRequest("M63");
+    sendSettingReadRequest(tr("M64"), tr("X19"), CDataUnitType::ReadHoldingRegisters, 4);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionExt1
+ *
+ * Чтение защиты Внешняя1
+ */
+void ConfiguratorWindow::protectionExt1Read()
+{
+    sendSettingControlReadRequest("M71");
+    sendSettingReadRequest(tr("M72"), tr("M72"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionExt2
+ *
+ * Чтение защыты Внешняя2
+ */
+void ConfiguratorWindow::protectionExt2Read()
+{
+    sendSettingControlReadRequest("M73");
+    sendSettingReadRequest(tr("M74"), tr("M74"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionExt3
+ *
+ * Чтение защиты Внешняя3
+ */
+void ConfiguratorWindow::protectionExt3Read()
+{
+    sendSettingControlReadRequest("M75");
+    sendSettingReadRequest(tr("M76"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionExternal
+ *
+ * Чтение группы внешних защит
+ */
+void ConfiguratorWindow::protectionExternal()
+{
+    protectionArcRead();
+    protectionExt1Read();
+    protectionExt2Read();
+    protectionExt3Read();
+}
+/*!
+ * \brief ConfiguratorWindow::protectionStartingRead
+ *
+ * Чтение защиты Пусковая
+ */
+void ConfiguratorWindow::protectionStartingRead()
+{
+    sendSettingControlReadRequest("M19");
+    sendSettingReadRequest(tr("M20"), tr("X06"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionIminRead
+ *
+ * Чтение защиты Imin
+ */
+void ConfiguratorWindow::protectionIminRead()
+{
+    sendSettingControlReadRequest("M29");
+    sendSettingReadRequest(tr("M30"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMotorRead
+ *
+ * Чтение защит для Двигателя
+ */
+void ConfiguratorWindow::protectionMotorRead()
+{
+    protectionStartingRead();
+    protectionIminRead();
+}
+/*!
+ * \brief ConfiguratorWindow::protectionTemp1Read
+ *
+ * Чтение защиты Температурная1
+ */
+void ConfiguratorWindow::protectionTemp1Read()
+{
+    sendSettingControlReadRequest("M65");
+    sendSettingControlReadRequest("M66");
+    sendSettingReadRequest(tr("M67"), tr("X20"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionTemp2Read
+ *
+ * Чтение защиты Температурная2
+ */
+void ConfiguratorWindow::protectionTemp2Read()
+{
+    sendSettingControlReadRequest("M65");
+    sendSettingControlReadRequest("M66");
+    sendSettingReadRequest(tr("M68"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionTemperatureRead
+ *
+ * Чтение защит по Температуре
+ */
+void ConfiguratorWindow::protectionTemperatureRead()
+{
+    protectionTemp1Read();
+    protectionTemp2Read();
+}
+/*!
+ * \brief ConfiguratorWindow::protectionLevel1Read
+ *
+ * Чтение защиты Уровень1
+ */
+void ConfiguratorWindow::protectionLevel1Read()
+{
+    sendSettingControlReadRequest("M77");
+    sendSettingReadRequest(tr("M78"), tr("M78"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionLevel2Read
+ *
+ * Чтение защиты Уровень2
+ */
+void ConfiguratorWindow::protectionLevel2Read()
+{
+    sendSettingControlReadRequest("M77");
+    sendSettingReadRequest(tr("M79"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionSignalStartRead
+ *
+ * Чтение защиты Сигнала пуска
+ */
+void ConfiguratorWindow::protectionSignalStartRead()
+{
+
+}
+/*!
+ * \brief ConfiguratorWindow::protectionReserveRead
+ *
+ * Чтение группы резервных защит
+ */
+void ConfiguratorWindow::protectionReserveRead()
+{
+    protectionLevel1Read();
+    protectionLevel2Read();
+    protectionSignalStartRead();
+}
+/*!
+ * \brief ConfiguratorWindow::protectionBRURead
+ *
+ * Чтение защиты БРУ
+ */
+void ConfiguratorWindow::protectionBRURead()
+{
+    sendSettingControlReadRequest("M93");
+    sendSettingControlReadRequest("M95");
+    sendSettingReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionVacuumRead
+ *
+ * Чтение защиты Вакуум
+ */
+void ConfiguratorWindow::protectionVacuumRead()
+{
+    sendSettingControlReadRequest("M90");
+    sendSettingReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionControlRead
+ *
+ * Чтение групп защиты Предварительного контроля
+ */
+void ConfiguratorWindow::protectionControlRead()
+{
+    protectionBRURead();
+    protectionVacuumRead();
+}
+/*!
+ * \brief ConfiguratorWindow::automationSwitchRead
+ *
+ * Чтение автоматика Выключатель
+ */
+void ConfiguratorWindow::automationSwitchRead()
+{
+    sendSettingControlReadRequest("K32");
+    sendSettingControlReadRequest("K01");
+    sendSettingControlReadRequest("K03");
+    sendSettingControlReadRequest("K06");
+    sendSettingControlReadRequest("K17");
+    sendSettingControlReadRequest("K07");
+    sendSettingReadRequest(tr("K02"), tr("X22"), CDataUnitType::ReadHoldingRegisters, 12);
+}
+/*!
+ * \brief ConfiguratorWindow::automationSwitchTruckRead
+ *
+ * Чтение автоматика Тележка Выключателя
+ */
+void ConfiguratorWindow::automationSwitchTruckRead()
+{
+    sendSettingControlReadRequest("K37");
+    sendSettingControlReadRequest("K41");
+    sendSettingReadRequest(tr("K45"), tr("K49"), CDataUnitType::ReadHoldingRegisters, 4);
+}
+/*!
+ * \brief ConfiguratorWindow::automationBlockRead
+ *
+ * Чтение автоматика Блокировки
+ */
+void ConfiguratorWindow::automationBlockRead()
+{
+    sendSettingControlReadRequest("K13");
+    sendSettingControlReadRequest("K14");
+    sendSettingControlReadRequest("K15");
+}
+/*!
+ * \brief ConfiguratorWindow::automationBusRead
+ *
+ * Чтение автоматика Шинный разъединитель
+ */
+void ConfiguratorWindow::automationBusRead()
+{
+    sendSettingControlReadRequest("K34");
+    sendSettingControlReadRequest("K38");
+    sendSettingReadRequest(tr("K42"), tr("K46"), CDataUnitType::ReadHoldingRegisters, 4);
+}
+/*!
+ * \brief ConfiguratorWindow::automationLineRead
+ *
+ * Чтение автоматика Линейные разъединители
+ */
+void ConfiguratorWindow::automationLineRead()
+{
+    sendSettingControlReadRequest("K35");
+    sendSettingControlReadRequest("K39");
+    sendSettingReadRequest(tr("K43"), tr("K47"), CDataUnitType::ReadHoldingRegisters, 4);
+}
+/*!
+ * \brief ConfiguratorWindow::automationEarthRead
+ *
+ * Чтение автоматика Заземляющий разъединитель
+ */
+void ConfiguratorWindow::automationEarthRead()
+{
+    sendSettingControlReadRequest("K36");
+    sendSettingControlReadRequest("K40");
+    sendSettingReadRequest(tr("K44"), tr("K48"), CDataUnitType::ReadHoldingRegisters, 4);
+}
+/*!
+ * \brief ConfiguratorWindow::automationDisconnectorsRead
+ *
+ * Чтение автоматика Разъединители
+ */
+void ConfiguratorWindow::automationDisconnectorsRead()
+{
+    automationBusRead();
+    automationLineRead();
+    automationEarthRead();
+}
+/*!
+ * \brief ConfiguratorWindow::automationCtrlTN
+ *
+ * Чтение автоматика Контроль ТН
+ */
+void ConfiguratorWindow::automationCtrlTNRead()
+{
+    sendSettingControlReadRequest("K18");
+    sendSettingReadRequest(tr("K19"), tr("K19"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::automationAVRRead
+ *
+ * Чтение автоматика АВР
+ */
+void ConfiguratorWindow::automationAVRRead()
+{
+    sendSettingControlReadRequest("M81");
+    sendSettingReadRequest(tr("M82"), tr("M85"), CDataUnitType::ReadHoldingRegisters, 8);
+}
+/*!
+ * \brief ConfiguratorWindow::automationAPVRead
+ *
+ * Чтение автоматика АПВ
+ */
+void ConfiguratorWindow::automationAPVRead()
+{
+    sendSettingControlReadRequest("M87");
+    sendSettingReadRequest(tr("M88"), tr("M89"), CDataUnitType::ReadHoldingRegisters, 4);
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetWrite()
@@ -533,27 +913,12 @@ void ConfiguratorWindow::protectionPowerSetWrite()
     sendSettingControlWriteRequest("M45");
     sendSettingControlWriteRequest("M48");
 }
-//-----------------------------------------------
-void ConfiguratorWindow::protectionMotorSetRead()
-{
-    sendSettingReadRequest(tr("M20"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 12);
-    sendSettingControlReadRequest("M19");
-    sendSettingControlReadRequest("M29");
-}
 //------------------------------------------------
 void ConfiguratorWindow::protectionMotorSetWrite()
 {
     sendSettingWriteRequest(tr("M20"), tr("X10"));
     sendSettingControlWriteRequest("M19");
     sendSettingControlWriteRequest("M29");
-}
-//---------------------------------------------------
-void ConfiguratorWindow::protectionFrequencySetRead()
-{
-    sendSettingReadRequest(tr("M52"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 24);
-    sendSettingControlReadRequest("M51");
-    sendSettingControlReadRequest("M55");
-    sendSettingControlReadRequest("M59");
 }
 //----------------------------------------------------
 void ConfiguratorWindow::protectionFrequencySetWrite()
@@ -562,15 +927,6 @@ void ConfiguratorWindow::protectionFrequencySetWrite()
     sendSettingControlWriteRequest("M51");
     sendSettingControlWriteRequest("M55");
     sendSettingControlWriteRequest("M59");
-}
-//--------------------------------------------------
-void ConfiguratorWindow::protectionExternalSetRead()
-{
-    sendSettingReadRequest(tr("M64"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 10);
-    sendSettingControlReadRequest("M63");
-    sendSettingControlReadRequest("M71");
-    sendSettingControlReadRequest("M73");
-    sendSettingControlReadRequest("M75");
 }
 //---------------------------------------------------
 void ConfiguratorWindow::protectionExternalSetWrite()
@@ -581,13 +937,6 @@ void ConfiguratorWindow::protectionExternalSetWrite()
     sendSettingControlWriteRequest("M73");
     sendSettingControlWriteRequest("M75");
 }
-//-----------------------------------------------------
-void ConfiguratorWindow::protectionTemperatureSetRead()
-{
-    sendSettingReadRequest(tr("M67"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 12);
-    sendSettingControlReadRequest("M65");
-    sendSettingControlReadRequest("M66");
-}
 //------------------------------------------------------
 void ConfiguratorWindow::protectionTemperatureSetWrite()
 {
@@ -595,24 +944,11 @@ void ConfiguratorWindow::protectionTemperatureSetWrite()
     sendSettingControlWriteRequest("M65");
     sendSettingControlWriteRequest("M66");
 }
-//-----------------------------------------------
-void ConfiguratorWindow::protectionLevelSetRead()
-{
-    sendSettingReadRequest(tr("M78"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 4);
-    sendSettingControlReadRequest("M77");
-}
 //------------------------------------------------
 void ConfiguratorWindow::protectionLevelSetWrite()
 {
     sendSettingWriteRequest(tr("M78"), tr("M79"));
     sendSettingControlWriteRequest("M77");
-}
-//---------------------------------------------
-void ConfiguratorWindow::protectionBruSetRead()
-{
-    sendSettingReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
-    sendSettingControlReadRequest("M93");
-    sendSettingControlReadRequest("M95");
 }
 //----------------------------------------------
 void ConfiguratorWindow::protectionBruSetWrite()
@@ -620,12 +956,6 @@ void ConfiguratorWindow::protectionBruSetWrite()
     sendSettingWriteRequest(tr("M96"), tr("M99"));
     sendSettingControlWriteRequest("M93");
     sendSettingControlWriteRequest("M95");
-}
-//------------------------------------------------
-void ConfiguratorWindow::protectionVacuumSetRead()
-{
-    sendSettingReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendSettingControlReadRequest("M90");
 }
 //-------------------------------------------------
 void ConfiguratorWindow::protectionVacuumSetWrite()
@@ -919,16 +1249,6 @@ void ConfiguratorWindow::readSettings()
     if(index >= 0 && index < 22) // выбрана группа "Настройки"
     {
         inputAnalogGeneralRead(); // чтение настроек "Основные" и "Калибровки"
-        protectionEarthySetRead(); // чтение настроек земляных защит
-        protectionMotorSetRead(); // чтение настроек защит двигателей
-        protectionFrequencySetRead(); // чтение настроек частотных защит
-        protectionExternalSetRead(); // чтение настроек внешних защит
-        protectionTemperatureSetRead(); // чтение настроек температурных защит
-        protectionLevelSetRead(); // чтение настроек уровневых защит
-        protectionVacuumSetRead(); // чтение настроек вакуумных защит
-        protectionBruSetRead(); // чтение настроек защит БРУ
-        automationSetRead(); // чтение настроек автоматики
-        switchDeviceSetRead(); // чтение настроек коммутационных аппаратов
     }
 }
 //---------------------------------------
@@ -1001,90 +1321,151 @@ void ConfiguratorWindow::readSetCurrent()
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1: // чтение защиты ОЗЗ1
+            protectionOZZ1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2: // чтение защиты ОЗЗ2
+            protectionOZZ2Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1: // чтение защиты НЗЗ1
+            protectionNZZ1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2: // чтение защиты НЗЗ2
+            protectionNZZ2Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED: // чтение направленных защит
+            protectionDirectedGroupRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1: // чтение защиты АЧР1
+            protectionAchr1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2: // чтение защиты АЧР2
+            protectionAchr2Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3: // чтение защиты АЧР3
+            protectionAchr3Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY: // чтение защит по частоте
+            protectionFrequencyRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC: // чтение защиты Дуговая
+            protectionArcRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1: // чтение защиты Внешняя1
+            protectionExt1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2: // чтение защиты Внешняя2
+            protectionExt2Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3: // чтение защиты Внешняя3
+            protectionExt3Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL: // чтение Внешних защит
+            protectionExternal();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING: // чтение защиты Пусковая
+            protectionStartingRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN: // чтение защиты Imin
+            protectionIminRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_MOTOR: // чтение защит для двигателя
+            protectionMotorRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1: // чтение защиты Температурная1
+            protectionTemp1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2: // чтение защиты Температурная2
+            protectionTemp2Read();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE: // чтение защит по Температуре
+            protectionTemperatureRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1: // чтение защиты Уровневая1
+            protectionLevel1Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2: // чтение защиты Уровневая2
+            protectionLevel2Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START: // чтение защиты Сигнал пуска
+            protectionSignalStartRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE: // чтение резервных защит
+            protectionReserveRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU: // чтение защиты БРУ
+            protectionBRURead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM: // чтение пзащиты Вакуум
+            protectionVacuumRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CONTROL: // чтение группы защит Предварительного контроля
+            protectionControlRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_SWITCH: // автоматики защиты Выключатель
+            automationSwitchRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK: // автоматики защиты Тележка выключателя
+            automationSwitchTruckRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_BLOCKS: // чтение автоматики Блокировки
+            automationBlockRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS: // чтение автоматики Шинный разъединитель
+            automationBusRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE: // чтение автоматики Линейный разъединитель
+            automationLineRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH: // чтение автоматики Заземляющий разъединитель
+            automationEarthRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS: // чтение группы автоматики Разъединители
+            automationDisconnectorsRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN: // чтение автоматики Контроль ТН
+            automationCtrlTNRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_AVR: // чтение автоматики АВР
+            automationAVRRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_APV: // чтение автоматики АПВ
+            automationAPVRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START: // чтение автоматики АПВ сигналы пуска
@@ -4540,6 +4921,13 @@ QPoint ConfiguratorWindow::indexSettingKey(const QString& first, const QString& 
             if(index.x() == -1)
             {
                 index.setX(i);
+
+                if(first == last)
+                {
+                    index.setY(i);
+                    break;
+                }
+
                 key = last;
             }
             else
