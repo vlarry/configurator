@@ -914,6 +914,15 @@ void ConfiguratorWindow::purposeRelayRead()
     sendPurposeReadRequest(tr("DO10"), tr("DO11"));
     sendPurposeReadRequest(tr("DO12"), tr("DO13"));
 }
+//-------------------------------------
+void ConfiguratorWindow::dateTimeRead()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 0x2000, QVector<quint16>() << 4);
+
+    unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
+
+    m_modbusDevice->request(unit);
+}
 //-------------------------------------------------
 void ConfiguratorWindow::protectionEarthySetWrite()
 {
@@ -1151,6 +1160,8 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         processReadJournal(unit);
     else if(type == READ_SERIAL_NUMBER)
         displayDeviceSerialNumber(unit.values());
+    else if(type == DATETIME_TYPE)
+        displayDateTime(unit);
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -1509,6 +1520,10 @@ void ConfiguratorWindow::readSetCurrent()
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY:
             purposeRelayRead();
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME:
+            dateTimeRead();
         break;
 
         default: break;
@@ -2591,6 +2606,27 @@ void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
         m_calculateWidget->setData(values);
 
     m_calculate_buffer.clear();
+}
+//-----------------------------------------------------------
+void ConfiguratorWindow::displayDateTime(CDataUnitType& unit)
+{
+    if(unit.valueCount() != 4)
+        return;
+
+    int day    = (unit.value(1) >> 8)&0x00FF;
+    int month  = unit.value(0)&0x00FF;
+    int year   = (unit.value(0) >> 8)&0x00FF;
+    int hour   = unit.value(2)&0x00FF;
+    int minute = (unit.value(3) >> 8)&0x00FF;
+    int second = unit.value(3)&0x00FF;
+
+    if(year < 2000)
+        year += 2000;
+
+    QDateTime dt(QDate(year, month, day), QTime(hour, minute, second));
+
+    ui->dateEdit->setDate(dt.date());
+    ui->timeEdit->setTime(dt.time());
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)

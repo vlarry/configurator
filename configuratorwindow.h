@@ -77,7 +77,8 @@
                 READ_SERIAL_NUMBER, // чтение серийного номера
                 READ_JOURNAL,
                 READ_JOURNAL_COUNT,
-                READ_JOURNAL_SHIFT_PTR
+                READ_JOURNAL_SHIFT_PTR,
+                DATETIME_TYPE
             };
             //-------------
             enum WidgetType
@@ -293,6 +294,7 @@
             void purposeLedsRead();
             void purposeInputRead();
             void purposeRelayRead();
+            void dateTimeRead();
             void protectionEarthySetWrite();
             void protectionPowerSetWrite();
             void protectionMotorSetWrite();
@@ -379,6 +381,7 @@
             void disconnectDb(QSqlDatabase* db);
             void initTable(QTableView* table, CDataTable& data);
             void displayCalculateValues(QVector<quint16> values);
+            void displayDateTime(CDataUnitType& unit);
             void displaySettingResponse(CDataUnitType& unit);
             void displaySettingControlResponce(const CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
