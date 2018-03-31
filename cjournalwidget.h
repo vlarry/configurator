@@ -48,6 +48,7 @@
     {
         QString name; // имя расчетной величины
         int     first; // позиция первого байта
+        QString description; // описание расчетной величины
     };
     /*!
      * \brief The variable_t struct
