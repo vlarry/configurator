@@ -734,7 +734,52 @@ void ConfiguratorWindow::protectionLevel2Write()
  */
 void ConfiguratorWindow::protectionSignalStartWrite()
 {
+    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
+                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
+                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
+                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
+                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
+                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
+                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
+                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
+                                                            ui->cboxV96;
 
+    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+
+    for(QComboBox* box: box_list)
+    {
+        QString key = box->objectName().remove("cbox");
+
+        if(key.isEmpty())
+            continue;
+
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
+
+        if(val_pos < data.count())
+        {
+            int item_pos = box->currentIndex();
+
+            if(item_pos == 1)
+                data[val_pos] |= (1 << bit_pos);
+        }
+    }
+
+    QVector<quint16> tdata;
+
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+    {
+        tdata << data[i + 1] << data[i];
+    }
+
+    int addr = addressSettingKey("M80");
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, addr, tdata);
+
+    unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
+
+    m_modbusDevice->request(unit);
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveGroupWrite
@@ -890,6 +935,60 @@ void ConfiguratorWindow::automationAPVWrite()
     sendSettingWriteRequest("M88", "M89");
 }
 /*!
+ * \brief ConfiguratorWindow::automationAPVSignalStartWrite
+ *
+ * Запись синалов пуска автоматики АПВ
+ */
+void ConfiguratorWindow::automationAPVSignalStartWrite()
+{
+    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
+                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
+                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
+                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
+                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
+                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
+                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
+                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
+                                                            ui->cboxV96_2;
+
+    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+
+    for(QComboBox* box: box_list)
+    {
+        QString key = (box->objectName().remove("cbox")).remove("_2");
+
+        if(key.isEmpty())
+            continue;
+
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
+
+        if(val_pos < data.count())
+        {
+            int item_pos = box->currentIndex();
+
+            if(item_pos == 1)
+                data[val_pos] |= (1 << bit_pos);
+        }
+    }
+
+    QVector<quint16> tdata;
+
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+    {
+        tdata << data[i + 1] << data[i];
+    }
+
+    int addr = addressSettingKey("M86");
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, addr, tdata);
+
+    unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
+
+    m_modbusDevice->request(unit);
+}
+/*!
  * \brief ConfiguratorWindow::purposeLedsWrite
  *
  * Запись настроек привязок Светодиодов
@@ -934,7 +1033,7 @@ void ConfiguratorWindow::dateTimeWrite()
 {
     QDateTime dt(ui->dateEdit->date(), ui->timeEdit->time());
 
-    quint16 year_month = (((dt.date().year() << 8)&0xFF00) | (dt.date().month()&0x00FF));
+    quint16 year_month = ((((dt.date().year() - 2000) << 8)&0xFF00) | (dt.date().month()&0x00FF));
     quint16 date_wday  = (((dt.date().day() << 8)&0xFF00) | (dt.date().dayOfWeek()&0x00FF));
     quint16 hour       = (dt.time().hour()&0x00FF);
     quint16 min_second = (((dt.time().minute() << 8)&0xFF00) | (dt.time().second()&0x00FF));
@@ -2255,15 +2354,13 @@ void ConfiguratorWindow::writeSetCurrent()
             automationCtrlTNWrite();
         break;
 
-        case DEVICE_MENU_ITEM_AUTOMATION_AVR: // запись автоматики АВР
-            automationAVRWrite();
-        break;
-
         case DEVICE_MENU_ITEM_AUTOMATION_APV: // запись автоматики АПВ
             automationAPVWrite();
+            automationAPVSignalStartWrite();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START: // чтение автоматики АПВ сигналы пуска
+            automationAPVSignalStartWrite();
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // запись настройки Светодиоды
@@ -2284,123 +2381,6 @@ void ConfiguratorWindow::writeSetCurrent()
 
         default: break;
     }
-//    if(!m_modbusDevice->is_open())
-//    {
-//        noConnectMessage();
-//        return;
-//    }
-
-//    qint32 index = ui->stwgtMain->currentIndex();
-
-//    switch(index)
-//    {
-//        case 0:
-//        case 1:
-//            inputAnalogGeneralWrite(); // запись настроек "Основные" и "Калибровки"
-//        break;
-
-//        case 2:
-//            protectionMTZSetWrite(); // запись настроек токовых защит
-//        break;
-
-//        case 3:
-//            protectionEarthySetWrite(); // запись настроек земляных защит
-//        break;
-
-//        case 4:
-//            protectionPowerSetWrite(); // запись настроек защит по напряжению
-//        break;
-
-//        case 5:
-//            protectionMotorSetWrite(); // запись настроек защит двигателей
-//        break;
-
-//        case 6:
-//            protectionFrequencySetWrite(); // запись настроек частотных защит
-//        break;
-
-//        case 7:
-//            protectionExternalSetWrite(); // запись настроек внешних защит
-//        break;
-
-//        case 8:
-//            protectionTemperatureSetWrite(); // запись настроек температурных защит
-//        break;
-
-//        case 9:
-//            protectionLevelSetWrite(); // запись настроек уровневых защит
-//        break;
-
-//        case 10:
-//            protectionBruSetWrite(); // запись настроек защит БРУ
-//        break;
-
-//        case 11:
-//            protectionVacuumSetWrite(); // запись настроек вакуумных защит
-//        break;
-
-//        case 12:
-//            switchDeviceSetWrite(); // запись настроек коммутационных аппаратов
-//        break;
-
-//        case 13:
-//            automationSetWrite(); // запись настроек автоматики
-//        break;
-
-//        case 14:
-//        break;
-
-//        case 15:
-//        break;
-
-//        case 16:
-//        break;
-
-//        case 17:
-//        break;
-
-//        case 18:
-//        break;
-
-//        case 19:
-//        break;
-
-//        case 20:
-//        break;
-
-//        case 21:
-//        break;
-
-//        case 24: // привязки выходов (светодиодов)
-//        break;
-
-//        case 25: // привязки входов
-
-//        break;
-
-//        case 26: // привязки выходов (реле)
-
-//        break;
-
-//        case 27: // привязки выходов (клавиатуры)
-//        break;
-//    }
-//}
-////-------------------------------------------------
-//void ConfiguratorWindow::expandItemTree(bool state)
-//{
-//    if(state)
-//    {
-//        ui->treewgtDeviceMenu->expandAll();
-//        ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_open.png")));
-//        ui->tbntExpandItems->setToolTip(tr("Свернуть меню"));
-//    }
-//    else
-//    {
-//        ui->treewgtDeviceMenu->collapseAll();
-//        ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_close.png")));
-//        ui->tbntExpandItems->setToolTip(tr("Развернуть меню"));
-    //    }
 }
 /*!
  * \brief ConfiguratorWindow::expandItemTree
@@ -3638,6 +3618,8 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         tdata << data[i + 1] << data[i];
     }
 
+    qDebug() << "read: " << tdata;
+
     for(QComboBox* box: box_list)
     {
         QString key = box->objectName().remove("cbox");
@@ -4315,6 +4297,16 @@ void ConfiguratorWindow::saveDeviceSettings()
     sendDeviceCommand(2);
 }
 /*!
+ * \brief ConfiguratorWindow::dateDeviceChanged
+ * \param date Новая дата
+ *
+ * Изменение вывода текущего дня при исправлении даты (установка новой даты для устройства)
+ */
+void ConfiguratorWindow::dateDeviceChanged(const QDate& date)
+{
+    ui->lineEditWeekDay->setText(date.toString("dddd"));
+}
+/*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
  */
@@ -4413,17 +4405,18 @@ bool ConfiguratorWindow::currentJournal(const CJournalWidget*& widget)
     DeviceMenuItemType  index  = menuIndex();
     bool                result = false;
 
-    if(index < DEVICE_MENU_ITEM_JOURNALS_CRASHES || index > DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
-        return false;
-
-    QWidget* curWgt = ui->stwgtMain->currentWidget();
-
-    for(const QObject* obj: curWgt->children())
+    if(index == DEVICE_MENU_ITEM_JOURNALS_CRASHES || index == DEVICE_MENU_ITEM_JOURNALS_EVENTS ||
+       index == DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS || index == DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
     {
-        if(obj->isWidgetType() && QString(obj->metaObject()->className()) == "CJournalWidget")
+        QWidget* curWgt = ui->stwgtMain->currentWidget();
+
+        for(const QObject* obj: curWgt->children())
         {
-            widget = qobject_cast<const CJournalWidget*>(obj);
-            result = true;
+            if(obj->isWidgetType() && QString(obj->metaObject()->className()) == "CJournalWidget")
+            {
+                widget = qobject_cast<const CJournalWidget*>(obj);
+                result = true;
+            }
         }
     }
 
@@ -5969,4 +5962,5 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
     connect(m_modbusDevice, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
     connect(m_modbusDevice, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
+    connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
 }

@@ -353,6 +353,7 @@
             void automationCtrlTNWrite();
             void automationAVRWrite();
             void automationAPVWrite();
+            void automationAPVSignalStartWrite();
             void purposeLedsWrite();
             void purposeInputWrite();
             void purposeRelayWrite();
@@ -411,6 +412,7 @@
             void noConnectMessage();
             void setNewBaudrate(int baudrate_index);
             void saveDeviceSettings();
+            void dateDeviceChanged(const QDate& date);
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
