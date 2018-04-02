@@ -1002,15 +1002,6 @@ void ConfiguratorWindow::protectionMTZGroupRead()
     protectionMTZ3Read();
     protectionMTZ4Read();
 }
-//----------------------------------------------
-void ConfiguratorWindow::protectionMTZSetWrite()
-{
-    sendSettingWriteRequest(tr("M06"), tr("X05a"));
-    sendSettingControlWriteRequest("M09");
-    sendSettingControlWriteRequest("M13");
-    sendSettingControlWriteRequest("M16");
-    sendSettingControlWriteRequest("M05");
-}
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Read
  *
@@ -1312,7 +1303,13 @@ void ConfiguratorWindow::protectionLevel2Read()
  */
 void ConfiguratorWindow::protectionSignalStartRead()
 {
+    int addr = addressSettingKey("M80");
 
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 24);
+
+    unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
+
+    m_modbusDevice->request(unit);
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveRead
@@ -1458,6 +1455,21 @@ void ConfiguratorWindow::automationAVRRead()
     sendSettingReadRequest(tr("M82"), tr("M85"), CDataUnitType::ReadHoldingRegisters, 8);
 }
 /*!
+ * \brief ConfiguratorWindow::automationAPVSignalStartRead
+ *
+ * Чтение состояний автоматики сигнала пуска
+ */
+void ConfiguratorWindow::automationAPVSignalStartRead()
+{
+    int addr = addressSettingKey("M86");
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 24);
+
+    unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
+
+    m_modbusDevice->request(unit);
+}
+/*!
  * \brief ConfiguratorWindow::automationAPVRead
  *
  * Чтение автоматика АПВ
@@ -1499,79 +1511,6 @@ void ConfiguratorWindow::dateTimeRead()
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
     m_modbusDevice->request(unit);
-}
-//-------------------------------------------------
-void ConfiguratorWindow::protectionEarthySetWrite()
-{
-    sendSettingWriteRequest(tr("M23"), tr("X09a"));
-    sendSettingControlWriteRequest("M22");
-    sendSettingControlWriteRequest("K23");
-    sendSettingControlWriteRequest("M25");
-    sendSettingControlWriteRequest("K26");
-}
-//------------------------------------------------
-void ConfiguratorWindow::protectionPowerSetWrite()
-{
-    sendSettingWriteRequest(tr("M49"), tr("X14"));
-    sendSettingControlWriteRequest("M32");
-    sendSettingControlWriteRequest("M35");
-    sendSettingControlWriteRequest("M38");
-    sendSettingControlWriteRequest("M39");
-    sendSettingControlWriteRequest("M40");
-    sendSettingControlWriteRequest("M43");
-    sendSettingControlWriteRequest("M44");
-    sendSettingControlWriteRequest("M45");
-    sendSettingControlWriteRequest("M48");
-}
-//------------------------------------------------
-void ConfiguratorWindow::protectionMotorSetWrite()
-{
-    sendSettingWriteRequest(tr("M20"), tr("X10"));
-    sendSettingControlWriteRequest("M19");
-    sendSettingControlWriteRequest("M29");
-}
-//----------------------------------------------------
-void ConfiguratorWindow::protectionFrequencySetWrite()
-{
-    sendSettingWriteRequest(tr("M52"), tr("X18"));
-    sendSettingControlWriteRequest("M51");
-    sendSettingControlWriteRequest("M55");
-    sendSettingControlWriteRequest("M59");
-}
-//---------------------------------------------------
-void ConfiguratorWindow::protectionExternalSetWrite()
-{
-    sendSettingWriteRequest(tr("M64"), tr("M76"));
-    sendSettingControlWriteRequest("M63");
-    sendSettingControlWriteRequest("M71");
-    sendSettingControlWriteRequest("M73");
-    sendSettingControlWriteRequest("M75");
-}
-//------------------------------------------------------
-void ConfiguratorWindow::protectionTemperatureSetWrite()
-{
-    sendSettingWriteRequest(tr("M67"), tr("X21"));
-    sendSettingControlWriteRequest("M65");
-    sendSettingControlWriteRequest("M66");
-}
-//------------------------------------------------
-void ConfiguratorWindow::protectionLevelSetWrite()
-{
-    sendSettingWriteRequest(tr("M78"), tr("M79"));
-    sendSettingControlWriteRequest("M77");
-}
-//----------------------------------------------
-void ConfiguratorWindow::protectionBruSetWrite()
-{
-    sendSettingWriteRequest(tr("M96"), tr("M99"));
-    sendSettingControlWriteRequest("M93");
-    sendSettingControlWriteRequest("M95");
-}
-//-------------------------------------------------
-void ConfiguratorWindow::protectionVacuumSetWrite()
-{
-    sendSettingWriteRequest(tr("M91"), tr("X23"));
-    sendSettingControlWriteRequest("M90");
 }
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
@@ -1636,62 +1575,6 @@ void ConfiguratorWindow::processImport()
     else
         QMessageBox::warning(this, tr("Импорт"), tr("Не выбран допустимый пункт меню"));
 }
-//------------------------------------------
-void ConfiguratorWindow::automationSetRead()
-{
-    sendSettingReadRequest(tr("M82"), tr("M89"), CDataUnitType::ReadHoldingRegisters, 12);
-}
-//-------------------------------------------
-void ConfiguratorWindow::automationSetWrite()
-{
-    sendSettingWriteRequest(tr("M82"), tr("M89"));
-}
-//--------------------------------------------
-void ConfiguratorWindow::switchDeviceSetRead()
-{
-    sendSettingReadRequest(tr("K02"), tr("K10"), CDataUnitType::ReadHoldingRegisters, 30);
-    sendSettingControlReadRequest("K32");
-    sendSettingControlReadRequest("K01");
-    sendSettingControlReadRequest("K03");
-    sendSettingControlReadRequest("K06");
-    sendSettingControlReadRequest("K17");
-    sendSettingControlReadRequest("K07");
-    sendSettingControlReadRequest("K13");
-    sendSettingControlReadRequest("K14");
-    sendSettingControlReadRequest("K15");
-    sendSettingControlReadRequest("K34");
-    sendSettingControlReadRequest("K38");
-    sendSettingControlReadRequest("K35");
-    sendSettingControlReadRequest("K39");
-    sendSettingControlReadRequest("K36");
-    sendSettingControlReadRequest("K40");
-    sendSettingControlReadRequest("K37");
-    sendSettingControlReadRequest("K41");
-    sendSettingControlReadRequest("K18");
-}
-//---------------------------------------------
-void ConfiguratorWindow::switchDeviceSetWrite()
-{
-    sendSettingWriteRequest(tr("K02"), tr("K10"));
-    sendSettingControlWriteRequest("K32");
-    sendSettingControlWriteRequest("K01");
-    sendSettingControlWriteRequest("K03");
-    sendSettingControlWriteRequest("K06");
-    sendSettingControlWriteRequest("K17");
-    sendSettingControlWriteRequest("K07");
-    sendSettingControlWriteRequest("K13");
-    sendSettingControlWriteRequest("K14");
-    sendSettingControlWriteRequest("K15");
-    sendSettingControlWriteRequest("K34");
-    sendSettingControlWriteRequest("K38");
-    sendSettingControlWriteRequest("K35");
-    sendSettingControlWriteRequest("K39");
-    sendSettingControlWriteRequest("K36");
-    sendSettingControlWriteRequest("K40");
-    sendSettingControlWriteRequest("K37");
-    sendSettingControlWriteRequest("K41");
-    sendSettingControlWriteRequest("K18");
-}
 //--------------------------------------------------------
 void ConfiguratorWindow::responseRead(CDataUnitType& unit)
 {
@@ -1739,6 +1622,14 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
         displayDeviceSerialNumber(unit.values());
     else if(type == DATETIME_TYPE)
         displayDateTime(unit);
+    else if(type == PORTECT_RESERVE_SIGNAL_START)
+    {
+        displayProtectReserveSignalStart(unit.values());
+    }
+    else if(type == AUTOMATION_SIGNAL_START)
+    {
+        displayAutomationAPVSignalStart(unit.values());
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -2094,9 +1985,11 @@ void ConfiguratorWindow::readSetCurrent()
 
         case DEVICE_MENU_ITEM_AUTOMATION_APV: // чтение автоматики АПВ
             automationAPVRead();
+            automationAPVSignalStartRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START: // чтение автоматики АПВ сигналы пуска
+            automationAPVSignalStartRead();
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // чтение настройки Светодиоды
@@ -2941,10 +2834,14 @@ void ConfiguratorWindow::initModelTables()
     {
         while(query.next())
         {
-            CColumn::column_t column = qMakePair(query.value(tr("key")).toString(),
-                                                 qMakePair(query.value(tr("name")).toString(),
-                                                           query.value(tr("description")).toString()));
+            QString key         = query.value(tr("key")).toString();
+            int     bit         = query.value("bit").toInt();
+            QString name        = query.value(tr("name")).toString();
+            QString description = query.value(tr("description")).toString();
+
+            CColumn::column_t column = qMakePair(key, qMakePair(name, description));
             m_variables << column;
+            m_variable_bits[key] = bit; // список позиций переменных в битовом массиве (для сигналов пуска)
         }
     }
 
@@ -3719,6 +3616,86 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
                                              arg(date);
 
         m_status_bar->setSerialNumber(str);
+    }
+}
+//-------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>& data)
+{
+    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
+                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
+                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
+                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
+                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
+                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
+                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
+                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
+                                                            ui->cboxV96;
+
+    QVector<quint16> tdata;
+
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+    {
+        tdata << data[i + 1] << data[i];
+    }
+
+    for(QComboBox* box: box_list)
+    {
+        QString key = box->objectName().remove("cbox");
+
+        if(key.isEmpty())
+            continue;
+
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
+
+        if(val_pos < tdata.count())
+        {
+            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+
+            if(item_pos < box->count())
+                box->setCurrentIndex(item_pos);
+        }
+    }
+}
+//------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>& data)
+{
+    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
+                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
+                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
+                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
+                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
+                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
+                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
+                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
+                                                            ui->cboxV96_2;
+
+    QVector<quint16> tdata;
+
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+    {
+        tdata << data[i + 1] << data[i];
+    }
+
+    for(QComboBox* box: box_list)
+    {
+        QString key = (box->objectName().remove("cbox")).remove("_2");
+
+        if(key.isEmpty())
+            continue;
+
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
+
+        if(val_pos < tdata.count())
+        {
+            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+
+            if(item_pos < box->count())
+                box->setCurrentIndex(item_pos);
+        }
     }
 }
 //--------------------------------------

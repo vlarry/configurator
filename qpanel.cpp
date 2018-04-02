@@ -40,15 +40,15 @@ void QPanel::setVariableNames(const calc_value_list_t& calc_list)
     {
         QString cell_str = value.name;
 
-        if(cell_str.count() < 15)
-            cell_str += QString((15 - cell_str.count()), ' ');
+        if(!value.description.isEmpty())
+            cell_str += QString(" (%1)").arg(value.description);
 
         QCell* cell = new QCell(cell_str);
 
         cell->setToolTip(value.description);
 
         QListWidgetItem* item = new QListWidgetItem(m_central_wgt);
-        item->setSizeHint(QSize(cell->fontMetrics().width(cell_str), cell->sizeHint().height()));
+        item->setSizeHint(cell->sizeHint());
         m_central_wgt->setItemWidget(item, cell);
 
 //        m_cell_list.append(cell);

@@ -78,7 +78,9 @@
                 READ_JOURNAL,
                 READ_JOURNAL_COUNT,
                 READ_JOURNAL_SHIFT_PTR,
-                DATETIME_TYPE
+                DATETIME_TYPE,
+                PORTECT_RESERVE_SIGNAL_START,
+                AUTOMATION_SIGNAL_START
             };
             //-------------
             enum WidgetType
@@ -181,6 +183,12 @@
              */
             typedef QMap<DeviceMenuItemType, int> device_menu_item_key_t;
             /*!
+             * \brief variable_bit_t
+             *
+             * Список положений переменных в битовом массиве
+             */
+            typedef QMap<QString, int> variable_bit_t;
+            /*!
              * \brief The journal_address_t struct
              *
              *  Структура адресов журнала (используется при чтении)
@@ -246,7 +254,6 @@
             void protectionMTZ3Read();
             void protectionMTZ4Read();
             void protectionMTZGroupRead();
-            void protectionMTZSetWrite();
             void protectionUmax1Read();
             void protectionUmax2Read();
             void protectionUmin1Read();
@@ -289,6 +296,7 @@
             void automationDisconnectorsGroupRead();
             void automationCtrlTNRead();
             void automationAVRRead();
+            void automationAPVSignalStartRead();
             void automationAPVRead();
             void purposeLedsRead();
             void purposeInputRead();
@@ -350,22 +358,9 @@
             void purposeRelayWrite();
             void dateTimeWrite();
 
-            void protectionEarthySetWrite();
-            void protectionPowerSetWrite();
-            void protectionMotorSetWrite();
-            void protectionFrequencySetWrite();
-            void protectionExternalSetWrite();
-            void protectionTemperatureSetWrite();
-            void protectionLevelSetWrite();
-            void protectionBruSetWrite();
-            void protectionVacuumSetWrite();
             void processReadJournals(bool state);
             void processExport();
             void processImport();
-            void automationSetRead();
-            void automationSetWrite();
-            void switchDeviceSetRead();
-            void switchDeviceSetWrite();
             void responseRead(CDataUnitType& unit);
             void exitFromApp();
             void show();
@@ -444,6 +439,8 @@
             void displayEventJournalResponse(QVector<quint16>& data);
             void displayCrashJournalResponse(const QVector<quint16>& data);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
+            void displayProtectReserveSignalStart(const QVector<quint16>& data);
+            void displayAutomationAPVSignalStart(const QVector<quint16>& data);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
@@ -494,5 +491,6 @@
             QMap<QString, journal_set_t>     m_journal_set; // установки журналов
             device_menu_item_key_t           m_menu_items; // карта пунктов меню устройства
             QVector<quint16>                 m_calculate_buffer; // буфер расчетных величи (два запроса, поэтому необходимо клеить)
+            variable_bit_t                   m_variable_bits;
     };
 #endif // CONFIGURATORWINDOW_H
