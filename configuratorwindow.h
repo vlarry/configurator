@@ -80,7 +80,10 @@
                 READ_JOURNAL_SHIFT_PTR,
                 DATETIME_TYPE,
                 PORTECT_RESERVE_SIGNAL_START,
-                AUTOMATION_SIGNAL_START
+                AUTOMATION_SIGNAL_START,
+                COMMUNICATIONS_MODBUS_ADDRESS,
+                COMMUNICATIONS_MODBUS_TIM_REQUEST,
+                COMMUNICATIONS_MODBUS_TIM_SPEED
             };
             //-------------
             enum WidgetType
@@ -302,6 +305,7 @@
             void purposeInputRead();
             void purposeRelayRead();
             void dateTimeRead();
+            void settingCommunicationsRead();
             void inputAnalogGeneralWrite();
             void inputAnalogCalibrateWrite();
             void inputAnalogGroupWrite();
@@ -358,6 +362,7 @@
             void purposeInputWrite();
             void purposeRelayWrite();
             void dateTimeWrite();
+            void settingCommunicationsWrite();
 
             void processReadJournals(bool state);
             void processExport();
@@ -391,6 +396,8 @@
             void sendPurposeWriteRequest(const QString& first, const QString& last);
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
+            void sendRequestRead(int addr, int size, int request);
+            void sendRequestWrite(int addr, QVector<quint16>& values, int request);
             void sendDeviceCommand(int cmd);
             void clearIOTable();
             void clearJournal();
@@ -418,7 +425,7 @@
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
             bool currentJournal(const CJournalWidget*& widget);
             void loadSettings();
-            void saveSattings();
+            void saveSettings();
             void initConnect();
             void initMenuPanel();
             void initCellBind();
@@ -443,6 +450,9 @@
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void displayProtectReserveSignalStart(const QVector<quint16>& data);
             void displayAutomationAPVSignalStart(const QVector<quint16>& data);
+            void displayCommunicationTimeoutRequest(const QVector<quint16>& data);
+            void displayCommunicationTimeoutSpeed(const QVector<quint16>& data);
+            void displayCommunicationAddress(const QVector<quint16>& data);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;

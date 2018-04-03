@@ -73,7 +73,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
 {
-    saveSattings();
+    saveSettings();
 
     if(m_timer_synchronization->isActive())
         m_timer_synchronization->stop();
@@ -1047,6 +1047,26 @@ void ConfiguratorWindow::dateTimeWrite()
     m_modbusDevice->request(unit);
 }
 /*!
+ * \brief ConfiguratorWindow::settingCommunicationsWrite
+ *
+ * Запись настроек связи
+ */
+void ConfiguratorWindow::settingCommunicationsWrite()
+{
+    int answer = QMessageBox::question(this, tr("Запись настроек связи"),
+                                             tr("Вы действительно хотите перезаписать настройки связи?"),
+                                             QMessageBox::Yes | QMessageBox::No);
+
+    if(answer == QMessageBox::No)
+        return;
+
+    sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
+    sendRequestWrite(0x25, QVector<quint16>() << (quint16)ui->spinBoxCommunicationAddress->value(), 255);
+    sendDeviceCommand(19); // установить новый адрес MODBUS
+    sendRequestWrite(0x26, QVector<quint16>() << (quint16)ui->spinBoxCommunicationRequestTimeout->value(), 255);
+    sendRequestWrite(0x27, QVector<quint16>() << (quint16)ui->spinBoxCommunicationTimeoutSpeed->value(), 255);
+}
+/*!
  * \brief ConfiguratorWindow::protectionMTZ1Read
  *
  * Чтение защиты МТЗ1
@@ -1611,6 +1631,17 @@ void ConfiguratorWindow::dateTimeRead()
 
     m_modbusDevice->request(unit);
 }
+/*!
+ * \brief ConfiguratorWindow::settingCommunicationsRead
+ *
+ * Чтение настроек связи
+ */
+void ConfiguratorWindow::settingCommunicationsRead()
+{
+    sendRequestRead(0x25, 1, COMMUNICATIONS_MODBUS_ADDRESS);
+    sendRequestRead(0x26, 1, COMMUNICATIONS_MODBUS_TIM_REQUEST);
+    sendRequestRead(0x27, 1, COMMUNICATIONS_MODBUS_TIM_SPEED);
+}
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
 {
@@ -1729,6 +1760,18 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     {
         displayAutomationAPVSignalStart(unit.values());
     }
+    else if(type == COMMUNICATIONS_MODBUS_TIM_REQUEST)
+    {
+        displayCommunicationTimeoutRequest(unit.values());
+    }
+    else if(type == COMMUNICATIONS_MODBUS_TIM_SPEED)
+    {
+        displayCommunicationTimeoutSpeed(unit.values());
+    }
+    else if(type == COMMUNICATIONS_MODBUS_ADDRESS)
+    {
+        displayCommunicationAddress(unit.values());
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -1756,6 +1799,8 @@ void ConfiguratorWindow::show()
     ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
     ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
     ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
+
+    ui->comboBoxCommunicationParity->setCurrentIndex(1);
 
     loadSettings();
 }
@@ -2107,7 +2152,11 @@ void ConfiguratorWindow::readSetCurrent()
             dateTimeRead();
         break;
 
-        default: break;
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS:
+            settingCommunicationsRead();
+        break;
+
+        default: return;
     }
 }
 //--------------------------------------
@@ -2144,6 +2193,8 @@ void ConfiguratorWindow::writeSettings()
     automationCtrlTNWrite();
     automationAVRWrite();
     automationAPVWrite();
+
+    sendDeviceCommand(2);
 }
 //----------------------------------------
 void ConfiguratorWindow::writeSetCurrent()
@@ -2379,8 +2430,14 @@ void ConfiguratorWindow::writeSetCurrent()
             dateTimeWrite();
         break;
 
-        default: break;
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS:
+            settingCommunicationsWrite();
+        break;
+
+        default: return;
     }
+
+    sendDeviceCommand(2);
 }
 /*!
  * \brief ConfiguratorWindow::expandItemTree
@@ -3680,6 +3737,30 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
         }
     }
 }
+//---------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint16>& data)
+{
+    if(data.count() > 0)
+    {
+        ui->spinBoxCommunicationRequestTimeout->setValue(data[0]);
+    }
+}
+//-------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayCommunicationTimeoutSpeed(const QVector<quint16>& data)
+{
+    if(data.count() > 0)
+    {
+        ui->spinBoxCommunicationTimeoutSpeed->setValue(data[0]);
+    }
+}
+//--------------------------------------------------------------------------------
+void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& data)
+{
+    if(data.count() > 0)
+    {
+        ui->spinBoxCommunicationAddress->setValue(data[0]);
+    }
+}
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
 {
@@ -4081,6 +4162,35 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     m_modbusDevice->request(unit);
 }
 /*!
+ * \brief ConfiguratorWindow::sendRequestRead
+ * \param addr Адрес ячейки
+ * \param size Количество ячеек для чтения
+ */
+void ConfiguratorWindow::sendRequestRead(int addr, int size, int request)
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << size);
+
+    unit.setProperty(tr("REQUEST"), request);
+
+    m_modbusDevice->request(unit);
+}
+/*!
+ * \brief ConfiguratorWindow::sendRequestWrite
+ * \param addr Адрес ячейки
+ * \param data Данные для записи
+ */
+void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, int request)
+{
+    CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
+                                                                 CDataUnitType::WriteMultipleRegisters);
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addr, values);
+
+    unit.setProperty("REQUST", request);
+
+    m_modbusDevice->request(unit);
+}
+/*!
  * \brief ConfiguratorWindow::sendDeviceCommand
  *
  * Отправка команды устройству
@@ -4443,15 +4553,18 @@ void ConfiguratorWindow::loadSettings()
             ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
             ui->checkboxCalibTimeout->setChecked(m_settings->value("timeoutcalculateenable", true).toBool());
             ui->spinboxSyncTime->setValue(m_settings->value("synctime", 1000).toInt());
+            ui->checkBoxCommunicationAutoSpeed->setChecked(m_settings->value("autospeed", false).toBool());
         m_settings->endGroup();
 
         m_settings->beginGroup("mainwindow");
             restoreGeometry(m_settings->value("geometry").toByteArray());
         m_settings->endGroup();
     }
+
+    ui->comboBoxCommunicationBaudrate->setCurrentIndex(ui->cboxBaudrate->currentIndex());
 }
 //-------------------------------------
-void ConfiguratorWindow::saveSattings()
+void ConfiguratorWindow::saveSettings()
 {
     if(m_settings)
     {
@@ -4471,6 +4584,7 @@ void ConfiguratorWindow::saveSattings()
             m_settings->setValue("timeoutcalculate", ui->sboxTimeoutCalc->value());
             m_settings->setValue("timeoutcalculateenable", ui->checkboxCalibTimeout->isChecked());
             m_settings->setValue("synctime", ui->spinboxSyncTime->value());
+            m_settings->setValue("Autospeed", ui->checkBoxCommunicationAutoSpeed->isChecked());
         m_settings->endGroup();
 
         m_settings->beginGroup("mainwindow");
