@@ -13,7 +13,8 @@ CModbus::CModbus(const baudrate_list_t& baudrate_list, QObject *parent):
     m_counter_request_error(0),
     m_request_count_repeat(3),
     m_timeout_repeat(1000),
-    m_connect({ false, false, m_baudrate, 0, 0, baudrate_list })
+    m_connect({ false, false, m_baudrate, 0, 0, baudrate_list }),
+    m_autospeed(false)
 {
     m_device = new QSerialPort(this);
     m_timeout_timer = new QTimer(this);
@@ -96,6 +97,14 @@ QSerialPort::Parity CModbus::parity() const
 {
     return m_parity;
 }
+/*!
+ * \brief CModbus::autospeed
+ * \return Состояние автоподбора скорости
+ */
+bool CModbus::autospeed() const
+{
+    return m_autospeed;
+}
 //-------------------------------
 void CModbus::clearQueueRequest()
 {
@@ -157,6 +166,14 @@ quint32 CModbus::sizeQueue() const
 {
     return m_sizeQuery;
 }
+/*!
+ * \brief CModbus::setAutospeed
+ * \param state Установка состояния автоподбора скорости - истина, значит подбираем
+ */
+void CModbus::setAutospeed(bool state)
+{
+    m_autospeed = state;
+}
 //---------------------------
 void CModbus::connectDevice()
 {
@@ -198,7 +215,7 @@ void CModbus::disconnectDevice()
         emit infoLog(str);
     }
 
-    if(m_connect.baud_reconnect)
+    if(m_connect.baud_reconnect && m_autospeed)
     {
         m_connect.baud_reconnect = false;
 
@@ -349,7 +366,7 @@ void CModbus::readyRead()
     m_counter_request_error = 0;
 
     // приняли все сообщение
-    if(!m_connect.is_connect)
+    if(!m_connect.is_connect && m_autospeed)
     {
         m_connect.is_connect = true;
 
@@ -462,7 +479,8 @@ void CModbus::timeoutReadWait()
         bool isRepeat = false;
 
         if(!m_connect.is_connect && m_connect.index_start == 0 &&
-                                    m_connect.index_current == 0) // инициализация структуры подбора скорости
+                                    m_connect.index_current == 0 &&
+                                    m_autospeed) // инициализация структуры подбора скорости
         {
             int index = 0;
 
@@ -482,7 +500,7 @@ void CModbus::timeoutReadWait()
 
             isRepeat = true;
         }
-        else if(!m_connect.is_connect && (m_connect.index_current != 0 || m_connect.index_start != 0))
+        else if(!m_connect.is_connect && (m_connect.index_current != 0 || m_connect.index_start != 0) && m_autospeed)
         {
             if(m_connect.index_current == m_connect.baudrate_list.count())
                 m_connect.index_current = 0;
@@ -516,11 +534,11 @@ void CModbus::timeoutReadWait()
 
         QString str;
 
-        if(m_connect.is_connect) // если соединение было активным, то значит обрыв
+        if(m_connect.is_connect || !m_autospeed) // если соединение было активным, то значит обрыв
         {
             str = tr("Ошибка: время ожидания ответа от устройства истекло -> попытка №") + QString::number(m_counter_request_error);
         }
-        else
+        else if(!m_connect.is_connect && m_autospeed)
         {
             str = tr("Идет автоматический подбор скорости...");
         }

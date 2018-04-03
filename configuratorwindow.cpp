@@ -1060,11 +1060,11 @@ void ConfiguratorWindow::settingCommunicationsWrite()
     if(answer == QMessageBox::No)
         return;
 
+    sendRequestWrite(0x26, QVector<quint16>() << (quint16)ui->spinBoxCommunicationRequestTimeout->value(), 255);
+    sendRequestWrite(0x27, QVector<quint16>() << (quint16)ui->spinBoxCommunicationTimeoutSpeed->value(), 255);
     sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
     sendRequestWrite(0x25, QVector<quint16>() << (quint16)ui->spinBoxCommunicationAddress->value(), 255);
     sendDeviceCommand(19); // установить новый адрес MODBUS
-    sendRequestWrite(0x26, QVector<quint16>() << (quint16)ui->spinBoxCommunicationRequestTimeout->value(), 255);
-    sendRequestWrite(0x27, QVector<quint16>() << (quint16)ui->spinBoxCommunicationTimeoutSpeed->value(), 255);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Read
@@ -4417,6 +4417,14 @@ void ConfiguratorWindow::dateDeviceChanged(const QDate& date)
     ui->lineEditWeekDay->setText(date.toString("dddd"));
 }
 /*!
+ * \brief ConfiguratorWindow::autospeedStateChanged
+ * \param state Текущее состояние чекбокса подбора скорости
+ */
+void ConfiguratorWindow::autospeedStateChanged(bool state)
+{
+    m_modbusDevice->setAutospeed(state);
+}
+/*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
  */
@@ -4562,6 +4570,7 @@ void ConfiguratorWindow::loadSettings()
     }
 
     ui->comboBoxCommunicationBaudrate->setCurrentIndex(ui->cboxBaudrate->currentIndex());
+    m_modbusDevice->setAutospeed(ui->checkBoxCommunicationAutoSpeed->isChecked());
 }
 //-------------------------------------
 void ConfiguratorWindow::saveSettings()
@@ -6077,4 +6086,5 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
     connect(m_modbusDevice, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
+    connect(ui->checkBoxCommunicationAutoSpeed, &QCheckBox::clicked, this, &ConfiguratorWindow::autospeedStateChanged);
 }

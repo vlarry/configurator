@@ -45,6 +45,7 @@
             QSerialPort::StopBits stopbits() const;
             QSerialPort::Parity   parity() const;
             
+            bool     autospeed() const;
             void     clearQueueRequest();
             void     removeRequest(const QString& key, const QString& value);
             quint32  requestQueueCount() const;
@@ -53,6 +54,7 @@
             quint8   requestCountRepeat() const;
             void     setTimeoutRepeat(quint16 newTimeout);
             void     setRequestCountRepeat(quint8 newCount);
+            void     setAutospeed(bool state);
             quint32  sizeQueue() const;
             
         signals:
@@ -103,5 +105,6 @@
                                                      // чистится
             quint32                m_sizeQuery;
             AutoConnectType        m_connect;
+            bool                   m_autospeed; // режим включения автоподбора скорости
     };
 #endif // CMODBUS_H

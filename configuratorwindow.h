@@ -420,6 +420,7 @@
             void setNewBaudrate(int baudrate_index);
             void saveDeviceSettings();
             void dateDeviceChanged(const QDate& date);
+            void autospeedStateChanged(bool state);
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
