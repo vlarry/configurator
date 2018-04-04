@@ -1138,7 +1138,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>53</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -8122,7 +8122,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -8145,7 +8145,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -9643,7 +9643,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -9770,7 +9770,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -9977,7 +9977,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -10199,7 +10199,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -10306,7 +10306,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -10868,7 +10868,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -10929,7 +10929,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -10974,7 +10974,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -11663,7 +11663,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -11850,7 +11850,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
@@ -12031,7 +12031,7 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Откл</string>
+                      <string>Выкл</string>
                      </property>
                     </item>
                     <item>
