@@ -42,6 +42,7 @@
     #include "cprogressbarwidget.h"
     #include "cfilterdialog.h"
     #include "cjournalwidget.h"
+    #include "HierarchicalHeaderView.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     //-----------------------------------------------------
@@ -505,5 +506,6 @@
             device_menu_item_key_t           m_menu_items; // карта пунктов меню устройства
             QVector<quint16>                 m_calculate_buffer; // буфер расчетных величи (два запроса, поэтому необходимо клеить)
             variable_bit_t                   m_variable_bits;
+            group_t                          m_variable_group;
     };
 #endif // CONFIGURATORWINDOW_H

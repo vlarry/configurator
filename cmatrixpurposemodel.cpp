@@ -4,6 +4,12 @@ CMatrixPurposeModel::CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* 
     QAbstractTableModel(parent),
     m_data(data)
 {
+    fillHeaderModel(m_horizontal_header);
+}
+//--------------------------------------------------------------------
+CMatrixPurposeModel::CMatrixPurposeModel(QAbstractTableModel* parent):
+    QAbstractTableModel(parent)
+{
 
 }
 //------------------------------------
@@ -31,13 +37,13 @@ void CMatrixPurposeModel::setDataTable(CDataTable& data)
 int CMatrixPurposeModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return m_data.count();
+    return /*m_data.count()*/5;
 }
 //-------------------------------------------------------------------
 int CMatrixPurposeModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return m_data.columnCounts();
+    return /*m_data.columnCounts()*/358;
 }
 //------------------------------------------------------------------------------------------
 bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& value, int role)
@@ -64,9 +70,6 @@ bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& valu
 //--------------------------------------------------------------------------
 QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
 {
-    if(!index.isValid())
-        return QVariant();
-
     if(role == Qt::CheckStateRole)
     {
         Qt::CheckState state;
@@ -78,11 +81,13 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
 
         return state;
     }
-    else if(role == Qt::UserRole)
+
+    if(role == (Qt::UserRole + 10))
     {
         return m_data[index.row()][index.column()].status();
     }
-    else if(role == Qt::ToolTipRole)
+
+    if(role == Qt::ToolTipRole)
     {
         CColumn::column_t column  = m_data.columnData(index.column());
         QString           tooltip = m_data[index.row()].header() + ": " + column.second.second;
@@ -90,27 +95,73 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
         return tooltip;
     }
 
+    if(role == HierarchicalHeaderView::HorizontalHeaderDataRole)
+    {
+        QVariant v;
+        v.setValue((QObject*)&m_horizontal_header);
+        return v;
+    }
+
+    if(role == HierarchicalHeaderView::VerticalHeaderDataRole)
+    {
+        QVariant v;
+        v.setValue((QObject*)&m_vertical_header);
+        return v;
+    }
+
     return QVariant();
 }
 //------------------------------------------------------------------------------------------------
-QVariant CMatrixPurposeModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if(role != Qt::DisplayRole)
-        return QVariant();
+//QVariant CMatrixPurposeModel::headerData(int section, Qt::Orientation orientation, int role) const
+//{
+//    if(role != Qt::DisplayRole)
+//        return QVariant();
 
-    if(orientation == Qt::Horizontal)
-        return m_data.columnName(section);
-    else if(orientation == Qt::Vertical)
-        return m_data[section].header();
+//    /*if(orientation == Qt::Horizontal)
+//        return m_data.columnName(section);
+//    else */if(orientation == Qt::Vertical)
+//        return m_data[section].header();
 
-    return QVariant();
-}
+//    return QVariant();
+//}
 //----------------------------------------------------------------------
 Qt::ItemFlags CMatrixPurposeModel::flags(const QModelIndex& index) const
 {
     Qt::ItemFlags itemFlags = QAbstractTableModel::flags(index) | Qt::ItemIsUserCheckable;
 
     return itemFlags;
+}
+//------------------------------------------------------------------------
+void CMatrixPurposeModel::fillHeaderModel(QStandardItemModel& headerModel)
+{
+    group_t group = m_data.group();
+
+    if(group.isEmpty())
+        return;
+
+    int keys = 0;
+
+    for(int key: group.keys())
+    {
+        group_item_t   group_item = group[key];
+        QStandardItem* itemGroup  = new QStandardItem(group_item.name);
+        QVector<var_t> var_list   = group_item.var_list;
+
+        if(var_list.isEmpty())
+            continue;
+
+//        int vars = 0;
+
+        for(var_t var: var_list)
+        {
+            QStandardItem* cell = new QStandardItem(var.name);
+            cell->setData(1, Qt::UserRole);
+
+            itemGroup->appendColumn(QList<QStandardItem*>() << cell);
+        }
+
+        headerModel.setItem(0, keys++, itemGroup);
+    }
 }
 //----------------------
 //---class CDataTable---
@@ -122,7 +173,16 @@ CDataTable::CDataTable()
 //-------------------------------------------------------------------------------------
 CDataTable::CDataTable(QVector<CRow>& rows, QVector<CColumn::column_t>& columnHeaders):
     m_rows(rows),
-    m_columnHeaders(columnHeaders)
+    m_columnHeaders(columnHeaders),
+    m_group(group_t())
+{
+
+}
+//-----------------------------------------------------------------------------------------------------
+CDataTable::CDataTable(QVector<CRow>& rows, QVector<CColumn::column_t>& columnHeaders, group_t& group):
+    m_rows(rows),
+    m_columnHeaders(columnHeaders),
+    m_group(group)
 {
 
 }
@@ -193,6 +253,11 @@ QVector<int> CDataTable::columnIndexListInactive(int row)
     }
 
     return list;
+}
+//--------------------------
+group_t& CDataTable::group()
+{
+    return m_group;
 }
 //--------------------------------------------------------------------
 void CDataTable::setColumnHeaders(QVector<CColumn::column_t>& headers)
@@ -364,7 +429,7 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
     else
         checkboxstyle.state = QStyle::State_Off|QStyle::State_Enabled;
 
-    if(!index.data(Qt::UserRole).toBool())
+    if(!index.data((Qt::UserRole + 10)).toBool())
     {
         int cx = option.rect.x() + option.rect.width()/2;
         int cy = option.rect.y() + option.rect.height()/2;

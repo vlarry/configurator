@@ -1138,7 +1138,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>56</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -13701,7 +13701,18 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="pageKeyboard"/>
+         <widget class="QWidget" name="pageKeyboard">
+          <widget class="QTableView" name="tableView">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>20</y>
+             <width>761</width>
+             <height>361</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
          <widget class="QWidget" name="pageSetLedPurpose">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>

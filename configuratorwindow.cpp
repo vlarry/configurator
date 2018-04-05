@@ -2882,7 +2882,37 @@ void ConfiguratorWindow::initModelTables()
         }
     }
 
-    if(m_variables.isEmpty())
+    if(query.exec("SELECT * FROM var_group")) // читаем из базы список групп
+    {
+        while(query.next())
+        {
+            QSqlQuery query_item(m_system_db);
+
+            int     id                = query.value("id").toInt();
+            QString group_name        = query.value("name").toString();
+            QString group_description = query.value("description").toString();
+
+            QVector<var_t> var_list;
+
+            if(query_item.exec(QString("SELECT * FROM variable WHERE group_id=%1;").arg(id)))
+            {
+                while(query_item.next())
+                {
+                    QString key         = query_item.value("key").toString();
+                    int     group_id    = query_item.value("group_id").toInt();
+                    int     bit         = query_item.value("bit").toInt();
+                    QString name        = query_item.value("name").toString();
+                    QString description = query_item.value("description").toString();
+
+                    var_list << var_t({ key, group_id, bit, name, description });
+                }
+            }
+
+            m_variable_group[id] = group_item_t({ group_name, group_description, var_list });
+        }
+    }
+
+    if(m_variables.isEmpty() || m_variable_group.isEmpty())
         return;
 
     QList<QTableView*> view_list = QList<QTableView*>() << ui->tablewgtLedPurpose << ui->tablewgtDiscreteInputPurpose
@@ -2942,7 +2972,14 @@ void ConfiguratorWindow::initModelTables()
         if(rows.isEmpty())
             return;
 
-        CDataTable data(rows, m_variables);
+        CDataTable data(rows, m_variables, m_variable_group);
+
+//        CMatrixPurposeModel* model = new CMatrixPurposeModel(data);
+//        HierarchicalHeaderView* hv = new HierarchicalHeaderView(Qt::Horizontal, ui->tablewgtLedPurpose);
+//        ui->tablewgtLedPurpose->setHorizontalHeader(hv);
+//        ui->tablewgtLedPurpose->setModel(model);
+
+
 
         initTable(wgt, data);
     }
@@ -3268,20 +3305,19 @@ void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
     CHeaderTable* header_horizontal = new CHeaderTable(Qt::Horizontal, table);
     CHeaderTable* header_vertical   = new CHeaderTable(Qt::Vertical, table);
 
-    table->setHorizontalHeader(header_horizontal);
-    table->setVerticalHeader(header_vertical);
-
+    HierarchicalHeaderView* hheader = new HierarchicalHeaderView(Qt::Horizontal, table);
     CMatrixPurposeModel* model = new CMatrixPurposeModel(data);
 
     table->setItemDelegate(new CTableItemDelegate);
+    table->setHorizontalHeader(hheader);
     table->setModel(model);
     table->resizeColumnsToContents();
     table->resizeRowsToContents();
 
-    for(int index: data.columnIndexListInactive(0))
-    {
-        table->setColumnHidden(index, true);
-    }
+//    for(int index: data.columnIndexListInactive(0))
+//    {
+//        table->setColumnHidden(index, true);
+//    }
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)

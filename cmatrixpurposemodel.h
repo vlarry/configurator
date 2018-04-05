@@ -7,8 +7,29 @@
     #include <QCheckBox>
     #include <QMouseEvent>
     #include <QPainter>
+    #include <QStandardItemModel>
+    #include <QStandardItem>
     #include <QDebug>
+    #include "HierarchicalHeaderView.h"
     #include "cheadertable.h"
+    //----------
+    struct var_t
+    {
+        QString key;
+        int     group_id;
+        int     bit;
+        QString name;
+        QString description;
+    };
+    //-----------------
+    struct group_item_t
+    {
+        QString        name;
+        QString        description;
+        QVector<var_t> var_list;
+    };
+    //--------------------------------------
+    typedef QMap<int, group_item_t> group_t;
     //-----------
     class CColumn
     {
@@ -59,6 +80,7 @@
         public:
             CDataTable();
             CDataTable(QVector<CRow>& rows, QVector<CColumn::column_t>& columnHeaders);
+            CDataTable(QVector<CRow>& rows, QVector<CColumn::column_t>& columnHeaders, group_t& group);
 
             void addRow(CRow& row);
 
@@ -70,6 +92,7 @@
             const QString&    columnName(int index) const;
             QVector<int>      columnIndexListActive(int row);
             QVector<int>      columnIndexListInactive(int row);
+            group_t&          group();
 
             void setColumnHeaders(QVector<CColumn::column_t>& headers);
 
@@ -82,12 +105,15 @@
         private:
             QVector<CRow>              m_rows;
             QVector<CColumn::column_t> m_columnHeaders;
+            group_t                    m_group;
+
     };
     //---------------------------------------------------
     class CMatrixPurposeModel: public QAbstractTableModel
     {
         public:
             CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent = nullptr);
+            CMatrixPurposeModel(QAbstractTableModel* parent = nullptr);
             void updateData();
             CDataTable& dataTable();
             void setDataTable(CDataTable& data);
@@ -97,11 +123,14 @@
             int           columnCount(const QModelIndex& parent = QModelIndex()) const;
             bool          setData(const QModelIndex& index, const QVariant& value, int role);
             QVariant      data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-            QVariant      headerData(int section, Qt::Orientation orientation, int role) const;
+//            QVariant      headerData(int section, Qt::Orientation orientation, int role) const;
             Qt::ItemFlags flags(const QModelIndex& index) const;
+            void          fillHeaderModel(QStandardItemModel& headerModel);
 
         private:
-            CDataTable m_data;
+            CDataTable         m_data;
+            QStandardItemModel m_horizontal_header;
+            QStandardItemModel m_vertical_header;
     };
     //--------------------------------------------------
     class CTableItemDelegate: public QStyledItemDelegate
