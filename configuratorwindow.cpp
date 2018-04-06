@@ -2904,6 +2904,33 @@ void ConfiguratorWindow::initModelTables()
                     QString name        = query_item.value("name").toString();
                     QString description = query_item.value("description").toString();
 
+                    if(name.count() > 20)
+                    {
+                        int party = name.count()/20;
+
+                        for(int i = 0; i < party; i++)
+                        {
+                            int pos = i*20;
+
+                            if(name[pos] != ' ')
+                            {
+                                int from = name.indexOf(' ', pos - 5);
+                                int to   = name.indexOf(' ', pos);
+
+                                if(from != -1)
+                                {
+                                    name.insert(from, '\n');
+                                }
+                                else if(to != -1)
+                                {
+                                    name.insert(to, '\n');
+                                }
+                            }
+                            else
+                                name.insert(pos, '\n');
+                        }
+                    }
+
                     var_list << var_t({ key, group_id, bit, name, description });
                 }
             }
