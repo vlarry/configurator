@@ -2892,7 +2892,7 @@ void ConfiguratorWindow::initModelTables()
             QString group_name        = query.value("name").toString();
             QString group_description = query.value("description").toString();
 
-            QVector<var_t> var_list;
+            QVector<var_t> var_led_list;
 
             if(query_item.exec(QString("SELECT * FROM variable WHERE group_id=%1;").arg(id)))
             {
@@ -2903,6 +2903,27 @@ void ConfiguratorWindow::initModelTables()
                     int     bit         = query_item.value("bit").toInt();
                     QString name        = query_item.value("name").toString();
                     QString description = query_item.value("description").toString();
+
+                    QSqlQuery query_purpose(m_system_db);
+
+                    bool is_ok = false;
+
+                    if(query_purpose.exec(QString("SELECT io_key FROM purpose WHERE var_key = \'%1\';").arg(key)))
+                    {
+                        while(query_purpose.next())
+                        {
+                            QString val = query_purpose.value("io_key").toString();
+
+                            if(val.contains("LED"))
+                            {
+                                is_ok = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(!is_ok)
+                        continue;
 
                     if(name.count() > 20)
                     {
@@ -2931,85 +2952,20 @@ void ConfiguratorWindow::initModelTables()
                         }
                     }
 
-                    var_list << var_t({ key, group_id, bit, name, description });
+                    var_led_list << var_t({ key, group_id, bit, name, description });
                 }
             }
 
-            m_variable_group[id] = group_item_t({ group_name, group_description, var_list });
+            m_variable_group[id] = group_item_t({ group_name, group_description, var_led_list });
         }
     }
 
     if(m_variables.isEmpty() || m_variable_group.isEmpty())
         return;
 
-    QList<QTableView*> view_list = QList<QTableView*>() << ui->tablewgtLedPurpose << ui->tablewgtDiscreteInputPurpose
-                                                        << ui->tablewgtRelayPurpose << ui->tablewgtKeyboardPurpose;
+//    CDataTable data(rows, m_variables, m_variable_group);
 
-    for(QTableView* wgt: view_list)
-    {
-        QString first = "";
-        QString last  = "";
-
-        if(wgt == ui->tablewgtLedPurpose)
-        {
-            first = tr("LED1");
-            last  = tr("LED8");
-        }
-        else if(wgt == ui->tablewgtDiscreteInputPurpose)
-        {
-            first = tr("DI01");
-            last  = tr("DI20");
-        }
-        else if(wgt == ui->tablewgtRelayPurpose)
-        {
-            first = tr("DO1");
-            last  = tr("DO13");
-        }
-        else if(wgt == ui->tablewgtKeyboardPurpose)
-        {
-            break; // заглушка
-        }
-
-        if(first.isEmpty() || last.isEmpty())
-            break;
-
-        QPoint index = indexPurposeKey(first, last);
-
-        if(index.x() == -1 || index.y() == -1)
-            break;
-
-        QVector<CRow> rows;
-
-        QStringList columnList;
-
-        for(CColumn::column_t& column: m_variables)
-        {
-            columnList << column.first;
-        }
-
-        for(int i = index.x(); i <= index.y(); i++)
-        {
-            QVector<int> indexes = indexVariableFromKey(columnList, m_purpose_list[i].first);
-            CRow row(m_purpose_list[i].first, m_purpose_list[i].second.second.first, m_variables.count());
-
-            row.setActiveColumnList(indexes);
-            rows.append(row);
-        }
-
-        if(rows.isEmpty())
-            return;
-
-        CDataTable data(rows, m_variables, m_variable_group);
-
-//        CMatrixPurposeModel* model = new CMatrixPurposeModel(data);
-//        HierarchicalHeaderView* hv = new HierarchicalHeaderView(Qt::Horizontal, ui->tablewgtLedPurpose);
-//        ui->tablewgtLedPurpose->setHorizontalHeader(hv);
-//        ui->tablewgtLedPurpose->setModel(model);
-
-
-
-        initTable(wgt, data);
-    }
+//    initTable(wgt, data);
 }
 //-----------------------------------------
 void ConfiguratorWindow::initEventJournal()

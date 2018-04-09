@@ -1138,7 +1138,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>56</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -1223,7 +1223,7 @@
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_64">
                     <item>
-                     <widget class="QLineEdit" name="leM01">
+                     <widget class="CLineEdit" name="leM01">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -1240,12 +1240,15 @@
                        <locale language="English" country="UnitedStates"/>
                       </property>
                       <property name="inputMask">
-                       <string/>
+                       <string>999.999999</string>
                       </property>
                       <property name="text">
-                       <string>0</string>
+                       <string>000.000000</string>
                       </property>
                       <property name="maxLength">
+                       <number>10</number>
+                      </property>
+                      <property name="cursorPosition">
                        <number>10</number>
                       </property>
                       <property name="alignment">
@@ -1254,7 +1257,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="leM02">
+                     <widget class="CLineEdit" name="leM02">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -1268,10 +1271,10 @@
                        </size>
                       </property>
                       <property name="inputMask">
-                       <string/>
+                       <string>999.999999</string>
                       </property>
                       <property name="text">
-                       <string>0</string>
+                       <string>000.000000</string>
                       </property>
                       <property name="maxLength">
                        <number>10</number>
@@ -1282,7 +1285,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="leM03">
+                     <widget class="CLineEdit" name="leM03">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -1296,10 +1299,10 @@
                        </size>
                       </property>
                       <property name="inputMask">
-                       <string/>
+                       <string>999.999999</string>
                       </property>
                       <property name="text">
-                       <string>0</string>
+                       <string>000.000000</string>
                       </property>
                       <property name="maxLength">
                        <number>10</number>
@@ -1490,7 +1493,7 @@
                 </widget>
                </item>
                <item row="1" column="4">
-                <widget class="QLineEdit" name="leKUBC">
+                <widget class="CLineEdit" name="leKUBC">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1504,10 +1507,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1518,7 +1521,7 @@
                 </widget>
                </item>
                <item row="2" column="4">
-                <widget class="QLineEdit" name="leKUCA">
+                <widget class="CLineEdit" name="leKUCA">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1532,10 +1535,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1546,7 +1549,7 @@
                 </widget>
                </item>
                <item row="0" column="4">
-                <widget class="QLineEdit" name="leKUAB">
+                <widget class="CLineEdit" name="leKUAB">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1560,10 +1563,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1574,7 +1577,7 @@
                 </widget>
                </item>
                <item row="6" column="4">
-                <widget class="QLineEdit" name="leKUCX">
+                <widget class="CLineEdit" name="leKUCX">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1588,10 +1591,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1602,7 +1605,7 @@
                 </widget>
                </item>
                <item row="3" column="4">
-                <widget class="QLineEdit" name="leK3U0X">
+                <widget class="CLineEdit" name="leK3U0X">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1616,10 +1619,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1630,7 +1633,7 @@
                 </widget>
                </item>
                <item row="8" column="4">
-                <widget class="QLineEdit" name="leKU0X_">
+                <widget class="CLineEdit" name="leKU0X_">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1644,10 +1647,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1658,7 +1661,7 @@
                 </widget>
                </item>
                <item row="7" column="4">
-                <widget class="QLineEdit" name="leKU0X">
+                <widget class="CLineEdit" name="leKU0X">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1672,10 +1675,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1686,7 +1689,7 @@
                 </widget>
                </item>
                <item row="4" column="4">
-                <widget class="QLineEdit" name="leKUAX">
+                <widget class="CLineEdit" name="leKUAX">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1700,10 +1703,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1714,7 +1717,7 @@
                 </widget>
                </item>
                <item row="5" column="4">
-                <widget class="QLineEdit" name="leKUBX">
+                <widget class="CLineEdit" name="leKUBX">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1728,10 +1731,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1758,7 +1761,7 @@
                 </widget>
                </item>
                <item row="5" column="1">
-                <widget class="QLineEdit" name="leKUB">
+                <widget class="CLineEdit" name="leKUB">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1772,10 +1775,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1802,7 +1805,7 @@
                 </widget>
                </item>
                <item row="7" column="1">
-                <widget class="QLineEdit" name="leK3U0">
+                <widget class="CLineEdit" name="leK3U0">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1816,10 +1819,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1878,7 +1881,7 @@
                 </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QLineEdit" name="leKUA">
+                <widget class="CLineEdit" name="leKUA">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1892,10 +1895,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1906,7 +1909,7 @@
                 </widget>
                </item>
                <item row="6" column="1">
-                <widget class="QLineEdit" name="leKUC">
+                <widget class="CLineEdit" name="leKUC">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1920,10 +1923,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1934,7 +1937,7 @@
                 </widget>
                </item>
                <item row="8" column="1">
-                <widget class="QLineEdit" name="leKUS">
+                <widget class="CLineEdit" name="leKUS">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1948,10 +1951,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -1962,7 +1965,7 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="leK3I0">
+                <widget class="CLineEdit" name="leK3I0">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1976,10 +1979,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -2038,7 +2041,7 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLineEdit" name="leKIA">
+                <widget class="CLineEdit" name="leKIA">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -2052,10 +2055,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -2066,7 +2069,7 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="leKIB">
+                <widget class="CLineEdit" name="leKIB">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -2080,10 +2083,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -2110,7 +2113,7 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLineEdit" name="leKIC">
+                <widget class="CLineEdit" name="leKIC">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -2124,10 +2127,10 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string/>
+                  <string>999.999999</string>
                  </property>
                  <property name="text">
-                  <string>0</string>
+                  <string>000.000000</string>
                  </property>
                  <property name="maxLength">
                   <number>10</number>
@@ -2296,7 +2299,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM08">
+                   <widget class="CLineEdit" name="leM08">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2310,13 +2313,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
-                     <number>8</number>
+                     <number>10</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2356,7 +2359,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM06">
+                   <widget class="CLineEdit" name="leM06">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2370,13 +2373,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
-                     <number>8</number>
+                     <number>10</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2384,7 +2387,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK31">
+                   <widget class="CLineEdit" name="leK31">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2398,13 +2401,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
-                     <number>8</number>
+                     <number>10</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2428,7 +2431,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leX01">
+                   <widget class="CLineEdit" name="leX01">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2442,13 +2445,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
-                     <number>8</number>
+                     <number>10</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2519,7 +2522,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM10">
+                   <widget class="CLineEdit" name="leM10">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2533,10 +2536,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -2557,7 +2560,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM11">
+                   <widget class="CLineEdit" name="leM11">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2571,10 +2574,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -2585,7 +2588,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM12">
+                   <widget class="CLineEdit" name="leM12">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2599,10 +2602,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -2671,7 +2674,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leX03">
+                   <widget class="CLineEdit" name="leX03">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2685,10 +2688,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -2755,7 +2758,7 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_15">
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM14">
+                   <widget class="CLineEdit" name="leM14">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2769,10 +2772,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -2793,7 +2796,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK22">
+                   <widget class="CLineEdit" name="leK22">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2807,10 +2810,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -2937,7 +2940,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leX04">
+                   <widget class="CLineEdit" name="leX04">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2951,10 +2954,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -3011,15 +3014,18 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="leTZ1">
+              <widget class="CLineEdit" name="leTZ1">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="inputMask">
+                <string>999.999999</string>
+               </property>
                <property name="text">
-                <string>0</string>
+                <string>000.000000</string>
                </property>
                <property name="maxLength">
                 <number>10</number>
@@ -3071,15 +3077,18 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="leTZ2">
+              <widget class="CLineEdit" name="leTZ2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="inputMask">
+                <string>999.999999</string>
+               </property>
                <property name="text">
-                <string>0</string>
+                <string>000.000000</string>
                </property>
                <property name="maxLength">
                 <number>10</number>
@@ -3131,15 +3140,18 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="leTZ3">
+              <widget class="CLineEdit" name="leTZ3">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="inputMask">
+                <string>999.999999</string>
+               </property>
                <property name="text">
-                <string>0</string>
+                <string>000.000000</string>
                </property>
                <property name="maxLength">
                 <number>10</number>
@@ -3191,15 +3203,18 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="leTZ4">
+              <widget class="CLineEdit" name="leTZ4">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="inputMask">
+                <string>999.999999</string>
+               </property>
                <property name="text">
-                <string>0</string>
+                <string>000.000000</string>
                </property>
                <property name="maxLength">
                 <number>10</number>
@@ -3251,15 +3266,18 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="leTZ5">
+              <widget class="CLineEdit" name="leTZ5">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="inputMask">
+                <string>999.999999</string>
+               </property>
                <property name="text">
-                <string>0</string>
+                <string>000.000000</string>
                </property>
                <property name="maxLength">
                 <number>10</number>
@@ -3311,15 +3329,18 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="leTZ6">
+              <widget class="CLineEdit" name="leTZ6">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="inputMask">
+                <string>999.999999</string>
+               </property>
                <property name="text">
-                <string>0</string>
+                <string>000.000000</string>
                </property>
                <property name="maxLength">
                 <number>10</number>
@@ -3371,15 +3392,18 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="leTZ7">
+              <widget class="CLineEdit" name="leTZ7">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="inputMask">
+                <string>999.999999</string>
+               </property>
                <property name="text">
-                <string>0</string>
+                <string>000.000000</string>
                </property>
                <property name="maxLength">
                 <number>10</number>
@@ -3441,7 +3465,7 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_16">
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="leX05">
+                   <widget class="CLineEdit" name="leX05">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3455,10 +3479,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -3469,7 +3493,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK20">
+                   <widget class="CLineEdit" name="leK20">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3483,13 +3507,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000</string>
                     </property>
                     <property name="maxLength">
-                     <number>4</number>
+                     <number>3</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3497,7 +3521,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM07">
+                   <widget class="CLineEdit" name="leM07">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3511,10 +3535,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -3573,7 +3597,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leM18">
+                   <widget class="CLineEdit" name="leM18">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3587,10 +3611,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -3611,7 +3635,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM17">
+                   <widget class="CLineEdit" name="leM17">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3625,10 +3649,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -3679,7 +3703,7 @@
                    </widget>
                   </item>
                   <item row="6" column="1">
-                   <widget class="QLineEdit" name="leX05a">
+                   <widget class="CLineEdit" name="leX05a">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3693,10 +3717,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -3763,7 +3787,7 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_22">
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM23">
+                   <widget class="CLineEdit" name="leM23">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3777,10 +3801,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -3834,7 +3858,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM24">
+                   <widget class="CLineEdit" name="leM24">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3848,10 +3872,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -3882,7 +3906,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leX07">
+                   <widget class="CLineEdit" name="leX07">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -3896,10 +3920,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4009,7 +4033,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leK24">
+                   <widget class="CLineEdit" name="leK24">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4023,10 +4047,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4037,7 +4061,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leK25">
+                   <widget class="CLineEdit" name="leK25">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4051,10 +4075,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4085,7 +4109,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leX07a">
+                   <widget class="CLineEdit" name="leX07a">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4099,10 +4123,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4202,7 +4226,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM26">
+                   <widget class="CLineEdit" name="leM26">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4216,10 +4240,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4260,7 +4284,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK21">
+                   <widget class="CLineEdit" name="leK21">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4274,13 +4298,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000</string>
                     </property>
                     <property name="maxLength">
-                     <number>4</number>
+                     <number>3</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4298,7 +4322,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM27">
+                   <widget class="CLineEdit" name="leM27">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4312,10 +4336,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4326,7 +4350,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leM28">
+                   <widget class="CLineEdit" name="leM28">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4340,10 +4364,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4354,7 +4378,7 @@
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="leX08">
+                   <widget class="CLineEdit" name="leX08">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4368,10 +4392,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4402,7 +4426,7 @@
                    </widget>
                   </item>
                   <item row="6" column="1">
-                   <widget class="QLineEdit" name="leX09">
+                   <widget class="CLineEdit" name="leX09">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4416,10 +4440,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4506,7 +4530,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leK30">
+                   <widget class="CLineEdit" name="leK30">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4520,10 +4544,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4544,7 +4568,7 @@
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="leX08a">
+                   <widget class="CLineEdit" name="leX08a">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4558,10 +4582,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4595,7 +4619,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leK27">
+                   <widget class="CLineEdit" name="leK27">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4609,10 +4633,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4623,7 +4647,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leK28">
+                   <widget class="CLineEdit" name="leK28">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4637,10 +4661,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4671,7 +4695,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK29">
+                   <widget class="CLineEdit" name="leK29">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4685,13 +4709,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000</string>
                     </property>
                     <property name="maxLength">
-                     <number>4</number>
+                     <number>3</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4719,7 +4743,7 @@
                    </widget>
                   </item>
                   <item row="6" column="1">
-                   <widget class="QLineEdit" name="leX09a">
+                   <widget class="CLineEdit" name="leX09a">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -4733,10 +4757,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4803,12 +4827,18 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_17">
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM34">
+                   <widget class="CLineEdit" name="leM34">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>0</height>
+                     </size>
                     </property>
                     <property name="maximumSize">
                      <size>
@@ -4817,10 +4847,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4889,12 +4919,18 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM33">
+                   <widget class="CLineEdit" name="leM33">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>0</height>
+                     </size>
                     </property>
                     <property name="maximumSize">
                      <size>
@@ -4903,10 +4939,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -4917,12 +4953,18 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leX11">
+                   <widget class="CLineEdit" name="leX11">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>0</height>
+                     </size>
                     </property>
                     <property name="maximumSize">
                      <size>
@@ -4931,10 +4973,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5031,7 +5073,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM37">
+                   <widget class="CLineEdit" name="leM37">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5045,10 +5087,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5059,7 +5101,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM36">
+                   <widget class="CLineEdit" name="leM36">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5073,10 +5115,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5135,7 +5177,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leX12">
+                   <widget class="CLineEdit" name="leX12">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5149,10 +5191,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5333,7 +5375,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leM42">
+                   <widget class="CLineEdit" name="leM42">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5347,10 +5389,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5361,7 +5403,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM41">
+                   <widget class="CLineEdit" name="leM41">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5375,10 +5417,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5409,7 +5451,7 @@
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="leX13">
+                   <widget class="CLineEdit" name="leX13">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5423,10 +5465,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5521,7 +5563,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leM47">
+                   <widget class="CLineEdit" name="leM47">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5535,10 +5577,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5569,7 +5611,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM46">
+                   <widget class="CLineEdit" name="leM46">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5583,10 +5625,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5683,7 +5725,7 @@
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="leX14">
+                   <widget class="CLineEdit" name="leX14">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5697,10 +5739,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5800,7 +5842,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM49">
+                   <widget class="CLineEdit" name="leM49">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5814,10 +5856,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5828,7 +5870,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM50">
+                   <widget class="CLineEdit" name="leM50">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5842,10 +5884,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5886,7 +5928,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leX15">
+                   <widget class="CLineEdit" name="leX15">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -5900,10 +5942,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -5986,7 +6028,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM20">
+                   <widget class="CLineEdit" name="leM20">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6000,10 +6042,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6024,7 +6066,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM21">
+                   <widget class="CLineEdit" name="leM21">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6038,10 +6080,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6095,7 +6137,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leX06">
+                   <widget class="CLineEdit" name="leX06">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6109,10 +6151,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6228,7 +6270,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM30">
+                   <widget class="CLineEdit" name="leM30">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6242,10 +6284,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6256,7 +6298,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM31">
+                   <widget class="CLineEdit" name="leM31">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6270,10 +6312,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6304,7 +6346,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leX10">
+                   <widget class="CLineEdit" name="leX10">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6318,10 +6360,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6398,7 +6440,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM52">
+                   <widget class="CLineEdit" name="leM52">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6412,10 +6454,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6436,7 +6478,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM53">
+                   <widget class="CLineEdit" name="leM53">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6450,10 +6492,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6464,7 +6506,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM54">
+                   <widget class="CLineEdit" name="leM54">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6478,10 +6520,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6545,7 +6587,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leX16">
+                   <widget class="CLineEdit" name="leX16">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6559,10 +6601,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6662,7 +6704,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM58">
+                   <widget class="CLineEdit" name="leM58">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6676,10 +6718,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6710,7 +6752,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM57">
+                   <widget class="CLineEdit" name="leM57">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6724,10 +6766,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6738,7 +6780,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM56">
+                   <widget class="CLineEdit" name="leM56">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6752,10 +6794,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6786,7 +6828,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leX17">
+                   <widget class="CLineEdit" name="leX17">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6800,10 +6842,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6870,7 +6912,7 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_31">
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM62">
+                   <widget class="CLineEdit" name="leM62">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6884,10 +6926,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6908,7 +6950,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM60">
+                   <widget class="CLineEdit" name="leM60">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6922,10 +6964,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -6936,7 +6978,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM61">
+                   <widget class="CLineEdit" name="leM61">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -6950,10 +6992,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7027,7 +7069,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leX18">
+                   <widget class="CLineEdit" name="leX18">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -7041,10 +7083,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7177,7 +7219,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM64">
+                   <widget class="CLineEdit" name="leM64">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                       <horstretch>0</horstretch>
@@ -7191,10 +7233,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7221,7 +7263,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leX19">
+                   <widget class="CLineEdit" name="leX19">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                       <horstretch>0</horstretch>
@@ -7235,10 +7277,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7366,7 +7408,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM72">
+                   <widget class="CLineEdit" name="leM72">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
                       <horstretch>0</horstretch>
@@ -7380,10 +7422,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7511,7 +7553,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM74">
+                   <widget class="CLineEdit" name="leM74">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
                       <horstretch>0</horstretch>
@@ -7525,10 +7567,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7656,7 +7698,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM76">
+                   <widget class="CLineEdit" name="leM76">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
                       <horstretch>0</horstretch>
@@ -7670,10 +7712,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7740,7 +7782,7 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_36">
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM69">
+                   <widget class="CLineEdit" name="leM69">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -7754,10 +7796,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7814,7 +7856,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM67">
+                   <widget class="CLineEdit" name="leM67">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -7828,10 +7870,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -7922,7 +7964,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leX20">
+                   <widget class="CLineEdit" name="leX20">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -7936,10 +7978,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -8038,7 +8080,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM70">
+                   <widget class="CLineEdit" name="leM70">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -8052,10 +8094,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -8066,7 +8108,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM68">
+                   <widget class="CLineEdit" name="leM68">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -8080,10 +8122,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -8188,7 +8230,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leX21">
+                   <widget class="CLineEdit" name="leX21">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -8202,10 +8244,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -8330,7 +8372,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM78">
+                   <widget class="CLineEdit" name="leM78">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -8344,10 +8386,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -8472,7 +8514,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM79">
+                   <widget class="CLineEdit" name="leM79">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -8486,10 +8528,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -9654,7 +9696,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM96">
+                   <widget class="CLineEdit" name="leM96">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -9668,10 +9710,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -9698,7 +9740,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM97">
+                   <widget class="CLineEdit" name="leM97">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -9712,10 +9754,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -9781,7 +9823,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leM98">
+                   <widget class="CLineEdit" name="leM98">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -9795,10 +9837,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -9825,7 +9867,7 @@
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="leM99">
+                   <widget class="CLineEdit" name="leM99">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -9839,10 +9881,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -9906,7 +9948,7 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_11">
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM91">
+                   <widget class="CLineEdit" name="leM91">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -9919,8 +9961,11 @@
                       <height>75</height>
                      </size>
                     </property>
+                    <property name="inputMask">
+                     <string>999.999999</string>
+                    </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10032,7 +10077,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM92">
+                   <widget class="CLineEdit" name="leM92">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10045,8 +10090,11 @@
                       <height>75</height>
                      </size>
                     </property>
+                    <property name="inputMask">
+                     <string>999.999999</string>
+                    </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10079,7 +10127,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leX23">
+                   <widget class="CLineEdit" name="leX23">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10092,8 +10140,11 @@
                       <height>75</height>
                      </size>
                     </property>
+                    <property name="inputMask">
+                     <string>999.999999</string>
+                    </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10210,7 +10261,7 @@
                    </widget>
                   </item>
                   <item row="4" column="4">
-                   <widget class="QLineEdit" name="leK09">
+                   <widget class="CLineEdit" name="leK09">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10224,10 +10275,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10383,7 +10434,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leK02">
+                   <widget class="CLineEdit" name="leK02">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10397,10 +10448,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10411,7 +10462,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leK04">
+                   <widget class="CLineEdit" name="leK04">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10425,10 +10476,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10459,7 +10510,7 @@
                    </widget>
                   </item>
                   <item row="5" column="1">
-                   <widget class="QLineEdit" name="leK05">
+                   <widget class="CLineEdit" name="leK05">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10473,10 +10524,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10520,7 +10571,7 @@
                    </widget>
                   </item>
                   <item row="3" column="4">
-                   <widget class="QLineEdit" name="leK08">
+                   <widget class="CLineEdit" name="leK08">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10534,10 +10585,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10568,7 +10619,7 @@
                    </widget>
                   </item>
                   <item row="5" column="4">
-                   <widget class="QLineEdit" name="leX22">
+                   <widget class="CLineEdit" name="leX22">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10582,10 +10633,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10652,7 +10703,7 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_45">
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leK45">
+                   <widget class="CLineEdit" name="leK45">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10666,10 +10717,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -10766,7 +10817,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK49">
+                   <widget class="CLineEdit" name="leK49">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -10780,10 +10831,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11074,7 +11125,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leK42">
+                   <widget class="CLineEdit" name="leK42">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11088,10 +11139,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11155,7 +11206,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK46">
+                   <widget class="CLineEdit" name="leK46">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11169,10 +11220,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11239,7 +11290,7 @@
                 <item>
                  <layout class="QGridLayout" name="gridLayout_43">
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leK43">
+                   <widget class="CLineEdit" name="leK43">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11253,10 +11304,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11353,7 +11404,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK47">
+                   <widget class="CLineEdit" name="leK47">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11367,10 +11418,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11470,7 +11521,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leK44">
+                   <widget class="CLineEdit" name="leK44">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11484,10 +11535,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11551,7 +11602,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leK48">
+                   <widget class="CLineEdit" name="leK48">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11565,10 +11616,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11684,7 +11735,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leK19">
+                   <widget class="CLineEdit" name="leK19">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11698,10 +11749,10 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11781,7 +11832,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QLineEdit" name="leM84">
+                   <widget class="CLineEdit" name="leM84">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11789,10 +11840,10 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11803,7 +11854,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM82">
+                   <widget class="CLineEdit" name="leM82">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11811,10 +11862,10 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11893,7 +11944,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM83">
+                   <widget class="CLineEdit" name="leM83">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11901,10 +11952,10 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -11931,7 +11982,7 @@
                    </widget>
                   </item>
                   <item row="4" column="1">
-                   <widget class="QLineEdit" name="leM85">
+                   <widget class="CLineEdit" name="leM85">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -11939,10 +11990,10 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -12058,7 +12109,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLineEdit" name="leM88">
+                   <widget class="CLineEdit" name="leM88">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -12066,10 +12117,10 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -12096,7 +12147,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QLineEdit" name="leM89">
+                   <widget class="CLineEdit" name="leM89">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -12104,10 +12155,10 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string/>
+                     <string>999.999999</string>
                     </property>
                     <property name="text">
-                     <string>0</string>
+                     <string>000.000000</string>
                     </property>
                     <property name="maxLength">
                      <number>10</number>
@@ -13956,6 +14007,11 @@ QTreeView::branch:open:has-children:has-siblings
    <extends>QWidget</extends>
    <header>cjournalwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>clineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

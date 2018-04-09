@@ -2,9 +2,19 @@
 //--------------------------------------------------------------------------------------
 CMatrixPurposeModel::CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent):
     QAbstractTableModel(parent),
-    m_data(data)
+    m_data(data),
+    m_column_count(0)
 {
     fillHeaderModel(m_horizontal_header);
+
+    group_t group = data.group();
+
+    for(int key: group.keys())
+    {
+        group_item_t item = group[key];
+
+        m_column_count += item.var_list.count();
+    }
 }
 //--------------------------------------------------------------------
 CMatrixPurposeModel::CMatrixPurposeModel(QAbstractTableModel* parent):
@@ -37,13 +47,13 @@ void CMatrixPurposeModel::setDataTable(CDataTable& data)
 int CMatrixPurposeModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return /*m_data.count()*/5;
+    return /*m_data.count()*/8;
 }
 //-------------------------------------------------------------------
 int CMatrixPurposeModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return /*m_data.columnCounts()*/358;
+    return /*m_data.columnCounts()*/m_column_count;
 }
 //------------------------------------------------------------------------------------------
 bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& value, int role)

@@ -48,7 +48,8 @@ SOURCES += \
     cjournalpropertymodel.cpp \
     cjournalpropertydelegate.cpp \
     HierarchicalHeaderView.cpp \
-    ProxyModelWithHeaderModels.cpp
+    ProxyModelWithHeaderModels.cpp \
+    clineedit.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -74,7 +75,8 @@ HEADERS += \
     cjournalpropertymodel.h \
     cjournalpropertydelegate.h \
     HierarchicalHeaderView.h \
-    ProxyModelWithHeaderModels.h
+    ProxyModelWithHeaderModels.h \
+    clineedit.h
 
 FORMS += \
         configuratorwindow.ui \

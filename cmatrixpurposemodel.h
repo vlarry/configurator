@@ -131,6 +131,7 @@
             CDataTable         m_data;
             QStandardItemModel m_horizontal_header;
             QStandardItemModel m_vertical_header;
+            int                m_column_count;
     };
     //--------------------------------------------------
     class CTableItemDelegate: public QStyledItemDelegate
