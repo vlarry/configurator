@@ -2882,90 +2882,29 @@ void ConfiguratorWindow::initModelTables()
         }
     }
 
-    if(query.exec("SELECT * FROM var_group")) // читаем из базы список групп
+    group_t     group  = createVariableGroup("LED");
+
+    if(!group.isEmpty())
     {
-        while(query.next())
-        {
-            QSqlQuery query_item(m_system_db);
-
-            int     id                = query.value("id").toInt();
-            QString group_name        = query.value("name").toString();
-            QString group_description = query.value("description").toString();
-
-            QVector<var_t> var_led_list;
-
-            if(query_item.exec(QString("SELECT * FROM variable WHERE group_id=%1;").arg(id)))
-            {
-                while(query_item.next())
-                {
-                    QString key         = query_item.value("key").toString();
-                    int     group_id    = query_item.value("group_id").toInt();
-                    int     bit         = query_item.value("bit").toInt();
-                    QString name        = query_item.value("name").toString();
-                    QString description = query_item.value("description").toString();
-
-                    QSqlQuery query_purpose(m_system_db);
-
-                    bool is_ok = false;
-
-                    if(query_purpose.exec(QString("SELECT io_key FROM purpose WHERE var_key = \'%1\';").arg(key)))
-                    {
-                        while(query_purpose.next())
-                        {
-                            QString val = query_purpose.value("io_key").toString();
-
-                            if(val.contains("LED"))
-                            {
-                                is_ok = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if(!is_ok)
-                        continue;
-
-                    if(name.count() > 20)
-                    {
-                        int party = name.count()/20;
-
-                        for(int i = 0; i < party; i++)
-                        {
-                            int pos = i*20;
-
-                            if(name[pos] != ' ')
-                            {
-                                int from = name.indexOf(' ', pos - 5);
-                                int to   = name.indexOf(' ', pos);
-
-                                if(from != -1)
-                                {
-                                    name.insert(from, '\n');
-                                }
-                                else if(to != -1)
-                                {
-                                    name.insert(to, '\n');
-                                }
-                            }
-                            else
-                                name.insert(pos, '\n');
-                        }
-                    }
-
-                    var_led_list << var_t({ key, group_id, bit, name, description });
-                }
-            }
-
-            m_variable_group[id] = group_item_t({ group_name, group_description, var_led_list });
-        }
+        QStringList labels = loadLabelRows("LED");
+        initTable(ui->tablewgtLedPurpose, labels, group);
     }
 
-    if(m_variables.isEmpty() || m_variable_group.isEmpty())
-        return;
+    group = createVariableGroup("DO");
 
-//    CDataTable data(rows, m_variables, m_variable_group);
+    if(!group.isEmpty())
+    {
+        QStringList labels = loadLabelRows("RELAY");
+        initTable(ui->tablewgtRelayPurpose, labels, group);
+    }
 
-//    initTable(wgt, data);
+    group = createVariableGroup("DI");
+
+    if(!group.isEmpty())
+    {
+        QStringList labels = loadLabelRows("INPUT");
+        initTable(ui->tablewgtDiscreteInputPurpose, labels, group);
+    }
 }
 //-----------------------------------------
 void ConfiguratorWindow::initEventJournal()
@@ -3282,25 +3221,19 @@ void ConfiguratorWindow::disconnectDb(QSqlDatabase* db)
 
     QSqlDatabase::removeDatabase("db");
 }
-//---------------------------------------------------------------------
-void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
+//--------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::initTable(QTableView* table, const QStringList& row_labels, group_t& group)
 {
-    CHeaderTable* header_horizontal = new CHeaderTable(Qt::Horizontal, table);
-    CHeaderTable* header_vertical   = new CHeaderTable(Qt::Vertical, table);
-
     HierarchicalHeaderView* hheader = new HierarchicalHeaderView(Qt::Horizontal, table);
-    CMatrixPurposeModel* model = new CMatrixPurposeModel(data);
+    HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
+    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group);
 
     table->setItemDelegate(new CTableItemDelegate);
     table->setHorizontalHeader(hheader);
+    table->setVerticalHeader(vheader);
     table->setModel(model);
     table->resizeColumnsToContents();
     table->resizeRowsToContents();
-
-//    for(int index: data.columnIndexListInactive(0))
-//    {
-//        table->setColumnHidden(index, true);
-//    }
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -6055,6 +5988,109 @@ void ConfiguratorWindow::convertDataHalfwordToBytes(const QVector<quint16>& sour
         dest.append(quint8(((source[i] >> 8)&0x00FF)));
         dest.append(quint8((source[i]&0x00FF)));
     }
+}
+//--------------------------------------------------------------------
+group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
+{
+    QSqlQuery query;
+    group_t   group;
+
+    if(query.exec("SELECT * FROM var_group")) // читаем из базы список групп
+    {
+        while(query.next())
+        {
+            QSqlQuery query_item(m_system_db);
+
+            int     id                = query.value("id").toInt();
+            QString group_name        = query.value("name").toString();
+            QString group_description = query.value("description").toString();
+
+            QVector<var_t> var_list;
+
+            if(query_item.exec(QString("SELECT * FROM variable WHERE group_id=%1;").arg(id)))
+            {
+                while(query_item.next())
+                {
+                    QString key         = query_item.value("key").toString();
+                    int     group_id    = query_item.value("group_id").toInt();
+                    int     bit         = query_item.value("bit").toInt();
+                    QString name        = query_item.value("name").toString();
+                    QString description = query_item.value("description").toString();
+
+                    QSqlQuery query_purpose(m_system_db);
+
+                    bool is_ok = false;
+
+                    if(query_purpose.exec(QString("SELECT io_key FROM purpose WHERE var_key = \'%1\';").arg(key)))
+                    {
+                        while(query_purpose.next())
+                        {
+                            QString val = query_purpose.value("io_key").toString();
+
+                            if(val.contains(io_key))
+                            {
+                                is_ok = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(!is_ok)
+                        continue;
+
+                    /*if(name.count() > 20)
+                    {
+                        int party = name.count()/20;
+
+                        for(int i = 0; i < party; i++)
+                        {
+                            int pos = i*20;
+
+                            if(name[pos] != ' ')
+                            {
+                                int from = name.indexOf(' ', pos - 5);
+                                int to   = name.indexOf(' ', pos);
+
+                                if(from != -1)
+                                {
+                                    name.insert(from, '\n');
+                                }
+                                else if(to != -1)
+                                {
+                                    name.insert(to, '\n');
+                                }
+                            }
+                            else
+                                name.insert(pos, '\n');
+                        }
+                    }*/
+
+                    var_list << var_t({ key, group_id, bit, name, description });
+                }
+            }
+
+            group[id] = group_item_t({ group_name, group_description, var_list });
+        }
+    }
+
+    return group;
+}
+//----------------------------------------------------------------
+QStringList ConfiguratorWindow::loadLabelRows(const QString& type)
+{
+    QStringList labels;
+
+    QSqlQuery query(QString("SELECT description FROM iodevice WHERE type = \'%1\';").arg(type));
+
+    if(query.exec())
+    {
+        while(query.next())
+        {
+            labels << query.value("description").toString();
+        }
+    }
+
+    return labels;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

@@ -12,6 +12,7 @@
     #include <QDebug>
     #include "HierarchicalHeaderView.h"
     #include "cheadertable.h"
+    #include "cmatrix.h"
     //----------
     struct var_t
     {
@@ -113,6 +114,7 @@
     {
         public:
             CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent = nullptr);
+            CMatrixPurposeModel(const QStringList& row_labels, group_t& group, QAbstractTableModel* parent = nullptr);
             CMatrixPurposeModel(QAbstractTableModel* parent = nullptr);
             void updateData();
             CDataTable& dataTable();
@@ -123,15 +125,15 @@
             int           columnCount(const QModelIndex& parent = QModelIndex()) const;
             bool          setData(const QModelIndex& index, const QVariant& value, int role);
             QVariant      data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-//            QVariant      headerData(int section, Qt::Orientation orientation, int role) const;
             Qt::ItemFlags flags(const QModelIndex& index) const;
-            void          fillHeaderModel(QStandardItemModel& headerModel);
+            void          fillHorizontalHeaderModel(QStandardItemModel& headerModel, group_t& group);
+            void          fillVerticalHeaderModel(QStandardItemModel& headerModel, const QStringList& labels);
 
         private:
             CDataTable         m_data;
+            CMatrix            m_matrix;
             QStandardItemModel m_horizontal_header;
             QStandardItemModel m_vertical_header;
-            int                m_column_count;
     };
     //--------------------------------------------------
     class CTableItemDelegate: public QStyledItemDelegate

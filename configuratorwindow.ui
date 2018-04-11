@@ -1138,7 +1138,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -2218,9 +2218,9 @@
           </layout>
          </widget>
          <widget class="QWidget" name="pageMTZ1">
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_6">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
               <widget class="QGroupBox" name="gboxProtectionPropertiesMTZ1">
                <property name="sizePolicy">
@@ -2464,14 +2464,14 @@
               </widget>
              </item>
              <item>
-              <spacer name="verticalSpacer_5">
+              <spacer name="horizontalSpacer_55">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>20</width>
-                 <height>40</height>
+                 <width>40</width>
+                 <height>20</height>
                 </size>
                </property>
               </spacer>
@@ -2479,14 +2479,17 @@
             </layout>
            </item>
            <item>
-            <widget class="QCustomPlot" name="wgtChartMTZ" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
              </property>
-            </widget>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>209</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -13996,12 +13999,6 @@ QTreeView::branch:open:has-children:has-siblings
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>QCustomPlot</class>
-   <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>CJournalWidget</class>
    <extends>QWidget</extends>

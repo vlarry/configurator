@@ -440,7 +440,7 @@
             void connectSystemDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
-            void initTable(QTableView* table, CDataTable& data);
+            void initTable(QTableView* table, const QStringList& row_labels, group_t& group);
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CDataUnitType& unit);
             void displaySettingResponse(CDataUnitType& unit);
@@ -475,6 +475,8 @@
             DeviceMenuItemType  menuIndex();
             QDateTime           unpackDateTime(QVector<quint8>& data);
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
+            group_t             createVariableGroup(const QString& io_key);
+            QStringList         loadLabelRows(const QString& type);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
