@@ -11,7 +11,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
     m_versionWidget(nullptr),
-    m_variables(QVector<CColumn::column_t>()),
     m_timer_synchronization(nullptr),
     m_status_bar(nullptr),
     m_watcher(nullptr),
@@ -753,17 +752,17 @@ void ConfiguratorWindow::protectionSignalStartWrite()
         if(key.isEmpty())
             continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < data.count())
-        {
-            int item_pos = box->currentIndex();
+//        if(val_pos < data.count())
+//        {
+//            int item_pos = box->currentIndex();
 
-            if(item_pos == 1)
-                data[val_pos] |= (1 << bit_pos);
-        }
+//            if(item_pos == 1)
+//                data[val_pos] |= (1 << bit_pos);
+//        }
     }
 
     QVector<quint16> tdata;
@@ -960,17 +959,17 @@ void ConfiguratorWindow::automationAPVSignalStartWrite()
         if(key.isEmpty())
             continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < data.count())
-        {
-            int item_pos = box->currentIndex();
+//        if(val_pos < data.count())
+//        {
+//            int item_pos = box->currentIndex();
 
-            if(item_pos == 1)
-                data[val_pos] |= (1 << bit_pos);
-        }
+//            if(item_pos == 1)
+//                data[val_pos] |= (1 << bit_pos);
+//        }
     }
 
     QVector<quint16> tdata;
@@ -2865,24 +2864,7 @@ void ConfiguratorWindow::initPurposeBind()
 //----------------------------------------
 void ConfiguratorWindow::initModelTables()
 {
-    QSqlQuery query(m_system_db);
-
-    if(query.exec("SELECT * FROM variable;"))
-    {
-        while(query.next())
-        {
-            QString key         = query.value(tr("key")).toString();
-            int     bit         = query.value("bit").toInt();
-            QString name        = query.value(tr("name")).toString();
-            QString description = query.value(tr("description")).toString();
-
-            CColumn::column_t column = qMakePair(key, qMakePair(name, description));
-            m_variables << column;
-            m_variable_bits[key] = bit; // список позиций переменных в битовом массиве (для сигналов пуска)
-        }
-    }
-
-    group_t     group  = createVariableGroup("LED");
+    group_t group = createVariableGroup("LED");
 
     if(!group.isEmpty())
     {
@@ -3636,17 +3618,17 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         if(key.isEmpty())
             continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < tdata.count())
-        {
-            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+//        if(val_pos < tdata.count())
+//        {
+//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-            if(item_pos < box->count())
-                box->setCurrentIndex(item_pos);
-        }
+//            if(item_pos < box->count())
+//                box->setCurrentIndex(item_pos);
+//        }
     }
 }
 //------------------------------------------------------------------------------------
@@ -3676,17 +3658,17 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
         if(key.isEmpty())
             continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < tdata.count())
-        {
-            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+//        if(val_pos < tdata.count())
+//        {
+//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-            if(item_pos < box->count())
-                box->setCurrentIndex(item_pos);
-        }
+//            if(item_pos < box->count())
+//                box->setCurrentIndex(item_pos);
+//        }
     }
 }
 //---------------------------------------------------------------------------------------
@@ -4839,7 +4821,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
-        fileNameDefault     = "inputs";
+        fileNameDefault     = "input";
         typeName            = "INPUT";
         typeNameDescription = tr("Дискретные входы");
 
@@ -5889,37 +5871,6 @@ QTableView* ConfiguratorWindow::tableMatrixFromKeys(const QString& first, const 
     }
 
     return nullptr;
-}
-//---------------------------------------------------------------------
-CColumn::column_t ConfiguratorWindow::columnFromKey(const QString& key)
-{
-    if(m_variables.isEmpty())
-        return CColumn::column_t();
-
-    for(int i = 0; i < m_variables.count(); i++)
-    {
-        if(m_variables[i].first.toUpper() == key.toUpper())
-            return m_variables[i];
-    }
-
-    return CColumn::column_t();
-}
-/*!
- * \brief ConfiguratorWindow::indexColumnFromKey
- * \param  key ключ (имя переменной)
- * \return позиция ключа в списке переменных
- *
- * Метод ищет позицию ключа в списке переменных, т.е. абсолютная позиция переменной. Если ключ не найден, то возвращается -1.
- */
-int ConfiguratorWindow::indexColumnFromKey(const QString& key)
-{
-    for(int i = 0; i < m_variables.count(); i++)
-    {
-        if(m_variables[i].first.toUpper() == key.toUpper())
-            return i;
-    }
-
-    return -1;
 }
 //--------------------------------------------------------------------
 ConfiguratorWindow::DeviceMenuItemType ConfiguratorWindow::menuIndex()

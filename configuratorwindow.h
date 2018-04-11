@@ -470,8 +470,6 @@
             QPoint              indexPurposeKey(const QString& first, const QString& last);
             QVector<int>        indexVariableFromKey(const QStringList& variables, const QString& key);
             QTableView*         tableMatrixFromKeys(const QString& first, const QString& last);
-            CColumn::column_t   columnFromKey(const QString& key);
-            int                 indexColumnFromKey(const QString& key);
             DeviceMenuItemType  menuIndex();
             QDateTime           unpackDateTime(QVector<quint8>& data);
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
@@ -493,7 +491,6 @@
             QSqlDatabase                     m_system_db;
             cell_t                           m_cell_list;
             purpose_t                        m_purpose_list;
-            QVector<CColumn::column_t>       m_variables;
             QTime                            m_time_process;
             QTimer*                          m_timer_synchronization;
             CStatusBar*                      m_status_bar;
@@ -507,7 +504,5 @@
             QMap<QString, journal_set_t>     m_journal_set; // установки журналов
             device_menu_item_key_t           m_menu_items; // карта пунктов меню устройства
             QVector<quint16>                 m_calculate_buffer; // буфер расчетных величи (два запроса, поэтому необходимо клеить)
-            variable_bit_t                   m_variable_bits;
-            group_t                          m_variable_group;
     };
 #endif // CONFIGURATORWINDOW_H
