@@ -1138,7 +1138,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -1240,16 +1240,16 @@
                        <locale language="English" country="UnitedStates"/>
                       </property>
                       <property name="inputMask">
-                       <string>999.999999</string>
+                       <string/>
                       </property>
                       <property name="text">
-                       <string>000.000000</string>
+                       <string/>
                       </property>
                       <property name="maxLength">
-                       <number>10</number>
+                       <number>32767</number>
                       </property>
                       <property name="cursorPosition">
-                       <number>10</number>
+                       <number>0</number>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
@@ -1271,13 +1271,13 @@
                        </size>
                       </property>
                       <property name="inputMask">
-                       <string>999.999999</string>
+                       <string/>
                       </property>
                       <property name="text">
-                       <string>000.000000</string>
+                       <string/>
                       </property>
                       <property name="maxLength">
-                       <number>10</number>
+                       <number>32767</number>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
@@ -1299,13 +1299,13 @@
                        </size>
                       </property>
                       <property name="inputMask">
-                       <string>999.999999</string>
+                       <string/>
                       </property>
                       <property name="text">
-                       <string>000.000000</string>
+                       <string/>
                       </property>
                       <property name="maxLength">
-                       <number>10</number>
+                       <number>32767</number>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
@@ -1507,13 +1507,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1535,13 +1535,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1563,13 +1563,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1591,13 +1591,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1619,13 +1619,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1647,13 +1647,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1675,13 +1675,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1703,13 +1703,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1731,13 +1731,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1775,13 +1775,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1819,13 +1819,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1895,13 +1895,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1923,13 +1923,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1951,13 +1951,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1979,13 +1979,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -2055,13 +2055,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -2083,13 +2083,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -2127,13 +2127,13 @@
                   </size>
                  </property>
                  <property name="inputMask">
-                  <string>999.999999</string>
+                  <string/>
                  </property>
                  <property name="text">
-                  <string>000.000000</string>
+                  <string/>
                  </property>
                  <property name="maxLength">
-                  <number>10</number>
+                  <number>32767</number>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -2313,13 +2313,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2373,13 +2373,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2401,13 +2401,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2445,13 +2445,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2539,13 +2539,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2577,13 +2577,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2605,13 +2605,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2691,13 +2691,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2775,13 +2775,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2813,13 +2813,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -2957,13 +2957,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3025,13 +3025,13 @@
                 </sizepolicy>
                </property>
                <property name="inputMask">
-                <string>999.999999</string>
+                <string/>
                </property>
                <property name="text">
-                <string>000.000000</string>
+                <string/>
                </property>
                <property name="maxLength">
-                <number>10</number>
+                <number>32767</number>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3088,13 +3088,13 @@
                 </sizepolicy>
                </property>
                <property name="inputMask">
-                <string>999.999999</string>
+                <string/>
                </property>
                <property name="text">
-                <string>000.000000</string>
+                <string/>
                </property>
                <property name="maxLength">
-                <number>10</number>
+                <number>32767</number>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3151,13 +3151,13 @@
                 </sizepolicy>
                </property>
                <property name="inputMask">
-                <string>999.999999</string>
+                <string/>
                </property>
                <property name="text">
-                <string>000.000000</string>
+                <string/>
                </property>
                <property name="maxLength">
-                <number>10</number>
+                <number>32767</number>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3214,13 +3214,13 @@
                 </sizepolicy>
                </property>
                <property name="inputMask">
-                <string>999.999999</string>
+                <string/>
                </property>
                <property name="text">
-                <string>000.000000</string>
+                <string/>
                </property>
                <property name="maxLength">
-                <number>10</number>
+                <number>32767</number>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3277,13 +3277,13 @@
                 </sizepolicy>
                </property>
                <property name="inputMask">
-                <string>999.999999</string>
+                <string/>
                </property>
                <property name="text">
-                <string>000.000000</string>
+                <string/>
                </property>
                <property name="maxLength">
-                <number>10</number>
+                <number>32767</number>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3340,13 +3340,13 @@
                 </sizepolicy>
                </property>
                <property name="inputMask">
-                <string>999.999999</string>
+                <string/>
                </property>
                <property name="text">
-                <string>000.000000</string>
+                <string/>
                </property>
                <property name="maxLength">
-                <number>10</number>
+                <number>32767</number>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3403,13 +3403,13 @@
                 </sizepolicy>
                </property>
                <property name="inputMask">
-                <string>999.999999</string>
+                <string/>
                </property>
                <property name="text">
-                <string>000.000000</string>
+                <string/>
                </property>
                <property name="maxLength">
-                <number>10</number>
+                <number>32767</number>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3482,13 +3482,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3510,13 +3510,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>3</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3538,13 +3538,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3614,13 +3614,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3652,13 +3652,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3720,13 +3720,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3804,13 +3804,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3875,13 +3875,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -3923,13 +3923,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4050,13 +4050,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4078,13 +4078,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4126,13 +4126,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4243,13 +4243,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4301,13 +4301,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>3</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4339,13 +4339,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4367,13 +4367,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4395,13 +4395,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4443,13 +4443,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4547,13 +4547,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4585,13 +4585,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4636,13 +4636,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4664,13 +4664,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4712,13 +4712,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>3</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4760,13 +4760,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4850,13 +4850,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4942,13 +4942,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -4976,13 +4976,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5090,13 +5090,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5118,13 +5118,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5194,13 +5194,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5392,13 +5392,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5420,13 +5420,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5468,13 +5468,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5580,13 +5580,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5628,13 +5628,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5742,13 +5742,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5859,13 +5859,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5887,13 +5887,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -5945,13 +5945,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6045,13 +6045,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6083,13 +6083,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6154,13 +6154,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6287,13 +6287,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6315,13 +6315,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6363,13 +6363,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6457,13 +6457,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6495,13 +6495,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6523,13 +6523,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6604,13 +6604,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6721,13 +6721,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6769,13 +6769,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6797,13 +6797,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6845,13 +6845,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6929,13 +6929,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6967,13 +6967,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -6995,13 +6995,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7086,13 +7086,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7236,13 +7236,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7280,13 +7280,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7425,13 +7425,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7570,13 +7570,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7715,13 +7715,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7799,13 +7799,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7873,13 +7873,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -7981,13 +7981,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -8097,13 +8097,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -8125,13 +8125,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -8247,13 +8247,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -8389,13 +8389,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -8531,13 +8531,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -9713,13 +9713,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -9757,13 +9757,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -9840,13 +9840,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -9884,13 +9884,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -9965,13 +9965,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10094,13 +10094,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10144,13 +10144,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10278,13 +10278,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10451,13 +10451,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10479,13 +10479,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10527,13 +10527,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10588,13 +10588,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10636,13 +10636,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10720,13 +10720,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -10834,13 +10834,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11142,13 +11142,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11223,13 +11223,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11307,13 +11307,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11421,13 +11421,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11538,13 +11538,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11619,13 +11619,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11752,13 +11752,13 @@
                      </size>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11843,13 +11843,13 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11865,13 +11865,13 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11955,13 +11955,13 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -11993,13 +11993,13 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -12120,13 +12120,13 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -12158,13 +12158,13 @@
                      </sizepolicy>
                     </property>
                     <property name="inputMask">
-                     <string>999.999999</string>
+                     <string/>
                     </property>
                     <property name="text">
-                     <string>000.000000</string>
+                     <string/>
                     </property>
                     <property name="maxLength">
-                     <number>10</number>
+                     <number>32767</number>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>

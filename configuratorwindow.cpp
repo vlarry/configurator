@@ -59,6 +59,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initDeviceCode(); // инициализация списка кодов устройств
     initEventJournal(); // инициализация параметров журнала событий
     initCrashJournal(); // инициализация параметров журнала аварий
+    initLineEditValidator();
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -3161,7 +3162,53 @@ void ConfiguratorWindow::initJournals()
     m_journal_set["CRASH"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
                                                                  journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
     m_journal_set["EVENT"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
-                                                                 journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
+                                             journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
+}
+/*!
+ * \brief ConfiguratorWindow::initLineEditValidator
+ * Применение валидатора для полей ввода CLineEdit
+ */
+void ConfiguratorWindow::initLineEditValidator()
+{
+    QObjectList root_obj_list = ui->stwgtMain->children();
+
+    for(QObject* obj: root_obj_list)
+    {
+        if(obj->isWidgetType() && obj->metaObject()->className() == QString("QWidget"))
+        {
+            QWidget* root_wgt = qobject_cast<QWidget*>(obj);
+
+            QObjectList root_wgt_list = root_wgt->children();
+
+            for(QObject* child_obj: root_wgt_list)
+            {
+                if(child_obj->isWidgetType())
+                {
+                    if(child_obj->metaObject()->className() == QString("CLineEdit"))
+                    {
+                        setLineEditValidator(child_obj);
+                    }
+                    else if(child_obj->metaObject()->className() == QString("QGroupBox"))
+                    {
+                        QGroupBox* root_groupbox = qobject_cast<QGroupBox*>(child_obj);
+
+                        QObjectList root_groupbox_list = root_groupbox->children();
+
+                        for(QObject* child_groupbox_obj: root_groupbox_list)
+                        {
+                            if(child_groupbox_obj->isWidgetType())
+                            {
+                                if(child_groupbox_obj->metaObject()->className() == QString("CLineEdit"))
+                                {
+                                    setLineEditValidator(child_groupbox_obj);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -5651,6 +5698,27 @@ void ConfiguratorWindow::synchronization(bool state)
     {
         if(m_timer_synchronization->isActive())
             m_timer_synchronization->stop();
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::setLineEditValidator
+ * \param object Объект к которому применяется валидатор (class CLineEdit)
+ */
+void ConfiguratorWindow::setLineEditValidator(QObject* object)
+{
+    CLineEdit* lineEdit = qobject_cast<CLineEdit*>(object);
+
+    QString str = lineEdit->objectName().toUpper();
+
+    if(str == "LEK20" || str == "LEK21" || str == "LEK29")
+    {
+        lineEdit->setValidator(new QIntValidator(0, 360));
+        lineEdit->setText("0");
+    }
+    else
+    {
+        lineEdit->setValidator(new QDoubleValidator(0, 100, 6));
+        lineEdit->setText("0.000000");
     }
 }
 /*!

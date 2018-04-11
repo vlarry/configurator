@@ -42,6 +42,7 @@
     #include "cprogressbarwidget.h"
     #include "cfilterdialog.h"
     #include "cjournalwidget.h"
+    #include "clineedit.h"
     #include "HierarchicalHeaderView.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
@@ -437,6 +438,7 @@
             void initCrashJournal();
             void initDeviceCode();
             void initJournals();
+            void initLineEditValidator();
             void connectSystemDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
@@ -462,6 +464,7 @@
             void readShiftPrtEventJournal();
             void readJournalCount();
             void synchronization(bool state = false);
+            void setLineEditValidator(QObject* object);
             int  recordCountDb(QSqlDatabase* db, const QString& table_name, const QString& parameter, const QString& value,
                                                  const QString& subparamter = "", const QStringList& range = QStringList());
             QString             recordLastDb(QSqlDatabase* db, const QString& table_name, const QString& parameter);
