@@ -54,6 +54,11 @@ CDataTable& CMatrixPurposeModel::dataTable()
 {
     return m_data;
 }
+//------------------------------------------
+CMatrix& CMatrixPurposeModel::dataTableNew()
+{
+    return m_matrix;
+}
 //------------------------------------------------------
 void CMatrixPurposeModel::setDataTable(CDataTable& data)
 {
@@ -148,8 +153,6 @@ void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerMo
 
         if(var_list.isEmpty())
             continue;
-
-//        int vars = 0;
 
         for(var_t var: var_list)
         {

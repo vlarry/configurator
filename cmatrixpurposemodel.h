@@ -118,6 +118,7 @@
             CMatrixPurposeModel(QAbstractTableModel* parent = nullptr);
             void updateData();
             CDataTable& dataTable();
+            CMatrix&    dataTableNew();
             void setDataTable(CDataTable& data);
 
         private:

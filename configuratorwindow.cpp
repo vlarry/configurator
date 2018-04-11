@@ -4730,6 +4730,7 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
 void ConfiguratorWindow::exportPurposeToJSON()
 {
     CDataTable data;
+    CMatrix    matrix;
     QString    fileNameDefault;
     QString    typeName;
 
@@ -4738,23 +4739,26 @@ void ConfiguratorWindow::exportPurposeToJSON()
     if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTableNew();
         typeName        = "LED";
         fileNameDefault = "led";
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTableNew();
         typeName        = "INPUT";
         fileNameDefault = "input";
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
     {
         data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTableNew();
         typeName        = "RELAY";
         fileNameDefault = "relay";
     }
 
-    if(data.count() == 0)
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
         return;
 
     QDir dir;
@@ -4785,34 +4789,36 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     json["type"] = typeName;
 
-    for(int i = 0; i < data.columnCounts(); i++)
+    for(int i = 0; i < matrix.columnCount(); i++)
     {
         QJsonObject tcolumnKeyObj;
 
-        tcolumnKeyObj["key"] = data.columnData(i).first;
+        tcolumnKeyObj["key"] = matrix[0][i].key();
 
         columnKeyArr.append(tcolumnKeyObj);
     }
 
     json["headers"] = columnKeyArr;
 
-    for(int i = 0; i < data.count(); i++)
+    for(int i = 0; i < matrix.rowCount(); i++)
     {
         QJsonObject trowCurObj;
         QJsonArray  columnArr;
 
-        for(int j = 0; j < data.columnCounts(); j++)
+        for(int j = 0; j < matrix.columnCount(); j++)
         {
             QJsonObject tcolumnObj;
 
-            tcolumnObj["status"] = data[i][j].status();
-            tcolumnObj["state"]  = data[i][j].state();
+            tcolumnObj["state"]       = matrix[i][j].state();
+            tcolumnObj["bit"]         = matrix[i][j].bit();
+            tcolumnObj["key"]         = matrix[i][j].key();
+            tcolumnObj["name"]        = matrix[i][j].name();
+            tcolumnObj["description"] = matrix[i][j].description();
 
             columnArr.append(tcolumnObj);
         }
 
-        trowCurObj["key"]     = data[i].key();
-        trowCurObj["name"]    = data[i].header();
+        trowCurObj["name"]    = matrix[i].name();
         trowCurObj["columns"] = columnArr;
 
         rowArr.append(trowCurObj);
