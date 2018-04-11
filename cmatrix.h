@@ -9,7 +9,7 @@
     {
         public:
             CColumnNew();
-            CColumnNew(int bit, const QString& key, const QString& name, const QString& description);
+            CColumnNew(int bit, bool state, const QString& key, const QString& name, const QString& description);
 
             int     bit() const;
             QString key() const;
@@ -64,6 +64,7 @@
 
         public:
             CMatrix();
+            CMatrix(row_t& rows, int columnCount);
 
             void addRow(CRowNew& row);
 

@@ -21,7 +21,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& row_labels, group_t&
 
         for(var_t& var: item.var_list)
         {
-            columns << CColumnNew(var.bit, var.key, var.name, var.description);
+            columns << CColumnNew(var.bit, false, var.key, var.name, var.description);
         }
     }
 
@@ -65,6 +65,11 @@ void CMatrixPurposeModel::setDataTable(CDataTable& data)
     m_data = data;
 
     updateData();
+}
+//--------------------------------------------------------
+void CMatrixPurposeModel::setDataTableNew(CMatrix& matrix)
+{
+    m_matrix = matrix;
 }
 //----------------------------------------------------------------
 int CMatrixPurposeModel::rowCount(const QModelIndex& parent) const

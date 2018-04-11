@@ -7,6 +7,14 @@ CMatrix::CMatrix():
 {
 
 }
+//------------------------------------------------------
+CMatrix::CMatrix(CMatrix::row_t& rows, int columnCount):
+    m_rows(rows),
+    m_rowCount(rows.count()),
+    m_columnCount(columnCount)
+{
+
+}
 //--------------------------------
 void CMatrix::addRow(CRowNew& row)
 {
@@ -58,10 +66,10 @@ CColumnNew::CColumnNew():
 {
 
 }
-//---------------------------------------------------------------------------------------------------
-CColumnNew::CColumnNew(int bit, const QString& key, const QString& name, const QString& description):
+//---------------------------------------------------------------------------------------------------------------
+CColumnNew::CColumnNew(int bit, bool state, const QString& key, const QString& name, const QString& description):
     m_bit(bit),
-    m_state(false),
+    m_state(state),
     m_key(key),
     m_name(name),
     m_description(description)

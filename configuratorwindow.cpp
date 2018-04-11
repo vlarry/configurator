@@ -4190,13 +4190,13 @@ void ConfiguratorWindow::clearIOTable()
     if(!model)
         return;
 
-    CDataTable& data = model->dataTable();
+    CMatrix& matrix = model->dataTableNew();
 
-    for(int i = 0; i < data.count(); i++)
+    for(int i = 0; i < matrix.rowCount(); i++)
     {
-        for(int j = 0; j < data.columnCounts(); j++)
+        for(int j = 0; j < matrix.columnCount(); j++)
         {
-            data[i][j].setState(false);
+            matrix[i][j].setState(false);
         }
     }
 
@@ -4785,20 +4785,8 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     QJsonObject json;
     QJsonArray  rowArr;
-    QJsonArray  columnKeyArr;
 
     json["type"] = typeName;
-
-    for(int i = 0; i < matrix.columnCount(); i++)
-    {
-        QJsonObject tcolumnKeyObj;
-
-        tcolumnKeyObj["key"] = matrix[0][i].key();
-
-        columnKeyArr.append(tcolumnKeyObj);
-    }
-
-    json["headers"] = columnKeyArr;
 
     for(int i = 0; i < matrix.rowCount(); i++)
     {
@@ -4898,29 +4886,13 @@ void ConfiguratorWindow::importPurposeFromJSON()
         return;
     }
 
-    QJsonArray headerArr = rootObj.value("headers").toArray(); // получение массива данных - заголовки колонок
-
-    if(headerArr.isEmpty())
-        return;
-
-    QVector<CColumn::column_t> headers;
-
-    for(int i = 0; i < headerArr.count(); i++)
-    {
-        QJsonObject headerObj = headerArr[i].toObject();
-
-        if(headerObj.isEmpty())
-            continue;
-
-        headers << columnFromKey(headerObj["key"].toString());
-    }
-
     QJsonArray dataArr = rootObj.value("data").toArray(); // получение массива данных - строки
 
     if(dataArr.isEmpty())
         return;
 
-    QVector<CRow> rows;
+    CMatrix::row_t rows;
+    int            columnCount = 0;
 
     for(int i = 0; i < dataArr.count(); i++)
     {
@@ -4934,22 +4906,25 @@ void ConfiguratorWindow::importPurposeFromJSON()
         if(colArr.isEmpty())
             continue;
 
-        QVector<CColumn> columns;
+        CRowNew::column_t columns;
 
         for(int j = 0; j < colArr.count(); j++)
         {
             QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
 
-            columns << CColumn(colObj["state"].toBool(), colObj["status"].toBool());
+            columns << CColumnNew(colObj["bit"].toInt(), colObj["state"].toBool(), colObj["key"].toString(),
+                                  colObj["name"].toString(), colObj["description"].toString());
         }
 
-        rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);
+        rows << CRowNew(rowObj["name"].toString(), columns);
+
+        columnCount = columns.count();
     }
 
-    CDataTable dataTable(rows, headers);
+    CMatrix matrix(rows, columnCount);
 
     if(model)
-        model->setDataTable(dataTable);
+        model->setDataTableNew(matrix);
 }
 //--------------------------------------------------------------
 void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
