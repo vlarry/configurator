@@ -42,6 +42,8 @@
     #include "cprogressbarwidget.h"
     #include "cfilterdialog.h"
     #include "cjournalwidget.h"
+    #include "clineedit.h"
+    #include "HierarchicalHeaderView.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     //-----------------------------------------------------
@@ -181,16 +183,16 @@
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS  = 5022
             };
             /*!
-             * \brief device_menu_item_key_t
-             * Карта ключей QMap<номер пункта меню, номер в стеке виджетов>
-             */
-            typedef QMap<DeviceMenuItemType, int> device_menu_item_key_t;
-            /*!
              * \brief variable_bit_t
              *
              * Список положений переменных в битовом массиве
              */
             typedef QMap<QString, int> variable_bit_t;
+            /*!
+             * \brief device_menu_item_key_t
+             * Карта ключей QMap<номер пункта меню, номер в стеке виджетов>
+             */
+            typedef QMap<DeviceMenuItemType, int> device_menu_item_key_t;
             /*!
              * \brief The journal_address_t struct
              *
@@ -436,10 +438,11 @@
             void initCrashJournal();
             void initDeviceCode();
             void initJournals();
+            void initLineEditValidator();
             void connectSystemDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
-            void initTable(QTableView* table, CDataTable& data);
+            void initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group);
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CDataUnitType& unit);
             void displaySettingResponse(CDataUnitType& unit);
@@ -461,6 +464,7 @@
             void readShiftPrtEventJournal();
             void readJournalCount();
             void synchronization(bool state = false);
+            void setLineEditValidator(QObject* object);
             int  recordCountDb(QSqlDatabase* db, const QString& table_name, const QString& parameter, const QString& value,
                                                  const QString& subparamter = "", const QStringList& range = QStringList());
             QString             recordLastDb(QSqlDatabase* db, const QString& table_name, const QString& parameter);
@@ -469,11 +473,12 @@
             QPoint              indexPurposeKey(const QString& first, const QString& last);
             QVector<int>        indexVariableFromKey(const QStringList& variables, const QString& key);
             QTableView*         tableMatrixFromKeys(const QString& first, const QString& last);
-            CColumn::column_t   columnFromKey(const QString& key);
-            int                 indexColumnFromKey(const QString& key);
             DeviceMenuItemType  menuIndex();
             QDateTime           unpackDateTime(QVector<quint8>& data);
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
+            group_t             createVariableGroup(const QString& io_key);
+            QVector<QPair<QString, QString> > loadLabelRows(const QString& type);
+            QVector<QString>    loadVaribleByType(const QString& type);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
@@ -490,7 +495,6 @@
             QSqlDatabase                     m_system_db;
             cell_t                           m_cell_list;
             purpose_t                        m_purpose_list;
-            QVector<CColumn::column_t>       m_variables;
             QTime                            m_time_process;
             QTimer*                          m_timer_synchronization;
             CStatusBar*                      m_status_bar;

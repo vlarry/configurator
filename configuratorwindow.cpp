@@ -11,7 +11,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
     m_versionWidget(nullptr),
-    m_variables(QVector<CColumn::column_t>()),
     m_timer_synchronization(nullptr),
     m_status_bar(nullptr),
     m_watcher(nullptr),
@@ -60,6 +59,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initDeviceCode(); // инициализация списка кодов устройств
     initEventJournal(); // инициализация параметров журнала событий
     initCrashJournal(); // инициализация параметров журнала аварий
+    initLineEditValidator();
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -2865,86 +2865,41 @@ void ConfiguratorWindow::initPurposeBind()
 //----------------------------------------
 void ConfiguratorWindow::initModelTables()
 {
-    QSqlQuery query(m_system_db);
+    QSqlQuery query("SELECT key, bit FROM variable;");
 
-    if(query.exec("SELECT * FROM variable;"))
+    if(query.exec())
     {
         while(query.next())
         {
-            QString key         = query.value(tr("key")).toString();
-            int     bit         = query.value("bit").toInt();
-            QString name        = query.value(tr("name")).toString();
-            QString description = query.value(tr("description")).toString();
+            QString key = query.value("key").toString();
+            int     bit = query.value("bit").toInt();
 
-            CColumn::column_t column = qMakePair(key, qMakePair(name, description));
-            m_variables << column;
-            m_variable_bits[key] = bit; // список позиций переменных в битовом массиве (для сигналов пуска)
+            m_variable_bits[key] = bit;
         }
     }
 
-    if(m_variables.isEmpty())
-        return;
+    group_t group = createVariableGroup("LED");
 
-    QList<QTableView*> view_list = QList<QTableView*>() << ui->tablewgtLedPurpose << ui->tablewgtDiscreteInputPurpose
-                                                        << ui->tablewgtRelayPurpose << ui->tablewgtKeyboardPurpose;
-
-    for(QTableView* wgt: view_list)
+    if(!group.isEmpty())
     {
-        QString first = "";
-        QString last  = "";
+        QVector<QPair<QString, QString> > labels = loadLabelRows("LED");
+        initTable(ui->tablewgtLedPurpose, labels, group);
+    }
 
-        if(wgt == ui->tablewgtLedPurpose)
-        {
-            first = tr("LED1");
-            last  = tr("LED8");
-        }
-        else if(wgt == ui->tablewgtDiscreteInputPurpose)
-        {
-            first = tr("DI01");
-            last  = tr("DI20");
-        }
-        else if(wgt == ui->tablewgtRelayPurpose)
-        {
-            first = tr("DO1");
-            last  = tr("DO13");
-        }
-        else if(wgt == ui->tablewgtKeyboardPurpose)
-        {
-            break; // заглушка
-        }
+    group = createVariableGroup("DO");
 
-        if(first.isEmpty() || last.isEmpty())
-            break;
+    if(!group.isEmpty())
+    {
+        QVector<QPair<QString, QString> > labels = loadLabelRows("RELAY");
+        initTable(ui->tablewgtRelayPurpose, labels, group);
+    }
 
-        QPoint index = indexPurposeKey(first, last);
+    group = createVariableGroup("DI");
 
-        if(index.x() == -1 || index.y() == -1)
-            break;
-
-        QVector<CRow> rows;
-
-        QStringList columnList;
-
-        for(CColumn::column_t& column: m_variables)
-        {
-            columnList << column.first;
-        }
-
-        for(int i = index.x(); i <= index.y(); i++)
-        {
-            QVector<int> indexes = indexVariableFromKey(columnList, m_purpose_list[i].first);
-            CRow row(m_purpose_list[i].first, m_purpose_list[i].second.second.first, m_variables.count());
-
-            row.setActiveColumnList(indexes);
-            rows.append(row);
-        }
-
-        if(rows.isEmpty())
-            return;
-
-        CDataTable data(rows, m_variables);
-
-        initTable(wgt, data);
+    if(!group.isEmpty())
+    {
+        QVector<QPair<QString, QString> > labels = loadLabelRows("INPUT");
+        initTable(ui->tablewgtDiscreteInputPurpose, labels, group);
     }
 }
 //-----------------------------------------
@@ -3220,7 +3175,53 @@ void ConfiguratorWindow::initJournals()
     m_journal_set["CRASH"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
                                                                  journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
     m_journal_set["EVENT"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
-                                                                 journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
+                                             journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
+}
+/*!
+ * \brief ConfiguratorWindow::initLineEditValidator
+ * Применение валидатора для полей ввода CLineEdit
+ */
+void ConfiguratorWindow::initLineEditValidator()
+{
+    QObjectList root_obj_list = ui->stwgtMain->children();
+
+    for(QObject* obj: root_obj_list)
+    {
+        if(obj->isWidgetType() && obj->metaObject()->className() == QString("QWidget"))
+        {
+            QWidget* root_wgt = qobject_cast<QWidget*>(obj);
+
+            QObjectList root_wgt_list = root_wgt->children();
+
+            for(QObject* child_obj: root_wgt_list)
+            {
+                if(child_obj->isWidgetType())
+                {
+                    if(child_obj->metaObject()->className() == QString("CLineEdit"))
+                    {
+                        setLineEditValidator(child_obj);
+                    }
+                    else if(child_obj->metaObject()->className() == QString("QGroupBox"))
+                    {
+                        QGroupBox* root_groupbox = qobject_cast<QGroupBox*>(child_obj);
+
+                        QObjectList root_groupbox_list = root_groupbox->children();
+
+                        for(QObject* child_groupbox_obj: root_groupbox_list)
+                        {
+                            if(child_groupbox_obj->isWidgetType())
+                            {
+                                if(child_groupbox_obj->metaObject()->className() == QString("CLineEdit"))
+                                {
+                                    setLineEditValidator(child_groupbox_obj);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -3262,26 +3263,19 @@ void ConfiguratorWindow::disconnectDb(QSqlDatabase* db)
 
     QSqlDatabase::removeDatabase("db");
 }
-//---------------------------------------------------------------------
-void ConfiguratorWindow::initTable(QTableView* table, CDataTable& data)
+//------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group)
 {
-    CHeaderTable* header_horizontal = new CHeaderTable(Qt::Horizontal, table);
-    CHeaderTable* header_vertical   = new CHeaderTable(Qt::Vertical, table);
-
-    table->setHorizontalHeader(header_horizontal);
-    table->setVerticalHeader(header_vertical);
-
-    CMatrixPurposeModel* model = new CMatrixPurposeModel(data);
+    HierarchicalHeaderView* hheader = new HierarchicalHeaderView(Qt::Horizontal, table);
+    HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
+    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group);
 
     table->setItemDelegate(new CTableItemDelegate);
+    table->setHorizontalHeader(hheader);
+    table->setVerticalHeader(vheader);
     table->setModel(model);
     table->resizeColumnsToContents();
     table->resizeRowsToContents();
-
-    for(int index: data.columnIndexListInactive(0))
-    {
-        table->setColumnHidden(index, true);
-    }
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -3445,6 +3439,18 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     QString first = unit.property(tr("FIRST")).toString(); // получаем первый ключ
     QString last  = unit.property(tr("LAST")).toString();  // получаем второй ключ
 
+    if(first.isEmpty() || last.isEmpty())
+        return;
+
+    int faddr = addressPurposeKey(first);
+    int eaddr = addressPurposeKey(last);
+
+    int rowCount = (eaddr - faddr)/24 + 1; // 24 полуслова хранит до 384 переменных, т.е. при чтении одной
+                                           // переменной мы получим 24 полуслова
+
+    if(rowCount == 0)
+        return;
+
     QTableView* table = tableMatrixFromKeys(first, last); // поиск таблицы по ключам
 
     if(!table)
@@ -3455,88 +3461,35 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(!model)
         return;
 
-    CDataTable& data = model->dataTable(); // получаем ссылку на данные таблицы
+    CMatrix& matrix = model->matrixTable();
 
-    int var_count = data.columnCounts()/16; // получаем количество байт для хранения переменных
+    int offset = matrix.rowIndexByKey(first);
 
-    if(data.columnCounts()%16) // если есть остаток, значит +1 байт для хранения всех переменных
-        var_count++;           // например LED имеют 115 возможных привязок к переменным - 115/16 = 7,1875 -> 7 + 1 = 8 байт
+    QVector<quint16> values;
 
-    int offset_row = data.indexRowFromKey(first); // смещение строки таблицы, т.к. данные разбиты на несколько блоков и
-                                                  // запрашиваются не для всех строк (для реле и светодиодов по 2 строки за раз)
-
-    if(offset_row == -1)
-        return;
-
-    int row_count = unit.valueCount()/24; // расчет количества строк из количества пришедших данных;
-                                              // полная строка со всеми переменными равна 48 байт, т.е. 24 ячейки
-                                              // привязка переменной равна 1 бит (нет/есть)
-    int limit = var_count*16 - (var_count*16 - data.columnCounts()); // предел количества переменных - т.к. всего 48 байт, т.е.
-                                                                     // максимальное число переменных - 384, а используется, н-р,
-                                                                     // для LED всего 115, то все что свыше этого значения мы
-                                                                     // игнорируем (резерв)
-
-    QFile file("purpose.log");
-
-    file.open(QFile::Append);
-
-    QTextStream out(&file);
-
-    for(int i = 0; i < row_count; i++) // обработка строк
+    for(int i = 0; i < unit.valueCount() - 1; i += 2) // изменение младшего со старшим
     {
-        int col_bytes = unit.valueCount()/row_count; // количество байт на строку
-        int row       = i + offset_row; // абсолютный номер строки
+        values << unit.value(i + 1) << unit.value(i);
+    }
 
-        out << QString("Строка №%1\n").arg(row + 1);
+    for(int i = 0; i < rowCount; i++)
+    {
+        int row_index  = i + offset;
+        int offset_pos = i*24;
 
-        for(int j = 0; j < col_bytes - 1; j += 2) // обработка колонок
+        CRow::column_t& columns = matrix[row_index].columns();
+
+        for(CColumn& col: columns)
         {
-            int index = i*col_bytes + j;
-            int value = (unit.value(index) << 16) | unit.value(index + 1);
+            int hword = col.bit()/16;
+            int bit   = col.bit()%16;
 
-            QString val_hex = QString::number(value, 16);
-            QString val_bin = QString::number(value, 2);
+            bool state = (values[hword + offset_pos]&(1 << bit));
 
-            int len_hex = 8 - val_hex.length();
-            int len_bin = 32 - val_bin.length();
-
-            QString str_hex;
-            QString str_bin;
-
-            if(val_hex.length() == 0)
-                str_hex = "0x" + QString(8, '0');
-            else
-                str_hex = "0x" + QString(len_hex, '0') + val_hex;
-
-            if(val_bin.length() == 0)
-                str_bin = "0b" + QString(32, '0');
-            else
-                str_bin = "0b" + QString(len_bin, '0') + val_bin;
-
-            out << QString("hex: %1\nbin: %2\n").arg(str_hex).arg(str_bin);
-
-            for(int k = 0; k < 32; k++) // проверяем побитно состояние привязки
-            {
-                bool state = (value&(1 << k)); // состояние привязки
-                int  bit   = j/2*32 + k; // номер колонки
-
-                if(bit >= limit)
-                    break;
-
-                data[row][bit].setState(state);
-
-                if(state)
-                {
-                    out << QString("Бит №%1 -> переменная \"%2\" = %3\n").arg(k).arg(data.columnData(bit).first).
-                           arg(((data[row][bit].status())?"допустимая привязка":"недопустимая привязка"));
-                }
-            }
+            col.setState(state);
         }
     }
 
-    out << QString(80, '*') << "\n";
-
-    file.close();
     model->updateData();
 }
 //--------------------------------------------------------------------
@@ -3548,6 +3501,11 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
         return;
     }
 
+    QVector<QString> var_list = loadVaribleByType("DI");
+
+    if(var_list.isEmpty())
+        return;
+
     int first_addr = unit.property(tr("FIRST_ADDRESS")).toInt();
     int last_addr  = unit.property(tr("LAST_ADDRESS")).toInt();
 
@@ -3556,22 +3514,43 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 
     int column_offset = (first_addr - 512)/2;
 
-    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
-    CDataTable&          data  = model->dataTable();
+    CMatrixPurposeModel* model  = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
+    CMatrix&             matrix = model->matrixTable();
 
-    for(int i = 0; i < unit.valueCount() - 1; i += 2)
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
+
+    QVector<quint32> data;
+
+    for(int i = 0; i < (unit.valueCount() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
+    {                                                   // каждые 32 бита хранят состояния входов для переменной
+        quint32 value = ((unit.value(i) << 16) | unit.value(i + 1));
+        data << value;
+    }
+
+    for(int i = 0; i < data.count(); i++)
     {
-        quint32 value = (unit.value(i) << 16) | unit.value(i + 1);
+        QString key = var_list[i + column_offset].toUpper();
 
-        for(int j = 0; j < data.count(); j++)
+        int col_index = -1;
+
+        for(int k = 0; k < matrix.columnCount(); k++) // производим поиск позиции текущей переменной в колонках, т.к. колонки
+        {                                             // идут не по порядку - разбиты на группы (позиция переменной в var_list
+                                                      // определяет ее положение в полученных данных учитывая смещение)
+            if(matrix[0][k].key().toUpper() == key)
+            {
+                col_index = k;
+                break;
+            }
+        }
+
+        if(col_index != -1)
         {
-            QVector<int> list = data.columnIndexListActive(j);
-
-            bool state = (value >> j)&0x00000001;
-
-            int column = list[i/2 + column_offset];
-
-            data[j][column].setState(state);
+            for(int j = 0; j < matrix.rowCount(); j++)
+            {
+                bool state = data[i]&(1 << j);
+                matrix[j][col_index].setState(state);
+            }
         }
     }
 
@@ -4061,43 +4040,39 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     if(!table)
         return;
 
-    CDataTable data = static_cast<CMatrixPurposeModel*>(table->model())->dataTable();
+    CMatrix matrix = static_cast<CMatrixPurposeModel*>(table->model())->matrixTable();
 
-    int bIndex = data.indexRowFromKey(first);
-    int eIndex = data.indexRowFromKey(last);
+    int bIndex = matrix.rowIndexByKey(first);
+    int eIndex = matrix.rowIndexByKey(last);
 
     if(bIndex == -1 || eIndex == -1)
         return;
 
-    QVector<quint16> values;
+    int hword_size = (eIndex - bIndex + 1)*24;
 
-    int var_count = 24; // 24 ячейки 384 переменных максимум (у нас 358)
+    QVector<quint16> data = QVector<quint16>(hword_size, 0); // создаем вектор размерностью hword_size полуслов со значением 0
 
-    for(int i = bIndex; i <= eIndex; i++)
+    for(int i = 0; i <= (eIndex - bIndex); i++)
     {
-        for(int j = 0, offset = 0; j < 24 - 1; j += 2, offset += 32)
+        int index      = i + bIndex;
+        int offset_pos = i*24;
+
+        for(CColumn& col: matrix[index].columns())
         {
-            quint32 value = 0;
+            quint16 hword = col.bit()/16;
+            quint16 bit   = col.bit()%16;
 
-            for(int k = 0; k < 32; k++)
+            if(col.state())
             {
-                int bit = offset + k;
-
-                if(bit >= var_count*16 - (var_count*16 - data.columnCounts()))
-                    break;
-
-                bool state = data[i][bit].state();
-
-                if(state)
-                    value |= 1 << k;
+                data[hword + offset_pos] |= (1 << bit);
             }
-
-            quint16 lbs = (quint16)value&0x0000FFFF;
-            quint16 mbs = (quint16)((value >> 16)&0x0000FFFF);
-
-            values << mbs << lbs;
         }
     }
+
+    QVector<quint16> values;
+
+    for(int i = 0; i < (data.count() - 1); i += 2)
+        values << data[i + 1] << data[i];
 
     CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                  CDataUnitType::WriteMultipleRegisters);
@@ -4131,24 +4106,48 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     if(!model)
         return;
 
-    CDataTable   data        = model->dataTable();
-    QVector<int> column_list = data.columnIndexListActive(0);
+    CMatrix matrix = model->matrixTable();
+
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
+
+    QVector<QString> var_list = loadVaribleByType("DI");
 
     int bIndex = (first_addr - 512)/2;
     int eIndex = (670 - last_addr)/2;
 
     QVector<quint16> values;
 
-    for(int i = bIndex; i < column_list.count() - eIndex; i++)
+    for(int i = bIndex; i < var_list.count() - eIndex; i++)
     {
-        quint32 value = 0;
+        QString key       = var_list[i].toUpper();
+        int     col_index = -1;
 
-        for(int j = 0; j < data.count(); j++)
+        for(int j = 0; j < matrix.columnCount(); j++)
         {
-            value |= (data[j][column_list[i]].state()) << j;
+            QString col_key = matrix[0][j].key().toUpper();
+
+            if(key == col_key)
+            {
+                col_index = j;
+                break;
+            }
         }
 
-        values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+        if(col_index != -1)
+        {
+            quint32 value = 0;
+
+            for(int k = 0; k < matrix.rowCount(); k++)
+            {
+                bool state = matrix[k][col_index].state();
+
+                if(state)
+                    value |= (1 << k);
+            }
+
+            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+        }
     }
 
     CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
@@ -4238,13 +4237,13 @@ void ConfiguratorWindow::clearIOTable()
     if(!model)
         return;
 
-    CDataTable& data = model->dataTable();
+    CMatrix& matrix = model->matrixTable();
 
-    for(int i = 0; i < data.count(); i++)
+    for(int i = 0; i < matrix.rowCount(); i++)
     {
-        for(int j = 0; j < data.columnCounts(); j++)
+        for(int j = 0; j < matrix.columnCount(); j++)
         {
-            data[i][j].setState(false);
+            matrix[i][j].setState(false);
         }
     }
 
@@ -4777,7 +4776,7 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
 //--------------------------------------------
 void ConfiguratorWindow::exportPurposeToJSON()
 {
-    CDataTable data;
+    CMatrix    matrix;
     QString    fileNameDefault;
     QString    typeName;
 
@@ -4785,24 +4784,24 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
     {
-        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->matrixTable();
         typeName        = "LED";
         fileNameDefault = "led";
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
-        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->matrixTable();
         typeName        = "INPUT";
         fileNameDefault = "input";
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
     {
-        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->matrixTable();
         typeName        = "RELAY";
         fileNameDefault = "relay";
     }
 
-    if(data.count() == 0)
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
         return;
 
     QDir dir;
@@ -4829,38 +4828,29 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     QJsonObject json;
     QJsonArray  rowArr;
-    QJsonArray  columnKeyArr;
 
     json["type"] = typeName;
 
-    for(int i = 0; i < data.columnCounts(); i++)
-    {
-        QJsonObject tcolumnKeyObj;
-
-        tcolumnKeyObj["key"] = data.columnData(i).first;
-
-        columnKeyArr.append(tcolumnKeyObj);
-    }
-
-    json["headers"] = columnKeyArr;
-
-    for(int i = 0; i < data.count(); i++)
+    for(int i = 0; i < matrix.rowCount(); i++)
     {
         QJsonObject trowCurObj;
         QJsonArray  columnArr;
 
-        for(int j = 0; j < data.columnCounts(); j++)
+        for(int j = 0; j < matrix.columnCount(); j++)
         {
             QJsonObject tcolumnObj;
 
-            tcolumnObj["status"] = data[i][j].status();
-            tcolumnObj["state"]  = data[i][j].state();
+            tcolumnObj["state"]       = matrix[i][j].state();
+            tcolumnObj["bit"]         = matrix[i][j].bit();
+            tcolumnObj["key"]         = matrix[i][j].key();
+            tcolumnObj["name"]        = matrix[i][j].name();
+            tcolumnObj["description"] = matrix[i][j].description();
 
             columnArr.append(tcolumnObj);
         }
 
-        trowCurObj["key"]     = data[i].key();
-        trowCurObj["name"]    = data[i].header();
+        trowCurObj["key"]     = matrix[i].key();
+        trowCurObj["name"]    = matrix[i].name();
         trowCurObj["columns"] = columnArr;
 
         rowArr.append(trowCurObj);
@@ -4893,7 +4883,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
-        fileNameDefault     = "inputs";
+        fileNameDefault     = "input";
         typeName            = "INPUT";
         typeNameDescription = tr("Дискретные входы");
 
@@ -4940,29 +4930,13 @@ void ConfiguratorWindow::importPurposeFromJSON()
         return;
     }
 
-    QJsonArray headerArr = rootObj.value("headers").toArray(); // получение массива данных - заголовки колонок
-
-    if(headerArr.isEmpty())
-        return;
-
-    QVector<CColumn::column_t> headers;
-
-    for(int i = 0; i < headerArr.count(); i++)
-    {
-        QJsonObject headerObj = headerArr[i].toObject();
-
-        if(headerObj.isEmpty())
-            continue;
-
-        headers << columnFromKey(headerObj["key"].toString());
-    }
-
     QJsonArray dataArr = rootObj.value("data").toArray(); // получение массива данных - строки
 
     if(dataArr.isEmpty())
         return;
 
-    QVector<CRow> rows;
+    CMatrix::row_t rows;
+    int            columnCount = 0;
 
     for(int i = 0; i < dataArr.count(); i++)
     {
@@ -4976,22 +4950,25 @@ void ConfiguratorWindow::importPurposeFromJSON()
         if(colArr.isEmpty())
             continue;
 
-        QVector<CColumn> columns;
+        CRow::column_t columns;
 
         for(int j = 0; j < colArr.count(); j++)
         {
             QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
 
-            columns << CColumn(colObj["state"].toBool(), colObj["status"].toBool());
+            columns << CColumn(colObj["bit"].toInt(), colObj["state"].toBool(), colObj["key"].toString(),
+                                  colObj["name"].toString(), colObj["description"].toString());
         }
 
         rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);
+
+        columnCount = columns.count();
     }
 
-    CDataTable dataTable(rows, headers);
+    CMatrix matrix(rows, columnCount);
 
     if(model)
-        model->setDataTable(dataTable);
+        model->setMatrixTable(matrix);
 }
 //--------------------------------------------------------------
 void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
@@ -5739,6 +5716,27 @@ void ConfiguratorWindow::synchronization(bool state)
     }
 }
 /*!
+ * \brief ConfiguratorWindow::setLineEditValidator
+ * \param object Объект к которому применяется валидатор (class CLineEdit)
+ */
+void ConfiguratorWindow::setLineEditValidator(QObject* object)
+{
+    CLineEdit* lineEdit = qobject_cast<CLineEdit*>(object);
+
+    QString str = lineEdit->objectName().toUpper();
+
+    if(str == "LEK20" || str == "LEK21" || str == "LEK29")
+    {
+        lineEdit->setValidator(new QIntValidator(0, 360));
+        lineEdit->setText("0");
+    }
+    else
+    {
+        lineEdit->setValidator(new QDoubleValidator(0, 100, 6));
+        lineEdit->setText("0.000000");
+    }
+}
+/*!
  * \brief ConfiguratorWindow::recordCountDb
  * \param db           Указатель на базу данных
  * \param table_name   Имя таблицы
@@ -5957,37 +5955,6 @@ QTableView* ConfiguratorWindow::tableMatrixFromKeys(const QString& first, const 
 
     return nullptr;
 }
-//---------------------------------------------------------------------
-CColumn::column_t ConfiguratorWindow::columnFromKey(const QString& key)
-{
-    if(m_variables.isEmpty())
-        return CColumn::column_t();
-
-    for(int i = 0; i < m_variables.count(); i++)
-    {
-        if(m_variables[i].first.toUpper() == key.toUpper())
-            return m_variables[i];
-    }
-
-    return CColumn::column_t();
-}
-/*!
- * \brief ConfiguratorWindow::indexColumnFromKey
- * \param  key ключ (имя переменной)
- * \return позиция ключа в списке переменных
- *
- * Метод ищет позицию ключа в списке переменных, т.е. абсолютная позиция переменной. Если ключ не найден, то возвращается -1.
- */
-int ConfiguratorWindow::indexColumnFromKey(const QString& key)
-{
-    for(int i = 0; i < m_variables.count(); i++)
-    {
-        if(m_variables[i].first.toUpper() == key.toUpper())
-            return i;
-    }
-
-    return -1;
-}
 //--------------------------------------------------------------------
 ConfiguratorWindow::DeviceMenuItemType ConfiguratorWindow::menuIndex()
 {
@@ -6036,6 +6003,129 @@ void ConfiguratorWindow::convertDataHalfwordToBytes(const QVector<quint16>& sour
         dest.append(quint8(((source[i] >> 8)&0x00FF)));
         dest.append(quint8((source[i]&0x00FF)));
     }
+}
+//--------------------------------------------------------------------
+group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
+{
+    QSqlQuery query;
+    group_t   group;
+
+    if(query.exec("SELECT * FROM var_group")) // читаем из базы список групп
+    {
+        while(query.next())
+        {
+            QSqlQuery query_item(m_system_db);
+
+            int     id                = query.value("id").toInt();
+            QString group_name        = query.value("name").toString();
+            QString group_description = query.value("description").toString();
+
+            QVector<var_t> var_list;
+
+            if(query_item.exec(QString("SELECT * FROM variable WHERE group_id=%1;").arg(id)))
+            {
+                while(query_item.next())
+                {
+                    QString key         = query_item.value("key").toString();
+                    int     group_id    = query_item.value("group_id").toInt();
+                    int     bit         = query_item.value("bit").toInt();
+                    QString name        = query_item.value("name").toString();
+                    QString description = query_item.value("description").toString();
+
+                    QSqlQuery query_purpose(m_system_db);
+
+                    bool is_ok = false;
+
+                    if(query_purpose.exec(QString("SELECT io_key FROM purpose WHERE var_key = \'%1\';").arg(key)))
+                    {
+                        while(query_purpose.next())
+                        {
+                            QString val = query_purpose.value("io_key").toString();
+
+                            if(val.contains(io_key))
+                            {
+                                is_ok = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(!is_ok)
+                        continue;
+
+                    /*if(name.count() > 20)
+                    {
+                        int party = name.count()/20;
+
+                        for(int i = 0; i < party; i++)
+                        {
+                            int pos = i*20;
+
+                            if(name[pos] != ' ')
+                            {
+                                int from = name.indexOf(' ', pos - 5);
+                                int to   = name.indexOf(' ', pos);
+
+                                if(from != -1)
+                                {
+                                    name.insert(from, '\n');
+                                }
+                                else if(to != -1)
+                                {
+                                    name.insert(to, '\n');
+                                }
+                            }
+                            else
+                                name.insert(pos, '\n');
+                        }
+                    }*/
+
+                    var_list << var_t({ key, group_id, bit, name, description });
+                }
+            }
+
+            group[id] = group_item_t({ group_name, group_description, var_list });
+        }
+    }
+
+    return group;
+}
+//--------------------------------------------------------------------------------------
+QVector<QPair<QString, QString> > ConfiguratorWindow::loadLabelRows(const QString& type)
+{
+    QVector<QPair<QString, QString> > labels;
+
+    QSqlQuery query(QString("SELECT key, description FROM iodevice WHERE type = \'%1\';").arg(type));
+
+    if(query.exec())
+    {
+        while(query.next())
+        {
+            labels << qMakePair(query.value("key").toString(), query.value("description").toString());
+        }
+    }
+
+    return labels;
+}
+//-------------------------------------------------------------------------
+QVector<QString> ConfiguratorWindow::loadVaribleByType(const QString& type)
+{
+    QSqlQuery query(m_system_db);
+
+    QVector<QString> var_list;
+
+    if(query.exec(QString("SELECT var_key FROM purpose WHERE io_key LIKE \'%1%\';").arg(type)))
+    {
+        while(query.next())
+        {
+            QString var_key = query.value("var_key").toString();
+
+            if(!var_list.contains(var_key))
+                var_list << var_key;
+        }
+    }
+
+    return var_list;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

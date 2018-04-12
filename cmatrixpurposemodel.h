@@ -7,101 +7,55 @@
     #include <QCheckBox>
     #include <QMouseEvent>
     #include <QPainter>
+    #include <QStandardItemModel>
+    #include <QStandardItem>
     #include <QDebug>
+    #include "HierarchicalHeaderView.h"
     #include "cheadertable.h"
-    //-----------
-    class CColumn
+    #include "cmatrix.h"
+    //----------
+    struct var_t
     {
-        public:
-            typedef QPair<QString, QPair<QString, QString> > column_t; // column data <key, <name, description> >
-
-        public:
-            CColumn();
-            CColumn(bool state, bool status);
-
-            bool status() const;
-            bool state() const;
-            void setState(bool state);
-            void setStatus(bool status);
-
-        private:
-            bool m_state;
-            bool m_status;
+        QString key;
+        int     group_id;
+        int     bit;
+        QString name;
+        QString description;
     };
-    //--------
-    class CRow
+    //-----------------
+    struct group_item_t
     {
-        public:
-            CRow();
-            CRow(const QString& key, const QString& header, int columnSize);
-            CRow(const QString& key, const QString& header, QVector<CColumn>& columns);
-
-            void addColumns(QVector<CColumn>& columns);
-
-            int   columns() const;
-            const QString& key() const;
-            const QString& header() const;
-
-            void setInactiveColumnList(QVector<int>& list);
-            void setActiveColumnList(QVector<int>& list);
-
-            CColumn&       operator [](int index);
-            const CColumn& operator [](int index) const;
-
-        private:
-            QString          m_key;
-            QString          m_header;
-            QVector<CColumn> m_columns;
+        QString        name;
+        QString        description;
+        QVector<var_t> var_list;
     };
-    //--------------
-    class CDataTable
-    {
-        public:
-            CDataTable();
-            CDataTable(QVector<CRow>& rows, QVector<CColumn::column_t>& columnHeaders);
-
-            void addRow(CRow& row);
-
-            int count() const;
-            int columnCounts() const;
-
-            int               indexRowFromKey(const QString& key);
-            CColumn::column_t columnData(int index) const;
-            const QString&    columnName(int index) const;
-            QVector<int>      columnIndexListActive(int row);
-            QVector<int>      columnIndexListInactive(int row);
-
-            void setColumnHeaders(QVector<CColumn::column_t>& headers);
-
-            void setDisableColumns(int row, QVector<int>& list);
-            void setEnableColumns(int row, QVector<int>& list);
-
-            CRow&       operator [](int index);
-            const CRow& operator [](int index) const;
-
-        private:
-            QVector<CRow>              m_rows;
-            QVector<CColumn::column_t> m_columnHeaders;
-    };
+    //--------------------------------------
+    typedef QMap<int, group_item_t> group_t;
     //---------------------------------------------------
     class CMatrixPurposeModel: public QAbstractTableModel
     {
         public:
-            CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent = nullptr);
-            void updateData();
-            CDataTable& dataTable();
-            void setDataTable(CDataTable& data);
+            CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
+                                QAbstractTableModel* parent = nullptr);
+            CMatrixPurposeModel(QAbstractTableModel* parent = nullptr);
+            void     updateData();
+            CMatrix& matrixTable();
+            void     setMatrixTable(CMatrix& matrix);
 
         private:
             int           rowCount(const QModelIndex& parent = QModelIndex()) const;
             int           columnCount(const QModelIndex& parent = QModelIndex()) const;
             bool          setData(const QModelIndex& index, const QVariant& value, int role);
             QVariant      data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-            QVariant      headerData(int section, Qt::Orientation orientation, int role) const;
             Qt::ItemFlags flags(const QModelIndex& index) const;
+            void          fillHorizontalHeaderModel(QStandardItemModel& headerModel, group_t& group);
+            void          fillVerticalHeaderModel(QStandardItemModel& headerModel,
+                                                  const QVector<QPair<QString, QString> >& labels);
 
         private:
-            CDataTable m_data;
+            CMatrix            m_matrix;
+            QStandardItemModel m_horizontal_header;
+            QStandardItemModel m_vertical_header;
     };
     //--------------------------------------------------
     class CTableItemDelegate: public QStyledItemDelegate
