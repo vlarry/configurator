@@ -3461,7 +3461,7 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(!model)
         return;
 
-    CMatrix& matrix = model->dataTableNew();
+    CMatrix& matrix = model->matrixTable();
 
     int offset = matrix.rowIndexByKey(first);
 
@@ -3477,9 +3477,9 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
         int row_index  = i + offset;
         int offset_pos = i*24;
 
-        CRowNew::column_t& columns = matrix[row_index].columns();
+        CRow::column_t& columns = matrix[row_index].columns();
 
-        for(CColumnNew& col: columns)
+        for(CColumn& col: columns)
         {
             int hword = col.bit()/16;
             int bit   = col.bit()%16;
@@ -3515,7 +3515,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
     int column_offset = (first_addr - 512)/2;
 
     CMatrixPurposeModel* model  = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
-    CMatrix&             matrix = model->dataTableNew();
+    CMatrix&             matrix = model->matrixTable();
 
     if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
         return;
@@ -4040,7 +4040,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     if(!table)
         return;
 
-    CMatrix matrix = static_cast<CMatrixPurposeModel*>(table->model())->dataTableNew();
+    CMatrix matrix = static_cast<CMatrixPurposeModel*>(table->model())->matrixTable();
 
     int bIndex = matrix.rowIndexByKey(first);
     int eIndex = matrix.rowIndexByKey(last);
@@ -4057,7 +4057,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
         int index      = i + bIndex;
         int offset_pos = i*24;
 
-        for(CColumnNew& col: matrix[index].columns())
+        for(CColumn& col: matrix[index].columns())
         {
             quint16 hword = col.bit()/16;
             quint16 bit   = col.bit()%16;
@@ -4106,7 +4106,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     if(!model)
         return;
 
-    CMatrix matrix = model->dataTableNew();
+    CMatrix matrix = model->matrixTable();
 
     if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
         return;
@@ -4237,7 +4237,7 @@ void ConfiguratorWindow::clearIOTable()
     if(!model)
         return;
 
-    CMatrix& matrix = model->dataTableNew();
+    CMatrix& matrix = model->matrixTable();
 
     for(int i = 0; i < matrix.rowCount(); i++)
     {
@@ -4776,7 +4776,6 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
 //--------------------------------------------
 void ConfiguratorWindow::exportPurposeToJSON()
 {
-    CDataTable data;
     CMatrix    matrix;
     QString    fileNameDefault;
     QString    typeName;
@@ -4785,22 +4784,19 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
     {
-        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTable();
-        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->dataTableNew();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->matrixTable();
         typeName        = "LED";
         fileNameDefault = "led";
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
-        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTable();
-        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->dataTableNew();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->matrixTable();
         typeName        = "INPUT";
         fileNameDefault = "input";
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
     {
-        data            = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTable();
-        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->dataTableNew();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->matrixTable();
         typeName        = "RELAY";
         fileNameDefault = "relay";
     }
@@ -4954,17 +4950,17 @@ void ConfiguratorWindow::importPurposeFromJSON()
         if(colArr.isEmpty())
             continue;
 
-        CRowNew::column_t columns;
+        CRow::column_t columns;
 
         for(int j = 0; j < colArr.count(); j++)
         {
             QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
 
-            columns << CColumnNew(colObj["bit"].toInt(), colObj["state"].toBool(), colObj["key"].toString(),
+            columns << CColumn(colObj["bit"].toInt(), colObj["state"].toBool(), colObj["key"].toString(),
                                   colObj["name"].toString(), colObj["description"].toString());
         }
 
-        rows << CRowNew(rowObj["key"].toString(), rowObj["name"].toString(), columns);
+        rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);
 
         columnCount = columns.count();
     }
@@ -4972,7 +4968,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
     CMatrix matrix(rows, columnCount);
 
     if(model)
-        model->setDataTableNew(matrix);
+        model->setMatrixTable(matrix);
 }
 //--------------------------------------------------------------
 void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)

@@ -4,12 +4,12 @@
     #include <QString>
     #include <QVector>
     #include <QDebug>
-    //--------------
-    class CColumnNew
+    //-----------
+    class CColumn
     {
         public:
-            CColumnNew();
-            CColumnNew(int bit, bool state, const QString& key, const QString& name, const QString& description);
+            CColumn();
+            CColumn(int bit, bool state, const QString& key, const QString& name, const QString& description);
 
             int     bit() const;
             QString key() const;
@@ -31,17 +31,17 @@
             QString m_name;
             QString m_description;
     };
-    //-----------
-    class CRowNew
+    //--------
+    class CRow
     {
         public:
-            typedef QVector<CColumnNew> column_t;
+            typedef QVector<CColumn> column_t;
 
         public:
-            CRowNew();
-            CRowNew(const QString& key, const QString& name, column_t& columns);
+            CRow();
+            CRow(const QString& key, const QString& name, column_t& columns);
 
-            void addColumn(CColumnNew& column);
+            void addColumn(CColumn& column);
 
             QString   key() const;
             QString   name() const;
@@ -51,8 +51,8 @@
             void setName(const QString& name);
             void setColumns(column_t& columns);
 
-            CColumnNew&       operator [](int index);
-            const CColumnNew& operator [](int index) const;
+            CColumn&       operator [](int index);
+            const CColumn& operator [](int index) const;
 
         private:
             QString  m_key;
@@ -63,13 +63,13 @@
     class CMatrix
     {
         public:
-            typedef QVector<CRowNew> row_t;
+            typedef QVector<CRow> row_t;
 
         public:
             CMatrix();
             CMatrix(row_t& rows, int columnCount);
 
-            void addRow(CRowNew& row);
+            void addRow(CRow& row);
 
             row_t& rows();
 
@@ -80,8 +80,8 @@
             void setRowCount(int count);
             void setColumnCount(int count);
 
-            CRowNew&       operator [](int index);
-            const CRowNew& operator [](int index) const;
+            CRow&       operator [](int index);
+            const CRow& operator [](int index) const;
 
         private:
             row_t m_rows;

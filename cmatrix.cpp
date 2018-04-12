@@ -1,7 +1,7 @@
 #include "cmatrix.h"
 //-----------------
 CMatrix::CMatrix():
-    m_rows(row_t(0, CRowNew())),
+    m_rows(row_t(0, CRow())),
     m_rowCount(0),
     m_columnCount(0)
 {
@@ -16,7 +16,7 @@ CMatrix::CMatrix(CMatrix::row_t& rows, int columnCount):
 
 }
 //--------------------------------
-void CMatrix::addRow(CRowNew& row)
+void CMatrix::addRow(CRow& row)
 {
     m_rows.push_back(row);
 }
@@ -61,19 +61,19 @@ void CMatrix::setColumnCount(int count)
 {
     m_columnCount = count;
 }
-//--------------------------------------
-CRowNew& CMatrix::operator [](int index)
+//-----------------------------------
+CRow& CMatrix::operator [](int index)
 {
     return m_rows[index];
 }
-//--------------------------------------------------
-const CRowNew& CMatrix::operator [](int index) const
+//-----------------------------------------------
+const CRow& CMatrix::operator [](int index) const
 {
     return m_rows[index];
 }
 //-----Класс колонка-----
 //-----------------------
-CColumnNew::CColumnNew():
+CColumn::CColumn():
     m_bit(-1),
     m_state(false),
     m_key(""),
@@ -82,8 +82,8 @@ CColumnNew::CColumnNew():
 {
 
 }
-//---------------------------------------------------------------------------------------------------------------
-CColumnNew::CColumnNew(int bit, bool state, const QString& key, const QString& name, const QString& description):
+//---------------------------------------------------------------------------------------------------------
+CColumn::CColumn(int bit, bool state, const QString& key, const QString& name, const QString& description):
     m_bit(bit),
     m_state(state),
     m_key(key),
@@ -92,122 +92,122 @@ CColumnNew::CColumnNew(int bit, bool state, const QString& key, const QString& n
 {
 
 }
-//-------------------------
-int CColumnNew::bit() const
+//----------------------
+int CColumn::bit() const
 {
     return m_bit;
 }
-//-----------------------------
-QString CColumnNew::key() const
+//--------------------------
+QString CColumn::key() const
 {
     return m_key;
 }
-//------------------------------
-QString CColumnNew::name() const
+//---------------------------
+QString CColumn::name() const
 {
     return m_name;
 }
-//-------------------------------------
-QString CColumnNew::description() const
+//----------------------------------
+QString CColumn::description() const
 {
     return m_description;
 }
-//----------------------------
-bool CColumnNew::state() const
+//-------------------------
+bool CColumn::state() const
 {
     return m_state;
 }
-//------------------------------
-void CColumnNew::setBit(int bit)
+//---------------------------
+void CColumn::setBit(int bit)
 {
     m_bit = bit;
 }
-//-------------------------------------------------------------------------------------------
-void CColumnNew::setData(const QString& key, const QString& name, const QString& description)
+//----------------------------------------------------------------------------------------
+void CColumn::setData(const QString& key, const QString& name, const QString& description)
 {
     m_key         = key;
     m_name        = name;
     m_description = description;
 }
-//-----------------------------------------
-void CColumnNew::setKey(const QString& key)
+//--------------------------------------
+void CColumn::setKey(const QString& key)
 {
     m_key = key;
 }
-//-------------------------------------------
-void CColumnNew::setName(const QString& name)
+//----------------------------------------
+void CColumn::setName(const QString& name)
 {
     m_name = name;
 }
-//---------------------------------------------------------
-void CColumnNew::setDescription(const QString& description)
+//------------------------------------------------------
+void CColumn::setDescription(const QString& description)
 {
     m_description = description;
 }
-//-----------------------------------
-void CColumnNew::setState(bool state)
+//--------------------------------
+void CColumn::setState(bool state)
 {
     m_state = state;
 }
 //--Класс строка---
 //-----------------
-CRowNew::CRowNew():
+CRow::CRow():
     m_key(""),
     m_name(""),
-    m_columns(column_t(0, CColumnNew()))
+    m_columns(column_t(0, CColumn()))
 {
 
 }
-//------------------------------------------------------------------------------------
-CRowNew::CRowNew(const QString& key, const QString& name, CRowNew::column_t& columns):
+//---------------------------------------------------------------------------
+CRow::CRow(const QString& key, const QString& name, CRow::column_t& columns):
     m_key(key),
     m_name(name),
     m_columns(columns)
 {
 
 }
-//-----------------------------------------
-void CRowNew::addColumn(CColumnNew& column)
+//-----------------------------------
+void CRow::addColumn(CColumn& column)
 {
     m_columns.push_back(column);
 }
-//--------------------------
-QString CRowNew::key() const
+//-----------------------
+QString CRow::key() const
 {
     return m_key;
 }
-//---------------------------
-QString CRowNew::name() const
+//------------------------
+QString CRow::name() const
 {
     return m_name;
 }
-//-----------------------------------
-CRowNew::column_t& CRowNew::columns()
+//-----------------------------
+CRow::column_t& CRow::columns()
 {
     return m_columns;
 }
-//--------------------------------------
-void CRowNew::setKey(const QString &key)
+//-----------------------------------
+void CRow::setKey(const QString &key)
 {
     m_key = key;
 }
-//----------------------------------------
-void CRowNew::setName(const QString& name)
+//-------------------------------------
+void CRow::setName(const QString& name)
 {
     m_name = name;
 }
-//--------------------------------------------------
-void CRowNew::setColumns(CRowNew::column_t& columns)
+//--------------------------------------------
+void CRow::setColumns(CRow::column_t& columns)
 {
     m_columns = columns;
 }
-//-----------------------------------------
-CColumnNew& CRowNew::operator [](int index)
+//-----------------------------------
+CColumn& CRow::operator [](int index)
 {
     return m_columns[index];
 }
-//-----------------------------------------------------
-const CColumnNew& CRowNew::operator [](int index) const
+//-----------------------------------------------
+const CColumn& CRow::operator [](int index) const
 {
     return m_columns[index];
 }
