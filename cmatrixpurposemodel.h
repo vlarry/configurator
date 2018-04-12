@@ -114,7 +114,8 @@
     {
         public:
             CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* parent = nullptr);
-            CMatrixPurposeModel(const QStringList& row_labels, group_t& group, QAbstractTableModel* parent = nullptr);
+            CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
+                                QAbstractTableModel* parent = nullptr);
             CMatrixPurposeModel(QAbstractTableModel* parent = nullptr);
             void updateData();
             CDataTable& dataTable();
@@ -129,7 +130,8 @@
             QVariant      data(const QModelIndex& index, int role = Qt::DisplayRole) const;
             Qt::ItemFlags flags(const QModelIndex& index) const;
             void          fillHorizontalHeaderModel(QStandardItemModel& headerModel, group_t& group);
-            void          fillVerticalHeaderModel(QStandardItemModel& headerModel, const QStringList& labels);
+            void          fillVerticalHeaderModel(QStandardItemModel& headerModel,
+                                                  const QVector<QPair<QString, QString> >& labels);
 
         private:
             CDataTable         m_data;

@@ -753,17 +753,17 @@ void ConfiguratorWindow::protectionSignalStartWrite()
         if(key.isEmpty())
             continue;
 
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
 
-//        if(val_pos < data.count())
-//        {
-//            int item_pos = box->currentIndex();
+        if(val_pos < data.count())
+        {
+            int item_pos = box->currentIndex();
 
-//            if(item_pos == 1)
-//                data[val_pos] |= (1 << bit_pos);
-//        }
+            if(item_pos == 1)
+                data[val_pos] |= (1 << bit_pos);
+        }
     }
 
     QVector<quint16> tdata;
@@ -960,17 +960,17 @@ void ConfiguratorWindow::automationAPVSignalStartWrite()
         if(key.isEmpty())
             continue;
 
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
 
-//        if(val_pos < data.count())
-//        {
-//            int item_pos = box->currentIndex();
+        if(val_pos < data.count())
+        {
+            int item_pos = box->currentIndex();
 
-//            if(item_pos == 1)
-//                data[val_pos] |= (1 << bit_pos);
-//        }
+            if(item_pos == 1)
+                data[val_pos] |= (1 << bit_pos);
+        }
     }
 
     QVector<quint16> tdata;
@@ -2865,11 +2865,24 @@ void ConfiguratorWindow::initPurposeBind()
 //----------------------------------------
 void ConfiguratorWindow::initModelTables()
 {
+    QSqlQuery query("SELECT key, bit FROM variable;");
+
+    if(query.exec())
+    {
+        while(query.next())
+        {
+            QString key = query.value("key").toString();
+            int     bit = query.value("bit").toInt();
+
+            m_variable_bits[key] = bit;
+        }
+    }
+
     group_t group = createVariableGroup("LED");
 
     if(!group.isEmpty())
     {
-        QStringList labels = loadLabelRows("LED");
+        QVector<QPair<QString, QString> > labels = loadLabelRows("LED");
         initTable(ui->tablewgtLedPurpose, labels, group);
     }
 
@@ -2877,7 +2890,7 @@ void ConfiguratorWindow::initModelTables()
 
     if(!group.isEmpty())
     {
-        QStringList labels = loadLabelRows("RELAY");
+        QVector<QPair<QString, QString> > labels = loadLabelRows("RELAY");
         initTable(ui->tablewgtRelayPurpose, labels, group);
     }
 
@@ -2885,7 +2898,7 @@ void ConfiguratorWindow::initModelTables()
 
     if(!group.isEmpty())
     {
-        QStringList labels = loadLabelRows("INPUT");
+        QVector<QPair<QString, QString> > labels = loadLabelRows("INPUT");
         initTable(ui->tablewgtDiscreteInputPurpose, labels, group);
     }
 }
@@ -3250,8 +3263,8 @@ void ConfiguratorWindow::disconnectDb(QSqlDatabase* db)
 
     QSqlDatabase::removeDatabase("db");
 }
-//--------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::initTable(QTableView* table, const QStringList& row_labels, group_t& group)
+//------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group)
 {
     HierarchicalHeaderView* hheader = new HierarchicalHeaderView(Qt::Horizontal, table);
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
@@ -3426,6 +3439,18 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     QString first = unit.property(tr("FIRST")).toString(); // получаем первый ключ
     QString last  = unit.property(tr("LAST")).toString();  // получаем второй ключ
 
+    if(first.isEmpty() || last.isEmpty())
+        return;
+
+    int faddr = addressPurposeKey(first);
+    int eaddr = addressPurposeKey(last);
+
+    int rowCount = (eaddr - faddr)/24 + 1; // 24 слова хранит до 384 переменных, т.е. при чтении одной
+                                           // переменной мы получим 24 слова
+
+    if(rowCount == 0)
+        return;
+
     QTableView* table = tableMatrixFromKeys(first, last); // поиск таблицы по ключам
 
     if(!table)
@@ -3436,88 +3461,35 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     if(!model)
         return;
 
-    CDataTable& data = model->dataTable(); // получаем ссылку на данные таблицы
+    CMatrix& matrix = model->dataTableNew();
 
-    int var_count = data.columnCounts()/16; // получаем количество байт для хранения переменных
+    int offset = matrix.rowIndexByKey(first);
 
-    if(data.columnCounts()%16) // если есть остаток, значит +1 байт для хранения всех переменных
-        var_count++;           // например LED имеют 115 возможных привязок к переменным - 115/16 = 7,1875 -> 7 + 1 = 8 байт
+    QVector<quint16> values;
 
-    int offset_row = data.indexRowFromKey(first); // смещение строки таблицы, т.к. данные разбиты на несколько блоков и
-                                                  // запрашиваются не для всех строк (для реле и светодиодов по 2 строки за раз)
-
-    if(offset_row == -1)
-        return;
-
-    int row_count = unit.valueCount()/24; // расчет количества строк из количества пришедших данных;
-                                              // полная строка со всеми переменными равна 48 байт, т.е. 24 ячейки
-                                              // привязка переменной равна 1 бит (нет/есть)
-    int limit = var_count*16 - (var_count*16 - data.columnCounts()); // предел количества переменных - т.к. всего 48 байт, т.е.
-                                                                     // максимальное число переменных - 384, а используется, н-р,
-                                                                     // для LED всего 115, то все что свыше этого значения мы
-                                                                     // игнорируем (резерв)
-
-    QFile file("purpose.log");
-
-    file.open(QFile::Append);
-
-    QTextStream out(&file);
-
-    for(int i = 0; i < row_count; i++) // обработка строк
+    for(int i = 0; i < unit.valueCount() - 1; i += 2) // изменение младшего со старшим
     {
-        int col_bytes = unit.valueCount()/row_count; // количество байт на строку
-        int row       = i + offset_row; // абсолютный номер строки
+        values << unit.value(i + 1) << unit.value(i);
+    }
 
-        out << QString("Строка №%1\n").arg(row + 1);
+    for(int i = 0; i < rowCount; i++)
+    {
+        int row_index  = i + offset;
+        int offset_pos = i*24;
 
-        for(int j = 0; j < col_bytes - 1; j += 2) // обработка колонок
+        CRowNew::column_t& columns = matrix[row_index].columns();
+
+        for(CColumnNew& col: columns)
         {
-            int index = i*col_bytes + j;
-            int value = (unit.value(index) << 16) | unit.value(index + 1);
+            int hword = col.bit()/16;
+            int bit   = col.bit()%16;
 
-            QString val_hex = QString::number(value, 16);
-            QString val_bin = QString::number(value, 2);
+            bool state = (values[hword + offset_pos]&(1 << bit));
 
-            int len_hex = 8 - val_hex.length();
-            int len_bin = 32 - val_bin.length();
-
-            QString str_hex;
-            QString str_bin;
-
-            if(val_hex.length() == 0)
-                str_hex = "0x" + QString(8, '0');
-            else
-                str_hex = "0x" + QString(len_hex, '0') + val_hex;
-
-            if(val_bin.length() == 0)
-                str_bin = "0b" + QString(32, '0');
-            else
-                str_bin = "0b" + QString(len_bin, '0') + val_bin;
-
-            out << QString("hex: %1\nbin: %2\n").arg(str_hex).arg(str_bin);
-
-            for(int k = 0; k < 32; k++) // проверяем побитно состояние привязки
-            {
-                bool state = (value&(1 << k)); // состояние привязки
-                int  bit   = j/2*32 + k; // номер колонки
-
-                if(bit >= limit)
-                    break;
-
-                data[row][bit].setState(state);
-
-                if(state)
-                {
-                    out << QString("Бит №%1 -> переменная \"%2\" = %3\n").arg(k).arg(data.columnData(bit).first).
-                           arg(((data[row][bit].status())?"допустимая привязка":"недопустимая привязка"));
-                }
-            }
+            col.setState(state);
         }
     }
 
-    out << QString(80, '*') << "\n";
-
-    file.close();
     model->updateData();
 }
 //--------------------------------------------------------------------
@@ -3665,17 +3637,17 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         if(key.isEmpty())
             continue;
 
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
 
-//        if(val_pos < tdata.count())
-//        {
-//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+        if(val_pos < tdata.count())
+        {
+            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-//            if(item_pos < box->count())
-//                box->setCurrentIndex(item_pos);
-//        }
+            if(item_pos < box->count())
+                box->setCurrentIndex(item_pos);
+        }
     }
 }
 //------------------------------------------------------------------------------------
@@ -3705,17 +3677,17 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
         if(key.isEmpty())
             continue;
 
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
 
-//        if(val_pos < tdata.count())
-//        {
-//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+        if(val_pos < tdata.count())
+        {
+            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-//            if(item_pos < box->count())
-//                box->setCurrentIndex(item_pos);
-//        }
+            if(item_pos < box->count())
+                box->setCurrentIndex(item_pos);
+        }
     }
 }
 //---------------------------------------------------------------------------------------
@@ -4835,6 +4807,7 @@ void ConfiguratorWindow::exportPurposeToJSON()
             columnArr.append(tcolumnObj);
         }
 
+        trowCurObj["key"]     = matrix[i].key();
         trowCurObj["name"]    = matrix[i].name();
         trowCurObj["columns"] = columnArr;
 
@@ -4945,7 +4918,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
                                   colObj["name"].toString(), colObj["description"].toString());
         }
 
-        rows << CRowNew(rowObj["name"].toString(), columns);
+        rows << CRowNew(rowObj["key"].toString(), rowObj["name"].toString(), columns);
 
         columnCount = columns.count();
     }
@@ -6075,18 +6048,18 @@ group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
 
     return group;
 }
-//----------------------------------------------------------------
-QStringList ConfiguratorWindow::loadLabelRows(const QString& type)
+//--------------------------------------------------------------------------------------
+QVector<QPair<QString, QString> > ConfiguratorWindow::loadLabelRows(const QString& type)
 {
-    QStringList labels;
+    QVector<QPair<QString, QString> > labels;
 
-    QSqlQuery query(QString("SELECT description FROM iodevice WHERE type = \'%1\';").arg(type));
+    QSqlQuery query(QString("SELECT key, description FROM iodevice WHERE type = \'%1\';").arg(type));
 
     if(query.exec())
     {
         while(query.next())
         {
-            labels << query.value("description").toString();
+            labels << qMakePair(query.value("key").toString(), query.value("description").toString());
         }
     }
 

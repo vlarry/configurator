@@ -39,13 +39,15 @@
 
         public:
             CRowNew();
-            CRowNew(const QString& name, column_t& columns);
+            CRowNew(const QString& key, const QString& name, column_t& columns);
 
             void addColumn(CColumnNew& column);
 
+            QString   key() const;
             QString   name() const;
             column_t& columns();
 
+            void setKey(const QString& key);
             void setName(const QString& name);
             void setColumns(column_t& columns);
 
@@ -53,6 +55,7 @@
             const CColumnNew& operator [](int index) const;
 
         private:
+            QString  m_key;
             QString  m_name;
             column_t m_columns;
     };
@@ -70,6 +73,7 @@
 
             row_t& rows();
 
+            int rowIndexByKey(const QString& key);
             int rowCount() const;
             int columnCount() const;
 

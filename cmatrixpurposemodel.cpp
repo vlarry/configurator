@@ -6,8 +6,9 @@ CMatrixPurposeModel::CMatrixPurposeModel(CDataTable& data, QAbstractTableModel* 
 {
 
 }
-//-------------------------------------------------------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& row_labels, group_t& group, QAbstractTableModel* parent):
+//-----------------------------------------------------------------------------------------------------
+CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
+                                         QAbstractTableModel* parent):
     QAbstractTableModel(parent)
 {
     fillHorizontalHeaderModel(m_horizontal_header, group);
@@ -25,9 +26,9 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& row_labels, group_t&
         }
     }
 
-    for(const QString& label: row_labels)
+    for(const QPair<QString, QString>& label: row_labels)
     {
-        CRowNew row(label, columns);
+        CRowNew row(label.first, label.second, columns);
         m_matrix.addRow(row);
     }
 
@@ -171,13 +172,14 @@ void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerMo
     }
 }
 //-----------------------------------------------------------------------------------------------------------
-void CMatrixPurposeModel::fillVerticalHeaderModel(QStandardItemModel& headerModel, const QStringList& labels)
+void CMatrixPurposeModel::fillVerticalHeaderModel(QStandardItemModel& headerModel,
+                                                  const QVector<QPair<QString, QString> >& labels)
 {
     int columns = 0;
 
-    for(const QString& label: labels)
+    for(const QPair<QString, QString>& label: labels)
     {
-        headerModel.setItem(0, columns++, new QStandardItem(label));
+        headerModel.setItem(0, columns++, new QStandardItem(label.second));
     }
 }
 //----------------------

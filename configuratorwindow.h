@@ -183,16 +183,16 @@
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS  = 5022
             };
             /*!
-             * \brief device_menu_item_key_t
-             * Карта ключей QMap<номер пункта меню, номер в стеке виджетов>
-             */
-            typedef QMap<DeviceMenuItemType, int> device_menu_item_key_t;
-            /*!
              * \brief variable_bit_t
              *
              * Список положений переменных в битовом массиве
              */
             typedef QMap<QString, int> variable_bit_t;
+            /*!
+             * \brief device_menu_item_key_t
+             * Карта ключей QMap<номер пункта меню, номер в стеке виджетов>
+             */
+            typedef QMap<DeviceMenuItemType, int> device_menu_item_key_t;
             /*!
              * \brief The journal_address_t struct
              *
@@ -442,7 +442,7 @@
             void connectSystemDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
-            void initTable(QTableView* table, const QStringList& row_labels, group_t& group);
+            void initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group);
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CDataUnitType& unit);
             void displaySettingResponse(CDataUnitType& unit);
@@ -477,7 +477,7 @@
             QDateTime           unpackDateTime(QVector<quint8>& data);
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
             group_t             createVariableGroup(const QString& io_key);
-            QStringList         loadLabelRows(const QString& type);
+            QVector<QPair<QString, QString> > loadLabelRows(const QString& type);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
@@ -507,5 +507,6 @@
             QMap<QString, journal_set_t>     m_journal_set; // установки журналов
             device_menu_item_key_t           m_menu_items; // карта пунктов меню устройства
             QVector<quint16>                 m_calculate_buffer; // буфер расчетных величи (два запроса, поэтому необходимо клеить)
+            variable_bit_t                   m_variable_bits;
     };
 #endif // CONFIGURATORWINDOW_H

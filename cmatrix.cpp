@@ -25,6 +25,22 @@ CMatrix::row_t& CMatrix::rows()
 {
     return m_rows;
 }
+//--------------------------------------------
+int CMatrix::rowIndexByKey(const QString& key)
+{
+    int index = -1;
+
+    for(int i = 0; i < m_rowCount; i++)
+    {
+        if(m_rows[i].key().toUpper() == key.toUpper())
+        {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
 //---------------------------
 int CMatrix::rowCount() const
 {
@@ -136,13 +152,15 @@ void CColumnNew::setState(bool state)
 //--Класс строка---
 //-----------------
 CRowNew::CRowNew():
+    m_key(""),
     m_name(""),
     m_columns(column_t(0, CColumnNew()))
 {
 
 }
-//----------------------------------------------------------------
-CRowNew::CRowNew(const QString& name, CRowNew::column_t& columns):
+//------------------------------------------------------------------------------------
+CRowNew::CRowNew(const QString& key, const QString& name, CRowNew::column_t& columns):
+    m_key(key),
     m_name(name),
     m_columns(columns)
 {
@@ -153,6 +171,11 @@ void CRowNew::addColumn(CColumnNew& column)
 {
     m_columns.push_back(column);
 }
+//--------------------------
+QString CRowNew::key() const
+{
+    return m_key;
+}
 //---------------------------
 QString CRowNew::name() const
 {
@@ -162,6 +185,11 @@ QString CRowNew::name() const
 CRowNew::column_t& CRowNew::columns()
 {
     return m_columns;
+}
+//--------------------------------------
+void CRowNew::setKey(const QString &key)
+{
+    m_key = key;
 }
 //----------------------------------------
 void CRowNew::setName(const QString& name)
