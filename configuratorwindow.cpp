@@ -3445,8 +3445,8 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
     int faddr = addressPurposeKey(first);
     int eaddr = addressPurposeKey(last);
 
-    int rowCount = (eaddr - faddr)/24 + 1; // 24 слова хранит до 384 переменных, т.е. при чтении одной
-                                           // переменной мы получим 24 слова
+    int rowCount = (eaddr - faddr)/24 + 1; // 24 полуслова хранит до 384 переменных, т.е. при чтении одной
+                                           // переменной мы получим 24 полуслова
 
     if(rowCount == 0)
         return;
@@ -4014,43 +4014,39 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     if(!table)
         return;
 
-    CDataTable data = static_cast<CMatrixPurposeModel*>(table->model())->dataTable();
+    CMatrix matrix = static_cast<CMatrixPurposeModel*>(table->model())->dataTableNew();
 
-    int bIndex = data.indexRowFromKey(first);
-    int eIndex = data.indexRowFromKey(last);
+    int bIndex = matrix.rowIndexByKey(first);
+    int eIndex = matrix.rowIndexByKey(last);
 
     if(bIndex == -1 || eIndex == -1)
         return;
 
-    QVector<quint16> values;
+    int hword_size = (eIndex - bIndex + 1)*24;
 
-    int var_count = 24; // 24 ячейки 384 переменных максимум (у нас 358)
+    QVector<quint16> data = QVector<quint16>(hword_size, 0); // создаем вектор размерностью hword_size полуслов со значением 0
 
-    for(int i = bIndex; i <= eIndex; i++)
+    for(int i = 0; i <= (eIndex - bIndex); i++)
     {
-        for(int j = 0, offset = 0; j < 24 - 1; j += 2, offset += 32)
+        int index      = i + bIndex;
+        int offset_pos = i*24;
+
+        for(CColumnNew& col: matrix[index].columns())
         {
-            quint32 value = 0;
+            quint16 hword = col.bit()/16;
+            quint16 bit   = col.bit()%16;
 
-            for(int k = 0; k < 32; k++)
+            if(col.state())
             {
-                int bit = offset + k;
-
-                if(bit >= var_count*16 - (var_count*16 - data.columnCounts()))
-                    break;
-
-                bool state = data[i][bit].state();
-
-                if(state)
-                    value |= 1 << k;
+                data[hword + offset_pos] |= (1 << bit);
             }
-
-            quint16 lbs = (quint16)value&0x0000FFFF;
-            quint16 mbs = (quint16)((value >> 16)&0x0000FFFF);
-
-            values << mbs << lbs;
         }
     }
+
+    QVector<quint16> values;
+
+    for(int i = 0; i < (data.count() - 1); i += 2)
+        values << data[i + 1] << data[i];
 
     CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                  CDataUnitType::WriteMultipleRegisters);
