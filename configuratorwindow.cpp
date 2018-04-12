@@ -3501,6 +3501,11 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
         return;
     }
 
+    QVector<QString> var_list = loadVaribleByType("DI");
+
+    if(var_list.isEmpty())
+        return;
+
     int first_addr = unit.property(tr("FIRST_ADDRESS")).toInt();
     int last_addr  = unit.property(tr("LAST_ADDRESS")).toInt();
 
@@ -3509,22 +3514,43 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 
     int column_offset = (first_addr - 512)/2;
 
-    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
-    CDataTable&          data  = model->dataTable();
+    CMatrixPurposeModel* model  = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
+    CMatrix&             matrix = model->dataTableNew();
 
-    for(int i = 0; i < unit.valueCount() - 1; i += 2)
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
+
+    QVector<quint32> data;
+
+    for(int i = 0; i < (unit.valueCount() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
+    {                                                   // каждые 32 бита хранят состояния входов для переменной
+        quint32 value = ((unit.value(i) << 16) | unit.value(i + 1));
+        data << value;
+    }
+
+    for(int i = 0; i < data.count(); i++)
     {
-        quint32 value = (unit.value(i) << 16) | unit.value(i + 1);
+        QString key = var_list[i + column_offset].toUpper();
 
-        for(int j = 0; j < data.count(); j++)
+        int col_index = -1;
+
+        for(int k = 0; k < matrix.columnCount(); k++) // производим поиск позиции текущей переменной в колонках, т.к. колонки
+        {                                             // идут не по порядку - разбиты на группы (позиция переменной в var_list
+                                                      // определяет ее положение в полученных данных учитывая смещение)
+            if(matrix[0][k].key().toUpper() == key)
+            {
+                col_index = k;
+                break;
+            }
+        }
+
+        if(col_index != -1)
         {
-            QVector<int> list = data.columnIndexListActive(j);
-
-            bool state = (value >> j)&0x00000001;
-
-            int column = list[i/2 + column_offset];
-
-            data[j][column].setState(state);
+            for(int j = 0; j < matrix.rowCount(); j++)
+            {
+                bool state = data[i]&(1 << j);
+                matrix[j][col_index].setState(state);
+            }
         }
     }
 
@@ -4080,24 +4106,48 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     if(!model)
         return;
 
-    CDataTable   data        = model->dataTable();
-    QVector<int> column_list = data.columnIndexListActive(0);
+    CMatrix matrix = model->dataTableNew();
+
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
+
+    QVector<QString> var_list = loadVaribleByType("DI");
 
     int bIndex = (first_addr - 512)/2;
     int eIndex = (670 - last_addr)/2;
 
     QVector<quint16> values;
 
-    for(int i = bIndex; i < column_list.count() - eIndex; i++)
+    for(int i = bIndex; i < var_list.count() - eIndex; i++)
     {
-        quint32 value = 0;
+        QString key       = var_list[i].toUpper();
+        int     col_index = -1;
 
-        for(int j = 0; j < data.count(); j++)
+        for(int j = 0; j < matrix.columnCount(); j++)
         {
-            value |= (data[j][column_list[i]].state()) << j;
+            QString col_key = matrix[0][j].key().toUpper();
+
+            if(key == col_key)
+            {
+                col_index = j;
+                break;
+            }
         }
 
-        values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+        if(col_index != -1)
+        {
+            quint32 value = 0;
+
+            for(int k = 0; k < matrix.rowCount(); k++)
+            {
+                bool state = matrix[k][col_index].state();
+
+                if(state)
+                    value |= (1 << k);
+            }
+
+            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+        }
     }
 
     CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
@@ -6060,6 +6110,26 @@ QVector<QPair<QString, QString> > ConfiguratorWindow::loadLabelRows(const QStrin
     }
 
     return labels;
+}
+//-------------------------------------------------------------------------
+QVector<QString> ConfiguratorWindow::loadVaribleByType(const QString& type)
+{
+    QSqlQuery query(m_system_db);
+
+    QVector<QString> var_list;
+
+    if(query.exec(QString("SELECT var_key FROM purpose WHERE io_key LIKE \'%1%\';").arg(type)))
+    {
+        while(query.next())
+        {
+            QString var_key = query.value("var_key").toString();
+
+            if(!var_list.contains(var_key))
+                var_list << var_key;
+        }
+    }
+
+    return var_list;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

@@ -478,6 +478,7 @@
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
             group_t             createVariableGroup(const QString& io_key);
             QVector<QPair<QString, QString> > loadLabelRows(const QString& type);
+            QVector<QString>    loadVaribleByType(const QString& type);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
