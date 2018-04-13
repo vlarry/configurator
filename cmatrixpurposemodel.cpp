@@ -164,7 +164,7 @@ void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerMo
 
         for(var_t var: var_list)
         {
-            QStandardItem* cell = new QStandardItem(var.name);
+            QStandardItem* cell = new QStandardItem(var.name + QString(3, ' ') + QString("(%1)").arg(var.key));
             cell->setData(1, Qt::UserRole);
 
             itemGroup->appendColumn(QList<QStandardItem*>() << cell);
