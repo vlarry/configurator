@@ -3,6 +3,7 @@
     //------------------
     #include <QLineEdit>
     #include <QMouseEvent>
+    #include <QLocale>
     #include <QDebug>
     //-------------------------------
     class CLineEdit: public QLineEdit

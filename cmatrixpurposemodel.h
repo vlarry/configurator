@@ -37,7 +37,7 @@
         public:
             CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
                                 QAbstractTableModel* parent = nullptr);
-            CMatrixPurposeModel(QAbstractTableModel* parent = nullptr);
+            CMatrixPurposeModel(QVector<QPair<QString, int> >& labels, QAbstractTableModel* parent = nullptr);
             void     updateData();
             CMatrix& matrixTable();
             void     setMatrixTable(CMatrix& matrix);
@@ -51,6 +51,7 @@
             void          fillHorizontalHeaderModel(QStandardItemModel& headerModel, group_t& group);
             void          fillVerticalHeaderModel(QStandardItemModel& headerModel,
                                                   const QVector<QPair<QString, QString> >& labels);
+            void          fillHeaderProtectionModel(const QStringList& labels);
 
         private:
             CMatrix            m_matrix;
@@ -61,10 +62,20 @@
     class CTableItemDelegate: public QStyledItemDelegate
     {
         public:
-            CTableItemDelegate(QObject* parent = nullptr);
+            enum TableType
+            {
+                PURPOSE_TYPE,
+                PROTECTION_TYPE
+            };
+
+        public:
+            CTableItemDelegate(TableType table_type, QObject* parent = nullptr);
 
         protected:
             void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
             bool editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index);
+
+        private:
+            TableType m_table_type;
     };
 #endif // CMATRIXPURPOSEMODEL_H

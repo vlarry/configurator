@@ -180,7 +180,8 @@
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY   = 5611,
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS  = 5612,
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY   = 5021,
-                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS  = 5022
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS  = 5022,
+                DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION     = 5023
             };
             /*!
              * \brief variable_bit_t
@@ -443,6 +444,7 @@
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
             void initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group);
+            void initTableProtection(QTableView* table, QVector<QPair<QString, int> >& labels);
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CDataUnitType& unit);
             void displaySettingResponse(CDataUnitType& unit);
@@ -479,6 +481,7 @@
             group_t             createVariableGroup(const QString& io_key);
             QVector<QPair<QString, QString> > loadLabelRows(const QString& type);
             QVector<QString>    loadVaribleByType(const QString& type);
+            QVector<QPair<QString, int> > loadProtectionList();
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

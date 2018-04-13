@@ -28,11 +28,32 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_
     m_matrix.setRowCount(row_labels.count());
     m_matrix.setColumnCount(columns.count());
 }
-//--------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(QAbstractTableModel* parent):
+//-----------------------------------------------------------------------------------------------------------
+CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, int> >& labels, QAbstractTableModel* parent):
     QAbstractTableModel(parent)
 {
+    QStringList list;
 
+    for(QPair<QString, int>& label: labels)
+        list << label.first;
+
+    fillHeaderProtectionModel(list);
+
+    CRow::column_t columns;
+
+    for(const QString& label: list)
+    {
+        columns << CColumn(label);
+    }
+
+    for(const QString& label: list)
+    {
+        CRow row("", label, columns);
+        m_matrix.addRow(row);
+    }
+
+    m_matrix.setRowCount(list.count());
+    m_matrix.setColumnCount(list.count());
 }
 //------------------------------------
 void CMatrixPurposeModel::updateData()
@@ -163,11 +184,28 @@ void CMatrixPurposeModel::fillVerticalHeaderModel(QStandardItemModel& headerMode
         headerModel.setItem(0, columns++, new QStandardItem(label.second));
     }
 }
+//----------------------------------------------------------------------------
+void CMatrixPurposeModel::fillHeaderProtectionModel(const QStringList& labels)
+{
+    int columns = 0;
+
+    for(const QString& label: labels)
+    {
+        QStandardItem* hitem = new QStandardItem(label);
+        QStandardItem* vitem = new QStandardItem(label);
+
+        hitem->setData(1, Qt::UserRole);
+
+        m_horizontal_header.setItem(0, columns, hitem);
+        m_vertical_header.setItem(0, columns++, vitem);
+    }
+}
 //--------------------------------
 //------class CItemDelegate-------
-//------------------------------------------------------
-CTableItemDelegate::CTableItemDelegate(QObject* parent):
-    QStyledItemDelegate(parent)
+//----------------------------------------------------------------------------
+CTableItemDelegate::CTableItemDelegate(TableType table_type, QObject* parent):
+    QStyledItemDelegate(parent),
+    m_table_type(table_type)
 {
 
 }
@@ -198,27 +236,27 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
     else
         checkboxstyle.state = QStyle::State_Off|QStyle::State_Enabled;
 
-//    if(!index.data((Qt::UserRole + 10)).toBool())
-//    {
-//        int cx = option.rect.x() + option.rect.width()/2;
-//        int cy = option.rect.y() + option.rect.height()/2;
+    if(m_table_type == PROTECTION_TYPE && index.row() == index.column())
+    {
+        int cx = option.rect.x() + option.rect.width()/2;
+        int cy = option.rect.y() + option.rect.height()/2;
 
-//        QPoint line_topLeft(cx - checkbox_rect.width()/2, cy - checkbox_rect.height()/2 - 1);
-//        QPoint line_bottomRight(cx + checkbox_rect.width()/2, cy + checkbox_rect.height()/2 -1);
-//        QPoint line_bottomLeft(cx - checkbox_rect.width()/2, cy + checkbox_rect.height()/2);
-//        QPoint line_topRight(cx + checkbox_rect.width()/2, cy - checkbox_rect.height()/2);
+        QPoint line_topLeft(cx - checkbox_rect.width()/2, cy - checkbox_rect.height()/2 - 1);
+        QPoint line_bottomRight(cx + checkbox_rect.width()/2, cy + checkbox_rect.height()/2 -1);
+        QPoint line_bottomLeft(cx - checkbox_rect.width()/2, cy + checkbox_rect.height()/2);
+        QPoint line_topRight(cx + checkbox_rect.width()/2, cy - checkbox_rect.height()/2);
 
-//        painter->save();
-//            painter->setPen(Qt::gray);
-//            painter->drawRect(line_topLeft.x(), line_topLeft.y(), checkbox_rect.width(), checkbox_rect.height());
-//            painter->drawLine(line_topLeft, line_bottomRight);
-//            painter->drawLine(line_bottomLeft, line_topRight);
-//        painter->restore();
-//    }
-//    else
-//    {
+        painter->save();
+            painter->setPen(Qt::gray);
+            painter->drawRect(line_topLeft.x(), line_topLeft.y(), checkbox_rect.width(), checkbox_rect.height());
+            painter->drawLine(line_topLeft, line_bottomRight);
+            painter->drawLine(line_bottomLeft, line_topRight);
+        painter->restore();
+    }
+    else
+    {
         QApplication::style()->drawControl(QStyle::CE_CheckBox, &checkboxstyle, painter);
-//    }
+    }
 }
 //----------------------------------------------------------------------------------------------------------------
 bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option,

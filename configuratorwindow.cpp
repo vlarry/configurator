@@ -2725,10 +2725,12 @@ void ConfiguratorWindow::initMenuPanel()
 
 //    settingIO->addChildren(QList<QTreeWidgetItem*>() << ioMDVV01 << ioMDVV02);
 
-    QTreeWidgetItem* ioRelayMDVV01   = new QTreeWidgetItem(settingIO, QStringList() << tr("Реле"),
-                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
-    QTreeWidgetItem* ioDSInputMDVV01 = new QTreeWidgetItem(settingIO, QStringList() << tr("Дискретные входы"),
-                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS);
+    QTreeWidgetItem* ioRelayMDVV01    = new QTreeWidgetItem(settingIO, QStringList() << tr("Реле"),
+                                                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
+    QTreeWidgetItem* ioDSInputMDVV01  = new QTreeWidgetItem(settingIO, QStringList() << tr("Дискретные входы"),
+                                                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS);
+    QTreeWidgetItem* ioProtectionCtrl = new QTreeWidgetItem(settingIO, QStringList() << tr("Управление защитами"),
+                                                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION);
 
     settingIO->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01);
 
@@ -2807,6 +2809,7 @@ void ConfiguratorWindow::initMenuPanel()
 //    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS]  = 57;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 58;
 //    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 60;
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -2900,6 +2903,13 @@ void ConfiguratorWindow::initModelTables()
     {
         QVector<QPair<QString, QString> > labels = loadLabelRows("INPUT");
         initTable(ui->tablewgtDiscreteInputPurpose, labels, group);
+    }
+
+    QVector<QPair<QString, int> > list = loadProtectionList();
+
+    if(!list.isEmpty())
+    {
+        initTableProtection(ui->tablewgtProtectionCtrl, list);
     }
 }
 //-----------------------------------------
@@ -3270,7 +3280,21 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
     CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group);
 
-    table->setItemDelegate(new CTableItemDelegate);
+    table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PROTECTION_TYPE));
+    table->setHorizontalHeader(hheader);
+    table->setVerticalHeader(vheader);
+    table->setModel(model);
+    table->resizeColumnsToContents();
+    table->resizeRowsToContents();
+}
+//----------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::initTableProtection(QTableView* table, QVector<QPair<QString, int> >& labels)
+{
+    HierarchicalHeaderView* hheader = new HierarchicalHeaderView(Qt::Horizontal, table);
+    HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
+    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(labels);
+
+    table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PROTECTION_TYPE));
     table->setHorizontalHeader(hheader);
     table->setVerticalHeader(vheader);
     table->setModel(model);
@@ -3350,9 +3374,9 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
 
         QString classWgt = widget->metaObject()->className();
 
-        if(classWgt == tr("QLineEdit"))
+        if(classWgt == tr("CLineEdit"))
         {
-            QLineEdit* edit = qobject_cast<QLineEdit*>(widget);
+            CLineEdit* edit = qobject_cast<CLineEdit*>(widget);
 
             if(edit)
             {
@@ -3979,9 +4003,9 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 
         QString classWgt = widget->metaObject()->className();
 
-        if(classWgt == tr("QLineEdit"))
+        if(classWgt == tr("CLineEdit"))
         {
-            QLineEdit* edit = qobject_cast<QLineEdit*>(widget);
+            CLineEdit* edit = qobject_cast<CLineEdit*>(widget);
 
             if(!edit)
                 continue;
@@ -5723,6 +5747,8 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
 {
     CLineEdit* lineEdit = qobject_cast<CLineEdit*>(object);
 
+    lineEdit->setLocale(QLocale::system());
+
     QString str = lineEdit->objectName().toUpper();
 
     if(str == "LEK20" || str == "LEK21" || str == "LEK29")
@@ -5732,8 +5758,11 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
     }
     else
     {
-        lineEdit->setValidator(new QDoubleValidator(0, 100, 6));
-        lineEdit->setText("0.000000");
+        QDoubleValidator* validator = new QDoubleValidator(0, 100, 6);
+        validator->setLocale(QLocale::system())
+                ;
+        lineEdit->setValidator(validator);
+        lineEdit->setText(QString("%1").arg(QString::number(0.0f, 'f', 6)));
     }
 }
 /*!
@@ -6126,6 +6155,26 @@ QVector<QString> ConfiguratorWindow::loadVaribleByType(const QString& type)
     }
 
     return var_list;
+}
+//--------------------------------------------------------------------
+QVector<QPair<QString, int> > ConfiguratorWindow::loadProtectionList()
+{
+    QVector<QPair<QString, int> > list;
+
+    QSqlQuery query(m_system_db);
+
+    if(query.exec("SELECT code, name FROM protection;"))
+    {
+        while(query.next())
+        {
+            int     code = query.value("code").toInt();
+            QString name = query.value("name").toString();
+
+            list << qMakePair(name, code);
+        }
+    }
+
+    return list;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

@@ -9,6 +9,7 @@
     {
         public:
             CColumn();
+            CColumn(const QString& name);
             CColumn(int bit, bool state, const QString& key, const QString& name, const QString& description);
 
             int     bit() const;

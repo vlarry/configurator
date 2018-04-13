@@ -30,27 +30,27 @@ SOURCES += \
         qcell.cpp \
         cmodbus.cpp \
         cdataunittype.cpp \
-    cterminal.cpp \
-    qcustomplot.cpp \
-    cversionsoftware.cpp \
-    cmatrixpurposemodel.cpp \
-    cheadertable.cpp \
-    cserialportsetting.cpp \
-    cstatusbar.cpp \
-    ctablewidgetitem.cpp \
-    ceventlistjournals.cpp \
-    cprogressbarwidget.cpp \
-    cfilterdialog.cpp \
-    cfilter.cpp \
-    cheaderjournal.cpp \
-    cjournalwidget.cpp \
-    cjournaltable.cpp \
-    cjournalpropertymodel.cpp \
-    cjournalpropertydelegate.cpp \
-    HierarchicalHeaderView.cpp \
-    ProxyModelWithHeaderModels.cpp \
-    clineedit.cpp \
-    cmatrix.cpp
+        cterminal.cpp \
+        qcustomplot.cpp \
+        cversionsoftware.cpp \
+        cmatrixpurposemodel.cpp \
+        cheadertable.cpp \
+        cserialportsetting.cpp \
+        cstatusbar.cpp \
+        ctablewidgetitem.cpp \
+        ceventlistjournals.cpp \
+        cprogressbarwidget.cpp \
+        cfilterdialog.cpp \
+        cfilter.cpp \
+        cheaderjournal.cpp \
+        cjournalwidget.cpp \
+        cjournaltable.cpp \
+        cjournalpropertymodel.cpp \
+        cjournalpropertydelegate.cpp \
+        HierarchicalHeaderView.cpp \
+        ProxyModelWithHeaderModels.cpp \
+        clineedit.cpp \
+        cmatrix.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -58,40 +58,40 @@ HEADERS += \
         qcell.h \
         cmodbus.h \
         cdataunittype.h \
-    cterminal.h \
-    qcustomplot.h \
-    cversionsoftware.h \
-    cmatrixpurposemodel.h \
-    cheadertable.h \
-    cserialportsetting.h \
-    cstatusbar.h \
-    ctablewidgetitem.h \
-    ceventlistjournals.h \
-    cprogressbarwidget.h \
-    cfilterdialog.h \
-    cfilter.h \
-    cheaderjournal.h \
-    cjournalwidget.h \
-    cjournaltable.h \
-    cjournalpropertymodel.h \
-    cjournalpropertydelegate.h \
-    HierarchicalHeaderView.h \
-    ProxyModelWithHeaderModels.h \
-    clineedit.h \
-    cmatrix.h
+        cterminal.h \
+        qcustomplot.h \
+        cversionsoftware.h \
+        cmatrixpurposemodel.h \
+        cheadertable.h \
+        cserialportsetting.h \
+        cstatusbar.h \
+        ctablewidgetitem.h \
+        ceventlistjournals.h \
+        cprogressbarwidget.h \
+        cfilterdialog.h \
+        cfilter.h \
+        cheaderjournal.h \
+        cjournalwidget.h \
+        cjournaltable.h \
+        cjournalpropertymodel.h \
+        cjournalpropertydelegate.h \
+        HierarchicalHeaderView.h \
+        ProxyModelWithHeaderModels.h \
+        clineedit.h \
+        cmatrix.h
 
 FORMS += \
         configuratorwindow.ui \
         qcell.ui \
-    cterminal.ui \
-    versionform.ui \
-    serialportsetting.ui \
-    statusbar.ui \
-    eventlistjournals.ui \
-    progressbarwidget.ui \
-    filterdialog.ui \
-    headerjournal.ui \
-    journalwidget.ui
+        cterminal.ui \
+        versionform.ui \
+        serialportsetting.ui \
+        statusbar.ui \
+        eventlistjournals.ui \
+        progressbarwidget.ui \
+        filterdialog.ui \
+        headerjournal.ui \
+        journalwidget.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

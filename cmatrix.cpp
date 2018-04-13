@@ -82,6 +82,16 @@ CColumn::CColumn():
 {
 
 }
+//------------------------------------
+CColumn::CColumn(const QString& name):
+    m_bit(-1),
+    m_state(false),
+    m_key(""),
+    m_name(name),
+    m_description("")
+{
+
+}
 //---------------------------------------------------------------------------------------------------------
 CColumn::CColumn(int bit, bool state, const QString& key, const QString& name, const QString& description):
     m_bit(bit),
