@@ -12,3 +12,13 @@ void CLineEdit::mouseReleaseEvent(QMouseEvent* event)
 
     selectAll();
 }
+//---------------------------------------------
+void CLineEdit::keyPressEvent(QKeyEvent* event)
+{
+    QLineEdit::keyPressEvent(event);
+
+    if(event->key() == Qt::Key_Return)
+    {
+        selectAll();
+    }
+}

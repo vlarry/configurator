@@ -3280,7 +3280,7 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
     CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group);
 
-    table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PROTECTION_TYPE));
+    table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PURPOSE_TYPE));
     table->setHorizontalHeader(hheader);
     table->setVerticalHeader(vheader);
     table->setModel(model);
@@ -3386,7 +3386,7 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
                 value.w[0] = val1;
                 value.w[1] = val2;
 
-                QString str = QString::number(value.f, 'f', 6);
+                QString str = QLocale::system().toString(value.f, 'f', 6);
 
                 if(!str.isEmpty())
                     edit->setText(str);
@@ -5747,8 +5747,6 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
 {
     CLineEdit* lineEdit = qobject_cast<CLineEdit*>(object);
 
-    lineEdit->setLocale(QLocale::system());
-
     QString str = lineEdit->objectName().toUpper();
 
     if(str == "LEK20" || str == "LEK21" || str == "LEK29")
@@ -5759,10 +5757,8 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
     else
     {
         QDoubleValidator* validator = new QDoubleValidator(0, 100, 6);
-        validator->setLocale(QLocale::system())
-                ;
         lineEdit->setValidator(validator);
-        lineEdit->setText(QString("%1").arg(QString::number(0.0f, 'f', 6)));
+        lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
     }
 }
 /*!

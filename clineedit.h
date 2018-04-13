@@ -3,6 +3,7 @@
     //------------------
     #include <QLineEdit>
     #include <QMouseEvent>
+    #include <QKeyEvent>
     #include <QLocale>
     #include <QDebug>
     //-------------------------------
@@ -15,5 +16,6 @@
 
         protected:
             void mouseReleaseEvent(QMouseEvent* event);
+            void keyPressEvent(QKeyEvent* event);
     };
 #endif // CLINEEDIT_H

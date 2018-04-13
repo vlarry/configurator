@@ -173,7 +173,7 @@ void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerMo
         headerModel.setItem(0, keys++, itemGroup);
     }
 }
-//-----------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 void CMatrixPurposeModel::fillVerticalHeaderModel(QStandardItemModel& headerModel,
                                                   const QVector<QPair<QString, QString> >& labels)
 {
