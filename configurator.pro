@@ -50,7 +50,8 @@ SOURCES += \
         HierarchicalHeaderView.cpp \
         ProxyModelWithHeaderModels.cpp \
         clineedit.cpp \
-        cmatrix.cpp
+        cmatrix.cpp \
+    cvaribalelist.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -78,7 +79,8 @@ HEADERS += \
         HierarchicalHeaderView.h \
         ProxyModelWithHeaderModels.h \
         clineedit.h \
-        cmatrix.h
+        cmatrix.h \
+    cvaribalelist.h
 
 FORMS += \
         configuratorwindow.ui \

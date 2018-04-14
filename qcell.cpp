@@ -1,5 +1,12 @@
 #include "qcell.h"
 #include "ui_qcell.h"
+//----------------------------
+QCell::QCell(QWidget *parent):
+    QWidget(parent),
+    ui(new Ui::QCell)
+{
+    ui->setupUi(this);
+}
 //------------------------------------------------------
 QCell::QCell(const QString& cell_name, QWidget *parent):
     QWidget(parent),
@@ -17,10 +24,21 @@ QCell::~QCell()
 //------------------------------------------
 void QCell::setCellName(const QString& name)
 {
-    ui->lblCellName->setText(name);
+    ui->lblCellName->clear();
+    ui->lblCellName->setText(fontMetrics().elidedText(name, Qt::ElideRight, ui->lblCellName->width() - 10));
 }
 //-----------------------------------
 void QCell::setCellValue(float value)
 {
     ui->leCellValue->setText(QString::number(value, 'f', 4));
+}
+//----------------------------
+QSize QCell::labelSize() const
+{
+    return ui->lblCellName->size();
+}
+//----------------------------
+QSize QCell::fieldSize() const
+{
+    return ui->leCellValue->size();
 }

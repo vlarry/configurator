@@ -2,6 +2,7 @@
     #define QCELL_H
     //----------------
     #include <QWidget>
+    #include <QDebug>
     //----------
     namespace Ui 
     {
@@ -13,10 +14,14 @@
         Q_OBJECT
     
         public:
-            explicit QCell(const QString& cell_name, QWidget* parent = Q_NULLPTR);
+            explicit QCell(QWidget* parent = nullptr);
+            explicit QCell(const QString& cell_name, QWidget* parent = nullptr);
             ~QCell();
             void setCellName(const QString& name);
             void setCellValue(float value);
+
+            QSize labelSize() const;
+            QSize fieldSize() const;
         
         private:
             Ui::QCell* ui;

@@ -2,10 +2,12 @@
 //------------------------------
 QPanel::QPanel(QWidget* parent):
     QDockWidget(parent),
-    m_central_wgt(Q_NULLPTR)
+    m_central_wgt(nullptr)
 {
-    m_central_wgt = new QListWidget(this);
+    m_central_wgt = new CVaribaleList(this);
     setWidget(m_central_wgt);
+
+    connect(m_central_wgt, &CVaribaleList::resizeSize, this, &QPanel::resizeSize);
 }
 //------------------------------------------------
 void QPanel::setData(const QVector<quint16>& data)
@@ -43,14 +45,27 @@ void QPanel::setVariableNames(const calc_value_list_t& calc_list)
         if(!value.description.isEmpty())
             cell_str += QString(" (%1)").arg(value.description);
 
-        QCell* cell = new QCell(cell_str);
+        m_varibles << cell_str;
+
+        QCell* cell = new QCell;
+
+        cell->setCellName(cell_str);
 
         cell->setToolTip(value.description);
 
         QListWidgetItem* item = new QListWidgetItem(m_central_wgt);
         item->setSizeHint(cell->sizeHint());
         m_central_wgt->setItemWidget(item, cell);
+    }
+}
+//-----------------------
+void QPanel::resizeSize()
+{
+    for(int i = 0; i < m_central_wgt->count(); i++)
+    {
+        QListWidgetItem* item = m_central_wgt->item(i);
+        QCell*           cell = static_cast<QCell*>(m_central_wgt->itemWidget(item));
 
-//        m_cell_list.append(cell);
+        cell->setCellName(m_varibles.at(i));
     }
 }
