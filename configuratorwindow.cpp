@@ -2516,32 +2516,41 @@ void ConfiguratorWindow::initMenuPanel()
     QTreeWidgetItem* currentItemMTZ3 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ3"),
                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3); // защита МТЗ3
 
-    QTreeWidgetItem* currentItemMTZ3_charact_steep   = new QTreeWidgetItem(currentItemMTZ3, QStringList() << tr("Крутая"),
+    QTreeWidgetItem* currentItemMTZ3_set_character = new QTreeWidgetItem(currentItemMTZ3,
+                                                                         QStringList() << tr("Настройка характеристик"),
+                                                                         DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR);
+
+    currentItemMTZ3->addChild(currentItemMTZ3_set_character);
+
+    QTreeWidgetItem* currentItemMTZ3_charact_steep   = new QTreeWidgetItem(currentItemMTZ3_set_character,
+                                                                           QStringList() << tr("Крутая"),
                                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP);
-    QTreeWidgetItem* currentItemMTZ3_charact_sloping = new QTreeWidgetItem(currentItemMTZ3, QStringList() << tr("Пологая"),
+    QTreeWidgetItem* currentItemMTZ3_charact_sloping = new QTreeWidgetItem(currentItemMTZ3_set_character,
+                                                                           QStringList() << tr("Пологая"),
                                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP);
-    QTreeWidgetItem* currentItemMTZ3_charact_inverse = new QTreeWidgetItem(currentItemMTZ3, QStringList() << tr("Инверсная"),
+    QTreeWidgetItem* currentItemMTZ3_charact_inverse = new QTreeWidgetItem(currentItemMTZ3_set_character,
+                                                                           QStringList() << tr("Инверсная"),
                                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV);
-    QTreeWidgetItem* currentItemMTZ3_charact_dur_inv = new QTreeWidgetItem(currentItemMTZ3,
+    QTreeWidgetItem* currentItemMTZ3_charact_dur_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
                                                                            QStringList() << tr("Длительно инверсная"),
                                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV);
-    QTreeWidgetItem* currentItemMTZ3_charact_back    = new QTreeWidgetItem(currentItemMTZ3,
+    QTreeWidgetItem* currentItemMTZ3_charact_back    = new QTreeWidgetItem(currentItemMTZ3_set_character,
                                                                            QStringList() << tr("Обратно зависимая"),
                                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK);
-    QTreeWidgetItem* currentItemMTZ3_charact_str_inv = new QTreeWidgetItem(currentItemMTZ3,
+    QTreeWidgetItem* currentItemMTZ3_charact_str_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
                                                                            QStringList() << tr("Сильно инверсная"),
                                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV);
-    QTreeWidgetItem* currentItemMTZ3_charact_ext_inv = new QTreeWidgetItem(currentItemMTZ3,
+    QTreeWidgetItem* currentItemMTZ3_charact_ext_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
                                                                            QStringList() << tr("Экстремально инверсная"),
                                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV);
 
-    currentItemMTZ3->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ3_charact_steep <<
-                                                              currentItemMTZ3_charact_sloping <<
-                                                              currentItemMTZ3_charact_inverse <<
-                                                              currentItemMTZ3_charact_dur_inv <<
-                                                              currentItemMTZ3_charact_back <<
-                                                              currentItemMTZ3_charact_str_inv <<
-                                                              currentItemMTZ3_charact_ext_inv);
+    currentItemMTZ3_set_character->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ3_charact_steep <<
+                                                                            currentItemMTZ3_charact_sloping <<
+                                                                            currentItemMTZ3_charact_inverse <<
+                                                                            currentItemMTZ3_charact_dur_inv <<
+                                                                            currentItemMTZ3_charact_back <<
+                                                                            currentItemMTZ3_charact_str_inv <<
+                                                                            currentItemMTZ3_charact_ext_inv);
 
     QTreeWidgetItem* currentItemMTZ4 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ4"),
                                                            DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4); // защита МТЗ4

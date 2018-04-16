@@ -115,9 +115,10 @@
                 DEVICE_MENU_PROTECT_ITEM_TEMPERATURE             = 1700,
                 DEVICE_MENU_PROTECT_ITEM_RESERVE                 = 1800,
                 DEVICE_MENU_PROTECT_ITEM_CONTROL                 = 1900,
-                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1            = 1111,
-                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2            = 1112,
-                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3            = 1113,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1            = 1121,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2            = 1122,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3            = 1123,
+                DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR   = 1110, // Настройки характеристик
                 DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP = 1101, // крутая
                 DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP  = 1102, // пологая
                 DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV   = 1103, // инверсная
