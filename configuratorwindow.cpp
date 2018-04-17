@@ -6252,4 +6252,5 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
     connect(m_serialPortSettings, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
+    connect(m_terminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
 }

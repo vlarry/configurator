@@ -18,15 +18,22 @@
         public:
             explicit CTerminal(QWidget* parent = nullptr);
             ~CTerminal();
+
+            void show();
         
         signals:
             void closeTerminal(int);
+            void sendDeviceCommand(int);
         
         public slots:
             void appendData(QByteArray& data, bool isRequest = true);
+
+        private slots:
+            void convertDeviceCommand();
             
         private:
             void closeEvent(QCloseEvent* event);
+            bool eventFilter(QObject* watched, QEvent* event);
     
         private:
             Ui::CTerminal* ui;
