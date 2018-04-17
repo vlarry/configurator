@@ -9,6 +9,7 @@ CSerialPortSetting::CSerialPortSetting(QWidget* parent):
 
     connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SIGNAL(timeout(int)));
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SIGNAL(numberRepeat(int)));
+    connect(ui->checkBoxAutoSpeed, &QCheckBox::clicked, this, &CSerialPortSetting::autospeed);
 
     setWindowFlag(Qt::Dialog);
 }
@@ -36,6 +37,16 @@ int CSerialPortSetting::modbusTimeout() const
 int CSerialPortSetting::modbusTryCount() const
 {
     return ui->sboxNumRepeat->value();
+}
+//---------------------------------------------
+bool CSerialPortSetting::autospeedState() const
+{
+    return ui->checkBoxAutoSpeed->isChecked();
+}
+//-----------------------------------------------
+void CSerialPortSetting::setAutospeed(bool state)
+{
+    ui->checkBoxAutoSpeed->setChecked(state);
 }
 //-----------------------------------------------------------
 void CSerialPortSetting::setDataBits(const QString& databits)

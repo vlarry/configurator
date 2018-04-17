@@ -21,7 +21,9 @@
             const QString stopBits() const;
             int           modbusTimeout() const;
             int           modbusTryCount() const;
+            bool          autospeedState() const;
 
+            void setAutospeed(bool state);
             void setDataBits(const QString& databits);
             void setStopBits(const QString& stopbits);
             void setParity(const QString& parity);
@@ -34,6 +36,7 @@
         signals:
             void numberRepeat(int);
             void timeout(int);
+            void autospeed(bool);
 
         private:
             Ui::CSerialPortSetting* ui;

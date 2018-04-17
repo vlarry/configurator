@@ -3289,6 +3289,8 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
     CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group);
 
+    hheader->setCascadingSectionResizes(true);
+
     table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PURPOSE_TYPE));
     table->setHorizontalHeader(hheader);
     table->setVerticalHeader(vheader);
@@ -4593,7 +4595,7 @@ void ConfiguratorWindow::loadSettings()
             ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
             ui->checkboxCalibTimeout->setChecked(m_settings->value("timeoutcalculateenable", true).toBool());
             ui->spinboxSyncTime->setValue(m_settings->value("synctime", 1000).toInt());
-            ui->checkBoxCommunicationAutoSpeed->setChecked(m_settings->value("autospeed", false).toBool());
+            m_serialPortSettings->setAutospeed(m_settings->value("autospeed", false).toBool());
         m_settings->endGroup();
 
         m_settings->beginGroup("mainwindow");
@@ -4602,7 +4604,7 @@ void ConfiguratorWindow::loadSettings()
     }
 
     ui->comboBoxCommunicationBaudrate->setCurrentIndex(ui->cboxBaudrate->currentIndex());
-    m_modbusDevice->setAutospeed(ui->checkBoxCommunicationAutoSpeed->isChecked());
+    m_modbusDevice->setAutospeed(m_serialPortSettings->autospeedState());
 }
 //-------------------------------------
 void ConfiguratorWindow::saveSettings()
@@ -4625,7 +4627,7 @@ void ConfiguratorWindow::saveSettings()
             m_settings->setValue("timeoutcalculate", ui->sboxTimeoutCalc->value());
             m_settings->setValue("timeoutcalculateenable", ui->checkboxCalibTimeout->isChecked());
             m_settings->setValue("synctime", ui->spinboxSyncTime->value());
-            m_settings->setValue("Autospeed", ui->checkBoxCommunicationAutoSpeed->isChecked());
+            m_settings->setValue("autospeed", m_serialPortSettings->autospeedState());
         m_settings->endGroup();
 
         m_settings->beginGroup("mainwindow");
@@ -6230,5 +6232,5 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
     connect(m_modbusDevice, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
-    connect(ui->checkBoxCommunicationAutoSpeed, &QCheckBox::clicked, this, &ConfiguratorWindow::autospeedStateChanged);
+    connect(m_serialPortSettings, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
 }

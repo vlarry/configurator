@@ -1138,7 +1138,7 @@
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="currentIndex">
-          <number>60</number>
+          <number>53</number>
          </property>
          <widget class="QWidget" name="pageInAnalogMain">
           <layout class="QVBoxLayout" name="verticalLayout_74">
@@ -13344,7 +13344,7 @@
          <widget class="QWidget" name="pageDeviceCommunication">
           <layout class="QVBoxLayout" name="verticalLayout_57">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_74">
+            <layout class="QHBoxLayout" name="horizontalLayout_73">
              <item>
               <widget class="QGroupBox" name="groupBoxDeviceCommunication">
                <property name="title">
@@ -13599,17 +13599,6 @@
                     </property>
                     <property name="scaledContents">
                      <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_73">
-                  <item>
-                   <widget class="QCheckBox" name="checkBoxCommunicationAutoSpeed">
-                    <property name="text">
-                     <string>Автоподбор скорости</string>
                     </property>
                    </widget>
                   </item>
