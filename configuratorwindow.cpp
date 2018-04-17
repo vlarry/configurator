@@ -3289,14 +3289,30 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
     CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group);
 
-    hheader->setCascadingSectionResizes(true);
-
     table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PURPOSE_TYPE));
     table->setHorizontalHeader(hheader);
     table->setVerticalHeader(vheader);
     table->setModel(model);
     table->resizeColumnsToContents();
     table->resizeRowsToContents();
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+    table->setColumnWidth(0, 100);
+
+    if(table == ui->tablewgtLedPurpose || table == ui->tablewgtRelayPurpose)
+    {
+        table->setColumnWidth(1, 75);
+        table->setColumnWidth(2, 75);
+        table->setColumnWidth(50, 75);
+        table->setColumnWidth(51, 75);
+    }
+    else if(table == ui->tablewgtDiscreteInputPurpose)
+    {
+        table->setColumnWidth(1, 150);
+        table->setColumnWidth(26, 120);
+        table->setColumnWidth(75, 100);
+    }
 }
 //----------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::initTableProtection(QTableView* table, QVector<QPair<QString, int> >& labels)
@@ -3311,6 +3327,9 @@ void ConfiguratorWindow::initTableProtection(QTableView* table, QVector<QPair<QS
     table->setModel(model);
     table->resizeColumnsToContents();
     table->resizeRowsToContents();
+
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)

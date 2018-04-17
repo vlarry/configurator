@@ -4,6 +4,7 @@
     #include <QWidget>
     #include <QListWidget>
     #include <QResizeEvent>
+    #include <QDebug>
     //-------------------------------------
     class CVaribaleList: public QListWidget
     {
