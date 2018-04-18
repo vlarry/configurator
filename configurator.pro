@@ -51,7 +51,9 @@ SOURCES += \
         ProxyModelWithHeaderModels.cpp \
         clineedit.cpp \
         cmatrix.cpp \
-    cvaribalelist.cpp
+    cvaribalelist.cpp \
+    cdockpanel.cpp \
+    cvariablewidget.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -80,7 +82,9 @@ HEADERS += \
         ProxyModelWithHeaderModels.h \
         clineedit.h \
         cmatrix.h \
-    cvaribalelist.h
+    cvaribalelist.h \
+    cdockpanel.h \
+    cvariablewidget.h
 
 FORMS += \
         configuratorwindow.ui \

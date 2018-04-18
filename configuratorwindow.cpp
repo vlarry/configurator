@@ -46,6 +46,13 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_calculateWidget->setWindowTitle(tr("Расчетные величины"));
     addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
 
+    m_calculateWidget->hide();
+
+    CVariableWidget* vwgt = new CVariableWidget;
+
+    ui->frameDockPanel->setWidget(vwgt);
+    ui->frameDockPanel->setHeaderText(tr("Расчетные величины"));
+
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
@@ -3138,6 +3145,13 @@ void ConfiguratorWindow::initCrashJournal()
 
     if(m_calculateWidget)
         m_calculateWidget->setVariableNames(calc_value_list); // добавляем в виджет имена переменных
+
+    CVariableWidget* variableWidget = qobject_cast<CVariableWidget*>(ui->frameDockPanel->widget());
+
+    if(variableWidget)
+    {
+        variableWidget->setVariableNames(calc_value_list);
+    }
 
     protection_t protection = { list_item, list_set, variable_list, out_list, input_list, calc_value_list };
 

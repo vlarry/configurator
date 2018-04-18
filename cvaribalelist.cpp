@@ -3,7 +3,7 @@
 CVaribaleList::CVaribaleList(QWidget* parent):
     QListWidget(parent)
 {
-
+    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 }
 //--------------------------------------------------
 void CVaribaleList::resizeEvent(QResizeEvent* event)
