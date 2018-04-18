@@ -35,14 +35,10 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_status_bar            = new CStatusBar(statusBar());
     m_watcher               = new QFutureWatcher<void>(this);
     m_progressbar           = new CProgressBarWidget(this);
-    m_settings              = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator",
+    m_settings              = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME,
+                                            "configurator",
                                             this);
     m_timer_synchronization = new QTimer(this);
-
-    CVariableWidget* vwgt = new CVariableWidget;
-
-    ui->frameDockPanel->setWidget(vwgt);
-    ui->frameDockPanel->setHeaderText(tr("Расчетные величины"));
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -2448,13 +2444,13 @@ void ConfiguratorWindow::expandItemTree(bool state)
     if(state)
     {
         ui->treewgtDeviceMenu->expandAll();
-        ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_open.png")));
+        ui->tbntExpandItems->setIcon(QIcon(":/images/resource/images/branch_open.png"));
         ui->tbntExpandItems->setToolTip(tr("Свернуть меню"));
     }
     else
     {
         ui->treewgtDeviceMenu->collapseAll();
-        ui->tbntExpandItems->setIcon(QIcon(tr(":/images/resource/images/branch_close.png")));
+        ui->tbntExpandItems->setIcon(QIcon(":/images/resource/images/branch_close.png"));
         ui->tbntExpandItems->setToolTip(tr("Развернуть меню"));
     }
 }
@@ -3134,12 +3130,7 @@ void ConfiguratorWindow::initCrashJournal()
                                           query.value("description").toString() });
     }
 
-    CVariableWidget* variableWidget = qobject_cast<CVariableWidget*>(ui->frameDockPanel->widget());
-
-    if(variableWidget)
-    {
-        variableWidget->setVariableNames(calc_value_list);
-    }
+    ui->variableWidget->setVariableNames(calc_value_list);
 
     protection_t protection = { list_item, list_set, variable_list, out_list, input_list, calc_value_list };
 
@@ -3338,12 +3329,7 @@ void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
     if(values.size() == 74)
     {
-        CVariableWidget* variableWidget = qobject_cast<CVariableWidget*>(ui->frameDockPanel->widget());
-
-        if(variableWidget)
-        {
-            variableWidget->setData(values);
-        }
+        ui->variableWidget->setData(values);
     }
 
     m_calculate_buffer.clear();
@@ -4328,18 +4314,18 @@ void ConfiguratorWindow::clearJournal()
 //--------------------------------------
 void ConfiguratorWindow::menuPanelCtrl()
 {
-    if(ui->dockwgtDeviceMenu->isHidden())
-        ui->dockwgtDeviceMenu->show();
+    if(ui->menuDeviceDockPanel->isHidden())
+        ui->menuDeviceDockPanel->show();
     else
-        ui->dockwgtDeviceMenu->hide();
+        ui->menuDeviceDockPanel->hide();
 }
 //------------------------------------------
 void ConfiguratorWindow::variablePanelCtrl()
 {
-    if(ui->frameDockPanel->isHidden())
-        ui->frameDockPanel->show();
+    if(ui->variableDockPanel->isHidden())
+        ui->variableDockPanel->show();
     else
-        ui->frameDockPanel->hide();
+        ui->variableDockPanel->hide();
 }
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
@@ -4628,6 +4614,7 @@ void ConfiguratorWindow::loadSettings()
 
         m_settings->beginGroup("mainwindow");
             restoreGeometry(m_settings->value("geometry").toByteArray());
+            ui->splitterCentralWidget->restoreState(m_settings->value("panel").toByteArray());
         m_settings->endGroup();
     }
 
@@ -4660,6 +4647,7 @@ void ConfiguratorWindow::saveSettings()
 
         m_settings->beginGroup("mainwindow");
             m_settings->setValue("geometry", saveGeometry());
+            m_settings->setValue("panel", ui->splitterCentralWidget->saveState());
         m_settings->endGroup();
     }
 }

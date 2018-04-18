@@ -51,7 +51,6 @@ SOURCES += \
         clineedit.cpp \
         cmatrix.cpp \
     cvaribalelist.cpp \
-    cdockpanel.cpp \
     cvariablewidget.cpp
 
 HEADERS += \
@@ -81,7 +80,6 @@ HEADERS += \
         clineedit.h \
         cmatrix.h \
     cvaribalelist.h \
-    cdockpanel.h \
     cvariablewidget.h
 
 FORMS += \

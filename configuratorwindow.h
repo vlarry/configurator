@@ -43,7 +43,6 @@
     #include "cjournalwidget.h"
     #include "clineedit.h"
     #include "HierarchicalHeaderView.h"
-    #include "cdockpanel.h"
     #include "cvariablewidget.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
