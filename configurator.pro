@@ -26,7 +26,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         configuratorwindow.cpp \
-        qpanel.cpp \
         qcell.cpp \
         cmodbus.cpp \
         cdataunittype.cpp \
@@ -57,7 +56,6 @@ SOURCES += \
 
 HEADERS += \
         configuratorwindow.h \
-        qpanel.h \
         qcell.h \
         cmodbus.h \
         cdataunittype.h \

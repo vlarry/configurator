@@ -6,7 +6,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui(new Ui::ConfiguratorWindow),
     m_modbusDevice(nullptr),
     m_serialPortSettings(nullptr),
-    m_calculateWidget(nullptr),
     m_terminal(nullptr),
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
@@ -28,25 +27,17 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
         baudrate_list << ui->cboxBaudrate->itemText(i).toInt();
     }
 
-    m_modbusDevice              = new CModbus(baudrate_list, this);
-    m_calculateWidget           = new QPanel(this);
-    m_tim_calculate             = new QTimer(this);
-    m_terminal                  = new CTerminal(this);
-    m_logFile                   = new QFile("Log.txt");
-    m_serialPortSettings        = new CSerialPortSetting;
-    m_status_bar                = new CStatusBar(statusBar());
-    m_watcher                   = new QFutureWatcher<void>(this);
-    m_progressbar               = new CProgressBarWidget(this);
-    m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator",
-                                                this);
-    m_timer_synchronization     = new QTimer(this);
-
-    m_calculateWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    m_calculateWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    m_calculateWidget->setWindowTitle(tr("Расчетные величины"));
-    addDockWidget(Qt::RightDockWidgetArea, m_calculateWidget);
-
-    m_calculateWidget->hide();
+    m_modbusDevice          = new CModbus(baudrate_list, this);
+    m_tim_calculate         = new QTimer(this);
+    m_terminal              = new CTerminal(this);
+    m_logFile               = new QFile("Log.txt");
+    m_serialPortSettings    = new CSerialPortSetting;
+    m_status_bar            = new CStatusBar(statusBar());
+    m_watcher               = new QFutureWatcher<void>(this);
+    m_progressbar           = new CProgressBarWidget(this);
+    m_settings              = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator",
+                                            this);
+    m_timer_synchronization = new QTimer(this);
 
     CVariableWidget* vwgt = new CVariableWidget;
 
@@ -3143,9 +3134,6 @@ void ConfiguratorWindow::initCrashJournal()
                                           query.value("description").toString() });
     }
 
-    if(m_calculateWidget)
-        m_calculateWidget->setVariableNames(calc_value_list); // добавляем в виджет имена переменных
-
     CVariableWidget* variableWidget = qobject_cast<CVariableWidget*>(ui->frameDockPanel->widget());
 
     if(variableWidget)
@@ -3349,7 +3337,14 @@ void ConfiguratorWindow::initTableProtection(QTableView* table, QVector<QPair<QS
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
     if(values.size() == 74)
-        m_calculateWidget->setData(values);
+    {
+        CVariableWidget* variableWidget = qobject_cast<CVariableWidget*>(ui->frameDockPanel->widget());
+
+        if(variableWidget)
+        {
+            variableWidget->setData(values);
+        }
+    }
 
     m_calculate_buffer.clear();
 }
@@ -4341,10 +4336,10 @@ void ConfiguratorWindow::menuPanelCtrl()
 //------------------------------------------
 void ConfiguratorWindow::variablePanelCtrl()
 {
-    if(m_calculateWidget->isHidden())
-        m_calculateWidget->show();
+    if(ui->frameDockPanel->isHidden())
+        ui->frameDockPanel->show();
     else
-        m_calculateWidget->hide();
+        ui->frameDockPanel->hide();
 }
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()

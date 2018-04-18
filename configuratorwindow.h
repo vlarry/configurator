@@ -31,7 +31,6 @@
     #include <QShowEvent>
     #include <QSettings>
     #include "cmodbus.h"
-    #include "qpanel.h"
     #include "cterminal.h"
     #include "qcustomplot.h"
     #include "cversionsoftware.h"
@@ -493,7 +492,6 @@
             Ui::ConfiguratorWindow*          ui;
             CModbus*                         m_modbusDevice;
             CSerialPortSetting*              m_serialPortSettings;
-            QPanel*                          m_calculateWidget;
             CTerminal*                       m_terminal;
             QFile*                           m_logFile;
             QTimer*                          m_tim_calculate;
