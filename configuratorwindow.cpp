@@ -309,7 +309,8 @@ void ConfiguratorWindow::journalRead(const QString& key)
         address += set.msg_part;
     }
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, address, QVector<quint16>() << msg_size);
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, address,
+                       QVector<quint16>() << msg_size);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
     unit.setProperty(tr("JOURNAL"), key);
 
@@ -3155,10 +3156,13 @@ void ConfiguratorWindow::initDeviceCode()
 //-------------------------------------
 void ConfiguratorWindow::initJournals()
 {
-    QStringList eventJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип") << tr("Категория") <<
-                                                       tr("Параметр");
-
-    QStringList crashJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Защита");
+    QStringList eventJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
+                                                           tr("Тип") << tr("Категория") << tr("Параметр");
+    QStringList crashJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
+                                                           tr("Защита");
+    QStringList halfHourJournalHeaders  = QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
+                                                           tr("Тип записи");
+    QStringList isolationJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
@@ -3172,8 +3176,8 @@ void ConfiguratorWindow::initJournals()
 
     ui->widgetJournalCrash->setTableHeaders(crashJournalHeaders);
     ui->widgetJournalEvent->setTableHeaders(eventJournalHeaders);
-    ui->widgetJournalHalfHour->setTableHeaders(eventJournalHeaders);
-    ui->widgetJournalIsolation->setTableHeaders(eventJournalHeaders);
+    ui->widgetJournalHalfHour->setTableHeaders(halfHourJournalHeaders);
+    ui->widgetJournalIsolation->setTableHeaders(isolationJournalHeaders);
 
     QVector<int> length_list = QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300;
 
@@ -3185,9 +3189,11 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalCrash->setVisibleProperty(true);
 
     m_journal_set["CRASH"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
-                                                                 journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
+                                             journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
     m_journal_set["EVENT"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
                                              journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
+    m_journal_set["HALF"]  = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x3000 }),
+                                             journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 }
 /*!
  * \brief ConfiguratorWindow::initLineEditValidator
@@ -3627,6 +3633,24 @@ void ConfiguratorWindow::displayEventJournalResponse(QVector<quint16>& data)
 }
 //--------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCrashJournalResponse(const QVector<quint16>& data)
+{
+    if(!m_journal_read_current)
+        return;
+
+    m_journal_read_current->print(data);
+
+    QString key = m_journal_read_current->property("TYPE").toString();
+
+    if(m_journal_set.find(key) != m_journal_set.end())
+    {
+        int read  = m_journal_set[key].message.read_count;
+        int total = m_journal_set[key].message.read_total;
+
+        m_journal_read_current->header()->setTextDeviceCountMessages(read, total);
+    }
+}
+//-----------------------------------------------------------------------------------
+void ConfiguratorWindow::displayHalfHourJournalResponse(const QVector<quint16>& data)
 {
     if(!m_journal_read_current)
         return;
@@ -4651,9 +4675,9 @@ void ConfiguratorWindow::saveSettings()
         m_settings->endGroup();
     }
 }
-//----------------------------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString& reportName, const QString& sn_device,
-                                                                   const QString& filename)
+//-------------------------------------------------------------------------------------------
+void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString& reportName,
+                                     const QString& sn_device, const QString& filename)
 {
     QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
 
@@ -5080,6 +5104,8 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
                 displayEventJournalResponse(data);
             else if(key == "CRASH")
                 displayCrashJournalResponse(data);
+            else if(key == "HALF")
+                displayHalfHourJournalResponse(data);
 
             journalRead(key);
         }

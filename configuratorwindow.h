@@ -454,6 +454,7 @@
             void displayPurposeDIResponse(CDataUnitType& unit);
             void displayEventJournalResponse(QVector<quint16>& data);
             void displayCrashJournalResponse(const QVector<quint16>& data);
+            void displayHalfHourJournalResponse(const QVector<quint16>& data);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void displayProtectReserveSignalStart(const QVector<quint16>& data);
             void displayAutomationAPVSignalStart(const QVector<quint16>& data);

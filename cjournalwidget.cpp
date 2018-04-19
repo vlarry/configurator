@@ -71,7 +71,13 @@ void CJournalWidget::print(const QVector<quint16>& data) const
         printCrash(bytes);
     }
     else if(journal_type == "EVENT")
+    {
         printEvent(bytes);
+    }
+    else if(journal_type == "HALF")
+    {
+        printHalfHour(bytes);
+    }
 }
 //--------------------------------------------------------------
 void CJournalWidget::setTableHeaders(const QStringList& headers)
@@ -435,6 +441,11 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
                 ui->tableWidgetJournal->scrollToBottom();
         }
     }
+}
+//-------------------------------------------------------------------
+void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
+{
+    qDebug() << "half hour: " << data.count();
 }
 //-------------------------------------------------------------
 void CJournalWidget::clickedItemTable(const QModelIndex& index)
