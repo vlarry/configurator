@@ -3612,48 +3612,12 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
     model->updateData();
 }
 //--------------------------------------------------------------------------
-void ConfiguratorWindow::displayEventJournalResponse(QVector<quint16>& data)
+void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
 {
     if(!m_journal_read_current)
     {
         return;
     }
-
-    m_journal_read_current->print(data);
-
-    QString key = m_journal_read_current->property("TYPE").toString();
-
-    if(m_journal_set.find(key) != m_journal_set.end())
-    {
-        int read  = m_journal_set[key].message.read_count;
-        int total = m_journal_set[key].message.read_total;
-
-        m_journal_read_current->header()->setTextDeviceCountMessages(read, total);
-    }
-}
-//--------------------------------------------------------------------------------
-void ConfiguratorWindow::displayCrashJournalResponse(const QVector<quint16>& data)
-{
-    if(!m_journal_read_current)
-        return;
-
-    m_journal_read_current->print(data);
-
-    QString key = m_journal_read_current->property("TYPE").toString();
-
-    if(m_journal_set.find(key) != m_journal_set.end())
-    {
-        int read  = m_journal_set[key].message.read_count;
-        int total = m_journal_set[key].message.read_total;
-
-        m_journal_read_current->header()->setTextDeviceCountMessages(read, total);
-    }
-}
-//-----------------------------------------------------------------------------------
-void ConfiguratorWindow::displayHalfHourJournalResponse(const QVector<quint16>& data)
-{
-    if(!m_journal_read_current)
-        return;
 
     m_journal_read_current->print(data);
 
@@ -5065,7 +5029,21 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         case READ_JOURNAL_COUNT:
             if(unit.valueCount() == 2)
             {
-                set.message.read_total = long(long((unit.value(0) << 16)&0xFFFF) | long(unit.value(1)&0xFFFF));
+                long count = long(long((unit.value(0) << 16)&0xFFFF) | long(unit.value(1)&0xFFFF));
+
+                set.message.read_total = count;
+
+                CHeaderJournal* header = nullptr;
+
+                if(key == "CRASH")
+                    header = ui->widgetJournalCrash->header();
+                else if(key == "EVENT")
+                    header = ui->widgetJournalEvent->header();
+                else if(key == "HALF")
+                    header = ui->widgetJournalHalfHour->header();
+
+                if(header)
+                    header->setTextDeviceCountMessages(0, count);
             }
         break;
 
@@ -5100,12 +5078,8 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
             set.message.read_count   += count;
             set.message.read_current += count;
 
-            if(key == "EVENT")
-                displayEventJournalResponse(data);
-            else if(key == "CRASH")
-                displayCrashJournalResponse(data);
-            else if(key == "HALF")
-                displayHalfHourJournalResponse(data);
+            if(!key.isEmpty())
+                displayJournalResponse(data);
 
             journalRead(key);
         }
@@ -5139,15 +5113,20 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         if(!currentJournal(m_active_journal_current))
             m_active_journal_current = nullptr;
 
-        m_active_journal_current->header()->setTextDeviceCountMessages(0, 0);
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
 
         if(m_active_journal_current)
+        {
             readJournalCount();
+        }
+
+
     }
-    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||
-            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD)
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD)
     {
         ui->pushButtonDefaultSettings->setVisible(true);
     }

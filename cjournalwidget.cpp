@@ -326,7 +326,7 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
             {
                 int ivar = i*8 + k; // вычисляем индекс переменной
 
-                if(ivar >= 50)
+                if(ivar >= out_list.count())
                     break;
 
                 bool    state = (value&(1 << k));
