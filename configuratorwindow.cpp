@@ -407,6 +407,78 @@ void ConfiguratorWindow::protectionMTZ3Write()
     sendSettingWriteRequest("TZ1", "TZ7");
 }
 /*!
+ * \brief ConfiguratorWindow::protectionMTZ3SetCharWrite
+ *
+ *  Запись токовых характеристик защиты МТЗ3
+ */
+void ConfiguratorWindow::protectionMTZ3SetCharWrite()
+{
+    sendSettingWriteRequest("TZ1", "TZ7");
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperySteepWrite
+ *
+ *  Запись характеристики защиты МТЗ3 - Крутая
+ */
+void ConfiguratorWindow::protectionMTZ3PropertySteepWrite()
+{
+    sendSettingWriteRequest("TZ1", "TZ1");
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperySlopWrite
+ *
+ * Запись характеристики защиты МТЗ3 - Пологая
+ */
+void ConfiguratorWindow::protectionMTZ3PropertySlopWrite()
+{
+    sendSettingWriteRequest("TZ2", "TZ2");
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyInversionWrite
+ *
+ * Запись характеристики защиты МТЗ3 - Инверсная
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyInversionWrite()
+{
+    sendSettingWriteRequest("TZ3", "TZ3");
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyDInversionWrite
+ *
+ * Запись характеристики защиты МТЗ3 - Длительно инверсная
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyDInversionWrite()
+{
+    sendSettingWriteRequest("TZ4", "TZ4");
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyBackWrite
+ *
+ * Запись характеристики защиты МТЗ3 - Возвратно зависимая
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyBackWrite()
+{
+    sendSettingWriteRequest("TZ5", "TZ5");
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyStrongInversionWrite
+ *
+ * Запись характеристики защиты МТЗ3 - Сильно инверсная
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionWrite()
+{
+    sendSettingWriteRequest("TZ6", "TZ6");
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyExtremalInversionWrite
+ *
+ * Запись характеристики защиты МТЗ3 - Экстремально инверсная
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionWrite()
+{
+    sendSettingWriteRequest("TZ7", "TZ7");
+}
+/*!
  * \brief ConfiguratorWindow::protectionMTZ4Write
  *
  * Запись настроек МТЗ4
@@ -1093,6 +1165,78 @@ void ConfiguratorWindow::protectionMTZ3Read()
     sendSettingReadRequest(tr("M14"), tr("K22"), CDataUnitType::ReadHoldingRegisters, 4);
     sendSettingReadRequest(tr("X04"), tr("X04"), CDataUnitType::ReadHoldingRegisters, 2);
     sendSettingReadRequest(tr("TZ1"), tr("TZ7"), CDataUnitType::ReadHoldingRegisters, 14);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3SetCharRead
+ *
+ * Чтение токовых характеристик защиты МТЗ3
+ */
+void ConfiguratorWindow::protectionMTZ3SetCharRead()
+{
+    sendSettingReadRequest(tr("TZ1"), tr("TZ7"), CDataUnitType::ReadHoldingRegisters, 14);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperySteepRead
+ *
+ * Чтение характеристики защиты МТЗ3 - Крутая
+ */
+void ConfiguratorWindow::protectionMTZ3PropertySteepRead()
+{
+    sendSettingReadRequest(tr("TZ1"), tr("TZ1"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperySlopRead
+ *
+ * Чтение характеристики защиты МТЗ3 - Пологая
+ */
+void ConfiguratorWindow::protectionMTZ3PropertySlopRead()
+{
+    sendSettingReadRequest(tr("TZ2"), tr("TZ2"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyInversionRead
+ *
+ * Чтение характеристики защиты МТЗ3 - Инверсная
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyInversionRead()
+{
+    sendSettingReadRequest(tr("TZ3"), tr("TZ3"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyDInversionRead
+ *
+ * Чтение характеристики защиты МТЗ3 - Длительно инверсная
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyDInversionRead()
+{
+    sendSettingReadRequest(tr("TZ4"), tr("TZ4"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyBackRead
+ *
+ * Чтение характеристики защиты МТЗ3 - Обратно зависимая
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyBackRead()
+{
+    sendSettingReadRequest(tr("TZ5"), tr("TZ5"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyStrongInversionRead
+ *
+ * Чтение характеристики защиты МТЗ3 - Сильно инверсная
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionRead()
+{
+    sendSettingReadRequest(tr("TZ6"), tr("TZ6"), CDataUnitType::ReadHoldingRegisters, 2);
+}
+/*!
+ * \brief ConfiguratorWindow::protectionMTZ3ProperyExtremalInversionRead
+ *
+ * Чтение характеристики защиты МТЗ3 - Экстремально инверсная
+ */
+void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionRead()
+{
+    sendSettingReadRequest(tr("TZ7"), tr("TZ7"), CDataUnitType::ReadHoldingRegisters, 2);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ4Read
@@ -1946,6 +2090,38 @@ void ConfiguratorWindow::readSetCurrent()
             protectionMTZ3Read();
         break;
 
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR: // чтение токовых характеристик защиты МТЗ3
+            protectionMTZ3SetCharRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP:
+            protectionMTZ3PropertySteepRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP:
+            protectionMTZ3PropertySlopRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV:
+            protectionMTZ3PropertyInversionRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV:
+            protectionMTZ3PropertyDInversionRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK:
+            protectionMTZ3PropertyBackRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV:
+            protectionMTZ3PropertyStrongInversionRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV:
+            protectionMTZ3PropertyExtremalInversionRead();
+        break;
+
         case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4: // чтение защиты По току
             protectionMTZ4Read();
         break;
@@ -2228,6 +2404,38 @@ void ConfiguratorWindow::writeSetCurrent()
             protectionMTZ3Write();
         break;
 
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR: // чтение токовых характеристик защиты МТЗ3
+            protectionMTZ3SetCharWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP:
+            protectionMTZ3PropertySteepWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP:
+            protectionMTZ3PropertySlopWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV:
+            protectionMTZ3PropertyInversionWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV:
+            protectionMTZ3PropertyDInversionWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK:
+            protectionMTZ3PropertyBackWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV:
+            protectionMTZ3PropertyStrongInversionWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV:
+            protectionMTZ3PropertyExtremalInversionWrite();
+        break;
+
         case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4: // запись защиты По току
             protectionMTZ4Write();
         break;
@@ -2398,6 +2606,10 @@ void ConfiguratorWindow::writeSetCurrent()
 
         case DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN: // запись автоматики Контроль ТН
             automationCtrlTNWrite();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_AVR: // запись автоматики АВР
+            automationAVRWrite();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_APV: // запись автоматики АПВ
