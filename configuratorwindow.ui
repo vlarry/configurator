@@ -1249,7 +1249,7 @@ QTreeView::branch:open:has-children:has-siblings
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>46</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -3121,47 +3121,64 @@ QTreeView::branch:open:has-children:has-siblings
            </layout>
           </widget>
           <widget class="QWidget" name="pageMTZ3_Steep">
-           <layout class="QVBoxLayout" name="verticalLayout_12">
+           <layout class="QHBoxLayout" name="horizontalLayout_52">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_53">
+             <layout class="QVBoxLayout" name="verticalLayout_12">
               <item>
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Туст</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_53">
+                <item>
+                 <widget class="QLabel" name="label_9">
+                  <property name="text">
+                   <string>Туст</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="CLineEdit" name="leTZ1">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="inputMask">
+                   <string/>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>32767</number>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
               <item>
-               <widget class="CLineEdit" name="leTZ1">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="inputMask">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="maxLength">
-                 <number>32767</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_13">
+               <spacer name="verticalSpacer_10">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>20</width>
+                  <height>351</height>
                  </size>
                 </property>
                </spacer>
@@ -3169,62 +3186,82 @@ QTreeView::branch:open:has-children:has-siblings
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_10">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QLabel" name="labelMTZ3ChartSteep">
+              <property name="text">
+               <string/>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>351</height>
-               </size>
+              <property name="pixmap">
+               <pixmap resource="resource.qrc">:/images/resource/images/MTZ3ChartSteep.png</pixmap>
               </property>
-             </spacer>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
           <widget class="QWidget" name="pageMTZ3_Sloping">
-           <layout class="QVBoxLayout" name="verticalLayout_13">
+           <layout class="QHBoxLayout" name="horizontalLayout_74">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_76">
+             <layout class="QVBoxLayout" name="verticalLayout_13">
               <item>
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>Туст</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_76">
+                <item>
+                 <widget class="QLabel" name="label_10">
+                  <property name="text">
+                   <string>Туст</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="CLineEdit" name="leTZ2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="inputMask">
+                   <string/>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>32767</number>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_34">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
               <item>
-               <widget class="CLineEdit" name="leTZ2">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="inputMask">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="maxLength">
-                 <number>32767</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_34">
+               <spacer name="verticalSpacer_13">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>17</width>
+                  <height>348</height>
                  </size>
                 </property>
                </spacer>
@@ -3232,62 +3269,82 @@ QTreeView::branch:open:has-children:has-siblings
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_13">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QLabel" name="labelMTZ3ChartSloping">
+              <property name="text">
+               <string/>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>351</height>
-               </size>
+              <property name="pixmap">
+               <pixmap resource="resource.qrc">:/images/resource/images/MTZ3ChartSloping.png</pixmap>
               </property>
-             </spacer>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
           <widget class="QWidget" name="pageMTZ3_Inverse">
-           <layout class="QVBoxLayout" name="verticalLayout_14">
+           <layout class="QHBoxLayout" name="horizontalLayout_85">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_77">
+             <layout class="QVBoxLayout" name="verticalLayout_14">
               <item>
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>K</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_77">
+                <item>
+                 <widget class="QLabel" name="label_11">
+                  <property name="text">
+                   <string>K</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="CLineEdit" name="leTZ3">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="inputMask">
+                   <string/>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>32767</number>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_35">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
               <item>
-               <widget class="CLineEdit" name="leTZ3">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="inputMask">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="maxLength">
-                 <number>32767</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_35">
+               <spacer name="verticalSpacer_14">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>20</width>
+                  <height>351</height>
                  </size>
                 </property>
                </spacer>
@@ -3295,62 +3352,82 @@ QTreeView::branch:open:has-children:has-siblings
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_14">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QLabel" name="labelMTZ3ChartInverse">
+              <property name="text">
+               <string/>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>351</height>
-               </size>
+              <property name="pixmap">
+               <pixmap resource="resource.qrc">:/images/resource/images/MTZ3ChartInverse.png</pixmap>
               </property>
-             </spacer>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
           <widget class="QWidget" name="pageMTZ3_DurInverse">
-           <layout class="QVBoxLayout" name="verticalLayout_18">
+           <layout class="QHBoxLayout" name="horizontalLayout_86">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_78">
+             <layout class="QVBoxLayout" name="verticalLayout_18">
               <item>
-               <widget class="QLabel" name="label_13">
-                <property name="text">
-                 <string>K</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_78">
+                <item>
+                 <widget class="QLabel" name="label_13">
+                  <property name="text">
+                   <string>K</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="CLineEdit" name="leTZ4">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="inputMask">
+                   <string/>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>32767</number>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_36">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
               <item>
-               <widget class="CLineEdit" name="leTZ4">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="inputMask">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="maxLength">
-                 <number>32767</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_36">
+               <spacer name="verticalSpacer_18">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>20</width>
+                  <height>351</height>
                  </size>
                 </property>
                </spacer>
@@ -3358,17 +3435,20 @@ QTreeView::branch:open:has-children:has-siblings
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_18">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QLabel" name="labelMTZ3ChartInverseDuration">
+              <property name="text">
+               <string/>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>351</height>
-               </size>
+              <property name="pixmap">
+               <pixmap resource="resource.qrc">:/images/resource/images/MTZ3ChartInverseDuration.png</pixmap>
               </property>
-             </spacer>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -3436,47 +3516,64 @@ QTreeView::branch:open:has-children:has-siblings
            </layout>
           </widget>
           <widget class="QWidget" name="pageMTZ3_StrInverse">
-           <layout class="QVBoxLayout" name="verticalLayout_26">
+           <layout class="QHBoxLayout" name="horizontalLayout_87">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_117">
+             <layout class="QVBoxLayout" name="verticalLayout_26">
               <item>
-               <widget class="QLabel" name="label_15">
-                <property name="text">
-                 <string>K</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_117">
+                <item>
+                 <widget class="QLabel" name="label_15">
+                  <property name="text">
+                   <string>K</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="CLineEdit" name="leTZ6">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="inputMask">
+                   <string/>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>32767</number>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_66">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
               <item>
-               <widget class="CLineEdit" name="leTZ6">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="inputMask">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="maxLength">
-                 <number>32767</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_66">
+               <spacer name="verticalSpacer_22">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>20</width>
+                  <height>351</height>
                  </size>
                 </property>
                </spacer>
@@ -3484,62 +3581,82 @@ QTreeView::branch:open:has-children:has-siblings
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_22">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QLabel" name="labelMTZ3ChartInverseStrong">
+              <property name="text">
+               <string/>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>351</height>
-               </size>
+              <property name="pixmap">
+               <pixmap resource="resource.qrc">:/images/resource/images/MTZ3ChartInverseStrong.png</pixmap>
               </property>
-             </spacer>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
           <widget class="QWidget" name="pageMTZ3_ExtInverse">
-           <layout class="QVBoxLayout" name="verticalLayout_33">
+           <layout class="QHBoxLayout" name="horizontalLayout_88">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_118">
+             <layout class="QVBoxLayout" name="verticalLayout_33">
               <item>
-               <widget class="QLabel" name="label_17">
-                <property name="text">
-                 <string>K</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_118">
+                <item>
+                 <widget class="QLabel" name="label_17">
+                  <property name="text">
+                   <string>K</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="CLineEdit" name="leTZ7">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="inputMask">
+                   <string/>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>32767</number>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_67">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
               <item>
-               <widget class="CLineEdit" name="leTZ7">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="inputMask">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="maxLength">
-                 <number>32767</number>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_67">
+               <spacer name="verticalSpacer_23">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>20</width>
+                  <height>351</height>
                  </size>
                 </property>
                </spacer>
@@ -3547,17 +3664,20 @@ QTreeView::branch:open:has-children:has-siblings
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_23">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QLabel" name="labelMTZ3ChartInverseExtremal">
+              <property name="text">
+               <string/>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>351</height>
-               </size>
+              <property name="pixmap">
+               <pixmap resource="resource.qrc">:/images/resource/images/MTZ3ChartInverseExtremal.png</pixmap>
               </property>
-             </spacer>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

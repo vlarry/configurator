@@ -26,6 +26,12 @@
         <file>resource/images/journal_read.png</file>
         <file>resource/images/background_report.jpg</file>
         <file>resource/images/set_default.png</file>
+        <file>resource/images/MTZ3ChartSteep.png</file>
+        <file>resource/images/MTZ3ChartSloping.png</file>
+        <file>resource/images/MTZ3ChartInverse.png</file>
+        <file>resource/images/MTZ3ChartInverseDuration.png</file>
+        <file>resource/images/MTZ3ChartInverseStrong.png</file>
+        <file>resource/images/MTZ3ChartInverseExtremal.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
