@@ -3448,6 +3448,11 @@ void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit
         return;
     }
 
+    QString typeRequest = unit.property("REQUEST_TYPE").toString().toUpper();
+
+    if(typeRequest == "SAVE") // ответ на запись - выйти
+        return;
+
     QString indexName = unit.property("INDEX").toString();
 
     QPoint index = indexSettingKey(indexName, indexName);
@@ -3472,17 +3477,17 @@ void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit
     {
         quint16 i = unit.value(0);
 
-        if(i != 0 && (i - 1) < box->count())
-        {
-            box->setCurrentIndex(i - 1);
+        if(indexName.toUpper() != "TZ")
+            i--;
 
-            if(indexName == "M65")
-                ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(i - 1);
-            else if(indexName == "M66")
-                ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(i - 1);
-            else if(indexName == "M77")
-                ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(i - 1);
-        }
+        box->setCurrentIndex(i);
+
+        if(indexName == "M65")
+            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(i);
+        else if(indexName == "M66")
+            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(i);
+        else if(indexName == "M77")
+            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(i);
     }
 }
 //------------------------------------------------------------------
@@ -3934,6 +3939,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 1);
 
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
+    unit.setProperty("REQUEST_TYPE", "READ");
     unit.setProperty("INDEX", index);
 
     m_modbusDevice->request(unit);
@@ -3969,9 +3975,15 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
         if(addr == -1)
             return;
 
+        quint16 value = box->currentIndex();
+
+        if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
+            value++;
+
         CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, addr,
-                                                     QVector<quint16>() << (box->currentIndex() + 1));
+                                                     QVector<quint16>() << value);
         unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
+        unit.setProperty("REQUEST_TYPE", "SAVE");
         unit.setProperty("INDEX", index);
 
         m_modbusDevice->request(unit);
@@ -4023,7 +4035,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
             if(!edit)
                 continue;
 
-            value.f = edit->text().toFloat();
+            value.f = QLocale::system().toFloat(edit->text());
 
             data.append(value.w[1]);
             data.append(value.w[0]);
