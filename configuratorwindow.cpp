@@ -3568,7 +3568,9 @@ void ConfiguratorWindow::initTableProtection(QTableView* table, QVector<QPair<QS
 void ConfiguratorWindow::initIndicatorStates()
 {
     QSqlQuery query(m_system_db);
-    QStringList led_list, relay_list;
+
+    QStringList                   led_list;
+    CIndicatorState::relay_list_t relay_list;
 
     if(query.exec("SELECT key, description FROM iodevice WHERE type = \'LED\';"))
     {
@@ -3582,7 +3584,13 @@ void ConfiguratorWindow::initIndicatorStates()
     {
         while(query.next())
         {
-            relay_list << query.value("description").toString();
+            QString key         = query.value("key").toString();
+            QString description = query.value("description").toString();
+            CIndicatorState::RelayType type = ((key.toUpper() == "DO4" || key.toUpper() == "DO5" ||
+                                                key.toUpper() == "DO5" || key.toUpper() == "DO6")?
+                                                CIndicatorState::RELAY_TYPE_TWO:CIndicatorState::RELAY_TYPE_ONE);
+
+            relay_list << CIndicatorState::relay_t({ type, key, description });
         }
     }
 
@@ -6510,8 +6518,8 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
-    connect(ui->pbtnMenuPanelMenuCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
-    connect(ui->pbtnMenuPanelVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
+    connect(ui->checkBoxMenuPanel, &QCheckBox::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
+    connect(ui->checkBoxPanelVariableCtrl, &QCheckBox::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
     connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
     connect(ui->pushButtonImport, &QPushButton::clicked, this, &ConfiguratorWindow::processImport);

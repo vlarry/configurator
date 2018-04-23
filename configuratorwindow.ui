@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1178</width>
-    <height>710</height>
+    <height>906</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,7 +30,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabFile">
        <attribute name="title">
@@ -380,23 +380,30 @@
        <attribute name="title">
         <string>Вид</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_113">
+       <layout class="QHBoxLayout" name="horizontalLayout_92">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_128">
           <property name="spacing">
            <number>2</number>
           </property>
           <item>
-           <widget class="QPushButton" name="pbtnMenuPanelMenuCtrl">
+           <widget class="QCheckBox" name="checkBoxMenuPanel">
             <property name="text">
-             <string>Вкл/выкл панель меню</string>
+             <string>Панель меню</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pbtnMenuPanelVariableCtrl">
+           <widget class="QCheckBox" name="checkBoxPanelVariableCtrl">
             <property name="text">
-             <string>Вкл/выкл панель переменных</string>
+             <string>Панель переменных</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxIndicatorStates">
+            <property name="text">
+             <string>Индикаторы</string>
             </property>
            </widget>
           </item>
@@ -481,13 +488,6 @@
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QCheckBox" name="checkBoxIndicatorStates">
-                 <property name="text">
-                  <string>Индикаторы</string>
                  </property>
                 </widget>
                </item>
@@ -15731,7 +15731,6 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>tbtnPortRefresh</tabstop>
   <tabstop>cboxBaudrate</tabstop>
   <tabstop>pbtnReadCurrentBlock</tabstop>
-  <tabstop>pbtnMenuPanelVariableCtrl</tabstop>
   <tabstop>pbtnSerialPortSettings</tabstop>
   <tabstop>tbntExpandItems</tabstop>
   <tabstop>sboxTimeoutCalc</tabstop>
@@ -15743,7 +15742,6 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>chboxTerminal</tabstop>
   <tabstop>pbtnPortCtrl</tabstop>
   <tabstop>pushButtonJournalClear</tabstop>
-  <tabstop>pbtnMenuPanelMenuCtrl</tabstop>
   <tabstop>pbtnWriteCurrentBlock</tabstop>
   <tabstop>pushButtonDefaultSettings</tabstop>
  </tabstops>

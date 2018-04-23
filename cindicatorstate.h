@@ -4,6 +4,7 @@
     #include <QWidget>
     #include <QCloseEvent>
     #include <QTimer>
+    #include <QDebug>
     //----------
     namespace Ui
     {
@@ -15,10 +16,26 @@
         Q_OBJECT
 
         public:
+            enum RelayType
+            {
+                RELAY_TYPE_ONE,
+                RELAY_TYPE_TWO
+            };
+            //------------
+            struct relay_t
+            {
+                RelayType type;
+                QString   key;
+                QString   description;
+            };
+            //------------------------------------
+            typedef QVector<relay_t> relay_list_t;
+
+        public:
             explicit CIndicatorState(QWidget* parent = nullptr);
             ~CIndicatorState();
 
-            void setLists(const QStringList& led_list, const QStringList& relay_list);
+            void setLists(const QStringList& led_list, relay_list_t& relay_list);
 
         private slots:
             void changeState();
