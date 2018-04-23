@@ -56,6 +56,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initEventJournal(); // инициализация параметров журнала событий
     initCrashJournal(); // инициализация параметров журнала аварий
     initLineEditValidator();
+    initIndicatorStates(); // инициализация окна отображения состояний индикаторов
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -3558,6 +3559,34 @@ void ConfiguratorWindow::initTableProtection(QTableView* table, QVector<QPair<QS
 
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+}
+/*!
+ * \brief ConfiguratorWindow::initIndicatorStates
+ *
+ * Инициализация окна отображения состояний индикаторов (Светодиоды и реле)
+ */
+void ConfiguratorWindow::initIndicatorStates()
+{
+    QSqlQuery query(m_system_db);
+    QStringList led_list, relay_list;
+
+    if(query.exec("SELECT key, description FROM iodevice WHERE type = \'LED\';"))
+    {
+        while(query.next())
+        {
+            led_list << query.value("description").toString();
+        }
+    }
+
+    if(query.exec("SELECT key, description FROM iodevice WHERE type = \'RELAY\';"))
+    {
+        while(query.next())
+        {
+            relay_list << query.value("description").toString();
+        }
+    }
+
+    m_indicator->setLists(led_list, relay_list);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)

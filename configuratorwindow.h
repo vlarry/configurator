@@ -464,6 +464,7 @@
             void disconnectDb(QSqlDatabase* db);
             void initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group);
             void initTableProtection(QTableView* table, QVector<QPair<QString, int> >& labels);
+            void initIndicatorStates();
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CDataUnitType& unit);
             void displaySettingResponse(CDataUnitType& unit);
