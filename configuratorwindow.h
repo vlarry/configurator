@@ -32,6 +32,7 @@
     #include <QSettings>
     #include "cmodbus.h"
     #include "cterminal.h"
+    #include "cindicatorstate.h"
     #include "qcustomplot.h"
     #include "cversionsoftware.h"
     #include "cmatrixpurposemodel.h"
@@ -398,6 +399,7 @@
             void errorDevice(const QString& errorConnect);
             void errorConnect(const QString& errorConnect);
             void terminalVisiblity(int state);
+            void indicatorVisiblity(int state);
             void saveLog(const QString& info);
             void itemClicked(QTreeWidgetItem* item, int);
             void readSettings();
@@ -507,6 +509,7 @@
             CModbus*                         m_modbusDevice;
             CSerialPortSetting*              m_serialPortSettings;
             CTerminal*                       m_terminal;
+            CIndicatorState*                 m_indicator;
             QFile*                           m_logFile;
             QTimer*                          m_tim_calculate;
             CVersionSoftware*                m_versionWidget;

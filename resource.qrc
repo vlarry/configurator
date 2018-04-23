@@ -32,6 +32,8 @@
         <file>resource/images/MTZ3ChartInverseDuration.png</file>
         <file>resource/images/MTZ3ChartInverseStrong.png</file>
         <file>resource/images/MTZ3ChartInverseExtremal.png</file>
+        <file>resource/images/led_off.png</file>
+        <file>resource/images/led_on.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

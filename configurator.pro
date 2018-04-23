@@ -51,7 +51,8 @@ SOURCES += \
         clineedit.cpp \
         cmatrix.cpp \
     cvaribalelist.cpp \
-    cvariablewidget.cpp
+    cvariablewidget.cpp \
+    cindicatorstate.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -80,7 +81,8 @@ HEADERS += \
         clineedit.h \
         cmatrix.h \
     cvaribalelist.h \
-    cvariablewidget.h
+    cvariablewidget.h \
+    cindicatorstate.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -93,7 +95,8 @@ FORMS += \
         progressbarwidget.ui \
         filterdialog.ui \
         headerjournal.ui \
-        journalwidget.ui
+        journalwidget.ui \
+    indicatorstate.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

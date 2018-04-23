@@ -7,6 +7,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_modbusDevice(nullptr),
     m_serialPortSettings(nullptr),
     m_terminal(nullptr),
+    m_indicator(nullptr),
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
     m_versionWidget(nullptr),
@@ -30,6 +31,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_modbusDevice          = new CModbus(baudrate_list, this);
     m_tim_calculate         = new QTimer(this);
     m_terminal              = new CTerminal(this);
+    m_indicator             = new CIndicatorState(this);
     m_logFile               = new QFile("Log.txt");
     m_serialPortSettings    = new CSerialPortSetting;
     m_status_bar            = new CStatusBar(statusBar());
@@ -1998,6 +2000,21 @@ void ConfiguratorWindow::terminalVisiblity(int state)
         m_terminal->hide();
     
     ui->chboxTerminal->setCheckState((Qt::CheckState)state);
+}
+/*!
+ * \brief ConfiguratorWindow::indicatorVisiblity
+ * \param state Состояние окна индикаторов
+ *
+ * Управляет видимостью окна отображения состояния индикаторов
+ */
+void ConfiguratorWindow::indicatorVisiblity(int state)
+{
+    if(state == Qt::Checked)
+        m_indicator->show();
+    else if(state == Qt::Unchecked)
+        m_indicator->hide();
+
+    ui->checkBoxIndicatorStates->setCheckState((Qt::CheckState)state);
 }
 //---------------------------------------------------
 void ConfiguratorWindow::saveLog(const QString& info)
@@ -6442,8 +6459,10 @@ void ConfiguratorWindow::initConnect()
     connect(m_serialPortSettings, &CSerialPortSetting::timeout, this, &ConfiguratorWindow::timeoutValueChanged);
     connect(m_serialPortSettings, &CSerialPortSetting::numberRepeat, this, &ConfiguratorWindow::numberRepeatChanged);
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
+    connect(ui->checkBoxIndicatorStates, &QCheckBox::stateChanged, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
     connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
+    connect(m_indicator, &CIndicatorState::closeWindowIndicator, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
     connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
