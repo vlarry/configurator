@@ -5,6 +5,7 @@
     #include <QCloseEvent>
     #include <QTimer>
     #include <QDebug>
+    #include "cindicatorcell.h"
     //----------
     namespace Ui
     {
