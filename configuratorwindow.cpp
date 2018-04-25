@@ -386,6 +386,7 @@ void ConfiguratorWindow::protectionMTZ1Write()
 {
     sendSettingControlWriteRequest("M05");
     sendSettingWriteRequest("M06", "X01");
+    sendProtectionWorkModeRequest("MTZ1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Write
@@ -396,6 +397,7 @@ void ConfiguratorWindow::protectionMTZ2Write()
 {
     sendSettingControlWriteRequest("M09");
     sendSettingWriteRequest("M10", "X03");
+    sendProtectionWorkModeRequest("MTZ2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Write
@@ -406,6 +408,7 @@ void ConfiguratorWindow::protectionMTZ3Write()
 {
     sendSettingControlWriteRequest("M13");
     sendSettingControlWriteRequest("TZ");
+    sendProtectionWorkModeRequest("MTZ3", FUN_SAVE);
     sendSettingWriteRequest("M14", "K22");
     sendSettingWriteRequest("X04", "X04");
     sendSettingWriteRequest("TZ1", "TZ7");
@@ -491,6 +494,7 @@ void ConfiguratorWindow::protectionMTZ4Write()
 {
     sendSettingControlWriteRequest("M16");
     sendSettingWriteRequest("M17", "X05a");
+    sendProtectionWorkModeRequest("MTZ4", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupWrite
@@ -513,6 +517,7 @@ void ConfiguratorWindow::protectionUmax1Write()
 {
     sendSettingControlWriteRequest("M32");
     sendSettingWriteRequest("M33", "X11");
+    sendProtectionWorkModeRequest("UMAX1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax2Write
@@ -523,6 +528,7 @@ void ConfiguratorWindow::protectionUmax2Write()
 {
     sendSettingControlWriteRequest("M35");
     sendSettingWriteRequest("M36", "X12");
+    sendProtectionWorkModeRequest("UMAX2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin1Write
@@ -535,6 +541,7 @@ void ConfiguratorWindow::protectionUmin1Write()
     sendSettingControlWriteRequest("M39");
     sendSettingControlWriteRequest("M40");
     sendSettingWriteRequest("M41", "X13");
+    sendProtectionWorkModeRequest("UMIN1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Write
@@ -547,6 +554,7 @@ void ConfiguratorWindow::protectionUmin2Write()
     sendSettingControlWriteRequest("M44");
     sendSettingControlWriteRequest("M45");
     sendSettingWriteRequest("M46", "X14");
+    sendProtectionWorkModeRequest("UMIN2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Write
@@ -557,6 +565,7 @@ void ConfiguratorWindow::protection3U0Write()
 {
     sendSettingControlWriteRequest("M48");
     sendSettingWriteRequest("M49", "X15");
+    sendProtectionWorkModeRequest("3U0", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionPowerWrite
@@ -580,6 +589,7 @@ void ConfiguratorWindow::protectionOZZ1Write()
 {
     sendSettingControlWriteRequest("M22");
     sendSettingWriteRequest("M23", "X07");
+    sendProtectionWorkModeRequest("OZZ1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionOZZ2Write
@@ -590,6 +600,7 @@ void ConfiguratorWindow::protectionOZZ2Write()
 {
     sendSettingControlWriteRequest("K23");
     sendSettingWriteRequest("K24", "X07a");
+    sendProtectionWorkModeRequest("OZZ2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionNZZ1Write
@@ -600,6 +611,7 @@ void ConfiguratorWindow::protectionNZZ1Write()
 {
     sendSettingControlWriteRequest("M25");
     sendSettingWriteRequest("M26", "X09");
+    sendProtectionWorkModeRequest("NZZ1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionNZZ2Write
@@ -610,6 +622,7 @@ void ConfiguratorWindow::protectionNZZ2Write()
 {
     sendSettingControlWriteRequest("K26");
     sendSettingWriteRequest("K27", "X09a");
+    sendProtectionWorkModeRequest("NZZ2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupWrite
@@ -632,6 +645,7 @@ void ConfiguratorWindow::protectionAchr1Write()
 {
     sendSettingControlWriteRequest("M51");
     sendSettingWriteRequest("M52", "X16");
+    sendProtectionWorkModeRequest("ACHR1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr2Write
@@ -642,6 +656,7 @@ void ConfiguratorWindow::protectionAchr2Write()
 {
     sendSettingControlWriteRequest("M55");
     sendSettingWriteRequest("M56", "X17");
+    sendProtectionWorkModeRequest("ACHR2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr3Write
@@ -652,6 +667,7 @@ void ConfiguratorWindow::protectionAchr3Write()
 {
     sendSettingControlWriteRequest("M59");
     sendSettingWriteRequest("M60", "X18");
+    sendProtectionWorkModeRequest("ACHR3", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionFrequencyGroupWrite
@@ -673,6 +689,7 @@ void ConfiguratorWindow::protectionArcWrite()
 {
     sendSettingControlWriteRequest("M63");
     sendSettingWriteRequest("M64", "X19");
+    sendProtectionWorkModeRequest("ARC", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt1Write
@@ -683,6 +700,7 @@ void ConfiguratorWindow::protectionExt1Write()
 {
     sendSettingControlWriteRequest("M71");
     sendSettingWriteRequest("M72", "M72");
+    sendProtectionWorkModeRequest("EXT1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2Write
@@ -693,6 +711,7 @@ void ConfiguratorWindow::protectionExt2Write()
 {
     sendSettingControlWriteRequest("M73");
     sendSettingWriteRequest("M74", "M74");
+    sendProtectionWorkModeRequest("EXT2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3Write
@@ -703,6 +722,7 @@ void ConfiguratorWindow::protectionExt3Write()
 {
     sendSettingControlWriteRequest("M75");
     sendSettingWriteRequest("M76", "M76");
+    sendProtectionWorkModeRequest("EXT3", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternalGroupWrite
@@ -725,6 +745,7 @@ void ConfiguratorWindow::protectionStartingWrite()
 {
     sendSettingControlWriteRequest("M19");
     sendSettingWriteRequest("M20", "X06");
+    sendProtectionWorkModeRequest("STARTING", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminWrite
@@ -735,6 +756,7 @@ void ConfiguratorWindow::protectionIminWrite()
 {
     sendSettingControlWriteRequest("M29");
     sendSettingWriteRequest("M30", "X10");
+    sendProtectionWorkModeRequest("IMIN1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorGroupWrite
@@ -756,6 +778,7 @@ void ConfiguratorWindow::protectionTemp1Write()
     sendSettingControlWriteRequest("M65");
     sendSettingControlWriteRequest("M66");
     sendSettingWriteRequest("M67", "X20");
+    sendProtectionWorkModeRequest("TEMP1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp2Write
@@ -767,6 +790,7 @@ void ConfiguratorWindow::protectionTemp2Write()
     sendSettingControlWriteRequest("M65");
     sendSettingControlWriteRequest("M66");
     sendSettingWriteRequest("M68", "X21");
+    sendProtectionWorkModeRequest("TEMP2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemperatureGroupWrite
@@ -787,6 +811,7 @@ void ConfiguratorWindow::protectionLevel1Write()
 {
     sendSettingControlWriteRequest("M77");
     sendSettingWriteRequest("M78", "M78");
+    sendProtectionWorkModeRequest("LEVEL1", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Write
@@ -797,6 +822,7 @@ void ConfiguratorWindow::protectionLevel2Write()
 {
     sendSettingControlWriteRequest("M77");
     sendSettingWriteRequest("M79", "M79");
+    sendProtectionWorkModeRequest("LEVEL2", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartWrite
@@ -873,6 +899,7 @@ void ConfiguratorWindow::protectionBRUWrite()
     sendSettingControlWriteRequest("M93");
     sendSettingControlWriteRequest("M95");
     sendSettingWriteRequest("M96", "M99");
+    sendProtectionWorkModeRequest("BRU", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumWrite
@@ -883,6 +910,7 @@ void ConfiguratorWindow::protectionVacuumWrite()
 {
     sendSettingControlWriteRequest("M90");
     sendSettingWriteRequest("M91", "X23");
+    sendProtectionWorkModeRequest("VACUUM", FUN_SAVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlGroupWrite
@@ -1146,7 +1174,7 @@ void ConfiguratorWindow::protectionMTZ1Read()
 {
     sendSettingControlReadRequest("M05");
     sendSettingReadRequest(tr("M06"), tr("X01"), CDataUnitType::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRead("MTZ1");
+    sendProtectionWorkModeRequest("MTZ1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Read
@@ -1157,7 +1185,7 @@ void ConfiguratorWindow::protectionMTZ2Read()
 {
     sendSettingControlReadRequest("M09");
     sendSettingReadRequest(tr("M10"), tr("X03"), CDataUnitType::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRead("MTZ2");
+    sendProtectionWorkModeRequest("MTZ2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Read
@@ -1168,7 +1196,7 @@ void ConfiguratorWindow::protectionMTZ3Read()
 {
     sendSettingControlReadRequest("M13");
     sendSettingControlReadRequest("TZ");
-    sendProtectionWorkModeRead("MTZ3");
+    sendProtectionWorkModeRequest("MTZ3");
     sendSettingReadRequest(tr("M14"), tr("K22"), CDataUnitType::ReadHoldingRegisters, 4);
     sendSettingReadRequest(tr("X04"), tr("X04"), CDataUnitType::ReadHoldingRegisters, 2);
     sendSettingReadRequest(tr("TZ1"), tr("TZ7"), CDataUnitType::ReadHoldingRegisters, 14);
@@ -1254,7 +1282,7 @@ void ConfiguratorWindow::protectionMTZ4Read()
 {
     sendSettingControlReadRequest("M16");
     sendSettingReadRequest(tr("M17"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 12);
-    sendProtectionWorkModeRead("MTZ4");
+    sendProtectionWorkModeRequest("MTZ4");
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupRead
@@ -1277,7 +1305,7 @@ void ConfiguratorWindow::protectionUmax1Read()
 {
     sendSettingControlReadRequest("M32");
     sendSettingReadRequest(tr("M33"), tr("X11"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("UMAX1");
+    sendProtectionWorkModeRequest("UMAX1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax2Read
@@ -1288,7 +1316,7 @@ void ConfiguratorWindow::protectionUmax2Read()
 {
     sendSettingControlReadRequest("M35");
     sendSettingReadRequest(tr("M36"), tr("X12"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("UMAX2");
+    sendProtectionWorkModeRequest("UMAX2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin1Read
@@ -1301,7 +1329,7 @@ void ConfiguratorWindow::protectionUmin1Read()
     sendSettingControlReadRequest("M39");
     sendSettingControlReadRequest("M40");
     sendSettingReadRequest(tr("M41"), tr("X13"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("UMIN1");
+    sendProtectionWorkModeRequest("UMIN1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Read
@@ -1314,7 +1342,7 @@ void ConfiguratorWindow::protectionUmin2Read()
     sendSettingControlReadRequest("M44");
     sendSettingControlReadRequest("M45");
     sendSettingReadRequest(tr("M46"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("UMIN2");
+    sendProtectionWorkModeRequest("UMIN2");
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Read
@@ -1325,7 +1353,7 @@ void ConfiguratorWindow::protection3U0Read()
 {
     sendSettingControlReadRequest("M48");
     sendSettingReadRequest(tr("M49"), tr("X15"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("3U0");
+    sendProtectionWorkModeRequest("3U0");
 }
 /*!
  * \brief ConfiguratorWindow::protectionPowerGroupRead
@@ -1349,7 +1377,7 @@ void ConfiguratorWindow::protectionOZZ1Read()
 {
     sendSettingControlReadRequest("M22");
     sendSettingReadRequest(tr("M23"), tr("X07"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("OZZ1");
+    sendProtectionWorkModeRequest("OZZ1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedOZZ2Read
@@ -1360,7 +1388,7 @@ void ConfiguratorWindow::protectionOZZ2Read()
 {
     sendSettingControlReadRequest("K23");
     sendSettingReadRequest(tr("K24"), tr("X07a"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("OZZ2");
+    sendProtectionWorkModeRequest("OZZ2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ1Read
@@ -1371,7 +1399,7 @@ void ConfiguratorWindow::protectionNZZ1Read()
 {
     sendSettingControlReadRequest("M25");
     sendSettingReadRequest(tr("M26"), tr("X09"), CDataUnitType::ReadHoldingRegisters, 12);
-    sendProtectionWorkModeRead("NZZ1");
+    sendProtectionWorkModeRequest("NZZ1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ2Read
@@ -1382,7 +1410,7 @@ void ConfiguratorWindow::protectionNZZ2Read()
 {
     sendSettingControlReadRequest("K26");
     sendSettingReadRequest(tr("K27"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 12);
-    sendProtectionWorkModeRead("NZZ2");
+    sendProtectionWorkModeRequest("NZZ2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupRead
@@ -1405,7 +1433,7 @@ void ConfiguratorWindow::protectionAchr1Read()
 {
     sendSettingControlReadRequest("M51");
     sendSettingReadRequest(tr("M52"), tr("X16"), CDataUnitType::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRead("ACHR1");
+    sendProtectionWorkModeRequest("ACHR1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr2Read
@@ -1416,7 +1444,7 @@ void ConfiguratorWindow::protectionAchr2Read()
 {
     sendSettingControlReadRequest("M55");
     sendSettingReadRequest(tr("M56"), tr("X17"), CDataUnitType::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRead("ACHR2");
+    sendProtectionWorkModeRequest("ACHR2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr3Read
@@ -1427,7 +1455,7 @@ void ConfiguratorWindow::protectionAchr3Read()
 {
     sendSettingControlReadRequest("M59");
     sendSettingReadRequest(tr("M60"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRead("ACHR3");
+    sendProtectionWorkModeRequest("ACHR3");
 }
 /*!
  * \brief ConfiguratorWindow::protectionFrequencyGroupRead
@@ -1449,7 +1477,7 @@ void ConfiguratorWindow::protectionArcRead()
 {
     sendSettingControlReadRequest("M63");
     sendSettingReadRequest(tr("M64"), tr("X19"), CDataUnitType::ReadHoldingRegisters, 4);
-    sendProtectionWorkModeRead("ARC");
+    sendProtectionWorkModeRequest("ARC");
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt1
@@ -1460,7 +1488,7 @@ void ConfiguratorWindow::protectionExt1Read()
 {
     sendSettingControlReadRequest("M71");
     sendSettingReadRequest(tr("M72"), tr("M72"), CDataUnitType::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRead("EXT1");
+    sendProtectionWorkModeRequest("EXT1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2
@@ -1471,7 +1499,7 @@ void ConfiguratorWindow::protectionExt2Read()
 {
     sendSettingControlReadRequest("M73");
     sendSettingReadRequest(tr("M74"), tr("M74"), CDataUnitType::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRead("EXT2");
+    sendProtectionWorkModeRequest("EXT2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3
@@ -1482,7 +1510,7 @@ void ConfiguratorWindow::protectionExt3Read()
 {
     sendSettingControlReadRequest("M75");
     sendSettingReadRequest(tr("M76"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRead("EXT3");
+    sendProtectionWorkModeRequest("EXT3");
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternal
@@ -1505,7 +1533,7 @@ void ConfiguratorWindow::protectionStartingRead()
 {
     sendSettingControlReadRequest("M19");
     sendSettingReadRequest(tr("M20"), tr("X06"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("STARTING");
+    sendProtectionWorkModeRequest("STARTING");
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminRead
@@ -1516,7 +1544,7 @@ void ConfiguratorWindow::protectionIminRead()
 {
     sendSettingControlReadRequest("M29");
     sendSettingReadRequest(tr("M30"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("IMIN");
+    sendProtectionWorkModeRequest("IMIN");
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorRead
@@ -1538,7 +1566,7 @@ void ConfiguratorWindow::protectionTemp1Read()
     sendSettingControlReadRequest("M65");
     sendSettingControlReadRequest("M66");
     sendSettingReadRequest(tr("M67"), tr("X20"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("TEMP1");
+    sendProtectionWorkModeRequest("TEMP1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp2Read
@@ -1550,7 +1578,7 @@ void ConfiguratorWindow::protectionTemp2Read()
     sendSettingControlReadRequest("M65");
     sendSettingControlReadRequest("M66");
     sendSettingReadRequest(tr("M68"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("TEMP2");
+    sendProtectionWorkModeRequest("TEMP2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemperatureRead
@@ -1571,7 +1599,7 @@ void ConfiguratorWindow::protectionLevel1Read()
 {
     sendSettingControlReadRequest("M77");
     sendSettingReadRequest(tr("M78"), tr("M78"), CDataUnitType::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRead("LEVEL1");
+    sendProtectionWorkModeRequest("LEVEL1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Read
@@ -1582,7 +1610,7 @@ void ConfiguratorWindow::protectionLevel2Read()
 {
     sendSettingControlReadRequest("M77");
     sendSettingReadRequest(tr("M79"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRead("LEVEL2");
+    sendProtectionWorkModeRequest("LEVEL2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartRead
@@ -1620,7 +1648,7 @@ void ConfiguratorWindow::protectionBRURead()
     sendSettingControlReadRequest("M93");
     sendSettingControlReadRequest("M95");
     sendSettingReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRead("BRU");
+    sendProtectionWorkModeRequest("BRU");
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumRead
@@ -1631,7 +1659,7 @@ void ConfiguratorWindow::protectionVacuumRead()
 {
     sendSettingControlReadRequest("M90");
     sendSettingReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRead("VACUUM");
+    sendProtectionWorkModeRequest("VACUUM");
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlRead
@@ -3765,9 +3793,9 @@ void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit
         return;
     }
 
-    QString typeRequest = unit.property("REQUEST_TYPE").toString().toUpper();
+    RequestFunction requestFuncton = RequestFunction(unit.property("REQUEST_FUNCTION").toInt());
 
-    if(typeRequest == "SAVE") // ответ на запись - выйти
+    if(requestFuncton == FUN_SAVE) // ответ на запись - выйти
         return;
 
     QString indexName = unit.property("INDEX").toString();
@@ -4012,8 +4040,6 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         tdata << data[i + 1] << data[i];
     }
 
-    qDebug() << "read: " << tdata;
-
     for(QComboBox* box: box_list)
     {
         QString key = box->objectName().remove("cbox");
@@ -4125,6 +4151,8 @@ void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
     if(!cbox)
         return;
 
+    RequestFunction function = RequestFunction(unit.property("REQUEST_FUNCTION").toInt());
+
     QString var;
 
     if(m_protections.find(tprotect) != m_protections.end())
@@ -4145,15 +4173,63 @@ void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
     int k11_pos = k10_pos + 24;
     int bit     = bitNumber%16;
 
-    int k10_state = ((unit.value(k10_pos)&(1 << bit)) >> bit);
-    int k11_state = ((unit.value(k11_pos)&(1 << bit)) >> bit);
+    int k10_state = -1;
+    int k11_state = -1;
 
-    int row = k10_state << 1 | k11_state;
+    if(function == FUN_READ)
+    {
+        k10_state = ((unit.value(k10_pos)&(1 << bit)) >> bit);
+        k11_state = ((unit.value(k11_pos)&(1 << bit)) >> bit);
 
-    qDebug() << "protectio: " << tprotect << ", row: " << row;
+        int row = k10_state << 1 | k11_state;
 
-    if(row < cbox->count())
-        cbox->setCurrentIndex(row);
+        if(row < cbox->count())
+            cbox->setCurrentIndex(row);
+    }
+    else if(function == FUN_SAVE)
+    {
+        int state = cbox->currentIndex();
+
+        switch(state)
+        {
+            case 0:
+                k10_state = 0;
+                k11_state = 0;
+            break;
+
+            case 1:
+                k10_state = 0;
+                k11_state = 1;
+            break;
+
+            case 2:
+                k10_state = 1;
+                k11_state = 0;
+            break;
+
+            default: return;
+        }
+
+        if(k10_state == -1 || k11_state == -1)
+            return;
+
+        QVector<quint16> values = unit.values();
+
+        values[k10_pos] &= (~quint16(1 << bit)); // очищаем бит k10
+        values[k10_pos] |= quint16(k10_state << bit); // устанавливаем бит k10
+        values[k11_pos] &= (~quint16(1 << bit)); // очищаем бит k11
+        values[k11_pos] |= quint16(k11_state << bit); // устанавливаем бит k11
+
+        int addr = addressSettingKey("K10");
+
+        if(addr == -1)
+            return;
+
+        CDataUnitType new_unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+                               addr, values);
+
+        m_modbusDevice->request(new_unit);
+    }
 }
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
@@ -4312,7 +4388,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 1);
 
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
-    unit.setProperty("REQUEST_TYPE", "READ");
+    unit.setProperty("REQUEST_FUNCTION", FUN_READ);
     unit.setProperty("INDEX", index);
 
     m_modbusDevice->request(unit);
@@ -4356,7 +4432,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
         CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, addr,
                                                      QVector<quint16>() << value);
         unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
-        unit.setProperty("REQUEST_TYPE", "SAVE");
+        unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
         unit.setProperty("INDEX", index);
 
         m_modbusDevice->request(unit);
@@ -4582,17 +4658,17 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
     m_modbusDevice->request(unit);
 }
-//----------------------------------------------------------------------------
-void ConfiguratorWindow::sendProtectionWorkModeRead(const QString& protection)
+//---------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function)
 {
     int firstAddr = addressSettingKey("K10");
-//    int lastAddr  = addressSettingKey("K11");
 
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, firstAddr,
                        QVector<quint16>() << 48);
 
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
     unit.setProperty("PROTECTION", protection);
+    unit.setProperty("REQUEST_FUNCTION", function);
 
     m_modbusDevice->request(unit);
 }

@@ -74,7 +74,7 @@
                 GENERAL_CONTROL_TYPE, // общие настройки (выбор варианта, т.е. комбобокс) - отдельный запрос
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
-                PROTECTION_WORK_MODE_TYPE, // чтение блокировок защит
+                PROTECTION_WORK_MODE_TYPE, // чтение режима работы защит
                 READ_EVENT_JOURNAL, // чтение журнала событий
                 READ_EVENT_COUNT, // чтение количества событий в журнале
                 READ_EVENT_SHIFT_PTR, // чтение позиции указателя сдвига журнала событий
@@ -88,6 +88,12 @@
                 COMMUNICATIONS_MODBUS_ADDRESS,
                 COMMUNICATIONS_MODBUS_TIM_REQUEST,
                 COMMUNICATIONS_MODBUS_TIM_SPEED
+            };
+            //------------------
+            enum RequestFunction
+            {
+                FUN_READ,
+                FUN_SAVE
             };
             //-------------
             enum WidgetType
@@ -431,7 +437,8 @@
             void sendPurposeWriteRequest(const QString& first, const QString& last);
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
-            void sendProtectionWorkModeRead(const QString& protection);
+            void sendProtectionWorkModeRequest(const QString& protection,
+                                               RequestFunction function = FUN_READ);
             void sendRequestRead(int addr, int size, int request);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
             void sendDeviceCommand(int cmd);
