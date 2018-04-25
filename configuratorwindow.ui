@@ -1256,7 +1256,7 @@ QTreeView::branch:open:has-children:has-siblings
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>21</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -4106,7 +4106,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxMTZ4">
+                    <widget class="QComboBox" name="cboxMTZ4WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -5562,7 +5562,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxUmax1WorkMode">
+                    <widget class="QComboBox" name="cboxUMAX1WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -5808,7 +5808,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxUmax2WorkMode">
+                    <widget class="QComboBox" name="cboxUMAX2WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -6120,7 +6120,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxUmin1WorkMode">
+                    <widget class="QComboBox" name="cboxUMIN1WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -6432,7 +6432,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxUmin2WorkMode">
+                    <widget class="QComboBox" name="cboxUMIN2WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -6673,7 +6673,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cbox3UOWorkMode">
+                    <widget class="QComboBox" name="cbox3U0WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -6762,16 +6762,6 @@ QTreeView::branch:open:has-children:has-siblings
                  </property>
                  <item>
                   <layout class="QGridLayout" name="gridLayout_27">
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="label_36">
-                     <property name="text">
-                      <string>Режим работы</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="3" column="0">
                     <widget class="QLabel" name="lblTextProtectionMotor_StartCurrent">
                      <property name="text">
@@ -6779,34 +6769,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="1">
-                    <widget class="CLineEdit" name="leM21">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -6820,31 +6782,8 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="cboxM19">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Выкл</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Вкл</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="3" column="1">
-                    <widget class="CLineEdit" name="leM20">
+                   <item row="4" column="1">
+                    <widget class="CLineEdit" name="leM21">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -6909,6 +6848,57 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
+                   <item row="3" column="1">
+                    <widget class="CLineEdit" name="leM20">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="cboxM19">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Выкл</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Вкл</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
                    <item row="5" column="0">
                     <widget class="QLabel" name="lblTextProtectionMotor_Kvz_Current">
                      <property name="text">
@@ -6920,7 +6910,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="1">
-                    <widget class="QComboBox" name="cboxStartingWorkMode">
+                    <widget class="QComboBox" name="cboxSTARTINGWorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -6945,6 +6935,16 @@ QTreeView::branch:open:has-children:has-siblings
                        <string>Откл без блок</string>
                       </property>
                      </item>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_36">
+                     <property name="text">
+                      <string>Режим работы</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -7167,7 +7167,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxIminWorkMode">
+                    <widget class="QComboBox" name="cboxIMINWorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -8437,7 +8437,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxExtWorkMode">
+                    <widget class="QComboBox" name="cboxEXT1WorkMode">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8632,7 +8632,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxExt2WorkMode">
+                    <widget class="QComboBox" name="cboxEXT2WorkMode">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8827,7 +8827,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxExt3WorkMode">
+                    <widget class="QComboBox" name="cboxEXT3WorkMode">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -9143,7 +9143,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="1">
-                    <widget class="QComboBox" name="cboxTemp1WorkMode">
+                    <widget class="QComboBox" name="cboxTEMP1WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -9453,7 +9453,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="1">
-                    <widget class="QComboBox" name="cboxProtectionTemp2WorkMode">
+                    <widget class="QComboBox" name="cboxTEMP2WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -9633,7 +9633,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxLevel1WorkMode">
+                    <widget class="QComboBox" name="cboxLEVEL1WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -9813,7 +9813,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxLevel2WorkMode">
+                    <widget class="QComboBox" name="cboxLEVEL2WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -11357,8 +11357,8 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>75</width>
-                       <height>75</height>
+                       <width>100</width>
+                       <height>100</height>
                       </size>
                      </property>
                      <property name="inputMask">
@@ -11407,8 +11407,8 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>75</width>
-                       <height>75</height>
+                       <width>100</width>
+                       <height>100</height>
                       </size>
                      </property>
                      <property name="inputMask">
@@ -11479,8 +11479,8 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>75</width>
-                       <height>75</height>
+                       <width>100</width>
+                       <height>100</height>
                       </size>
                      </property>
                      <property name="inputMask">
@@ -11520,7 +11520,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxVacuumWorkMode">
+                    <widget class="QComboBox" name="cboxVACUUMWorkMode">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -15455,7 +15455,7 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>leTZ6</tabstop>
   <tabstop>leTZ7</tabstop>
   <tabstop>cboxM16</tabstop>
-  <tabstop>cboxMTZ4</tabstop>
+  <tabstop>cboxMTZ4WorkMode</tabstop>
   <tabstop>leM17</tabstop>
   <tabstop>leM07</tabstop>
   <tabstop>leK20</tabstop>
@@ -15490,41 +15490,41 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>leX08a</tabstop>
   <tabstop>leX09a</tabstop>
   <tabstop>cboxM32</tabstop>
-  <tabstop>cboxUmax1WorkMode</tabstop>
+  <tabstop>cboxUMAX1WorkMode</tabstop>
   <tabstop>leM33</tabstop>
   <tabstop>leM34</tabstop>
   <tabstop>leX11</tabstop>
   <tabstop>cboxM35</tabstop>
-  <tabstop>cboxUmax2WorkMode</tabstop>
+  <tabstop>cboxUMAX2WorkMode</tabstop>
   <tabstop>leM36</tabstop>
   <tabstop>leM37</tabstop>
   <tabstop>leX12</tabstop>
   <tabstop>cboxM38</tabstop>
-  <tabstop>cboxUmin1WorkMode</tabstop>
+  <tabstop>cboxUMIN1WorkMode</tabstop>
   <tabstop>cboxM39</tabstop>
   <tabstop>cboxM40</tabstop>
   <tabstop>leM41</tabstop>
   <tabstop>leM42</tabstop>
   <tabstop>leX13</tabstop>
   <tabstop>cboxM43</tabstop>
-  <tabstop>cboxUmin2WorkMode</tabstop>
+  <tabstop>cboxUMIN2WorkMode</tabstop>
   <tabstop>cboxM44</tabstop>
   <tabstop>cboxM45</tabstop>
   <tabstop>leM46</tabstop>
   <tabstop>leM47</tabstop>
   <tabstop>leX14</tabstop>
   <tabstop>cboxM48</tabstop>
-  <tabstop>cbox3UOWorkMode</tabstop>
+  <tabstop>cbox3U0WorkMode</tabstop>
   <tabstop>leM49</tabstop>
   <tabstop>leM50</tabstop>
   <tabstop>leX15</tabstop>
   <tabstop>cboxM19</tabstop>
-  <tabstop>cboxStartingWorkMode</tabstop>
+  <tabstop>cboxSTARTINGWorkMode</tabstop>
   <tabstop>leM20</tabstop>
   <tabstop>leM21</tabstop>
   <tabstop>leX06</tabstop>
   <tabstop>cboxM29</tabstop>
-  <tabstop>cboxIminWorkMode</tabstop>
+  <tabstop>cboxIMINWorkMode</tabstop>
   <tabstop>leM30</tabstop>
   <tabstop>leM31</tabstop>
   <tabstop>leX10</tabstop>
@@ -15551,32 +15551,32 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>leM64</tabstop>
   <tabstop>leX19</tabstop>
   <tabstop>cboxM71</tabstop>
-  <tabstop>cboxExtWorkMode</tabstop>
+  <tabstop>cboxEXT1WorkMode</tabstop>
   <tabstop>leM72</tabstop>
   <tabstop>cboxM73</tabstop>
-  <tabstop>cboxExt2WorkMode</tabstop>
+  <tabstop>cboxEXT2WorkMode</tabstop>
   <tabstop>leM74</tabstop>
   <tabstop>cboxM75</tabstop>
-  <tabstop>cboxExt3WorkMode</tabstop>
+  <tabstop>cboxEXT3WorkMode</tabstop>
   <tabstop>leM76</tabstop>
   <tabstop>cboxM65</tabstop>
   <tabstop>cboxM66</tabstop>
-  <tabstop>cboxTemp1WorkMode</tabstop>
+  <tabstop>cboxTEMP1WorkMode</tabstop>
   <tabstop>spinboxSyncTime</tabstop>
   <tabstop>leM67</tabstop>
   <tabstop>leM69</tabstop>
   <tabstop>leX20</tabstop>
   <tabstop>cboxProtectionTemp2_Sensor1</tabstop>
   <tabstop>cboxProtectionTemp2_Sensor2</tabstop>
-  <tabstop>cboxProtectionTemp2WorkMode</tabstop>
+  <tabstop>cboxTEMP2WorkMode</tabstop>
   <tabstop>leM68</tabstop>
   <tabstop>leM70</tabstop>
   <tabstop>leX21</tabstop>
   <tabstop>cboxM77</tabstop>
-  <tabstop>cboxLevel1WorkMode</tabstop>
+  <tabstop>cboxLEVEL1WorkMode</tabstop>
   <tabstop>leM78</tabstop>
   <tabstop>cboxProtectionLeve2_Ctrl</tabstop>
-  <tabstop>cboxLevel2WorkMode</tabstop>
+  <tabstop>cboxLEVEL2WorkMode</tabstop>
   <tabstop>leM79</tabstop>
   <tabstop>cboxN50</tabstop>
   <tabstop>cboxN52</tabstop>
@@ -15619,7 +15619,7 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>leM98</tabstop>
   <tabstop>leM99</tabstop>
   <tabstop>cboxM90</tabstop>
-  <tabstop>cboxVacuumWorkMode</tabstop>
+  <tabstop>cboxVACUUMWorkMode</tabstop>
   <tabstop>leM91</tabstop>
   <tabstop>leM92</tabstop>
   <tabstop>leX23</tabstop>

@@ -74,6 +74,7 @@
                 GENERAL_CONTROL_TYPE, // общие настройки (выбор варианта, т.е. комбобокс) - отдельный запрос
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
+                PROTECTION_WORK_MODE_TYPE, // чтение блокировок защит
                 READ_EVENT_JOURNAL, // чтение журнала событий
                 READ_EVENT_COUNT, // чтение количества событий в журнале
                 READ_EVENT_SHIFT_PTR, // чтение позиции указателя сдвига журнала событий
@@ -132,7 +133,7 @@
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2             = 1202,
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1             = 1203,
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2             = 1204,
-                DEVICE_MENU_PROTECT_ITEM_POWER_3UO               = 1205,
+                DEVICE_MENU_PROTECT_ITEM_POWER_3U0               = 1205,
                 DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1           = 1301,
                 DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2           = 1302,
                 DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1           = 1303,
@@ -237,11 +238,24 @@
                 journal_message_t message; 
                 QVector<quint16>  buffer;    // буфер сообщений
             };
+            /*!
+             * \brief The protection_t struct
+             *
+             * Структура определяющая тип защиты
+             */
+            struct protection_group_t
+            {
+                int     code;
+                QString var_name;
+                QString name;
+            };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
             typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;
             //-------------------key, addres, widget name-----------------
             typedef QVector<QPair<QString, QPair<int, QString> > > cell_t;
+            //--------------------key <protection>----------------------
+            typedef QMap<QString, protection_group_t> protection_list_t;
 
         public:
             explicit ConfiguratorWindow(QWidget* parent = Q_NULLPTR);
@@ -274,7 +288,7 @@
             void protectionUmax2Read();
             void protectionUmin1Read();
             void protectionUmin2Read();
-            void protection3UORead();
+            void protection3U0Read();
             void protectionPowerGroupRead();
             void protectionOZZ1Read();
             void protectionOZZ2Read();
@@ -339,7 +353,7 @@
             void protectionUmax2Write();
             void protectionUmin1Write();
             void protectionUmin2Write();
-            void protection3UOWrite();
+            void protection3U0Write();
             void protectionPowerGroupWrite();
             void protectionOZZ1Write();
             void protectionOZZ2Write();
@@ -384,7 +398,6 @@
             void purposeRelayWrite();
             void dateTimeWrite();
             void settingCommunicationsWrite();
-
             void processReadJournals(bool state);
             void processExport();
             void processImport();
@@ -418,6 +431,7 @@
             void sendPurposeWriteRequest(const QString& first, const QString& last);
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
+            void sendProtectionWorkModeRead(const QString& protection);
             void sendRequestRead(int addr, int size, int request);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
             void sendDeviceCommand(int cmd);
@@ -459,6 +473,7 @@
             void initDeviceCode();
             void initJournals();
             void initLineEditValidator();
+            void initProtectionList();
             void connectSystemDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
@@ -478,6 +493,7 @@
             void displayCommunicationTimeoutRequest(const QVector<quint16>& data);
             void displayCommunicationTimeoutSpeed(const QVector<quint16>& data);
             void displayCommunicationAddress(const QVector<quint16>& data);
+            void displayProtectionWorkMode(CDataUnitType& unit);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
@@ -531,5 +547,6 @@
             device_menu_item_key_t           m_menu_items; // карта пунктов меню устройства
             QVector<quint16>                 m_calculate_buffer; // буфер расчетных величи (два запроса, поэтому необходимо клеить)
             variable_bit_t                   m_variable_bits;
+            protection_list_t                m_protections; // карта защит
     };
 #endif // CONFIGURATORWINDOW_H

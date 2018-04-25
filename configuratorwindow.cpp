@@ -56,6 +56,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initEventJournal(); // инициализация параметров журнала событий
     initCrashJournal(); // инициализация параметров журнала аварий
     initLineEditValidator();
+    initProtectionList(); // инициализация списка защит
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
 
     if(!m_logFile->open(QFile::ReadWrite))
@@ -548,11 +549,11 @@ void ConfiguratorWindow::protectionUmin2Write()
     sendSettingWriteRequest("M46", "X14");
 }
 /*!
- * \brief ConfiguratorWindow::protection3UOWrite
+ * \brief ConfiguratorWindow::protection3U0Write
  *
- * Запись защиты 3UO
+ * Запись защиты 3U0
  */
-void ConfiguratorWindow::protection3UOWrite()
+void ConfiguratorWindow::protection3U0Write()
 {
     sendSettingControlWriteRequest("M48");
     sendSettingWriteRequest("M49", "X15");
@@ -568,7 +569,7 @@ void ConfiguratorWindow::protectionPowerGroupWrite()
     protectionUmax2Write();
     protectionUmin1Write();
     protectionUmin2Write();
-    protection3UOWrite();
+    protection3U0Write();
 }
 /*!
  * \brief ConfiguratorWindow::protectionOZZ1Write
@@ -1145,6 +1146,7 @@ void ConfiguratorWindow::protectionMTZ1Read()
 {
     sendSettingControlReadRequest("M05");
     sendSettingReadRequest(tr("M06"), tr("X01"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendProtectionWorkModeRead("MTZ1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Read
@@ -1155,6 +1157,7 @@ void ConfiguratorWindow::protectionMTZ2Read()
 {
     sendSettingControlReadRequest("M09");
     sendSettingReadRequest(tr("M10"), tr("X03"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendProtectionWorkModeRead("MTZ2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Read
@@ -1165,6 +1168,7 @@ void ConfiguratorWindow::protectionMTZ3Read()
 {
     sendSettingControlReadRequest("M13");
     sendSettingControlReadRequest("TZ");
+    sendProtectionWorkModeRead("MTZ3");
     sendSettingReadRequest(tr("M14"), tr("K22"), CDataUnitType::ReadHoldingRegisters, 4);
     sendSettingReadRequest(tr("X04"), tr("X04"), CDataUnitType::ReadHoldingRegisters, 2);
     sendSettingReadRequest(tr("TZ1"), tr("TZ7"), CDataUnitType::ReadHoldingRegisters, 14);
@@ -1250,6 +1254,7 @@ void ConfiguratorWindow::protectionMTZ4Read()
 {
     sendSettingControlReadRequest("M16");
     sendSettingReadRequest(tr("M17"), tr("X05a"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendProtectionWorkModeRead("MTZ4");
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupRead
@@ -1272,6 +1277,7 @@ void ConfiguratorWindow::protectionUmax1Read()
 {
     sendSettingControlReadRequest("M32");
     sendSettingReadRequest(tr("M33"), tr("X11"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("UMAX1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax2Read
@@ -1282,6 +1288,7 @@ void ConfiguratorWindow::protectionUmax2Read()
 {
     sendSettingControlReadRequest("M35");
     sendSettingReadRequest(tr("M36"), tr("X12"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("UMAX2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin1Read
@@ -1294,6 +1301,7 @@ void ConfiguratorWindow::protectionUmin1Read()
     sendSettingControlReadRequest("M39");
     sendSettingControlReadRequest("M40");
     sendSettingReadRequest(tr("M41"), tr("X13"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("UMIN1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Read
@@ -1306,16 +1314,18 @@ void ConfiguratorWindow::protectionUmin2Read()
     sendSettingControlReadRequest("M44");
     sendSettingControlReadRequest("M45");
     sendSettingReadRequest(tr("M46"), tr("X14"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("UMIN2");
 }
 /*!
- * \brief ConfiguratorWindow::protection3UORead
+ * \brief ConfiguratorWindow::protection3U0Read
  *
- * Чтение защиты 3UO
+ * Чтение защиты 3U0
  */
-void ConfiguratorWindow::protection3UORead()
+void ConfiguratorWindow::protection3U0Read()
 {
     sendSettingControlReadRequest("M48");
     sendSettingReadRequest(tr("M49"), tr("X15"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("3U0");
 }
 /*!
  * \brief ConfiguratorWindow::protectionPowerGroupRead
@@ -1328,7 +1338,7 @@ void ConfiguratorWindow::protectionPowerGroupRead()
     protectionUmax2Read();
     protectionUmin1Read();
     protectionUmin2Read();
-    protection3UORead();
+    protection3U0Read();
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedOZZ1Read
@@ -1339,6 +1349,7 @@ void ConfiguratorWindow::protectionOZZ1Read()
 {
     sendSettingControlReadRequest("M22");
     sendSettingReadRequest(tr("M23"), tr("X07"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("OZZ1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedOZZ2Read
@@ -1349,6 +1360,7 @@ void ConfiguratorWindow::protectionOZZ2Read()
 {
     sendSettingControlReadRequest("K23");
     sendSettingReadRequest(tr("K24"), tr("X07a"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("OZZ2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ1Read
@@ -1359,6 +1371,7 @@ void ConfiguratorWindow::protectionNZZ1Read()
 {
     sendSettingControlReadRequest("M25");
     sendSettingReadRequest(tr("M26"), tr("X09"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendProtectionWorkModeRead("NZZ1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ2Read
@@ -1369,6 +1382,7 @@ void ConfiguratorWindow::protectionNZZ2Read()
 {
     sendSettingControlReadRequest("K26");
     sendSettingReadRequest(tr("K27"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendProtectionWorkModeRead("NZZ2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupRead
@@ -1391,6 +1405,7 @@ void ConfiguratorWindow::protectionAchr1Read()
 {
     sendSettingControlReadRequest("M51");
     sendSettingReadRequest(tr("M52"), tr("X16"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendProtectionWorkModeRead("ACHR1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr2Read
@@ -1401,6 +1416,7 @@ void ConfiguratorWindow::protectionAchr2Read()
 {
     sendSettingControlReadRequest("M55");
     sendSettingReadRequest(tr("M56"), tr("X17"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendProtectionWorkModeRead("ACHR2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr3Read
@@ -1411,6 +1427,7 @@ void ConfiguratorWindow::protectionAchr3Read()
 {
     sendSettingControlReadRequest("M59");
     sendSettingReadRequest(tr("M60"), tr("X18"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendProtectionWorkModeRead("ACHR3");
 }
 /*!
  * \brief ConfiguratorWindow::protectionFrequencyGroupRead
@@ -1432,6 +1449,7 @@ void ConfiguratorWindow::protectionArcRead()
 {
     sendSettingControlReadRequest("M63");
     sendSettingReadRequest(tr("M64"), tr("X19"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendProtectionWorkModeRead("ARC");
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt1
@@ -1442,6 +1460,7 @@ void ConfiguratorWindow::protectionExt1Read()
 {
     sendSettingControlReadRequest("M71");
     sendSettingReadRequest(tr("M72"), tr("M72"), CDataUnitType::ReadHoldingRegisters, 2);
+    sendProtectionWorkModeRead("EXT1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2
@@ -1452,6 +1471,7 @@ void ConfiguratorWindow::protectionExt2Read()
 {
     sendSettingControlReadRequest("M73");
     sendSettingReadRequest(tr("M74"), tr("M74"), CDataUnitType::ReadHoldingRegisters, 2);
+    sendProtectionWorkModeRead("EXT2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3
@@ -1462,6 +1482,7 @@ void ConfiguratorWindow::protectionExt3Read()
 {
     sendSettingControlReadRequest("M75");
     sendSettingReadRequest(tr("M76"), tr("M76"), CDataUnitType::ReadHoldingRegisters, 2);
+    sendProtectionWorkModeRead("EXT3");
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternal
@@ -1484,6 +1505,7 @@ void ConfiguratorWindow::protectionStartingRead()
 {
     sendSettingControlReadRequest("M19");
     sendSettingReadRequest(tr("M20"), tr("X06"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("STARTING");
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminRead
@@ -1494,6 +1516,7 @@ void ConfiguratorWindow::protectionIminRead()
 {
     sendSettingControlReadRequest("M29");
     sendSettingReadRequest(tr("M30"), tr("X10"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("IMIN");
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorRead
@@ -1515,6 +1538,7 @@ void ConfiguratorWindow::protectionTemp1Read()
     sendSettingControlReadRequest("M65");
     sendSettingControlReadRequest("M66");
     sendSettingReadRequest(tr("M67"), tr("X20"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("TEMP1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp2Read
@@ -1526,6 +1550,7 @@ void ConfiguratorWindow::protectionTemp2Read()
     sendSettingControlReadRequest("M65");
     sendSettingControlReadRequest("M66");
     sendSettingReadRequest(tr("M68"), tr("X21"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("TEMP2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemperatureRead
@@ -1546,6 +1571,7 @@ void ConfiguratorWindow::protectionLevel1Read()
 {
     sendSettingControlReadRequest("M77");
     sendSettingReadRequest(tr("M78"), tr("M78"), CDataUnitType::ReadHoldingRegisters, 2);
+    sendProtectionWorkModeRead("LEVEL1");
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Read
@@ -1556,6 +1582,7 @@ void ConfiguratorWindow::protectionLevel2Read()
 {
     sendSettingControlReadRequest("M77");
     sendSettingReadRequest(tr("M79"), tr("M79"), CDataUnitType::ReadHoldingRegisters, 2);
+    sendProtectionWorkModeRead("LEVEL2");
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartRead
@@ -1593,6 +1620,7 @@ void ConfiguratorWindow::protectionBRURead()
     sendSettingControlReadRequest("M93");
     sendSettingControlReadRequest("M95");
     sendSettingReadRequest(tr("M96"), tr("M99"), CDataUnitType::ReadHoldingRegisters, 8);
+    sendProtectionWorkModeRead("BRU");
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumRead
@@ -1603,6 +1631,7 @@ void ConfiguratorWindow::protectionVacuumRead()
 {
     sendSettingControlReadRequest("M90");
     sendSettingReadRequest(tr("M91"), tr("X23"), CDataUnitType::ReadHoldingRegisters, 6);
+    sendProtectionWorkModeRead("VACUUM");
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlRead
@@ -1914,6 +1943,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     {
         displayCommunicationAddress(unit.values());
     }
+    else if(type == PROTECTION_WORK_MODE_TYPE)
+    {
+        displayProtectionWorkMode(unit);
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -2164,8 +2197,8 @@ void ConfiguratorWindow::readSetCurrent()
             protectionUmin2Read();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_POWER_3UO: // чтение защиты 3UO
-            protection3UORead();
+        case DEVICE_MENU_PROTECT_ITEM_POWER_3U0: // чтение защиты 3U0
+            protection3U0Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER: // чтение группы защит По напряжению
@@ -2478,8 +2511,8 @@ void ConfiguratorWindow::writeSetCurrent()
             protectionUmin2Write();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_POWER_3UO: // запись защиты 3UO
-            protection3UOWrite();
+        case DEVICE_MENU_PROTECT_ITEM_POWER_3U0: // запись защиты 3U0
+            protection3U0Write();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER: // запись группы защит По напряжению
@@ -2792,11 +2825,11 @@ void ConfiguratorWindow::initMenuPanel()
                                                           DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1); // защита Umin1
     QTreeWidgetItem* powerItemUmin2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin2"),
                                                           DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2); // защита Umin2
-    QTreeWidgetItem* powerItem3UO   = new QTreeWidgetItem(protectItemPower, QStringList() << tr("3UO"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_3UO); // защита 3UO
+    QTreeWidgetItem* powerItem3U0   = new QTreeWidgetItem(protectItemPower, QStringList() << tr("3U0"),
+                                                          DEVICE_MENU_PROTECT_ITEM_POWER_3U0); // защита 3U0
 
     protectItemPower->addChildren(QList<QTreeWidgetItem*>() << powerItemUmax1 << powerItemUmax2 << powerItemUmin1 <<
-                                                               powerItemUmin2 << powerItem3UO);
+                                                               powerItemUmin2 << powerItem3U0);
 
     // пункты защиты "направленные"
     QTreeWidgetItem* directItemOZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ1"),
@@ -3003,7 +3036,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2]             = 18;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1]             = 19;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2]             = 20;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_3UO]               = 21;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_3U0]               = 21;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING]          = 22;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN]              = 23;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1]         = 24;
@@ -3471,6 +3504,24 @@ void ConfiguratorWindow::initLineEditValidator()
         }
     }
 }
+//-------------------------------------------
+void ConfiguratorWindow::initProtectionList()
+{
+    QSqlQuery query(m_system_db);
+
+    if(query.exec("SELECT * FROM protection;"))
+    {
+        while(query.next())
+        {
+            int     code     = query.value("code").toInt();
+            QString var_name = query.value("var_name").toString();
+            QString key      = query.value("key").toString();
+            QString name     = query.value("name").toString();
+
+            m_protections[key] = protection_group_t({ code, var_name, name });
+        }
+    }
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -3720,8 +3771,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit
         return;
 
     QString indexName = unit.property("INDEX").toString();
-
-    QPoint index = indexSettingKey(indexName, indexName);
+    QPoint  index     = indexSettingKey(indexName, indexName);
 
     if(index.x() == -1 || index.x() >= m_cell_list.count())
         return;
@@ -4048,6 +4098,63 @@ void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& dat
         ui->spinBoxCommunicationAddress->setValue(data[0]);
     }
 }
+//---------------------------------------------------------------------
+void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
+{
+    if(unit.valueCount() != 48)
+        return;
+
+    QString tprotect = unit.property("PROTECTION").toString();
+
+    if(tprotect.isEmpty())
+        return;
+
+    QString  wgtName = QString("cbox%1WorkMode").arg(tprotect);
+    QWidget* widget  = findChild<QWidget*>(wgtName);
+
+    if(!widget)
+        return;
+
+    QString className = widget->metaObject()->className();
+
+    if(className != "QComboBox")
+        return;
+
+    QComboBox* cbox = qobject_cast<QComboBox*>(widget);
+
+    if(!cbox)
+        return;
+
+    QString var;
+
+    if(m_protections.find(tprotect) != m_protections.end())
+        var = m_protections[tprotect].var_name;
+
+    if(var.isEmpty())
+        return;
+
+    int bitNumber = -1;
+
+    if(m_variable_bits.find(var) != m_variable_bits.end())
+        bitNumber = m_variable_bits[var];
+
+    if(bitNumber == -1)
+        return;
+
+    int k10_pos = bitNumber/16;
+    int k11_pos = k10_pos + 24;
+    int bit     = bitNumber%16;
+
+    int k10_state = ((unit.value(k10_pos)&(1 << bit)) >> bit);
+    int k11_state = ((unit.value(k11_pos)&(1 << bit)) >> bit);
+
+    int row = k10_state << 1 | k11_state;
+
+    qDebug() << "protectio: " << tprotect << ", row: " << row;
+
+    if(row < cbox->count())
+        cbox->setCurrentIndex(row);
+}
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
 {
@@ -4341,9 +4448,9 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, faddr,
                                                  QVector<quint16>() << size);
 
-    unit.setProperty(tr("REQUEST"), PURPOSE_OUT_TYPE);
-    unit.setProperty(tr("FIRST"), first);
-    unit.setProperty(tr("LAST"), last);
+    unit.setProperty("REQUEST", PURPOSE_OUT_TYPE);
+    unit.setProperty("FIRST", first);
+    unit.setProperty("LAST", last);
 
     m_modbusDevice->request(unit);
 }
@@ -4472,6 +4579,20 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
+
+    m_modbusDevice->request(unit);
+}
+//----------------------------------------------------------------------------
+void ConfiguratorWindow::sendProtectionWorkModeRead(const QString& protection)
+{
+    int firstAddr = addressSettingKey("K10");
+//    int lastAddr  = addressSettingKey("K11");
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, firstAddr,
+                       QVector<quint16>() << 48);
+
+    unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
+    unit.setProperty("PROTECTION", protection);
 
     m_modbusDevice->request(unit);
 }
@@ -6387,33 +6508,6 @@ group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
 
                     if(!is_ok)
                         continue;
-
-                    /*if(name.count() > 20)
-                    {
-                        int party = name.count()/20;
-
-                        for(int i = 0; i < party; i++)
-                        {
-                            int pos = i*20;
-
-                            if(name[pos] != ' ')
-                            {
-                                int from = name.indexOf(' ', pos - 5);
-                                int to   = name.indexOf(' ', pos);
-
-                                if(from != -1)
-                                {
-                                    name.insert(from, '\n');
-                                }
-                                else if(to != -1)
-                                {
-                                    name.insert(to, '\n');
-                                }
-                            }
-                            else
-                                name.insert(pos, '\n');
-                        }
-                    }*/
 
                     var_list << var_t({ key, group_id, bit, name, description });
                 }
