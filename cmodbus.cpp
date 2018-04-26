@@ -10,14 +10,16 @@ CModbus::CModbus(const baudrate_list_t& baudrate_list, QObject *parent):
     m_parity(QSerialPort::EvenParity),
     m_blocking_send(false),
     m_timeout_timer(nullptr),
+    m_send_wait_timer(nullptr),
     m_counter_request_error(0),
     m_request_count_repeat(3),
     m_timeout_repeat(1000),
     m_connect({ false, false, m_baudrate, 0, 0, baudrate_list }),
     m_autospeed(false)
 {
-    m_device = new QSerialPort(this);
-    m_timeout_timer = new QTimer(this);
+    m_device          = new QSerialPort(this);
+    m_timeout_timer   = new QTimer(this);
+    m_send_wait_timer = new QTimer(this);
     
     m_device->setPortName(m_port_name);
     m_device->setBaudRate(m_baudrate);
@@ -28,6 +30,7 @@ CModbus::CModbus(const baudrate_list_t& baudrate_list, QObject *parent):
     connect(m_device, &QSerialPort::readyRead, this, &CModbus::readyRead);
     connect(m_device, &QSerialPort::errorOccurred, this, &CModbus::errorPort);
     connect(m_timeout_timer, &QTimer::timeout, this, &CModbus::timeoutReadWait, Qt::DirectConnection);
+    connect(m_send_wait_timer, &QTimer::timeout, this, &CModbus::sendRequestWait);
 }
 //-----------------
 CModbus::~CModbus()
@@ -37,6 +40,12 @@ CModbus::~CModbus()
     
     delete m_timeout_timer;
     m_timeout_timer = nullptr;
+
+    if(m_send_wait_timer->isActive())
+        m_send_wait_timer->stop();
+
+    delete m_send_wait_timer;
+    m_send_wait_timer = nullptr;
     
     if(m_device)
     {
@@ -194,8 +203,8 @@ void CModbus::connectDevice()
     
     emit infoLog(tr("Последовательный порт <%1> открыт").arg(m_device->portName()));
 }
-//------------------------------
-void CModbus::disconnectDevice()
+//------------------------------------------
+void CModbus::disconnectDevice(bool isClear)
 {
     if(m_device->isOpen())
     {
@@ -203,7 +212,10 @@ void CModbus::disconnectDevice()
         
         m_counter_request_error = 0;
         m_receive_buffer.clear();
-        m_request_queue.clear();
+
+        if(isClear)
+            m_request_queue.clear();
+
         m_request_cur = CDataUnitType();
         m_timeout_timer->stop();
         unblock();
@@ -233,17 +245,6 @@ void CModbus::disconnectDevice()
 //----------------------------------------
 void CModbus::request(CDataUnitType& unit)
 {
-    if(!m_device->isOpen())
-    {
-        if(!m_device->portName().isEmpty())
-            emit errorDevice(tr("Порт <") + m_device->portName() + tr("> закрыт."));
-
-        return;
-    }
-
-    if(unit.is_empty())
-        return;
-
     quint16 size;
     
     if(unit.functionType() == CDataUnitType::ReadHoldingRegisters || 
@@ -260,16 +261,6 @@ void CModbus::request(CDataUnitType& unit)
     {
         return;
     }
-    
-    if(is_bloking() && m_counter_request_error == 0) // передача блокированна и не было ошибок -> все запросы в очередь
-    {
-        m_request_queue.append(unit);
-        m_sizeQuery++;
-
-        return;
-    }
-    
-    block(); // блокируем передачу
     
     QVector<quint8> tvalues;
     
@@ -319,7 +310,30 @@ void CModbus::request(CDataUnitType& unit)
 //--------------------------------------------
 void CModbus::sendRequest(CDataUnitType& unit)
 {
+    if(!m_device->isOpen())
+    {
+        if(!m_device->portName().isEmpty())
+            emit errorDevice(tr("Порт <") + m_device->portName() + tr("> закрыт."));
 
+        return;
+    }
+
+    if(unit.is_empty())
+        return;
+
+    if(is_bloking() && m_counter_request_error == 0) // передача блокированна и не было ошибок -> все запросы в очередь
+    {
+        m_request_queue.append(unit);
+        m_sizeQuery++;
+
+        return;
+    }
+
+    block(); // блокируем передачу
+
+    m_request_send_wait = unit;
+
+    m_send_wait_timer->start(4); // пауза 4мс
 }
 //-----------------------
 void CModbus::readyRead()
@@ -479,7 +493,7 @@ void CModbus::timeoutReadWait()
     
     if(m_counter_request_error == m_request_count_repeat)
     {
-        disconnectDevice();
+        disconnectDevice(false);
 
         bool isRepeat = false;
 
@@ -550,8 +564,20 @@ void CModbus::timeoutReadWait()
 
         emit errorDevice(str);
 
-        request(m_request_cur);
+        sendRequest(m_request_cur);
     }
+}
+//-----------------------------
+void CModbus::sendRequestWait()
+{
+    m_send_wait_timer->stop();
+
+    if(!m_request_send_wait)
+        return;
+
+    request(m_request_send_wait);
+
+    m_request_send_wait = CDataUnitType();
 }
 //-----------------------------------
 void CModbus::process_request_queue()
@@ -562,7 +588,7 @@ void CModbus::process_request_queue()
         
         if(!unit.is_empty()) // если запрос не пустой
         {
-            request(unit);
+            sendRequest(unit);
         }
     }
 }

@@ -72,14 +72,15 @@
             
         public slots:
             void connectDevice();
-            void disconnectDevice();
-            void request(CDataUnitType& unit);
+            void disconnectDevice(bool isClear = true);
             void sendRequest(CDataUnitType& unit);
             void readyRead();
             void errorPort(QSerialPort::SerialPortError error);
             void timeoutReadWait();
+            void sendRequestWait();
             
         private:
+            void    request(CDataUnitType& unit);
             void    process_request_queue();
             quint16 CRC16(QVector<quint8>& data, quint8 length);
             void    block();
@@ -96,6 +97,7 @@
             QVector<CDataUnitType> m_request_queue; // очередь запросов (если передача заблокирована, то сохраняем в очередь)
             bool                   m_blocking_send; // блокировка отправки сообщения (передается предыдущий запрос)
             CDataUnitType          m_request_cur; // текущий запрос
+            CDataUnitType          m_request_send_wait; // запрос ожидающий отправки
             QByteArray             m_receive_buffer; // буфер приема ответа на запрос
             QTimer*                m_timeout_timer; // таймер для отслеживания таймаута ответа
             QTimer*                m_send_wait_timer; // таймер ожидания отправки сообщения

@@ -318,7 +318,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
     unit.setProperty(tr("JOURNAL"), key);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -876,7 +876,7 @@ void ConfiguratorWindow::protectionSignalStartWrite()
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveGroupWrite
@@ -1085,7 +1085,7 @@ void ConfiguratorWindow::automationAPVSignalStartWrite()
 
     unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::purposeLedsWrite
@@ -1143,7 +1143,7 @@ void ConfiguratorWindow::dateTimeWrite()
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::settingCommunicationsWrite
@@ -1625,7 +1625,7 @@ void ConfiguratorWindow::protectionSignalStartRead()
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveRead
@@ -1785,7 +1785,7 @@ void ConfiguratorWindow::automationAPVSignalStartRead()
 
     unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVRead
@@ -1828,7 +1828,7 @@ void ConfiguratorWindow::dateTimeRead()
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::settingCommunicationsRead
@@ -2762,7 +2762,7 @@ void ConfiguratorWindow::versionSowftware()
 //-------------------------------------------------------------
 void ConfiguratorWindow::sendCalculateRead(CDataUnitType& unit)
 {
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
@@ -4236,7 +4236,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
         CDataUnitType new_unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
                                addr, values);
 
-        m_modbusDevice->request(new_unit);
+        m_modbusDevice->sendRequest(new_unit);
     }
 }
 //--------------------------------------
@@ -4386,7 +4386,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //--------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
@@ -4399,7 +4399,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
     unit.setProperty("INDEX", index);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //---------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
@@ -4443,7 +4443,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
         unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
         unit.setProperty("INDEX", index);
 
-        m_modbusDevice->request(unit);
+        m_modbusDevice->sendRequest(unit);
     }
 }
 //-----------------------------------------------------------------------------------------
@@ -4516,7 +4516,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QString& last)
@@ -4536,7 +4536,7 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
     unit.setProperty("FIRST", first);
     unit.setProperty("LAST", last);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //-----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QString& last)
@@ -4588,7 +4588,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
@@ -4602,7 +4602,7 @@ void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //-------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr)
@@ -4664,7 +4664,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //---------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function)
@@ -4678,7 +4678,7 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
     unit.setProperty("PROTECTION", protection);
     unit.setProperty("REQUEST_FUNCTION", function);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::sendRequestRead
@@ -4691,7 +4691,7 @@ void ConfiguratorWindow::sendRequestRead(int addr, int size, int request)
 
     unit.setProperty(tr("REQUEST"), request);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::sendRequestWrite
@@ -4707,7 +4707,7 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
 
     unit.setProperty("REQUST", request);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 /*!
  * \brief ConfiguratorWindow::sendDeviceCommand
@@ -4720,7 +4720,7 @@ void ConfiguratorWindow::sendDeviceCommand(int cmd)
 
     unit.setProperty("CMD", cmd);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //-------------------------------------
 void ConfiguratorWindow::clearIOTable()
@@ -5658,7 +5658,7 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
     unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
     unit.setProperty(tr("JOURNAL"), key);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 }
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSynchronization()
@@ -5667,7 +5667,7 @@ void ConfiguratorWindow::timeoutSynchronization()
 
     unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
 
-    m_modbusDevice->request(unit);
+    m_modbusDevice->sendRequest(unit);
 
     if(!m_timer_synchronization->isActive())
         m_timer_synchronization->start(ui->spinboxSyncTime->value());
@@ -6246,7 +6246,7 @@ void ConfiguratorWindow::readShiftPrtEventJournal()
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
         unit.setProperty(tr("JOURNAL"), key);
 
-        m_modbusDevice->request(unit);
+        m_modbusDevice->sendRequest(unit);
     }
 }
 //-----------------------------------------
@@ -6264,7 +6264,7 @@ void ConfiguratorWindow::readJournalCount()
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_COUNT);
         unit.setProperty(tr("JOURNAL"), key);
 
-        m_modbusDevice->request(unit);
+        m_modbusDevice->sendRequest(unit);
     }
 }
 //--------------------------------------------------
