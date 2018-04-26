@@ -2005,6 +2005,14 @@ void ConfiguratorWindow::show()
 
     ui->comboBoxCommunicationParity->setCurrentIndex(1);
 
+    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel),
+                                              false);
+    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel),
+                                              false);
+
+    ui->variableDockPanel->setMinimumWidth(ui->widgetVariablePanelCtrl->minimumWidth());
+    ui->menuDeviceDockPanel->setMinimumWidth(ui->widgetMenuDevicePanelCtrl->minimumWidth());
+
     loadSettings();
 }
 //-------------------------------------------------------
@@ -4936,6 +4944,33 @@ void ConfiguratorWindow::autospeedStateChanged(bool state)
     m_modbusDevice->setAutospeed(state);
 }
 /*!
+ * \brief ConfiguratorWindow::panelMoved
+ * \param pos    Позиция виджета
+ * \param index  Индекса виджета
+ */
+void ConfiguratorWindow::panelMoved(int pos, int index)
+{
+    Q_UNUSED(pos);
+
+    QWidget* widget = ui->splitterCentralWidget->widget(index);
+
+    panelVisibleCtrl(widget);
+}
+/*!
+ * \brief ConfiguratorWindow::panelButtonCtrlPress
+ *
+ * Обработка нажатия кнопок управления панелью
+ */
+void ConfiguratorWindow::panelButtonCtrlPress()
+{
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+
+    if(!button)
+        return;
+
+    // Пока заглушка. Если будет необходимо, то дополню.
+}
+/*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
  */
@@ -5080,6 +5115,9 @@ void ConfiguratorWindow::loadSettings()
             ui->splitterCentralWidget->restoreState(m_settings->value("panel").toByteArray());
         m_settings->endGroup();
     }
+
+    panelVisibleCtrl(ui->centralWgt);
+    panelVisibleCtrl(ui->variableDockPanel);
 
     ui->comboBoxCommunicationBaudrate->setCurrentIndex(ui->cboxBaudrate->currentIndex());
     m_modbusDevice->setAutospeed(m_serialPortSettings->autospeedState());
@@ -6268,6 +6306,55 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
         lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
     }
 }
+//--------------------------------------------------------
+void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
+{
+    if(widget == ui->variableDockPanel)
+    {
+        if(ui->variableDockPanel->width() == ui->widgetVariablePanelCtrl->minimumWidth())
+        {
+            if(!ui->variableWidget->isHidden())
+            {
+                ui->variableWidget->hide();
+                ui->labelVariablePanel->hide();
+                ui->pushButtonVariablePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_left.png"));
+            }
+        }
+        else
+        {
+            if(ui->variableWidget->isHidden())
+            {
+                ui->variableWidget->show();
+                ui->labelVariablePanel->show();
+                ui->pushButtonVariablePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_close.png"));
+            }
+        }
+    }
+
+    if(widget == ui->centralWgt)
+    {
+        if(ui->menuDeviceDockPanel->width() == ui->widgetMenuDevicePanelCtrl->minimumWidth())
+        {
+            if(!ui->treewgtDeviceMenu->isHidden())
+            {
+                ui->treewgtDeviceMenu->hide();
+                ui->labelMenuDevice->hide();
+                ui->tbntExpandItems->hide();
+                ui->pushButtonMenuDevicePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_close.png"));
+            }
+        }
+        else
+        {
+            if(ui->treewgtDeviceMenu->isHidden())
+            {
+                ui->treewgtDeviceMenu->show();
+                ui->labelMenuDevice->show();
+                ui->tbntExpandItems->show();
+                ui->pushButtonMenuDevicePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_left.png"));
+            }
+        }
+    }
+}
 /*!
  * \brief ConfiguratorWindow::recordCountDb
  * \param db           Указатель на базу данных
@@ -6705,4 +6792,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
     connect(m_serialPortSettings, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
     connect(m_terminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
+    connect(ui->pushButtonMenuDevicePanelCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
+    connect(ui->pushButtonVariablePanelCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
 }

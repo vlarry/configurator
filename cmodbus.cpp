@@ -316,6 +316,11 @@ void CModbus::request(CDataUnitType& unit)
 
     emit rawData(ba);
 }
+//--------------------------------------------
+void CModbus::sendRequest(CDataUnitType& unit)
+{
+
+}
 //-----------------------
 void CModbus::readyRead()
 {

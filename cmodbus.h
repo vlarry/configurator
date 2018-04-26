@@ -74,6 +74,7 @@
             void connectDevice();
             void disconnectDevice();
             void request(CDataUnitType& unit);
+            void sendRequest(CDataUnitType& unit);
             void readyRead();
             void errorPort(QSerialPort::SerialPortError error);
             void timeoutReadWait();
@@ -97,6 +98,7 @@
             CDataUnitType          m_request_cur; // текущий запрос
             QByteArray             m_receive_buffer; // буфер приема ответа на запрос
             QTimer*                m_timeout_timer; // таймер для отслеживания таймаута ответа
+            QTimer*                m_send_wait_timer; // таймер ожидания отправки сообщения
             quint8                 m_counter_request_error; // счетчик неудачных отправок
             quint8                 m_request_count_repeat; // количество повторений отправки в случае ошибки
             quint16                m_timeout_repeat; // таймаут попытки отправить сообщениие устройству.

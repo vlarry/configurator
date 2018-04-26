@@ -30,6 +30,8 @@
     #include <QFileDialog>
     #include <QShowEvent>
     #include <QSettings>
+    #include <QVBoxLayout>
+    #include <QHBoxLayout>
     #include "cmodbus.h"
     #include "cterminal.h"
     #include "cindicatorstate.h"
@@ -464,6 +466,8 @@
             void saveDeviceSettings();
             void dateDeviceChanged(const QDate& date);
             void autospeedStateChanged(bool state);
+            void panelMoved(int pos, int index);
+            void panelButtonCtrlPress();
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
@@ -509,6 +513,7 @@
             void readJournalCount();
             void synchronization(bool state = false);
             void setLineEditValidator(QObject* object);
+            void panelVisibleCtrl(QWidget* widget);
             int  recordCountDb(QSqlDatabase* db, const QString& table_name, const QString& parameter, const QString& value,
                                                  const QString& subparamter = "", const QStringList& range = QStringList());
             QString             recordLastDb(QSqlDatabase* db, const QString& table_name, const QString& parameter);
