@@ -59,6 +59,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initProtectionList(); // инициализация списка защит
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
 
+    ui->labelVHeaderMenuDevice->installEventFilter(this);
+    ui->labelVHeaderVariable->installEventFilter(this);
+
     if(!m_logFile->open(QFile::ReadWrite))
     {
         m_status_bar->setStatusMessage(tr("Ошибка. Невозможно открыть log-файл"));
@@ -4970,6 +4973,53 @@ void ConfiguratorWindow::panelButtonCtrlPress()
 
     // Пока заглушка. Если будет необходимо, то дополню.
 }
+//-------------------------------------------------------------------
+bool ConfiguratorWindow::eventFilter(QObject* watched, QEvent* event)
+{
+    if(watched == ui->labelVHeaderMenuDevice || watched == ui->labelVHeaderVariable)
+    {
+        if(event->type() == event->Paint)
+        {
+            if(watched == ui->labelVHeaderMenuDevice)
+            {
+                QPaintEvent* pevent = static_cast<QPaintEvent*>(event);
+
+                QPainter painter(qobject_cast<QLabel*>(watched));
+
+                painter.save();
+
+                QFont f(painter.font());
+                f.setBold(true);
+                f.setPixelSize(pevent->rect().width() - 4);
+
+                painter.setFont(f);
+
+                painter.translate(pevent->rect().left(), pevent->rect().bottom());
+                painter.rotate(-90);
+
+                QString text = tr("Панель меню");
+
+                int pos_x   = pevent->rect().height() - painter.fontMetrics().width(text);
+                int pos_y   = 0;
+                int rwidth  = painter.fontMetrics().width(text);
+                int rheight = painter.fontMetrics().height();
+
+                QRect r(pos_x, pos_y, rwidth, rheight);
+
+                painter.fillRect(r, Qt::white);
+                painter.drawText(r, text);
+
+                painter.restore();
+
+                ui->labelVHeaderMenuDevice->resize(20, painter.fontMetrics().width(text)*2);
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
 /*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
@@ -6318,6 +6368,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->variableWidget->hide();
                 ui->labelVariablePanel->hide();
                 ui->pushButtonVariablePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_left.png"));
+//                ui->labelVHeaderVariable->show();
             }
         }
         else
@@ -6327,6 +6378,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->variableWidget->show();
                 ui->labelVariablePanel->show();
                 ui->pushButtonVariablePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_close.png"));
+//                ui->labelVHeaderVariable->hide();
             }
         }
     }
@@ -6341,6 +6393,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->labelMenuDevice->hide();
                 ui->tbntExpandItems->hide();
                 ui->pushButtonMenuDevicePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_close.png"));
+                ui->labelVHeaderMenuDevice->show();
             }
         }
         else
@@ -6351,6 +6404,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->labelMenuDevice->show();
                 ui->tbntExpandItems->show();
                 ui->pushButtonMenuDevicePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_left.png"));
+                ui->labelVHeaderMenuDevice->hide();
             }
         }
     }
