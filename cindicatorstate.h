@@ -28,6 +28,7 @@
                 RelayType type;
                 QString   key;
                 QString   description;
+                QString   name;
             };
             //------------------------------------
             typedef QVector<relay_t> relay_list_t;
@@ -36,7 +37,9 @@
             explicit CIndicatorState(QWidget* parent = nullptr);
             ~CIndicatorState();
 
-            void setLists(const QStringList& led_list, relay_list_t& relay_list);
+            void        setLists(const QStringList& led_list, const QStringList &relay_list);
+            QStringList ledList();
+            QStringList relayList();
 
         private slots:
             void changeState();

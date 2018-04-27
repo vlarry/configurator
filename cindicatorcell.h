@@ -16,8 +16,12 @@
             explicit CIndicatorCell(QWidget* parent = nullptr);
             ~CIndicatorCell();
 
+            const QString text() const;
+            const QString name() const;
+
             void setText(const QString& text);
             void setIcon(const QPixmap& icon);
+            void setName(const QString& name);
 
         private:
             Ui::CIndicatorCell* ui;

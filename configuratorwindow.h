@@ -470,7 +470,8 @@
             void panelButtonCtrlPress();
             
         private:
-            bool eventFilter(QObject* watched, QEvent* event);
+            bool eventFilter(QObject* object, QEvent* event);
+            void panelPaint(const QString& text, QLabel* label, QPaintEvent* event);
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
             bool currentJournal(const CJournalWidget*& widget);
             void loadSettings();

@@ -18,8 +18,8 @@ CIndicatorState::~CIndicatorState()
 {
     delete ui;
 }
-//-----------------------------------------------------------------------------------
-void CIndicatorState::setLists(const QStringList& led_list, relay_list_t& relay_list)
+//----------------------------------------------------------------------------------------
+void CIndicatorState::setLists(const QStringList& led_list, const QStringList& relay_list)
 {
     int count = 0;
 
@@ -31,6 +31,7 @@ void CIndicatorState::setLists(const QStringList& led_list, relay_list_t& relay_
         CIndicatorCell* cell = new CIndicatorCell;
 
         cell->setText(QString("%1").arg(++count));
+        cell->setName(led);
         cell->setIcon(QPixmap(":/images/resource/images/led_off.png"));
 
         QListWidgetItem* item = new QListWidgetItem(ui->listWidgetLed);
@@ -42,27 +43,77 @@ void CIndicatorState::setLists(const QStringList& led_list, relay_list_t& relay_
 
     count = 0;
 
-    for(relay_t& relay: relay_list)
+    for(const QString& relay: relay_list)
     {
         CIndicatorCell* cell = new CIndicatorCell;
 
         cell->setText(QString("%1").arg(++count));
+        cell->setName(relay);
 
-        if(relay.type == RELAY_TYPE_ONE)
+        RelayType type = ((count == 2 || count == 3 || count == 5 || count == 6 || count == 7)?RELAY_TYPE_TWO:
+                                                                                               RELAY_TYPE_ONE);
+
+        if(type == RELAY_TYPE_ONE)
             cell->setIcon(QPixmap(":/images/resource/images/relay_type1_off.png"));
-        else if(relay.type == RELAY_TYPE_TWO)
+        else if(type == RELAY_TYPE_TWO)
             cell->setIcon(QPixmap(":/images/resource/images/relay_type2_off.png"));
 
         QListWidgetItem* item = new QListWidgetItem(ui->listWidgetRelay);
 
-        item->setToolTip(relay.description);
-        item->setData(Qt::UserRole, relay.type);
+        item->setToolTip(relay);
+        item->setData(Qt::UserRole, type);
         item->setSizeHint(cell->sizeHint());
 
         ui->listWidgetRelay->setItemWidget(item, cell);
     }
 
+    if(ui->listWidgetLed->count() > 0)
+        ui->listWidgetLed->item(0)->setSelected(true);
+
+    if(ui->listWidgetRelay->count() > 0)
+        ui->listWidgetRelay->item(0)->setSelected(true);
+
     m_timer.start(1000);
+}
+//------------------------------------
+QStringList CIndicatorState::ledList()
+{
+    QStringList list;
+
+    for(int i = 0; i < ui->listWidgetLed->count(); i++)
+    {
+        QListWidgetItem* item = ui->listWidgetLed->item(i);
+
+        if(item)
+        {
+            CIndicatorCell*  cell = static_cast<CIndicatorCell*>(ui->listWidgetLed->itemWidget(item));
+
+            if(cell)
+                list << cell->name();
+        }
+    }
+
+    return list;
+}
+//--------------------------------------
+QStringList CIndicatorState::relayList()
+{
+    QStringList list;
+
+    for(int i = 0; i < ui->listWidgetRelay->count(); i++)
+    {
+        QListWidgetItem* item = ui->listWidgetRelay->item(i);
+
+        if(item)
+        {
+            CIndicatorCell*  cell = static_cast<CIndicatorCell*>(ui->listWidgetRelay->itemWidget(item));
+
+            if(cell)
+                list << cell->name();
+        }
+    }
+
+    return list;
 }
 //---------------------------------
 void CIndicatorState::changeState()

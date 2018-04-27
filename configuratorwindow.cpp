@@ -2085,7 +2085,30 @@ void ConfiguratorWindow::indicatorVisiblity(int state)
     if(state == Qt::Checked)
         m_indicator->show();
     else if(state == Qt::Unchecked)
+    {
         m_indicator->hide();
+
+        QStringList ledList   = m_indicator->ledList();
+        QStringList relayList = m_indicator->relayList();
+
+        QSqlQuery query(m_system_db);
+
+        for(int i = 0; i < ledList.count(); i++)
+        {
+            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
+                       arg(ledList.at(i)).
+                       arg(i + 1).
+                       arg("LED"));
+        }
+
+        for(int i = 0; i < relayList.count(); i++)
+        {
+            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
+                       arg(relayList.at(i)).
+                       arg(i + 1).
+                       arg("RELAY"));
+        }
+    }
 
     ui->checkBoxIndicatorStates->setCheckState((Qt::CheckState)state);
 }
@@ -3659,28 +3682,22 @@ void ConfiguratorWindow::initIndicatorStates()
 {
     QSqlQuery query(m_system_db);
 
-    QStringList                   led_list;
-    CIndicatorState::relay_list_t relay_list;
+    QStringList led_list;
+    QStringList relay_list;
 
-    if(query.exec("SELECT key, description FROM iodevice WHERE type = \'LED\';"))
+    if(query.exec("SELECT name FROM indicator WHERE type = \'LED\';"))
     {
         while(query.next())
         {
-            led_list << query.value("description").toString();
+            led_list << query.value("name").toString();
         }
     }
 
-    if(query.exec("SELECT key, description FROM iodevice WHERE type = \'RELAY\';"))
+    if(query.exec("SELECT name FROM indicator WHERE type = \'RELAY\';"))
     {
         while(query.next())
         {
-            QString key         = query.value("key").toString();
-            QString description = query.value("description").toString();
-            CIndicatorState::RelayType type = ((key.toUpper() == "DO4" || key.toUpper() == "DO5" ||
-                                                key.toUpper() == "DO5" || key.toUpper() == "DO6")?
-                                                CIndicatorState::RELAY_TYPE_TWO:CIndicatorState::RELAY_TYPE_ONE);
-
-            relay_list << CIndicatorState::relay_t({ type, key, description });
+            relay_list << query.value("name").toString();
         }
     }
 
@@ -3971,7 +3988,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 
     model->updateData();
 }
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------
 void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
 {
     if(!m_journal_read_current)
@@ -4788,18 +4805,20 @@ void ConfiguratorWindow::clearJournal()
 //--------------------------------------
 void ConfiguratorWindow::menuPanelCtrl()
 {
-    if(ui->menuDeviceDockPanel->isHidden())
-        ui->menuDeviceDockPanel->show();
-    else
-        ui->menuDeviceDockPanel->hide();
+//    if(ui->menuDeviceDockPanel->isHidden())
+//        ui->menuDeviceDockPanel->show();
+//    else
+//        ui->menuDeviceDockPanel->hide();
+    emit ui->pushButtonMenuDevicePanelCtrl->clicked();
 }
 //------------------------------------------
 void ConfiguratorWindow::variablePanelCtrl()
 {
-    if(ui->variableDockPanel->isHidden())
-        ui->variableDockPanel->show();
-    else
-        ui->variableDockPanel->hide();
+//    if(ui->variableDockPanel->isHidden())
+//        ui->variableDockPanel->show();
+//    else
+//        ui->variableDockPanel->hide();
+    emit ui->pushButtonVariablePanelCtrl->clicked();
 }
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
@@ -4972,53 +4991,125 @@ void ConfiguratorWindow::panelButtonCtrlPress()
         return;
 
     // Пока заглушка. Если будет необходимо, то дополню.
-}
-//-------------------------------------------------------------------
-bool ConfiguratorWindow::eventFilter(QObject* watched, QEvent* event)
-{
-    if(watched == ui->labelVHeaderMenuDevice || watched == ui->labelVHeaderVariable)
+    QList<int> sizes = ui->splitterCentralWidget->sizes();
+
+    if(sizes.count() == 3)
     {
+        if(button == ui->pushButtonMenuDevicePanelCtrl)
+        {
+            if(ui->menuDeviceDockPanel->width() > ui->widgetMenuDevicePanelCtrl->minimumWidth())
+            {
+                int w = sizes[0];
+
+                ui->menuDeviceDockPanel->setProperty("WIDTH", w);
+
+                sizes[0] = ui->widgetMenuDevicePanelCtrl->minimumWidth();
+                sizes[1] = sizes[1] + (w - sizes[0]);
+
+                ui->splitterCentralWidget->setSizes(sizes);
+
+                emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
+            }
+            else if(ui->menuDeviceDockPanel->width() == ui->widgetMenuDevicePanelCtrl->minimumWidth())
+            {
+                int w        = sizes[0];
+                int newWidth = ui->menuDeviceDockPanel->property("WIDTH").toInt();
+
+                if(newWidth <= 0)
+                    newWidth = ui->menuDeviceDockPanel->sizeHint().width();
+
+                sizes[0] = newWidth;
+                sizes[1] = sizes[1] - (newWidth - w);
+
+                ui->splitterCentralWidget->setSizes(sizes);
+
+                emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
+            }
+        }
+        else if(button == ui->pushButtonVariablePanelCtrl)
+        {
+            if(ui->variableDockPanel->width() > ui->widgetVariablePanelCtrl->minimumWidth())
+            {
+                int w = sizes[2];
+
+                ui->variableDockPanel->setProperty("WIDTH", w);
+
+                sizes[2] = ui->widgetVariablePanelCtrl->minimumWidth();
+                sizes[1] = sizes[1] + (w - sizes[2]);
+
+                ui->splitterCentralWidget->setSizes(sizes);
+
+                emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
+            }
+            else if(ui->variableDockPanel->width() == ui->widgetVariablePanelCtrl->minimumWidth())
+            {
+                int w        = sizes[2];
+                int newWidth = ui->variableDockPanel->property("WIDTH").toInt();
+
+                if(newWidth <= 0)
+                    newWidth = ui->variableDockPanel->sizeHint().width();
+
+                sizes[2] = newWidth;
+                sizes[1] = sizes[1] - (newWidth - w);
+
+                ui->splitterCentralWidget->setSizes(sizes);
+
+                emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
+            }
+        }
+    }
+}
+//------------------------------------------------------------------
+bool ConfiguratorWindow::eventFilter(QObject* object, QEvent* event)
+{
+    if(object == ui->labelVHeaderMenuDevice || object == ui->labelVHeaderVariable)
+    {
+        QLabel* label = qobject_cast<QLabel*>(object);
+        QString text;
+
+        text = ((label == ui->labelVHeaderMenuDevice)?tr("Панель меню"):tr("Панель измерений"));
+
         if(event->type() == event->Paint)
         {
-            if(watched == ui->labelVHeaderMenuDevice)
-            {
-                QPaintEvent* pevent = static_cast<QPaintEvent*>(event);
+            QPaintEvent* pevent = static_cast<QPaintEvent*>(event);
 
-                QPainter painter(qobject_cast<QLabel*>(watched));
+            panelPaint(text, label, pevent);
 
-                painter.save();
-
-                QFont f(painter.font());
-                f.setBold(true);
-                f.setPixelSize(pevent->rect().width() - 4);
-
-                painter.setFont(f);
-
-                painter.translate(pevent->rect().left(), pevent->rect().bottom());
-                painter.rotate(-90);
-
-                QString text = tr("Панель меню");
-
-                int pos_x   = pevent->rect().height() - painter.fontMetrics().width(text);
-                int pos_y   = 0;
-                int rwidth  = painter.fontMetrics().width(text);
-                int rheight = painter.fontMetrics().height();
-
-                QRect r(pos_x, pos_y, rwidth, rheight);
-
-                painter.fillRect(r, Qt::white);
-                painter.drawText(r, text);
-
-                painter.restore();
-
-                ui->labelVHeaderMenuDevice->resize(20, painter.fontMetrics().width(text)*2);
-
-                return true;
-            }
+            return true;
         }
     }
 
     return false;
+}
+//-----------------------------------------------------------------------------------------
+void ConfiguratorWindow::panelPaint(const QString& text, QLabel* label, QPaintEvent* event)
+{
+    QPainter painter(label);
+
+    painter.save();
+
+    QFont f(painter.font());
+    f.setBold(true);
+    f.setPixelSize(event->rect().width() - 4);
+
+    painter.setFont(f);
+
+    painter.translate(event->rect().left(), event->rect().bottom());
+    painter.rotate(-90);
+
+    int pos_x   = event->rect().height() - painter.fontMetrics().width(text) - 10;
+    int pos_y   = 0;
+    int rwidth  = painter.fontMetrics().width(text);
+    int rheight = painter.fontMetrics().height();
+
+    QRect r(pos_x, pos_y, rwidth, rheight);
+
+    painter.fillRect(r, Qt::white);
+    painter.drawText(r, text);
+
+    painter.restore();
+
+    label->resize(20, painter.fontMetrics().width(text)*2);
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
@@ -5166,6 +5257,11 @@ void ConfiguratorWindow::loadSettings()
         m_settings->endGroup();
     }
 
+    // скрытие заголовков панелей
+    ui->labelVHeaderMenuDevice->hide();
+    ui->labelVHeaderVariable->hide();
+
+    // управление отображением панелей
     panelVisibleCtrl(ui->centralWgt);
     panelVisibleCtrl(ui->variableDockPanel);
 
@@ -6368,7 +6464,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->variableWidget->hide();
                 ui->labelVariablePanel->hide();
                 ui->pushButtonVariablePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_left.png"));
-//                ui->labelVHeaderVariable->show();
+                ui->labelVHeaderVariable->show();
             }
         }
         else
@@ -6378,7 +6474,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->variableWidget->show();
                 ui->labelVariablePanel->show();
                 ui->pushButtonVariablePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_close.png"));
-//                ui->labelVHeaderVariable->hide();
+                ui->labelVHeaderVariable->hide();
             }
         }
     }
