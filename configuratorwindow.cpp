@@ -59,8 +59,13 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initProtectionList(); // инициализация списка защит
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
 
-    ui->labelVHeaderMenuDevice->installEventFilter(this);
-    ui->labelVHeaderVariable->installEventFilter(this);
+//    ui->pushButtonMenuDeviceCtrl->installEventFilter(this);
+//    ui->pushButtonVariableCtrl->installEventFilter(this);
+
+    ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
+    ui->pushButtonVariableCtrl->setText(tr("Панель измерений"));
+    ui->pushButtonMenuDeviceCtrl->setSide(CDockPanelItemCtrl::Left);
+    ui->pushButtonVariableCtrl->setSide(CDockPanelItemCtrl::Right);
 
     if(!m_logFile->open(QFile::ReadWrite))
     {
@@ -2013,10 +2018,36 @@ void ConfiguratorWindow::show()
     ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel),
                                               false);
 
-    ui->variableDockPanel->setMinimumWidth(ui->widgetVariablePanelCtrl->minimumWidth());
-    ui->menuDeviceDockPanel->setMinimumWidth(ui->widgetMenuDevicePanelCtrl->minimumWidth());
+    ui->variableDockPanel->setMinimumWidth(ui->pushButtonVariableCtrl->minimumWidth());
+    ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
 
     loadSettings();
+
+    // управление отображением панелей
+    panelVisibleCtrl(ui->centralWgt);
+    panelVisibleCtrl(ui->variableDockPanel);
+
+    if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
+    {
+        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
+        ui->checkBoxMenuPanel->setCheckState(Qt::Unchecked);
+    }
+    else
+    {
+        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
+        ui->checkBoxMenuPanel->setCheckState(Qt::Checked);
+    }
+
+    if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
+    {
+        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
+        ui->checkBoxPanelVariableCtrl->setCheckState(Qt::Unchecked);
+    }
+    else
+    {
+        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
+        ui->checkBoxPanelVariableCtrl->setCheckState(Qt::Checked);
+    }
 }
 //-------------------------------------------------------
 void ConfiguratorWindow::resizeEvent(QResizeEvent* event)
@@ -4805,20 +4836,18 @@ void ConfiguratorWindow::clearJournal()
 //--------------------------------------
 void ConfiguratorWindow::menuPanelCtrl()
 {
-//    if(ui->menuDeviceDockPanel->isHidden())
-//        ui->menuDeviceDockPanel->show();
-//    else
-//        ui->menuDeviceDockPanel->hide();
-    emit ui->pushButtonMenuDevicePanelCtrl->clicked();
+    if(ui->menuDeviceDockPanel->isHidden())
+        ui->menuDeviceDockPanel->show();
+    else
+        ui->menuDeviceDockPanel->hide();
 }
 //------------------------------------------
 void ConfiguratorWindow::variablePanelCtrl()
 {
-//    if(ui->variableDockPanel->isHidden())
-//        ui->variableDockPanel->show();
-//    else
-//        ui->variableDockPanel->hide();
-    emit ui->pushButtonVariablePanelCtrl->clicked();
+    if(ui->variableDockPanel->isHidden())
+        ui->variableDockPanel->show();
+    else
+        ui->variableDockPanel->hide();
 }
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
@@ -4990,27 +5019,28 @@ void ConfiguratorWindow::panelButtonCtrlPress()
     if(!button)
         return;
 
-    // Пока заглушка. Если будет необходимо, то дополню.
     QList<int> sizes = ui->splitterCentralWidget->sizes();
 
     if(sizes.count() == 3)
     {
-        if(button == ui->pushButtonMenuDevicePanelCtrl)
+        if(button == ui->pushButtonMenuDeviceCtrl)
         {
-            if(ui->menuDeviceDockPanel->width() > ui->widgetMenuDevicePanelCtrl->minimumWidth())
+            if(ui->menuDeviceDockPanel->width() > ui->pushButtonMenuDeviceCtrl->minimumWidth())
             {
                 int w = sizes[0];
 
                 ui->menuDeviceDockPanel->setProperty("WIDTH", w);
 
-                sizes[0] = ui->widgetMenuDevicePanelCtrl->minimumWidth();
+                sizes[0] = ui->pushButtonMenuDeviceCtrl->minimumWidth();
                 sizes[1] = sizes[1] + (w - sizes[0]);
 
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
+
+//                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
             }
-            else if(ui->menuDeviceDockPanel->width() == ui->widgetMenuDevicePanelCtrl->minimumWidth())
+            else if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
             {
                 int w        = sizes[0];
                 int newWidth = ui->menuDeviceDockPanel->property("WIDTH").toInt();
@@ -5024,24 +5054,28 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
+
+//                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
-        else if(button == ui->pushButtonVariablePanelCtrl)
+        else if(button == ui->pushButtonVariableCtrl)
         {
-            if(ui->variableDockPanel->width() > ui->widgetVariablePanelCtrl->minimumWidth())
+            if(ui->variableDockPanel->width() > ui->pushButtonVariableCtrl->minimumWidth())
             {
                 int w = sizes[2];
 
                 ui->variableDockPanel->setProperty("WIDTH", w);
 
-                sizes[2] = ui->widgetVariablePanelCtrl->minimumWidth();
+                sizes[2] = ui->pushButtonVariableCtrl->minimumWidth();
                 sizes[1] = sizes[1] + (w - sizes[2]);
 
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
+
+//                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
             }
-            else if(ui->variableDockPanel->width() == ui->widgetVariablePanelCtrl->minimumWidth())
+            else if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
             {
                 int w        = sizes[2];
                 int newWidth = ui->variableDockPanel->property("WIDTH").toInt();
@@ -5055,61 +5089,11 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
+
+//                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
     }
-}
-//------------------------------------------------------------------
-bool ConfiguratorWindow::eventFilter(QObject* object, QEvent* event)
-{
-    if(object == ui->labelVHeaderMenuDevice || object == ui->labelVHeaderVariable)
-    {
-        QLabel* label = qobject_cast<QLabel*>(object);
-        QString text;
-
-        text = ((label == ui->labelVHeaderMenuDevice)?tr("Панель меню"):tr("Панель измерений"));
-
-        if(event->type() == event->Paint)
-        {
-            QPaintEvent* pevent = static_cast<QPaintEvent*>(event);
-
-            panelPaint(text, label, pevent);
-
-            return true;
-        }
-    }
-
-    return false;
-}
-//-----------------------------------------------------------------------------------------
-void ConfiguratorWindow::panelPaint(const QString& text, QLabel* label, QPaintEvent* event)
-{
-    QPainter painter(label);
-
-    painter.save();
-
-    QFont f(painter.font());
-    f.setBold(true);
-    f.setPixelSize(event->rect().width() - 4);
-
-    painter.setFont(f);
-
-    painter.translate(event->rect().left(), event->rect().bottom());
-    painter.rotate(-90);
-
-    int pos_x   = event->rect().height() - painter.fontMetrics().width(text) - 10;
-    int pos_y   = 0;
-    int rwidth  = painter.fontMetrics().width(text);
-    int rheight = painter.fontMetrics().height();
-
-    QRect r(pos_x, pos_y, rwidth, rheight);
-
-    painter.fillRect(r, Qt::white);
-    painter.drawText(r, text);
-
-    painter.restore();
-
-    label->resize(20, painter.fontMetrics().width(text)*2);
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
@@ -5256,14 +5240,6 @@ void ConfiguratorWindow::loadSettings()
             ui->splitterCentralWidget->restoreState(m_settings->value("panel").toByteArray());
         m_settings->endGroup();
     }
-
-    // скрытие заголовков панелей
-    ui->labelVHeaderMenuDevice->hide();
-    ui->labelVHeaderVariable->hide();
-
-    // управление отображением панелей
-    panelVisibleCtrl(ui->centralWgt);
-    panelVisibleCtrl(ui->variableDockPanel);
 
     ui->comboBoxCommunicationBaudrate->setCurrentIndex(ui->cboxBaudrate->currentIndex());
     m_modbusDevice->setAutospeed(m_serialPortSettings->autospeedState());
@@ -6457,14 +6433,13 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
 {
     if(widget == ui->variableDockPanel)
     {
-        if(ui->variableDockPanel->width() == ui->widgetVariablePanelCtrl->minimumWidth())
+        if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
         {
             if(!ui->variableWidget->isHidden())
             {
                 ui->variableWidget->hide();
                 ui->labelVariablePanel->hide();
-                ui->pushButtonVariablePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_left.png"));
-                ui->labelVHeaderVariable->show();
+                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
             }
         }
         else
@@ -6473,23 +6448,21 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
             {
                 ui->variableWidget->show();
                 ui->labelVariablePanel->show();
-                ui->pushButtonVariablePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_close.png"));
-                ui->labelVHeaderVariable->hide();
+                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
     }
 
     if(widget == ui->centralWgt)
     {
-        if(ui->menuDeviceDockPanel->width() == ui->widgetMenuDevicePanelCtrl->minimumWidth())
+        if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
         {
             if(!ui->treewgtDeviceMenu->isHidden())
             {
                 ui->treewgtDeviceMenu->hide();
                 ui->labelMenuDevice->hide();
                 ui->tbntExpandItems->hide();
-                ui->pushButtonMenuDevicePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_close.png"));
-                ui->labelVHeaderMenuDevice->show();
+                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
             }
         }
         else
@@ -6499,8 +6472,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->treewgtDeviceMenu->show();
                 ui->labelMenuDevice->show();
                 ui->tbntExpandItems->show();
-                ui->pushButtonMenuDevicePanelCtrl->setIcon(QPixmap(":/images/resource/images/branch_left.png"));
-                ui->labelVHeaderMenuDevice->hide();
+                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
     }
@@ -6943,6 +6915,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_serialPortSettings, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
     connect(m_terminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
-    connect(ui->pushButtonMenuDevicePanelCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
-    connect(ui->pushButtonVariablePanelCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
+    connect(ui->pushButtonMenuDeviceCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
+    connect(ui->pushButtonVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
 }

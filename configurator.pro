@@ -53,7 +53,8 @@ SOURCES += \
     cvaribalelist.cpp \
     cvariablewidget.cpp \
     cindicatorstate.cpp \
-    cindicatorcell.cpp
+    cindicatorcell.cpp \
+    cdockpanelitemctrl.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -84,7 +85,8 @@ HEADERS += \
     cvaribalelist.h \
     cvariablewidget.h \
     cindicatorstate.h \
-    cindicatorcell.h
+    cindicatorcell.h \
+    cdockpanelitemctrl.h
 
 FORMS += \
         configuratorwindow.ui \
