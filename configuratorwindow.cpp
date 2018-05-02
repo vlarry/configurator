@@ -3181,11 +3181,15 @@ void ConfiguratorWindow::initCellBind()
 
     while(query.next())
     {
-        QString key  = query.value(tr("key")).toString();
-        QString name = query.value(tr("widget")).toString();
-        int     addr = query.value(tr("address")).toInt();
+        QString key          = query.value(tr("key")).toString();
+        QString name         = query.value(tr("widget")).toString();
+        int     addr         = query.value(tr("address")).toInt();
+        float   limit_min    = query.value("limit_min").toFloat();
+        float   limit_max    = query.value("limit_max").toFloat();
+        QString unit_meadure = query.value("unit_measure").toString();
 
-        m_cell_list.append(qMakePair(key, qMakePair(addr, name)));
+        m_cell_list.append(qMakePair(key, cell_t({ addr, name, limit_min, limit_max, unit_meadure })));
+        m_limits[key] = cell_t({ addr, name, limit_min, limit_max, unit_meadure });
     }
 }
 //----------------------------------------
@@ -3797,7 +3801,7 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
         if(index >= unit.valueCount())
             break;
 
-        QString nameWgt = m_cell_list[i].second.second;
+        QString nameWgt = m_cell_list[i].second.name;
 
         if(nameWgt.isEmpty())
         {
@@ -3863,7 +3867,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit
     if(index.x() == -1 || index.x() >= m_cell_list.count())
         return;
 
-    QString nameWgt = m_cell_list[index.x()].second.second;
+    QString nameWgt = m_cell_list[index.x()].second.name;
 
     if(nameWgt.isEmpty())
         return;
@@ -4408,7 +4412,7 @@ int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& la
 
     for(quint8 i = 0; i < m_cell_list.count(); i++)
     {
-        QPair<QString, QPair<int, QString> > pair = m_cell_list.at(i);
+        QPair<QString, cell_t> pair = m_cell_list.at(i);
 
         if(pair.first == first)
             iFirst = i;
@@ -4463,7 +4467,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
     if(key.x() == -1 || key.x() >= m_cell_list.count())
         return;
 
-    QString nameWgt = m_cell_list[key.x()].second.second;
+    QString nameWgt = m_cell_list[key.x()].second.name;
 
     if(nameWgt.isEmpty())
         return;
@@ -4519,7 +4523,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 
     for(int i = index.x(); i <= index.y(); i++)
     {
-        QString nameWgt = m_cell_list[i].second.second;
+        QString nameWgt = m_cell_list[i].second.name;
 
         if(nameWgt.isEmpty())
         {
@@ -6329,11 +6333,11 @@ void ConfiguratorWindow::exportJournalToDb()
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
-    for(QPair<QString, QPair<int, QString> > pair: m_cell_list)
+    for(QPair<QString, cell_t> pair: m_cell_list)
     {
         if(pair.first == key)
         {
-            return pair.second.first;
+            return pair.second.addr;
         }
     }
 
@@ -6415,16 +6419,45 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
     CLineEdit* lineEdit = qobject_cast<CLineEdit*>(object);
 
     QString str = lineEdit->objectName().toUpper();
+    QString key = str.remove("LE");
 
-    if(str == "LEK20" || str == "LEK21" || str == "LEK29")
+    float limit_min = 0;
+    float limit_max = 0;
+
+    if(m_limits.find(key) != m_limits.end())
     {
-        lineEdit->setValidator(new QIntValidator(0, 360));
+        limit_min = m_limits[key].limit_min;
+        limit_max = m_limits[key].limit_max;
+    }
+
+    QWidget* widget = findChild<QWidget*>(QString("label%1").arg(key));
+
+    if(widget)
+    {
+        QString classWgt = widget->metaObject()->className();
+
+        if(classWgt == tr("QLabel") && limit_max != 0)
+        {
+            QLabel* label = qobject_cast<QLabel*>(widget);
+
+            if(label)
+                label->setText(QString("%1 (%2...%3)").arg(label->text()).arg(limit_min).arg(limit_max));
+        }
+    }
+
+    if(limit_min == -180 && limit_max == 180)
+    {
+        lineEdit->setValidator(new QIntValidator(limit_min, limit_max));
         lineEdit->setText("0");
+    }
+    else if(limit_min == 0 && limit_max == 0)
+    {
+        lineEdit->setValidator(new QDoubleValidator(0, 100, 6));
+        lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
     }
     else
     {
-        QDoubleValidator* validator = new QDoubleValidator(0, 100, 6);
-        lineEdit->setValidator(validator);
+        lineEdit->setValidator(new QDoubleValidator(limit_min, limit_max, 6));
         lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
     }
 }

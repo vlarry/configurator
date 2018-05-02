@@ -1315,7 +1315,7 @@ QTreeView::branch:open:has-children:has-siblings
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>54</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -1392,7 +1392,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextMainKt0">
+                    <widget class="QLabel" name="labelM02">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -1442,7 +1442,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextMainKtt">
+                    <widget class="QLabel" name="lableM01">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -1458,7 +1458,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextMainKtn">
+                    <widget class="QLabel" name="labelM03">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -1474,7 +1474,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblMainOnTN">
+                    <widget class="QLabel" name="labelM04">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -1562,7 +1562,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <number>2</number>
                 </property>
                 <item row="1" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerPhase_B_C">
+                 <widget class="QLabel" name="labelKUBC">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1578,7 +1578,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="4" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerUAx">
+                 <widget class="QLabel" name="labelKUAX">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1594,7 +1594,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="5" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerUBx">
+                 <widget class="QLabel" name="labelKUBX">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1610,7 +1610,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="7" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorChannel3U0">
+                 <widget class="QLabel" name="labelKU0X">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1626,7 +1626,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="6" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerUCx">
+                 <widget class="QLabel" name="labelKUCX">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1642,7 +1642,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="0" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerPhase_A_B">
+                 <widget class="QLabel" name="labelKUAB">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1658,7 +1658,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="3" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorPower3U0x">
+                 <widget class="QLabel" name="labelK3U0X">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1926,7 +1926,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="3" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorCurrent3I0">
+                 <widget class="QLabel" name="labelK3I0">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1970,7 +1970,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="6" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerPhase_C">
+                 <widget class="QLabel" name="labelKUC">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2014,7 +2014,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="7" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorPower3U0">
+                 <widget class="QLabel" name="labelK3U0">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2030,7 +2030,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="5" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerPhase_B">
+                 <widget class="QLabel" name="labelKUB">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2046,7 +2046,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="4" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerPhase_A">
+                 <widget class="QLabel" name="labelKUA">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2174,7 +2174,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="8" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerTotal">
+                 <widget class="QLabel" name="labelKUS">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2190,7 +2190,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorCurrentPhase_A">
+                 <widget class="QLabel" name="labelKIA">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2206,7 +2206,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorCurrentPhase_B">
+                 <widget class="QLabel" name="labelKIB">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2278,7 +2278,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="2" column="0">
-                 <widget class="QLabel" name="lblTextCalibFactorCurrentPhase_C">
+                 <widget class="QLabel" name="labelKIC">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2322,7 +2322,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="2" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorPowerPhase_C_A">
+                 <widget class="QLabel" name="labelKUCA">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2338,7 +2338,7 @@ QTreeView::branch:open:has-children:has-siblings
                  </widget>
                 </item>
                 <item row="8" column="3">
-                 <widget class="QLabel" name="lblTextCalibFactorChannel3Us">
+                 <widget class="QLabel" name="labelKU0X_">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2476,7 +2476,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_StartCurrent">
+                    <widget class="QLabel" name="labelM06">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -2484,7 +2484,7 @@ QTreeView::branch:open:has-children:has-siblings
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>Ток пуска (0,01*Ин...15Ин)</string>
+                      <string>Ток пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -2492,7 +2492,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking">
+                    <widget class="QLabel" name="labelK31">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -2508,7 +2508,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl">
+                    <widget class="QLabel" name="labelM05">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -2608,7 +2608,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_5">
+                    <widget class="QLabel" name="labelX01">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -2624,7 +2624,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Timeout">
+                    <widget class="QLabel" name="labelM08">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -2632,7 +2632,7 @@ QTreeView::branch:open:has-children:has-siblings
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>Задержка (0,06...10,0 с)</string>
+                      <string>Задержка</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -2640,7 +2640,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="label_25">
+                    <widget class="QLabel" name="cboxMTZ1WorkMode_2">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -2824,9 +2824,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Timeout_2">
+                    <widget class="QLabel" name="labelM11">
                      <property name="text">
-                      <string>Задержка (0,06...10,0 с)</string>
+                      <string>Задержка</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -2834,9 +2834,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Acceleration">
+                    <widget class="QLabel" name="labelM12">
                      <property name="text">
-                      <string>Ввод ускор (1,0…10,0 с)</string>
+                      <string>Ввод ускор</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -2844,9 +2844,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_StartCurrent_2">
+                    <widget class="QLabel" name="labelM10">
                      <property name="text">
-                      <string>Ток пуска (0,01*Ин...15Ин)</string>
+                      <string>Ток пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -2882,7 +2882,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Acceleration_2">
+                    <widget class="QLabel" name="labelX03">
                      <property name="text">
                       <string>Квз ток (0,8...0,98)</string>
                      </property>
@@ -2920,7 +2920,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_2">
+                    <widget class="QLabel" name="labelM09">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -3052,7 +3052,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_3">
+                    <widget class="QLabel" name="labelM13">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -3090,9 +3090,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Timeout_3">
+                    <widget class="QLabel" name="labelK22">
                      <property name="text">
-                      <string>Задержка (0,06...10,0 с)</string>
+                      <string>Задержка</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -3128,9 +3128,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_StartCurrent_3">
+                    <widget class="QLabel" name="labelM14">
                      <property name="text">
-                      <string>Ток пуска (0,01*Ин...15Ин)</string>
+                      <string>Ток пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -3138,7 +3138,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_10">
+                    <widget class="QLabel" name="labelTZ">
                      <property name="text">
                       <string>Тзв х-ка</string>
                      </property>
@@ -3196,9 +3196,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Factor_2">
+                    <widget class="QLabel" name="labelX04">
                      <property name="text">
-                      <string>Квз ток (0,8...0,98)</string>
+                      <string>Квз ток</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -3313,7 +3313,7 @@ QTreeView::branch:open:has-children:has-siblings
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_53">
                 <item>
-                 <widget class="QLabel" name="label_9">
+                 <widget class="QLabel" name="labelTZ1">
                   <property name="text">
                    <string>Туст</string>
                   </property>
@@ -3396,7 +3396,7 @@ QTreeView::branch:open:has-children:has-siblings
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_76">
                 <item>
-                 <widget class="QLabel" name="label_10">
+                 <widget class="QLabel" name="labelTZ2">
                   <property name="text">
                    <string>Туст</string>
                   </property>
@@ -3479,7 +3479,7 @@ QTreeView::branch:open:has-children:has-siblings
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_77">
                 <item>
-                 <widget class="QLabel" name="label_11">
+                 <widget class="QLabel" name="labelTZ3">
                   <property name="text">
                    <string>K</string>
                   </property>
@@ -3562,7 +3562,7 @@ QTreeView::branch:open:has-children:has-siblings
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_78">
                 <item>
-                 <widget class="QLabel" name="label_13">
+                 <widget class="QLabel" name="labelTZ4">
                   <property name="text">
                    <string>K</string>
                   </property>
@@ -3643,7 +3643,7 @@ QTreeView::branch:open:has-children:has-siblings
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_112">
               <item>
-               <widget class="QLabel" name="label_14">
+               <widget class="QLabel" name="labelTZ5">
                 <property name="text">
                  <string>Tx</string>
                 </property>
@@ -3708,7 +3708,7 @@ QTreeView::branch:open:has-children:has-siblings
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_117">
                 <item>
-                 <widget class="QLabel" name="label_15">
+                 <widget class="QLabel" name="labelTZ6">
                   <property name="text">
                    <string>K</string>
                   </property>
@@ -3791,7 +3791,7 @@ QTreeView::branch:open:has-children:has-siblings
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_118">
                 <item>
-                 <widget class="QLabel" name="label_17">
+                 <widget class="QLabel" name="labelTZ7">
                   <property name="text">
                    <string>K</string>
                   </property>
@@ -3973,7 +3973,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Angle">
+                    <widget class="QLabel" name="labelK20">
                      <property name="text">
                       <string>Угол</string>
                      </property>
@@ -4039,9 +4039,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_StartCurrent_4">
+                    <widget class="QLabel" name="labelM17">
                      <property name="text">
-                      <string>Ток пуска (0,01*Ин...15Ин)</string>
+                      <string>Ток пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -4049,7 +4049,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_4">
+                    <widget class="QLabel" name="labelM16">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -4059,9 +4059,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Angle_3">
+                    <widget class="QLabel" name="labelX05">
                      <property name="text">
-                      <string>Квз ток (0,8...0,98)</string>
+                      <string>Квз ток</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -4069,9 +4069,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_DirStart">
+                    <widget class="QLabel" name="labelM07">
                      <property name="text">
-                      <string>Напр. пуска (0,5*Uн…Uн)</string>
+                      <string>Напр. пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -4107,9 +4107,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Angle_2">
+                    <widget class="QLabel" name="labelM18">
                      <property name="text">
-                      <string>Задержка (0,06...10,0 с)</string>
+                      <string>Задержка</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -4117,9 +4117,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="7" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Angle_4">
+                    <widget class="QLabel" name="labelX05a">
                      <property name="text">
-                      <string>Квз напр (0,8...0,98)</string>
+                      <string>Квз напр</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -4157,7 +4157,7 @@ QTreeView::branch:open:has-children:has-siblings
                    <item row="1" column="0">
                     <widget class="QLabel" name="label_27">
                      <property name="text">
-                      <string>Управление</string>
+                      <string>Режим работы</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -4277,7 +4277,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_StartCurrent">
+                    <widget class="QLabel" name="labelM23">
                      <property name="text">
                       <string>Ток пуска</string>
                      </property>
@@ -4310,7 +4310,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_KvzCurrent">
+                    <widget class="QLabel" name="labelX07">
                      <property name="text">
                       <string>Квз ток</string>
                      </property>
@@ -4319,36 +4319,8 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="3" column="1">
-                    <widget class="CLineEdit" name="leM24">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_Pause">
+                    <widget class="QLabel" name="labelM24">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -4386,7 +4358,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_OZZ1_Ctrl">
+                    <widget class="QLabel" name="labelM22">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -4431,6 +4403,34 @@ QTreeView::branch:open:has-children:has-siblings
                        <string>Откл без блок</string>
                       </property>
                      </item>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="CLineEdit" name="leM24">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -4574,7 +4574,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_StartCurrent">
+                    <widget class="QLabel" name="labelK24">
                      <property name="text">
                       <string>Ток пуска</string>
                      </property>
@@ -4584,7 +4584,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_KvzCurrent">
+                    <widget class="QLabel" name="labelX07a">
                      <property name="text">
                       <string>Квз ток</string>
                      </property>
@@ -4594,7 +4594,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_Pause">
+                    <widget class="QLabel" name="labelK25">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -4627,7 +4627,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_OZZ2_Ctrl">
+                    <widget class="QLabel" name="labelK23">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -4754,7 +4754,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_StartCurrent">
+                    <widget class="QLabel" name="labelM26">
                      <property name="text">
                       <string>Ток пуска</string>
                      </property>
@@ -4764,7 +4764,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_StartPower">
+                    <widget class="QLabel" name="labelM27">
                      <property name="text">
                       <string>Напр пуска</string>
                      </property>
@@ -4802,7 +4802,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Angle">
+                    <widget class="QLabel" name="labelK21">
                      <property name="text">
                       <string>Угол</string>
                      </property>
@@ -4868,7 +4868,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Pause">
+                    <widget class="QLabel" name="labelM28">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -4906,7 +4906,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_KvzCurrent">
+                    <widget class="QLabel" name="labelX08">
                      <property name="text">
                       <string>Квз ток</string>
                      </property>
@@ -4916,7 +4916,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_Ctrl">
+                    <widget class="QLabel" name="labelM25">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -4926,7 +4926,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="7" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ1_KvzPower">
+                    <widget class="QLabel" name="labelX09">
                      <property name="text">
                       <string>Квз напр</string>
                      </property>
@@ -5086,7 +5086,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_26">
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Angle">
+                    <widget class="QLabel" name="labelK29">
                      <property name="text">
                       <string>Угол</string>
                      </property>
@@ -5096,7 +5096,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_StartPower">
+                    <widget class="QLabel" name="labelK28">
                      <property name="text">
                       <string>Напр пуска</string>
                      </property>
@@ -5134,7 +5134,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Ctrl">
+                    <widget class="QLabel" name="labelK26">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -5172,7 +5172,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_Pause">
+                    <widget class="QLabel" name="labelK30">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -5205,7 +5205,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_KvzCurrent">
+                    <widget class="QLabel" name="labelX08a">
                      <property name="text">
                       <string>Квз ток</string>
                      </property>
@@ -5271,7 +5271,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="7" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_KvzPower">
+                    <widget class="QLabel" name="labelX09a">
                      <property name="text">
                       <string>Квз напр</string>
                      </property>
@@ -5337,7 +5337,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionEarthly_NZZ2_StartCurrent">
+                    <widget class="QLabel" name="labelK27">
                      <property name="text">
                       <string>Ток пуска</string>
                      </property>
@@ -5441,9 +5441,9 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_17">
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umax1_Pause">
+                    <widget class="QLabel" name="labelM34">
                      <property name="text">
-                      <string>Задержка (0,2…10,0 с)</string>
+                      <string>Задержка</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -5513,9 +5513,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umax1_KvzPower">
+                    <widget class="QLabel" name="labelX11">
                      <property name="text">
-                      <string>Квз напр (0,8...0,98)</string>
+                      <string>Квз напр</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -5523,7 +5523,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umax1_Ctrl">
+                    <widget class="QLabel" name="labelM32">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -5601,9 +5601,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umax1_StartPower">
+                    <widget class="QLabel" name="labelM33">
                      <property name="text">
-                      <string>Напр пуска (1,02*Uн…1,2*Uн)</string>
+                      <string>Напр пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -5705,9 +5705,9 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_18">
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umax2_StartPower">
+                    <widget class="QLabel" name="labelM36">
                      <property name="text">
-                      <string>Напр пуска (1,02*Uн…1,2*Uн)</string>
+                      <string>Напр пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -5715,7 +5715,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umax2_Ctrl">
+                    <widget class="QLabel" name="labelM35">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -5809,9 +5809,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umax2_Pause">
+                    <widget class="QLabel" name="labelM37">
                      <property name="text">
-                      <string>Задержка (0,2…10,0 с)</string>
+                      <string>Задержка</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -5819,9 +5819,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umax2_KvzPower">
+                    <widget class="QLabel" name="labelX12">
                      <property name="text">
-                      <string>Квз напр (0,8...0,98)</string>
+                      <string>Квз напр</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -5974,7 +5974,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin1_StartCtrl">
+                    <widget class="QLabel" name="labelM40">
                      <property name="text">
                       <string>Контр тока</string>
                      </property>
@@ -5984,9 +5984,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin1_StartPower">
+                    <widget class="QLabel" name="labelM41">
                      <property name="text">
-                      <string>Напр пуска (0,8*Uн...0,98*Uн)</string>
+                      <string>Напр пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -6022,9 +6022,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin1_StartPower_2">
+                    <widget class="QLabel" name="labelM42">
                      <property name="text">
-                      <string>Задержка (0,2…10,0 с)</string>
+                      <string>Задержка</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -6032,7 +6032,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin1_Logic">
+                    <widget class="QLabel" name="labelM39">
                      <property name="text">
                       <string>Логика</string>
                      </property>
@@ -6070,7 +6070,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin1_Ctrl">
+                    <widget class="QLabel" name="labelM38">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -6131,9 +6131,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin1_StartPower_3">
+                    <widget class="QLabel" name="labelX13">
                      <property name="text">
-                      <string>Квз напр (0,8...0,98)</string>
+                      <string>Квз напр</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -6290,6 +6290,26 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelM43">
+                     <property name="text">
+                      <string>Управление</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelM45">
+                     <property name="text">
+                      <string>Контр тока</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="5" column="1">
                     <widget class="CLineEdit" name="leM47">
                      <property name="sizePolicy">
@@ -6318,91 +6338,10 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin2_Logic">
-                     <property name="text">
-                      <string>Логика</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin2_Ctrl">
-                     <property name="text">
-                      <string>Управление</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin2_StartCtrl">
-                     <property name="text">
-                      <string>Контр тока</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="1">
-                    <widget class="CLineEdit" name="leM46">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="1">
-                    <widget class="QComboBox" name="cboxM45">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Выкл</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Вкл</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin2_StartPower_2">
+                    <widget class="QLabel" name="labelM47">
                      <property name="text">
-                      <string>Задержка (0,2…10,0 с)</string>
+                      <string>Задержка</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -6460,30 +6399,61 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin2_StartPower_3">
-                     <property name="text">
-                      <string>Квз напр (0,8...0,98)</string>
+                   <item row="3" column="1">
+                    <widget class="QComboBox" name="cboxM45">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
                      </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Выкл</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Вкл</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="CLineEdit" name="leM46">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin2_StartPower">
+                    <widget class="QLabel" name="labelM46">
                      <property name="text">
-                      <string>Напр пуска (0,8*Uн...0,98*Uн)</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_Umin2_Ctrl_2">
-                     <property name="text">
-                      <string>Режим работы</string>
+                      <string>Напр пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -6516,6 +6486,36 @@ QTreeView::branch:open:has-children:has-siblings
                        <string>Откл без блок</string>
                       </property>
                      </item>
+                    </widget>
+                   </item>
+                   <item row="6" column="0">
+                    <widget class="QLabel" name="labelX14">
+                     <property name="text">
+                      <string>Квз напр</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="lblTextProtectionPower_Umin2_Ctrl_2">
+                     <property name="text">
+                      <string>Режим работы</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="labelM44">
+                     <property name="text">
+                      <string>Логика</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -6603,7 +6603,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_3UO_StartCurrent">
+                    <widget class="QLabel" name="labelM49">
                      <property name="text">
                       <string>Напр пуска</string>
                      </property>
@@ -6636,7 +6636,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_3UO_Ctrl">
+                    <widget class="QLabel" name="labelM48">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -6674,7 +6674,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_3UO_KvzPower">
+                    <widget class="QLabel" name="labelX15">
                      <property name="text">
                       <string>Квз напр</string>
                      </property>
@@ -6712,7 +6712,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionPower_3UO_Pause">
+                    <widget class="QLabel" name="labelM50">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -6822,7 +6822,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_27">
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMotor_StartCurrent">
+                    <widget class="QLabel" name="labelM20">
                      <property name="text">
                       <string>Ток пуска</string>
                      </property>
@@ -6832,7 +6832,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMotor_Ctrl">
+                    <widget class="QLabel" name="labelM19">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -6870,7 +6870,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMotor_Pause">
+                    <widget class="QLabel" name="labelM21">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -6959,7 +6959,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMotor_Kvz_Current">
+                    <widget class="QLabel" name="labelX06">
                      <property name="text">
                       <string>Квз ток</string>
                      </property>
@@ -7069,7 +7069,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_28">
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMotor_Imin_Ctrl">
+                    <widget class="QLabel" name="labelM29">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -7102,7 +7102,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMotor_Pause_2">
+                    <widget class="QLabel" name="labelM31">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -7112,7 +7112,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMotor_Kvz_Power">
+                    <widget class="QLabel" name="labelX10">
                      <property name="text">
                       <string>Квз напр</string>
                      </property>
@@ -7178,7 +7178,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMotor_StartPower">
+                    <widget class="QLabel" name="labelM30">
                      <property name="text">
                       <string>Напр пуска</string>
                      </property>
@@ -7310,7 +7310,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_29">
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR1_StartFreq">
+                    <widget class="QLabel" name="labelM52">
                      <property name="text">
                       <string>Част пуска</string>
                      </property>
@@ -7376,7 +7376,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR1_Pause">
+                    <widget class="QLabel" name="labelM53">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -7386,7 +7386,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR1_Umin">
+                    <widget class="QLabel" name="labelM54">
                      <property name="text">
                       <string>Напр мин</string>
                      </property>
@@ -7447,7 +7447,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR1_KvzPower">
+                    <widget class="QLabel" name="labelX16">
                      <property name="text">
                       <string>Квз напр</string>
                      </property>
@@ -7457,7 +7457,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR1_Ctrl">
+                    <widget class="QLabel" name="labelM51">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -7617,7 +7617,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR2_StartFreq">
+                    <widget class="QLabel" name="labelM56">
                      <property name="text">
                       <string>Част пуска</string>
                      </property>
@@ -7650,7 +7650,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR2_Ctrl">
+                    <widget class="QLabel" name="labelM55">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -7660,7 +7660,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR2_Pause">
+                    <widget class="QLabel" name="labelM57">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -7726,7 +7726,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR2_Umin">
+                    <widget class="QLabel" name="labelM58">
                      <property name="text">
                       <string>Напр мин</string>
                      </property>
@@ -7764,7 +7764,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR2_KvzPower">
+                    <widget class="QLabel" name="labelX17">
                      <property name="text">
                       <string>Квз напр</string>
                      </property>
@@ -7952,7 +7952,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR3_StartFreq">
+                    <widget class="QLabel" name="labelM60">
                      <property name="text">
                       <string>Част пуска</string>
                      </property>
@@ -7962,7 +7962,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR3_Ctrl">
+                    <widget class="QLabel" name="labelM59">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -7972,7 +7972,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR3_Pause">
+                    <widget class="QLabel" name="labelM61">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -7982,7 +7982,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR3_Umin">
+                    <widget class="QLabel" name="labelM62">
                      <property name="text">
                       <string>Напр мин</string>
                      </property>
@@ -8043,7 +8043,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionFrequency_ACR3_KvzPower">
+                    <widget class="QLabel" name="labelX18">
                      <property name="text">
                       <string>Квз напр</string>
                      </property>
@@ -8181,7 +8181,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExternal_Arc_Ctrl">
+                    <widget class="QLabel" name="labelM63">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8197,7 +8197,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExtermal_Arc_KvzCurrent">
+                    <widget class="QLabel" name="labelX19">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8269,7 +8269,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExternal_Arc_StartCurrent">
+                    <widget class="QLabel" name="labelM64">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8420,7 +8420,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExternal_Ext1_Ctrl">
+                    <widget class="QLabel" name="labelM71">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8464,7 +8464,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExternal_Ext1_Pause">
+                    <widget class="QLabel" name="labelM72">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8586,7 +8586,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_34">
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExternal_Ext2_Ctrl">
+                    <widget class="QLabel" name="labelM73">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8630,7 +8630,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExternal_Ext2_Pause">
+                    <widget class="QLabel" name="labelM74">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8838,7 +8838,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExternal_Ext3_Pause">
+                    <widget class="QLabel" name="labelM76">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -8854,7 +8854,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionExternal_Ext3_Ctrl">
+                    <widget class="QLabel" name="labelM75">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>0</horstretch>
@@ -9027,7 +9027,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp1_StartTemp">
+                    <widget class="QLabel" name="labelM67">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -9094,7 +9094,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp1_KvzTemp">
+                    <widget class="QLabel" name="labelX20">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -9110,7 +9110,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp1_Sensor2">
+                    <widget class="QLabel" name="labelM66">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -9126,7 +9126,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp1_Pause">
+                    <widget class="QLabel" name="labelM69">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -9142,7 +9142,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp1_Sensor1">
+                    <widget class="QLabel" name="labelM65">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -9286,7 +9286,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_37">
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp2_StartTemp">
+                    <widget class="QLabel" name="labelM68">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -9436,7 +9436,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp2_Pause">
+                    <widget class="QLabel" name="labelM70">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -9452,7 +9452,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp2_KvzTemp">
+                    <widget class="QLabel" name="labelX21">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -9634,7 +9634,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionLevel1_Ctrl">
+                    <widget class="QLabel" name="labelM77">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -9672,7 +9672,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionLevel1_Pause">
+                    <widget class="QLabel" name="labelM78">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -9824,7 +9824,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionLevel2_Pause">
+                    <widget class="QLabel" name="labelM79">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -9956,7 +9956,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_40">
                    <item row="7" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_8">
+                    <widget class="QLabel" name="labelN58">
                      <property name="text">
                       <string>Rиз норма</string>
                      </property>
@@ -9966,7 +9966,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_4">
+                    <widget class="QLabel" name="labelN54">
                      <property name="text">
                       <string>Пск Вак фС</string>
                      </property>
@@ -10016,7 +10016,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_13">
+                    <widget class="QLabel" name="labelV13">
                      <property name="text">
                       <string>Откл МТЗ4</string>
                      </property>
@@ -10026,7 +10026,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_25">
+                    <widget class="QLabel" name="labelV65">
                      <property name="text">
                       <string>Откл АЧР2</string>
                      </property>
@@ -10056,7 +10056,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_26">
+                    <widget class="QLabel" name="labelV68">
                      <property name="text">
                       <string>Откл АЧР3</string>
                      </property>
@@ -10146,7 +10146,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_31">
+                    <widget class="QLabel" name="labelV90">
                      <property name="text">
                       <string>Откл Вн3</string>
                      </property>
@@ -10196,7 +10196,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="7" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_32">
+                    <widget class="QLabel" name="labelV95">
                      <property name="text">
                       <string>Откл УР1</string>
                      </property>
@@ -10246,7 +10246,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_29">
+                    <widget class="QLabel" name="labelV81">
                      <property name="text">
                       <string>Откл Вн1</string>
                      </property>
@@ -10256,7 +10256,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_30">
+                    <widget class="QLabel" name="labelV86">
                      <property name="text">
                       <string>Откл Вн2</string>
                      </property>
@@ -10286,7 +10286,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="8">
-                    <widget class="QLabel" name="lblTextStartSignal_33">
+                    <widget class="QLabel" name="labelV96">
                      <property name="text">
                       <string>Откл УР2</string>
                      </property>
@@ -10296,7 +10296,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_1">
+                    <widget class="QLabel" name="labelN50">
                      <property name="text">
                       <string>Измер БРУ</string>
                      </property>
@@ -10346,7 +10346,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_12">
+                    <widget class="QLabel" name="labelV10">
                      <property name="text">
                       <string>Откл МТЗ3</string>
                      </property>
@@ -10356,7 +10356,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_3">
+                    <widget class="QLabel" name="labelN53">
                      <property name="text">
                       <string>Пск Вак фВ</string>
                      </property>
@@ -10386,7 +10386,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_2">
+                    <widget class="QLabel" name="labelN52">
                      <property name="text">
                       <string>Пск Вак фА</string>
                      </property>
@@ -10396,7 +10396,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_17">
+                    <widget class="QLabel" name="labelV25">
                      <property name="text">
                       <string>Откл Imin</string>
                      </property>
@@ -10426,7 +10426,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_5">
+                    <widget class="QLabel" name="labelN55">
                      <property name="text">
                       <string>Работа Вак</string>
                      </property>
@@ -10496,7 +10496,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="7" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_16">
+                    <widget class="QLabel" name="labelV22">
                      <property name="text">
                       <string>Откл НЗЗ1</string>
                      </property>
@@ -10506,7 +10506,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="7" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_24">
+                    <widget class="QLabel" name="labelV62">
                      <property name="text">
                       <string>Откл АЧР1</string>
                      </property>
@@ -10536,7 +10536,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_22">
+                    <widget class="QLabel" name="labelV44">
                      <property name="text">
                       <string>Откл 3UO</string>
                      </property>
@@ -10546,7 +10546,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_23">
+                    <widget class="QLabel" name="labelV50">
                      <property name="text">
                       <string>Откл АВР</string>
                      </property>
@@ -10576,7 +10576,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_28">
+                    <widget class="QLabel" name="labelV77">
                      <property name="text">
                       <string>Откл Тмп2</string>
                      </property>
@@ -10606,7 +10606,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_27">
+                    <widget class="QLabel" name="labelV76">
                      <property name="text">
                       <string>Откл Тмп1</string>
                      </property>
@@ -10616,7 +10616,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_14">
+                    <widget class="QLabel" name="labelV16">
                      <property name="text">
                       <string>Откл Пусков</string>
                      </property>
@@ -10666,7 +10666,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_18">
+                    <widget class="QLabel" name="labelV28">
                      <property name="text">
                       <string>Откл Umax1</string>
                      </property>
@@ -10696,7 +10696,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_19">
+                    <widget class="QLabel" name="labelV31">
                      <property name="text">
                       <string>Откл Umax2</string>
                      </property>
@@ -10746,7 +10746,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_21">
+                    <widget class="QLabel" name="labelV39">
                      <property name="text">
                       <string>Откл Umin2</string>
                      </property>
@@ -10776,7 +10776,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_7">
+                    <widget class="QLabel" name="labelN57">
                      <property name="text">
                       <string>Бл. ВКЛ БРУ</string>
                      </property>
@@ -10806,7 +10806,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_6">
+                    <widget class="QLabel" name="labelN56">
                      <property name="text">
                       <string>Работа БРУ</string>
                      </property>
@@ -10816,7 +10816,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_9">
+                    <widget class="QLabel" name="labelN59">
                      <property name="text">
                       <string>ВКЛ от БРУ</string>
                      </property>
@@ -10886,7 +10886,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_11">
+                    <widget class="QLabel" name="labelV07">
                      <property name="text">
                       <string>Откл МТЗ2</string>
                      </property>
@@ -10896,7 +10896,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_20">
+                    <widget class="QLabel" name="labelV36">
                      <property name="text">
                       <string>Откл Umin1</string>
                      </property>
@@ -10906,7 +10906,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_10">
+                    <widget class="QLabel" name="labelV04">
                      <property name="text">
                       <string>Откл МТЗ1</string>
                      </property>
@@ -10916,7 +10916,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_15">
+                    <widget class="QLabel" name="labelV19">
                      <property name="text">
                       <string>Откл ОЗЗ1</string>
                      </property>
@@ -10999,7 +10999,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_10">
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_5">
+                    <widget class="QLabel" name="labelM93">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11043,7 +11043,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_StartCurrent_5">
+                    <widget class="QLabel" name="labelM95">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11059,7 +11059,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Timeout_4">
+                    <widget class="QLabel" name="labelM96">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11098,7 +11098,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_2">
+                    <widget class="QLabel" name="labelM97">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11193,7 +11193,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_3">
+                    <widget class="QLabel" name="labelM98">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11237,7 +11237,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_EnterBlocking_4">
+                    <widget class="QLabel" name="labelM99">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11385,7 +11385,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_8">
+                    <widget class="QLabel" name="labelM92">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11435,7 +11435,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_6">
+                    <widget class="QLabel" name="labelM90">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11485,7 +11485,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_9">
+                    <widget class="QLabel" name="labelX23">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11507,7 +11507,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextProtectionMTZ_Ctrl_7">
+                    <widget class="QLabel" name="labelM91">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11672,7 +11672,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_6">
                    <item row="4" column="3">
-                    <widget class="QLabel" name="lblT_KCU">
+                    <widget class="QLabel" name="labelK09">
                      <property name="text">
                       <string>Ток опред ВКЛ полож ВВ</string>
                      </property>
@@ -11682,7 +11682,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="3">
-                    <widget class="QLabel" name="lblCtrlOT">
+                    <widget class="QLabel" name="labelK17">
                      <property name="text">
                       <string>Контроль ОТ</string>
                      </property>
@@ -11692,7 +11692,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextSwitchON">
+                    <widget class="QLabel" name="labelK01">
                      <property name="text">
                       <string>Команда включения</string>
                      </property>
@@ -11776,7 +11776,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="3">
-                    <widget class="QLabel" name="lblKcu">
+                    <widget class="QLabel" name="labelK06">
                      <property name="text">
                       <string>КЦУ</string>
                      </property>
@@ -11786,7 +11786,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextSwBreakerModeCtrl">
+                    <widget class="QLabel" name="labelK32">
                      <property name="text">
                       <string>Режим упр.</string>
                      </property>
@@ -11832,7 +11832,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextSwitchOFF">
+                    <widget class="QLabel" name="labelK03">
                      <property name="text">
                       <string>Команда отключения</string>
                      </property>
@@ -11888,7 +11888,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextSwitchON_T">
+                    <widget class="QLabel" name="labelK02">
                      <property name="text">
                       <string>Команда ВКЛ: время включения</string>
                      </property>
@@ -11954,7 +11954,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextSwitchOFF_T">
+                    <widget class="QLabel" name="labelK04">
                      <property name="text">
                       <string>Команда ОТКЛ: время включения</string>
                      </property>
@@ -11964,7 +11964,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="lblTotv">
+                    <widget class="QLabel" name="labelK05">
                      <property name="text">
                       <string>Время ответа</string>
                      </property>
@@ -12002,7 +12002,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="3">
-                    <widget class="QLabel" name="lblPosVV">
+                    <widget class="QLabel" name="labelK07">
                      <property name="text">
                       <string>Полож ВВ</string>
                      </property>
@@ -12063,7 +12063,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="3">
-                    <widget class="QLabel" name="lblI_VV_on">
+                    <widget class="QLabel" name="labelK08">
                      <property name="text">
                       <string>Задержка КЦУ</string>
                      </property>
@@ -12073,7 +12073,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="3">
-                    <widget class="QLabel" name="lblKv_KCU_I">
+                    <widget class="QLabel" name="labelX22">
                      <property name="text">
                       <string>Кв КЦУ по току</string>
                      </property>
@@ -12195,7 +12195,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextTruck_Timp">
+                    <widget class="QLabel" name="labelK45">
                      <property name="text">
                       <string>Т имп</string>
                      </property>
@@ -12205,7 +12205,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextTruck_Cmd">
+                    <widget class="QLabel" name="labelK41">
                      <property name="text">
                       <string>Команда</string>
                      </property>
@@ -12261,7 +12261,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextTruck_Ctrl">
+                    <widget class="QLabel" name="labelK37">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -12271,7 +12271,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextTruck_Toff">
+                    <widget class="QLabel" name="labelK49">
                      <property name="text">
                       <string>Т откл</string>
                      </property>
@@ -12394,7 +12394,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextVk_VV_tel_2">
+                    <widget class="QLabel" name="labelK14">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -12410,7 +12410,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextVk_VV_tel">
+                    <widget class="QLabel" name="labelK13">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -12455,7 +12455,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextVk_VV_tel_3">
+                    <widget class="QLabel" name="labelK15">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -12556,7 +12556,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_42">
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextSCHR_Cmd">
+                    <widget class="QLabel" name="labelK38">
                      <property name="text">
                       <string>Команда</string>
                      </property>
@@ -12617,7 +12617,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextSCHR_Timp">
+                    <widget class="QLabel" name="labelK42">
                      <property name="text">
                       <string>Т имп</string>
                      </property>
@@ -12650,7 +12650,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextSCHR_Ctrl">
+                    <widget class="QLabel" name="labelK34">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -12660,7 +12660,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextSCHR_Toff">
+                    <widget class="QLabel" name="labelK46">
                      <property name="text">
                       <string>Т откл</string>
                      </property>
@@ -12828,7 +12828,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextLR_Timp">
+                    <widget class="QLabel" name="labelK43">
                      <property name="text">
                       <string>Т имп</string>
                      </property>
@@ -12838,7 +12838,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextLR_Cmd">
+                    <widget class="QLabel" name="labelK39">
                      <property name="text">
                       <string>Команда</string>
                      </property>
@@ -12848,7 +12848,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextLR_Ctrl">
+                    <widget class="QLabel" name="labelK35">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -12858,7 +12858,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextLR_Toff">
+                    <widget class="QLabel" name="labelK47">
                      <property name="text">
                       <string>Т откл</string>
                      </property>
@@ -12952,7 +12952,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_44">
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextZR_Ctrl">
+                    <widget class="QLabel" name="labelK36">
                      <property name="text">
                       <string>Управление</string>
                      </property>
@@ -13013,7 +13013,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextZR_Cmd">
+                    <widget class="QLabel" name="labelK40">
                      <property name="text">
                       <string>Команда</string>
                      </property>
@@ -13023,7 +13023,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextZR_Timp">
+                    <widget class="QLabel" name="labelK44">
                      <property name="text">
                       <string>Т имп</string>
                      </property>
@@ -13056,7 +13056,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextZR_Toff">
+                    <widget class="QLabel" name="labelK48">
                      <property name="text">
                       <string>Т откл</string>
                      </property>
@@ -13150,7 +13150,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_46">
                    <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextCtrl_Ctrl">
+                    <widget class="QLabel" name="labelK18">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13189,7 +13189,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextTruck_Toff_2">
+                    <widget class="QLabel" name="labelK19">
                      <property name="text">
                       <string>Задержка</string>
                      </property>
@@ -13280,7 +13280,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_12">
                    <item row="3" column="0">
-                    <widget class="QLabel" name="label_4">
+                    <widget class="QLabel" name="labelM84">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13340,7 +13340,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="label">
+                    <widget class="QLabel" name="labelM81">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13376,7 +13376,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="label_2">
+                    <widget class="QLabel" name="labelM82">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13392,7 +13392,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="label_3">
+                    <widget class="QLabel" name="labelM83">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13430,7 +13430,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="label_5">
+                    <widget class="QLabel" name="labelM85">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13521,7 +13521,7 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_13">
                    <item row="1" column="0">
-                    <widget class="QLabel" name="label_7">
+                    <widget class="QLabel" name="labelM88">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13557,7 +13557,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="label_6">
+                    <widget class="QLabel" name="labelM87">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13595,7 +13595,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="label_8">
+                    <widget class="QLabel" name="labelM89">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -13689,19 +13689,9 @@ QTreeView::branch:open:has-children:has-siblings
                  <item>
                   <layout class="QGridLayout" name="gridLayout_47">
                    <item row="7" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_34">
+                    <widget class="QLabel" name="labelN58_2">
                      <property name="text">
                       <string>Rиз норма</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_35">
-                     <property name="text">
-                      <string>Пск Вак фС</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -13748,20 +13738,20 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="4" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_36">
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelN54_2">
                      <property name="text">
-                      <string>Откл МТЗ4</string>
+                      <string>Пск Вак фС</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_37">
+                   <item row="1" column="6">
+                    <widget class="QLabel" name="labelV68_2">
                      <property name="text">
-                      <string>Откл АЧР2</string>
+                      <string>Откл АЧР3</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -13788,16 +13778,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="1" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_38">
-                     <property name="text">
-                      <string>Откл АЧР3</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="3" column="5">
                     <widget class="QComboBox" name="cboxV36_2">
                      <property name="toolTip">
@@ -13818,8 +13798,28 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="7" column="3">
-                    <widget class="QComboBox" name="cboxV22_2">
+                   <item row="4" column="2">
+                    <widget class="QLabel" name="labelV13_2">
+                     <property name="text">
+                      <string>Откл МТЗ4</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="6">
+                    <widget class="QLabel" name="labelV90_2">
+                     <property name="text">
+                      <string>Откл Вн3</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="7">
+                    <widget class="QComboBox" name="cboxV81_2">
                      <property name="toolTip">
                       <string>Скорость</string>
                      </property>
@@ -13858,88 +13858,28 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
+                   <item row="7" column="3">
+                    <widget class="QComboBox" name="cboxV22_2">
+                     <property name="toolTip">
+                      <string>Скорость</string>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
                    <item row="3" column="3">
                     <widget class="QComboBox" name="cboxV10_2">
-                     <property name="toolTip">
-                      <string>Скорость</string>
-                     </property>
-                     <property name="currentIndex">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Нет</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Да</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="6" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_39">
-                     <property name="text">
-                      <string>Откл Вн3</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="7">
-                    <widget class="QComboBox" name="cboxV81_2">
-                     <property name="toolTip">
-                      <string>Скорость</string>
-                     </property>
-                     <property name="currentIndex">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Нет</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Да</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="5" column="7">
-                    <widget class="QComboBox" name="cboxV86_2">
-                     <property name="toolTip">
-                      <string>Скорость</string>
-                     </property>
-                     <property name="currentIndex">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Нет</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Да</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="7" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_40">
-                     <property name="text">
-                      <string>Откл УР1</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="6" column="7">
-                    <widget class="QComboBox" name="cboxV90_2">
                      <property name="toolTip">
                       <string>Скорость</string>
                      </property>
@@ -13978,8 +13918,28 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
+                   <item row="5" column="7">
+                    <widget class="QComboBox" name="cboxV86_2">
+                     <property name="toolTip">
+                      <string>Скорость</string>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
                    <item row="4" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_41">
+                    <widget class="QLabel" name="labelV81_2">
                      <property name="text">
                       <string>Откл Вн1</string>
                      </property>
@@ -13988,8 +13948,48 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
+                   <item row="6" column="7">
+                    <widget class="QComboBox" name="cboxV90_2">
+                     <property name="toolTip">
+                      <string>Скорость</string>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="7" column="6">
+                    <widget class="QLabel" name="labelV95_2">
+                     <property name="text">
+                      <string>Откл УР1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelN50_2">
+                     <property name="text">
+                      <string>Измер БРУ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="5" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_42">
+                    <widget class="QLabel" name="labelV86_2">
                      <property name="text">
                       <string>Откл Вн2</string>
                      </property>
@@ -14019,7 +14019,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="8">
-                    <widget class="QLabel" name="lblTextStartSignal_43">
+                    <widget class="QLabel" name="labelV96_2">
                      <property name="text">
                       <string>Откл УР2</string>
                      </property>
@@ -14028,18 +14028,48 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_44">
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="cboxN50_2">
+                     <property name="toolTip">
+                      <string>Скорость</string>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="labelN53_2">
                      <property name="text">
-                      <string>Измер БРУ</string>
+                      <string>Пск Вак фВ</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="cboxN50_2">
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="labelN52_2">
+                     <property name="text">
+                      <string>Пск Вак фА</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="5">
+                    <widget class="QComboBox" name="cboxV31_2">
                      <property name="toolTip">
                       <string>Скорость</string>
                      </property>
@@ -14079,59 +14109,9 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_45">
+                    <widget class="QLabel" name="labelV10_2">
                      <property name="text">
                       <string>Откл МТЗ3</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_46">
-                     <property name="text">
-                      <string>Пск Вак фВ</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="5">
-                    <widget class="QComboBox" name="cboxV31_2">
-                     <property name="toolTip">
-                      <string>Скорость</string>
-                     </property>
-                     <property name="currentIndex">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Нет</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Да</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_47">
-                     <property name="text">
-                      <string>Пск Вак фА</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_48">
-                     <property name="text">
-                      <string>Откл Imin</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -14159,9 +14139,19 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_49">
+                    <widget class="QLabel" name="labelN55_2">
                      <property name="text">
                       <string>Работа Вак</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="QLabel" name="labelV25_2">
+                     <property name="text">
+                      <string>Откл Imin</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -14208,40 +14198,10 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="5" column="3">
-                    <widget class="QComboBox" name="cboxV16_2">
-                     <property name="toolTip">
-                      <string>Скорость</string>
-                     </property>
-                     <property name="currentIndex">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Нет</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Да</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
                    <item row="7" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_50">
+                    <widget class="QLabel" name="labelV22_2">
                      <property name="text">
                       <string>Откл НЗЗ1</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="7" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_51">
-                     <property name="text">
-                      <string>Откл АЧР1</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -14269,7 +14229,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="5" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_52">
+                    <widget class="QLabel" name="labelV44_2">
                      <property name="text">
                       <string>Откл 3UO</string>
                      </property>
@@ -14278,10 +14238,70 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_53">
+                   <item row="7" column="4">
+                    <widget class="QLabel" name="labelV62_2">
                      <property name="text">
-                      <string>Откл АВР</string>
+                      <string>Откл АЧР1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="3">
+                    <widget class="QComboBox" name="cboxV16_2">
+                     <property name="toolTip">
+                      <string>Скорость</string>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="3" column="7">
+                    <widget class="QComboBox" name="cboxV77_2">
+                     <property name="toolTip">
+                      <string>Скорость</string>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="3" column="6">
+                    <widget class="QLabel" name="labelV77_2">
+                     <property name="text">
+                      <string>Откл Тмп2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="6">
+                    <widget class="QLabel" name="labelV76_2">
+                     <property name="text">
+                      <string>Откл Тмп1</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -14308,74 +14328,14 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="3" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_54">
+                   <item row="6" column="4">
+                    <widget class="QLabel" name="labelV50_2">
                      <property name="text">
-                      <string>Откл Тмп2</string>
+                      <string>Откл АВР</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="7">
-                    <widget class="QComboBox" name="cboxV77_2">
-                     <property name="toolTip">
-                      <string>Скорость</string>
-                     </property>
-                     <property name="currentIndex">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Нет</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Да</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="2" column="6">
-                    <widget class="QLabel" name="lblTextStartSignal_55">
-                     <property name="text">
-                      <string>Откл Тмп1</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="5" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_56">
-                     <property name="text">
-                      <string>Откл Пусков</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="1">
-                    <widget class="QComboBox" name="cboxN55_2">
-                     <property name="toolTip">
-                      <string>Скорость</string>
-                     </property>
-                     <property name="currentIndex">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Нет</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Да</string>
-                      </property>
-                     </item>
                     </widget>
                    </item>
                    <item row="1" column="5">
@@ -14398,16 +14358,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="1" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_57">
-                     <property name="text">
-                      <string>Откл Umax1</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="0" column="5">
                     <widget class="QComboBox" name="cboxV25_2">
                      <property name="toolTip">
@@ -14428,18 +14378,28 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="2" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_58">
+                   <item row="1" column="4">
+                    <widget class="QLabel" name="labelV28_2">
                      <property name="text">
-                      <string>Откл Umax2</string>
+                      <string>Откл Umax1</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="5">
-                    <widget class="QComboBox" name="cboxV50_2">
+                   <item row="5" column="2">
+                    <widget class="QLabel" name="labelV16_2">
+                     <property name="text">
+                      <string>Откл Пусков</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QComboBox" name="cboxN55_2">
                      <property name="toolTip">
                       <string>Скорость</string>
                      </property>
@@ -14479,13 +14439,43 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="4" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_59">
+                    <widget class="QLabel" name="labelV39_2">
                      <property name="text">
                       <string>Откл Umin2</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="4">
+                    <widget class="QLabel" name="labelV31_2">
+                     <property name="text">
+                      <string>Откл Umax2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="5">
+                    <widget class="QComboBox" name="cboxV50_2">
+                     <property name="toolTip">
+                      <string>Скорость</string>
+                     </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                    <item row="6" column="1">
@@ -14508,16 +14498,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="6" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_60">
-                     <property name="text">
-                      <string>Бл. ВКЛ БРУ</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="5" column="1">
                     <widget class="QComboBox" name="cboxN56_2">
                      <property name="toolTip">
@@ -14538,10 +14518,10 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="5" column="0">
-                    <widget class="QLabel" name="lblTextStartSignal_61">
+                   <item row="6" column="0">
+                    <widget class="QLabel" name="labelN57_2">
                      <property name="text">
-                      <string>Работа БРУ</string>
+                      <string>Бл. ВКЛ БРУ</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -14549,7 +14529,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="0" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_62">
+                    <widget class="QLabel" name="labelN59_2">
                      <property name="text">
                       <string>ВКЛ от БРУ</string>
                      </property>
@@ -14558,28 +14538,38 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="3">
-                    <widget class="QComboBox" name="cboxN59_2">
-                     <property name="toolTip">
-                      <string>Скорость</string>
+                   <item row="5" column="0">
+                    <widget class="QLabel" name="labelN56_2">
+                     <property name="text">
+                      <string>Работа БРУ</string>
                      </property>
-                     <property name="currentIndex">
-                      <number>0</number>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
-                     <item>
-                      <property name="text">
-                       <string>Нет</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Да</string>
-                      </property>
-                     </item>
                     </widget>
                    </item>
-                   <item row="1" column="3">
-                    <widget class="QComboBox" name="cboxV04_2">
+                   <item row="2" column="2">
+                    <widget class="QLabel" name="labelV07_2">
+                     <property name="text">
+                      <string>Откл МТЗ2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="4">
+                    <widget class="QLabel" name="labelV36_2">
+                     <property name="text">
+                      <string>Откл Umin1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QComboBox" name="cboxN59_2">
                      <property name="toolTip">
                       <string>Скорость</string>
                      </property>
@@ -14618,28 +14608,28 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="2" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_63">
-                     <property name="text">
-                      <string>Откл МТЗ2</string>
+                   <item row="1" column="3">
+                    <widget class="QComboBox" name="cboxV04_2">
+                     <property name="toolTip">
+                      <string>Скорость</string>
                      </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
+                     <property name="currentIndex">
+                      <number>0</number>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="4">
-                    <widget class="QLabel" name="lblTextStartSignal_64">
-                     <property name="text">
-                      <string>Откл Umin1</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Нет</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Да</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                    <item row="1" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_65">
+                    <widget class="QLabel" name="labelV04_2">
                      <property name="text">
                       <string>Откл МТЗ1</string>
                      </property>
@@ -14649,7 +14639,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="6" column="2">
-                    <widget class="QLabel" name="lblTextStartSignal_66">
+                    <widget class="QLabel" name="labelV19_2">
                      <property name="text">
                       <string>Откл ОЗЗ1</string>
                      </property>
@@ -14676,6 +14666,16 @@ QTreeView::branch:open:has-children:has-siblings
                        <string>Да</string>
                       </property>
                      </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="6">
+                    <widget class="QLabel" name="labelV65_2">
+                     <property name="text">
+                      <string>Откл АЧР2</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                   </layout>

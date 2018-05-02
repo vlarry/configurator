@@ -258,11 +258,26 @@
                 QString var_name;
                 QString name;
             };
+            /*!
+             * \brief The cell_t struct
+             *
+             * Структура определяющая ячейку редактируемой величины
+             */
+            struct cell_t
+            {
+                int     addr;
+                QString name;
+                float   limit_min;
+                float   limit_max;
+                QString unit_measure;
+            };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
             typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;
-            //-------------------key, addres, widget name-----------------
-            typedef QVector<QPair<QString, QPair<int, QString> > > cell_t;
+            //-------------key, addres, widget name--------------
+            typedef QVector<QPair<QString, cell_t> > cell_list_t;
+            //--------key, <addr, name, limit_min, limit_max, unit_measure>--------
+            typedef QMap<QString, cell_t> limit_unit_t;
             //--------------------key <protection>----------------------
             typedef QMap<QString, protection_group_t> protection_list_t;
 
@@ -544,7 +559,7 @@
             QTimer*                          m_tim_calculate;
             CVersionSoftware*                m_versionWidget;
             QSqlDatabase                     m_system_db;
-            cell_t                           m_cell_list;
+            cell_list_t                           m_cell_list;
             purpose_t                        m_purpose_list;
             QTime                            m_time_process;
             QTimer*                          m_timer_synchronization;
@@ -561,5 +576,6 @@
             QVector<quint16>                 m_calculate_buffer; // буфер расчетных величи (два запроса, поэтому необходимо клеить)
             variable_bit_t                   m_variable_bits;
             protection_list_t                m_protections; // карта защит
+            limit_unit_t                     m_limits; // лимиты редактируемых величин
     };
 #endif // CONFIGURATORWINDOW_H
