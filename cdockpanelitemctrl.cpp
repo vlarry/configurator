@@ -65,7 +65,6 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
     QFont    f(painter.font());
 
     f.setPointSize(8);
-    f.setBold(true);
 
     painter.setFont(f);
     painter.save();
