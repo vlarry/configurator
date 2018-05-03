@@ -2616,7 +2616,7 @@ QTreeView::branch:open:has-children:has-siblings
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>Квз ток (0,8...0,98)</string>
+                      <string>Квз ток</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -2884,7 +2884,7 @@ QTreeView::branch:open:has-children:has-siblings
                    <item row="5" column="0">
                     <widget class="QLabel" name="labelX03">
                      <property name="text">
-                      <string>Квз ток (0,8...0,98)</string>
+                      <string>Квз ток</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>

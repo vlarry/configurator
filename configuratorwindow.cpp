@@ -6441,7 +6441,9 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
             QLabel* label = qobject_cast<QLabel*>(widget);
 
             if(label)
-                label->setText(QString("%1 (%2...%3)").arg(label->text()).arg(limit_min).arg(limit_max));
+                label->setText(QString("%1 (%2...%3)").arg(label->text()).
+                                                       arg(QLocale::system().toString(limit_min)).
+                                                       arg(QLocale::system().toString(limit_max)));
         }
     }
 
