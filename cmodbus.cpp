@@ -321,6 +321,15 @@ void CModbus::sendRequest(CDataUnitType& unit)
     if(unit.is_empty())
         return;
 
+    if(!m_connect.is_connect && !m_request_cur.is_empty())
+        return;
+    else if(!m_connect.is_connect && m_request_cur.is_empty())
+    {
+        request(unit);
+
+        return;
+    }
+
     if(is_bloking() && m_counter_request_error == 0) // передача блокированна и не было ошибок -> все запросы в очередь
     {
         m_request_queue.append(unit);
@@ -559,12 +568,12 @@ void CModbus::timeoutReadWait()
         }
         else if(!m_connect.is_connect && m_autospeed)
         {
-            str = tr("Идет автоматический подбор скорости...");
+            str = tr("Идет автоматический подбор скорости. Текущая скорость %1.").arg(m_baudrate);
         }
 
         emit errorDevice(str);
 
-        sendRequest(m_request_cur);
+        request(m_request_cur);
     }
 }
 //-----------------------------
