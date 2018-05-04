@@ -401,9 +401,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBoxIndicatorStates">
+           <widget class="QPushButton" name="pushButtonIndicatorStates">
             <property name="text">
-             <string>Индикаторы</string>
+             <string>Выходы</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>

@@ -2132,11 +2132,13 @@ void ConfiguratorWindow::terminalVisiblity(int state)
  *
  * Управляет видимостью окна отображения состояния индикаторов
  */
-void ConfiguratorWindow::indicatorVisiblity(int state)
+void ConfiguratorWindow::indicatorVisiblity(bool state)
 {
-    if(state == Qt::Checked)
+    ui->pushButtonIndicatorStates->setChecked(state);
+
+    if(state)
         m_indicator->show();
-    else if(state == Qt::Unchecked)
+    else
     {
         m_indicator->hide();
 
@@ -2161,8 +2163,6 @@ void ConfiguratorWindow::indicatorVisiblity(int state)
                        arg("RELAY"));
         }
     }
-
-    ui->checkBoxIndicatorStates->setCheckState((Qt::CheckState)state);
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::monitorK10K11Visiblity(bool state)
@@ -7039,7 +7039,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_serialPortSettings, &CSerialPortSetting::timeout, this, &ConfiguratorWindow::timeoutValueChanged);
     connect(m_serialPortSettings, &CSerialPortSetting::numberRepeat, this, &ConfiguratorWindow::numberRepeatChanged);
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
-    connect(ui->checkBoxIndicatorStates, &QCheckBox::stateChanged, this, &ConfiguratorWindow::indicatorVisiblity);
+    connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
     connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_indicator, &CIndicatorState::closeWindowIndicator, this, &ConfiguratorWindow::indicatorVisiblity);

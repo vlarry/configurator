@@ -8,7 +8,7 @@ CIndicatorState::CIndicatorState(QWidget* parent):
 {
     ui->setupUi(this);
 
-    setWindowTitle(tr("Состояния индикаторов"));
+    setWindowTitle(tr("Состояния выходов"));
     setWindowFlag(Qt::Window);
 
     connect(&m_timer, &QTimer::timeout, this, &CIndicatorState::changeState);
@@ -194,7 +194,7 @@ void CIndicatorState::changeState()
 //--------------------------------------------------
 void CIndicatorState::closeEvent(QCloseEvent* event)
 {
-    emit closeWindowIndicator(Qt::Unchecked);
+    emit closeWindowIndicator();
 
     QWidget::closeEvent(event);
 }

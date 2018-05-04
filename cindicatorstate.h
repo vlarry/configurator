@@ -45,7 +45,7 @@
             void changeState();
 
         signals:
-            void closeWindowIndicator(int);
+            void closeWindowIndicator(bool = false);
 
         protected:
             void closeEvent(QCloseEvent* event);

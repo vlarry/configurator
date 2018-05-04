@@ -438,7 +438,7 @@
             void errorDevice(const QString& errorConnect);
             void errorConnect(const QString& errorConnect);
             void terminalVisiblity(int state);
-            void indicatorVisiblity(int state);
+            void indicatorVisiblity(bool state);
             void monitorK10K11Visiblity(bool state);
             void saveLog(const QString& info);
             void itemClicked(QTreeWidgetItem* item, int);
