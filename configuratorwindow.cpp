@@ -8,6 +8,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_serialPortSettings(nullptr),
     m_terminal(nullptr),
     m_indicator(nullptr),
+    m_monitor_purpose(nullptr),
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
     m_versionWidget(nullptr),
@@ -32,6 +33,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_calculate         = new QTimer(this);
     m_terminal              = new CTerminal(this);
     m_indicator             = new CIndicatorState(this);
+    m_monitor_purpose       = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
     m_logFile               = new QFile("Log.txt");
     m_serialPortSettings    = new CSerialPortSetting;
     m_status_bar            = new CStatusBar(statusBar());
@@ -58,6 +60,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initLineEditValidator();
     initProtectionList(); // инициализация списка защит
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
+    initMonitorPurpose();
 
 //    ui->pushButtonMenuDeviceCtrl->installEventFilter(this);
 //    ui->pushButtonVariableCtrl->installEventFilter(this);
@@ -1946,19 +1949,33 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
             m_calculate_buffer.clear();
     }
     else if(type == GENERAL_TYPE)
+    {
         displaySettingResponse(unit);
+    }
     else if(type == GENERAL_CONTROL_TYPE)
+    {
         displaySettingControlResponce(unit);
+    }
     else if(type == PURPOSE_OUT_TYPE)
+    {
         displayPurposeResponse(unit);
+    }
     else if(type == PURPOSE_INPUT_TYPE)
+    {
         displayPurposeDIResponse(unit);
+    }
     else if(type == READ_JOURNAL || type == READ_JOURNAL_COUNT || type == READ_JOURNAL_SHIFT_PTR)
+    {
         processReadJournal(unit);
+    }
     else if(type == READ_SERIAL_NUMBER)
+    {
         displayDeviceSerialNumber(unit.values());
+    }
     else if(type == DATETIME_TYPE)
+    {
         displayDateTime(unit);
+    }
     else if(type == PORTECT_RESERVE_SIGNAL_START)
     {
         displayProtectReserveSignalStart(unit.values());
@@ -1982,6 +1999,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     else if(type == PROTECTION_WORK_MODE_TYPE)
     {
         displayProtectionWorkMode(unit);
+    }
+    else if(type == MONITONR_PURPOSE_K10_K11_TYPE)
+    {
+        displayMonitorK10_K11(unit);
     }
 }
 //------------------------------------
@@ -2142,6 +2163,19 @@ void ConfiguratorWindow::indicatorVisiblity(int state)
     }
 
     ui->checkBoxIndicatorStates->setCheckState((Qt::CheckState)state);
+}
+//---------------------------------------------------------
+void ConfiguratorWindow::monitorK10K11Visiblity(bool state)
+{
+    if(state)
+    {
+        sendMonitorPurposeK10_K11Request();
+        m_monitor_purpose->show();
+    }
+    else
+        m_monitor_purpose->hide();
+
+    ui->pushButtonMonitorK10_K11->setChecked(state);
 }
 //---------------------------------------------------
 void ConfiguratorWindow::saveLog(const QString& info)
@@ -3619,6 +3653,37 @@ void ConfiguratorWindow::initProtectionList()
         }
     }
 }
+//-------------------------------------------
+void ConfiguratorWindow::initMonitorPurpose()
+{
+    QSqlQuery query(m_system_db);
+
+    QStringList rows, columns;
+
+    if(query.exec("SELECT * FROM variable;"))
+    {
+        while(query.next())
+        {
+            QString key  = query.value("key").toString();
+            QString name = query.value("name").toString();
+
+            if(key.toUpper() == "K10" || key.toUpper() == "K11")
+                rows << QString("%1 (%2)").arg(key).arg(name);
+
+            QString str = QString("%1 (%2)").arg(key).arg(name);
+
+            if(str.count() > 22)
+            {
+                str  = str.remove(22, str.count() - 22);
+                str += "...)";
+            }
+
+            columns << str;
+        }
+    }
+
+    m_monitor_purpose->setHeaders(rows, columns);
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -4305,6 +4370,47 @@ void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
         m_modbusDevice->sendRequest(new_unit);
     }
 }
+//-----------------------------------------------------------------
+void ConfiguratorWindow::displayMonitorK10_K11(CDataUnitType& unit)
+{
+    if(unit.valueCount() != 48)
+        return;
+
+    QTableView* table = m_monitor_purpose->table();
+
+    if(!table)
+        return;
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+    if(!model)
+        return;
+
+    CMatrix& matrix = model->matrixTable();
+
+    for(int row = 0; row < matrix.rowCount(); row++)
+    {
+        int offset = row*24;
+
+        for(int column = 0; column < matrix.columnCount(); column++)
+        {
+            quint16 value = unit.value(column + offset);
+
+            for(quint8 bit = 0; bit < sizeof(value)*8; bit++)
+            {
+                bool state = (value&(1 << bit));
+                int  pos   = (sizeof(value)*8)*column + bit;
+
+                if(pos >= matrix.columnCount())
+                    break;
+
+                matrix[row][pos].setState(state);
+            }
+        }
+    }
+
+    model->updateData();
+}
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
 {
@@ -4743,6 +4849,18 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
     unit.setProperty("PROTECTION", protection);
     unit.setProperty("REQUEST_FUNCTION", function);
+
+    m_modbusDevice->sendRequest(unit);
+}
+//---------------------------------------------------------
+void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
+{
+    int firstAddr = addressSettingKey("K10");
+
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, firstAddr,
+                       QVector<quint16>() << 48);
+
+    unit.setProperty("REQUEST", MONITONR_PURPOSE_K10_K11_TYPE);
 
     m_modbusDevice->sendRequest(unit);
 }
@@ -6925,6 +7043,8 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
     connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_indicator, &CIndicatorState::closeWindowIndicator, this, &ConfiguratorWindow::indicatorVisiblity);
+    connect(ui->pushButtonMonitorK10_K11, &QPushButton::toggled, this, &ConfiguratorWindow::monitorK10K11Visiblity);
+    connect(m_monitor_purpose, &CMonitorPurpose::closeWindow, this, &ConfiguratorWindow::monitorK10K11Visiblity);
     connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
     connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
@@ -6963,4 +7083,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     connect(ui->pushButtonMenuDeviceCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(ui->pushButtonVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
+    connect(m_monitor_purpose, &CMonitorPurpose::readPurpose, this, &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
 }

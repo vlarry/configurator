@@ -48,6 +48,7 @@
     #include "HierarchicalHeaderView.h"
     #include "cvariablewidget.h"
     #include "cdockpanelitemctrl.h"
+    #include "cmonitorpurpose.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     //-----------------------------------------------------
@@ -78,6 +79,7 @@
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
                 PROTECTION_WORK_MODE_TYPE, // чтение режима работы защит
+                MONITONR_PURPOSE_K10_K11_TYPE, // чтение привязок для внутренних переменных К10-К11
                 READ_EVENT_JOURNAL, // чтение журнала событий
                 READ_EVENT_COUNT, // чтение количества событий в журнале
                 READ_EVENT_SHIFT_PTR, // чтение позиции указателя сдвига журнала событий
@@ -437,6 +439,7 @@
             void errorConnect(const QString& errorConnect);
             void terminalVisiblity(int state);
             void indicatorVisiblity(int state);
+            void monitorK10K11Visiblity(bool state);
             void saveLog(const QString& info);
             void itemClicked(QTreeWidgetItem* item, int);
             void readSettings();
@@ -457,6 +460,7 @@
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             void sendProtectionWorkModeRequest(const QString& protection,
                                                RequestFunction function = FUN_READ);
+            void sendMonitorPurposeK10_K11Request();
             void sendRequestRead(int addr, int size, int request);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
             void sendDeviceCommand(int cmd);
@@ -501,6 +505,7 @@
             void initJournals();
             void initLineEditValidator();
             void initProtectionList();
+            void initMonitorPurpose();
             void connectSystemDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
@@ -521,6 +526,7 @@
             void displayCommunicationTimeoutSpeed(const QVector<quint16>& data);
             void displayCommunicationAddress(const QVector<quint16>& data);
             void displayProtectionWorkMode(CDataUnitType& unit);
+            void displayMonitorK10_K11(CDataUnitType& unit);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
@@ -555,6 +561,7 @@
             CSerialPortSetting*              m_serialPortSettings;
             CTerminal*                       m_terminal;
             CIndicatorState*                 m_indicator;
+            CMonitorPurpose*                 m_monitor_purpose;
             QFile*                           m_logFile;
             QTimer*                          m_tim_calculate;
             CVersionSoftware*                m_versionWidget;

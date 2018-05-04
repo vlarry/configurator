@@ -38,6 +38,8 @@
             CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
                                 QAbstractTableModel* parent = nullptr);
             CMatrixPurposeModel(QVector<QPair<QString, int> >& labels, QAbstractTableModel* parent = nullptr);
+            CMatrixPurposeModel(const QStringList& rows, const QStringList& columns,
+                                QAbstractTableModel* parent = nullptr);
             void     updateData();
             CMatrix& matrixTable();
             void     setMatrixTable(CMatrix& matrix);
@@ -52,6 +54,7 @@
             void          fillVerticalHeaderModel(QStandardItemModel& headerModel,
                                                   const QVector<QPair<QString, QString> >& labels);
             void          fillHeaderProtectionModel(const QStringList& labels);
+            void          fillHeaderMonitorModel(const QStringList& rows, const QStringList& columns);
 
         private:
             CMatrix            m_matrix;

@@ -55,6 +55,27 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, int> >& labels, 
     m_matrix.setRowCount(list.count());
     m_matrix.setColumnCount(list.count());
 }
+//-------------------------------------------------------------------------------------------
+CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& rows, const QStringList& columns,
+                                         QAbstractTableModel* parent):
+    QAbstractTableModel(parent)
+{
+    fillHeaderMonitorModel(rows, columns);
+
+    CRow::column_t column_list;
+
+    for(const QString& column_label: columns)
+        column_list << CColumn(column_label);
+
+    for(const QString& row_label: rows)
+    {
+        CRow row("", row_label, column_list);
+        m_matrix.addRow(row);
+    }
+
+    m_matrix.setRowCount(rows.count());
+    m_matrix.setColumnCount(columns.count());
+}
 //------------------------------------
 void CMatrixPurposeModel::updateData()
 {
@@ -198,6 +219,29 @@ void CMatrixPurposeModel::fillHeaderProtectionModel(const QStringList& labels)
 
         m_horizontal_header.setItem(0, columns, hitem);
         m_vertical_header.setItem(0, columns++, vitem);
+    }
+}
+//---------------------------------------------------------------------------------------------------
+void CMatrixPurposeModel::fillHeaderMonitorModel(const QStringList& rows, const QStringList& columns)
+{
+    int counter = 0;
+
+    for(const QString& row: rows)
+    {
+        QStandardItem* item = new QStandardItem(row);
+
+        m_vertical_header.setItem(0, counter++, item);
+    }
+
+    counter = 0;
+
+    for(const QString& column: columns)
+    {
+        QStandardItem* item = new QStandardItem(column);
+
+        item->setData(1, Qt::UserRole);
+
+        m_horizontal_header.setItem(0, counter++, item);
     }
 }
 //--------------------------------
