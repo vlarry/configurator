@@ -55,7 +55,9 @@ SOURCES += \
     cindicatorstate.cpp \
     cindicatorcell.cpp \
     cdockpanelitemctrl.cpp \
-    cmonitorpurpose.cpp
+    cmonitorpurpose.cpp \
+    coutputall.cpp \
+    coutputallcell.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -88,7 +90,9 @@ HEADERS += \
     cindicatorstate.h \
     cindicatorcell.h \
     cdockpanelitemctrl.h \
-    cmonitorpurpose.h
+    cmonitorpurpose.h \
+    coutputall.h \
+    coutputallcell.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -104,7 +108,9 @@ FORMS += \
         journalwidget.ui \
     indicatorstate.ui \
     cindicatorcell.ui \
-    monitorpurpose.ui
+    monitorpurpose.ui \
+    outputall.ui \
+    outputallcell.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

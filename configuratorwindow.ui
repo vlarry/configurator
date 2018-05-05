@@ -411,6 +411,16 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pushButtonOutputAll">
+            <property name="text">
+             <string>Все выходы</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="pushButtonMonitorK10_K11">
             <property name="text">
              <string>Мониторинг К10/К11</string>

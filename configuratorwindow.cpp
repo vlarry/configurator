@@ -5,13 +5,14 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
     ui(new Ui::ConfiguratorWindow),
     m_modbusDevice(nullptr),
-    m_serialPortSettings(nullptr),
-    m_terminal(nullptr),
-    m_indicator(nullptr),
-    m_monitor_purpose(nullptr),
+    m_serialPortSettings_window(nullptr),
+    m_terminal_window(nullptr),
+    m_output_window(nullptr),
+    m_monitor_purpose_window(nullptr),
+    m_outputall_window(nullptr),
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
-    m_versionWidget(nullptr),
+    m_version_window(nullptr),
     m_timer_synchronization(nullptr),
     m_status_bar(nullptr),
     m_watcher(nullptr),
@@ -29,17 +30,18 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
         baudrate_list << ui->cboxBaudrate->itemText(i).toInt();
     }
 
-    m_modbusDevice          = new CModbus(baudrate_list, this);
-    m_tim_calculate         = new QTimer(this);
-    m_terminal              = new CTerminal(this);
-    m_indicator             = new CIndicatorState(this);
-    m_monitor_purpose       = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
-    m_logFile               = new QFile("Log.txt");
-    m_serialPortSettings    = new CSerialPortSetting;
-    m_status_bar            = new CStatusBar(statusBar());
-    m_watcher               = new QFutureWatcher<void>(this);
-    m_progressbar           = new CProgressBarWidget(this);
-    m_settings              = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME,
+    m_modbusDevice              = new CModbus(baudrate_list, this);
+    m_tim_calculate             = new QTimer(this);
+    m_terminal_window           = new CTerminal(this);
+    m_output_window             = new CIndicatorState(this);
+    m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
+    m_serialPortSettings_window = new CSerialPortSetting;
+    m_outputall_window          = new COutputAll(this);
+    m_logFile                   = new QFile("Log.txt");
+    m_status_bar                = new CStatusBar(statusBar());
+    m_watcher                   = new QFutureWatcher<void>(this);
+    m_progressbar               = new CProgressBarWidget(this);
+    m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME,
                                             "configurator",
                                             this);
     m_timer_synchronization = new QTimer(this);
@@ -61,6 +63,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initProtectionList(); // инициализация списка защит
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
     initMonitorPurpose();
+    initOutputAll();
 
 //    ui->pushButtonMenuDeviceCtrl->installEventFilter(this);
 //    ui->pushButtonVariableCtrl->installEventFilter(this);
@@ -106,8 +109,8 @@ ConfiguratorWindow::~ConfiguratorWindow()
     delete m_logFile;
     m_logFile = nullptr;
     
-    delete m_terminal;
-    m_terminal = nullptr;
+    delete m_terminal_window;
+    m_terminal_window = nullptr;
     
     delete m_modbusDevice;
     m_modbusDevice = nullptr;
@@ -126,13 +129,13 @@ void ConfiguratorWindow::serialPortCtrl()
     {
         m_modbusDevice->setPortName(ui->cboxPortName->currentText());
         m_modbusDevice->setBaudrate(ui->cboxBaudrate->currentText().toInt());
-        m_modbusDevice->setDatabits((QSerialPort::DataBits)m_serialPortSettings->dataBits().toInt());
+        m_modbusDevice->setDatabits((QSerialPort::DataBits)m_serialPortSettings_window->dataBits().toInt());
 
-        quint32 stopbits = ((m_serialPortSettings->stopBits() == "1.5")?3:m_serialPortSettings->stopBits().toInt());
-        quint32 parity   = ((m_serialPortSettings->parity().toUpper() == tr("NO"))?0:
-                           (m_serialPortSettings->parity().toUpper() == tr("EVEN"))?2:
-                           (m_serialPortSettings->parity().toUpper() == tr("ODD"))?3:
-                           (m_serialPortSettings->parity() == tr("SPACE")))?4:5;
+        quint32 stopbits = ((m_serialPortSettings_window->stopBits() == "1.5")?3:m_serialPortSettings_window->stopBits().toInt());
+        quint32 parity   = ((m_serialPortSettings_window->parity().toUpper() == tr("NO"))?0:
+                           (m_serialPortSettings_window->parity().toUpper() == tr("EVEN"))?2:
+                           (m_serialPortSettings_window->parity().toUpper() == tr("ODD"))?3:
+                           (m_serialPortSettings_window->parity() == tr("SPACE")))?4:5;
         
         m_modbusDevice->setStopbits((QSerialPort::StopBits)stopbits);
         m_modbusDevice->setParity((QSerialPort::Parity)parity);
@@ -196,7 +199,7 @@ void ConfiguratorWindow::refreshSerialPort()
 //-------------------------------------------
 void ConfiguratorWindow::serialPortSettings()
 {
-    m_serialPortSettings->show();
+    m_serialPortSettings_window->show();
 }
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
@@ -2004,6 +2007,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     {
         displayMonitorK10_K11(unit);
     }
+    else if(type == READ_OUTPUT_ALL)
+    {
+        displayOutputAllRead(unit.values());
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -2017,10 +2024,10 @@ void ConfiguratorWindow::show()
 
     setWindowState(Qt::WindowMaximized);
     
-    m_terminal->hide();
+    m_terminal_window->hide();
     ui->stwgtMain->setCurrentIndex(0);
 
-    m_versionWidget = new CVersionSoftware(this);
+    m_version_window = new CVersionSoftware(this);
     versionParser();
 
     ui->tabwgtMenu->setCurrentIndex(3);
@@ -2120,9 +2127,9 @@ void ConfiguratorWindow::errorConnect(const QString& error)
 void ConfiguratorWindow::terminalVisiblity(int state)
 {
     if(state == Qt::Checked)
-        m_terminal->show();
+        m_terminal_window->show();
     else if(state == Qt::Unchecked)
-        m_terminal->hide();
+        m_terminal_window->hide();
     
     ui->chboxTerminal->setCheckState((Qt::CheckState)state);
 }
@@ -2137,13 +2144,13 @@ void ConfiguratorWindow::indicatorVisiblity(bool state)
     ui->pushButtonIndicatorStates->setChecked(state);
 
     if(state)
-        m_indicator->show();
+        m_output_window->show();
     else
     {
-        m_indicator->hide();
+        m_output_window->hide();
 
-        QStringList ledList   = m_indicator->ledList();
-        QStringList relayList = m_indicator->relayList();
+        QStringList ledList   = m_output_window->ledList();
+        QStringList relayList = m_output_window->relayList();
 
         QSqlQuery query(m_system_db);
 
@@ -2170,12 +2177,25 @@ void ConfiguratorWindow::monitorK10K11Visiblity(bool state)
     if(state)
     {
         sendMonitorPurposeK10_K11Request();
-        m_monitor_purpose->show();
+        m_monitor_purpose_window->show();
     }
     else
-        m_monitor_purpose->hide();
+        m_monitor_purpose_window->hide();
 
     ui->pushButtonMonitorK10_K11->setChecked(state);
+}
+//-----------------------------------------------------
+void ConfiguratorWindow::outputAllVisiblity(bool state)
+{
+    ui->pushButtonOutputAll->setChecked(state);
+
+    if(state)
+    {
+        sendOutputAllRequest();
+        m_outputall_window->show();
+    }
+    else
+        m_outputall_window->hide();
 }
 //---------------------------------------------------
 void ConfiguratorWindow::saveLog(const QString& info)
@@ -2848,7 +2868,7 @@ void ConfiguratorWindow::expandItemTree(bool state)
 //-----------------------------------------
 void ConfiguratorWindow::versionSowftware()
 {
-    m_versionWidget->show();
+    m_version_window->show();
 }
 //-------------------------------------------------------------
 void ConfiguratorWindow::sendCalculateRead(CDataUnitType& unit)
@@ -3682,7 +3702,40 @@ void ConfiguratorWindow::initMonitorPurpose()
         }
     }
 
-    m_monitor_purpose->setHeaders(rows, columns);
+    m_monitor_purpose_window->setHeaders(rows, columns);
+}
+//--------------------------------------
+void ConfiguratorWindow::initOutputAll()
+{
+    QSqlQuery query(m_system_db);
+
+    QStringList list;
+
+    if(query.exec("SELECT description FROM iodevice WHERE type=\'RELAY\';"))
+    {
+        while(query.next())
+        {
+            list << query.value("description").toString();
+        }
+    }
+
+    if(query.exec("SELECT description FROM iodevice WHERE type=\'LED\';"))
+    {
+        while(query.next())
+        {
+            list << query.value("description").toString();
+        }
+    }
+
+    if(query.exec("SELECT key, description FROM iodevice WHERE type=\'MODIFY\';"))
+    {
+        while(query.next())
+        {
+            list << QString("%1 (%2)").arg(query.value("key").toString()).arg(query.value("description").toString());
+        }
+    }
+
+    m_outputall_window->createList(list);
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -3801,7 +3854,7 @@ void ConfiguratorWindow::initIndicatorStates()
         }
     }
 
-    m_indicator->setLists(led_list, relay_list);
+    m_output_window->setLists(led_list, relay_list);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -4376,7 +4429,7 @@ void ConfiguratorWindow::displayMonitorK10_K11(CDataUnitType& unit)
     if(unit.valueCount() != 48)
         return;
 
-    QTableView* table = m_monitor_purpose->table();
+    QTableView* table = m_monitor_purpose_window->table();
 
     if(!table)
         return;
@@ -4410,6 +4463,14 @@ void ConfiguratorWindow::displayMonitorK10_K11(CDataUnitType& unit)
     }
 
     model->updateData();
+}
+//-------------------------------------------------------------------------
+void ConfiguratorWindow::displayOutputAllRead(const QVector<quint16>& data)
+{
+    if(data.count() != 4)
+        return;
+
+    m_outputall_window->setOutputStates(data);
 }
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
@@ -4513,7 +4574,7 @@ void ConfiguratorWindow::versionParser()
 
     file.close();
 
-    m_versionWidget->setText(ver);
+    m_version_window->setText(ver);
 
     QString title = this->windowTitle();
 
@@ -4903,6 +4964,19 @@ void ConfiguratorWindow::sendDeviceCommand(int cmd)
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, 0x3000, QVector<quint16>() << cmd);
 
     unit.setProperty("CMD", cmd);
+
+    m_modbusDevice->sendRequest(unit);
+}
+/*!
+ * \brief ConfiguratorWindow::sendOutputAllRequest
+ *
+ * Чтение состояния всех выходов (Светодиоды, Реле и Модифецируемые переменные)
+ */
+void ConfiguratorWindow::sendOutputAllRequest()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 196, QVector<quint16>() << 4);
+
+    unit.setProperty("REQUEST", READ_OUTPUT_ALL);
 
     m_modbusDevice->sendRequest(unit);
 }
@@ -5351,21 +5425,21 @@ void ConfiguratorWindow::loadSettings()
     {
         m_settings->beginGroup("serial-port");
             ui->cboxBaudrate->setCurrentText(m_settings->value("baudrate", "115200").toString());
-            m_serialPortSettings->setDataBits(m_settings->value("databits", "8").toString());
-            m_serialPortSettings->setStopBits(m_settings->value("stopbits", "1").toString());
-            m_serialPortSettings->setParity(m_settings->value("parity", "Even").toString());
+            m_serialPortSettings_window->setDataBits(m_settings->value("databits", "8").toString());
+            m_serialPortSettings_window->setStopBits(m_settings->value("stopbits", "1").toString());
+            m_serialPortSettings_window->setParity(m_settings->value("parity", "Even").toString());
         m_settings->endGroup();
 
         m_settings->beginGroup("modbus");
-            m_serialPortSettings->setModbusTimeout(m_settings->value("timeout", 500).toInt());
-            m_serialPortSettings->setModbusTryCount(m_settings->value("trycount", 3).toInt());
+            m_serialPortSettings_window->setModbusTimeout(m_settings->value("timeout", 500).toInt());
+            m_serialPortSettings_window->setModbusTryCount(m_settings->value("trycount", 3).toInt());
         m_settings->endGroup();
 
         m_settings->beginGroup("device");
             ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
             ui->checkboxCalibTimeout->setChecked(m_settings->value("timeoutcalculateenable", true).toBool());
             ui->spinboxSyncTime->setValue(m_settings->value("synctime", 1000).toInt());
-            m_serialPortSettings->setAutospeed(m_settings->value("autospeed", false).toBool());
+            m_serialPortSettings_window->setAutospeed(m_settings->value("autospeed", false).toBool());
         m_settings->endGroup();
 
         m_settings->beginGroup("mainwindow");
@@ -5375,7 +5449,7 @@ void ConfiguratorWindow::loadSettings()
     }
 
     ui->comboBoxCommunicationBaudrate->setCurrentIndex(ui->cboxBaudrate->currentIndex());
-    m_modbusDevice->setAutospeed(m_serialPortSettings->autospeedState());
+    m_modbusDevice->setAutospeed(m_serialPortSettings_window->autospeedState());
 }
 //-------------------------------------
 void ConfiguratorWindow::saveSettings()
@@ -5384,21 +5458,21 @@ void ConfiguratorWindow::saveSettings()
     {
         m_settings->beginGroup("serial-port");
             m_settings->setValue("baudrate", ui->cboxBaudrate->currentText());
-            m_settings->setValue("databits", m_serialPortSettings->dataBits());
-            m_settings->setValue("stopbits", m_serialPortSettings->stopBits());
-            m_settings->setValue("parity", m_serialPortSettings->parity());
+            m_settings->setValue("databits", m_serialPortSettings_window->dataBits());
+            m_settings->setValue("stopbits", m_serialPortSettings_window->stopBits());
+            m_settings->setValue("parity", m_serialPortSettings_window->parity());
         m_settings->endGroup();
 
         m_settings->beginGroup("modbus");
-            m_settings->setValue("timeout", m_serialPortSettings->modbusTimeout());
-            m_settings->setValue("trycount", m_serialPortSettings->modbusTryCount());
+            m_settings->setValue("timeout", m_serialPortSettings_window->modbusTimeout());
+            m_settings->setValue("trycount", m_serialPortSettings_window->modbusTryCount());
         m_settings->endGroup();
 
         m_settings->beginGroup("device");
             m_settings->setValue("timeoutcalculate", ui->sboxTimeoutCalc->value());
             m_settings->setValue("timeoutcalculateenable", ui->checkboxCalibTimeout->isChecked());
             m_settings->setValue("synctime", ui->spinboxSyncTime->value());
-            m_settings->setValue("autospeed", m_serialPortSettings->autospeedState());
+            m_settings->setValue("autospeed", m_serialPortSettings_window->autospeedState());
         m_settings->endGroup();
 
         m_settings->beginGroup("mainwindow");
@@ -7036,15 +7110,17 @@ void ConfiguratorWindow::initConnect()
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
-    connect(m_serialPortSettings, &CSerialPortSetting::timeout, this, &ConfiguratorWindow::timeoutValueChanged);
-    connect(m_serialPortSettings, &CSerialPortSetting::numberRepeat, this, &ConfiguratorWindow::numberRepeatChanged);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::timeout, this, &ConfiguratorWindow::timeoutValueChanged);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::numberRepeat, this, &ConfiguratorWindow::numberRepeatChanged);
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
-    connect(m_modbusDevice, &CModbus::rawData, m_terminal, &CTerminal::appendData);
-    connect(m_terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
-    connect(m_indicator, &CIndicatorState::closeWindowIndicator, this, &ConfiguratorWindow::indicatorVisiblity);
-    connect(ui->pushButtonMonitorK10_K11, &QPushButton::toggled, this, &ConfiguratorWindow::monitorK10K11Visiblity);
-    connect(m_monitor_purpose, &CMonitorPurpose::closeWindow, this, &ConfiguratorWindow::monitorK10K11Visiblity);
+    connect(m_modbusDevice, &CModbus::rawData, m_terminal_window, &CTerminal::appendData);
+    connect(m_terminal_window, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
+    connect(m_output_window, &CIndicatorState::closeWindowIndicator, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
+    connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this, &ConfiguratorWindow::monitorK10K11Visiblity);
+    connect(m_monitor_purpose_window, &CMonitorPurpose::closeWindow, ui->pushButtonMonitorK10_K11, &QPushButton::setChecked);
+    connect(ui->pushButtonOutputAll, &QPushButton::clicked, this, &ConfiguratorWindow::outputAllVisiblity);
+    connect(m_outputall_window, &COutputAll::closeWindow, ui->pushButtonOutputAll, &QPushButton::setChecked);
     connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
     connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
@@ -7078,10 +7154,11 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
     connect(m_modbusDevice, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
-    connect(m_serialPortSettings, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
-    connect(m_terminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
+    connect(m_terminal_window, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     connect(ui->pushButtonMenuDeviceCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(ui->pushButtonVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
-    connect(m_monitor_purpose, &CMonitorPurpose::readPurpose, this, &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
+    connect(m_monitor_purpose_window, &CMonitorPurpose::readPurpose, this, &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
+    connect(m_outputall_window, &COutputAll::buttonRead, this, &ConfiguratorWindow::sendOutputAllRequest);
 }
