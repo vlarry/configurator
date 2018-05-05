@@ -3,7 +3,6 @@
     //----------------
     #include <QWidget>
     #include <QCloseEvent>
-    #include <QTimer>
     #include <QDebug>
     #include "cindicatorcell.h"
     //----------
@@ -37,22 +36,19 @@
             explicit CIndicatorState(QWidget* parent = nullptr);
             ~CIndicatorState();
 
-            void        setLists(const QStringList& led_list, const QStringList &relay_list);
             QStringList ledList();
             QStringList relayList();
 
-        private slots:
-            void changeState();
+            void setLists(const QStringList& led_list, const QStringList &relay_list);
+            void setOutputStates(const QVector<quint16>& data);
 
         signals:
-            void closeWindowIndicator(bool = false);
+            void closeWindow(bool = false);
 
         protected:
             void closeEvent(QCloseEvent* event);
 
         private:
             Ui::CIndicatorState* ui;
-            QTimer               m_timer;
-            bool                 m_state;
     };
 #endif // CINDICATORSTATE_H

@@ -9,6 +9,8 @@ COutputAll::COutputAll(QWidget* parent):
 
     setWindowFlag(Qt::Window);
 
+    ui->pushButtonRead->setProperty("TYPE", "OUTPUTALL");
+
     connect(ui->pushButtonRead, &QPushButton::clicked, this, &COutputAll::buttonRead);
     connect(ui->pushButtonReset, &QPushButton::clicked, this, &COutputAll::outputStateReset);
 }

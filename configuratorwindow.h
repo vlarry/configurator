@@ -532,7 +532,7 @@
             void displayCommunicationAddress(const QVector<quint16>& data);
             void displayProtectionWorkMode(CDataUnitType& unit);
             void displayMonitorK10_K11(CDataUnitType& unit);
-            void displayOutputAllRead(const QVector<quint16>& data);
+            void displayOutputAllRead(CDataUnitType& unit);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;

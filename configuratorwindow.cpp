@@ -2009,7 +2009,7 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     }
     else if(type == READ_OUTPUT_ALL)
     {
-        displayOutputAllRead(unit.values());
+        displayOutputAllRead(unit);
     }
 }
 //------------------------------------
@@ -2141,10 +2141,11 @@ void ConfiguratorWindow::terminalVisiblity(int state)
  */
 void ConfiguratorWindow::indicatorVisiblity(bool state)
 {
-    ui->pushButtonIndicatorStates->setChecked(state);
-
     if(state)
+    {
+        sendOutputAllRequest();
         m_output_window->show();
+    }
     else
     {
         m_output_window->hide();
@@ -3707,6 +3708,8 @@ void ConfiguratorWindow::initMonitorPurpose()
 //--------------------------------------
 void ConfiguratorWindow::initOutputAll()
 {
+    ui->pushButtonOutputAll->setProperty("TYPE", "OUTPUTALL");
+
     QSqlQuery query(m_system_db);
 
     QStringList list;
@@ -3833,6 +3836,8 @@ void ConfiguratorWindow::initTableProtection(QTableView* table, QVector<QPair<QS
  */
 void ConfiguratorWindow::initIndicatorStates()
 {
+    ui->pushButtonIndicatorStates->setProperty("TYPE", "OUTPUT");
+
     QSqlQuery query(m_system_db);
 
     QStringList led_list;
@@ -4464,13 +4469,14 @@ void ConfiguratorWindow::displayMonitorK10_K11(CDataUnitType& unit)
 
     model->updateData();
 }
-//-------------------------------------------------------------------------
-void ConfiguratorWindow::displayOutputAllRead(const QVector<quint16>& data)
+//----------------------------------------------------------------
+void ConfiguratorWindow::displayOutputAllRead(CDataUnitType& unit)
 {
-    if(data.count() != 4)
+    if(unit.valueCount() != 4)
         return;
 
-    m_outputall_window->setOutputStates(data);
+    m_outputall_window->setOutputStates(unit.values());
+    m_output_window->setOutputStates(unit.values());
 }
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
@@ -4974,9 +4980,17 @@ void ConfiguratorWindow::sendDeviceCommand(int cmd)
  */
 void ConfiguratorWindow::sendOutputAllRequest()
 {
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+
+    QString type = "";
+
+    if(button)
+        type = button->property("TYPE").toString();
+
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 196, QVector<quint16>() << 4);
 
     unit.setProperty("REQUEST", READ_OUTPUT_ALL);
+    unit.setProperty("BUTTON_TYPE", type);
 
     m_modbusDevice->sendRequest(unit);
 }
@@ -7116,7 +7130,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(m_modbusDevice, &CModbus::rawData, m_terminal_window, &CTerminal::appendData);
     connect(m_terminal_window, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
-    connect(m_output_window, &CIndicatorState::closeWindowIndicator, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
+    connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
+    connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this, &ConfiguratorWindow::monitorK10K11Visiblity);
     connect(m_monitor_purpose_window, &CMonitorPurpose::closeWindow, ui->pushButtonMonitorK10_K11, &QPushButton::setChecked);
     connect(ui->pushButtonOutputAll, &QPushButton::clicked, this, &ConfiguratorWindow::outputAllVisiblity);
