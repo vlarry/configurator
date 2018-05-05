@@ -1,15 +1,14 @@
 #include "coutputall.h"
 #include "ui_outputall.h"
-//--------------------------------------
-COutputAll::COutputAll(QWidget* parent):
+//------------------------------------------------------------
+COutputAll::COutputAll(const QString& title, QWidget* parent):
     QWidget(parent),
     ui(new Ui::COutputAll)
 {
     ui->setupUi(this);
 
     setWindowFlag(Qt::Window);
-
-    ui->pushButtonRead->setProperty("TYPE", "OUTPUTALL");
+    setWindowTitle(title);
 
     connect(ui->pushButtonRead, &QPushButton::clicked, this, &COutputAll::buttonRead);
     connect(ui->pushButtonReset, &QPushButton::clicked, this, &COutputAll::outputStateReset);

@@ -15,7 +15,7 @@
         Q_OBJECT
 
         public:
-            explicit COutputAll(QWidget* parent = nullptr);
+            explicit COutputAll(const QString& title, QWidget* parent = nullptr);
             ~COutputAll();
 
             void createList(const QStringList& list);

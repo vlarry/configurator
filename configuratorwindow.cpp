@@ -10,6 +10,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_output_window(nullptr),
     m_monitor_purpose_window(nullptr),
     m_outputall_window(nullptr),
+    m_inputs_window(nullptr),
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
     m_version_window(nullptr),
@@ -36,15 +37,15 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_output_window             = new CIndicatorState(this);
     m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
     m_serialPortSettings_window = new CSerialPortSetting;
-    m_outputall_window          = new COutputAll(this);
+    m_outputall_window          = new COutputAll(tr("Все выходы"), this);
+    m_inputs_window             = new COutputAll(tr("Входы"), this);
     m_logFile                   = new QFile("Log.txt");
     m_status_bar                = new CStatusBar(statusBar());
     m_watcher                   = new QFutureWatcher<void>(this);
     m_progressbar               = new CProgressBarWidget(this);
     m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME,
-                                            "configurator",
-                                            this);
-    m_timer_synchronization = new QTimer(this);
+                                                "configurator", this);
+    m_timer_synchronization     = new QTimer(this);
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -64,6 +65,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
     initMonitorPurpose();
     initOutputAll();
+    initInputs();
 
 //    ui->pushButtonMenuDeviceCtrl->installEventFilter(this);
 //    ui->pushButtonVariableCtrl->installEventFilter(this);
@@ -2011,6 +2013,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     {
         displayOutputAllRead(unit);
     }
+    else if(type == READ_INPUTS)
+    {
+        displayInputsRead(unit.values());
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -2188,8 +2194,6 @@ void ConfiguratorWindow::monitorK10K11Visiblity(bool state)
 //-----------------------------------------------------
 void ConfiguratorWindow::outputAllVisiblity(bool state)
 {
-    ui->pushButtonOutputAll->setChecked(state);
-
     if(state)
     {
         sendOutputAllRequest();
@@ -2197,6 +2201,17 @@ void ConfiguratorWindow::outputAllVisiblity(bool state)
     }
     else
         m_outputall_window->hide();
+}
+//-------------------------------------------------
+void ConfiguratorWindow::inputVisiblity(bool state)
+{
+    if(state)
+    {
+        sendInputStatesRequest();
+        m_inputs_window->show();
+    }
+    else
+        m_inputs_window->hide();
 }
 //---------------------------------------------------
 void ConfiguratorWindow::saveLog(const QString& info)
@@ -3740,6 +3755,23 @@ void ConfiguratorWindow::initOutputAll()
 
     m_outputall_window->createList(list);
 }
+//-----------------------------------
+void ConfiguratorWindow::initInputs()
+{
+    QSqlQuery query(m_system_db);
+
+    QStringList list;
+
+    if(query.exec("SELECT description FROM iodevice WHERE type=\'INPUT\';"))
+    {
+        while(query.next())
+        {
+            list << query.value("description").toString();
+        }
+    }
+
+    m_inputs_window->createList(list);
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -4478,6 +4510,18 @@ void ConfiguratorWindow::displayOutputAllRead(CDataUnitType& unit)
     m_outputall_window->setOutputStates(unit.values());
     m_output_window->setOutputStates(unit.values());
 }
+//----------------------------------------------------------------------
+void ConfiguratorWindow::displayInputsRead(const QVector<quint16>& data)
+{
+    if(data.count() != 2)
+        return;
+
+    QVector<quint16> t;
+
+    t << data[1] << data[0];
+
+    m_inputs_window->setOutputStates(t);
+}
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
 {
@@ -4991,6 +5035,19 @@ void ConfiguratorWindow::sendOutputAllRequest()
 
     unit.setProperty("REQUEST", READ_OUTPUT_ALL);
     unit.setProperty("BUTTON_TYPE", type);
+
+    m_modbusDevice->sendRequest(unit);
+}
+/*!
+ * \brief ConfiguratorWindow::sendInputStatesRequest
+ *
+ * Чтение состояний входов
+ */
+void ConfiguratorWindow::sendInputStatesRequest()
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 200, QVector<quint16>() << 2);
+
+    unit.setProperty("REQUEST", READ_INPUTS);
 
     m_modbusDevice->sendRequest(unit);
 }
@@ -7136,6 +7193,8 @@ void ConfiguratorWindow::initConnect()
     connect(m_monitor_purpose_window, &CMonitorPurpose::closeWindow, ui->pushButtonMonitorK10_K11, &QPushButton::setChecked);
     connect(ui->pushButtonOutputAll, &QPushButton::clicked, this, &ConfiguratorWindow::outputAllVisiblity);
     connect(m_outputall_window, &COutputAll::closeWindow, ui->pushButtonOutputAll, &QPushButton::setChecked);
+    connect(ui->pushButtonInputs, &QPushButton::clicked, this, &ConfiguratorWindow::inputVisiblity);
+    connect(m_inputs_window, &COutputAll::closeWindow, ui->pushButtonInputs, &QPushButton::setChecked);
     connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
     connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
@@ -7176,4 +7235,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(m_monitor_purpose_window, &CMonitorPurpose::readPurpose, this, &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
     connect(m_outputall_window, &COutputAll::buttonRead, this, &ConfiguratorWindow::sendOutputAllRequest);
+    connect(m_inputs_window, &COutputAll::buttonRead, this, &ConfiguratorWindow::sendInputStatesRequest);
 }

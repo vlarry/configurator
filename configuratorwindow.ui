@@ -382,35 +382,18 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_92">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_128">
-          <property name="spacing">
-           <number>2</number>
-          </property>
-          <item>
-           <widget class="QCheckBox" name="checkBoxMenuPanel">
+         <layout class="QGridLayout" name="gridLayout_49">
+          <item row="2" column="0">
+           <widget class="QPushButton" name="pushButtonInputs">
             <property name="text">
-             <string>Панель меню</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBoxPanelVariableCtrl">
-            <property name="text">
-             <string>Панель измерений</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButtonIndicatorStates">
-            <property name="text">
-             <string>Выходы</string>
+             <string>Входы</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="1" column="1">
            <widget class="QPushButton" name="pushButtonOutputAll">
             <property name="text">
              <string>Все выходы</string>
@@ -420,7 +403,31 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="checkBoxPanelVariableCtrl">
+            <property name="text">
+             <string>Панель измерений</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="pushButtonIndicatorStates">
+            <property name="text">
+             <string>Выходы</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="checkBoxMenuPanel">
+            <property name="text">
+             <string>Панель меню</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
            <widget class="QPushButton" name="pushButtonMonitorK10_K11">
             <property name="text">
              <string>Мониторинг К10/К11</string>
@@ -430,29 +437,16 @@
             </property>
            </widget>
           </item>
-          <item>
-           <spacer name="verticalSpacer_20">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>13</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </item>
         <item>
-         <spacer name="horizontalSpacer_59">
+         <spacer name="horizontalSpacer_6">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>660</width>
+            <width>842</width>
             <height>20</height>
            </size>
           </property>
@@ -1515,7 +1509,7 @@ QTreeView::branch:open:has-children:has-siblings
                    <item row="3" column="1">
                     <widget class="QComboBox" name="cboxM04">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>

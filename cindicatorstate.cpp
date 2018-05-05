@@ -76,8 +76,6 @@ void CIndicatorState::setOutputStates(const QVector<quint16>& data)
     if(data.isEmpty() || data.count() == 1 || ui->listWidgetLed->count() == 0 || ui->listWidgetRelay->count() == 0)
         return;
 
-    qDebug() << data;
-
     for(int i = 0; i < ui->listWidgetRelay->count(); i++)
     {
         QListWidgetItem* item = ui->listWidgetRelay->item(i);
