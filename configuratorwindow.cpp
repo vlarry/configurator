@@ -5212,7 +5212,11 @@ void ConfiguratorWindow::filterDialog()
 
     if(filterDlg->exec() == QDialog::Accepted)
     {
-        m_filter[key] = filterDlg->filter();
+        CFilter filter = filterDlg->filter();
+        m_filter[key] = filter;
+
+        if(filter.type() == CFilter::DATE)
+            filterJournal(filter);
     }
 
     delete filterDlg;
@@ -5371,6 +5375,46 @@ void ConfiguratorWindow::panelButtonCtrlPress()
 //                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::filterJournal
+ * \param filter Настройки фильтра
+ *
+ * Фильтрация текущей таблицы
+ */
+void ConfiguratorWindow::filterJournal(const CFilter& filter)
+{
+    if(!m_active_journal_current || !filter.time().isValid())
+        return;
+
+    CJournalTable* table = m_active_journal_current->table();
+
+    if(!table || table->rowCount() == 0 || table->columnCount() < 3)
+        return;
+
+    for(int i = 0; i < table->rowCount(); i++)
+    {
+        QTableWidgetItem* itemDate = table->item(i, 1);
+        QTableWidgetItem* itemTime = table->item(i, 2);
+
+        if(!itemDate || !itemTime)
+            continue;
+
+        QDate fdate = QDate::fromString(itemDate->text(), "dd.MM.yyyy");
+        QTime ftime = QTime::fromString(itemTime->text(), "hh:mm:ss.zzz");
+
+        if(!fdate.isValid() || !ftime.isValid())
+            continue;
+
+        if(fdate < filter.date().begin || fdate > filter.date().end)
+        {
+            table->setRowHidden(i, true);
+        }
+        else if(fdate == filter.date().begin && ftime < filter.time())
+            table->setRowHidden(i, true);
+        else
+            table->setRowHidden(i, false);
     }
 }
 /*!

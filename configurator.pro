@@ -57,7 +57,8 @@ SOURCES += \
     cdockpanelitemctrl.cpp \
     cmonitorpurpose.cpp \
     coutputall.cpp \
-    coutputallcell.cpp
+    coutputallcell.cpp \
+    ctimefilterdialog.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -92,7 +93,8 @@ HEADERS += \
     cdockpanelitemctrl.h \
     cmonitorpurpose.h \
     coutputall.h \
-    coutputallcell.h
+    coutputallcell.h \
+    ctimefilterdialog.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -110,7 +112,8 @@ FORMS += \
     cindicatorcell.ui \
     monitorpurpose.ui \
     outputall.ui \
-    outputallcell.ui
+    outputallcell.ui \
+    timefilterdialog.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

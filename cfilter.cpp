@@ -3,15 +3,17 @@
 CFilter::CFilter():
     m_interval({ 0, 0, 0 }),
     m_date({ QDate::currentDate(), QDate::currentDate() }),
+    m_time(QTime::fromString("00:00:00", "HH:mm:ss")),
     m_state(OFF),
     m_type(INTERVAL)
 {
 
 }
-//-------------------------------------------------------------------------------
-CFilter::CFilter(const FilterIntervalType& interval, const FilterDateType& date):
+//--------------------------------------------------------------------------------------------------
+CFilter::CFilter(const FilterIntervalType& interval, const FilterDateType& date, const QTime& time):
     m_interval(interval),
     m_date(date),
+    m_time(time),
     m_state(OFF),
     m_type(INTERVAL)
 {
@@ -26,6 +28,11 @@ const CFilter::FilterDateType& CFilter::date() const
 const CFilter::FilterIntervalType& CFilter::interval() const
 {
     return m_interval;
+}
+//-------------------------
+QTime CFilter::time() const
+{
+    return m_time;
 }
 //-------------------------
 bool CFilter::state() const
@@ -46,6 +53,11 @@ void CFilter::setDate(const FilterDateType& date)
 void CFilter::setInterval(const FilterIntervalType& interval)
 {
     m_interval = interval;
+}
+//--------------------------------------
+void CFilter::setTime(const QTime& time)
+{
+    m_time = time;
 }
 //--------------------------------
 void CFilter::setState(bool state)

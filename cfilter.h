@@ -22,15 +22,18 @@
 
         public:
             CFilter();
-            CFilter(const FilterIntervalType& interval, const FilterDateType& date);
+            CFilter(const FilterIntervalType& interval, const FilterDateType& date,
+                    const QTime& time = QTime::fromString("00:00:00", "HH:mm:ss"));
 
             const FilterDateType&     date() const;
             const FilterIntervalType& interval() const;
+            QTime                     time() const;
             bool                      state() const;
             FilterType                type() const;
 
             void setDate(const FilterDateType& date);
             void setInterval(const FilterIntervalType& interval);
+            void setTime(const QTime& time);
             void setState(bool state);
             void setType(FilterType type);
 
@@ -42,6 +45,7 @@
         private:
             FilterIntervalType m_interval;
             FilterDateType     m_date;
+            QTime              m_time;
             bool               m_state;
             FilterType         m_type;
     };

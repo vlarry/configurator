@@ -495,6 +495,7 @@
             void autospeedStateChanged(bool state);
             void panelMoved(int pos, int index);
             void panelButtonCtrlPress();
+            void filterJournal(const CFilter& filter);
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
