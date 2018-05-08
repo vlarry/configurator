@@ -37,7 +37,7 @@
         public:
             CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
                                 QAbstractTableModel* parent = nullptr);
-            CMatrixPurposeModel(QVector<QPair<QString, int> >& labels, QAbstractTableModel* parent = nullptr);
+            CMatrixPurposeModel(const QStringList& labels, QAbstractTableModel* parent = nullptr);
             CMatrixPurposeModel(const QStringList& rows, const QStringList& columns,
                                 QAbstractTableModel* parent = nullptr);
             void     updateData();

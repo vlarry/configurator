@@ -3339,11 +3339,11 @@ void ConfiguratorWindow::initModelTables()
         initTable(ui->tablewgtDiscreteInputPurpose, labels, group);
     }
 
-    QVector<QPair<QString, int> > list = loadProtectionList();
+    block_protection_list_t block_list = loadProtectionList();
 
-    if(!list.isEmpty())
+    if(!block_list.isEmpty())
     {
-        initTableProtection(ui->tablewgtProtectionCtrl, list);
+        initTableProtection(ui->tablewgtProtectionCtrl, block_list);
     }
 }
 //-----------------------------------------
@@ -3844,12 +3844,20 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
         table->setColumnWidth(75, 100);
     }
 }
-//----------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::initTableProtection(QTableView* table, QVector<QPair<QString, int> >& labels)
+//----------------------------------------------------------------------------------------------
+void ConfiguratorWindow::initTableProtection(QTableView* table, block_protection_list_t& labels)
 {
+    if(labels.isEmpty())
+        return;
+
+    QStringList list;
+
+    for(const block_protection_t& protection: labels)
+        list << protection.name;
+
     HierarchicalHeaderView* hheader = new HierarchicalHeaderView(Qt::Horizontal, table);
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
-    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(labels);
+    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(list);
 
     table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PROTECTION_TYPE));
     table->setHorizontalHeader(hheader);
@@ -7194,25 +7202,44 @@ QVector<QString> ConfiguratorWindow::loadVaribleByType(const QString& type)
 
     return var_list;
 }
-//--------------------------------------------------------------------
-QVector<QPair<QString, int> > ConfiguratorWindow::loadProtectionList()
+//----------------------------------------------------------------------------------
+ConfiguratorWindow::block_protection_list_t ConfiguratorWindow::loadProtectionList()
 {
-    QVector<QPair<QString, int> > list;
+    block_protection_list_t block_list;
 
     QSqlQuery query(m_system_db);
 
-    if(query.exec("SELECT code, name FROM protection;"))
+    if(query.exec("SELECT * FROM block_protection;"))
     {
         while(query.next())
         {
-            int     code = query.value("code").toInt();
-            QString name = query.value("name").toString();
+            int     id          = query.value("id").toInt();
+            QString key         = query.value("key").toString();
+            int     address     = query.value("address").toInt();
+            QString name        = query.value("name").toString();
+            QString description = query.value("description").toString();
 
-            list << qMakePair(name, code);
+            QSqlQuery query_purpose(m_system_db);
+
+            QVector<block_protection_purpose_t> purpose;
+
+            if(query_purpose.exec(QString("SELECT * FROM block_protection purpose WHERE id_block_protection = %1;").
+                                  arg(id)))
+            {
+                while(query_purpose.next())
+                {
+                    QString key_purpose = query_purpose.value("key").toString();
+                    int     bit         = query_purpose.value("bit").toInt();
+
+                    purpose << block_protection_purpose_t({ key_purpose, bit });
+                }
+            }
+
+            block_list << block_protection_t({ id, key, address, name, description, purpose });
         }
     }
 
-    return list;
+    return block_list;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

@@ -276,6 +276,30 @@
                 float   limit_max;
                 QString unit_measure;
             };
+            /*!
+             * \brief The block_protection_purpose_t struct
+             *
+             * Структура описывающая привязку блокировки защиты (таблица управления защитами)
+             */
+            struct block_protection_purpose_t
+            {
+                QString key;
+                int     bit;
+            };
+            /*!
+             * \brief The block_protection_t struct
+             *
+             * Структура описывающая блокировку защит (таблица управления защитами)
+             */
+            struct block_protection_t
+            {
+                int     id;
+                QString key;
+                int     address;
+                QString name;
+                QString description;
+                QVector<block_protection_purpose_t> purpose;
+            };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
             typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;
@@ -285,6 +309,8 @@
             typedef QMap<QString, cell_t> limit_unit_t;
             //--------------------key <protection>----------------------
             typedef QMap<QString, protection_group_t> protection_list_t;
+            //----------------------------------------------------------
+            typedef QVector<block_protection_t> block_protection_list_t;
 
         public:
             explicit ConfiguratorWindow(QWidget* parent = Q_NULLPTR);
@@ -520,7 +546,7 @@
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
             void initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group);
-            void initTableProtection(QTableView* table, QVector<QPair<QString, int> >& labels);
+            void initTableProtection(QTableView* table, block_protection_list_t& labels);
             void initIndicatorStates();
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CDataUnitType& unit);
@@ -562,7 +588,7 @@
             group_t             createVariableGroup(const QString& io_key);
             QVector<QPair<QString, QString> > loadLabelRows(const QString& type);
             QVector<QString>    loadVaribleByType(const QString& type);
-            QVector<QPair<QString, int> > loadProtectionList();
+            block_protection_list_t loadProtectionList();
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

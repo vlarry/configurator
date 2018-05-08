@@ -28,32 +28,27 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_
     m_matrix.setRowCount(row_labels.count());
     m_matrix.setColumnCount(columns.count());
 }
-//-----------------------------------------------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, int> >& labels, QAbstractTableModel* parent):
+//-----------------------------------------------------------------------------------------------
+CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, QAbstractTableModel* parent):
     QAbstractTableModel(parent)
 {
-    QStringList list;
-
-    for(QPair<QString, int>& label: labels)
-        list << label.first;
-
-    fillHeaderProtectionModel(list);
+    fillHeaderProtectionModel(labels);
 
     CRow::column_t columns;
 
-    for(const QString& label: list)
+    for(const QString& label: labels)
     {
         columns << CColumn(label);
     }
 
-    for(const QString& label: list)
+    for(const QString& label: labels)
     {
         CRow row("", label, columns);
         m_matrix.addRow(row);
     }
 
-    m_matrix.setRowCount(list.count());
-    m_matrix.setColumnCount(list.count());
+    m_matrix.setRowCount(labels.count());
+    m_matrix.setColumnCount(labels.count());
 }
 //-------------------------------------------------------------------------------------------
 CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& rows, const QStringList& columns,
