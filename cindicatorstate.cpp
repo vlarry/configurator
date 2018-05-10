@@ -47,8 +47,8 @@ void CIndicatorState::setLists(const QStringList& led_list, const QStringList& r
         cell->setText(QString("%1").arg(++count));
         cell->setName(relay);
 
-        RelayType type = ((count == 2 || count == 3 || count == 5 || count == 6 || count == 7)?RELAY_TYPE_TWO:
-                                                                                               RELAY_TYPE_ONE);
+        RelayType type = ((count == 3 || count == 5 || count == 6 || count == 7)?RELAY_TYPE_TWO:
+                                                                                 RELAY_TYPE_ONE);
 
         if(type == RELAY_TYPE_ONE)
             cell->setIcon(QPixmap(":/images/resource/images/relay_type1_off.png"));
@@ -164,7 +164,7 @@ QStringList CIndicatorState::relayList()
 
         if(item)
         {
-            CIndicatorCell*  cell = static_cast<CIndicatorCell*>(ui->listWidgetRelay->itemWidget(item));
+            CIndicatorCell* cell = static_cast<CIndicatorCell*>(ui->listWidgetRelay->itemWidget(item));
 
             if(cell)
                 list << cell->name();

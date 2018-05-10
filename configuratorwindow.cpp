@@ -204,6 +204,14 @@ void ConfiguratorWindow::serialPortSettings()
     m_serialPortSettings_window->show();
 }
 //--------------------------------------
+void ConfiguratorWindow::blockProtectionCtrlRead()
+{
+    for(const block_protection_t& block: m_block_list)
+    {
+        sendRequestRead(block.address, 24, READ_BLOCK_PROTECTION);
+    }
+}
+//--------------------------------------
 void ConfiguratorWindow::calculateRead()
 {
     CDataUnitType unit_part1(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
@@ -2017,6 +2025,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     {
         displayInputsRead(unit.values());
     }
+    else if(type == READ_BLOCK_PROTECTION)
+    {
+        displayBlockProtectionRead(unit.values());
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -2543,6 +2555,10 @@ void ConfiguratorWindow::readSetCurrent()
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS:
             settingCommunicationsRead();
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION:
+            blockProtectionCtrlRead();
         break;
 
         default: return;
@@ -4538,6 +4554,59 @@ void ConfiguratorWindow::displayInputsRead(const QVector<quint16>& data)
     t << data[1] << data[0];
 
     m_inputs_window->setOutputStates(t);
+}
+//-------------------------------------------------------------------------------
+void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data)
+{
+    if(data.count() < 24)
+        return;
+
+    static QVector<QVector<quint16> > data_buf;
+
+    QVector<quint16> tdata;
+
+    for(int i = 0; i < data.count() - 1; i += 2)
+        tdata << data[i + 1] << data[i];
+
+    data_buf << tdata;
+
+    if(data_buf.count() < m_block_list.count())
+        return;
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtProtectionCtrl->model());
+
+    if(!model)
+    {
+        saveLog(tr("Не удалось получить модель таблицы Управления защитами."));
+        return;
+    }
+
+    CMatrix& matrix = model->matrixTable();
+
+    for(int i = 0; i < data_buf.count(); i++)
+    {
+        QVector<quint16> row = data_buf[i];
+        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
+
+        for(int j = 0; j < purpose_list.count(); j++)
+        {
+            block_protection_purpose_t purpose = purpose_list[j];
+            int col = purpose.bit/16;
+            int bit = purpose.bit%16;
+
+            bool state = (row[col]&(1 << bit));
+
+            if(state)
+                qDebug() << "KEY: " << m_block_list[i].key << ", key: " << purpose.key;
+
+            if(i == j)
+                continue;
+
+            matrix[i][j].setState(state);
+        }
+    }
+
+    model->updateData();
 }
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
@@ -7232,7 +7301,7 @@ ConfiguratorWindow::block_protection_list_t ConfiguratorWindow::loadProtectionLi
 
             QVector<block_protection_purpose_t> purpose;
 
-            if(query_purpose.exec(QString("SELECT * FROM block_protection purpose WHERE id_block_protection = %1;").
+            if(query_purpose.exec(QString("SELECT * FROM block_protection_purpose WHERE id_block_protection = %1;").
                                   arg(id)))
             {
                 while(query_purpose.next())

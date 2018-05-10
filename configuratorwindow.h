@@ -87,6 +87,7 @@
                 READ_EVENT_COUNT, // чтение количества событий в журнале
                 READ_EVENT_SHIFT_PTR, // чтение позиции указателя сдвига журнала событий
                 READ_SERIAL_NUMBER, // чтение серийного номера
+                READ_BLOCK_PROTECTION, // чтение блокировок защит
                 READ_JOURNAL,
                 READ_JOURNAL_COUNT,
                 READ_JOURNAL_SHIFT_PTR,
@@ -321,6 +322,7 @@
             void stateChanged(bool state);
             void refreshSerialPort();
             void serialPortSettings();
+            void blockProtectionCtrlRead(); // чтение состояний блокировок защит (таблица "Управление блокировками"
             void calculateRead(); // запрос расчетных величин
             void journalRead(const QString& key);
             void inputAnalogGeneralRead();
@@ -565,6 +567,7 @@
             void displayMonitorK10_K11(CDataUnitType& unit);
             void displayOutputAllRead(CDataUnitType& unit);
             void displayInputsRead(const QVector<quint16>& data);
+            void displayBlockProtectionRead(const QVector<quint16>& data);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
