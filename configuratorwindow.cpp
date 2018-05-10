@@ -4515,8 +4515,11 @@ void ConfiguratorWindow::displayOutputAllRead(CDataUnitType& unit)
     if(unit.valueCount() != 4)
         return;
 
-    m_outputall_window->setOutputStates(unit.values());
-    m_output_window->setOutputStates(unit.values());
+    QVector<quint16> data = QVector<quint16>() << unit.value(1) << unit.value(0) <<
+                                                  unit.value(3) << unit.value(2);
+
+    m_outputall_window->setOutputStates(data);
+    m_output_window->setOutputStates(data);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayInputsRead(const QVector<quint16>& data)
