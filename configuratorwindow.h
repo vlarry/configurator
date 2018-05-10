@@ -624,5 +624,6 @@
             variable_bit_t                   m_variable_bits;
             protection_list_t                m_protections; // карта защит
             limit_unit_t                     m_limits; // лимиты редактируемых величин
+            block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
     };
 #endif // CONFIGURATORWINDOW_H

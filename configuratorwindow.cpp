@@ -2161,6 +2161,8 @@ void ConfiguratorWindow::indicatorVisiblity(bool state)
 
         QSqlQuery query(m_system_db);
 
+        m_system_db.transaction();
+
         for(int i = 0; i < ledList.count(); i++)
         {
             query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
@@ -2176,6 +2178,8 @@ void ConfiguratorWindow::indicatorVisiblity(bool state)
                        arg(i + 1).
                        arg("RELAY"));
         }
+
+        m_system_db.commit();
     }
 }
 //---------------------------------------------------------
@@ -3339,12 +3343,14 @@ void ConfiguratorWindow::initModelTables()
         initTable(ui->tablewgtDiscreteInputPurpose, labels, group);
     }
 
-    block_protection_list_t block_list = loadProtectionList();
+    m_block_list = loadProtectionList();
 
-    if(!block_list.isEmpty())
+    if(!m_block_list.isEmpty())
     {
-        initTableProtection(ui->tablewgtProtectionCtrl, block_list);
+        initTableProtection(ui->tablewgtProtectionCtrl, m_block_list);
     }
+    else
+        saveLog(tr("Ошибка чтения привязок для таблицы Управления Защитами"));
 }
 //-----------------------------------------
 void ConfiguratorWindow::initEventJournal()
