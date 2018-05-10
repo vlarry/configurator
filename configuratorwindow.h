@@ -323,6 +323,7 @@
             void refreshSerialPort();
             void serialPortSettings();
             void blockProtectionCtrlRead(); // чтение состояний блокировок защит (таблица "Управление блокировками"
+            void blockProtectionCtrlWrite(); // запись состояний блокировок защит (таблица "Управление блокировками"
             void calculateRead(); // запрос расчетных величин
             void journalRead(const QString& key);
             void inputAnalogGeneralRead();

@@ -203,12 +203,61 @@ void ConfiguratorWindow::serialPortSettings()
 {
     m_serialPortSettings_window->show();
 }
-//--------------------------------------
+//------------------------------------------------
 void ConfiguratorWindow::blockProtectionCtrlRead()
 {
     for(const block_protection_t& block: m_block_list)
     {
         sendRequestRead(block.address, 24, READ_BLOCK_PROTECTION);
+    }
+}
+//-------------------------------------------------
+void ConfiguratorWindow::blockProtectionCtrlWrite()
+{
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtProtectionCtrl->model());
+
+    if(!model)
+        return;
+
+    CMatrix matrix = model->matrixTable();
+
+    if(matrix.rowCount() == 0)
+        return;
+
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
+        QVector<quint16> values = QVector<quint16>(24, 0);
+
+        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
+        {
+            if(i == j)
+            {
+                pos--;
+                continue;
+            }
+
+            block_protection_purpose_t purpose = purpose_list[pos];
+
+            int col = purpose.bit/16;
+            int bit = purpose.bit%16;
+
+            bool state = matrix[i][j].state();
+
+            quint16 value = values[col];
+
+            if(state)
+                value |= (1 << bit);
+
+            values[col] = value;
+        }
+
+        QVector<quint16> tvalues;
+
+        for(int k = 0; k < values.count() - 1; k += 2)
+            tvalues << values[k + 1] << values[k];
+
+        sendRequestWrite(m_block_list[i].address, tvalues, -1);
     }
 }
 //--------------------------------------
@@ -2875,6 +2924,10 @@ void ConfiguratorWindow::writeSetCurrent()
             settingCommunicationsWrite();
         break;
 
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION:
+            blockProtectionCtrlWrite();
+        break;
+
         default: return;
     }
 
@@ -4583,29 +4636,30 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
     CMatrix& matrix = model->matrixTable();
 
-    for(int i = 0; i < data_buf.count(); i++)
+    for(int i = 0; i < matrix.rowCount(); i++)
     {
         QVector<quint16> row = data_buf[i];
         QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
 
-        for(int j = 0; j < purpose_list.count(); j++)
+        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
         {
-            block_protection_purpose_t purpose = purpose_list[j];
+            if(i == j)
+            {
+                pos--;
+                continue;
+            }
+
+            block_protection_purpose_t purpose = purpose_list[pos];
             int col = purpose.bit/16;
             int bit = purpose.bit%16;
 
             bool state = (row[col]&(1 << bit));
 
-            if(state)
-                qDebug() << "KEY: " << m_block_list[i].key << ", key: " << purpose.key;
-
-            if(i == j)
-                continue;
-
             matrix[i][j].setState(state);
         }
     }
 
+    data_buf.clear();
     model->updateData();
 }
 //--------------------------------------
@@ -5159,6 +5213,10 @@ void ConfiguratorWindow::clearIOTable()
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD:
 
+        break;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION:
+            table = ui->tablewgtProtectionCtrl;
         break;
 
         default: return;
@@ -7357,6 +7415,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
+    connect(ui->pbtnClearKeyboardProtectionCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
     connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalRead, &QPushButton::setEnabled);
