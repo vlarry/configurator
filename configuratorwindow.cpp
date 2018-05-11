@@ -1201,9 +1201,22 @@ void ConfiguratorWindow::purposeRelayWrite()
  *
  * Запись настроек дата/время
  */
-void ConfiguratorWindow::dateTimeWrite()
+void ConfiguratorWindow::dateTimeWrite(const QDateTime& dateTime)
 {
-    QDateTime dt(ui->dateEdit->date(), ui->timeEdit->time());
+    if(!m_modbusDevice->is_open())
+    {
+        noConnectMessage();
+        return;
+    }
+
+    QDateTime dt;
+
+    if(dateTime.isValid())
+        dt = dateTime;
+    else
+        dt = QDateTime(ui->dateEdit->date(), ui->timeEdit->time());
+
+    qDebug() << dt;
 
     quint16 year_month = ((((dt.date().year() - 2000) << 8)&0xFF00) | (dt.date().month()&0x00FF));
     quint16 date_wday  = (((dt.date().day() << 8)&0xFF00) | (dt.date().dayOfWeek()&0x00FF));
@@ -1217,6 +1230,11 @@ void ConfiguratorWindow::dateTimeWrite()
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
     m_modbusDevice->sendRequest(unit);
+}
+//------------------------------------------------
+void ConfiguratorWindow::synchronizationDateTime()
+{
+    dateTimeWrite(QDateTime::currentDateTime());
 }
 /*!
  * \brief ConfiguratorWindow::settingCommunicationsWrite
@@ -2653,12 +2671,6 @@ void ConfiguratorWindow::writeSettings()
 //----------------------------------------
 void ConfiguratorWindow::writeSetCurrent()
 {
-    if(!m_modbusDevice->is_open())
-    {
-        noConnectMessage();
-        return;
-    }
-
     DeviceMenuItemType index = menuIndex();
 
     switch(index)
@@ -7444,4 +7456,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_monitor_purpose_window, &CMonitorPurpose::readPurpose, this, &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
     connect(m_outputall_window, &COutputAll::buttonRead, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_inputs_window, &COutputAll::buttonRead, this, &ConfiguratorWindow::sendInputStatesRequest);
+    connect(ui->pushButtonSyncDateTime, &QPushButton::clicked, this, &ConfiguratorWindow::synchronizationDateTime);
+//    connect(m_modbusDevice, &CModbus::noConnect, this, &ConfiguratorWindow::noConnectMessage);
 }

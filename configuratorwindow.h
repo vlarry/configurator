@@ -454,7 +454,8 @@
             void purposeLedsWrite();
             void purposeInputWrite();
             void purposeRelayWrite();
-            void dateTimeWrite();
+            void dateTimeWrite(const QDateTime& dateTime = QDateTime());
+            void synchronizationDateTime();
             void settingCommunicationsWrite();
             void processReadJournals(bool state);
             void processExport();

@@ -1332,7 +1332,7 @@ QTreeView::branch:open:has-children:has-siblings
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>54</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -15188,6 +15188,13 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                   </layout>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButtonSyncDateTime">
+                   <property name="text">
+                    <string>Синхронизация с ПК</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>

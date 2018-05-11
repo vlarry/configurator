@@ -314,6 +314,8 @@ void CModbus::sendRequest(CDataUnitType& unit)
     {
         if(!m_device->portName().isEmpty())
             emit errorDevice(tr("Порт <") + m_device->portName() + tr("> закрыт."));
+        else
+            emit noConnect();
 
         return;
     }
