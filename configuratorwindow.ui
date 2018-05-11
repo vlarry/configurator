@@ -1332,7 +1332,7 @@ QTreeView::branch:open:has-children:has-siblings
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>43</number>
+           <number>38</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -5554,7 +5554,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="8" column="1">
-                    <widget class="CLineEdit" name="le27C">
+                    <widget class="CLineEdit" name="leK27C">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -7142,16 +7142,6 @@ QTreeView::branch:open:has-children:has-siblings
                  </property>
                  <item>
                   <layout class="QGridLayout" name="gridLayout_27">
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="labelM20">
-                     <property name="text">
-                      <string>Ток пуска</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="0" column="0">
                     <widget class="QLabel" name="labelM19">
                      <property name="text">
@@ -7159,100 +7149,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="1">
-                    <widget class="CLineEdit" name="leM21">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="0">
-                    <widget class="QLabel" name="labelM21">
-                     <property name="text">
-                      <string>Задержка</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="5" column="1">
-                    <widget class="CLineEdit" name="leX06">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="1">
-                    <widget class="CLineEdit" name="leM20">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -7279,17 +7175,17 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="5" column="0">
-                    <widget class="QLabel" name="labelX06">
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_36">
                      <property name="text">
-                      <string>Квз ток</string>
+                      <string>Режим работы</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="1">
+                   <item row="1" column="1">
                     <widget class="QComboBox" name="cboxSTARTINGWorkMode">
                      <property name="maximumSize">
                       <size>
@@ -7318,12 +7214,116 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="label_36">
+                    <widget class="QLabel" name="labelM20">
                      <property name="text">
-                      <string>Режим работы</string>
+                      <string>Ток пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelM21">
+                     <property name="text">
+                      <string>Задержка</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="labelX06">
+                     <property name="text">
+                      <string>Квз ток</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="CLineEdit" name="leM20">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="CLineEdit" name="leM21">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="CLineEdit" name="leX06">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -16380,10 +16380,6 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>leM50</tabstop>
   <tabstop>leX15</tabstop>
   <tabstop>cboxM19</tabstop>
-  <tabstop>cboxSTARTINGWorkMode</tabstop>
-  <tabstop>leM20</tabstop>
-  <tabstop>leM21</tabstop>
-  <tabstop>leX06</tabstop>
   <tabstop>cboxM29</tabstop>
   <tabstop>cboxIMINWorkMode</tabstop>
   <tabstop>leM30</tabstop>

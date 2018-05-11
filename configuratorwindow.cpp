@@ -684,6 +684,7 @@ void ConfiguratorWindow::protectionNZZ1Write()
 {
     sendSettingControlWriteRequest("M25");
     sendSettingWriteRequest("M26", "X09");
+    sendSettingWriteRequest("M26C", "M28C");
     sendProtectionWorkModeRequest("NZZ1", FUN_SAVE);
 }
 /*!
@@ -695,6 +696,7 @@ void ConfiguratorWindow::protectionNZZ2Write()
 {
     sendSettingControlWriteRequest("K26");
     sendSettingWriteRequest("K27", "X09a");
+    sendSettingWriteRequest("K27C", "K30C");
     sendProtectionWorkModeRequest("NZZ2", FUN_SAVE);
 }
 /*!
@@ -1008,7 +1010,14 @@ void ConfiguratorWindow::automationSwitchWrite()
     sendSettingControlWriteRequest("K06");
     sendSettingControlWriteRequest("K17");
     sendSettingControlWriteRequest("K07");
-    sendSettingWriteRequest("K02", "X22");
+    sendSettingWriteRequest("K02", "K02");
+    sendSettingWriteRequest("K50", "K50");
+    sendSettingWriteRequest("K04", "K04");
+    sendSettingWriteRequest("K51", "K51");
+    sendSettingWriteRequest("K05", "K05");
+    sendSettingWriteRequest("K08", "K08");
+    sendSettingWriteRequest("K09", "K09");
+    sendSettingWriteRequest("X22", "X22");
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckWrite
@@ -1020,6 +1029,7 @@ void ConfiguratorWindow::automationSwitchTruckWrite()
     sendSettingControlWriteRequest("K37");
     sendSettingControlWriteRequest("K41");
     sendSettingWriteRequest("K45", "K49");
+    sendSettingWriteRequest("K58", "K59");
 }
 /*!
  * \brief ConfiguratorWindow::automationBlockWrite
@@ -1042,6 +1052,7 @@ void ConfiguratorWindow::automationBusWrite()
     sendSettingControlWriteRequest("K34");
     sendSettingControlWriteRequest("K38");
     sendSettingWriteRequest("K42", "K46");
+    sendSettingWriteRequest("K52", "K53");
 }
 /*!
  * \brief ConfiguratorWindow::automationLineWrite
@@ -1053,6 +1064,7 @@ void ConfiguratorWindow::automationLineWrite()
     sendSettingControlWriteRequest("K35");
     sendSettingControlWriteRequest("K39");
     sendSettingWriteRequest("K43", "K47");
+    sendSettingWriteRequest("K54", "K55");
 }
 /*!
  * \brief ConfiguratorWindow::automationEarthWrite
@@ -1064,6 +1076,7 @@ void ConfiguratorWindow::automationEarthWrite()
     sendSettingControlWriteRequest("K36");
     sendSettingControlWriteRequest("K40");
     sendSettingWriteRequest("K44", "K48");
+    sendSettingWriteRequest("K56", "K57");
 }
 /*!
  * \brief ConfiguratorWindow::automationDisconnectorsGroupWrite
@@ -1490,6 +1503,7 @@ void ConfiguratorWindow::protectionNZZ1Read()
 {
     sendSettingControlReadRequest("M25");
     sendSettingReadRequest(tr("M26"), tr("X09"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingReadRequest(tr("M26C"), tr("M28C"), CDataUnitType::ReadHoldingRegisters, 8);
     sendProtectionWorkModeRequest("NZZ1");
 }
 /*!
@@ -1500,7 +1514,8 @@ void ConfiguratorWindow::protectionNZZ1Read()
 void ConfiguratorWindow::protectionNZZ2Read()
 {
     sendSettingControlReadRequest("K26");
-    sendSettingReadRequest(tr("K27"), tr("X09a"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingReadRequest("K27", "X09a", CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingReadRequest("K27C", "K30C", CDataUnitType::ReadHoldingRegisters, 8);
     sendProtectionWorkModeRequest("NZZ2");
 }
 /*!
@@ -1775,7 +1790,14 @@ void ConfiguratorWindow::automationSwitchRead()
     sendSettingControlReadRequest("K06");
     sendSettingControlReadRequest("K17");
     sendSettingControlReadRequest("K07");
-    sendSettingReadRequest(tr("K02"), tr("X22"), CDataUnitType::ReadHoldingRegisters, 12);
+    sendSettingReadRequest("K02", "K02", CDataUnitType::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("K50", "K50", CDataUnitType::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("K04", "K04", CDataUnitType::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("K51", "K51", CDataUnitType::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("K05", "K05", CDataUnitType::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("K08", "K08", CDataUnitType::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("K09", "K09", CDataUnitType::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("X22", "X22", CDataUnitType::ReadHoldingRegisters, 2);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckRead
@@ -1786,7 +1808,8 @@ void ConfiguratorWindow::automationSwitchTruckRead()
 {
     sendSettingControlReadRequest("K37");
     sendSettingControlReadRequest("K41");
-    sendSettingReadRequest(tr("K45"), tr("K49"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest("K45", "K49", CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest("K58", "K59", CDataUnitType::ReadHoldingRegisters, 4);
 }
 /*!
  * \brief ConfiguratorWindow::automationBlockRead
@@ -1808,7 +1831,8 @@ void ConfiguratorWindow::automationBusRead()
 {
     sendSettingControlReadRequest("K34");
     sendSettingControlReadRequest("K38");
-    sendSettingReadRequest(tr("K42"), tr("K46"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest("K42", "K46", CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest("K52", "K53", CDataUnitType::ReadHoldingRegisters, 4);
 }
 /*!
  * \brief ConfiguratorWindow::automationLineRead
@@ -1819,7 +1843,8 @@ void ConfiguratorWindow::automationLineRead()
 {
     sendSettingControlReadRequest("K35");
     sendSettingControlReadRequest("K39");
-    sendSettingReadRequest(tr("K43"), tr("K47"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest("K43", "K47", CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest("K54", "K55", CDataUnitType::ReadHoldingRegisters, 4);
 }
 /*!
  * \brief ConfiguratorWindow::automationEarthRead
@@ -1830,7 +1855,8 @@ void ConfiguratorWindow::automationEarthRead()
 {
     sendSettingControlReadRequest("K36");
     sendSettingControlReadRequest("K40");
-    sendSettingReadRequest(tr("K44"), tr("K48"), CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest("K44", "K48", CDataUnitType::ReadHoldingRegisters, 4);
+    sendSettingReadRequest("K56", "K57", CDataUnitType::ReadHoldingRegisters, 4);
 }
 /*!
  * \brief ConfiguratorWindow::automationDisconnectorsRead
@@ -4060,6 +4086,9 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
         }
 
         QWidget* widget = findChild<QWidget*>(nameWgt);
+
+        if(!widget)
+            continue;
 
         QString classWgt = widget->metaObject()->className();
 
