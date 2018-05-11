@@ -1332,7 +1332,7 @@ QTreeView::branch:open:has-children:has-siblings
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>54</number>
+           <number>43</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -4747,6 +4747,16 @@ QTreeView::branch:open:has-children:has-siblings
                 <layout class="QHBoxLayout" name="horizontalLayout_21">
                  <item>
                   <layout class="QGridLayout" name="gridLayout_24">
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="labelM26">
+                     <property name="text">
+                      <string>Ток пуска</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="0" column="1">
                     <widget class="QComboBox" name="cboxM25">
                      <property name="maximumSize">
@@ -4768,64 +4778,6 @@ QTreeView::branch:open:has-children:has-siblings
                        <string>Вкл</string>
                       </property>
                      </item>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="labelM26">
-                     <property name="text">
-                      <string>Ток пуска</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="labelM27">
-                     <property name="text">
-                      <string>Напр пуска</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="1">
-                    <widget class="CLineEdit" name="leM26">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="0">
-                    <widget class="QLabel" name="labelK21">
-                     <property name="text">
-                      <string>Угол</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
                     </widget>
                    </item>
                    <item row="4" column="1">
@@ -4884,6 +4836,74 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelM27">
+                     <property name="text">
+                      <string>Напр пуска</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="labelK21">
+                     <property name="text">
+                      <string>Угол</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="CLineEdit" name="leM26">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelM25">
+                     <property name="text">
+                      <string>Управление</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="7" column="0">
+                    <widget class="QLabel" name="labelX09">
+                     <property name="text">
+                      <string>Квз напр</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="5" column="0">
                     <widget class="QLabel" name="labelM28">
                      <property name="text">
@@ -4932,23 +4952,31 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="labelM25">
+                   <item row="6" column="1">
+                    <widget class="CLineEdit" name="leX08">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
                      <property name="text">
-                      <string>Управление</string>
+                      <string/>
                      </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
+                     <property name="maxLength">
+                      <number>32767</number>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="7" column="0">
-                    <widget class="QLabel" name="labelX09">
-                     <property name="text">
-                      <string>Квз напр</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -4980,44 +5008,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="1">
-                    <widget class="CLineEdit" name="leX08">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="label_29">
-                     <property name="text">
-                      <string>Режим работы</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="1" column="1">
                     <widget class="QComboBox" name="cboxNZZ1WorkMode">
                      <property name="maximumSize">
@@ -5044,6 +5034,168 @@ QTreeView::branch:open:has-children:has-siblings
                        <string>Откл без блок</string>
                       </property>
                      </item>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_29">
+                     <property name="text">
+                      <string>Режим работы</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="9" column="1">
+                    <widget class="CLineEdit" name="leM27C">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="10" column="1">
+                    <widget class="CLineEdit" name="leK21C">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="1">
+                    <widget class="CLineEdit" name="leM26C">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="11" column="1">
+                    <widget class="CLineEdit" name="leM28C">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="0">
+                    <widget class="QLabel" name="labelM26C">
+                     <property name="text">
+                      <string>Ток пуска КОНТРОЛЬ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="9" column="0">
+                    <widget class="QLabel" name="labelM27C">
+                     <property name="text">
+                      <string>Напряжение пуска КОНТРОЛЬ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="10" column="0">
+                    <widget class="QLabel" name="labelK21C">
+                     <property name="text">
+                      <string>Угол КОНТРОЛЬ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="11" column="0">
+                    <widget class="QLabel" name="labelM28C">
+                     <property name="text">
+                      <string>Задержка отключения КОНТРОЛЬ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -5198,29 +5350,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="cboxK26">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Откл</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Вкл</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
                    <item row="6" column="0">
                     <widget class="QLabel" name="labelX08a">
                      <property name="text">
@@ -5231,31 +5360,13 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="3" column="1">
-                    <widget class="CLineEdit" name="leK28">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
+                   <item row="7" column="0">
+                    <widget class="QLabel" name="labelX09a">
                      <property name="text">
-                      <string/>
+                      <string>Квз напр</string>
                      </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -5287,10 +5398,99 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="7" column="0">
-                    <widget class="QLabel" name="labelX09a">
+                   <item row="3" column="1">
+                    <widget class="CLineEdit" name="leK28">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
                      <property name="text">
-                      <string>Квз напр</string>
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="cboxK26">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Откл</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Вкл</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="cboxNZZ2WorkMode">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Сигнализация</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Откл с блок</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Откл без блок</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_31">
+                     <property name="text">
+                      <string>Режим работы</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="labelK27">
+                     <property name="text">
+                      <string>Ток пуска</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -5353,52 +5553,156 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="labelK27">
-                     <property name="text">
-                      <string>Ток пуска</string>
+                   <item row="8" column="1">
+                    <widget class="CLineEdit" name="le27C">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="label_31">
-                     <property name="text">
-                      <string>Режим работы</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxNZZ2WorkMode">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
                        <height>100</height>
                       </size>
                      </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
+                     <property name="inputMask">
+                      <string/>
                      </property>
-                     <item>
-                      <property name="text">
-                       <string>Сигнализация</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Откл с блок</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Откл без блок</string>
-                      </property>
-                     </item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="10" column="1">
+                    <widget class="CLineEdit" name="leK29C">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="9" column="1">
+                    <widget class="CLineEdit" name="leK28C">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="11" column="1">
+                    <widget class="CLineEdit" name="leK30C">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="0">
+                    <widget class="QLabel" name="labelK27C">
+                     <property name="text">
+                      <string>Ток пуска КОНТРОЛЬ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="9" column="0">
+                    <widget class="QLabel" name="labelK28C">
+                     <property name="text">
+                      <string>Напряжение пуска КОНТРОЛЬ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="10" column="0">
+                    <widget class="QLabel" name="labelK29C">
+                     <property name="text">
+                      <string>Угол КОНТРОЛЬ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="11" column="0">
+                    <widget class="QLabel" name="labelK30C">
+                     <property name="text">
+                      <string>Задержка отключения КОНТРОЛЬ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -11688,24 +11992,27 @@ QTreeView::branch:open:has-children:has-siblings
                 <layout class="QVBoxLayout" name="verticalLayout_76">
                  <item>
                   <layout class="QGridLayout" name="gridLayout_6">
-                   <item row="4" column="3">
-                    <widget class="QLabel" name="labelK09">
-                     <property name="text">
-                      <string>Ток опред ВКЛ полож ВВ</string>
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="cboxK32">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
                      </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="3">
-                    <widget class="QLabel" name="labelK17">
-                     <property name="text">
-                      <string>Контроль ОТ</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Местн</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Дист</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                    <item row="1" column="0">
@@ -11718,8 +12025,28 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="4">
-                    <widget class="QComboBox" name="cboxK06">
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="labelK03">
+                     <property name="text">
+                      <string>Команда отключения</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelK32">
+                     <property name="text">
+                      <string>Режим упр.</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QComboBox" name="cboxK03">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -11731,14 +12058,126 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <item>
                       <property name="text">
-                       <string>Выкл</string>
+                       <string>Постоянная</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>Вкл</string>
+                       <string>Импульсная</string>
                       </property>
                      </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <spacer name="horizontalSpacer_11">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="CLineEdit" name="leK02">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="labelK02">
+                     <property name="text">
+                      <string>Команда ВКЛ: время включения</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="cboxK01">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Пост</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Импульсн.</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="4" column="3">
+                    <widget class="QLabel" name="labelK09">
+                     <property name="text">
+                      <string>Ток опред ВКЛ полож ВВ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="1">
+                    <widget class="CLineEdit" name="leK04">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
                     </widget>
                    </item>
                    <item row="4" column="4">
@@ -11769,89 +12208,48 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="cboxK32">
+                   <item row="5" column="4">
+                    <widget class="CLineEdit" name="leX22">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
                        <height>100</height>
                       </size>
                      </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
+                     <property name="inputMask">
+                      <string/>
                      </property>
-                     <item>
-                      <property name="text">
-                       <string>Местн</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Дист</string>
-                      </property>
-                     </item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
                     </widget>
                    </item>
-                   <item row="0" column="3">
-                    <widget class="QLabel" name="labelK06">
+                   <item row="5" column="3">
+                    <widget class="QLabel" name="labelX22">
                      <property name="text">
-                      <string>КЦУ</string>
+                      <string>Кв КЦУ по току</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="labelK32">
+                   <item row="6" column="0">
+                    <widget class="QLabel" name="labelK50_2">
                      <property name="text">
-                      <string>Режим упр.</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="2">
-                    <spacer name="horizontalSpacer_11">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="1" column="4">
-                    <widget class="QComboBox" name="cboxK17">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Выкл</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Вкл</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="labelK03">
-                     <property name="text">
-                      <string>Команда отключения</string>
+                      <string>Команда ОТКЛ: время резервн снятия сигнала</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -11859,63 +12257,7 @@ QTreeView::branch:open:has-children:has-siblings
                     </widget>
                    </item>
                    <item row="3" column="1">
-                    <widget class="QComboBox" name="cboxK03">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Постоянная</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Импульсная</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxK01">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Пост</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Импульсн.</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="labelK02">
-                     <property name="text">
-                      <string>Команда ВКЛ: время включения</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="1">
-                    <widget class="CLineEdit" name="leK02">
+                    <widget class="CLineEdit" name="leK50">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -11940,115 +12282,6 @@ QTreeView::branch:open:has-children:has-siblings
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="1">
-                    <widget class="CLineEdit" name="leK04">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="0">
-                    <widget class="QLabel" name="labelK04">
-                     <property name="text">
-                      <string>Команда ОТКЛ: время включения</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="5" column="0">
-                    <widget class="QLabel" name="labelK05">
-                     <property name="text">
-                      <string>Время ответа</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="5" column="1">
-                    <widget class="CLineEdit" name="leK05">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="inputMask">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="maxLength">
-                      <number>32767</number>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="3">
-                    <widget class="QLabel" name="labelK07">
-                     <property name="text">
-                      <string>Полож ВВ</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="4">
-                    <widget class="QComboBox" name="cboxK07">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>По БК ВВ</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>По катушкам упр</string>
-                      </property>
-                     </item>
                     </widget>
                    </item>
                    <item row="3" column="4">
@@ -12079,6 +12312,26 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
+                   <item row="5" column="0">
+                    <widget class="QLabel" name="labelK04">
+                     <property name="text">
+                      <string>Команда ОТКЛ: время включения</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="3">
+                    <widget class="QLabel" name="labelK07">
+                     <property name="text">
+                      <string>Полож ВВ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="3" column="3">
                     <widget class="QLabel" name="labelK08">
                      <property name="text">
@@ -12089,18 +12342,18 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="5" column="3">
-                    <widget class="QLabel" name="labelX22">
+                   <item row="7" column="0">
+                    <widget class="QLabel" name="labelK05">
                      <property name="text">
-                      <string>Кв КЦУ по току</string>
+                      <string>Время ответа</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
                     </widget>
                    </item>
-                   <item row="5" column="4">
-                    <widget class="CLineEdit" name="leX22">
+                   <item row="6" column="1">
+                    <widget class="CLineEdit" name="leK51">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -12124,6 +12377,171 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelK50">
+                     <property name="text">
+                      <string>Команда ВКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="7" column="1">
+                    <widget class="CLineEdit" name="leK05">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="QComboBox" name="cboxK06">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Выкл</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Вкл</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="QLabel" name="labelK17">
+                     <property name="text">
+                      <string>Контроль ОТ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QLabel" name="labelK06">
+                     <property name="text">
+                      <string>КЦУ</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="4">
+                    <widget class="QComboBox" name="cboxK07">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>По БК ВВ</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>По катушкам упр</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="1" column="4">
+                    <widget class="QComboBox" name="cboxK17">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Выкл</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Вкл</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="6" column="4">
+                    <widget class="QComboBox" name="cboxSPRK_CNF">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Без искр.</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Искр: местн</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Искр: ПДУ</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="6" column="3">
+                    <widget class="QLabel" name="labelSPRK_CNF">
+                     <property name="text">
+                      <string>Схема внешн. упр.</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -12183,6 +12601,34 @@ QTreeView::branch:open:has-children:has-siblings
                 <layout class="QHBoxLayout" name="horizontalLayout_67">
                  <item>
                   <layout class="QGridLayout" name="gridLayout_45">
+                   <item row="4" column="1">
+                    <widget class="CLineEdit" name="leK58">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="2" column="1">
                     <widget class="CLineEdit" name="leK45">
                      <property name="sizePolicy">
@@ -12214,7 +12660,7 @@ QTreeView::branch:open:has-children:has-siblings
                    <item row="2" column="0">
                     <widget class="QLabel" name="labelK45">
                      <property name="text">
-                      <string>Т имп</string>
+                      <string>Длительность импульса</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -12277,26 +12723,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="labelK37">
-                     <property name="text">
-                      <string>Управление</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="labelK49">
-                     <property name="text">
-                      <string>Т откл</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="3" column="1">
                     <widget class="CLineEdit" name="leK49">
                      <property name="sizePolicy">
@@ -12322,6 +12748,74 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelK49">
+                     <property name="text">
+                      <string>Время отклика</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelK37">
+                     <property name="text">
+                      <string>Управление</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="1">
+                    <widget class="CLineEdit" name="leK59">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="labelK58">
+                     <property name="text">
+                      <string>Команда ВКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="0">
+                    <widget class="QLabel" name="labelK59">
+                     <property name="text">
+                      <string>Команда ОТКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -12582,8 +13076,8 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxK38">
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="cboxK34">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -12595,12 +13089,12 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <item>
                       <property name="text">
-                       <string>Пост</string>
+                       <string>Местн</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>Импульсн.</string>
+                       <string>Дист</string>
                       </property>
                      </item>
                     </widget>
@@ -12633,18 +13127,8 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="labelK42">
-                     <property name="text">
-                      <string>Т имп</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="cboxK34">
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="cboxK38">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -12656,30 +13140,20 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <item>
                       <property name="text">
-                       <string>Местн</string>
+                       <string>Пост</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>Дист</string>
+                       <string>Импульсн.</string>
                       </property>
                      </item>
                     </widget>
                    </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="labelK34">
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="labelK42">
                      <property name="text">
-                      <string>Управление</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="labelK46">
-                     <property name="text">
-                      <string>Т откл</string>
+                      <string>Длительность импульса</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -12711,6 +13185,102 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelK34">
+                     <property name="text">
+                      <string>Управление</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelK46">
+                     <property name="text">
+                      <string>Время отклика</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="CLineEdit" name="leK52">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="1">
+                    <widget class="CLineEdit" name="leK53">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="labelK52">
+                     <property name="text">
+                      <string>Команда ВКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="0">
+                    <widget class="QLabel" name="labelK53">
+                     <property name="text">
+                      <string>Команда ОТКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -12770,6 +13340,29 @@ QTreeView::branch:open:has-children:has-siblings
                 <layout class="QHBoxLayout" name="horizontalLayout_65">
                  <item>
                   <layout class="QGridLayout" name="gridLayout_43">
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="cboxK35">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Местн</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Дист</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
                    <item row="2" column="1">
                     <widget class="CLineEdit" name="leK43">
                      <property name="sizePolicy">
@@ -12798,27 +13391,14 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="cboxK35">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelK47">
+                     <property name="text">
+                      <string>Время отклика</string>
                      </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
-                     <item>
-                      <property name="text">
-                       <string>Местн</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Дист</string>
-                      </property>
-                     </item>
                     </widget>
                    </item>
                    <item row="1" column="1">
@@ -12844,16 +13424,6 @@ QTreeView::branch:open:has-children:has-siblings
                      </item>
                     </widget>
                    </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="labelK43">
-                     <property name="text">
-                      <string>Т имп</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="1" column="0">
                     <widget class="QLabel" name="labelK39">
                      <property name="text">
@@ -12874,10 +13444,10 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="labelK47">
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="labelK43">
                      <property name="text">
-                      <string>Т откл</string>
+                      <string>Длительность импульса</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -12909,6 +13479,82 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="CLineEdit" name="leK54">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="1">
+                    <widget class="CLineEdit" name="leK55">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="labelK54">
+                     <property name="text">
+                      <string>Команда ВКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="0">
+                    <widget class="QLabel" name="labelK55">
+                     <property name="text">
+                      <string>Команда ОТКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -12968,6 +13614,34 @@ QTreeView::branch:open:has-children:has-siblings
                 <layout class="QHBoxLayout" name="horizontalLayout_66">
                  <item>
                   <layout class="QGridLayout" name="gridLayout_44">
+                   <item row="4" column="1">
+                    <widget class="CLineEdit" name="leK56">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="0" column="0">
                     <widget class="QLabel" name="labelK36">
                      <property name="text">
@@ -12976,29 +13650,6 @@ QTreeView::branch:open:has-children:has-siblings
                      <property name="scaledContents">
                       <bool>true</bool>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxK40">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Пост</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Импульсн.</string>
-                      </property>
-                     </item>
                     </widget>
                    </item>
                    <item row="2" column="1">
@@ -13029,6 +13680,39 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                     </widget>
                    </item>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="cboxK40">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Пост</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Импульсн.</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="labelK48">
+                     <property name="text">
+                      <string>Время отклика</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="1" column="0">
                     <widget class="QLabel" name="labelK40">
                      <property name="text">
@@ -13042,40 +13726,7 @@ QTreeView::branch:open:has-children:has-siblings
                    <item row="2" column="0">
                     <widget class="QLabel" name="labelK44">
                      <property name="text">
-                      <string>Т имп</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="cboxK36">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Местн</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Дист</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="labelK48">
-                     <property name="text">
-                      <string>Т откл</string>
+                      <string>Длительность импульса</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -13107,6 +13758,77 @@ QTreeView::branch:open:has-children:has-siblings
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="cboxK36">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Местн</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Дист</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="5" column="1">
+                    <widget class="CLineEdit" name="leK57">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="labelK56">
+                     <property name="text">
+                      <string>Команда ВКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="0">
+                    <widget class="QLabel" name="labelK57">
+                     <property name="text">
+                      <string>Команда ОТКЛ: время резервн снятия сигнала</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -15766,15 +16488,7 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>cboxK01</tabstop>
   <tabstop>leK02</tabstop>
   <tabstop>cboxK03</tabstop>
-  <tabstop>leK04</tabstop>
-  <tabstop>leK05</tabstop>
-  <tabstop>cboxK06</tabstop>
-  <tabstop>cboxK17</tabstop>
-  <tabstop>cboxK07</tabstop>
-  <tabstop>leK08</tabstop>
   <tabstop>pbtnFilter</tabstop>
-  <tabstop>leK09</tabstop>
-  <tabstop>leX22</tabstop>
   <tabstop>cboxK37</tabstop>
   <tabstop>cboxK41</tabstop>
   <tabstop>leK45</tabstop>
