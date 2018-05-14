@@ -268,12 +268,20 @@ void ConfiguratorWindow::calculateRead()
     unit_part1.setProperty(tr("REQUEST"), CALCULATE_TYPE);
     unit_part1.setProperty("PART", CALCULATE_ADDRESS_PART1);
 
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтение расчетных величин. Часть 1.";
+#endif
+
     sendCalculateRead(unit_part1);
 
     CDataUnitType unit_part2(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
                              CALCULATE_ADDRESS_PART2, QVector<quint16>() << 8);
     unit_part2.setProperty(tr("REQUEST"), CALCULATE_TYPE);
     unit_part2.setProperty("PART", CALCULATE_ADDRESS_PART2);
+
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтение расчетных величин. Часть 2.";
+#endif
 
     sendCalculateRead(unit_part2);
 }
@@ -2227,7 +2235,7 @@ void ConfiguratorWindow::numberRepeatChanged(int number)
 //--------------------------------------------------------
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
-    m_status_bar->setStatusMessage(error, 5000);
+    m_status_bar->setStatusMessage(error, 2000);
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::errorConnect(const QString& error)
@@ -4017,6 +4025,9 @@ void ConfiguratorWindow::initIndicatorStates()
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод расчетных величин.";
+#endif
     if(values.size() == 74)
     {
         ui->variableWidget->setData(values);
@@ -4027,6 +4038,9 @@ void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 //-----------------------------------------------------------
 void ConfiguratorWindow::displayDateTime(CDataUnitType& unit)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Дата/Время.";
+#endif
     if(unit.valueCount() != 4)
         return;
 
@@ -4049,6 +4063,9 @@ void ConfiguratorWindow::displayDateTime(CDataUnitType& unit)
 //------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Настроек (FLOAT)";
+#endif
     if(unit.is_empty())
     {
         noConnectMessage();
@@ -4129,6 +4146,9 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
 //-------------------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Настроек (FLOAT).";
+#endif
     if(unit.is_empty() || unit.valueCount() > 1 || unit.valueCount() == 0)
     {
         noConnectMessage();
@@ -4179,6 +4199,9 @@ void ConfiguratorWindow::displaySettingControlResponce(const CDataUnitType& unit
 //------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод привязок.";
+#endif
     if(unit.valueCount() == 0)
         return;
 
@@ -4241,6 +4264,9 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 //--------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод привязок входов.";
+#endif
     if(unit.is_empty())
     {
         noConnectMessage();
@@ -4305,6 +4331,9 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 //---------------------------------------------------------------------
 void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Чтения журнала.";
+#endif
     if(!m_journal_read_current)
     {
         return;
@@ -4325,6 +4354,9 @@ void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод серийного номера устройства.";
+#endif
     if(data.count() == 4) // пришел серийный номер, иначе сообщение с ошибкой
     {
         m_status_bar->connectStateChanged(true); // обновляем состояние соединения с устройством
@@ -4376,6 +4408,9 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
 //-------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Защиты резервные Пусковые.";
+#endif
     QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
                                                             ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
                                                             ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
@@ -4416,6 +4451,9 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
 //------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Автаматика АПВ Пусковые.";
+#endif
     QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
                                                             ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
                                                             ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
@@ -4456,6 +4494,9 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
 //---------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Связь Таймаут.";
+#endif
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationRequestTimeout->setValue(data[0]);
@@ -4464,6 +4505,9 @@ void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint1
 //-------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutSpeed(const QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Связь Таймаут скорости.";
+#endif
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationTimeoutSpeed->setValue(data[0]);
@@ -4472,6 +4516,9 @@ void ConfiguratorWindow::displayCommunicationTimeoutSpeed(const QVector<quint16>
 //--------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Связь адрес устройства.";
+#endif
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationAddress->setValue(data[0]);
@@ -4480,6 +4527,9 @@ void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& dat
 //---------------------------------------------------------------------
 void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Режим работы защит.";
+#endif
     if(unit.valueCount() != 48)
         return;
 
@@ -4587,6 +4637,9 @@ void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
 //-----------------------------------------------------------------
 void ConfiguratorWindow::displayMonitorK10_K11(CDataUnitType& unit)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Мониторинг К10 и К11.";
+#endif
     if(unit.valueCount() != 48)
         return;
 
@@ -4628,6 +4681,9 @@ void ConfiguratorWindow::displayMonitorK10_K11(CDataUnitType& unit)
 //----------------------------------------------------------------
 void ConfiguratorWindow::displayOutputAllRead(CDataUnitType& unit)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Все выходы";
+#endif
     if(unit.valueCount() != 4)
         return;
 
@@ -4640,6 +4696,9 @@ void ConfiguratorWindow::displayOutputAllRead(CDataUnitType& unit)
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayInputsRead(const QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Вывод Состояния входов";
+#endif
     if(data.count() != 2)
         return;
 
@@ -4652,6 +4711,9 @@ void ConfiguratorWindow::displayInputsRead(const QVector<quint16>& data)
 //-------------------------------------------------------------------------------
 void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data)
 {
+#ifdef DEBUG_REQUEST
+    qDebug() << "Чтение блокировок защит.";
+#endif
     if(data.count() < 24)
         return;
 
@@ -4849,7 +4911,9 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
     unit.setProperty(tr("REQUEST"), GENERAL_TYPE);
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтение настроек (FLOAT)";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 //--------------------------------------------------------------------------
@@ -4862,7 +4926,9 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
     unit.setProperty("INDEX", index);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтение настроек (LIST).";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 //---------------------------------------------------------------------------
@@ -4906,7 +4972,9 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
         unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
         unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
         unit.setProperty("INDEX", index);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Запись настроек (LIST).";
+#endif
         m_modbusDevice->sendRequest(unit);
     }
 }
@@ -4979,7 +5047,9 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Запись настроек (FLOAT).";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 //----------------------------------------------------------------------------------------
@@ -4999,7 +5069,9 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
     unit.setProperty("REQUEST", PURPOSE_OUT_TYPE);
     unit.setProperty("FIRST", first);
     unit.setProperty("LAST", last);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтение привязок (" << first << ", " << last << ").";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 //-----------------------------------------------------------------------------------------
@@ -5051,7 +5123,9 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Запись привязок (" << first << ", " << last << ").";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 //------------------------------------------------------------------------------
@@ -5065,7 +5139,9 @@ void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
     unit.setProperty(tr("REQUEST"), PURPOSE_INPUT_TYPE);
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтения привязок входов.";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 //-------------------------------------------------------------------------------
@@ -5127,7 +5203,9 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Запись привязок входов к переменным.";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 //---------------------------------------------------------------------------------------------------------
@@ -5141,7 +5219,9 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
     unit.setProperty("PROTECTION", protection);
     unit.setProperty("REQUEST_FUNCTION", function);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Режима работы защит";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 //---------------------------------------------------------
@@ -5153,7 +5233,9 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
                        QVector<quint16>() << 48);
 
     unit.setProperty("REQUEST", MONITONR_PURPOSE_K10_K11_TYPE);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Мониторинг К10 и К11";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 /*!
@@ -5166,7 +5248,9 @@ void ConfiguratorWindow::sendRequestRead(int addr, int size, int request)
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), request);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтения (request: " << request << ").";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 /*!
@@ -5182,7 +5266,9 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
     CDataUnitType unit(ui->sboxSlaveID->value(), funType, addr, values);
 
     unit.setProperty("REQUST", request);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Запись (request: " << request << ").";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 /*!
@@ -5195,7 +5281,7 @@ void ConfiguratorWindow::sendDeviceCommand(int cmd)
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, 0x3000, QVector<quint16>() << cmd);
 
     unit.setProperty("CMD", cmd);
-
+qDebug() << "Запрос. Команда: " << cmd;
     m_modbusDevice->sendRequest(unit);
 }
 /*!
@@ -5216,7 +5302,9 @@ void ConfiguratorWindow::sendOutputAllRequest()
 
     unit.setProperty("REQUEST", READ_OUTPUT_ALL);
     unit.setProperty("BUTTON_TYPE", type);
-
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтения всех выходов.";
+#endif
     m_modbusDevice->sendRequest(unit);
 }
 /*!
@@ -5229,7 +5317,7 @@ void ConfiguratorWindow::sendInputStatesRequest()
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 200, QVector<quint16>() << 2);
 
     unit.setProperty("REQUEST", READ_INPUTS);
-
+qDebug() << "Запрос чтения состояний входов";
     m_modbusDevice->sendRequest(unit);
 }
 //-------------------------------------

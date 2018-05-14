@@ -5,6 +5,7 @@
     #include <QSerialPort>
     #include <QVector>
     #include <QTimer>
+    #include <QTime>
     #include <QMetaMethod>
     #include <QDebug>
     #include <cdataunittype.h>
@@ -110,5 +111,6 @@
             quint32                m_sizeQuery;
             AutoConnectType        m_connect;
             bool                   m_autospeed; // режим включения автоподбора скорости
+            QTime                  m_time;
     };
 #endif // CMODBUS_H

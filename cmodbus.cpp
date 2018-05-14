@@ -303,6 +303,9 @@ void CModbus::request(CDataUnitType& unit)
     
     m_request_cur = unit;
     m_timeout_timer->start(m_timeout_repeat);
+
+    m_time.start();
+
     m_device->write(ba);
 
     emit rawData(ba);
@@ -344,7 +347,7 @@ void CModbus::sendRequest(CDataUnitType& unit)
 
     m_request_send_wait = unit;
 
-    m_send_wait_timer->start(4); // пауза 4мс
+    m_send_wait_timer->start(10); // пауза 10мс
 }
 //-----------------------
 void CModbus::readyRead()
@@ -566,7 +569,9 @@ void CModbus::timeoutReadWait()
 
         if(m_connect.is_connect || !m_autospeed) // если соединение было активным, то значит обрыв
         {
-            str = tr("Ошибка: время ожидания ответа от устройства истекло -> попытка №") + QString::number(m_counter_request_error);
+            str = tr("Ошибка: время ожидания ответа от устройства истекло (%1 мс) -> попытка №%2").
+                     arg(m_time.elapsed()).
+                     arg(m_counter_request_error);
         }
         else if(!m_connect.is_connect && m_autospeed)
         {
