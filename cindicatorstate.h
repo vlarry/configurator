@@ -43,10 +43,14 @@
             void setOutputStates(const QVector<quint16>& data);
 
         signals:
+            void buttonUpdate();
             void closeWindow(bool = false);
 
         protected:
             void closeEvent(QCloseEvent* event);
+
+        private:
+            void resetStates();
 
         private:
             Ui::CIndicatorState* ui;

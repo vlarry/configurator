@@ -9,6 +9,9 @@ CIndicatorState::CIndicatorState(QWidget* parent):
 
     setWindowTitle(tr("Состояния выходов"));
     setWindowFlag(Qt::Window);
+
+    connect(ui->pushButtonUpdate, &QPushButton::clicked, this, &CIndicatorState::buttonUpdate);
+    connect(ui->pushButtonReset, &QPushButton::clicked, this, &CIndicatorState::resetStates);
 }
 //---------------------------------
 CIndicatorState::~CIndicatorState()
@@ -179,4 +182,9 @@ void CIndicatorState::closeEvent(QCloseEvent* event)
     emit closeWindow();
 
     QWidget::closeEvent(event);
+}
+//---------------------------------
+void CIndicatorState::resetStates()
+{
+    setOutputStates(QVector<quint16>(4, 0));
 }

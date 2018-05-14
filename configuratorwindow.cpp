@@ -7574,5 +7574,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_outputall_window, &COutputAll::buttonRead, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_inputs_window, &COutputAll::buttonRead, this, &ConfiguratorWindow::sendInputStatesRequest);
     connect(ui->pushButtonSyncDateTime, &QPushButton::clicked, this, &ConfiguratorWindow::synchronizationDateTime);
+    connect(m_output_window, &CIndicatorState::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
 //    connect(m_modbusDevice, &CModbus::noConnect, this, &ConfiguratorWindow::noConnectMessage);
 }
