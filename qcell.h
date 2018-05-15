@@ -19,6 +19,7 @@
             ~QCell();
             void setCellName(const QString& name);
             void setCellValue(float value);
+            void setCellValue(int value);
 
             QSize labelSize() const;
             QSize fieldSize() const;

@@ -11,8 +11,10 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_monitor_purpose_window(nullptr),
     m_outputall_window(nullptr),
     m_inputs_window(nullptr),
+    m_debuginfo_window(nullptr),
     m_logFile(nullptr),
     m_tim_calculate(nullptr),
+    m_tim_debug_info(nullptr),
     m_version_window(nullptr),
     m_timer_synchronization(nullptr),
     m_status_bar(nullptr),
@@ -33,12 +35,14 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 
     m_modbusDevice              = new CModbus(baudrate_list, this);
     m_tim_calculate             = new QTimer(this);
+    m_tim_debug_info            = new QTimer(this);
     m_terminal_window           = new CTerminal(this);
     m_output_window             = new CIndicatorState(this);
     m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
     m_serialPortSettings_window = new CSerialPortSetting;
     m_outputall_window          = new COutputAll(tr("Все выходы"), this);
     m_inputs_window             = new COutputAll(tr("Входы"), this);
+    m_debuginfo_window          = new CDebugInfo(tr("Отладочная информация"), this);
     m_logFile                   = new QFile("Log.txt");
     m_status_bar                = new CStatusBar(statusBar());
     m_watcher                   = new QFutureWatcher<void>(this);
@@ -66,6 +70,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initMonitorPurpose();
     initOutputAll();
     initInputs();
+    initDebugInfo();
 
 //    ui->pushButtonMenuDeviceCtrl->installEventFilter(this);
 //    ui->pushButtonVariableCtrl->installEventFilter(this);
@@ -284,6 +289,27 @@ void ConfiguratorWindow::calculateRead()
 #endif
 
     sendCalculateRead(unit_part2);
+}
+//--------------------------------------
+void ConfiguratorWindow::debugInfoRead()
+{
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос отладочной информации по 12ти каналам.";
+#endif
+
+    sendDebugInfoRead(0);
+    sendDebugInfoRead(1);
+    sendDebugInfoRead(2);
+    sendDebugInfoRead(3);
+    sendDebugInfoRead(4);
+    sendDebugInfoRead(5);
+    sendDebugInfoRead(6);
+    sendDebugInfoRead(7);
+    sendDebugInfoRead(8);
+    sendDebugInfoRead(9);
+    sendDebugInfoRead(10);
+    sendDebugInfoRead(11);
+    sendDebugInfoRead(12);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::journalRead(const QString& key)
@@ -2130,6 +2156,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     {
         displayBlockProtectionRead(unit.values());
     }
+    else if(type == READ_DEBUG_INFO)
+    {
+        displayDebugInfo(unit);
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -2329,6 +2359,19 @@ void ConfiguratorWindow::inputVisiblity(bool state)
     }
     else
         m_inputs_window->hide();
+}
+//-----------------------------------------------------
+void ConfiguratorWindow::debugInfoVisiblity(bool state)
+{
+    if(state)
+    {
+        debugInfoRead();
+        m_debuginfo_window->show();
+    }
+    else
+    {
+        m_debuginfo_window->hide();
+    }
 }
 //---------------------------------------------------
 void ConfiguratorWindow::saveLog(const QString& info)
@@ -3893,6 +3936,25 @@ void ConfiguratorWindow::initInputs()
 
     m_inputs_window->createList(list);
 }
+//--------------------------------------
+void ConfiguratorWindow::initDebugInfo()
+{
+    QSqlQuery   query(m_system_db);
+    QStringList columns;
+    QStringList rows = QStringList() << "Uc" << "3U0" << "3I0" << "Ia" << "Ib" << "Ic" << "Ua" << "Ub" << "Us" <<
+                                        "Uab" << "Ubc" << "Uca" << "3U0x";
+
+    if(query.exec("SELECT * FROM debug_info;"))
+    {
+        while(query.next())
+        {
+            QString name = QString("%1").arg(query.value("name").toString());
+            columns << name;
+        }
+
+        m_debuginfo_window->setHedears(rows, columns);
+    }
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -4765,6 +4827,16 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
     data_buf.clear();
     model->updateData();
 }
+//------------------------------------------------------------------
+void ConfiguratorWindow::displayDebugInfo(const CDataUnitType& unit)
+{
+    if(unit.valueCount() != 15)
+        return;
+
+    int channel = unit.property("CHANNEL").toInt();
+
+    m_debuginfo_window->setData(channel, unit.values());
+}
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
 {
@@ -5317,7 +5389,26 @@ void ConfiguratorWindow::sendInputStatesRequest()
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 200, QVector<quint16>() << 2);
 
     unit.setProperty("REQUEST", READ_INPUTS);
-qDebug() << "Запрос чтения состояний входов";
+
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос чтения состояний входов";
+#endif
+
+    m_modbusDevice->sendRequest(unit);
+}
+//-----------------------------------------------------
+void ConfiguratorWindow::sendDebugInfoRead(int channel)
+{
+    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 202 + channel*15,
+                       QVector<quint16>() << 15);
+
+    unit.setProperty("REQUEST", READ_DEBUG_INFO);
+    unit.setProperty("CHANNEL", channel);
+
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Чтение отладочной информации, канал: " << channel;
+#endif
+
     m_modbusDevice->sendRequest(unit);
 }
 //-------------------------------------
@@ -6388,6 +6479,26 @@ void ConfiguratorWindow::timeoutSynchronization()
 
     if(!m_timer_synchronization->isActive())
         m_timer_synchronization->start(ui->spinboxSyncTime->value());
+}
+//-----------------------------------------
+void ConfiguratorWindow::timeoutDebugInfo()
+{
+    debugInfoRead();
+}
+//-----------------------------------------------------------
+void ConfiguratorWindow::debugInfoCtrl(int timer, bool state)
+{
+    if(state)
+    {
+        if(m_tim_debug_info->isActive())
+            m_tim_debug_info->setInterval(timer);
+        else
+            m_tim_debug_info->start(timer);
+    }
+    else
+    {
+        m_tim_debug_info->stop();
+    }
 }
 //---------------------------------------------
 void ConfiguratorWindow::importJournalToTable()
@@ -7575,5 +7686,10 @@ void ConfiguratorWindow::initConnect()
     connect(m_inputs_window, &COutputAll::buttonRead, this, &ConfiguratorWindow::sendInputStatesRequest);
     connect(ui->pushButtonSyncDateTime, &QPushButton::clicked, this, &ConfiguratorWindow::synchronizationDateTime);
     connect(m_output_window, &CIndicatorState::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
+    connect(m_debuginfo_window, &CDebugInfo::readInfo, this, &ConfiguratorWindow::debugInfoCtrl);
+    connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoRead);
+    connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);
+    connect(m_debuginfo_window, &CDebugInfo::closeWindow, ui->pushButtonDebugInfo, &QPushButton::setChecked);
+    connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
 //    connect(m_modbusDevice, &CModbus::noConnect, this, &ConfiguratorWindow::noConnectMessage);
 }

@@ -30,7 +30,12 @@ void QCell::setCellName(const QString& name)
 //-----------------------------------
 void QCell::setCellValue(float value)
 {
-    ui->leCellValue->setText(QString::number(value, 'f', 4));
+    ui->leCellValue->setText(QLocale::system().toString(value, 'f', 4));
+}
+//---------------------------------
+void QCell::setCellValue(int value)
+{
+    ui->leCellValue->setText(QString::number(value));
 }
 //----------------------------
 QSize QCell::labelSize() const

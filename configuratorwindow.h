@@ -50,6 +50,7 @@
     #include "cdockpanelitemctrl.h"
     #include "cmonitorpurpose.h"
     #include "coutputall.h"
+    #include <cdebuginfo.h>
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     //-----------------------------------------------------
@@ -88,6 +89,7 @@
                 READ_EVENT_SHIFT_PTR, // чтение позиции указателя сдвига журнала событий
                 READ_SERIAL_NUMBER, // чтение серийного номера
                 READ_BLOCK_PROTECTION, // чтение блокировок защит
+                READ_DEBUG_INFO, // чтение отладочной информации
                 READ_JOURNAL,
                 READ_JOURNAL_COUNT,
                 READ_JOURNAL_SHIFT_PTR,
@@ -325,6 +327,7 @@
             void blockProtectionCtrlRead(); // чтение состояний блокировок защит (таблица "Управление блокировками"
             void blockProtectionCtrlWrite(); // запись состояний блокировок защит (таблица "Управление блокировками"
             void calculateRead(); // запрос расчетных величин
+            void debugInfoRead(); // чтение отладочной информации
             void journalRead(const QString& key);
             void inputAnalogGeneralRead();
             void inputAnalogCalibrateRead();
@@ -475,6 +478,7 @@
             void monitorK10K11Visiblity(bool state);
             void outputAllVisiblity(bool state);
             void inputVisiblity(bool state);
+            void debugInfoVisiblity(bool state);
             void saveLog(const QString& info);
             void itemClicked(QTreeWidgetItem* item, int);
             void readSettings();
@@ -501,6 +505,7 @@
             void sendDeviceCommand(int cmd);
             void sendOutputAllRequest();
             void sendInputStatesRequest();
+            void sendDebugInfoRead(int channel);
             void clearIOTable();
             void clearJournal();
             void menuPanelCtrl();
@@ -513,6 +518,8 @@
             void widgetStackIndexChanged(int);
             void setJournalPtrShift(const QString& key, long pos);
             void timeoutSynchronization();
+            void timeoutDebugInfo();
+            void debugInfoCtrl(int timer, bool state = false);
             void importJournalToTable();
             void exportJournalToDb();
             void startExportToPDF();
@@ -546,6 +553,7 @@
             void initMonitorPurpose();
             void initOutputAll();
             void initInputs();
+            void initDebugInfo();
             void connectSystemDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
@@ -570,6 +578,7 @@
             void displayOutputAllRead(CDataUnitType& unit);
             void displayInputsRead(const QVector<quint16>& data);
             void displayBlockProtectionRead(const QVector<quint16>& data);
+            void displayDebugInfo(const CDataUnitType& unit);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
@@ -607,8 +616,10 @@
             CMonitorPurpose*                 m_monitor_purpose_window;
             COutputAll*                      m_outputall_window;
             COutputAll*                      m_inputs_window; // состояние входов
+            CDebugInfo*                      m_debuginfo_window;
             QFile*                           m_logFile;
             QTimer*                          m_tim_calculate;
+            QTimer*                          m_tim_debug_info;
             CVersionSoftware*                m_version_window;
             QSqlDatabase                     m_system_db;
             cell_list_t                      m_cell_list;
