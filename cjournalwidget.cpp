@@ -74,10 +74,12 @@ void CJournalWidget::print(const QVector<quint16>& data) const
     {
         printEvent(bytes);
     }
-    else if(journal_type == "HALF")
+    else if(journal_type == "HALFHOUR")
     {
         printHalfHour(bytes);
     }
+
+    ui->tableWidgetJournal->resizeColumnsToContents();
 }
 //--------------------------------------------------------------
 void CJournalWidget::setTableHeaders(const QStringList& headers)
@@ -170,12 +172,21 @@ void CJournalWidget::convertHalfwordToBytes(const QVector<quint16>& source, QVec
         dest << (quint8(((value >> 8)&0x00FF))) << (quint8((value&0x00FF)));
     }
 }
+//---------------------------------------------
+date_t CJournalWidget::secsToDate(quint32 secs)
+{
+    date_t date;
+
+    date.day  = secs/86400;
+    date.hour = (secs = secs%86400)/3600;
+    date.min  = (secs = secs%3600)/60;
+    date.sec  = (secs%60);
+
+    return date;
+}
 //----------------------------------------------------------------
 void CJournalWidget::printCrash(const QVector<quint8>& data) const
 {
-    // Полный АТАС с журналом событий - в некоторых местах пришлось делать реализацию в ЛОБ переступив через себя
-    // (как впрочем и вся программа - задача сделать черновик для настроек, а вылилась в полнофункциональную и для клиента -
-    // ПОЗОР НА МОЮ СЕДУЮ ГОЛОВУ - СПЛОШНОЙ ГОВНОКОД!!!).
     if(data.count() != 256)
         return;
 
@@ -445,7 +456,42 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
 //-------------------------------------------------------------------
 void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 {
-    qDebug() << "half hour: " << data.count();
+    QVector<QString> type_list = QVector<QString>() << tr("Данные") << tr("Установка даты/времени") << tr("Новые дата/время") <<
+                                                       tr("Обнуление счетчика");
+    for(int i = 0; i < data.count(); i += 64)
+    {
+        quint16   id = ((data[i + 1] << 8) | data[i]);
+        QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
+        quint8    type = data[i + 7];
+        quint32   secs = ((data[i + 11] << 24) | (data[i + 10] << 16) | (data[i + 9] << 8) | data[i + 8]);
+        int       row  = ui->tableWidgetJournal->rowCount();
+
+        ui->tableWidgetJournal->insertRow(row);
+
+        ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString("%1").arg(id)));
+        ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+        ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+
+        ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+
+        if(type < type_list.count())
+        {
+            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(QString("%1").arg(type_list[type])));
+            ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
+
+            if(type == 0)
+            {
+                date_t     t    = secsToDate(secs);
+                QString    time = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
+
+                qDebug() << "time: " << time;
+            }
+        }
+
+//        ui->tableWidgetJournal->setRowData(row, QVariant::fromValue(property_list));
+    }
 }
 //-------------------------------------------------------------
 void CJournalWidget::clickedItemTable(const QModelIndex& index)
@@ -478,5 +524,9 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
                 model->setDataModel(list);
             }
         }
+    }
+    else if(journal_type == "HALFHOUR")
+    {
+
     }
 }

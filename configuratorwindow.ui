@@ -383,41 +383,7 @@
        <layout class="QHBoxLayout" name="horizontalLayout_92">
         <item>
          <layout class="QGridLayout" name="gridLayout_49">
-          <item row="2" column="0">
-           <widget class="QPushButton" name="pushButtonInputs">
-            <property name="text">
-             <string>Входы</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="checkBoxPanelVariableCtrl">
-            <property name="text">
-             <string>Панель измерений</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="pushButtonIndicatorStates">
-            <property name="text">
-             <string>Выходы</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="checkBoxMenuPanel">
-            <property name="text">
-             <string>Панель меню</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QPushButton" name="pushButtonOutputAll">
             <property name="text">
              <string>Все выходы</string>
@@ -427,10 +393,30 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="pushButtonMonitorK10_K11">
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pushButtonDebugInfo">
             <property name="text">
-             <string>Мониторинг К10/К11</string>
+             <string>Отладочная информация</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="pushButtonIndicatorStates">
+            <property name="text">
+             <string>Выходы</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="pushButtonInputs">
+            <property name="text">
+             <string>Входы</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -438,9 +424,9 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="pushButtonDebugInfo">
+           <widget class="QPushButton" name="pushButtonMonitorK10_K11">
             <property name="text">
-             <string>Отладочная информация</string>
+             <string>Мониторинг К10/К11</string>
             </property>
             <property name="checkable">
              <bool>true</bool>

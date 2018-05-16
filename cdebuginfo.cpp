@@ -75,12 +75,12 @@ void CDebugInfo::setData(int channel, const QVector<quint16>& data)
         float val;
     } value;
 
-    for(int i = 5; i < data.count() - 1; i += 2)
+    for(int i = 3, pos = 5; i < data.count() - 1; i += 2, pos++)
     {
         value.buf[0] = data[i + 1];
         value.buf[1] = data[i];
 
-        QTableWidgetItem* item = ui->tableWidgetDebugValue->item(channel, i);
+        QTableWidgetItem* item = ui->tableWidgetDebugValue->item(channel, pos);
 
         if(item)
             item->setText(QLocale::system().toString(value.val, 'f', 1));

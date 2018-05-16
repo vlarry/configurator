@@ -64,6 +64,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initDeviceCode(); // инициализация списка кодов устройств
     initEventJournal(); // инициализация параметров журнала событий
     initCrashJournal(); // инициализация параметров журнала аварий
+    initHalfhourJournal(); // инициализация параметров журнала получасовок
     initLineEditValidator();
     initProtectionList(); // инициализация списка защит
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
@@ -314,6 +315,9 @@ void ConfiguratorWindow::debugInfoRead()
 //------------------------------------------------------
 void ConfiguratorWindow::journalRead(const QString& key)
 {
+#ifdef DEBUG_JOURNAL
+    qDebug() << "journalRead";
+#endif
     if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
         return;
 
@@ -419,7 +423,9 @@ void ConfiguratorWindow::journalRead(const QString& key)
     {
         address += set.msg_part;
     }
-
+#ifdef DEBUG_JOURNAL
+    qDebug() << "journalRead Request: addr: " << address << ", size: " << msg_size;
+#endif
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, address,
                        QVector<quint16>() << msg_size);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
@@ -1996,7 +2002,9 @@ void ConfiguratorWindow::settingCommunicationsRead()
 void ConfiguratorWindow::processReadJournals(bool state)
 {
     Q_UNUSED(state);
-
+#ifdef DEBUG_JOURNAL
+    qDebug() << "processReadJournals";
+#endif
     if(!m_active_journal_current) // если активынй журнал не выбран, значит ошибка
     {
         QMessageBox::critical(this, tr("Чтение журнала"), tr("Не выбран текущий активный журнал.\nПоробуйте еще раз."));
@@ -2207,23 +2215,19 @@ void ConfiguratorWindow::show()
     if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
     {
         ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
-        ui->checkBoxMenuPanel->setCheckState(Qt::Unchecked);
     }
     else
     {
         ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
-        ui->checkBoxMenuPanel->setCheckState(Qt::Checked);
     }
 
     if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
     {
         ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
-        ui->checkBoxPanelVariableCtrl->setCheckState(Qt::Unchecked);
     }
     else
     {
         ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
-        ui->checkBoxPanelVariableCtrl->setCheckState(Qt::Checked);
     }
 }
 //-------------------------------------------------------
@@ -3731,6 +3735,43 @@ void ConfiguratorWindow::initCrashJournal()
 
     ui->widgetJournalCrash->setJournalDescription(QVariant::fromValue(protection));
 }
+//--------------------------------------------
+void ConfiguratorWindow::initHalfhourJournal()
+{
+    QSqlQuery query_halfhour(m_system_db);
+
+    if(query_halfhour.exec("SELECT * FROM halfhour;"))
+    {
+        QVector<halfhour_var_t> variables;
+
+        if(query_halfhour.next())
+        {
+            int     id   = query_halfhour.value("id").toInt();
+            QString name = query_halfhour.value("name").toString();
+            QString meas = query_halfhour.value("measure").toString();
+
+            QSqlQuery query_halfhour_var(m_system_db);
+
+            QVector<halfhour_val_t> values;
+
+            if(query_halfhour_var.exec(QString("SELECT * FROM halfhour_var WHERE id_halfhour = %1").arg(id)))
+            {
+                QString name        = query_halfhour_var.value("name").toString();
+                QString description = query_halfhour_var.value("description").toString();
+
+                values << halfhour_val_t({ name, description, 0 });
+            }
+
+            variables << halfhour_var_t({ name, meas, values });
+        }
+
+        if(!variables.isEmpty())
+        {
+            halfhour_t halfhour = halfhour_t({ date_t({ 0, 0, 0, 0 }), variables });
+            ui->widgetJournalHalfHour->setJournalDescription(QVariant::fromValue(halfhour));
+        }
+    }
+}
 //---------------------------------------
 void ConfiguratorWindow::initDeviceCode()
 {
@@ -3781,13 +3822,14 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalIsolation->setTableColumnWidth(length_list);
 
     ui->widgetJournalCrash->setVisibleProperty(true);
+    ui->widgetJournalHalfHour->setVisibleProperty(true);
 
-    m_journal_set["CRASH"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
-                                             journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
-    m_journal_set["EVENT"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
-                                             journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
-    m_journal_set["HALF"]  = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x3000 }),
-                                             journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
+    m_journal_set["CRASH"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
+                                                journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
+    m_journal_set["EVENT"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
+                                                journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
+    m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
+                                                journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 }
 /*!
  * \brief ConfiguratorWindow::initLineEditValidator
@@ -4393,7 +4435,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
 //---------------------------------------------------------------------
 void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
 {
-#ifdef DEBUG_REQUEST
+#ifdef DEBUG_JOURNAL
     qDebug() << "Вывод Чтения журнала.";
 #endif
     if(!m_journal_read_current)
@@ -6360,7 +6402,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
                     header = ui->widgetJournalCrash->header();
                 else if(key == "EVENT")
                     header = ui->widgetJournalEvent->header();
-                else if(key == "HALF")
+                else if(key == "HALFHOUR")
                     header = ui->widgetJournalHalfHour->header();
 
                 if(header)
@@ -7080,6 +7122,9 @@ void ConfiguratorWindow::readShiftPrtEventJournal()
 //-----------------------------------------
 void ConfiguratorWindow::readJournalCount()
 {
+#ifdef DEBUG_JOURNAL
+    qDebug() << "readJournalCount";
+#endif
     if(m_journal_set.isEmpty())
         return;
 
@@ -7091,7 +7136,9 @@ void ConfiguratorWindow::readJournalCount()
                                                      QVector<quint16>() << 2);
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_COUNT);
         unit.setProperty(tr("JOURNAL"), key);
-
+#ifdef DEBUG_JOURNAL
+    qDebug() << "readJournalCount Request, addr: " << set.address.msg_count;
+#endif
         m_modbusDevice->sendRequest(unit);
     }
 }
@@ -7661,8 +7708,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
-    connect(ui->checkBoxMenuPanel, &QCheckBox::clicked, this, &ConfiguratorWindow::menuPanelCtrl);
-    connect(ui->checkBoxPanelVariableCtrl, &QCheckBox::clicked, this, &ConfiguratorWindow::variablePanelCtrl);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
     connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
     connect(ui->pushButtonImport, &QPushButton::clicked, this, &ConfiguratorWindow::processImport);

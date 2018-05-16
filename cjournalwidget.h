@@ -137,6 +137,46 @@
         io_list_t            input;
         calc_value_list_t    calc;
     };
+    /*!
+     * \brief The date_t struct
+     *
+     * Структура для хранения количества дней, часов, минут и секунд
+     */
+    struct date_t
+    {
+        int day;
+        int hour;
+        int min;
+        int sec;
+    };
+    /*!
+     * \brief The halfhour_val_t struct
+     *
+     * Структура описывающая одно значение свойств журнала получасовок
+     */
+    struct halfhour_val_t
+    {
+        QString name;
+        QString description;
+        float   value;
+    };
+    /*!
+     * \brief The halfhour_var_t struct
+     *
+     * Структура описывающая переменные свойств журнала получасовок
+     */
+    struct halfhour_var_t
+    {
+        QString name;
+        QString measure;
+        QVector<halfhour_val_t> values;
+    };
+    //---------------
+    struct halfhour_t
+    {
+        date_t time;
+        QVector<halfhour_var_t> variable;
+    };
     //----------------------------------
     class CJournalWidget: public QWidget
     {
@@ -162,6 +202,7 @@
 
             static QDateTime unpackDateTime(QVector<quint8>& data);
             static void      convertHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
+            static date_t    secsToDate(quint32 secs);
 
         protected:
             void printCrash(const QVector<quint8>& data) const;
@@ -181,4 +222,5 @@
     // регистрация новых пользовательских типов
     Q_DECLARE_METATYPE(event_t)
     Q_DECLARE_METATYPE(protection_t)
+    Q_DECLARE_METATYPE(halfhour_t)
 #endif // CJOURNALWIDGET_H
