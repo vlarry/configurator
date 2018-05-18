@@ -12,17 +12,18 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-    ui->listViewPropertyJournal->hide(); // по умолчанию окно свойств скрыто
+    ui->listViewPropertyCrashJournal->hide(); // по умолчанию окно свойств журнала аварий скрыто
+    ui->tableWidgetPropertyHalfhourJournal->hide(); // по умолчанию окно свойств журнала получасовок скрыто
 
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
     connect(ui->tableWidgetJournal, &CJournalTable::clicked, this, &CJournalWidget::clickedItemTable);
 
     setAutoFillBackground(true);
 
-    CJournalPropertyModel* model = new CJournalPropertyModel(ui->listViewPropertyJournal);
+    CJournalPropertyModel* model = new CJournalPropertyModel(ui->listViewPropertyCrashJournal);
 
-    ui->listViewPropertyJournal->setModel(model);
-    ui->listViewPropertyJournal->setItemDelegate(new CJournalPropertyDelegate(ui->listViewPropertyJournal));
+    ui->listViewPropertyCrashJournal->setModel(model);
+    ui->listViewPropertyCrashJournal->setItemDelegate(new CJournalPropertyDelegate(ui->listViewPropertyCrashJournal));
 }
 //-------------------------------
 CJournalWidget::~CJournalWidget()
@@ -81,11 +82,18 @@ void CJournalWidget::print(const QVector<quint16>& data) const
 
     ui->tableWidgetJournal->resizeColumnsToContents();
 }
-//--------------------------------------------------------------
-void CJournalWidget::setTableHeaders(const QStringList& headers)
+//----------------------------------------------------------------------------------------------------------
+void CJournalWidget::setTableHeaders(CJournalWidget::PropertyType property_type, const QStringList& headers)
 {
+    m_property_type = property_type;
+
     ui->tableWidgetJournal->setColumnCount(headers.count());
     ui->tableWidgetJournal->setHorizontalHeaderLabels(headers);
+
+    if(property_type == HALFHOUR_PROPERTY)
+    {
+        ui->tableWidgetJournal->hideColumn(4);
+    }
 }
 //----------------------------------------------------------------
 void CJournalWidget::setTableColumnWidth(const QVector<int>& list)
@@ -111,10 +119,34 @@ void CJournalWidget::setJournalDescription(QVariant data)
 {
     m_journal_data = data;
 }
-//-------------------------------------------------
-void CJournalWidget::setVisibleProperty(bool state)
+//------------------------------------------------------------------------
+void CJournalWidget::setVisibleProperty(PropertyType property, bool state)
 {
-    ui->listViewPropertyJournal->setVisible(state);
+    if(property == CRASH_PROPERTY)
+        ui->listViewPropertyCrashJournal->setVisible(state);
+    else if(property == HALFHOUR_PROPERTY)
+        ui->tableWidgetPropertyHalfhourJournal->setVisible(state);
+}
+//------------------------------------------------------------------------------------
+void CJournalWidget::setHalfhourHeaders(const QVector<halfhour_item_t>& halfhour_cols,
+                                        const QVector<halfhour_item_t>& halfhour_rows)
+{
+    QStringList hor_labels, ver_labels;
+
+    for(const halfhour_item_t& item: halfhour_cols)
+    {
+        hor_labels << QString("%1, %2").arg(item.name).arg(item.description);
+    }
+
+    for(const halfhour_item_t& item: halfhour_rows)
+    {
+        ver_labels << QString("%1").arg(item.name);
+    }
+
+    ui->tableWidgetPropertyHalfhourJournal->setColumnCount(hor_labels.count());
+    ui->tableWidgetPropertyHalfhourJournal->setRowCount(ver_labels.count());
+    ui->tableWidgetPropertyHalfhourJournal->setHorizontalHeaderLabels(hor_labels);
+    ui->tableWidgetPropertyHalfhourJournal->setVerticalHeaderLabels(ver_labels);
 }
 //---------------------------------------
 void CJournalWidget::journalClear() const
@@ -122,13 +154,15 @@ void CJournalWidget::journalClear() const
     ui->tableWidgetJournal->clearContents();
     ui->tableWidgetJournal->setRowCount(0);
 
-    CJournalPropertyModel* model = qobject_cast<CJournalPropertyModel*>(ui->listViewPropertyJournal->model());
+    CJournalPropertyModel* model = qobject_cast<CJournalPropertyModel*>(ui->listViewPropertyCrashJournal->model());
 
     if(model)
     {
         QVector<QPair<QString, QString> > pair;
         model->setDataModel(pair);
     }
+
+    ui->tableWidgetPropertyHalfhourJournal->clearContents();
 }
 /*!
  * \brief CJournalWidget::unpackDateTime
@@ -458,12 +492,12 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 {
     QVector<QString> type_list = QVector<QString>() << tr("Данные") << tr("Установка даты/времени") << tr("Новые дата/время") <<
                                                        tr("Обнуление счетчика");
+
     for(int i = 0; i < data.count(); i += 64)
     {
         quint16   id = ((data[i + 1] << 8) | data[i]);
         QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
         quint8    type = data[i + 7];
-        quint32   secs = ((data[i + 11] << 24) | (data[i + 10] << 16) | (data[i + 9] << 8) | data[i + 8]);
         int       row  = ui->tableWidgetJournal->rowCount();
 
         ui->tableWidgetJournal->insertRow(row);
@@ -483,14 +517,39 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 
             if(type == 0)
             {
-                date_t     t    = secsToDate(secs);
-                QString    time = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
+                quint32 secs = ((data[i + 11] << 24) | (data[i + 10] << 16) | (data[i + 9] << 8) | data[i + 8]);
 
-                qDebug() << "time: " << time;
+                if(ui->tableWidgetJournal->isColumnHidden(4))
+                    ui->tableWidgetJournal->showColumn(4);
+
+                date_t  t    = secsToDate(secs);
+                QString time = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
+
+                ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(time));
+
+                union
+                {
+                    quint8 buf[4];
+                    float  _float;
+                } value;
+
+                halfhour_t halfhour;
+
+                for(int j = 0; j < 12; j++)
+                {
+                    int index = j + 12;
+
+                    value.buf[0] = data[index];
+                    value.buf[1] = data[index + 1];
+                    value.buf[2] = data[index + 2];
+                    value.buf[3] = data[index + 3];
+
+                    halfhour << value._float;
+                }
+
+                ui->tableWidgetJournal->setRowData(row, QVariant::fromValue(halfhour));
             }
         }
-
-//        ui->tableWidgetJournal->setRowData(row, QVariant::fromValue(property_list));
     }
 }
 //-------------------------------------------------------------
@@ -517,7 +576,7 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
 
         if(!list.isEmpty())
         {
-            CJournalPropertyModel* model = qobject_cast<CJournalPropertyModel*>(ui->listViewPropertyJournal->model());
+            CJournalPropertyModel* model = qobject_cast<CJournalPropertyModel*>(ui->listViewPropertyCrashJournal->model());
 
             if(model)
             {
@@ -527,6 +586,29 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
     }
     else if(journal_type == "HALFHOUR")
     {
+        halfhour_t halfhour = qvariant_cast<halfhour_t>(ui->tableWidgetJournal->rowData(index.row()));
 
+        for(int i = 0; i < ui->tableWidgetPropertyHalfhourJournal->columnCount(); i++)
+        {
+            for(int j = 0; j < ui->tableWidgetPropertyHalfhourJournal->rowCount(); j++)
+            {
+                QTableWidgetItem* item = ui->tableWidgetPropertyHalfhourJournal->item(j, i);
+
+                int     pos   = i*4 + j;
+                QString value = QLocale::system().toString(halfhour[pos], 'f', 1);
+
+                if(item)
+                {
+                    item->setText(value);
+                }
+                else
+                {
+                    item = new QTableWidgetItem(value);
+
+                    item->setTextAlignment(Qt::AlignCenter);
+                    ui->tableWidgetPropertyHalfhourJournal->setItem(j, i, item);
+                }
+            }
+        }
     }
 }

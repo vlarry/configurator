@@ -2024,7 +2024,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
     {
         journal_set_t& set = m_journal_set[key];
 
-        m_modbusDevice->clearQueueRequest();
+//        m_modbusDevice->clearQueueRequest();
 
         set.isStop = true;
     }
@@ -3740,36 +3740,38 @@ void ConfiguratorWindow::initHalfhourJournal()
 {
     QSqlQuery query_halfhour(m_system_db);
 
+    QVector<halfhour_item_t> columns, rows;
+
     if(query_halfhour.exec("SELECT * FROM halfhour;"))
     {
-        QVector<halfhour_var_t> variables;
-
-        if(query_halfhour.next())
+        while(query_halfhour.next())
         {
-            int     id   = query_halfhour.value("id").toInt();
+//            int     id   = query_halfhour.value("id").toInt();
             QString name = query_halfhour.value("name").toString();
             QString meas = query_halfhour.value("measure").toString();
 
-            QSqlQuery query_halfhour_var(m_system_db);
-
-            QVector<halfhour_val_t> values;
-
-            if(query_halfhour_var.exec(QString("SELECT * FROM halfhour_var WHERE id_halfhour = %1").arg(id)))
-            {
-                QString name        = query_halfhour_var.value("name").toString();
-                QString description = query_halfhour_var.value("description").toString();
-
-                values << halfhour_val_t({ name, description, 0 });
-            }
-
-            variables << halfhour_var_t({ name, meas, values });
+            columns << halfhour_item_t({ name, meas });
         }
+    }
+    else
+        qDebug() << "Ошибка чтения переменных halfhour: " << query_halfhour.lastError().text();
 
-        if(!variables.isEmpty())
+    if(query_halfhour.exec(QString("SELECT * FROM halfhour_var;")))
+    {
+        while(query_halfhour.next())
         {
-            halfhour_t halfhour = halfhour_t({ date_t({ 0, 0, 0, 0 }), variables });
-            ui->widgetJournalHalfHour->setJournalDescription(QVariant::fromValue(halfhour));
+            QString name        = query_halfhour.value("name").toString();
+            QString description = query_halfhour.value("description").toString();
+
+            rows << halfhour_item_t({ name, description });
         }
+    }
+    else
+        qDebug() << "Ошибка чтения значений halfhour_val: " << query_halfhour.lastError().text();
+
+    if(!columns.isEmpty() && !rows.isEmpty())
+    {
+        ui->widgetJournalHalfHour->setHalfhourHeaders(columns, rows);
     }
 }
 //---------------------------------------
@@ -3796,7 +3798,7 @@ void ConfiguratorWindow::initJournals()
     QStringList crashJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
                                                            tr("Защита");
     QStringList halfHourJournalHeaders  = QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
-                                                           tr("Тип записи");
+                                                           tr("Тип записи") << tr("Время учета, сек");
     QStringList isolationJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
@@ -3809,10 +3811,10 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalHalfHour->setProperty("TYPE", tr("HALFHOUR"));
     ui->widgetJournalIsolation->setProperty("TYPE", tr("ISOLATION"));
 
-    ui->widgetJournalCrash->setTableHeaders(crashJournalHeaders);
-    ui->widgetJournalEvent->setTableHeaders(eventJournalHeaders);
-    ui->widgetJournalHalfHour->setTableHeaders(halfHourJournalHeaders);
-    ui->widgetJournalIsolation->setTableHeaders(isolationJournalHeaders);
+    ui->widgetJournalCrash->setTableHeaders(CJournalWidget::CRASH_PROPERTY, crashJournalHeaders);
+    ui->widgetJournalEvent->setTableHeaders(CJournalWidget::EVENT_PROPERTY, eventJournalHeaders);
+    ui->widgetJournalHalfHour->setTableHeaders(CJournalWidget::HALFHOUR_PROPERTY, halfHourJournalHeaders);
+    ui->widgetJournalIsolation->setTableHeaders(CJournalWidget::ISOLATION_PROPERTY, isolationJournalHeaders);
 
     QVector<int> length_list = QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300;
 
@@ -3821,8 +3823,8 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalHalfHour->setTableColumnWidth(length_list);
     ui->widgetJournalIsolation->setTableColumnWidth(length_list);
 
-    ui->widgetJournalCrash->setVisibleProperty(true);
-    ui->widgetJournalHalfHour->setVisibleProperty(true);
+    ui->widgetJournalCrash->setVisibleProperty(CJournalWidget::CRASH_PROPERTY, true);
+    ui->widgetJournalHalfHour->setVisibleProperty(CJournalWidget::HALFHOUR_PROPERTY , true);
 
     m_journal_set["CRASH"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
                                                 journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});

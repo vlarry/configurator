@@ -149,38 +149,27 @@
         int min;
         int sec;
     };
-    /*!
-     * \brief The halfhour_val_t struct
-     *
-     * Структура описывающая одно значение свойств журнала получасовок
-     */
-    struct halfhour_val_t
+    //--------------------------------
+    typedef QVector<float> halfhour_t;
+    //--------------------
+    struct halfhour_item_t
     {
         QString name;
         QString description;
-        float   value;
-    };
-    /*!
-     * \brief The halfhour_var_t struct
-     *
-     * Структура описывающая переменные свойств журнала получасовок
-     */
-    struct halfhour_var_t
-    {
-        QString name;
-        QString measure;
-        QVector<halfhour_val_t> values;
-    };
-    //---------------
-    struct halfhour_t
-    {
-        date_t time;
-        QVector<halfhour_var_t> variable;
     };
     //----------------------------------
     class CJournalWidget: public QWidget
     {
         Q_OBJECT
+
+        public:
+            enum PropertyType
+            {
+                EVENT_PROPERTY,
+                CRASH_PROPERTY,
+                HALFHOUR_PROPERTY,
+                ISOLATION_PROPERTY
+            };
 
         public:
             explicit CJournalWidget(QWidget* parent = nullptr);
@@ -192,11 +181,12 @@
             QListWidget*    propertyJournal() const;
             void            print(const QVector<quint16>& data) const;
 
-            void setTableHeaders(const QStringList& headers);
+            void setTableHeaders(PropertyType property_type, const QStringList& headers);
             void setTableColumnWidth(const QVector<int>& list);
             void setTableColumnWidth(int column, int width);
             void setJournalDescription(QVariant data);
-            void setVisibleProperty(bool state = false);
+            void setVisibleProperty(PropertyType property, bool state = false);
+            void setHalfhourHeaders(const QVector<halfhour_item_t>& halfhour_cols, const QVector<halfhour_item_t>& halfhour_rows);
 
             void journalClear() const;
 
@@ -218,6 +208,7 @@
         private:
             Ui::CJournalWidget* ui;
             QVariant            m_journal_data;
+            PropertyType        m_property_type;
     };
     // регистрация новых пользовательских типов
     Q_DECLARE_METATYPE(event_t)
