@@ -2023,7 +2023,9 @@ void ConfiguratorWindow::processReadJournals(bool state)
     if(!state)
     {
         journal_set_t& set = m_journal_set[key];
-
+#ifdef DEBUG_JOURNAL
+    qDebug() << "processReadJournals stop read journal";
+#endif
 //        m_modbusDevice->clearQueueRequest();
 
         set.isStop = true;

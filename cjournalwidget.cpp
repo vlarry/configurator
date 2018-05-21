@@ -525,7 +525,7 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
                 date_t  t    = secsToDate(secs);
                 QString time = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
 
-                ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(time));
+                ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(time));
 
                 union
                 {
@@ -537,7 +537,7 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 
                 for(int j = 0; j < 12; j++)
                 {
-                    int index = j + 12;
+                    int index = j*4 + 12;
 
                     value.buf[0] = data[index];
                     value.buf[1] = data[index + 1];
@@ -587,6 +587,12 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
     else if(journal_type == "HALFHOUR")
     {
         halfhour_t halfhour = qvariant_cast<halfhour_t>(ui->tableWidgetJournal->rowData(index.row()));
+
+        if(halfhour.isEmpty())
+        {
+            ui->tableWidgetPropertyHalfhourJournal->clearContents();
+            return;
+        }
 
         for(int i = 0; i < ui->tableWidgetPropertyHalfhourJournal->columnCount(); i++)
         {

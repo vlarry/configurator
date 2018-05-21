@@ -39,6 +39,11 @@
         <file>resource/images/relay_type1_off.png</file>
         <file>resource/images/relay_type1_on.png</file>
         <file>resource/images/branch_left.png</file>
+        <file>resource/images/inputs.png</file>
+        <file>resource/images/outputs.png</file>
+        <file>resource/images/outputs_all.png</file>
+        <file>resource/images/debug.png</file>
+        <file>resource/images/monitor_k10_k11.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

@@ -52,7 +52,7 @@
     #include "coutputall.h"
     #include <cdebuginfo.h>
     //-------------------
-    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
+//    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");
