@@ -2189,10 +2189,11 @@ void ConfiguratorWindow::show()
     m_version_window = new CVersionSoftware(this);
     versionParser();
 
-    ui->tabwgtMenu->setCurrentIndex(3);
+    ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
     m_status_bar->connectStateChanged(false);
 
-    ui->tabwgtMenu->setTabEnabled(4, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
 
     ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
     ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
@@ -3346,6 +3347,22 @@ void ConfiguratorWindow::initMenuPanel()
     ui->treewgtDeviceMenu->addTopLevelItem(itemSettings);
 
     // заполнение карты меню устройства для доступа к настройкам при клике по пункту
+    m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT] = 10000;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT] = 10000;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ROOT]   = 10000;
+    m_menu_items[DEVICE_MENU_ITEM_MEASURES_ROOT]   = 10000;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ROOT]   = 10000;
+
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]     = 10000;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]       = 10000;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]    = 10000;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]   = 10000;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]    = 10000;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR ]      = 10000;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE] = 10000;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]     = 10000;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]     = 10000;
+
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL] = 0;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB]   = 1;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
@@ -6458,17 +6475,30 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
 //---------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int)
 {
-    ui->tabwgtMenu->setTabEnabled(4, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+
     m_active_journal_current = nullptr;
+
     ui->pushButtonJournalRead->setVisible(false);
     ui->pushButtonJournalClear->setVisible(false);
     ui->pushButtonDefaultSettings->setVisible(false);
 
+    if(ui->tabwgtMenu->currentIndex() == TAB_HELP_INDEX)
+    {
+        ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
+    }
+
     DeviceMenuItemType index = menuIndex();
 
-    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
+    if(index >= DEVICE_MENU_ITEM_PROTECTION_ROOT && index <= DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START)
     {
-        ui->tabwgtMenu->setTabEnabled(4, true);
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+        ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
+    }
+    else if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
+    {
+        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
 
         int width = ui->stwgtMain->width() - 760;
 
@@ -6487,14 +6517,14 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         {
             readJournalCount();
         }
-
-
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD)
     {
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+        ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
         ui->pushButtonDefaultSettings->setVisible(true);
     }
 }

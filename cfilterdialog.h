@@ -36,6 +36,5 @@
             Ui::CFilterDialog* ui;
             QButtonGroup*      m_btnGroup;
             int                m_intervalMax;
-            QTime              m_time;
     };
 #endif // CFILTERDIALOG_H

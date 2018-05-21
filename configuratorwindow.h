@@ -204,6 +204,17 @@
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS  = 5022,
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION     = 5023
             };
+            //---------------
+            enum TabMenuIndex
+            {
+                TAB_FILE_INDEX = 0,
+                TAB_IMPORT_EXPORT_INDEX,
+                TAB_VIEW_INDEX,
+                TAB_SET_INDEX,
+                TAB_READ_WRITE_INDEX,
+                TAB_FILTER_INDEX,
+                TAB_HELP_INDEX
+            };
             /*!
              * \brief variable_bit_t
              *

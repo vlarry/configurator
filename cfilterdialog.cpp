@@ -55,12 +55,6 @@ void CFilterDialog::intervalChanged(int value)
 void CFilterDialog::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
-
-    CTimeFilterDialog* filterDialog = new CTimeFilterDialog(this);
-
-    filterDialog->exec();
-
-    m_time = filterDialog->time();
 }
 //-----------------------------------
 const CFilter CFilterDialog::filter()
@@ -74,7 +68,7 @@ const CFilter CFilterDialog::filter()
     interval.begin = ui->spinboxIntervalBegin->value();
     interval.end   = ui->spinboxIntervalBegin->value() + ui->spinboxIntervalCount->value();
 
-    CFilter cfilter(interval, date, m_time);
+    CFilter cfilter(interval, date, ui->timeEditBeginFilter->time());
 
     cfilter.setType(((ui->stackwgtFilter->currentIndex() == 0)?CFilter::INTERVAL:CFilter::DATE));
     cfilter.setState(true);
@@ -104,5 +98,5 @@ const CFilter::FilterDateType CFilterDialog::date()
 //-------------------------------
 const QTime CFilterDialog::time()
 {
-    return m_time;
+    return ui->timeEditBeginFilter->time();
 }
