@@ -44,6 +44,8 @@
         <file>resource/images/outputs_all.png</file>
         <file>resource/images/debug.png</file>
         <file>resource/images/monitor_k10_k11.png</file>
+        <file>resource/images/help.png</file>
+        <file>resource/images/version.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
