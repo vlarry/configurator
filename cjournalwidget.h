@@ -149,8 +149,12 @@
         int min;
         int sec;
     };
-    //--------------------------------
-    typedef QVector<float> halfhour_t;
+    //---------------
+    struct halfhour_t
+    {
+        quint32        time;
+        QVector<float> values;
+    };
     //--------------------
     struct halfhour_item_t
     {

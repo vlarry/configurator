@@ -2001,7 +2001,6 @@ void ConfiguratorWindow::settingCommunicationsRead()
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
 {
-    Q_UNUSED(state);
 #ifdef DEBUG_JOURNAL
     qDebug() << "processReadJournals";
 #endif
@@ -2026,7 +2025,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
 #ifdef DEBUG_JOURNAL
     qDebug() << "processReadJournals stop read journal";
 #endif
-//        m_modbusDevice->clearQueueRequest();
+        m_modbusDevice->clearQueueRequest();
 
         set.isStop = true;
     }
@@ -5930,6 +5929,39 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
             return false;
         }
     }
+    else if(journal_type == "HALFHOUR")
+    {
+        // создание таблицы для хранения журналов аварий
+        db_str = "CREATE TABLE journals ("
+                 "id_msg INTEGER NOT NULL, "
+                 "date STRING(25) NOT NULL, "
+                 "time STRING(25), "
+                 "type STRING(255), "
+                 "id_journal INTEGER NOT NULL, " // идентификатор для привязки записей из таблицы свойств
+                 "sn_device INTEGER NOT NULL, "
+                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
+
+        if(!query.exec(db_str))
+        {
+            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журналов получасовок: ") +
+                                       query.lastError().text());
+            return false;
+        }
+
+        // создание таблицы для хранения свойств журналов аварий
+        db_str = "CREATE TABLE property ("
+                 "time INTEGER NOT NULL, "
+                 "value STRING(255) NOT NULL, "
+                 "id_journal INTEGER NOT NULL, "
+                 "CONSTRAINT new_pk PRIMARY KEY (time, value, id_journal));";
+
+        if(!query.exec(db_str))
+        {
+            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу свойств журналов получасовок: ") +
+                                       query.lastError().text());
+            return false;
+        }
+    }
 
     return true;
 }
@@ -6772,6 +6804,10 @@ void ConfiguratorWindow::importJournalToTable()
         table->setItem(row, 1, new CTableWidgetItem(date));
         table->setItem(row, 2, new QTableWidgetItem(time));
 
+        table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+        table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+        table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+
         if(journal_type == "EVENT")
         {
             QString type      = query.value("type").toString();
@@ -6781,10 +6817,6 @@ void ConfiguratorWindow::importJournalToTable()
             table->setItem(row, 3, new QTableWidgetItem(type));
             table->setItem(row, 4, new QTableWidgetItem(category));
             table->setItem(row, 5, new QTableWidgetItem(parameter));
-
-            table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-            table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-            table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
         }
         else if(journal_type == "CRASH")
         {
@@ -6814,6 +6846,41 @@ void ConfiguratorWindow::importJournalToTable()
             if(!property_list.isEmpty())
                 table->setRowData(row, QVariant::fromValue(property_list));
         }
+        else if(journal_type == "HALFHOUR")
+        {
+            QString type       = query.value("type").toString();
+            int     id_journal = query.value("id_journal").toInt();
+
+            table->setItem(row, 3, new QTableWidgetItem(type));
+
+            // формирование запроса для получения свойств записи
+            QSqlQuery query_property(*db);
+
+            if(!query_property.exec(QString("SELECT time, value FROM property WHERE id_journal=%1;").arg(id_journal)))
+            {
+                qDebug() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
+                continue;
+            }
+
+            halfhour_t halfhour = { 0, QVector<float>(0) };
+
+            while(query_property.next())
+            {
+                halfhour.values << query_property.value("value").toFloat();
+
+                if(halfhour.time == 0)
+                {
+                    halfhour.time = query_property.value("time").toInt();
+                    date_t  t     = CJournalWidget::secsToDate(halfhour.time);
+                    QString time  = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
+
+                    table->setItem(row, 4, new QTableWidgetItem(time));
+                }
+            }
+
+            if(!halfhour.values.isEmpty())
+                table->setRowData(row, QVariant::fromValue(halfhour));
+        }
 
         m_progressbar->progressIncrement();
 
@@ -6839,6 +6906,9 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(header->stateCheckbox())
         table->scrollToBottom();
+
+    table->resizeColumnsToContents();
+    table->horizontalHeader()->setStretchLastSection(true);
 
     disconnectDb(db);
 }
@@ -7094,6 +7164,48 @@ void ConfiguratorWindow::exportJournalToDb()
                     query_property.bindValue(":id_journal", id_journal);
 
                     query_property.exec();
+                }
+
+                id_journal++;
+            }
+        }
+        else if(journal_type == "HALFHOUR")
+        {
+            QTableWidgetItem* item = table->item(i, 3);
+
+            if(!item)
+                continue;
+
+            QString type = item->text();
+
+            query.prepare("INSERT OR REPLACE INTO journals (id_msg, date, time, type, id_journal, sn_device)"
+                          "VALUES(:id_msg, :date, :time, :type, :id_journal, :sn_device)");
+            query.bindValue(":id_msg", id_msg);
+            query.bindValue(":date", date);
+            query.bindValue(":time", time);
+            query.bindValue(":type", type);
+            query.bindValue(":id_journal", id_journal);
+            query.bindValue(":sn_device", id);
+
+            if(!query.exec())
+                qDebug() << "journal harfhour error: " << query.lastError().text();
+
+            halfhour_t halfhour = qvariant_cast<halfhour_t>(table->rowData(i));
+
+            if(!halfhour.values.isEmpty())
+            {
+                for(const float& value: halfhour.values)
+                {
+                    QSqlQuery query_property(*db);
+
+                    query_property.prepare("INSERT OR REPLACE INTO property (time, value, id_journal)"
+                                           "VALUES(:time, :value, :id_journal)");
+                    query_property.bindValue(":time", halfhour.time);
+                    query_property.bindValue(":value", value);
+                    query_property.bindValue(":id_journal", id_journal);
+
+                    if(!query_property.exec())
+                        qDebug() << "journal halfhour property error: " << query_property.lastError().text();
                 }
 
                 id_journal++;

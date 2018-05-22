@@ -81,6 +81,7 @@ void CJournalWidget::print(const QVector<quint16>& data) const
     }
 
     ui->tableWidgetJournal->resizeColumnsToContents();
+    ui->tableWidgetJournal->horizontalHeader()->setStretchLastSection(true);
 }
 //----------------------------------------------------------------------------------------------------------
 void CJournalWidget::setTableHeaders(CJournalWidget::PropertyType property_type, const QStringList& headers)
@@ -90,10 +91,10 @@ void CJournalWidget::setTableHeaders(CJournalWidget::PropertyType property_type,
     ui->tableWidgetJournal->setColumnCount(headers.count());
     ui->tableWidgetJournal->setHorizontalHeaderLabels(headers);
 
-    if(property_type == HALFHOUR_PROPERTY)
-    {
-        ui->tableWidgetJournal->hideColumn(4);
-    }
+//    if(property_type == HALFHOUR_PROPERTY)
+//    {
+//        ui->tableWidgetJournal->hideColumn(4);
+//    }
 }
 //----------------------------------------------------------------
 void CJournalWidget::setTableColumnWidth(const QVector<int>& list)
@@ -535,6 +536,8 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 
                 halfhour_t halfhour;
 
+                halfhour.time = secs;
+
                 for(int j = 0; j < 12; j++)
                 {
                     int index = j*4 + 12;
@@ -544,7 +547,7 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
                     value.buf[2] = data[index + 2];
                     value.buf[3] = data[index + 3];
 
-                    halfhour << value._float;
+                    halfhour.values << value._float;
                 }
 
                 ui->tableWidgetJournal->setRowData(row, QVariant::fromValue(halfhour));
@@ -588,7 +591,7 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
     {
         halfhour_t halfhour = qvariant_cast<halfhour_t>(ui->tableWidgetJournal->rowData(index.row()));
 
-        if(halfhour.isEmpty())
+        if(halfhour.values.isEmpty())
         {
             ui->tableWidgetPropertyHalfhourJournal->clearContents();
             return;
@@ -601,7 +604,19 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
                 QTableWidgetItem* item = ui->tableWidgetPropertyHalfhourJournal->item(j, i);
 
                 int     pos   = i*4 + j;
-                QString value = QLocale::system().toString(halfhour[pos], 'f', 1);
+                QString value = QLocale::system().toString(halfhour.values[pos], 'f', 1);
+                date_t  t     = secsToDate(halfhour.time);
+                int     row   = ui->tableWidgetJournal->currentRow();
+                QString time  = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
+
+                QTableWidgetItem* itemTime = ui->tableWidgetJournal->item(row, 4);
+
+                if(itemTime)
+                {
+                    itemTime->setText(time);
+                    itemTime->setTextAlignment(Qt::AlignCenter);
+                    ui->tableWidgetJournal->setItem(row, 4, itemTime);
+                }
 
                 if(item)
                 {
