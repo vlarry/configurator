@@ -605,18 +605,17 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
 
                 int     pos   = i*4 + j;
                 QString value = QLocale::system().toString(halfhour.values[pos], 'f', 1);
-                date_t  t     = secsToDate(halfhour.time);
-                int     row   = ui->tableWidgetJournal->currentRow();
-                QString time  = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
+//                date_t  t     = secsToDate(halfhour.time);
+//                int     row   = ui->tableWidgetJournal->currentRow();
+//                QString time  = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
 
-                QTableWidgetItem* itemTime = ui->tableWidgetJournal->item(row, 4);
+//                QTableWidgetItem* itemTime = ui->tableWidgetJournal->item(row, 4);
 
-                if(itemTime)
-                {
-                    itemTime->setText(time);
-                    itemTime->setTextAlignment(Qt::AlignCenter);
-                    ui->tableWidgetJournal->setItem(row, 4, itemTime);
-                }
+//                if(itemTime && itemTime->text().isEmpty())
+//                {
+//                    itemTime->setText(time);
+//                    itemTime->setTextAlignment(Qt::AlignCenter);
+//                }
 
                 if(item)
                 {
@@ -626,8 +625,12 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
                 {
                     item = new QTableWidgetItem(value);
 
-                    item->setTextAlignment(Qt::AlignCenter);
-                    ui->tableWidgetPropertyHalfhourJournal->setItem(j, i, item);
+                    if(item)
+                    {
+                        item->setText(value);
+                        item->setTextAlignment(Qt::AlignCenter);
+                        ui->tableWidgetPropertyHalfhourJournal->setItem(j, i, item);
+                    }
                 }
             }
         }

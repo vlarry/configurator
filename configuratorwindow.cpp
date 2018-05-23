@@ -5950,10 +5950,10 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         // создание таблицы для хранения свойств журналов аварий
         db_str = "CREATE TABLE property ("
-                 "time INTEGER NOT NULL, "
-                 "value STRING(255) NOT NULL, "
-                 "id_journal INTEGER NOT NULL, "
-                 "CONSTRAINT new_pk PRIMARY KEY (time, value, id_journal));";
+                 "time INTEGER, "
+                 "value DOUBLE, "
+                 "id_journal INTEGER);"
+                 /*"CONSTRAINT new_pk PRIMARY KEY (time, value, id_journal));"*/;
 
         if(!query.exec(db_str))
         {
@@ -7192,18 +7192,24 @@ void ConfiguratorWindow::exportJournalToDb()
 
             halfhour_t halfhour = qvariant_cast<halfhour_t>(table->rowData(i));
 
+//            qDebug() << "id: " << table->item(i, 0)->text() << ", halfhour: " << halfhour.values.count();
+
             if(!halfhour.values.isEmpty())
             {
                 for(const float& value: halfhour.values)
                 {
+//                    qDebug() << "value: " << value << ", from: " << halfhour.values.count();
                     QSqlQuery query_property(*db);
 
-                    query_property.prepare("INSERT OR REPLACE INTO property (time, value, id_journal)"
+                    query_property.prepare("INSERT INTO property (time, value, id_journal)"
                                            "VALUES(:time, :value, :id_journal)");
                     query_property.bindValue(":time", halfhour.time);
                     query_property.bindValue(":value", value);
                     query_property.bindValue(":id_journal", id_journal);
 
+//                    QString query_str = QString("INSERT OR REPLACE INTO property (time, value, id_journal) VALUES(%1, %2, %3)").
+//                                                arg(halfhour.time).arg(value).arg(id_journal);
+//                    qDebug() << query_str;
                     if(!query_property.exec())
                         qDebug() << "journal halfhour property error: " << query_property.lastError().text();
                 }

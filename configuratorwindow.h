@@ -19,6 +19,7 @@
     #include <QSqlDatabase>
     #include <QSqlQuery>
     #include <QSqlError>
+    #include <QSqlRecord>
     #include <QTextDocument>
     #include <QTextCursor>
     #include <QJsonObject>
@@ -53,7 +54,7 @@
     #include <cdebuginfo.h>
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
-    #define DEBUG_JOURNAL // отладка чтение журналов
+//    #define DEBUG_JOURNAL // отладка чтение журналов
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");
     const QString ORGANIZATION_DOMAIN = QObject::tr("http://www.rpa.ua/");
