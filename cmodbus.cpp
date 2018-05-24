@@ -303,8 +303,12 @@ void CModbus::request(CDataUnitType& unit)
     
     m_request_cur = unit;
     m_timeout_timer->start(m_timeout_repeat);
-    qDebug() << "request current: " << m_request_cur.functionType() << ", addr: " << m_request_cur.address() <<
-                ", values" << m_request_cur.valueCount();
+
+#ifdef DEBUG_MODBUS
+    qDebug() << "request current: " << m_request_cur.property("REQUEST").toInt() << ", addr: " << m_request_cur.address() <<
+                ", values: " << m_request_cur.values();
+#endif
+
     m_time.start();
 
     m_device->write(ba);
@@ -360,8 +364,10 @@ void CModbus::readyRead()
     
     quint16 count = 0;
 
-    qDebug() << "readyRead current: " << m_request_cur.functionType() << ", addr: " << m_request_cur.address() <<
-                ", values: " << m_request_cur.valueCount() << ", receiver size: " << m_receive_buffer.count();
+#ifdef DEBUG_MODBUS
+    qDebug() << "readyRead current: " << m_request_cur.property("REQUEST").toInt() << ", addr: " << m_request_cur.address() <<
+                ", values: " << m_request_cur.values() << ", receiver size: " << m_receive_buffer.count();
+#endif
     
     // Структура запроса для ReadHoldingRegisters и ReadInputRegisters:
     // ID | КОД ФУНКЦИИ | 1 БАЙТ - КОЛИЧЕСТВО ДАННЫХ ИДУЩИХ СЛЕДОМ | ДАННЫЕ | 2 БАЙТА CRC
@@ -583,8 +589,25 @@ void CModbus::timeoutReadWait()
         }
 
         emit errorDevice(str);
-qDebug() << "Reconnect: " << m_request_cur.functionType() << ", addr: " << m_request_cur.address() << ", values: " <<
-            m_request_cur.valueCount() << ", queue size: " << m_request_queue.size();
+
+#ifdef DEBUG_MODBUS
+    qDebug() << "Reconnect: " << m_request_cur.property("REQUEST").toInt() << ", addr: " << m_request_cur.address() << ", values: " <<
+                                 m_request_cur.values();
+
+    if(!m_request_queue.isEmpty())
+    {
+        qDebug() << "queue: " << m_request_queue.count();
+
+        for(const CDataUnitType& unit: m_request_queue)
+        {
+            qDebug() << "unit: " << unit.property("REQUEST").toInt() << ", addr: " << unit.address() << ", values: " <<
+                                    unit.valueCount();
+        }
+
+        qDebug() << "end queue";
+    }
+#endif
+
         request(m_request_cur);
     }
 }

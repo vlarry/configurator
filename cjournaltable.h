@@ -36,9 +36,6 @@
 
         protected:
             void keyPressEvent(QKeyEvent* event);
-
-        private:
-            QMap<int, QVariant> m_data_rows;
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(property_list_t)

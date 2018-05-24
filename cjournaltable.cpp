@@ -12,8 +12,6 @@ CJournalTable::CJournalTable(QWidget* parent):
  */
 QVariant CJournalTable::rowData(int row) const
 {
-//    if(m_data_rows.find(row) != m_data_rows.end())
-//        return m_data_rows[row];
     QTableWidgetItem* i = item(row, 0);
 
     if(i)
@@ -28,7 +26,6 @@ QVariant CJournalTable::rowData(int row) const
  */
 void CJournalTable::setRowData(int row, QVariant value)
 {
-    m_data_rows[row] = value;
     QTableWidgetItem* i = item(row, 0);
 
     if(i)
