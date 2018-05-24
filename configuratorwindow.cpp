@@ -370,14 +370,14 @@ void ConfiguratorWindow::journalRead(const QString& key)
                     int pos_end = filter.interval().end;
 
                     set.message.read_start = pos_beg; // устанавливаем номер сообщения с которого будем читать
-                    set.message.read_limit = pos_end - pos_beg; // устанавливаем сообщение до которого будем читать
+                    set.message.read_limit = pos_end - pos_beg + 1; // устанавливаем сообщение до которого будем читать
                 }
             }
         }
 
         if(set.message.read_start >= sector_size) // если начальное сообщение находится не в на первой странице
         {
-            set.shift_ptr            = (set.message.read_start/sector_size)*4096; // получаем смещение указателя
+            set.shift_ptr            = (--set.message.read_start/sector_size)*4096; // получаем смещение указателя
             set.message.read_current = set.message.read_start%sector_size; // устанавливаем текущее сообщение (для определения перехода указатеяля)
         }
 
@@ -5934,9 +5934,10 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
         // создание таблицы для хранения журналов аварий
         db_str = "CREATE TABLE journals ("
                  "id_msg INTEGER NOT NULL, "
-                 "date STRING(25) NOT NULL, "
-                 "time STRING(25), "
-                 "type STRING(255), "
+                 "date STRING NOT NULL, "
+                 "time STRING, "
+                 "type STRING, "
+                 "time_reset STRING, "
                  "id_journal INTEGER NOT NULL, " // идентификатор для привязки записей из таблицы свойств
                  "sn_device INTEGER NOT NULL, "
                  "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
@@ -5950,7 +5951,6 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         // создание таблицы для хранения свойств журналов аварий
         db_str = "CREATE TABLE property ("
-                 "time INTEGER, "
                  "value DOUBLE, "
                  "id_journal INTEGER);"
                  /*"CONSTRAINT new_pk PRIMARY KEY (time, value, id_journal));"*/;
@@ -6850,35 +6850,28 @@ void ConfiguratorWindow::importJournalToTable()
         {
             QString type       = query.value("type").toString();
             int     id_journal = query.value("id_journal").toInt();
+            QString time_reset = query.value("time_reset").toString();
 
             table->setItem(row, 3, new QTableWidgetItem(type));
+            table->setItem(row, 4, new QTableWidgetItem(time_reset));
 
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*db);
 
-            if(!query_property.exec(QString("SELECT time, value FROM property WHERE id_journal=%1;").arg(id_journal)))
+            if(!query_property.exec(QString("SELECT value FROM property WHERE id_journal=%1;").arg(id_journal)))
             {
                 qDebug() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
                 continue;
             }
 
-            halfhour_t halfhour = { 0, QVector<float>(0) };
+            halfhour_t halfhour;
 
             while(query_property.next())
             {
                 halfhour.values << query_property.value("value").toFloat();
-
-                if(halfhour.time == 0)
-                {
-                    halfhour.time = query_property.value("time").toInt();
-                    date_t  t     = CJournalWidget::secsToDate(halfhour.time);
-                    QString time  = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
-
-                    table->setItem(row, 4, new QTableWidgetItem(time));
-                }
             }
 
-            if(!halfhour.values.isEmpty())
+            if(!halfhour.values.isEmpty() && (!type.isEmpty() && type.toUpper() == tr("ДАННЫЕ")))
                 table->setRowData(row, QVariant::fromValue(halfhour));
         }
 
@@ -7178,12 +7171,16 @@ void ConfiguratorWindow::exportJournalToDb()
 
             QString type = item->text();
 
-            query.prepare("INSERT OR REPLACE INTO journals (id_msg, date, time, type, id_journal, sn_device)"
-                          "VALUES(:id_msg, :date, :time, :type, :id_journal, :sn_device)");
+            query.prepare("INSERT OR REPLACE INTO journals (id_msg, date, time, type, time_reset, id_journal, sn_device)"
+                          "VALUES(:id_msg, :date, :time, :type, :time_reset, :id_journal, :sn_device)");
             query.bindValue(":id_msg", id_msg);
             query.bindValue(":date", date);
             query.bindValue(":time", time);
             query.bindValue(":type", type);
+
+            QTableWidgetItem* itemTimeReset = table->item(i, 4);
+
+            query.bindValue(":time_reset", ((itemTimeReset)?itemTimeReset->text():""));
             query.bindValue(":id_journal", id_journal);
             query.bindValue(":sn_device", id);
 
@@ -7192,8 +7189,6 @@ void ConfiguratorWindow::exportJournalToDb()
 
             halfhour_t halfhour = qvariant_cast<halfhour_t>(table->rowData(i));
 
-//            qDebug() << "id: " << table->item(i, 0)->text() << ", halfhour: " << halfhour.values.count();
-
             if(!halfhour.values.isEmpty())
             {
                 for(const float& value: halfhour.values)
@@ -7201,9 +7196,8 @@ void ConfiguratorWindow::exportJournalToDb()
 //                    qDebug() << "value: " << value << ", from: " << halfhour.values.count();
                     QSqlQuery query_property(*db);
 
-                    query_property.prepare("INSERT INTO property (time, value, id_journal)"
-                                           "VALUES(:time, :value, :id_journal)");
-                    query_property.bindValue(":time", halfhour.time);
+                    query_property.prepare("INSERT INTO property (value, id_journal)"
+                                           "VALUES(:value, :id_journal)");
                     query_property.bindValue(":value", value);
                     query_property.bindValue(":id_journal", id_journal);
 

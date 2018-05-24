@@ -383,7 +383,7 @@ void CModbus::readyRead()
         else
             count = 8;
     }
-    
+
     if(count != m_receive_buffer.count() && count > m_receive_buffer.count()) 
     // сообщение передается в однобайтовых значениях + 
     // 5 байт накладные расхорды
@@ -579,7 +579,7 @@ void CModbus::timeoutReadWait()
         }
 
         emit errorDevice(str);
-
+qDebug() << "Reconnect: " << str << ", queue size: " << m_request_queue.size();
         request(m_request_cur);
     }
 }

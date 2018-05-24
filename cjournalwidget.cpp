@@ -536,8 +536,6 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 
                 halfhour_t halfhour;
 
-                halfhour.time = secs;
-
                 for(int j = 0; j < 12; j++)
                 {
                     int index = j*4 + 12;
@@ -589,49 +587,30 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
     }
     else if(journal_type == "HALFHOUR")
     {
+        ui->tableWidgetPropertyHalfhourJournal->clearContents();
+
         halfhour_t halfhour = qvariant_cast<halfhour_t>(ui->tableWidgetJournal->rowData(index.row()));
 
-        if(halfhour.values.isEmpty())
-        {
-            ui->tableWidgetPropertyHalfhourJournal->clearContents();
+        if(halfhour.values.count() != 12)
             return;
-        }
 
-        for(int i = 0; i < ui->tableWidgetPropertyHalfhourJournal->columnCount(); i++)
+        for(int col = 0; col < ui->tableWidgetPropertyHalfhourJournal->columnCount(); col++)
         {
-            for(int j = 0; j < ui->tableWidgetPropertyHalfhourJournal->rowCount(); j++)
+            for(int row = 0; row < ui->tableWidgetPropertyHalfhourJournal->rowCount(); row++)
             {
-                QTableWidgetItem* item = ui->tableWidgetPropertyHalfhourJournal->item(j, i);
+                QTableWidgetItem* item = ui->tableWidgetPropertyHalfhourJournal->item(row, col);
 
-                int     pos   = i*4 + j;
-                QString value = QLocale::system().toString(halfhour.values[pos], 'f', 1);
-//                date_t  t     = secsToDate(halfhour.time);
-//                int     row   = ui->tableWidgetJournal->currentRow();
-//                QString time  = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
+                int     index     = col*4 + row;
+                QString str_value = QLocale::system().toString(halfhour.values[index], 'f', 1);
 
-//                QTableWidgetItem* itemTime = ui->tableWidgetJournal->item(row, 4);
-
-//                if(itemTime && itemTime->text().isEmpty())
-//                {
-//                    itemTime->setText(time);
-//                    itemTime->setTextAlignment(Qt::AlignCenter);
-//                }
-
-                if(item)
+                if(!item)
                 {
-                    item->setText(value);
+                    item = new QTableWidgetItem;
+                    ui->tableWidgetPropertyHalfhourJournal->setItem(row, col, item);
                 }
-                else
-                {
-                    item = new QTableWidgetItem(value);
 
-                    if(item)
-                    {
-                        item->setText(value);
-                        item->setTextAlignment(Qt::AlignCenter);
-                        ui->tableWidgetPropertyHalfhourJournal->setItem(j, i, item);
-                    }
-                }
+                item->setTextAlignment(Qt::AlignCenter);
+                item->setText(str_value);
             }
         }
     }

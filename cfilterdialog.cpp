@@ -66,7 +66,7 @@ const CFilter CFilterDialog::filter()
     date.end   = ui->calendarwgtEnd->selectedDate();
 
     interval.begin = ui->spinboxIntervalBegin->value();
-    interval.end   = ui->spinboxIntervalBegin->value() + ui->spinboxIntervalCount->value();
+    interval.end   = ui->spinboxIntervalBegin->value() + ui->spinboxIntervalCount->value() - 1;
 
     CFilter cfilter(interval, date, ui->timeEditBeginFilter->time());
 

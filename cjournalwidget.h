@@ -152,7 +152,6 @@
     //---------------
     struct halfhour_t
     {
-        quint32        time;
         QVector<float> values;
     };
     //--------------------
