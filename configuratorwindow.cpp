@@ -7189,7 +7189,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
             halfhour_t halfhour = qvariant_cast<halfhour_t>(table->rowData(i));
 
-            if(!halfhour.values.isEmpty())
+            if(!halfhour.values.isEmpty() && type.toUpper() == tr("ДАННЫЕ"))
             {
                 for(const float& value: halfhour.values)
                 {

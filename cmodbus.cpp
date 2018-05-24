@@ -303,7 +303,8 @@ void CModbus::request(CDataUnitType& unit)
     
     m_request_cur = unit;
     m_timeout_timer->start(m_timeout_repeat);
-
+    qDebug() << "request current: " << m_request_cur.functionType() << ", addr: " << m_request_cur.address() <<
+                ", values" << m_request_cur.valueCount();
     m_time.start();
 
     m_device->write(ba);
@@ -358,6 +359,9 @@ void CModbus::readyRead()
     m_receive_buffer += m_device->readAll();
     
     quint16 count = 0;
+
+    qDebug() << "readyRead current: " << m_request_cur.functionType() << ", addr: " << m_request_cur.address() <<
+                ", values: " << m_request_cur.valueCount() << ", receiver size: " << m_receive_buffer.count();
     
     // Структура запроса для ReadHoldingRegisters и ReadInputRegisters:
     // ID | КОД ФУНКЦИИ | 1 БАЙТ - КОЛИЧЕСТВО ДАННЫХ ИДУЩИХ СЛЕДОМ | ДАННЫЕ | 2 БАЙТА CRC
@@ -579,7 +583,8 @@ void CModbus::timeoutReadWait()
         }
 
         emit errorDevice(str);
-qDebug() << "Reconnect: " << str << ", queue size: " << m_request_queue.size();
+qDebug() << "Reconnect: " << m_request_cur.functionType() << ", addr: " << m_request_cur.address() << ", values: " <<
+            m_request_cur.valueCount() << ", queue size: " << m_request_queue.size();
         request(m_request_cur);
     }
 }
