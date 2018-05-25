@@ -201,7 +201,7 @@ void CModbus::connectDevice()
     else
         emit connectDeviceState(true);
     
-    emit infoLog(tr("Последовательный порт <%1> открыт").arg(m_device->portName()));
+    qInfo() << tr("Последовательный порт <%1> открыт").arg(m_device->portName());
 }
 //------------------------------------------
 void CModbus::disconnectDevice(bool isClear)
@@ -224,7 +224,7 @@ void CModbus::disconnectDevice(bool isClear)
 
         QString str = tr("Последовательный порт <%1> закрыт.").arg(m_device->portName());
 
-        emit infoLog(str);
+        qInfo() << str;
     }
 
     if(m_connect.baud_reconnect && m_autospeed)
@@ -463,7 +463,7 @@ void CModbus::readyRead()
                            arg(str1).arg(str2).arg(func_type_str).arg(m_request_cur.valueCount()).arg(m_receive_buffer.count());
 
 //        emit errorDevice(error);
-        emit infoLog(error);
+        qInfo() << error;
         
         unblock();
         process_request_queue();

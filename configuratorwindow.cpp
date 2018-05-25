@@ -12,7 +12,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_outputall_window(nullptr),
     m_inputs_window(nullptr),
     m_debuginfo_window(nullptr),
-    m_logFile(nullptr),
     m_tim_calculate(nullptr),
     m_tim_debug_info(nullptr),
     m_version_window(nullptr),
@@ -43,7 +42,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_outputall_window          = new COutputAll(tr("Все выходы"), this);
     m_inputs_window             = new COutputAll(tr("Входы"), this);
     m_debuginfo_window          = new CDebugInfo(tr("Отладочная информация"), this);
-    m_logFile                   = new QFile("Log.txt");
     m_status_bar                = new CStatusBar(statusBar());
     m_watcher                   = new QFutureWatcher<void>(this);
     m_progressbar               = new CProgressBarWidget(this);
@@ -81,12 +79,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->pushButtonMenuDeviceCtrl->setSide(CDockPanelItemCtrl::Left);
     ui->pushButtonVariableCtrl->setSide(CDockPanelItemCtrl::Right);
 
-    if(!m_logFile->open(QFile::ReadWrite))
-    {
-        m_status_bar->setStatusMessage(tr("Ошибка. Невозможно открыть log-файл"));
-    }
-    else
-        saveLog(tr("Запуск программы..."));
+    qInfo() << tr("Запуск программы...");
 
     refreshSerialPort();
 }
@@ -104,19 +97,11 @@ ConfiguratorWindow::~ConfiguratorWindow()
         m_watcher->waitForFinished();
     }
 
-    if(m_logFile)
-    {
-        saveLog(tr("Завершение работы программы."));
-
-        m_logFile->close();
-    }
+    qInfo() << tr("Завершение работы программы.");
 
     if(m_system_db.isOpen())
         m_system_db.close();
 
-    delete m_logFile;
-    m_logFile = nullptr;
-    
     delete m_terminal_window;
     m_terminal_window = nullptr;
     
@@ -171,14 +156,14 @@ void ConfiguratorWindow::stateChanged(bool state)
 
     if(state)
     {
-        saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> открыт."));
+        qInfo() << tr("Порт <%1> открыт.").arg(m_modbusDevice->portName());
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
         synchronization(true); // запускаем синхронизацию
         readJournalCount(); // читаем количество сообщений в каждом журнале
     }
     else
     {
-        saveLog(tr("Порт <") + m_modbusDevice->portName() + tr("> закрыт."));
+        qInfo() << tr("Порт <%1> закрыт.").arg(m_modbusDevice->portName());
         synchronization(); // отключение синхронизации
         m_status_bar->connectStateChanged(false);
     }
@@ -1268,8 +1253,6 @@ void ConfiguratorWindow::dateTimeWrite(const QDateTime& dateTime)
         dt = dateTime;
     else
         dt = QDateTime(ui->dateEdit->date(), ui->timeEdit->time());
-
-    qDebug() << dt;
 
     quint16 year_month = ((((dt.date().year() - 2000) << 8)&0xFF00) | (dt.date().month()&0x00FF));
     quint16 date_wday  = (((dt.date().day() << 8)&0xFF00) | (dt.date().dayOfWeek()&0x00FF));
@@ -2377,17 +2360,6 @@ void ConfiguratorWindow::debugInfoVisiblity(bool state)
     else
     {
         m_debuginfo_window->hide();
-    }
-}
-//---------------------------------------------------
-void ConfiguratorWindow::saveLog(const QString& info)
-{
-    if(m_logFile->isOpen())
-    {
-        QDateTime dt = QDateTime::currentDateTime();
-
-        QString str = QString("[%1] - %3\n").arg(dt.toString("dd.MM.yyyy - hh.mm.ss")).arg(info);
-        m_logFile->write(str.toStdString().c_str());
     }
 }
 //--------------------------------------------------------------
@@ -3530,7 +3502,7 @@ void ConfiguratorWindow::initModelTables()
         initTableProtection(ui->tablewgtProtectionCtrl, m_block_list);
     }
     else
-        saveLog(tr("Ошибка чтения привязок для таблицы Управления Защитами"));
+        qWarning() << tr("Ошибка чтения привязок для таблицы Управления Защитами");
 }
 //-----------------------------------------
 void ConfiguratorWindow::initEventJournal()
@@ -3543,7 +3515,7 @@ void ConfiguratorWindow::initEventJournal()
 
     if(!query.exec("SELECT code, name FROM event_t;"))
     {
-        qDebug() << "Ошибка чтения типов журнала событий: " << query.lastError().text();
+        qWarning() << tr("Ошибка чтения типов журнала событий: %1").arg(query.lastError().text());
         return;
     }
 
@@ -3561,7 +3533,7 @@ void ConfiguratorWindow::initEventJournal()
     {
         if(!query.exec("SELECT code, name FROM event_category WHERE event_t = " + QString::number(event.code) + ";"))
         {
-            qDebug() << "Ошибка чтения категорий журнала событий: " << query.lastError().text();
+            qWarning() << tr("Ошибка чтения категорий журнала событий: %1").arg(query.lastError().text());
             return;
         }
 
@@ -3581,7 +3553,7 @@ void ConfiguratorWindow::initEventJournal()
             if(!query.exec("SELECT code, name FROM event_parameter WHERE event_category = " +
                            QString::number(category.code) + ";"))
             {
-                qDebug() << "Ошибка чтения параметров журнала событий: " << query.lastError().text();
+                qWarning() << tr("Ошибка чтения параметров журнала событий: %1").arg(query.lastError().text());
                 return;
             }
 
@@ -3772,7 +3744,7 @@ void ConfiguratorWindow::initHalfhourJournal()
         }
     }
     else
-        qDebug() << "Ошибка чтения переменных halfhour: " << query_halfhour.lastError().text();
+        qWarning() << tr("Ошибка чтения переменных halfhour: %1").arg(query_halfhour.lastError().text());
 
     if(query_halfhour.exec(QString("SELECT * FROM halfhour_var;")))
     {
@@ -3785,7 +3757,7 @@ void ConfiguratorWindow::initHalfhourJournal()
         }
     }
     else
-        qDebug() << "Ошибка чтения значений halfhour_val: " << query_halfhour.lastError().text();
+        qWarning() << tr("Ошибка чтения значений halfhour_val: %1").arg(query_halfhour.lastError().text());
 
     if(!columns.isEmpty() && !rows.isEmpty())
     {
@@ -3799,7 +3771,7 @@ void ConfiguratorWindow::initDeviceCode()
 
     if(!query.exec("SELECT code, name FROM device_code;"))
     {
-        qDebug() << "Ошибка чтения кодов устройств: " << query.lastError().text();
+        qWarning() << tr("Ошибка чтения кодов устройств: %1").arg(query.lastError().text());
         return;
     }
 
@@ -4857,7 +4829,7 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
     if(!model)
     {
-        saveLog(tr("Не удалось получить модель таблицы Управления защитами."));
+        qInfo() << tr("Не удалось получить модель таблицы Управления защитами.");
         return;
     }
 
@@ -5415,7 +5387,6 @@ void ConfiguratorWindow::sendDeviceCommand(int cmd)
     CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, 0x3000, QVector<quint16>() << cmd);
 
     unit.setProperty("CMD", cmd);
-qDebug() << "Запрос. Команда: " << cmd;
     m_modbusDevice->sendRequest(unit);
 }
 /*!
@@ -5995,6 +5966,8 @@ bool ConfiguratorWindow::currentJournal(const CJournalWidget*& widget)
 //-------------------------------------
 void ConfiguratorWindow::loadSettings()
 {
+    qInfo() << tr("Загрузка настроек программы...");
+
     if(m_settings)
     {
         m_settings->beginGroup("serial-port");
@@ -6028,6 +6001,8 @@ void ConfiguratorWindow::loadSettings()
 //-------------------------------------
 void ConfiguratorWindow::saveSettings()
 {
+    qInfo() << tr("Сохранение настроек программы...");
+
     if(m_settings)
     {
         m_settings->beginGroup("serial-port");
@@ -6860,7 +6835,7 @@ void ConfiguratorWindow::importJournalToTable()
 
             if(!query_property.exec(QString("SELECT value FROM property WHERE id_journal=%1;").arg(id_journal)))
             {
-                qDebug() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
+                qWarning() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
                 continue;
             }
 
@@ -7185,7 +7160,7 @@ void ConfiguratorWindow::exportJournalToDb()
             query.bindValue(":sn_device", id);
 
             if(!query.exec())
-                qDebug() << "journal harfhour error: " << query.lastError().text();
+                qWarning() << tr("Ошбика экспорта журнала получасовок в базу данных: %1").arg(query.lastError().text());
 
             halfhour_t halfhour = qvariant_cast<halfhour_t>(table->rowData(i));
 
@@ -7193,7 +7168,6 @@ void ConfiguratorWindow::exportJournalToDb()
             {
                 for(const float& value: halfhour.values)
                 {
-//                    qDebug() << "value: " << value << ", from: " << halfhour.values.count();
                     QSqlQuery query_property(*db);
 
                     query_property.prepare("INSERT INTO property (value, id_journal)"
@@ -7201,11 +7175,8 @@ void ConfiguratorWindow::exportJournalToDb()
                     query_property.bindValue(":value", value);
                     query_property.bindValue(":id_journal", id_journal);
 
-//                    QString query_str = QString("INSERT OR REPLACE INTO property (time, value, id_journal) VALUES(%1, %2, %3)").
-//                                                arg(halfhour.time).arg(value).arg(id_journal);
-//                    qDebug() << query_str;
                     if(!query_property.exec())
-                        qDebug() << "journal halfhour property error: " << query_property.lastError().text();
+                        qWarning() << tr("journal halfhour property error: %1").arg(query_property.lastError().text());
                 }
 
                 id_journal++;
@@ -7835,7 +7806,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_outputall_window, &COutputAll::closeWindow, ui->pushButtonOutputAll, &QPushButton::setChecked);
     connect(ui->pushButtonInputs, &QPushButton::clicked, this, &ConfiguratorWindow::inputVisiblity);
     connect(m_inputs_window, &COutputAll::closeWindow, ui->pushButtonInputs, &QPushButton::setChecked);
-    connect(m_modbusDevice, &CModbus::infoLog, this, &ConfiguratorWindow::saveLog);
     connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
     connect(ui->pbtnWriteAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);

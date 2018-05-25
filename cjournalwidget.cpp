@@ -90,11 +90,6 @@ void CJournalWidget::setTableHeaders(CJournalWidget::PropertyType property_type,
 
     ui->tableWidgetJournal->setColumnCount(headers.count());
     ui->tableWidgetJournal->setHorizontalHeaderLabels(headers);
-
-//    if(property_type == HALFHOUR_PROPERTY)
-//    {
-//        ui->tableWidgetJournal->hideColumn(4);
-//    }
 }
 //----------------------------------------------------------------
 void CJournalWidget::setTableColumnWidth(const QVector<int>& list)

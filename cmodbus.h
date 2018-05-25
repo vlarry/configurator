@@ -67,7 +67,6 @@
             void dataReady(CDataUnitType&);
             void timeoutResponse();
             void rawData(QByteArray& data, bool = true);
-            void infoLog(const QString&);
             void noConnect(bool = false);
             void baudrateChanged(int);
             void newBaudrate(int);

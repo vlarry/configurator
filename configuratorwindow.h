@@ -492,7 +492,6 @@
             void outputAllVisiblity(bool state);
             void inputVisiblity(bool state);
             void debugInfoVisiblity(bool state);
-            void saveLog(const QString& info);
             void itemClicked(QTreeWidgetItem* item, int);
             void readSettings();
             void readSetCurrent();
@@ -631,7 +630,6 @@
             COutputAll*                      m_outputall_window;
             COutputAll*                      m_inputs_window; // состояние входов
             CDebugInfo*                      m_debuginfo_window;
-            QFile*                           m_logFile;
             QTimer*                          m_tim_calculate;
             QTimer*                          m_tim_debug_info;
             CVersionSoftware*                m_version_window;
