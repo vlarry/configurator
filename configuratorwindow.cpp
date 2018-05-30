@@ -3730,7 +3730,7 @@ void ConfiguratorWindow::initHalfhourJournal()
 {
     QSqlQuery query_halfhour(m_system_db);
 
-    QVector<halfhour_item_t> columns, rows;
+    halfhour_labels_t columns, rows;
 
     if(query_halfhour.exec("SELECT * FROM halfhour;"))
     {
@@ -3762,6 +3762,8 @@ void ConfiguratorWindow::initHalfhourJournal()
     if(!columns.isEmpty() && !rows.isEmpty())
     {
         ui->widgetJournalHalfHour->setHalfhourHeaders(columns, rows);
+        ui->widgetJournalHalfHour->setProperty("COLUMNS", QVariant::fromValue(columns));
+        ui->widgetJournalHalfHour->setProperty("ROWS", QVariant::fromValue(rows));
     }
 }
 //---------------------------------------
@@ -6113,12 +6115,10 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
     int rows = pos.y() - pos.x() + 1; // считаем количество строк для экспорта
     int sub_rows = 0; // количество подстрок (свойства строки журнала)
 
-    QVariant p;
+    row_property_t list;
 
     if(key == "CRASH")
     {
-        row_property_t list;
-
         for(int i = pos.x(); i <= pos.y(); i++)
         {
             property_list_t property_list = qvariant_cast<property_list_t>(widget->table()->rowData(i));
@@ -6153,8 +6153,46 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
             list << sub_list;
             sub_rows += sub_list.count();
         }
+    }
+    else if(key == "HALFHOUR")
+    {
+        halfhour_labels_t column_labels = qvariant_cast<halfhour_labels_t>(widget->property("COLUMNS"));
+        halfhour_labels_t row_labels    = qvariant_cast<halfhour_labels_t>(widget->property("ROWS"));
 
-        p = QVariant::fromValue(list);
+        if(column_labels.isEmpty() || row_labels.isEmpty())
+            return;
+
+        for(int i = pos.x(); i <= pos.y(); i++)
+        {
+            halfhour_t halfhour = qvariant_cast<halfhour_t>(widget->table()->rowData(i));
+
+            if(halfhour.values.isEmpty())
+                list << property_list_t(QVector<property_data_item_t>(0));
+            else
+            {
+                if((column_labels.count()*row_labels.count()) != halfhour.values.count())
+                    continue;
+
+                property_list_t list_property;
+
+                for(int j = 0; j < column_labels.count(); j++)
+                {
+                    for(int k = 0; k < row_labels.count(); k++)
+                    {
+                        property_data_item_t item = property_data_item_t(
+                        {
+                            QString("%1 %2").arg(column_labels[j].name).arg(row_labels[k].name),
+                            QLocale::system().toString(halfhour.values[j*4 + k], 'f', 1)
+                        });
+
+                        list_property << item;
+                    }
+                }
+
+                list << list_property;
+                sub_rows += column_labels.count()*row_labels.count();
+            }
+        }
     }
 
     QTextTable* textTable = cursor.insertTable(rows + sub_rows + 1, columnCount, tableFormat);
@@ -6187,13 +6225,12 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
             cellCursor.insertText(widget->table()->item(pos.x() + i, j)->text());
         }
 
-        if(key == "CRASH")
+        if(!list.isEmpty())
         {
-            if(p.isValid())
-            {
-                row_property_t list = qvariant_cast<row_property_t>(p);
-                property_list_t property_list = list[i];
+            property_list_t property_list = list[i];
 
+            if(!property_list.isEmpty())
+            {
                 for(int k = 0; k < property_list.count(); k++)
                 {
                     QTextTableCell cell_name = textTable->cellAt(i + row_cur + 2 + k, columnCount - 2);

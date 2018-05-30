@@ -160,6 +160,8 @@
         QString name;
         QString description;
     };
+    //-------------------------------------------------
+    typedef QVector<halfhour_item_t> halfhour_labels_t;
     //----------------------------------
     class CJournalWidget: public QWidget
     {
@@ -217,4 +219,5 @@
     Q_DECLARE_METATYPE(event_t)
     Q_DECLARE_METATYPE(protection_t)
     Q_DECLARE_METATYPE(halfhour_t)
+    Q_DECLARE_METATYPE(halfhour_labels_t)
 #endif // CJOURNALWIDGET_H
