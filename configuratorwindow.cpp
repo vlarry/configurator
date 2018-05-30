@@ -6111,8 +6111,53 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
     }
 
     int rows = pos.y() - pos.x() + 1; // считаем количество строк для экспорта
+    int sub_rows = 0; // количество подстрок (свойства строки журнала)
 
-    QTextTable* textTable = cursor.insertTable(rows + 1, columnCount, tableFormat);
+    QVariant p;
+
+    if(key == "CRASH")
+    {
+        row_property_t list;
+
+        for(int i = pos.x(); i <= pos.y(); i++)
+        {
+            property_list_t property_list = qvariant_cast<property_list_t>(widget->table()->rowData(i));
+            property_list_t sub_list;
+
+            int index_calc_value = -1;
+
+            for(int j = 1; j < property_list.count(); j++)
+            {
+                if(property_list[j].name == ';')
+                {
+                    index_calc_value = j + 1;
+                    break;
+                }
+
+                sub_list << property_list[j];
+            }
+
+            if(index_calc_value != -1 && index_calc_value < property_list.count())
+            {
+                for(int k = index_calc_value; k < property_list.count(); k++)
+                {
+                    if(property_list[k].name == ';')
+                    {
+                        break;
+                    }
+
+                    sub_list << property_list[k];
+                }
+            }
+
+            list << sub_list;
+            sub_rows += sub_list.count();
+        }
+
+        p = QVariant::fromValue(list);
+    }
+
+    QTextTable* textTable = cursor.insertTable(rows + sub_rows + 1, columnCount, tableFormat);
 
     QTextBlockFormat blockTableHeaderFormat;
     blockTableHeaderFormat.setAlignment(Qt::AlignHCenter);
@@ -6130,14 +6175,40 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
         cellCursor.insertText(widget->table()->horizontalHeaderItem(i)->text());
     }
 
+    int row_cur = 0;
+
     for(int i = 0; i < rows; i++)
     {
         for(int j = 0; j < columnCount; j++)
         {
-            QTextTableCell cell = textTable->cellAt(i + 1, j);
+            QTextTableCell cell = textTable->cellAt(i + row_cur + 1, j);
             Q_ASSERT(cell.isValid());
             QTextCursor cellCursor = cell.firstCursorPosition();
             cellCursor.insertText(widget->table()->item(pos.x() + i, j)->text());
+        }
+
+        if(key == "CRASH")
+        {
+            if(p.isValid())
+            {
+                row_property_t list = qvariant_cast<row_property_t>(p);
+                property_list_t property_list = list[i];
+
+                for(int k = 0; k < property_list.count(); k++)
+                {
+                    QTextTableCell cell_name = textTable->cellAt(i + row_cur + 2 + k, columnCount - 2);
+                    Q_ASSERT(cell_name.isValid());
+                    QTextCursor cellCursorName = cell_name.firstCursorPosition();
+                    cellCursorName.insertText(property_list[k].name);
+
+                    QTextTableCell cell_value = textTable->cellAt(i + row_cur + 2 + k, columnCount - 1);
+                    Q_ASSERT(cell_value.isValid());
+                    QTextCursor cellCursorValue = cell_value.firstCursorPosition();
+                    cellCursorValue.insertText(property_list[k].value);
+                }
+
+                row_cur += property_list.count();
+            }
         }
     }
 
@@ -6524,6 +6595,9 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         {
             readJournalCount();
         }
+
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+        ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||

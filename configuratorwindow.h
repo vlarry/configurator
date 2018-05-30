@@ -63,6 +63,8 @@
     {
         class ConfiguratorWindow;
     }
+    //----------------------------------------------
+    typedef QVector<property_list_t> row_property_t;
     //-------------------------------------------
     class ConfiguratorWindow: public QMainWindow
     {
@@ -654,4 +656,6 @@
             limit_unit_t                     m_limits; // лимиты редактируемых величин
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
     };
+    // Регистрация пользовательских типов
+    Q_DECLARE_METATYPE(row_property_t)
 #endif // CONFIGURATORWINDOW_H

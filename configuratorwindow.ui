@@ -32,8 +32,26 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>150</height>
+       </size>
+      </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>4</number>
+      </property>
+      <property name="documentMode">
+       <bool>true</bool>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>true</bool>
       </property>
       <widget class="QWidget" name="tabFile">
        <attribute name="title">
@@ -943,50 +961,97 @@
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_101">
-           <property name="spacing">
-            <number>3</number>
-           </property>
-           <property name="leftMargin">
-            <number>3</number>
-           </property>
-           <property name="topMargin">
-            <number>3</number>
-           </property>
-           <property name="rightMargin">
-            <number>3</number>
-           </property>
-           <property name="bottomMargin">
-            <number>3</number>
-           </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
-            <widget class="QSpinBox" name="sboxSlaveID">
-             <property name="toolTip">
-              <string>Адрес ведомого устройства</string>
-             </property>
-             <property name="minimum">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <number>247</number>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_101">
+             <item>
+              <widget class="QSpinBox" name="sboxSlaveID">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>Адрес ведомого устройства</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>247</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lblTextSlaveID">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>ID устройства</string>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
-            <widget class="QLabel" name="lblTextSlaveID">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-             <property name="text">
-              <string>ID устройства</string>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
              </property>
-             <property name="scaledContents">
-              <bool>true</bool>
-             </property>
-            </widget>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkboxCalibTimeout">
+               <property name="text">
+                <string>Время опроса расчетных величин, мс</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSpinBox" name="sboxTimeoutCalc">
+               <property name="maximumSize">
+                <size>
+                 <width>75</width>
+                 <height>75</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Время опроса расчетных величин по таймеру</string>
+               </property>
+               <property name="minimum">
+                <number>100</number>
+               </property>
+               <property name="maximum">
+                <number>5000</number>
+               </property>
+               <property name="value">
+                <number>1000</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -1088,7 +1153,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tabReadWrite">
        <attribute name="title">
         <string>Чтение/Запись</string>
        </attribute>
@@ -1239,6 +1304,78 @@
              <property name="icon">
               <iconset resource="resource.qrc">
                <normaloff>:/images/resource/images/write_all.png</normaloff>:/images/resource/images/write_all.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonJournalRead">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Чтение текущего журнала&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="resource.qrc">
+               <normaloff>:/images/resource/images/journal_read.png</normaloff>:/images/resource/images/journal_read.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonJournalClear">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Очистка текущего журнала&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="resource.qrc">
+               <normaloff>:/images/resource/images/journal_clear.png</normaloff>:/images/resource/images/journal_clear.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonDefaultSettings">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Сброс настроек БЗУ-2-16 по умолчанию.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="resource.qrc">
+               <normaloff>:/images/resource/images/set_default.png</normaloff>:/images/resource/images/set_default.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1417,164 +1554,6 @@
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QWidget" name="widgetToolPanel" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="spacing">
-        <number>2</number>
-       </property>
-       <property name="leftMargin">
-        <number>2</number>
-       </property>
-       <property name="topMargin">
-        <number>2</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <property name="bottomMargin">
-        <number>2</number>
-       </property>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
-         <property name="spacing">
-          <number>2</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="pushButtonJournalRead">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Чтение текущего журнала&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="resource.qrc">
-             <normaloff>:/images/resource/images/journal_read.png</normaloff>:/images/resource/images/journal_read.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButtonJournalClear">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Очистка текущего журнала&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="resource.qrc">
-             <normaloff>:/images/resource/images/journal_clear.png</normaloff>:/images/resource/images/journal_clear.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButtonDefaultSettings">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Сброс настроек БЗУ-2-16 по умолчанию.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="resource.qrc">
-             <normaloff>:/images/resource/images/set_default.png</normaloff>:/images/resource/images/set_default.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>10</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="0" column="0">
-            <widget class="QCheckBox" name="checkboxCalibTimeout">
-             <property name="text">
-              <string>Время опроса расчетных величин, мс</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="sboxTimeoutCalc">
-             <property name="maximumSize">
-              <size>
-               <width>75</width>
-               <height>75</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Время опроса расчетных величин по таймеру</string>
-             </property>
-             <property name="minimum">
-              <number>100</number>
-             </property>
-             <property name="maximum">
-              <number>5000</number>
-             </property>
-             <property name="value">
-              <number>1000</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-      </layout>
      </widget>
     </item>
     <item>
@@ -1798,7 +1777,7 @@ QTreeView::branch:open:has-children:has-siblings
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>38</number>
+           <number>53</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -16417,18 +16396,7 @@ QTreeView::branch:open:has-children:has-siblings
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="pageKeyboard">
-           <widget class="QTableView" name="tableView">
-            <property name="geometry">
-             <rect>
-              <x>20</x>
-              <y>20</y>
-              <width>761</width>
-              <height>361</height>
-             </rect>
-            </property>
-           </widget>
-          </widget>
+          <widget class="QWidget" name="pageKeyboard"/>
           <widget class="QWidget" name="pageSetLedPurpose">
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
@@ -17019,7 +16987,6 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>leKUB</tabstop>
   <tabstop>leKUA</tabstop>
   <tabstop>leKUC</tabstop>
-  <tabstop>tableView</tabstop>
   <tabstop>pbtnClearLedOutput</tabstop>
   <tabstop>tablewgtLedPurpose</tabstop>
   <tabstop>pbtnClearDiscreteInput</tabstop>
@@ -17031,14 +16998,11 @@ QTreeView::branch:open:has-children:has-siblings
   <tabstop>pbtnClearKeyboardProtectionCtrl</tabstop>
   <tabstop>tablewgtProtectionCtrl</tabstop>
   <tabstop>pbtnMenuReference</tabstop>
-  <tabstop>pushButtonJournalRead</tabstop>
   <tabstop>pbtnVersionSoftware</tabstop>
   <tabstop>checkboxCalibTimeout</tabstop>
   <tabstop>tbntExpandItems</tabstop>
   <tabstop>sboxTimeoutCalc</tabstop>
   <tabstop>tabwgtMenu</tabstop>
-  <tabstop>pushButtonJournalClear</tabstop>
-  <tabstop>pushButtonDefaultSettings</tabstop>
  </tabstops>
  <resources>
   <include location="resource.qrc"/>
