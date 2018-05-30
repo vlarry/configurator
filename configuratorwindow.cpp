@@ -79,6 +79,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->pushButtonMenuDeviceCtrl->setSide(CDockPanelItemCtrl::Left);
     ui->pushButtonVariableCtrl->setSide(CDockPanelItemCtrl::Right);
 
+    ui->treewgtDeviceMenu->setStyleSheet("background-color: #EFE4B0");
+    ui->variableWidget->setStyleSheet("background-color: #EFE4B0");
+
     qInfo() << tr("Запуск программы...");
 
     refreshSerialPort();

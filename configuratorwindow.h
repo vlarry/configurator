@@ -213,6 +213,7 @@
                 TAB_FILE_INDEX = 0,
                 TAB_IMPORT_EXPORT_INDEX,
                 TAB_VIEW_INDEX,
+                TAB_SCREEN_INDEX,
                 TAB_SET_INDEX,
                 TAB_READ_WRITE_INDEX,
                 TAB_FILTER_INDEX,
