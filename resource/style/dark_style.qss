@@ -39,15 +39,18 @@ QTreeView::branch:open:has-children:has-siblings
     image: url(:/images/resource/images/branch_open.png);
 }
 
-QTreeView::branch:has-siblings:!adjoins-item {
+QTreeView::branch:has-siblings:!adjoins-item
+{
     border-image: url(:/images/resource/images/stylesheet-vline.png) 0;
 }
 
-QTreeView::branch:has-siblings:adjoins-item {
+QTreeView::branch:has-siblings:adjoins-item
+{
     border-image: url(:/images/resource/images/stylesheet-branch-more.png) 0;
 }
 
-QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+QTreeView::branch:!has-children:!has-siblings:adjoins-item
+{
     border-image: url(:/images/resource/images/stylesheet-branch-end.png) 0;
 }
 
@@ -58,7 +61,9 @@ QGroupBox
 
 QGroupBox::title
 {
+    subcontrol-origin: margin;
     subcontrol-position: top;
+    padding: 0 3px;
 }
 
 QPushButton
@@ -96,15 +101,21 @@ QSpinBox
     background-color: #EACE91;
 }
 
-QTabBar::tab:selected, QTabBar::tab:hover
+QTabBar::tab
+{
+    background: #EFE4B0;
+}
+
+QTabBar::tab:selected
 {
     background: #EACE91;
     border: 3px solid #E8B166;
 }
 
-QTabBar::tab
+QTabBar::tab:hover
 {
-    background: #EFE4B0;
+    background: #E8D0A0;
+    border: 1px solid gray;
 }
 
 QWidget#lblCellName
