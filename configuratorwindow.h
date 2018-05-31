@@ -548,6 +548,7 @@
             void panelMoved(int pos, int index);
             void panelButtonCtrlPress();
             void filterJournal(const CFilter& filter);
+            void setTestStyle(bool state = false);
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
@@ -656,6 +657,7 @@
             protection_list_t                m_protections; // карта защит
             limit_unit_t                     m_limits; // лимиты редактируемых величин
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
+            QString                          m_default_style;
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

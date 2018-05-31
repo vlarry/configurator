@@ -60,7 +60,8 @@ SOURCES += \
         coutputall.cpp \
         coutputallcell.cpp \
         ctimefilterdialog.cpp \
-        cdebuginfo.cpp
+        cdebuginfo.cpp \
+    styleloader.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -97,7 +98,8 @@ HEADERS += \
         coutputall.h \
         coutputallcell.h \
         ctimefilterdialog.h \
-        cdebuginfo.h
+        cdebuginfo.h \
+    styleloader.h
 
 FORMS += \
         configuratorwindow.ui \

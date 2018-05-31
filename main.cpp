@@ -1,11 +1,10 @@
 #include "configuratorwindow.h"
 #include <QApplication>
 #include <QMessageLogContext>
+#include "styleloader.h"
 //-----------------------------------------------------------------------------------
 void logOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
-    QByteArray localMsg = msg.toLocal8Bit();
-
     QString message;
     QString end_line = "\n";
 
@@ -67,6 +66,18 @@ int main(int argc, char* argv[])
     qInstallMessageHandler(logOutput);
 
     QApplication a(argc, argv);
+
+//    QFile styleFile("resource/style/dark_style.qss");
+
+//    styleFile.open(QFile::ReadOnly);
+
+//    QString qss_str = styleFile.readAll();
+
+//    qApp->setStyleSheet(qss_str);
+
+//    styleFile.close();
+
+//    StyleLoader::attach("resource/style/dark_style.qss", QKeySequence("F7"));
 
     ConfiguratorWindow w;
     w.show();

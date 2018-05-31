@@ -1,0 +1,123 @@
+QMainWindow
+{
+    background-color: #EFE4B0;
+}
+
+QWidget
+{
+    background: #EFE4B0;
+}
+
+QTreeView
+{
+    background-color: #EDDDA1;
+}
+
+QTreeView::item
+{
+	border: 1px solid black;
+	background-color: #A0A0A0;
+}
+
+QTreeView::item:selected
+{
+	background: #606060;
+	border: 1px solid blue;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings
+{
+    border-image: none;
+    image: url(:/images/resource/images/branch_close.png);
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings
+{
+    border-image: none;
+    image: url(:/images/resource/images/branch_open.png);
+}
+
+QTreeView::branch:has-siblings:!adjoins-item {
+    border-image: url(:/images/resource/images/stylesheet-vline.png) 0;
+}
+
+QTreeView::branch:has-siblings:adjoins-item {
+    border-image: url(:/images/resource/images/stylesheet-branch-more.png) 0;
+}
+
+QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+    border-image: url(:/images/resource/images/stylesheet-branch-end.png) 0;
+}
+
+QGroupBox
+{
+    border: 1px solid gray;
+}
+
+QGroupBox::title
+{
+    subcontrol-position: top;
+}
+
+QPushButton
+{
+    background-color: #EACE91;
+}
+
+QComboBox
+{
+    background-color: #EACE91;
+}
+
+QLineEdit
+{
+    background-color: #EDE6C2;
+}
+
+QScrollBar
+{
+    background-color: #EACE91;
+}
+
+QToolButton
+{
+    background-color: #EACE91;
+}
+
+QCheckBox:hover, QCheckBox:checked
+{
+    background: #EACE91;
+}
+
+QSpinBox
+{
+    background-color: #EACE91;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover
+{
+    background: #EACE91;
+    border: 3px solid #E8B166;
+}
+
+QTabBar::tab
+{
+    background: #EFE4B0;
+}
+
+QWidget#lblCellName
+{
+    background: #EDDDA1;
+}
+
+QLabel#labelMenuDevice, QLabel#labelVariablePanel
+{
+	background: #EACE91
+}
+
+QListWidget::item:selected
+{
+	border: 1px solid blue;
+}

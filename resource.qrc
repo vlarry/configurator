@@ -46,8 +46,14 @@
         <file>resource/images/monitor_k10_k11.png</file>
         <file>resource/images/help.png</file>
         <file>resource/images/version.png</file>
+        <file>resource/images/stylesheet-branch-end.png</file>
+        <file>resource/images/stylesheet-branch-more.png</file>
+        <file>resource/images/stylesheet-vline.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
+    </qresource>
+    <qresource prefix="/style">
+        <file>resource/style/dark_style.qss</file>
     </qresource>
 </RCC>
