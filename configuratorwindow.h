@@ -550,6 +550,7 @@
             void filterJournal(const CFilter& filter);
             void stopProgressbar();
             void timeoutJournalRead();
+            void testStyle(bool state);
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);

@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 
     QApplication a(argc, argv);
 
-//    QFile styleFile("resource/style/dark_style.qss");
+//    QFile styleFile("resource/styles/default_style.qss");
 
 //    styleFile.open(QFile::ReadOnly);
 
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 
 //    styleFile.close();
 
-//    StyleLoader::attach("resource/style/dark_style.qss", QKeySequence("F7"));
+//    StyleLoader::attach("resource/styles/default_style.qss", QKeySequence("F7"));
 
     ConfiguratorWindow w;
     w.show();

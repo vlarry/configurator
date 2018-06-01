@@ -53,4 +53,7 @@
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
     </qresource>
+    <qresource prefix="/styles">
+        <file>resource/styles/default_style.qss</file>
+    </qresource>
 </RCC>

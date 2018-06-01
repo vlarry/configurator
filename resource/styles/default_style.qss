@@ -1,0 +1,61 @@
+QFrame#menuDeviceDockPanel, QFrame#variableDockPanel
+{
+	background-color: #E5C16E;
+}
+
+QFrame#menuDeviceDockPanel QPushButton,
+QFrame#variableDockPanel   QPushButton,
+QFrame#menuDeviceDockPanel QToolButton,
+QFrame#menuDeviceDockPanel QLabel#labelMenuDevice,
+QFrame#variableDockPanel   QLabel#labelVariablePanel
+{
+	background-color: #DDA544;
+}
+
+QFrame#menuDeviceDockPanel QTreeView,
+QFrame#variableDockPanel   QListWidget
+{
+	background-color: #E5C16E;
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:has-siblings:!adjoins-item 
+{
+    border-image: url(:/images/resource/images/stylesheet-vline.png) 0;
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:has-siblings:adjoins-item 
+{
+    border-image: url(:/images/resource/images/stylesheet-branch-more.png) 0;
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:!has-children:!has-siblings:adjoins-item 
+{
+    border-image: url(:/images/resource/images/stylesheet-branch-end.png) 0;
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:has-children:!has-siblings:closed,
+QFrame#menuDeviceDockPanel QTreeView::branch:closed:has-children:has-siblings 
+{
+        border-image: none;
+        image: url(:/images/resource/images/branch_close.png);
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:open:has-children:!has-siblings,
+QFrame#menuDeviceDockPanel QTreeView::branch:open:has-children:has-siblings  
+{
+        border-image: none;
+        image: url(:/images/resource/images/branch_open.png);
+}
+
+QFrame#menuDeviceDockPanel QTreeView:item
+{
+	border: 1px solid black;
+	background-color: gray;
+}
+
+QFrame#menuDeviceDockPanel QTreeView:item:selected
+{
+	border: 2px solid blue;
+	background-color: lightgray;
+	color: green;
+}

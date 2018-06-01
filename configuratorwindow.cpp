@@ -5858,6 +5858,24 @@ void ConfiguratorWindow::timeoutJournalRead()
 
     QMessageBox::warning(this, tr("Чтение журнала"), tr("Ошибка чтения журнала %1.").arg(nameJournal));
 }
+//--------------------------------------------
+void ConfiguratorWindow::testStyle(bool state)
+{
+    QString style_str = "";
+
+    if(state)
+    {
+        QFile styleFile(":/styles/resource/styles/default_style.qss");
+
+        styleFile.open(QFile::ReadOnly);
+
+        style_str = styleFile.readAll();
+
+        styleFile.close();
+    }
+
+    qApp->setStyleSheet(style_str);
+}
 /*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
@@ -8020,4 +8038,5 @@ void ConfiguratorWindow::initConnect()
     connect(m_debuginfo_window, &CDebugInfo::closeWindow, ui->pushButtonDebugInfo, &QPushButton::setChecked);
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
     connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
+    connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
 }
