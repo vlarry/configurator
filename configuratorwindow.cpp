@@ -82,8 +82,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     qInfo() << tr("Запуск программы...");
 
     refreshSerialPort();
-
-    m_default_style = styleSheet();
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -5818,22 +5816,6 @@ void ConfiguratorWindow::filterJournal(const CFilter& filter)
             table->setRowHidden(i, false);
     }
 }
-//-----------------------------------------------
-void ConfiguratorWindow::setTestStyle(bool state)
-{
-    if(state)
-    {
-        QFile styleFile(":/style/resource/style/dark_style.qss");
-
-        styleFile.open(QFile::ReadOnly);
-
-        setStyleSheet(styleFile.readAll());
-
-        styleFile.close();
-    }
-    else
-        setStyleSheet(m_default_style);
-}
 /*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
@@ -7981,5 +7963,4 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);
     connect(m_debuginfo_window, &CDebugInfo::closeWindow, ui->pushButtonDebugInfo, &QPushButton::setChecked);
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
-    connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::setTestStyle);
 }

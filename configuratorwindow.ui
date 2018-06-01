@@ -48,7 +48,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>3</number>
       </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
@@ -764,28 +764,6 @@
        <attribute name="title">
         <string>Экран</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_105">
-        <item>
-         <widget class="QCheckBox" name="checkBoxTestStyle">
-          <property name="text">
-           <string>test style</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_59">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>1217</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
       </widget>
       <widget class="QWidget" name="tabSettings">
        <attribute name="title">

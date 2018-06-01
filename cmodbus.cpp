@@ -305,8 +305,8 @@ void CModbus::request(CDataUnitType& unit)
     m_timeout_timer->start(m_timeout_repeat);
 
 #ifdef DEBUG_MODBUS
-    qDebug() << "request current: " << m_request_cur.property("REQUEST").toInt() << ", addr: " << m_request_cur.address() <<
-                ", values: " << m_request_cur.values();
+    qDebug() << "Запрос: " << m_request_cur.property("REQUEST").toInt() << ", адрес: " << m_request_cur.address() <<
+                ", значения: " << m_request_cur.values();
 #endif
 
     m_time.start();
@@ -343,7 +343,10 @@ void CModbus::sendRequest(CDataUnitType& unit)
     if(is_bloking() && m_counter_request_error == 0) // передача блокированна и не было ошибок -> все запросы в очередь
     {
         m_request_queue.append(unit);
-        m_sizeQuery++;
+
+#ifdef DEBUG_MODBUS
+        qDebug() << "Добавление запроса в очередь. Размер очереди: " << m_request_queue.count();
+#endif
 
         return;
     }
@@ -365,8 +368,7 @@ void CModbus::readyRead()
     quint16 count = 0;
 
 #ifdef DEBUG_MODBUS
-    qDebug() << "readyRead current: " << m_request_cur.property("REQUEST").toInt() << ", addr: " << m_request_cur.address() <<
-                ", values: " << m_request_cur.values() << ", receiver size: " << m_receive_buffer.count();
+    qDebug() << QString("Ответ. Размер данных: %1").arg(m_receive_buffer.count());
 #endif
     
     // Структура запроса для ReadHoldingRegisters и ReadInputRegisters:
@@ -394,14 +396,24 @@ void CModbus::readyRead()
             count = 8;
     }
 
+#ifdef DEBUG_MODBUS
+    qDebug() << QString("Ответ. Ожидаемый размер данных: %1").arg(count);
+#endif
+
     if(count != m_receive_buffer.count() && count > m_receive_buffer.count()) 
     // сообщение передается в однобайтовых значениях + 
     // 5 байт накладные расхорды
     {
+#ifdef DEBUG_MODBUS
+        qDebug() << QString("Ответ. Размер не соответствует ожидаемому %1/%2").arg(count).arg(m_receive_buffer.count());
+#endif
         return;
     }
     else if(count < m_receive_buffer.count())
     {
+#ifdef DEBUG_MODBUS
+        qDebug() << QString("Ответ. Размер сообщения больше, чем ожидалось: %1/%2").arg(count).arg(m_receive_buffer.count());
+#endif
         m_receive_buffer = m_receive_buffer.remove(count, (m_receive_buffer.count() - count));
     }
     
@@ -463,8 +475,10 @@ void CModbus::readyRead()
                            arg(str1).arg(str2).arg(func_type_str).arg(m_request_cur.valueCount()).arg(m_receive_buffer.count());
 
 //        emit errorDevice(error);
-        qInfo() << error;
-        
+
+#ifdef DEBUG_MODBUS
+        qDebug() << QString("Ответ. %1").arg(error);
+#endif
         unblock();
         process_request_queue();
         
@@ -488,6 +502,9 @@ void CModbus::readyRead()
         if((data[1]&0x80) == 0x80) // если установлен старший бит в функции, то ведомый сообщает об ошибке
         {
             unit.serErrorCode(data[2]);
+#ifdef DEBUG_MODBUS
+        qDebug() << QString("Ответ. Ошибка в сообщении: %1").arg(data[2]);
+#endif
         }
     }
 
@@ -591,23 +608,11 @@ void CModbus::timeoutReadWait()
         emit errorDevice(str);
 
 #ifdef DEBUG_MODBUS
-    qDebug() << "Reconnect: " << m_request_cur.property("REQUEST").toInt() << ", addr: " << m_request_cur.address() << ", values: " <<
-                                 m_request_cur.values();
-
-    if(!m_request_queue.isEmpty())
-    {
-        qDebug() << "queue: " << m_request_queue.count();
-
-        for(const CDataUnitType& unit: m_request_queue)
-        {
-            qDebug() << "unit: " << unit.property("REQUEST").toInt() << ", addr: " << unit.address() << ", values: " <<
-                                    unit.valueCount();
-        }
-
-        qDebug() << "end queue";
-    }
+    qDebug() << QString("Таймаут ожидания ответа. Запрос: %1, адрес: %2, значения: %3").
+                                 arg(m_request_cur.property("REQUEST").toInt()).arg(m_request_cur.address()).
+                                 arg(m_request_cur.values());
+    qDebug() << QString("Повторная отправка запроса: ");
 #endif
-
         request(m_request_cur);
     }
 }
@@ -629,9 +634,16 @@ void CModbus::process_request_queue()
     if(!m_request_queue.isEmpty() && !is_bloking()) // очередь не пуста и не передается очередной запрос
     {
         CDataUnitType unit = m_request_queue.takeAt(0); // получение из очереди очередного запроса
-        
+#ifdef DEBUG_MODBUS
+        qDebug() << QString("Очередь запросов не пуста.");
+#endif
         if(!unit.is_empty()) // если запрос не пустой
         {
+#ifdef DEBUG_MODBUS
+        qDebug() << QString("Очередь запросов. Запрос: %1, адрес: %2, значения: %3").
+                    arg(m_request_cur.property("REQUEST").toInt()).arg(m_request_cur.address()).
+                    arg(m_request_cur.values());
+#endif
             sendRequest(unit);
         }
     }

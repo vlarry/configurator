@@ -10,7 +10,7 @@
     #include <QDebug>
     #include <cdataunittype.h>
     //------------------
-//    #define DEBUG_MODBUS
+    #define DEBUG_MODBUS
     //---------------------------
     class CModbus: public QObject
     {
