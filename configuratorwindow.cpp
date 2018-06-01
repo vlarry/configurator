@@ -137,6 +137,7 @@ void ConfiguratorWindow::serialPortCtrl()
     }
     else
     {
+        m_progressbar->progressStop();
         m_modbusDevice->disconnectDevice();
     }
 }
@@ -314,12 +315,20 @@ void ConfiguratorWindow::journalRead(const QString& key)
         m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
         m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
 
+        QMessageBox::information(this, tr("Чтение журнала"), tr("Чтение журнала %1 успешно завершено. "
+                                                                "Прочитано %2 сообщений.").
+                                                                arg(m_journal_read_current->property("NAME").toString()).
+                                                                arg(set.message.read_count));
+
         m_journal_read_current = nullptr;
 
         set.isStart = false;
         set.isStop  = false;
 
         emit buttonReadJournalStateChanged(); // отключаем кнопку чтения журналов
+
+        disconnect(ui->pushButtonJournalRead, &QPushButton::clicked, this, stopProgressbar);
+        m_progressbar->progressStop();
 
         return;
     }
@@ -330,7 +339,10 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
         if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
         {
-            clearJournal(); // очищаем таблицу
+            int result = QMessageBox::question(this, tr("Чтение журнала"), tr("Таблица журнала не пустая. Очистить?"));
+
+            if(result == QMessageBox::Yes)
+                clearJournal(); // очищаем таблицу
         }
 
         m_journal_read_current->header()->setTextDeviceCountMessages(0, set.message.read_total);
@@ -369,6 +381,12 @@ void ConfiguratorWindow::journalRead(const QString& key)
         setJournalPtrShift(key, set.shift_ptr);
 
         m_time_process.start();
+
+        m_progressbar->setProgressTitle(tr("Чтение журнала %1").arg(m_journal_read_current->property("NAME").toString()));
+        m_progressbar->progressStart();
+        m_progressbar->setSettings(set.message.read_count, set.message.read_limit, "сообщений");
+
+        connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::stopProgressbar);
     }
 
     if(set.message.read_current == sector_size) // дочитали до конца очередной страницы - переводим указатель
@@ -417,6 +435,8 @@ void ConfiguratorWindow::journalRead(const QString& key)
     unit.setProperty(tr("JOURNAL"), key);
 
     m_modbusDevice->sendRequest(unit);
+
+    m_journal_timer.start(500);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -5816,6 +5836,26 @@ void ConfiguratorWindow::filterJournal(const CFilter& filter)
             table->setRowHidden(i, false);
     }
 }
+//----------------------------------------
+void ConfiguratorWindow::stopProgressbar()
+{
+    m_progressbar->progressStop();
+}
+//-------------------------------------------
+void ConfiguratorWindow::timeoutJournalRead()
+{
+    m_journal_timer.stop();
+
+    ui->pushButtonJournalRead->setChecked(false);
+    m_progressbar->progressStop();
+
+    QString nameJournal;
+
+    if(m_journal_read_current)
+        nameJournal = m_journal_read_current->property("NAME").toString();
+
+    QMessageBox::warning(this, tr("Чтение журнала"), tr("Ошибка чтения журнала %1.").arg(nameJournal));
+}
 /*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
@@ -6555,6 +6595,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
                 if(set.buffer.isEmpty()) // буфер сообщений пуст
                 {
                     set.buffer.append(unit.values()); // сохраняем сообщения в буфер
+                    m_journal_timer.stop();
                     journalRead(key);
 
                     return;
@@ -6579,6 +6620,9 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
 
             if(!key.isEmpty())
                 displayJournalResponse(data);
+
+            m_progressbar->progressIncrement(count);
+            m_journal_timer.stop();
 
             journalRead(key);
         }
@@ -7963,4 +8007,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);
     connect(m_debuginfo_window, &CDebugInfo::closeWindow, ui->pushButtonDebugInfo, &QPushButton::setChecked);
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
+    connect(&m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
 }

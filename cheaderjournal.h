@@ -21,6 +21,7 @@
 
             void setTextDeviceCountMessages(int value, int total);
             void setTextElapsedTime(int value);
+            void setTextElapsedTime(const QString& text);
             void setTextTableCountMessages(int value);
             bool stateCheckbox();
 

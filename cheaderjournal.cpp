@@ -47,6 +47,14 @@ void CHeaderJournal::setTextElapsedTime(int value)
     ui->lineEditElapsedTime->setText(QString::number(time, 'f', 2) + tr(" сек."));
 }
 /*!
+ * \brief CHeaderJournal::setTextElapsedTime
+ * \param text Затраченное время на операцию
+ */
+void CHeaderJournal::setTextElapsedTime(const QString& text)
+{
+    ui->lineEditElapsedTime->setText(text);
+}
+/*!
  * \brief CHeaderJournal::setTextTableCountMessages
  * \param value Количество записей в таблице
  */

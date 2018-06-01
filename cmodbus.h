@@ -87,7 +87,7 @@
             quint16 CRC16(QVector<quint8>& data, quint8 length);
             void    block();
             void    unblock();
-            bool    is_bloking() const;
+            bool    is_blocking() const;
         
         private:
             QSerialPort*           m_device;

@@ -305,8 +305,9 @@ void CModbus::request(CDataUnitType& unit)
     m_timeout_timer->start(m_timeout_repeat);
 
 #ifdef DEBUG_MODBUS
-    qDebug() << "Запрос: " << m_request_cur.property("REQUEST").toInt() << ", адрес: " << m_request_cur.address() <<
-                ", значения: " << m_request_cur.values();
+    qDebug() << QString("Запрос: %1, адрес: %2, размер данных: %3").arg(m_request_cur.property("REQUEST").toInt()).
+                                                                    arg(m_request_cur.address()).
+                                                                    arg(m_request_cur.values().count());
 #endif
 
     m_time.start();
@@ -340,12 +341,13 @@ void CModbus::sendRequest(CDataUnitType& unit)
         return;
     }
 
-    if(is_bloking() && m_counter_request_error == 0) // передача блокированна и не было ошибок -> все запросы в очередь
+    if(is_blocking() && m_counter_request_error == 0) // передача блокированна и не было ошибок -> все запросы в очередь
     {
         m_request_queue.append(unit);
 
 #ifdef DEBUG_MODBUS
-        qDebug() << "Добавление запроса в очередь. Размер очереди: " << m_request_queue.count();
+        qDebug() << QString("Добавление запроса в очередь. Запрос: %1, размер очереди: %2").
+                    arg(unit.property("REQUEST").toInt()).arg(m_request_queue.count());
 #endif
 
         return;
@@ -440,6 +442,9 @@ void CModbus::readyRead()
         }
     }
 
+#ifdef DEBUG_MODBUS
+    qDebug() << QString("Ответ. Данные получены в полном объеме: %1").arg(m_receive_buffer.count());
+#endif
     // расчет и проверка контрольной суммы
     quint8 mbs = m_receive_buffer.at(m_receive_buffer.count() - 2);
     quint8 lbs = m_receive_buffer.at(m_receive_buffer.count() - 1);
@@ -608,9 +613,9 @@ void CModbus::timeoutReadWait()
         emit errorDevice(str);
 
 #ifdef DEBUG_MODBUS
-    qDebug() << QString("Таймаут ожидания ответа. Запрос: %1, адрес: %2, значения: %3").
+    qDebug() << QString("Таймаут ожидания ответа. Запрос: %1, адрес: %2, размер данных: %3").
                                  arg(m_request_cur.property("REQUEST").toInt()).arg(m_request_cur.address()).
-                                 arg(m_request_cur.values());
+                                 arg(m_request_cur.values().count());
     qDebug() << QString("Повторная отправка запроса: ");
 #endif
         request(m_request_cur);
@@ -620,6 +625,12 @@ void CModbus::timeoutReadWait()
 void CModbus::sendRequestWait()
 {
     m_send_wait_timer->stop();
+
+//    if(is_bloking())
+//    {
+//        m_request_queue.append(m_request_send_wait);
+//        return;
+//    }
 
     if(!m_request_send_wait)
         return;
@@ -631,7 +642,7 @@ void CModbus::sendRequestWait()
 //-----------------------------------
 void CModbus::process_request_queue()
 {
-    if(!m_request_queue.isEmpty() && !is_bloking()) // очередь не пуста и не передается очередной запрос
+    if(!m_request_queue.isEmpty() && !is_blocking()) // очередь не пуста и не передается очередной запрос
     {
         CDataUnitType unit = m_request_queue.takeAt(0); // получение из очереди очередного запроса
 #ifdef DEBUG_MODBUS
@@ -640,9 +651,9 @@ void CModbus::process_request_queue()
         if(!unit.is_empty()) // если запрос не пустой
         {
 #ifdef DEBUG_MODBUS
-        qDebug() << QString("Очередь запросов. Запрос: %1, адрес: %2, значения: %3").
+        qDebug() << QString("Очередь запросов. Запрос: %1, адрес: %2, размер данных: %3").
                     arg(m_request_cur.property("REQUEST").toInt()).arg(m_request_cur.address()).
-                    arg(m_request_cur.values());
+                    arg(m_request_cur.values().count());
 #endif
             sendRequest(unit);
         }
@@ -671,15 +682,21 @@ quint16 CModbus::CRC16(QVector<quint8> &data, quint8 length)
 //-------------------
 void CModbus::block()
 {
+#ifdef DEBUG_MODBUS
+    qDebug() << QString("Блокирование канала передачи.");
+#endif
     m_blocking_send = true;
 }
 //---------------------
 void CModbus::unblock()
 {
+#ifdef DEBUG_MODBUS
+    qDebug() << QString("Разблокирование канала передачи.");
+#endif
     m_blocking_send = false;
 }
 //------------------------------
-bool CModbus::is_bloking() const
+bool CModbus::is_blocking() const
 {
     return m_blocking_send;
 }

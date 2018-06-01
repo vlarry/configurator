@@ -548,6 +548,8 @@
             void panelMoved(int pos, int index);
             void panelButtonCtrlPress();
             void filterJournal(const CFilter& filter);
+            void stopProgressbar();
+            void timeoutJournalRead();
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
@@ -640,6 +642,7 @@
             cell_list_t                      m_cell_list;
             purpose_t                        m_purpose_list;
             QTime                            m_time_process;
+            QTime                            m_time_process_speed;
             QTimer*                          m_timer_synchronization;
             CStatusBar*                      m_status_bar;
             QMap<int, QString>               m_device_code_list;
@@ -656,6 +659,7 @@
             protection_list_t                m_protections; // карта защит
             limit_unit_t                     m_limits; // лимиты редактируемых величин
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
+            QTimer                           m_journal_timer; // проверка на обрыв чтения журнала
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)
