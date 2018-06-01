@@ -1,6 +1,6 @@
 QFrame#menuDeviceDockPanel, QFrame#variableDockPanel
 {
-	background-color: #E5C16E;
+        background-color: BlanchedAlmond;
 }
 
 QFrame#menuDeviceDockPanel QPushButton,
@@ -9,13 +9,13 @@ QFrame#menuDeviceDockPanel QToolButton,
 QFrame#menuDeviceDockPanel QLabel#labelMenuDevice,
 QFrame#variableDockPanel   QLabel#labelVariablePanel
 {
-	background-color: #DDA544;
+        background-color: Bisque;
 }
 
 QFrame#menuDeviceDockPanel QTreeView,
 QFrame#variableDockPanel   QListWidget
 {
-	background-color: #E5C16E;
+        background-color: BlanchedAlmond;
 }
 
 QFrame#menuDeviceDockPanel QTreeView::branch:has-siblings:!adjoins-item 
@@ -50,12 +50,12 @@ QFrame#menuDeviceDockPanel QTreeView::branch:open:has-children:has-siblings
 QFrame#menuDeviceDockPanel QTreeView:item
 {
 	border: 1px solid black;
-	background-color: gray;
+        background-color: LightSlateGray;
 }
 
 QFrame#menuDeviceDockPanel QTreeView:item:selected
 {
 	border: 2px solid blue;
-	background-color: lightgray;
+        background-color: Silver;
 	color: green;
 }

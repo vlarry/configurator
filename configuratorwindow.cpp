@@ -6611,6 +6611,9 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         {
             QVector<quint16> data = unit.values();
 
+            if(set.message.read_count == 0) // обнуление счетчика времени передачи данных (если пришло первое сообщение)
+                time_sum = 0;
+
             if(unit.valueCount()*2 < set.message.size) // принятые данные меньше, чем размер одного сообщения
             {
                 if(set.buffer.isEmpty()) // буфер сообщений пуст
@@ -6707,6 +6710,12 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
             readJournalCount();
         }
 
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+        ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
+    }
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB)
+    {
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
     }
