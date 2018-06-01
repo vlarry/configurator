@@ -659,7 +659,7 @@
             protection_list_t                m_protections; // карта защит
             limit_unit_t                     m_limits; // лимиты редактируемых величин
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
-            QTimer                           m_journal_timer; // проверка на обрыв чтения журнала
+            QTimer*                          m_journal_timer; // проверка на обрыв чтения журнала
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

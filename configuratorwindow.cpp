@@ -48,6 +48,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME,
                                                 "configurator", this);
     m_timer_synchronization     = new QTimer(this);
+    m_journal_timer             = new QTimer(this);
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -436,7 +437,8 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
     m_modbusDevice->sendRequest(unit);
 
-    m_journal_timer.start(500);
+    m_journal_timer->start(1000);
+    m_time_process_speed.start();
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -5844,7 +5846,7 @@ void ConfiguratorWindow::stopProgressbar()
 //-------------------------------------------
 void ConfiguratorWindow::timeoutJournalRead()
 {
-    m_journal_timer.stop();
+    m_journal_timer->stop();
 
     ui->pushButtonJournalRead->setChecked(false);
     m_progressbar->progressStop();
@@ -6559,6 +6561,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         return;
 
     journal_set_t& set = m_journal_set[key];
+    static int time_sum = 0; // текущее время выполнения чтения (для расчета скорости)
 
     switch(type)
     {
@@ -6595,7 +6598,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
                 if(set.buffer.isEmpty()) // буфер сообщений пуст
                 {
                     set.buffer.append(unit.values()); // сохраняем сообщения в буфер
-                    m_journal_timer.stop();
+                    m_journal_timer->stop();
                     journalRead(key);
 
                     return;
@@ -6622,7 +6625,16 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
                 displayJournalResponse(data);
 
             m_progressbar->progressIncrement(count);
-            m_journal_timer.stop();
+            m_journal_timer->stop();
+
+            time_sum += m_time_process_speed.elapsed();
+
+            if(time_sum > 0)
+            {
+                float speed_kb = float(set.message.size*set.message.read_count/1024.0f)/float(time_sum/1000.0f);
+
+                m_journal_read_current->header()->setTextElapsedTime(QString("%1 КБ/сек.").arg(QLocale::system().toString(speed_kb, 'f', 3)));
+            }
 
             journalRead(key);
         }
@@ -8007,5 +8019,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);
     connect(m_debuginfo_window, &CDebugInfo::closeWindow, ui->pushButtonDebugInfo, &QPushButton::setChecked);
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
-    connect(&m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
+    connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
 }
