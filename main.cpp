@@ -67,15 +67,15 @@ int main(int argc, char* argv[])
 
     QApplication a(argc, argv);
 
-//    QFile styleFile("resource/styles/default_style.qss");
+    QFile styleFile("resource/styles/default_style.qss");
 
-//    styleFile.open(QFile::ReadOnly);
+    styleFile.open(QFile::ReadOnly);
 
-//    QString qss_str = styleFile.readAll();
+    QString qss_str = styleFile.readAll();
 
-//    qApp->setStyleSheet(qss_str);
+    qApp->setStyleSheet(qss_str);
 
-//    styleFile.close();
+    styleFile.close();
 
 //    StyleLoader::attach("resource/styles/default_style.qss", QKeySequence("F7"));
 

@@ -42,6 +42,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_outputall_window          = new COutputAll(tr("Все выходы"), this);
     m_inputs_window             = new COutputAll(tr("Входы"), this);
     m_debuginfo_window          = new CDebugInfo(tr("Отладочная информация"), this);
+    m_status_window             = new CStatusInfo;
     m_status_bar                = new CStatusBar(statusBar());
     m_watcher                   = new QFutureWatcher<void>(this);
     m_progressbar               = new CProgressBarWidget(this);
@@ -71,11 +72,14 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initOutputAll();
     initInputs();
     initDebugInfo();
+    initWordStatus();
 
 //    ui->pushButtonMenuDeviceCtrl->installEventFilter(this);
 //    ui->pushButtonVariableCtrl->installEventFilter(this);
 
     ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
+
+
     ui->pushButtonVariableCtrl->setText(tr("Панель измерений"));
     ui->pushButtonMenuDeviceCtrl->setSide(CDockPanelItemCtrl::Left);
     ui->pushButtonVariableCtrl->setSide(CDockPanelItemCtrl::Right);
@@ -2174,6 +2178,10 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     {
         displayDebugInfo(unit);
     }
+    else if(type == READ_STATUS_MCP_INFO || type == READ_STATUS_MODULE_INFO)
+    {
+        displayStatusInfo(unit);
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -2382,6 +2390,19 @@ void ConfiguratorWindow::debugInfoVisiblity(bool state)
     else
     {
         m_debuginfo_window->hide();
+    }
+}
+//------------------------------------------------------
+void ConfiguratorWindow::statusInfoVisiblity(bool state)
+{
+    if(state)
+    {
+        readStatusInfo();
+        m_status_window->show();
+    }
+    else
+    {
+        m_status_window->hide();
     }
 }
 //--------------------------------------------------------------
@@ -4013,6 +4034,32 @@ void ConfiguratorWindow::initDebugInfo()
         m_debuginfo_window->setHedears(rows, columns);
     }
 }
+/*!
+ * \brief ConfiguratorWindow::initWordStatus
+ *
+ * Инициализация списка статусов
+ */
+void ConfiguratorWindow::initWordStatus()
+{
+    QSqlQuery query(m_system_db);
+
+    status_list_t status_info_list;
+
+    if(query.exec("SELECT bit, name FROM status;"))
+    {
+        while(query.next())
+        {
+            int     bit  = query.value("bit").toInt();
+            QString name = query.value("name").toString();
+
+            status_info_list[bit] = name;
+        }
+
+        m_status_window->setStatusList(status_info_list);
+    }
+    else
+        qWarning() << tr("Ошибка чтения базы данных \"Статус\": %1").arg(query.lastError().text());
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -4261,6 +4308,38 @@ void ConfiguratorWindow::displaySettingResponse(CDataUnitType& unit)
                     box->setCurrentIndex(i - 1);
             }
         }
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::statusInfo
+ *
+ * Отображение информации о статусах
+ */
+void ConfiguratorWindow::displayStatusInfo(const CDataUnitType& unit)
+{
+    RequestType type = (RequestType)unit.property("REQUEST").toInt();
+
+    quint32 value = 0;
+
+    switch (type)
+    {
+        case READ_STATUS_MCP_INFO:
+            value = unit.value(1) | (unit.value(0) << 16);
+
+            if(value == 0)
+            {
+                QMessageBox::information(m_status_window, tr("Информация о статусах"), tr("Нет ни одного активного статуса"));
+                return;
+            }
+
+            m_status_window->updateMcpInfo(value);
+        break;
+
+        case READ_STATUS_MODULE_INFO:
+            m_status_window->updateModuleInfo(unit.values());
+        break;
+
+        default: break;
     }
 }
 //-------------------------------------------------------------------------------
@@ -5877,6 +5956,16 @@ void ConfiguratorWindow::testStyle(bool state)
     qApp->setStyleSheet(style_str);
 }
 /*!
+ * \brief ConfiguratorWindow::readStatusInfo
+ *
+ * Запрос чтения информации о статусах
+ */
+void ConfiguratorWindow::readStatusInfo()
+{
+    sendRequestRead(16, 2, READ_STATUS_MCP_INFO);
+    sendRequestRead(538, 24, READ_STATUS_MODULE_INFO);
+}
+/*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
  */
@@ -6589,7 +6678,7 @@ void ConfiguratorWindow::processReadJournal(CDataUnitType& unit)
         case READ_JOURNAL_COUNT:
             if(unit.valueCount() == 2)
             {
-                long count = long(long((unit.value(0) << 16)&0xFFFF) | long(unit.value(1)&0xFFFF));
+                long count = long(long(unit.value(0) << 16) | long(unit.value(1)));
 
                 set.message.read_total = count;
 
@@ -6714,7 +6803,9 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL ||
-            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB)
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS)
     {
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
@@ -8000,6 +8091,9 @@ void ConfiguratorWindow::initConnect()
     connect(m_outputall_window, &COutputAll::closeWindow, ui->pushButtonOutputAll, &QPushButton::setChecked);
     connect(ui->pushButtonInputs, &QPushButton::clicked, this, &ConfiguratorWindow::inputVisiblity);
     connect(m_inputs_window, &COutputAll::closeWindow, ui->pushButtonInputs, &QPushButton::setChecked);
+    connect(ui->pushButtonStatusInfo, &QPushButton::clicked, this, &ConfiguratorWindow::statusInfoVisiblity);
+    connect(m_status_window, &CStatusInfo::closeWindow, ui->pushButtonStatusInfo, &QPushButton::setChecked);
+    connect(m_status_window, &CStatusInfo::updateStatusInfo, this, &ConfiguratorWindow::readStatusInfo);
     connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
     connect(ui->pbtnWriteAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);

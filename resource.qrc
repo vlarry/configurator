@@ -49,6 +49,7 @@
         <file>resource/images/stylesheet-branch-end.png</file>
         <file>resource/images/stylesheet-branch-more.png</file>
         <file>resource/images/stylesheet-vline.png</file>
+        <file>resource/images/status.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

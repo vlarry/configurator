@@ -61,7 +61,8 @@ SOURCES += \
         coutputallcell.cpp \
         ctimefilterdialog.cpp \
         cdebuginfo.cpp \
-    styleloader.cpp
+    styleloader.cpp \
+    cstatusinfo.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -99,7 +100,8 @@ HEADERS += \
         coutputallcell.h \
         ctimefilterdialog.h \
         cdebuginfo.h \
-    styleloader.h
+    styleloader.h \
+    cstatusinfo.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -119,7 +121,8 @@ FORMS += \
         outputall.ui \
         outputallcell.ui \
         timefilterdialog.ui \
-        debuginfo.ui
+        debuginfo.ui \
+    statusinfo.ui
 
 win32::RC_FILE = \
                  resource/icon.rc

@@ -51,10 +51,11 @@
     #include "cdockpanelitemctrl.h"
     #include "cmonitorpurpose.h"
     #include "coutputall.h"
-    #include <cdebuginfo.h>
+    #include "cdebuginfo.h"
+    #include "cstatusinfo.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
-//    #define DEBUG_JOURNAL // отладка чтение журналов
+    #define DEBUG_JOURNAL // отладка чтение журналов
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");
     const QString ORGANIZATION_DOMAIN = QObject::tr("http://www.rpa.ua/");
@@ -97,6 +98,8 @@
                 READ_JOURNAL,
                 READ_JOURNAL_COUNT,
                 READ_JOURNAL_SHIFT_PTR,
+                READ_STATUS_MCP_INFO,
+                READ_STATUS_MODULE_INFO,
                 DATETIME_TYPE,
                 PORTECT_RESERVE_SIGNAL_START,
                 AUTOMATION_SIGNAL_START,
@@ -495,6 +498,7 @@
             void outputAllVisiblity(bool state);
             void inputVisiblity(bool state);
             void debugInfoVisiblity(bool state);
+            void statusInfoVisiblity(bool state);
             void itemClicked(QTreeWidgetItem* item, int);
             void readSettings();
             void readSetCurrent();
@@ -551,6 +555,7 @@
             void stopProgressbar();
             void timeoutJournalRead();
             void testStyle(bool state);
+            void readStatusInfo();
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
@@ -573,6 +578,7 @@
             void initOutputAll();
             void initInputs();
             void initDebugInfo();
+            void initWordStatus();
             void connectSystemDb();
             bool connectDb(QSqlDatabase*& db, const QString& path);
             void disconnectDb(QSqlDatabase* db);
@@ -598,6 +604,7 @@
             void displayInputsRead(const QVector<quint16>& data);
             void displayBlockProtectionRead(const QVector<quint16>& data);
             void displayDebugInfo(const CDataUnitType& unit);
+            void displayStatusInfo(const CDataUnitType& unit);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
@@ -636,6 +643,7 @@
             COutputAll*                      m_outputall_window;
             COutputAll*                      m_inputs_window; // состояние входов
             CDebugInfo*                      m_debuginfo_window;
+            CStatusInfo*                     m_status_window;
             QTimer*                          m_tim_calculate;
             QTimer*                          m_tim_debug_info;
             CVersionSoftware*                m_version_window;
