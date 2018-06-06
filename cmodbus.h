@@ -17,30 +17,30 @@
         Q_OBJECT
 
         public:
-            typedef QVector<int> baudrate_list_t;
             /*!
              *  \brief The AutoConnectType struct
              *  Определяет необходимые переменные для автоподлкючения
              */
             struct AutoConnectType
             {
-                bool            is_connect;
-                bool            baud_reconnect;
-                int             baudrate_init;
-                int             index_current;
-                int             index_start;
-                baudrate_list_t baudrate_list;
+                bool                           is_connect;
+                bool                           baud_reconnect;
+                QSerialPort::BaudRate          baudrate_init;
+                int                            index_current;
+                int                            index_start;
+                QVector<QSerialPort::BaudRate> baudrate_list;
             };
         
         public:
-            explicit CModbus(const baudrate_list_t& baudrate_list, QObject* parent = nullptr);
+            explicit CModbus(QObject* parent = nullptr);
             ~CModbus();
         
-            void     setPortName(const QString& name);
-            void     setBaudrate(qint32 baudrate);
-            void     setDatabits(QSerialPort::DataBits databits);
-            void     setStopbits(QSerialPort::StopBits stopbits);
-            void     setParity(QSerialPort::Parity parity);
+            void setPortName(const QString& name);
+            void setBaudrate(QSerialPort::BaudRate baudrate);
+            void setDatabits(QSerialPort::DataBits databits);
+            void setStopbits(QSerialPort::StopBits stopbits);
+            void setParity(QSerialPort::Parity parity);
+            void setBaudrateList(const QVector<QSerialPort::BaudRate>& baudrate_list);
             
             const QString&        portName() const;
             quint32               baudrate() const;
@@ -92,7 +92,7 @@
         private:
             QSerialPort*           m_device;
             QString                m_port_name;
-            qint32                 m_baudrate;
+            QSerialPort::BaudRate  m_baudrate;
             QSerialPort::DataBits  m_data_bits;
             QSerialPort::StopBits  m_stop_bits;
             QSerialPort::Parity    m_parity;

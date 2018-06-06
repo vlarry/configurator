@@ -1,10 +1,10 @@
 #include "cmodbus.h"
-//----------------------------------------------------------------------
-CModbus::CModbus(const baudrate_list_t& baudrate_list, QObject *parent):
+//--------------------------------
+CModbus::CModbus(QObject *parent):
     QObject(parent),
     m_device(nullptr),
     m_port_name(tr("")),
-    m_baudrate(115200),
+    m_baudrate(QSerialPort::Baud115200),
     m_data_bits(QSerialPort::Data8),
     m_stop_bits(QSerialPort::OneStop),
     m_parity(QSerialPort::EvenParity),
@@ -14,8 +14,7 @@ CModbus::CModbus(const baudrate_list_t& baudrate_list, QObject *parent):
     m_counter_request_error(0),
     m_request_count_repeat(3),
     m_timeout_repeat(1000),
-    m_connect({ false, false, m_baudrate, 0, 0, baudrate_list }),
-    m_autospeed(false)
+    m_connect({ false, false, m_baudrate, 0, 0, QVector<QSerialPort::BaudRate>(0) })
 {
     m_device          = new QSerialPort(this);
     m_timeout_timer   = new QTimer(this);
@@ -61,8 +60,8 @@ void CModbus::setPortName(const QString& name)
 {
     m_port_name = name;
 }
-//----------------------------------------
-void CModbus::setBaudrate(qint32 baudrate)
+//-------------------------------------------------------
+void CModbus::setBaudrate(QSerialPort::BaudRate baudrate)
 {
     m_baudrate = m_connect.baudrate_init = baudrate;
 }
@@ -80,6 +79,11 @@ void CModbus::setStopbits(QSerialPort::StopBits stopbits)
 void CModbus::setParity(QSerialPort::Parity parity)
 {
     m_parity = parity;
+}
+//--------------------------------------------------------------------------------
+void CModbus::setBaudrateList(const QVector<QSerialPort::BaudRate>& baudrate_list)
+{
+    m_connect.baudrate_list = baudrate_list;
 }
 //--------------------------------------
 const QString &CModbus::portName() const
@@ -246,7 +250,10 @@ void CModbus::disconnectDevice(bool isClear)
 void CModbus::request(CDataUnitType& unit)
 {
     quint16 size;
-    
+#ifdef DEBUG_MODBUS
+    qDebug() << QString("Запрос. Адрес: %1, размер данных: %2, тип запроса: %3").arg(unit.address()).arg(unit.valueCount()).
+                                                                                 arg(unit.property("REQUEST").toInt());
+#endif
     if(unit.functionType() == CDataUnitType::ReadHoldingRegisters || 
        unit.functionType() == CDataUnitType::ReadInputRegisters)
     {

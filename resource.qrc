@@ -7,7 +7,6 @@
         <file>resource/images/checkbox_enable.png</file>
         <file>resource/images/checkbox_inactive.png</file>
         <file>resource/images/connect.png</file>
-        <file>resource/images/disconnect.png</file>
         <file>resource/images/calendar.png</file>
         <file>resource/images/read_all.png</file>
         <file>resource/images/write.png</file>
@@ -50,6 +49,11 @@
         <file>resource/images/stylesheet-branch-more.png</file>
         <file>resource/images/stylesheet-vline.png</file>
         <file>resource/images/status.png</file>
+        <file>resource/images/flag.png</file>
+        <file>resource/images/off.png</file>
+        <file>resource/images/connect_serial.png</file>
+        <file>resource/images/disconnect.png</file>
+        <file>resource/images/disconnect_serial.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

@@ -25,20 +25,13 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 {
     ui->setupUi(this);
 
-    CModbus::baudrate_list_t baudrate_list;
-
-    for(int i = 0; i < ui->cboxBaudrate->count(); i++)
-    {
-        baudrate_list << ui->cboxBaudrate->itemText(i).toInt();
-    }
-
-    m_modbusDevice              = new CModbus(baudrate_list, this);
+    m_modbusDevice              = new CModbus(this);
+    m_serialPortSettings_window = new CSerialPortSetting;
     m_tim_calculate             = new QTimer(this);
     m_tim_debug_info            = new QTimer(this);
     m_terminal_window           = new CTerminal(this);
     m_output_window             = new CIndicatorState(this);
     m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
-    m_serialPortSettings_window = new CSerialPortSetting;
     m_outputall_window          = new COutputAll(tr("Все выходы"), this);
     m_inputs_window             = new COutputAll(tr("Входы"), this);
     m_debuginfo_window          = new CDebugInfo(tr("Отладочная информация"), this);
@@ -73,9 +66,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initInputs();
     initDebugInfo();
     initWordStatus();
-
-//    ui->pushButtonMenuDeviceCtrl->installEventFilter(this);
-//    ui->pushButtonVariableCtrl->installEventFilter(this);
 
     ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
 
@@ -118,25 +108,18 @@ ConfiguratorWindow::~ConfiguratorWindow()
 //---------------------------------------
 void ConfiguratorWindow::serialPortCtrl()
 {
-    if(!m_modbusDevice || ui->cboxPortName->count() == 0)
+    if(!m_modbusDevice || m_serialPortSettings_window->serialPortName().isEmpty())
         return;
         
     m_status_bar->clearStatusMessage();
     
-    if(ui->pbtnPortCtrl->isChecked())
+    if(ui->toolButtonConnect->isChecked())
     {
-        m_modbusDevice->setPortName(ui->cboxPortName->currentText());
-        m_modbusDevice->setBaudrate(ui->cboxBaudrate->currentText().toInt());
-        m_modbusDevice->setDatabits((QSerialPort::DataBits)m_serialPortSettings_window->dataBits().toInt());
-
-        quint32 stopbits = ((m_serialPortSettings_window->stopBits() == "1.5")?3:m_serialPortSettings_window->stopBits().toInt());
-        quint32 parity   = ((m_serialPortSettings_window->parity().toUpper() == tr("NO"))?0:
-                           (m_serialPortSettings_window->parity().toUpper() == tr("EVEN"))?2:
-                           (m_serialPortSettings_window->parity().toUpper() == tr("ODD"))?3:
-                           (m_serialPortSettings_window->parity() == tr("SPACE")))?4:5;
-        
-        m_modbusDevice->setStopbits((QSerialPort::StopBits)stopbits);
-        m_modbusDevice->setParity((QSerialPort::Parity)parity);
+        m_modbusDevice->setPortName(m_serialPortSettings_window->serialPortName());
+        m_modbusDevice->setBaudrate(m_serialPortSettings_window->baudrate());
+        m_modbusDevice->setDatabits(m_serialPortSettings_window->dataBits());
+        m_modbusDevice->setStopbits(m_serialPortSettings_window->stopBits());
+        m_modbusDevice->setParity(m_serialPortSettings_window->parity());
         
         m_modbusDevice->connectDevice();
     }
@@ -149,11 +132,10 @@ void ConfiguratorWindow::serialPortCtrl()
 //-----------------------------------------------
 void ConfiguratorWindow::stateChanged(bool state)
 {
-    ui->pbtnPortCtrl->setChecked(state);
-    
-    ui->pbtnPortCtrl->setText(((state)?tr("Закрыть"):tr("Открыть")));
+    ui->toolButtonConnect->setChecked(state);
+
     m_status_bar->setStatusMessage(((state)?tr("Соединение с устройством установлено"):
-                                      tr("Соединение с устройством разорвано")), 5000);
+                                            tr("Соединение с устройством разорвано")), 5000);
     
     if(ui->checkboxCalibTimeout->isChecked() && state)
         chboxCalculateTimeoutStateChanged(true);
@@ -163,6 +145,9 @@ void ConfiguratorWindow::stateChanged(bool state)
     if(state)
     {
         qInfo() << tr("Порт <%1> открыт.").arg(m_modbusDevice->portName());
+        ui->toolButtonConnect->setText(tr("Отключиться"));
+        ui->toolButtonConnect->setIconSize(QSize(24, 24));
+        ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/disconnect_serial.png"));
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
         synchronization(true); // запускаем синхронизацию
         readJournalCount(); // читаем количество сообщений в каждом журнале
@@ -170,6 +155,9 @@ void ConfiguratorWindow::stateChanged(bool state)
     else
     {
         qInfo() << tr("Порт <%1> закрыт.").arg(m_modbusDevice->portName());
+        ui->toolButtonConnect->setText(tr("Подключиться"));
+        ui->toolButtonConnect->setIconSize(QSize(24, 24));
+        ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/flag.png"));
         synchronization(); // отключение синхронизации
         m_status_bar->connectStateChanged(false);
     }
@@ -188,12 +176,9 @@ void ConfiguratorWindow::refreshSerialPort()
     {
         QMessageBox::warning(nullptr, tr("Com-порт"), 
                              tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"));
-        
-        return;
     }
     
-    ui->cboxPortName->clear();
-    ui->cboxPortName->addItems(port_list);
+    m_serialPortSettings_window->setSerialPortList(port_list);
 }
 //-------------------------------------------
 void ConfiguratorWindow::serialPortSettings()
@@ -260,27 +245,27 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
 {
-    CDataUnitType unit_part1(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-                             CALCULATE_ADDRESS_PART1, QVector<quint16>() << 66);
-    unit_part1.setProperty(tr("REQUEST"), CALCULATE_TYPE);
-    unit_part1.setProperty("PART", CALCULATE_ADDRESS_PART1);
+//    CDataUnitType unit_part1(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
+//                             CALCULATE_ADDRESS_PART1, QVector<quint16>() << 66);
+//    unit_part1.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+//    unit_part1.setProperty("PART", CALCULATE_ADDRESS_PART1);
 
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтение расчетных величин. Часть 1.";
 #endif
 
-    sendCalculateRead(unit_part1);
+//    sendCalculateRead(unit_part1);
 
-    CDataUnitType unit_part2(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-                             CALCULATE_ADDRESS_PART2, QVector<quint16>() << 8);
-    unit_part2.setProperty(tr("REQUEST"), CALCULATE_TYPE);
-    unit_part2.setProperty("PART", CALCULATE_ADDRESS_PART2);
+//    CDataUnitType unit_part2(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
+//                             CALCULATE_ADDRESS_PART2, QVector<quint16>() << 8);
+//    unit_part2.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+//    unit_part2.setProperty("PART", CALCULATE_ADDRESS_PART2);
 
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтение расчетных величин. Часть 2.";
 #endif
 
-    sendCalculateRead(unit_part2);
+//    sendCalculateRead(unit_part2);
 }
 //--------------------------------------
 void ConfiguratorWindow::debugInfoRead()
@@ -434,7 +419,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
 #ifdef DEBUG_JOURNAL
     qDebug() << "journalRead Request: addr: " << address << ", size: " << msg_size;
 #endif
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, address,
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters, address,
                        QVector<quint16>() << msg_size);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
     unit.setProperty(tr("JOURNAL"), key);
@@ -998,7 +983,7 @@ void ConfiguratorWindow::protectionSignalStartWrite()
 
     int addr = addressSettingKey("M80");
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, addr, tdata);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::WriteMultipleRegisters, addr, tdata);
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
@@ -1218,7 +1203,7 @@ void ConfiguratorWindow::automationAPVSignalStartWrite()
 
     int addr = addressSettingKey("M86");
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, addr, tdata);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::WriteMultipleRegisters, addr, tdata);
 
     unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
@@ -1287,7 +1272,7 @@ void ConfiguratorWindow::dateTimeWrite(const QDateTime& dateTime)
 
     QVector<quint16> data = QVector<quint16>() << year_month << date_wday << hour << min_second;
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, 0x2000, data);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::WriteMultipleRegisters, 0x2000, data);
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
@@ -1776,7 +1761,7 @@ void ConfiguratorWindow::protectionSignalStartRead()
 {
     int addr = addressSettingKey("M80");
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 24);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 24);
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
@@ -1947,7 +1932,7 @@ void ConfiguratorWindow::automationAPVSignalStartRead()
 {
     int addr = addressSettingKey("M86");
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 24);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 24);
 
     unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
@@ -1990,7 +1975,7 @@ void ConfiguratorWindow::purposeRelayRead()
 //-------------------------------------
 void ConfiguratorWindow::dateTimeRead()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, 0x2000, QVector<quint16>() << 4);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, 0x2000, QVector<quint16>() << 4);
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
@@ -4827,10 +4812,10 @@ void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
         if(addr == -1)
             return;
 
-        CDataUnitType new_unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-                               addr, values);
+//        CDataUnitType new_unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
+//                               addr, values);
 
-        m_modbusDevice->sendRequest(new_unit);
+//        m_modbusDevice->sendRequest(new_unit);
     }
 }
 //-----------------------------------------------------------------
@@ -5115,7 +5100,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
 
     int addr = addressSettingKey(first);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), type, addr, QVector<quint16>() << size);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), type, addr, QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), GENERAL_TYPE);
     unit.setProperty(tr("FIRST"), first);
@@ -5130,7 +5115,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
 {
     int addr = addressSettingKey(index);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 1);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << 1);
 
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
@@ -5176,7 +5161,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
         if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
             value++;
 
-        CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, addr,
+        CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::WriteSingleRegister, addr,
                                                      QVector<quint16>() << value);
         unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
         unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
@@ -5252,7 +5237,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
     CDataUnitType::FunctionType funType = ((data.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                CDataUnitType::WriteMultipleRegisters);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addressSettingKey(first), data);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), funType, addressSettingKey(first), data);
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
@@ -5272,7 +5257,7 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
 
     int size = laddr - faddr + 24; // получаем размер считываемого блока с учетом выравнивания в 48 байт (одна строка)
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, faddr,
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, faddr,
                                                  QVector<quint16>() << size);
 
     unit.setProperty("REQUEST", PURPOSE_OUT_TYPE);
@@ -5328,7 +5313,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                  CDataUnitType::WriteMultipleRegisters);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addressPurposeKey(first), values);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), funType, addressPurposeKey(first), values);
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
@@ -5342,7 +5327,7 @@ void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
 {
     int size = last_addr - first_addr + 2;
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, first_addr,
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, first_addr,
                                                  QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), PURPOSE_INPUT_TYPE);
@@ -5408,7 +5393,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                  CDataUnitType::WriteMultipleRegisters);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), funType, first_addr, values);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
 
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
@@ -5422,7 +5407,7 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
 {
     int firstAddr = addressSettingKey("K10");
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, firstAddr,
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, firstAddr,
                        QVector<quint16>() << 48);
 
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
@@ -5438,7 +5423,7 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
 {
     int firstAddr = addressSettingKey("K10");
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, firstAddr,
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, firstAddr,
                        QVector<quint16>() << 48);
 
     unit.setProperty("REQUEST", MONITONR_PURPOSE_K10_K11_TYPE);
@@ -5454,7 +5439,7 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
  */
 void ConfiguratorWindow::sendRequestRead(int addr, int size, int request)
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << size);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), request);
 #ifdef DEBUG_REQUEST
@@ -5472,7 +5457,7 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
     CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
                                                                  CDataUnitType::WriteMultipleRegisters);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), funType, addr, values);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), funType, addr, values);
 
     unit.setProperty("REQUST", request);
 #ifdef DEBUG_REQUEST
@@ -5487,7 +5472,7 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
  */
 void ConfiguratorWindow::sendDeviceCommand(int cmd)
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteSingleRegister, 0x3000, QVector<quint16>() << cmd);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::WriteSingleRegister, 0x3000, QVector<quint16>() << cmd);
 
     unit.setProperty("CMD", cmd);
     m_modbusDevice->sendRequest(unit);
@@ -5506,7 +5491,7 @@ void ConfiguratorWindow::sendOutputAllRequest()
     if(button)
         type = button->property("TYPE").toString();
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 196, QVector<quint16>() << 4);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters, 196, QVector<quint16>() << 4);
 
     unit.setProperty("REQUEST", READ_OUTPUT_ALL);
     unit.setProperty("BUTTON_TYPE", type);
@@ -5522,7 +5507,7 @@ void ConfiguratorWindow::sendOutputAllRequest()
  */
 void ConfiguratorWindow::sendInputStatesRequest()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 200, QVector<quint16>() << 2);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters, 200, QVector<quint16>() << 2);
 
     unit.setProperty("REQUEST", READ_INPUTS);
 
@@ -5535,7 +5520,7 @@ void ConfiguratorWindow::sendInputStatesRequest()
 //-----------------------------------------------------
 void ConfiguratorWindow::sendDebugInfoRead(int channel)
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 202 + channel*15,
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters, 202 + channel*15,
                        QVector<quint16>() << 15);
 
     unit.setProperty("REQUEST", READ_DEBUG_INFO);
@@ -6119,24 +6104,28 @@ void ConfiguratorWindow::loadSettings()
 {
     qInfo() << tr("Загрузка настроек программы...");
 
+    int baudrate = -1;
+
     if(m_settings)
     {
         m_settings->beginGroup("serial-port");
-            ui->cboxBaudrate->setCurrentText(m_settings->value("baudrate", "115200").toString());
-            m_serialPortSettings_window->setDataBits(m_settings->value("databits", "8").toString());
-            m_serialPortSettings_window->setStopBits(m_settings->value("stopbits", "1").toString());
-            m_serialPortSettings_window->setParity(m_settings->value("parity", "Even").toString());
+            baudrate = m_settings->value("baudrate", QSerialPort::Baud115200).toInt();
+            m_serialPortSettings_window->setBaudrate(QSerialPort::BaudRate(baudrate));
+            m_serialPortSettings_window->setDataBits(QSerialPort::DataBits(m_settings->value("databits", QSerialPort::Data8).toInt()));
+            m_serialPortSettings_window->setStopBits(QSerialPort::StopBits(m_settings->value("stopbits", QSerialPort::OneStop).toInt()));
+            m_serialPortSettings_window->setParity(QSerialPort::Parity(m_settings->value("parity", QSerialPort::EvenParity).toInt()));
         m_settings->endGroup();
 
         m_settings->beginGroup("modbus");
             m_serialPortSettings_window->setModbusTimeout(m_settings->value("timeout", 500).toInt());
             m_serialPortSettings_window->setModbusTryCount(m_settings->value("trycount", 3).toInt());
+            m_serialPortSettings_window->setModbusIntervalSilence(m_settings->value("interval_silence", 4).toInt());
         m_settings->endGroup();
 
         m_settings->beginGroup("device");
             ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
             ui->checkboxCalibTimeout->setChecked(m_settings->value("timeoutcalculateenable", true).toBool());
-            ui->spinboxSyncTime->setValue(m_settings->value("synctime", 1000).toInt());
+            m_serialPortSettings_window->setDeviceSync(m_settings->value("synctime", 1000).toInt());
             m_serialPortSettings_window->setAutospeed(m_settings->value("autospeed", false).toBool());
         m_settings->endGroup();
 
@@ -6146,7 +6135,15 @@ void ConfiguratorWindow::loadSettings()
         m_settings->endGroup();
     }
 
-    ui->comboBoxCommunicationBaudrate->setCurrentIndex(ui->cboxBaudrate->currentIndex());
+    if(baudrate != -1)
+    {
+        int index = ui->comboBoxCommunicationBaudrate->findText(QString::number(baudrate));
+
+        if(index != -1)
+            ui->comboBoxCommunicationBaudrate->setCurrentIndex(index);
+    }
+
+    m_modbusDevice->setBaudrateList(m_serialPortSettings_window->baudrateList());
     m_modbusDevice->setAutospeed(m_serialPortSettings_window->autospeedState());
 }
 //-------------------------------------
@@ -6157,7 +6154,7 @@ void ConfiguratorWindow::saveSettings()
     if(m_settings)
     {
         m_settings->beginGroup("serial-port");
-            m_settings->setValue("baudrate", ui->cboxBaudrate->currentText());
+            m_settings->setValue("baudrate", m_serialPortSettings_window->baudrate());
             m_settings->setValue("databits", m_serialPortSettings_window->dataBits());
             m_settings->setValue("stopbits", m_serialPortSettings_window->stopBits());
             m_settings->setValue("parity", m_serialPortSettings_window->parity());
@@ -6166,12 +6163,13 @@ void ConfiguratorWindow::saveSettings()
         m_settings->beginGroup("modbus");
             m_settings->setValue("timeout", m_serialPortSettings_window->modbusTimeout());
             m_settings->setValue("trycount", m_serialPortSettings_window->modbusTryCount());
+            m_settings->setValue("interval_silence", m_serialPortSettings_window->modbusIntervalSilence());
         m_settings->endGroup();
 
         m_settings->beginGroup("device");
             m_settings->setValue("timeoutcalculate", ui->sboxTimeoutCalc->value());
             m_settings->setValue("timeoutcalculateenable", ui->checkboxCalibTimeout->isChecked());
-            m_settings->setValue("synctime", ui->spinboxSyncTime->value());
+            m_settings->setValue("synctime", m_serialPortSettings_window->deviceSync());
             m_settings->setValue("autospeed", m_serialPortSettings_window->autospeedState());
         m_settings->endGroup();
 
@@ -6830,7 +6828,7 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
 
     QVector<quint16> values = QVector<quint16>() << (quint16)((pos >> 16)&0xFFFF) << (quint16)(pos&0xFFFF);
 
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters, set.address.set_shift, values);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::WriteMultipleRegisters, set.address.set_shift, values);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
     unit.setProperty(tr("JOURNAL"), key);
 
@@ -6839,14 +6837,14 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSynchronization()
 {
-    CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
 
     unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
 
     m_modbusDevice->sendRequest(unit);
 
-    if(!m_timer_synchronization->isActive())
-        m_timer_synchronization->start(ui->spinboxSyncTime->value());
+//    if(!m_timer_synchronization->isActive())
+//        m_timer_synchronization->start(ui->spinboxSyncTime->value());
 }
 //-----------------------------------------
 void ConfiguratorWindow::timeoutDebugInfo()
@@ -7512,7 +7510,7 @@ void ConfiguratorWindow::readShiftPrtEventJournal()
     {
         journal_set_t set = m_journal_set[key];
 
-        CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadHoldingRegisters, set.address.set_shift,
+        CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, set.address.set_shift,
                                                      QVector<quint16>() << 2);
 
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
@@ -7534,7 +7532,7 @@ void ConfiguratorWindow::readJournalCount()
     {
         journal_set_t set = m_journal_set[key];
 
-        CDataUnitType unit(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters, set.address.msg_count,
+        CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters, set.address.msg_count,
                                                      QVector<quint16>() << 2);
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_COUNT);
         unit.setProperty(tr("JOURNAL"), key);
@@ -8069,9 +8067,9 @@ ConfiguratorWindow::block_protection_list_t ConfiguratorWindow::loadProtectionLi
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
-    connect(ui->pbtnPortCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
+    connect(ui->toolButtonConnect, &QToolButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
     connect(m_modbusDevice, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
-    connect(ui->tbtnPortRefresh, &QToolButton::clicked, this, &ConfiguratorWindow::refreshSerialPort);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this, &ConfiguratorWindow::refreshSerialPort);
     connect(m_modbusDevice, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
@@ -8101,7 +8099,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnWriteCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetCurrent);
     connect(ui->tbntExpandItems, &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
     connect(ui->pbtnVersionSoftware, &QPushButton::clicked, this, &ConfiguratorWindow::versionSowftware);
-    connect(ui->pbtnSerialPortSettings, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortSettings);
+    connect(ui->toolButtonConnectSettings, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortSettings);
     connect(ui->pbtnClearLedOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
@@ -8120,7 +8118,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
     connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
-    connect(m_modbusDevice, &CModbus::baudrateChanged, ui->cboxBaudrate, &QComboBox::setCurrentIndex);
+//    connect(m_modbusDevice, &CModbus::baudrateChanged, ui->cboxBaudrate, &QComboBox::setCurrentIndex);
     connect(m_modbusDevice, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
     connect(m_modbusDevice, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
     connect(m_modbusDevice, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
