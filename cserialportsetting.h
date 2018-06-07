@@ -47,6 +47,7 @@
 
         public slots:
             void show();
+            void cancel();
 
         signals:
             void numberRepeat(int);
@@ -54,11 +55,24 @@
             void autospeed(bool);
             void refreshSerialPort();
 
+        protected:
+            void closeEvent(QCloseEvent* event);
+
         private:
             Ui::CSerialPortSetting* ui;
             QButtonGroup*           m_group_databits;
             QButtonGroup*           m_group_stopbits;
             QButtonGroup*           m_group_parity;
+            QSerialPort::BaudRate   m_default_baudrate;
+            QSerialPort::DataBits   m_default_databits;
+            QSerialPort::StopBits   m_default_stopbits;
+            QSerialPort::Parity     m_default_parity;
+            bool                    m_default_autospeed;
+            int                     m_default_id;
+            int                     m_default_interval_silence;
+            int                     m_default_timeout;
+            int                     m_default_trycount;
+            int                     m_default_sync;
     };
 
 #endif // CSERIALPORTSETTING_H

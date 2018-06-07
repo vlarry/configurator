@@ -109,7 +109,12 @@ ConfiguratorWindow::~ConfiguratorWindow()
 void ConfiguratorWindow::serialPortCtrl()
 {
     if(!m_modbusDevice || m_serialPortSettings_window->serialPortName().isEmpty())
+    {
+        if(ui->toolButtonConnect->isChecked())
+            ui->toolButtonConnect->setChecked(false);
+
         return;
+    }
         
     m_status_bar->clearStatusMessage();
     

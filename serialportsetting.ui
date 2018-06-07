@@ -9,12 +9,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
-    <height>477</height>
+    <width>360</width>
+    <height>419</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -26,7 +26,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidgetSettings">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabSerialPort">
       <attribute name="title">
@@ -34,20 +34,17 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="spacing">
-          <number>5</number>
-         </property>
-         <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
           <widget class="QGroupBox" name="gboxMenuSerialPort">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="title">
-            <string>Последовательный порт</string>
+            <string>COM-порт</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -106,7 +103,7 @@
             <item>
              <widget class="QComboBox" name="cboxPortName">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -119,16 +116,16 @@
            </layout>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item>
           <widget class="QGroupBox" name="groupBox">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="title">
-            <string>Скорость передачи данных (бит/с)</string>
+            <string>Baudrate</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -152,7 +149,7 @@
             <item>
              <widget class="QComboBox" name="cboxBaudrate">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -213,7 +210,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
+          <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
             <widget class="QGroupBox" name="groupBoxParity">
              <property name="sizePolicy">
@@ -274,7 +271,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer_5">
+            <spacer name="verticalSpacer_3">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -289,7 +286,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
             <widget class="QGroupBox" name="groupBoxDataBits">
              <property name="sizePolicy">
@@ -304,7 +301,7 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
+             <layout class="QVBoxLayout" name="verticalLayout_3">
               <item>
                <widget class="QRadioButton" name="radioButtonDataBit5">
                 <property name="text">
@@ -340,7 +337,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer_3">
+            <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -355,11 +352,11 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
            <item>
             <widget class="QGroupBox" name="groupBoxStopBits">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -370,7 +367,7 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
+             <layout class="QVBoxLayout" name="verticalLayout_2">
               <item>
                <widget class="QRadioButton" name="radioButtonStopBit1">
                 <property name="text">
@@ -419,27 +416,7 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QCheckBox" name="checkBoxAutoSpeed">
-           <property name="text">
-            <string>Автоподбор скорости</string>
-           </property>
-          </widget>
-         </item>
          <item>
           <spacer name="horizontalSpacer_3">
            <property name="orientation">
@@ -452,6 +429,13 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxAutoSpeed">
+           <property name="text">
+            <string>Автоподбор скорости</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -467,7 +451,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="lblTextSlaveID">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -482,6 +466,12 @@
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="lblTextNumRepeat">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Количество попыток</string>
            </property>
@@ -492,6 +482,12 @@
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="lblTextTimeout">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Время ожидания ответа, мс</string>
            </property>
@@ -527,6 +523,12 @@
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="labelIntervalSilence">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Интервал тишины, мс</string>
            </property>
@@ -622,6 +624,12 @@
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="label_16">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Синхронизация, мс</string>
            </property>
@@ -665,14 +673,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pushButtonOk">
        <property name="text">
         <string>Ок</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="pushButtonCancel">
        <property name="text">
         <string>Отмена</string>
        </property>

@@ -41,7 +41,7 @@
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>100</height>
+        <height>130</height>
        </size>
       </property>
       <property name="tabShape">
@@ -832,134 +832,190 @@
        <attribute name="title">
         <string>Настройки</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_104">
+       <layout class="QHBoxLayout" name="horizontalLayout_101">
         <item>
-         <widget class="QToolButton" name="toolButtonConnect">
-          <property name="text">
-           <string>Подключиться</string>
-          </property>
-          <property name="icon">
-           <iconset resource="resource.qrc">
-            <normaloff>:/images/resource/images/flag.png</normaloff>:/images/resource/images/flag.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="toolButtonStyle">
-           <enum>Qt::ToolButtonTextUnderIcon</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="toolButtonConnectSettings">
-          <property name="text">
-           <string>Соединение</string>
-          </property>
-          <property name="icon">
-           <iconset resource="resource.qrc">
-            <normaloff>:/images/resource/images/connect_serial.png</normaloff>:/images/resource/images/connect_serial.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
-          <property name="toolButtonStyle">
-           <enum>Qt::ToolButtonTextUnderIcon</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupboxMenuCommunication">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Связь</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <property name="spacing">
-            <number>5</number>
-           </property>
-           <property name="sizeConstraint">
-            <enum>QLayout::SetMinimumSize</enum>
-           </property>
-           <property name="leftMargin">
-            <number>2</number>
-           </property>
-           <property name="topMargin">
-            <number>2</number>
-           </property>
-           <property name="rightMargin">
-            <number>2</number>
-           </property>
-           <property name="bottomMargin">
-            <number>2</number>
-           </property>
-           <item>
-            <layout class="QGridLayout" name="gridLayout_5">
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="checkboxCalibTimeout">
-               <property name="text">
-                <string>Время опроса расчетных величин, мс</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QSpinBox" name="sboxTimeoutCalc">
-               <property name="maximumSize">
-                <size>
-                 <width>75</width>
-                 <height>75</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Время опроса расчетных величин по таймеру</string>
-               </property>
-               <property name="minimum">
-                <number>100</number>
-               </property>
-               <property name="maximum">
-                <number>5000</number>
-               </property>
-               <property name="value">
-                <number>1000</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_70">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QToolButton" name="toolButtonConnect">
+              <property name="text">
+               <string>Подключиться</string>
+              </property>
+              <property name="icon">
+               <iconset resource="resource.qrc">
+                <normaloff>:/images/resource/images/flag.png</normaloff>:/images/resource/images/flag.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="toolButtonStyle">
+               <enum>Qt::ToolButtonTextUnderIcon</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButtonConnectSettings">
+              <property name="toolTip">
+               <string>Настройки соединения</string>
+              </property>
+              <property name="text">
+               <string>Соединение</string>
+              </property>
+              <property name="icon">
+               <iconset resource="resource.qrc">
+                <normaloff>:/images/resource/images/connect_serial.png</normaloff>:/images/resource/images/connect_serial.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="toolButtonStyle">
+               <enum>Qt::ToolButtonTextUnderIcon</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_69">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetFixedSize</enum>
+                </property>
+                <item>
+                 <widget class="QToolButton" name="toolButtonCalculateCheck">
+                  <property name="contextMenuPolicy">
+                   <enum>Qt::NoContextMenu</enum>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/images/resource/images/arrow-loop.png</normaloff>:/images/resource/images/arrow-loop.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
+                  </property>
+                  <property name="autoRaise">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="checkboxCalibTimeout">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::RightToLeft</enum>
+                  </property>
+                  <property name="text">
+                   <string>Постоянный опрос</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QToolButton" name="toolButtonCalcInterval">
+                  <property name="contextMenuPolicy">
+                   <enum>Qt::NoContextMenu</enum>
+                  </property>
+                  <property name="text">
+                   <string>Интервал, мс</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resource.qrc">
+                    <normaloff>:/images/resource/images/clock.png</normaloff>:/images/resource/images/clock.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
+                  </property>
+                  <property name="toolButtonStyle">
+                   <enum>Qt::ToolButtonTextBesideIcon</enum>
+                  </property>
+                  <property name="autoRaise">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="sboxTimeoutCalc">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>75</width>
+                    <height>75</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Время опроса расчетных величин по таймеру</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="minimum">
+                   <number>100</number>
+                  </property>
+                  <property name="maximum">
+                   <number>5000</number>
+                  </property>
+                  <property name="value">
+                   <number>1000</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="styleSheet">
+             <string notr="true">background-color: lightgray;</string>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="text">
+             <string>Работа с блоком БЗУ</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="Line" name="line_3">
@@ -16962,9 +17018,7 @@
   <tabstop>tablewgtProtectionCtrl</tabstop>
   <tabstop>pbtnMenuReference</tabstop>
   <tabstop>pbtnVersionSoftware</tabstop>
-  <tabstop>checkboxCalibTimeout</tabstop>
   <tabstop>tbntExpandItems</tabstop>
-  <tabstop>sboxTimeoutCalc</tabstop>
   <tabstop>tabwgtMenu</tabstop>
  </tabstops>
  <resources>

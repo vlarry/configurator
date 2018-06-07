@@ -29,12 +29,17 @@ CSerialPortSetting::CSerialPortSetting(QWidget* parent):
     m_group_parity->addButton(ui->radioButtonParitySpace, QSerialPort::SpaceParity);
     m_group_parity->addButton(ui->radioButtonParityMark, QSerialPort::MarkParity);
 
+    ui->tabWidgetSettings->setCurrentIndex(0);
+
     connect(ui->toolButtonPortRefresh, &QToolButton::clicked, this, &CSerialPortSetting::refreshSerialPort);
     connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SIGNAL(timeout(int)));
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SIGNAL(numberRepeat(int)));
     connect(ui->checkBoxAutoSpeed, &QCheckBox::clicked, this, &CSerialPortSetting::autospeed);
 
-    setWindowFlag(Qt::Dialog);
+    connect(ui->pushButtonOk, &QPushButton::clicked, this, &CSerialPortSetting::close);
+    connect(ui->pushButtonCancel, &QPushButton::clicked, this, &CSerialPortSetting::cancel);
+
+    setWindowFlags(Qt::Dialog | Qt::WindowCloseButtonHint);
 }
 //---------------------------------------
 CSerialPortSetting::~CSerialPortSetting()
@@ -221,8 +226,40 @@ void CSerialPortSetting::show()
     QWidget::show();
 
     setFixedSize(width(), height());
+
+    m_default_baudrate         = baudrate();
+    m_default_databits         = dataBits();
+    m_default_stopbits         = stopBits();
+    m_default_parity           = parity();
+    m_default_autospeed        = autospeedState();
+    m_default_id               = deviceID();
+    m_default_interval_silence = modbusIntervalSilence();
+    m_default_timeout          = modbusTimeout();
+    m_default_trycount         = modbusTryCount();
+    m_default_sync             = deviceSync();
 }
-//----------------------------------------------
+//-------------------------------
+void CSerialPortSetting::cancel()
+{
+    setBaudrate(m_default_baudrate);
+    setDataBits(m_default_databits);
+    setStopBits(m_default_stopbits);
+    setParity(m_default_parity);
+    setAutospeed(m_default_autospeed);
+    setDeviceID(m_default_id);
+    setModbusIntervalSilence(m_default_interval_silence);
+    setModbusTimeout(m_default_timeout);
+    setModbusTryCount(m_default_trycount);
+    setDeviceSync(m_default_sync);
+    close();
+}
+//-----------------------------------------------------
+void CSerialPortSetting::closeEvent(QCloseEvent* event)
+{
+    cancel();
+    QWidget::closeEvent(event);
+}
+//----------------------------------------------------
 QSerialPort::Parity CSerialPortSetting::parity() const
 {
     return QSerialPort::Parity(m_group_parity->checkedId());

@@ -54,6 +54,8 @@
         <file>resource/images/connect_serial.png</file>
         <file>resource/images/disconnect.png</file>
         <file>resource/images/disconnect_serial.png</file>
+        <file>resource/images/arrow-loop.png</file>
+        <file>resource/images/clock.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
