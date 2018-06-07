@@ -113,6 +113,8 @@ void ConfiguratorWindow::serialPortCtrl()
         if(ui->toolButtonConnect->isChecked())
             ui->toolButtonConnect->setChecked(false);
 
+        noConnectMessage();
+
         return;
     }
         
