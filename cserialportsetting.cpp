@@ -36,8 +36,8 @@ CSerialPortSetting::CSerialPortSetting(QWidget* parent):
     connect(ui->sboxNumRepeat, SIGNAL(valueChanged(int)), this, SIGNAL(numberRepeat(int)));
     connect(ui->checkBoxAutoSpeed, &QCheckBox::clicked, this, &CSerialPortSetting::autospeed);
 
-    connect(ui->pushButtonOk, &QPushButton::clicked, this, &CSerialPortSetting::close);
-    connect(ui->pushButtonCancel, &QPushButton::clicked, this, &CSerialPortSetting::cancel);
+    connect(ui->pushButtonOk, &QPushButton::clicked, this, &CSerialPortSetting::okProcess);
+    connect(ui->pushButtonCancel, &QPushButton::clicked, this, &CSerialPortSetting::cancelProcess);
 
     setWindowFlags(Qt::Dialog | Qt::WindowCloseButtonHint);
 }
@@ -238,8 +238,8 @@ void CSerialPortSetting::show()
     m_default_trycount         = modbusTryCount();
     m_default_sync             = deviceSync();
 }
-//-------------------------------
-void CSerialPortSetting::cancel()
+//--------------------------------------
+void CSerialPortSetting::cancelProcess()
 {
     setBaudrate(m_default_baudrate);
     setDataBits(m_default_databits);
@@ -251,12 +251,18 @@ void CSerialPortSetting::cancel()
     setModbusTimeout(m_default_timeout);
     setModbusTryCount(m_default_trycount);
     setDeviceSync(m_default_sync);
+//    close();
+}
+//----------------------------------
+void CSerialPortSetting::okProcess()
+{
+    emit updateSettings();
     close();
 }
 //-----------------------------------------------------
 void CSerialPortSetting::closeEvent(QCloseEvent* event)
 {
-    cancel();
+    cancelProcess();
     QWidget::closeEvent(event);
 }
 //----------------------------------------------------

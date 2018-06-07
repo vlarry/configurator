@@ -26,3 +26,13 @@ QFrame#menuDeviceDockPanel QTreeView::branch:open:has-children:has-siblings
         border-image: none;
         image: url(:/images/resource/images/branch_open.png);
 }
+
+QWidget#widgetWorkBZU
+{
+    background-color: Gainsboro;
+}
+
+QLabel#labelWorkBZU
+{
+    background-color: silver;
+}

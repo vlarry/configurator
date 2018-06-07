@@ -857,7 +857,7 @@
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: Gainsboro;</string>
+           <string notr="true"/>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_72">
            <property name="spacing">
@@ -1078,7 +1078,7 @@
             </layout>
            </item>
            <item>
-            <widget class="QLabel" name="label">
+            <widget class="QLabel" name="labelWorkBZU">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -1086,7 +1086,7 @@
               </sizepolicy>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: Silver;</string>
+              <string notr="true"/>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Plain</enum>

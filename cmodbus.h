@@ -58,6 +58,7 @@
             void     setTimeoutRepeat(quint16 newTimeout);
             void     setRequestCountRepeat(quint8 newCount);
             void     setAutospeed(bool state);
+            void     setIntervalSilence(int value);
             quint32  sizeQueue() const;
             
         signals:
@@ -113,5 +114,6 @@
             AutoConnectType        m_connect;
             bool                   m_autospeed; // режим включения автоподбора скорости
             QTime                  m_time;
+            int                    m_interval_silence; // пауза перед отправкой текущего запроса (по умолчанию 4мс)
     };
 #endif // CMODBUS_H

@@ -14,7 +14,8 @@ CModbus::CModbus(QObject *parent):
     m_counter_request_error(0),
     m_request_count_repeat(3),
     m_timeout_repeat(1000),
-    m_connect({ false, false, m_baudrate, 0, 0, QVector<QSerialPort::BaudRate>(0) })
+    m_connect({ false, false, m_baudrate, 0, 0, QVector<QSerialPort::BaudRate>(0) }),
+    m_interval_silence(4)
 {
     m_device          = new QSerialPort(this);
     m_timeout_timer   = new QTimer(this);
@@ -174,7 +175,7 @@ void CModbus::setRequestCountRepeat(quint8 newCount)
 {
     m_request_count_repeat = newCount;
 }
-
+//--------------------------------
 quint32 CModbus::sizeQueue() const
 {
     return m_sizeQuery;
@@ -186,6 +187,16 @@ quint32 CModbus::sizeQueue() const
 void CModbus::setAutospeed(bool state)
 {
     m_autospeed = state;
+}
+/*!
+ * \brief CModbus::setIntervalSilence
+ * \param value Интервал/Пауза тишины
+ *
+ * Установка нового значения паузы перед отправкой текущего пакета
+ */
+void CModbus::setIntervalSilence(int value)
+{
+    m_interval_silence = value;
 }
 //---------------------------
 void CModbus::connectDevice()
@@ -364,7 +375,7 @@ void CModbus::sendRequest(CDataUnitType& unit)
 
     m_request_send_wait = unit;
 
-    m_send_wait_timer->start(10); // пауза 10мс
+    m_send_wait_timer->start(m_interval_silence); // выдерживание паузы пере отправкой
 }
 //-----------------------
 void CModbus::readyRead()

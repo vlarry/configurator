@@ -46,7 +46,8 @@
 
         public slots:
             void show();
-            void cancel();
+            void cancelProcess();
+            void okProcess();
             void setBaudrate(QSerialPort::BaudRate baudrate);
 
         signals:
@@ -54,6 +55,7 @@
             void timeout(int);
             void autospeed(bool);
             void refreshSerialPort();
+            void updateSettings();
 
         protected:
             void closeEvent(QCloseEvent* event);

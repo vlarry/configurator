@@ -1,7 +1,6 @@
 #include "configuratorwindow.h"
 #include <QApplication>
 #include <QMessageLogContext>
-#include "styleloader.h"
 //-----------------------------------------------------------------------------------
 void logOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
@@ -76,8 +75,6 @@ int main(int argc, char* argv[])
     qApp->setStyleSheet(qss_str);
 
     styleFile.close();
-
-//    StyleLoader::attach("resource/styles/default_style.qss", QKeySequence("F7"));
 
     ConfiguratorWindow w;
     w.show();

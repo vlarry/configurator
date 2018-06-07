@@ -2263,16 +2263,6 @@ void ConfiguratorWindow::timeCalculateChanged(int newTime)
         m_tim_calculate->start(newTime);
     }
 }
-//-------------------------------------------------------
-void ConfiguratorWindow::timeoutValueChanged(int newTime)
-{
-    m_modbusDevice->setTimeoutRepeat(newTime);
-}
-//------------------------------------------------------
-void ConfiguratorWindow::numberRepeatChanged(int number)
-{
-    m_modbusDevice->setRequestCountRepeat(number);
-}
 //--------------------------------------------------------
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
@@ -5936,6 +5926,8 @@ void ConfiguratorWindow::testStyle(bool state)
         style_str = styleFile.readAll();
 
         styleFile.close();
+
+        StyleLoader::attach("styles/custom_style.qss", QKeySequence("F7"));
     }
 
     qApp->setStyleSheet(style_str);
@@ -5949,6 +5941,17 @@ void ConfiguratorWindow::readStatusInfo()
 {
     sendRequestRead(16, 2, READ_STATUS_MCP_INFO, CDataUnitType::ReadInputRegisters);
     sendRequestRead(538, 24, READ_STATUS_MODULE_INFO, CDataUnitType::ReadInputRegisters);
+}
+/*!
+ * \brief ConfiguratorWindow::updateSerialPortSettings
+ *
+ * Обнолвение параметров настроек последовательного порта и протокола Modbus при их изменении в окне настроек
+ */
+void ConfiguratorWindow::updateSerialPortSettings()
+{
+    m_modbusDevice->setIntervalSilence(m_serialPortSettings_window->modbusIntervalSilence());
+    m_modbusDevice->setTimeoutRepeat(m_serialPortSettings_window->modbusTimeout());
+    m_modbusDevice->setRequestCountRepeat(m_serialPortSettings_window->modbusTryCount());
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
@@ -8073,8 +8076,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
     connect(m_modbusDevice, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
-    connect(m_serialPortSettings_window, &CSerialPortSetting::timeout, this, &ConfiguratorWindow::timeoutValueChanged);
-    connect(m_serialPortSettings_window, &CSerialPortSetting::numberRepeat, this, &ConfiguratorWindow::numberRepeatChanged);
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(m_modbusDevice, &CModbus::rawData, m_terminal_window, &CTerminal::appendData);
@@ -8138,4 +8139,5 @@ void ConfiguratorWindow::initConnect()
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
     connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
     connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this, &ConfiguratorWindow::updateSerialPortSettings);
 }

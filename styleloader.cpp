@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------
 void StyleLoader::attach(const QString &filename, QKeySequence key)
 {
-    StyleLoader * loader = new StyleLoader(qApp, filename, key);
+    StyleLoader* loader = new StyleLoader(qApp, filename, key);
     qApp->installEventFilter(loader);
     loader->setAppStyleSheet();
 }
@@ -30,7 +30,7 @@ void StyleLoader::setAppStyleSheet()
 
     if(!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Cannot open stylesheet file " << m_filename;
+        qDebug() << tr("Cannot open stylesheet file: %1").arg(m_filename);
         return;
     }
 

@@ -53,6 +53,7 @@
     #include "coutputall.h"
     #include "cdebuginfo.h"
     #include "cstatusinfo.h"
+    #include "styleloader.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     #define DEBUG_JOURNAL // отладка чтение журналов
@@ -489,8 +490,6 @@
             void resizeEvent(QResizeEvent* event);
             void chboxCalculateTimeoutStateChanged(bool state);
             void timeCalculateChanged(int newTime);
-            void timeoutValueChanged(int newTime);
-            void numberRepeatChanged(int number);
             void errorDevice(const QString& errorConnect);
             void errorConnect(const QString& errorConnect);
             void terminalVisiblity(int state);
@@ -558,6 +557,7 @@
             void timeoutJournalRead();
             void testStyle(bool state);
             void readStatusInfo();
+            void updateSerialPortSettings();
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
