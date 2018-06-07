@@ -238,7 +238,7 @@ void CModbus::disconnectDevice(bool isClear)
         for(int i = 0; i < m_connect.baudrate_list.count(); i++)
         {
             if(m_baudrate == m_connect.baudrate_list[i])
-                emit baudrateChanged(i);
+                emit baudrateChanged(m_connect.baudrate_list[i]);
         }
 
         connectDevice();
@@ -430,20 +430,23 @@ void CModbus::readyRead()
     m_counter_request_error = 0;
 
     // приняли все сообщение
-    if(!m_connect.is_connect && m_autospeed)
+    if(!m_connect.is_connect)
     {
         m_connect.is_connect = true;
 
-        if(m_connect.baudrate_init != m_baudrate)
+        if(m_autospeed)
         {
-            m_baudrate = m_connect.baudrate_init;
-
-            for(int i = 0; i < m_connect.baudrate_list.count(); i++)
+            if(m_connect.baudrate_init != m_baudrate)
             {
-                if(m_baudrate == m_connect.baudrate_list[i])
+                m_baudrate = m_connect.baudrate_init;
+
+                for(int i = 0; i < m_connect.baudrate_list.count(); i++)
                 {
-                    m_connect.baud_reconnect = true;
-                    emit newBaudrate(i);
+                    if(m_baudrate == m_connect.baudrate_list[i])
+                    {
+                        m_connect.baud_reconnect = true;
+                        emit newBaudrate(i);
+                    }
                 }
             }
         }
@@ -579,7 +582,7 @@ void CModbus::timeoutReadWait()
 
             if(m_connect.index_current == m_connect.index_start - 1)
             {
-                emit baudrateChanged(m_connect.index_start - 1);
+                emit baudrateChanged(m_connect.baudrate_list[m_connect.index_start - 1]);
 
                 m_connect.index_current = m_connect.index_start = 0;
 
@@ -595,7 +598,7 @@ void CModbus::timeoutReadWait()
         {
             m_baudrate = m_connect.baudrate_list[m_connect.index_current++];
 
-            emit baudrateChanged(m_connect.index_current - 1);
+            emit baudrateChanged(m_connect.baudrate_list[m_connect.index_current - 1]);
 
             connectDevice();
         }

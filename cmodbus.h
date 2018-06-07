@@ -68,7 +68,7 @@
             void timeoutResponse();
             void rawData(QByteArray& data, bool = true);
             void noConnect(bool = false);
-            void baudrateChanged(int);
+            void baudrateChanged(QSerialPort::BaudRate);
             void newBaudrate(int);
             void saveSettings();
             

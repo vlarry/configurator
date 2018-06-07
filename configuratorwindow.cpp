@@ -155,6 +155,7 @@ void ConfiguratorWindow::stateChanged(bool state)
         ui->toolButtonConnect->setText(tr("Отключиться"));
         ui->toolButtonConnect->setIconSize(QSize(24, 24));
         ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/disconnect_serial.png"));
+        ui->toolButtonConnect->setToolTip(tr("Отключение от БЗУ"));
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
         synchronization(true); // запускаем синхронизацию
         readJournalCount(); // читаем количество сообщений в каждом журнале
@@ -165,6 +166,7 @@ void ConfiguratorWindow::stateChanged(bool state)
         ui->toolButtonConnect->setText(tr("Подключиться"));
         ui->toolButtonConnect->setIconSize(QSize(24, 24));
         ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/flag.png"));
+        ui->toolButtonConnect->setToolTip(tr("Подключение к БЗУ"));
         synchronization(); // отключение синхронизации
         m_status_bar->connectStateChanged(false);
     }
@@ -252,27 +254,27 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
 {
-//    CDataUnitType unit_part1(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-//                             CALCULATE_ADDRESS_PART1, QVector<quint16>() << 66);
-//    unit_part1.setProperty(tr("REQUEST"), CALCULATE_TYPE);
-//    unit_part1.setProperty("PART", CALCULATE_ADDRESS_PART1);
+    CDataUnitType unit_part1(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters,
+                             CALCULATE_ADDRESS_PART1, QVector<quint16>() << 66);
+    unit_part1.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+    unit_part1.setProperty("PART", CALCULATE_ADDRESS_PART1);
 
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтение расчетных величин. Часть 1.";
 #endif
 
-//    sendCalculateRead(unit_part1);
+    sendCalculateRead(unit_part1);
 
-//    CDataUnitType unit_part2(ui->sboxSlaveID->value(), CDataUnitType::ReadInputRegisters,
-//                             CALCULATE_ADDRESS_PART2, QVector<quint16>() << 8);
-//    unit_part2.setProperty(tr("REQUEST"), CALCULATE_TYPE);
-//    unit_part2.setProperty("PART", CALCULATE_ADDRESS_PART2);
+    CDataUnitType unit_part2(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters,
+                             CALCULATE_ADDRESS_PART2, QVector<quint16>() << 8);
+    unit_part2.setProperty(tr("REQUEST"), CALCULATE_TYPE);
+    unit_part2.setProperty("PART", CALCULATE_ADDRESS_PART2);
 
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтение расчетных величин. Часть 2.";
 #endif
 
-//    sendCalculateRead(unit_part2);
+    sendCalculateRead(unit_part2);
 }
 //--------------------------------------
 void ConfiguratorWindow::debugInfoRead()
@@ -312,7 +314,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
         m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
         m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
 
-        QMessageBox::information(this, tr("Чтение журнала"), tr("Чтение журнала %1 успешно завершено. "
+        QMessageBox::information(this, tr("Чтение журнала"), tr("Чтение журнала %1 успешно завершено.\n"
                                                                 "Прочитано %2 сообщений.").
                                                                 arg(m_journal_read_current->property("NAME").toString()).
                                                                 arg(set.message.read_count));
@@ -4557,14 +4559,7 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
         quint16 value2 = data[2];
         quint16 value3 = data[3];
 
-        quint8  device_code  = quint8((value0 >> 8)&0xFF); // получаем код изделия РПА
-//        quint16 index_number = quint16(quint8(quint8(value0&0xFF) << 8) | quint8((value1 >> 8)&0xFF)); // получаем порядковый номер
-//        quint8  party_number = quint8(value1&0xFF); // получаем номер партии
-//        quint8  firmware_var = quint8((value2 >> 8)&0xFF); // получаем вариант прошивки
-//        quint8  year         = quint8(value2&0xFF); // получаем год
-//        quint8  month        = quint8((value3 >> 8)&0xFF); // получаем месяц
-//        quint8  day          = quint8(value3&0xFF); // получаем день
-
+        quint8  device_code = quint8((value0 >> 8)&0xFF); // получаем код изделия РПА
         quint8 index_number = ((quint8((value0&0xFF)) >> 4)&0x0F)*1000 + (quint8((value0&0xFF))&0x0F)*100 +
                               (((quint8((value1 >> 8)&0xFF)) >> 4)&0x0F)*10 + ((quint8((value1 >> 8)&0xFF))&0x0F);
         quint8 party_number = (quint8(value1&0xFF) >> 4)*10 + quint8(value1&0x0F);
@@ -4819,10 +4814,10 @@ void ConfiguratorWindow::displayProtectionWorkMode(CDataUnitType& unit)
         if(addr == -1)
             return;
 
-//        CDataUnitType new_unit(ui->sboxSlaveID->value(), CDataUnitType::WriteMultipleRegisters,
-//                               addr, values);
+        CDataUnitType new_unit(m_serialPortSettings_window->deviceID(), CDataUnitType::WriteMultipleRegisters,
+                               addr, values);
 
-//        m_modbusDevice->sendRequest(new_unit);
+        m_modbusDevice->sendRequest(new_unit);
     }
 }
 //-----------------------------------------------------------------
@@ -5444,9 +5439,9 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
  * \param addr Адрес ячейки
  * \param size Количество ячеек для чтения
  */
-void ConfiguratorWindow::sendRequestRead(int addr, int size, int request)
+void ConfiguratorWindow::sendRequestRead(int addr, int size, int request, CDataUnitType::FunctionType functionType)
 {
-    CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, addr, QVector<quint16>() << size);
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), functionType, addr, QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), request);
 #ifdef DEBUG_REQUEST
@@ -5954,8 +5949,8 @@ void ConfiguratorWindow::testStyle(bool state)
  */
 void ConfiguratorWindow::readStatusInfo()
 {
-    sendRequestRead(16, 2, READ_STATUS_MCP_INFO);
-    sendRequestRead(538, 24, READ_STATUS_MODULE_INFO);
+    sendRequestRead(16, 2, READ_STATUS_MCP_INFO, CDataUnitType::ReadInputRegisters);
+    sendRequestRead(538, 24, READ_STATUS_MODULE_INFO, CDataUnitType::ReadInputRegisters);
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
@@ -6799,13 +6794,10 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
 
-        if(m_active_journal_current)
-        {
-            readJournalCount();
-        }
-
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
+
+        readJournalCount();
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB ||
@@ -6844,14 +6836,16 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSynchronization()
 {
+#ifdef DEBUG_FUNCTION
+    qDebug() << tr("Синхронизация. Таймаут синхронизации: %1").arg(m_serialPortSettings_window->deviceSync());
+#endif
     CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
 
     unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
 
     m_modbusDevice->sendRequest(unit);
 
-//    if(!m_timer_synchronization->isActive())
-//        m_timer_synchronization->start(ui->spinboxSyncTime->value());
+    m_timer_synchronization->start(m_serialPortSettings_window->deviceSync());
 }
 //-----------------------------------------
 void ConfiguratorWindow::timeoutDebugInfo()
@@ -7552,10 +7546,9 @@ void ConfiguratorWindow::readJournalCount()
 //--------------------------------------------------
 void ConfiguratorWindow::synchronization(bool state)
 {
-    #ifdef DEBUG_REQUEST // проверка связи (отключение синхронизации)
-        return;
-    #endif
-
+#ifdef DEBUG_FUNCTION
+    qInfo() << tr("Синхронизация: %1").arg(int(state));
+#endif
     if(state)
     {
         timeoutSynchronization();
@@ -8125,7 +8118,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
     connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
     connect(m_modbusDevice, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
-//    connect(m_modbusDevice, &CModbus::baudrateChanged, ui->cboxBaudrate, &QComboBox::setCurrentIndex);
+    connect(m_modbusDevice, &CModbus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
     connect(m_modbusDevice, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
     connect(m_modbusDevice, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
     connect(m_modbusDevice, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);

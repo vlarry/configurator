@@ -37,7 +37,6 @@
             void setDataBits(QSerialPort::DataBits databits);
             void setStopBits(QSerialPort::StopBits stopbits);
             void setParity(QSerialPort::Parity parity);
-            void setBaudrate(QSerialPort::BaudRate baudrate);
 
             void setDeviceID(int id);
             void setDeviceSync(int time_sync);
@@ -48,6 +47,7 @@
         public slots:
             void show();
             void cancel();
+            void setBaudrate(QSerialPort::BaudRate baudrate);
 
         signals:
             void numberRepeat(int);

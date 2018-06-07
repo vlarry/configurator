@@ -56,6 +56,7 @@
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     #define DEBUG_JOURNAL // отладка чтение журналов
+//    #define DEBUG_FUNCTION // отладка всего остального
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");
     const QString ORGANIZATION_DOMAIN = QObject::tr("http://www.rpa.ua/");
@@ -519,7 +520,8 @@
             void sendProtectionWorkModeRequest(const QString& protection,
                                                RequestFunction function = FUN_READ);
             void sendMonitorPurposeK10_K11Request();
-            void sendRequestRead(int addr, int size, int request);
+            void sendRequestRead(int addr, int size, int request,
+                                 CDataUnitType::FunctionType functionType = CDataUnitType::ReadHoldingRegisters);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
             void sendDeviceCommand(int cmd);
             void sendOutputAllRequest();
