@@ -68,8 +68,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initWordStatus();
 
     ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
-
-
     ui->pushButtonVariableCtrl->setText(tr("Панель измерений"));
     ui->pushButtonMenuDeviceCtrl->setSide(CDockPanelItemCtrl::Left);
     ui->pushButtonVariableCtrl->setSide(CDockPanelItemCtrl::Right);
