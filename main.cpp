@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 
     QApplication a(argc, argv);
 
-    QFile styleFile("resource/styles/default_style.qss");
+    QFile styleFile(":/styles/resource/styles/default_style.qss");
 
     styleFile.open(QFile::ReadOnly);
 

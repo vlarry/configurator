@@ -5915,22 +5915,27 @@ void ConfiguratorWindow::timeoutJournalRead()
 //--------------------------------------------
 void ConfiguratorWindow::testStyle(bool state)
 {
-    QString style_str = "";
+    QString path_to_style = "";
 
     if(state)
     {
-        QFile styleFile(":/styles/resource/styles/default_style.qss");
-
-        styleFile.open(QFile::ReadOnly);
-
-        style_str = styleFile.readAll();
-
-        styleFile.close();
-
-        StyleLoader::attach("styles/custom_style.qss", QKeySequence("F7"));
+        path_to_style = "styles/custom_style.qss";
+    }
+    else
+    {
+        path_to_style = ":/styles/resource/styles/default_style.qss";
     }
 
-    qApp->setStyleSheet(style_str);
+    QFile styleFile(path_to_style);
+
+    styleFile.open(QFile::ReadOnly);
+
+    if(state)
+        StyleLoader::attach(path_to_style, QKeySequence("F7"));
+
+    qApp->setStyleSheet(styleFile.readAll());
+
+    styleFile.close();
 }
 /*!
  * \brief ConfiguratorWindow::readStatusInfo
