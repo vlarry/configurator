@@ -75,7 +75,7 @@ const CRow& CMatrix::operator [](int index) const
 //-----------------------
 CColumn::CColumn():
     m_bit(-1),
-    m_state(false),
+    m_state(Qt::Unchecked),
     m_key(""),
     m_name(""),
     m_description("")
@@ -85,15 +85,15 @@ CColumn::CColumn():
 //------------------------------------
 CColumn::CColumn(const QString& name):
     m_bit(-1),
-    m_state(false),
+    m_state(Qt::Unchecked),
     m_key(""),
     m_name(name),
     m_description("")
 {
 
 }
-//---------------------------------------------------------------------------------------------------------
-CColumn::CColumn(int bit, bool state, const QString& key, const QString& name, const QString& description):
+//-------------------------------------------------------------------------------------------------------------------
+CColumn::CColumn(int bit, Qt::CheckState state, const QString& key, const QString& name, const QString& description):
     m_bit(bit),
     m_state(state),
     m_key(key),
@@ -122,8 +122,8 @@ QString CColumn::description() const
 {
     return m_description;
 }
-//-------------------------
-bool CColumn::state() const
+//-----------------------------------
+Qt::CheckState CColumn::state() const
 {
     return m_state;
 }
@@ -154,8 +154,8 @@ void CColumn::setDescription(const QString& description)
 {
     m_description = description;
 }
-//--------------------------------
-void CColumn::setState(bool state)
+//------------------------------------------
+void CColumn::setState(Qt::CheckState state)
 {
     m_state = state;
 }

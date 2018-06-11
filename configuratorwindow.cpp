@@ -4436,7 +4436,10 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 
             bool state = (values[hword + offset_pos]&(1 << bit));
 
-            col.setState(state);
+            if(state)
+                col.setState(Qt::Checked);
+            else
+                col.setState(Qt::Unchecked);
         }
     }
 
@@ -4502,7 +4505,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
             for(int j = 0; j < matrix.rowCount(); j++)
             {
                 bool state = data[i]&(1 << j);
-                matrix[j][col_index].setState(state);
+                matrix[j][col_index].setState(((state)?Qt::Checked:Qt::Unchecked));
             }
         }
     }
@@ -4845,7 +4848,7 @@ void ConfiguratorWindow::displayMonitorK10_K11(CDataUnitType& unit)
                 if(pos >= matrix.columnCount())
                     break;
 
-                matrix[row][pos].setState(state);
+                matrix[row][pos].setState(((state)?Qt::Checked:Qt::Unchecked));
             }
         }
     }
@@ -4932,7 +4935,7 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
             bool state = (row[col]&(1 << bit));
 
-            matrix[i][j].setState(state);
+            matrix[i][j].setState(((state)?Qt::Checked:Qt::Unchecked));
         }
     }
 
@@ -5567,7 +5570,7 @@ void ConfiguratorWindow::clearIOTable()
     {
         for(int j = 0; j < matrix.columnCount(); j++)
         {
-            matrix[i][j].setState(false);
+            matrix[i][j].setState(Qt::Unchecked);
         }
     }
 
@@ -6649,8 +6652,8 @@ void ConfiguratorWindow::importPurposeFromJSON()
         {
             QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
 
-            columns << CColumn(colObj["bit"].toInt(), colObj["state"].toBool(), colObj["key"].toString(),
-                                  colObj["name"].toString(), colObj["description"].toString());
+            columns << CColumn(colObj["bit"].toInt(), static_cast<Qt::CheckState>(colObj["state"].toInt()), colObj["key"].toString(),
+                               colObj["name"].toString(), colObj["description"].toString());
         }
 
         rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);

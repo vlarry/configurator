@@ -56,7 +56,7 @@ void CMonitorPurpose::clearTable()
     {
         for(int j = 0; j < matrix.columnCount(); j++)
         {
-            matrix[i][j].setState(false);
+            matrix[i][j].setState(Qt::Unchecked);
         }
     }
 

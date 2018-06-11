@@ -15,7 +15,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_
 
         for(var_t& var: item.var_list)
         {
-            columns << CColumn(var.bit, false, var.key, var.name, var.description);
+            columns << CColumn(var.bit, Qt::Unchecked, var.key, var.name, var.description);
         }
     }
 
@@ -110,12 +110,8 @@ bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& valu
 
     if(role == Qt::CheckStateRole)
     {
-//        if(!m_data[index.row()][index.column()].status())
-//            return false;
+        Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
 
-        bool state = ((static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked)?true:false);
-
-//        m_data[index.row()][index.column()].setState(state);
         m_matrix[index.row()][index.column()].setState(state);
 
         emit dataChanged(index, index);
@@ -130,7 +126,8 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
 {
     if(role == Qt::CheckStateRole)
     {
-        return static_cast<Qt::CheckState>((m_matrix[index.row()][index.column()].state())?Qt::Checked:Qt::Unchecked);
+        qDebug() << "check state: " << m_matrix[index.row()][index.column()].state();
+        return static_cast<Qt::CheckState>(m_matrix[index.row()][index.column()].state());
     }
 
     if(role == Qt::ToolTipRole)
@@ -268,11 +265,13 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
 
     checkboxstyle.rect.setLeft(option.rect.x() + option.rect.width()/2 - checkbox_rect.width()/2);
 
-    bool state = index.model()->data(index, Qt::CheckStateRole).toBool();
+    Qt::CheckState state = static_cast<Qt::CheckState>(index.model()->data(index, Qt::CheckStateRole).toInt());
 
-    if(state)
+    if(state == Qt::Checked)
         checkboxstyle.state = QStyle::State_On|QStyle::State_Enabled;
-    else
+    else if(state == Qt::PartiallyChecked)
+        checkboxstyle.state = QStyle::State_NoChange|QStyle::State_Enabled;
+    else if(state == Qt::Unchecked)
         checkboxstyle.state = QStyle::State_Off|QStyle::State_Enabled;
 
     if(m_table_type == PROTECTION_TYPE && index.row() == index.column())
@@ -328,7 +327,14 @@ bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, c
         if(!checkboxstyle.rect.contains(point))
             return false;
 
-        Qt::CheckState state = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked?Qt::Unchecked:Qt::Checked);
+        Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
+
+        if(state == Qt::Unchecked)
+            state = Qt::PartiallyChecked;
+        else if(state == Qt::PartiallyChecked)
+            state = Qt::Checked;
+        else if(state == Qt::Checked)
+            state = Qt::Unchecked;
 
         return model->setData(index, state, Qt::CheckStateRole);
     }

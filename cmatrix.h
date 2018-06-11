@@ -4,33 +4,34 @@
     #include <QString>
     #include <QVector>
     #include <QDebug>
+    #include <QCheckBox>
     //-----------
     class CColumn
     {
         public:
             CColumn();
             CColumn(const QString& name);
-            CColumn(int bit, bool state, const QString& key, const QString& name, const QString& description);
+            CColumn(int bit, Qt::CheckState state, const QString& key, const QString& name, const QString& description);
 
             int     bit() const;
             QString key() const;
             QString name() const;
             QString description() const;
-            bool    state() const;
+            Qt::CheckState state() const;
 
             void setBit(int bit);
             void setData(const QString& key, const QString& name, const QString& description);
             void setKey(const QString& key);
             void setName(const QString& name);
             void setDescription(const QString& description);
-            void setState(bool state);
+            void setState(Qt::CheckState state);
 
         private:
-            int     m_bit;
-            bool    m_state;
-            QString m_key;
-            QString m_name;
-            QString m_description;
+            int            m_bit;
+            Qt::CheckState m_state;
+            QString        m_key;
+            QString        m_name;
+            QString        m_description;
     };
     //--------
     class CRow
