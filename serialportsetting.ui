@@ -3,13 +3,13 @@
  <class>CSerialPortSetting</class>
  <widget class="QWidget" name="CSerialPortSetting">
   <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
+   <enum>Qt::ApplicationModal</enum>
   </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
+    <width>366</width>
     <height>419</height>
    </rect>
   </property>
