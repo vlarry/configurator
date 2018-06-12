@@ -251,13 +251,14 @@ void CSerialPortSetting::cancelProcess()
     setModbusTimeout(m_default_timeout);
     setModbusTryCount(m_default_trycount);
     setDeviceSync(m_default_sync);
-//    close();
+
+    hide();
 }
 //----------------------------------
 void CSerialPortSetting::okProcess()
 {
     emit updateSettings();
-    close();
+    hide();
 }
 //-----------------------------------------------------
 void CSerialPortSetting::closeEvent(QCloseEvent* event)

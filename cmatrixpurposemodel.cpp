@@ -126,7 +126,6 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
 {
     if(role == Qt::CheckStateRole)
     {
-        qDebug() << "check state: " << m_matrix[index.row()][index.column()].state();
         return static_cast<Qt::CheckState>(m_matrix[index.row()][index.column()].state());
     }
 

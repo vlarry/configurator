@@ -4,6 +4,7 @@
     #include <QWidget>
     #include <QtSerialPort>
     #include <QButtonGroup>
+    #include <QDebug>
     //----------
     namespace Ui
     {
