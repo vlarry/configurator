@@ -72,7 +72,7 @@
             };
 
         public:
-            CTableItemDelegate(TableType table_type, QObject* parent = nullptr);
+            CTableItemDelegate(TableType table_type, bool inverse = false, QObject* parent = nullptr);
 
         protected:
             void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
@@ -80,5 +80,6 @@
 
         private:
             TableType m_table_type;
+            bool      m_inverse;
     };
 #endif // CMATRIXPURPOSEMODEL_H

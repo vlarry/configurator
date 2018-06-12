@@ -1237,6 +1237,8 @@ void ConfiguratorWindow::purposeInputWrite()
 {
     sendPurposeDIWriteRequest(512, 590);
     sendPurposeDIWriteRequest(592, 670);
+    sendPurposeInverseDIWriteRequest(768, 846);
+    sendPurposeInverseDIWriteRequest(848, 926);
 }
 /*!
  * \brief ConfiguratorWindow::purposeRelayWrite
@@ -1968,6 +1970,8 @@ void ConfiguratorWindow::purposeInputRead()
 {
     sendPurposeDIReadRequest(512, 590);
     sendPurposeDIReadRequest(592, 670);
+    sendPurposeDIReadRequest(768, 846);
+    sendPurposeDIReadRequest(848, 926);
 }
 //-----------------------------------------
 void ConfiguratorWindow::purposeRelayRead()
@@ -2110,9 +2114,32 @@ void ConfiguratorWindow::responseRead(CDataUnitType& unit)
     {
         displayPurposeResponse(unit);
     }
-    else if(type == PURPOSE_INPUT_TYPE)
+    else if(type == PURPOSE_INPUT_TYPE || type == PURPOSE_INPUT_INVERSE_TYPE)
     {
-        displayPurposeDIResponse(unit);
+        static QVector<quint16> input_list;
+        static QVector<quint16> input_inverse_list;
+
+        if(type == PURPOSE_INPUT_TYPE)
+        {
+            if(input_list.isEmpty())
+                input_list = unit.values();
+            else
+                input_list += unit.values();
+        }
+        else if(type == PURPOSE_INPUT_INVERSE_TYPE)
+        {
+            if(input_inverse_list.isEmpty())
+                input_inverse_list = unit.values();
+            else
+            {
+                input_inverse_list += unit.values();
+
+                displayPurposeDIResponse(input_list, input_inverse_list);
+
+                input_list.clear();
+                input_inverse_list.clear();
+            }
+        }
     }
     else if(type == READ_JOURNAL || type == READ_JOURNAL_COUNT || type == READ_JOURNAL_SHIFT_PTR)
     {
@@ -4089,7 +4116,14 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
     CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group);
 
-    table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PURPOSE_TYPE));
+    bool is_inverse = false;
+
+    if(table == ui->tablewgtDiscreteInputPurpose)
+    {
+        is_inverse = true;
+    }
+
+    table->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PURPOSE_TYPE, is_inverse));
     table->setHorizontalHeader(hheader);
     table->setVerticalHeader(vheader);
     table->setModel(model);
@@ -4445,15 +4479,17 @@ void ConfiguratorWindow::displayPurposeResponse(CDataUnitType& unit)
 
     model->updateData();
 }
-//--------------------------------------------------------------------
-void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
+//-------------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_list, const QVector<quint16>& input_inverse_list)
 {
 #ifdef DEBUG_REQUEST
     qDebug() << "Вывод привязок входов.";
 #endif
-    if(unit.is_empty())
+
+    if(input_list.count() != input_inverse_list.count())
     {
-        noConnectMessage();
+        qDebug() << tr("Количество привязок входов не соответствует количеству инверсных привязок: %1/%2").
+                    arg(input_inverse_list.count()).arg(input_inverse_list.count());
         return;
     }
 
@@ -4462,31 +4498,31 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
     if(var_list.isEmpty())
         return;
 
-    int first_addr = unit.property(tr("FIRST_ADDRESS")).toInt();
-    int last_addr  = unit.property(tr("LAST_ADDRESS")).toInt();
-
-    if((last_addr - first_addr + 2) != unit.valueCount())
-        return;
-
-    int column_offset = (first_addr - 512)/2;
-
     CMatrixPurposeModel* model  = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
     CMatrix&             matrix = model->matrixTable();
 
     if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
         return;
 
-    QVector<quint32> data;
+    QVector<quint32> input_data;
 
-    for(int i = 0; i < (unit.valueCount() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
-    {                                                   // каждые 32 бита хранят состояния входов для переменной
-        quint32 value = ((unit.value(i) << 16) | unit.value(i + 1));
-        data << value;
+    for(int i = 0; i < (input_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
+    {                                                    // каждые 32 бита хранят состояния входов для переменной
+        quint32 value = ((input_list[i] << 16) | input_list[i + 1]);
+        input_data << value;
     }
 
-    for(int i = 0; i < data.count(); i++)
+    QVector<quint32> input_inverse_data;
+
+    for(int i = 0; i < (input_inverse_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
+    {                                                            // каждые 32 бита хранят состояния инверсий входов для переменной
+        quint32 value = ((input_inverse_list[i] << 16) | input_inverse_list[i + 1]);
+        input_inverse_data << value;
+    }
+
+    for(int i = 0; i < input_data.count(); i++)
     {
-        QString key = var_list[i + column_offset].toUpper();
+        QString key = var_list[i].toUpper();
 
         int col_index = -1;
 
@@ -4504,8 +4540,17 @@ void ConfiguratorWindow::displayPurposeDIResponse(CDataUnitType& unit)
         {
             for(int j = 0; j < matrix.rowCount(); j++)
             {
-                bool state = data[i]&(1 << j);
-                matrix[j][col_index].setState(((state)?Qt::Checked:Qt::Unchecked));
+                bool input_state   = input_data[i]&(1 << j);
+                bool inverse_state = input_inverse_data[i]&(1 << j);
+
+                Qt::CheckState state = Qt::Unchecked;
+
+                if(input_state && !inverse_state)
+                    state = Qt::Checked;
+                else if(input_state && inverse_state)
+                    state = Qt::PartiallyChecked;
+
+                matrix[j][col_index].setState(state);
             }
         }
     }
@@ -5323,7 +5368,7 @@ void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
     CDataUnitType unit(m_serialPortSettings_window->deviceID(), CDataUnitType::ReadHoldingRegisters, first_addr,
                                                  QVector<quint16>() << size);
 
-    unit.setProperty(tr("REQUEST"), PURPOSE_INPUT_TYPE);
+    unit.setProperty(tr("REQUEST"), ((first_addr < 768)?PURPOSE_INPUT_TYPE:PURPOSE_INPUT_INVERSE_TYPE));
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 #ifdef DEBUG_REQUEST
@@ -5373,7 +5418,8 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
             for(int k = 0; k < matrix.rowCount(); k++)
             {
-                bool state = matrix[k][col_index].state();
+                bool state = (matrix[k][col_index].state() == Qt::Checked || matrix[k][col_index].state() == Qt::PartiallyChecked)?true:
+                                                                                                                                   false;
 
                 if(state)
                     value |= (1 << k);
@@ -5392,6 +5438,70 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Запись привязок входов к переменным.";
+#endif
+    m_modbusDevice->sendRequest(unit);
+}
+//--------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int last_addr)
+{
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
+
+    if(!model)
+        return;
+
+    CMatrix matrix = model->matrixTable();
+
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
+
+    QVector<QString> var_list = loadVaribleByType("DI");
+
+    int bIndex = (first_addr - 768)/2;
+    int eIndex = (926 - last_addr)/2;
+
+    QVector<quint16> values;
+
+    for(int i = bIndex; i < var_list.count() - eIndex; i++)
+    {
+        QString key       = var_list[i].toUpper();
+        int     col_index = -1;
+
+        for(int j = 0; j < matrix.columnCount(); j++)
+        {
+            QString col_key = matrix[0][j].key().toUpper();
+
+            if(key == col_key)
+            {
+                col_index = j;
+                break;
+            }
+        }
+
+        if(col_index != -1)
+        {
+            quint32 value = 0;
+
+            for(int k = 0; k < matrix.rowCount(); k++)
+            {
+                bool state = ((matrix[k][col_index].state() == Qt::PartiallyChecked)?true:false);
+
+                if(state)
+                    value |= (1 << k);
+            }
+
+            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+        }
+    }
+
+    CDataUnitType::FunctionType funType = ((values.count() == 1)?CDataUnitType::WriteSingleRegister:
+                                                                 CDataUnitType::WriteMultipleRegisters);
+
+    CDataUnitType unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
+
+    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
+    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
+#ifdef DEBUG_REQUEST
+    qDebug() << "Запрос Запись матрицы инверсий.";
 #endif
     m_modbusDevice->sendRequest(unit);
 }
@@ -6811,7 +6921,8 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME ||
-            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS)
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS ||
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION)
     {
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
@@ -6821,6 +6932,14 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD)
     {
+        if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
+        {
+            ui->checkBoxToolTipInverse->setCheckState(Qt::PartiallyChecked);
+            ui->widgetToolTipState->show();
+        }
+        else
+            ui->widgetToolTipState->hide();
+
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
         ui->pushButtonDefaultSettings->setVisible(true);

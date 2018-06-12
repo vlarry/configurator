@@ -237,10 +237,11 @@ void CMatrixPurposeModel::fillHeaderMonitorModel(const QStringList& rows, const 
 }
 //--------------------------------
 //------class CItemDelegate-------
-//----------------------------------------------------------------------------
-CTableItemDelegate::CTableItemDelegate(TableType table_type, QObject* parent):
+//------------------------------------------------------------------------------------------
+CTableItemDelegate::CTableItemDelegate(TableType table_type, bool inverse, QObject* parent):
     QStyledItemDelegate(parent),
-    m_table_type(table_type)
+    m_table_type(table_type),
+    m_inverse(inverse)
 {
 
 }
@@ -329,7 +330,12 @@ bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, c
         Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
 
         if(state == Qt::Unchecked)
-            state = Qt::PartiallyChecked;
+        {
+            if(m_inverse)
+                state = Qt::PartiallyChecked;
+            else
+                state = Qt::Checked;
+        }
         else if(state == Qt::PartiallyChecked)
             state = Qt::Checked;
         else if(state == Qt::Checked)

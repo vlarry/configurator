@@ -87,6 +87,7 @@
                 GENERAL_CONTROL_TYPE, // общие настройки (выбор варианта, т.е. комбобокс) - отдельный запрос
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
+                PURPOSE_INPUT_INVERSE_TYPE, // матрица привязок инверсий входов
                 PROTECTION_WORK_MODE_TYPE, // чтение режима работы защит
                 MONITONR_PURPOSE_K10_K11_TYPE, // чтение привязок для внутренних переменных К10-К11
                 READ_OUTPUT_ALL, // чтение состояний всех выходов
@@ -516,6 +517,7 @@
             void sendPurposeWriteRequest(const QString& first, const QString& last);
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
+            void sendPurposeInverseDIWriteRequest(int first_addr, int last_addr);
             void sendProtectionWorkModeRequest(const QString& protection,
                                                RequestFunction function = FUN_READ);
             void sendMonitorPurposeK10_K11Request();
@@ -592,7 +594,7 @@
             void displaySettingResponse(CDataUnitType& unit);
             void displaySettingControlResponce(const CDataUnitType& unit);
             void displayPurposeResponse(CDataUnitType& unit);
-            void displayPurposeDIResponse(CDataUnitType& unit);
+            void displayPurposeDIResponse(const QVector<quint16>& input_list, const QVector<quint16>& input_inverse_list);
             void displayJournalResponse(QVector<quint16>& data);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void displayProtectReserveSignalStart(const QVector<quint16>& data);
