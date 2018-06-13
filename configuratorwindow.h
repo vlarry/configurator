@@ -633,6 +633,7 @@
             QVector<QPair<QString, QString> > loadLabelRows(const QString& type);
             QVector<QString>    loadVaribleByType(const QString& type);
             block_protection_list_t loadProtectionList();
+            bool deleteLogFile();
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

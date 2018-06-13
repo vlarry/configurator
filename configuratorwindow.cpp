@@ -72,7 +72,12 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->pushButtonMenuDeviceCtrl->setSide(CDockPanelItemCtrl::Left);
     ui->pushButtonVariableCtrl->setSide(CDockPanelItemCtrl::Right);
 
+    bool is_remove = deleteLogFile();
+
     qInfo() << tr("Запуск программы...");
+
+    if(is_remove)
+        qInfo() << tr("Файл логирования <log.txt> удален.");
 
     refreshSerialPort();
 }
@@ -8197,6 +8202,19 @@ ConfiguratorWindow::block_protection_list_t ConfiguratorWindow::loadProtectionLi
     }
 
     return block_list;
+}
+//--------------------------------------
+bool ConfiguratorWindow::deleteLogFile()
+{
+    QDir dir;
+
+    if(dir.exists("log.txt"))
+    {
+        if(dir.remove("log.txt"))
+            return true;
+    }
+
+    return false;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()
