@@ -139,7 +139,8 @@ void ConfiguratorWindow::stateChanged(bool state)
 {
     ui->toolButtonConnect->setChecked(state);
 
-    m_status_bar->setStatusMessage(((state)?tr("Соединение с устройством установлено"):
+    m_status_bar->setStatusMessage(((state)?tr("Соединение с устройством установлено на скорости: %1 бод").
+                                            arg(m_modbusDevice->baudrate()):
                                             tr("Соединение с устройством разорвано")), 5000);
     
     if(ui->checkboxCalibTimeout->isChecked() && state)
@@ -6651,7 +6652,7 @@ void ConfiguratorWindow::exportPurposeToJSON()
         {
             QJsonObject tcolumnObj;
 
-            tcolumnObj["state"]       = matrix[i][j].state();
+            tcolumnObj["state"]       = int(matrix[i][j].state());
             tcolumnObj["bit"]         = matrix[i][j].bit();
             tcolumnObj["key"]         = matrix[i][j].key();
             tcolumnObj["name"]        = matrix[i][j].name();

@@ -229,7 +229,14 @@ void CModbus::disconnectDevice(bool isClear)
         m_receive_buffer.clear();
 
         if(isClear)
+        {
             m_request_queue.clear();
+
+            m_connect.is_connect     = false;
+            m_connect.baud_reconnect = false;
+            m_connect.baudrate_init  = m_baudrate;
+            m_connect.index_current  = m_connect.index_start = m_connect.index_current;
+        }
 
         m_request_cur = CDataUnitType();
         m_timeout_timer->stop();
