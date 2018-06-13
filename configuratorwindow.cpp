@@ -6070,6 +6070,11 @@ void ConfiguratorWindow::updateSerialPortSettings()
     m_modbusDevice->setIntervalSilence(m_serialPortSettings_window->modbusIntervalSilence());
     m_modbusDevice->setTimeoutRepeat(m_serialPortSettings_window->modbusTimeout());
     m_modbusDevice->setRequestCountRepeat(m_serialPortSettings_window->modbusTryCount());
+
+    int index = ui->comboBoxCommunicationBaudrate->findText(QString("%1").arg(m_serialPortSettings_window->baudrate()));
+
+    if(index != -1)
+        ui->comboBoxCommunicationBaudrate->setCurrentIndex(index);
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
