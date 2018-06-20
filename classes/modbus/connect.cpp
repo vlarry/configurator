@@ -102,7 +102,10 @@ void CConnect::endWrite(qint64 size)
 //-----------------------------------------------------------------
 void CConnect::errorOccuredPort(QSerialPort::SerialPortError error)
 {
-    QString msg_str = tr("Ошибка последовательного порта: %1.").arg(m_error_list[error]);
+    if(error == QSerialPort::NoError)
+        return;
+
+    QString msg_str = tr("Ошибка последовательного порта: %1").arg(m_error_list[error]);
     qWarning() << msg_str;
     emit portError(msg_str);
 }
@@ -142,4 +145,9 @@ void CConnect::setSettings(CConnect::SerialPortType& settings)
 const CConnect::SerialPortType& CConnect::settings() const
 {
     return m_settings;
+}
+//------------------------------------------
+void CConnect::write(const QByteArray& data)
+{
+    m_port->write(data);
 }

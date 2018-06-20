@@ -32,6 +32,7 @@
             void                  setAutochoicespeed(bool state);
             void                  setSettings(SerialPortType& settings);
             const SerialPortType& settings() const;
+            void                  write(const QByteArray& data);
 
         signals:
             void portError(const QString&);

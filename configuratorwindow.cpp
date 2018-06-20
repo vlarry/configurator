@@ -125,18 +125,22 @@ void ConfiguratorWindow::serialPortCtrl()
     
     if(ui->toolButtonConnect->isChecked())
     {
-//        m_modbus->setPortName(m_serialPortSettings_window->serialPortName());
-//        m_modbus->setBaudrate(m_serialPortSettings_window->baudrate());
-//        m_modbus->setDatabits(m_serialPortSettings_window->dataBits());
-//        m_modbus->setStopbits(m_serialPortSettings_window->stopBits());
-//        m_modbus->setParity(m_serialPortSettings_window->parity());
-        
-//        m_modbus->connectDevice();
+        CConnect::SerialPortType settings =
+        {
+            m_serialPortSettings_window->serialPortName(),
+            m_serialPortSettings_window->baudrate(),
+            m_serialPortSettings_window->dataBits(),
+            m_serialPortSettings_window->parity(),
+            m_serialPortSettings_window->stopBits()
+        };
+
+        m_modbus->channel()->setSettings(settings);
+        emit m_modbus->open();
     }
     else
     {
         m_progressbar->progressStop();
-//        m_modbus->disconnectDevice();
+        emit m_modbus->close();
     }
 }
 //-----------------------------------------------
@@ -6981,7 +6985,7 @@ void ConfiguratorWindow::timeoutSynchronization()
 
     unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 
     m_timer_synchronization->start(m_serialPortSettings_window->deviceSync());
 }
@@ -8219,7 +8223,7 @@ bool ConfiguratorWindow::deleteLogFile()
 void ConfiguratorWindow::initConnect()
 {
     connect(ui->toolButtonConnect, &QToolButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
-//    connect(m_modbus, &CModbus::connectDeviceState, this, &ConfiguratorWindow::stateChanged);
+    connect(m_modbus, &CModBus::stateChanged, this, &ConfiguratorWindow::stateChanged);
     connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this, &ConfiguratorWindow::refreshSerialPort);
 //    connect(m_modbus, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
@@ -8228,7 +8232,7 @@ void ConfiguratorWindow::initConnect()
 //    connect(m_modbus, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
-//    connect(m_modbus, &CModbus::rawData, m_terminal_window, &CTerminal::appendData);
+    connect(m_modbus, &CModBus::rawData, m_terminal_window, &CTerminal::appendData);
     connect(m_terminal_window, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
     connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
