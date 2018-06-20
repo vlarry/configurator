@@ -30,6 +30,8 @@
             quint16 crc16(QByteArray& data, size_t length);
 
         private:
-            CConnect* m_channel;
+            CConnect*       m_channel;
+            CModBusDataUnit m_request;
+            QByteArray      m_buffer;
     };
 #endif // CMODBUS_H

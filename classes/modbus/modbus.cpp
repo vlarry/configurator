@@ -2,7 +2,8 @@
 //--------------------------------
 CModBus::CModBus(QObject* parent):
     QObject(parent),
-    m_channel(nullptr)
+    m_channel(nullptr),
+    m_request(CModBusDataUnit())
 {
     m_channel = new CConnect(this);
 
@@ -39,7 +40,35 @@ quint16 CModBus::crc16(QByteArray& data, size_t length)
 //--------------------------------------------
 void CModBus::readyReadData(QByteArray& bytes)
 {
+    if(!m_request.isValid())
+        return;
+
     qDebug() << tr("Получены данные: %1 байт.").arg(bytes.count());
+
+    m_buffer += bytes;
+
+    int size = -1;
+
+    switch(m_request.function())
+    {
+        case CModBusDataUnit::ReadHoldingRegisters:
+        case CModBusDataUnit::ReadInputRegisters:
+            size = quint8(m_request[0])*2 + 5;
+        break;
+
+        case CModBusDataUnit::WriteMultipleRegisters:
+        case CModBusDataUnit::WriteSingleRegister:
+            size = 8;
+        break;
+
+        default:
+            qDebug() << tr("Неизвестный код функции: %1.").arg(m_request.toString());
+        return;
+    }
+
+    qDebug() << tr("Расчитанный размер принимаемых данных: %1.").arg(size);
+
+    m_request = CModBusDataUnit();
 }
 //------------------------------------------
 void CModBus::request(CModBusDataUnit& unit)
@@ -75,7 +104,7 @@ void CModBus::request(CModBusDataUnit& unit)
         break;
 
         default:
-            qWarning() << tr("Неизвестный код функции: %1.").arg(quint8(unit.function()));
+            qWarning() << tr("Неизвестный код функции: %1.").arg(unit.toString());
         return;
     }
 
@@ -85,6 +114,7 @@ void CModBus::request(CModBusDataUnit& unit)
     ba.append((crc >> 8)&0xFF); // MSB crc
 
     m_channel->write(ba);
+    m_request = unit;
 
     emit rawData(ba);
 }
