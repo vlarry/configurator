@@ -8208,9 +8208,9 @@ bool ConfiguratorWindow::deleteLogFile()
 {
     QDir dir;
 
-    if(dir.exists("log.txt"))
+    if(dir.exists("output/log.txt"))
     {
-        if(dir.remove("log.txt"))
+        if(dir.remove("output/log.txt"))
             return true;
     }
 

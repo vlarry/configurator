@@ -38,7 +38,12 @@ void logOutput(QtMsgType type, const QMessageLogContext& context, const QString&
         break;
     }
 
-    QFile file("log.txt");
+    QDir dir;
+
+    if(!dir.exists("output"))
+        dir.mkdir("output");
+
+    QFile file("output/log.txt");
 
     if(!file.open(QFile::WriteOnly | QFile::Append))
     {
