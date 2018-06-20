@@ -5,7 +5,6 @@
     #include <QCloseEvent>
     #include <QDebug>
     #include <QIntValidator>
-    #include "cdataunittype.h"
     //----------
     namespace Ui
     {

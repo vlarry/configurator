@@ -33,7 +33,7 @@
     #include <QSettings>
     #include <QVBoxLayout>
     #include <QHBoxLayout>
-    #include "cmodbus.h"
+    #include "modbus.h"
     #include "cterminal.h"
     #include "cindicatorstate.h"
     #include "qcustomplot.h"
@@ -485,7 +485,7 @@
             void processReadJournals(bool state);
             void processExport();
             void processImport();
-            void responseRead(CDataUnitType& unit);
+            void responseRead(CModBusDataUnit& unit);
             void exitFromApp();
             void show();
             void resizeEvent(QResizeEvent* event);
@@ -507,9 +507,9 @@
             void writeSetCurrent();
             void expandItemTree(bool state);
             void versionSowftware();
-            void sendCalculateRead(CDataUnitType& unit);
+            void sendCalculateRead(CModBusDataUnit& unit);
             void sendSettingReadRequest(const QString& first, const QString& last,
-                                        CDataUnitType::FunctionType type, int size);
+                                        CModBusDataUnit::FunctionType type, int size);
             void sendSettingControlReadRequest(const QString& index);
             void sendSettingControlWriteRequest(const QString& index);
             void sendSettingWriteRequest(const QString& first, const QString& last);
@@ -522,7 +522,7 @@
                                                RequestFunction function = FUN_READ);
             void sendMonitorPurposeK10_K11Request();
             void sendRequestRead(int addr, int size, int request,
-                                 CDataUnitType::FunctionType functionType = CDataUnitType::ReadHoldingRegisters);
+                                 CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
             void sendDeviceCommand(int cmd);
             void sendOutputAllRequest();
@@ -536,7 +536,7 @@
                                                                                       const QString& filename);
             void exportPurposeToJSON();
             void importPurposeFromJSON();
-            void processReadJournal(CDataUnitType& unit);
+            void processReadJournal(CModBusDataUnit& unit);
             void widgetStackIndexChanged(int);
             void setJournalPtrShift(const QString& key, long pos);
             void timeoutSynchronization();
@@ -590,10 +590,10 @@
             void initTableProtection(QTableView* table, block_protection_list_t& labels);
             void initIndicatorStates();
             void displayCalculateValues(QVector<quint16> values);
-            void displayDateTime(CDataUnitType& unit);
-            void displaySettingResponse(CDataUnitType& unit);
-            void displaySettingControlResponce(const CDataUnitType& unit);
-            void displayPurposeResponse(CDataUnitType& unit);
+            void displayDateTime(CModBusDataUnit& unit);
+            void displaySettingResponse(CModBusDataUnit& unit);
+            void displaySettingControlResponce(const CModBusDataUnit& unit);
+            void displayPurposeResponse(CModBusDataUnit& unit);
             void displayPurposeDIResponse(const QVector<quint16>& input_list, const QVector<quint16>& input_inverse_list);
             void displayJournalResponse(QVector<quint16>& data);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
@@ -602,13 +602,13 @@
             void displayCommunicationTimeoutRequest(const QVector<quint16>& data);
             void displayCommunicationTimeoutSpeed(const QVector<quint16>& data);
             void displayCommunicationAddress(const QVector<quint16>& data);
-            void displayProtectionWorkMode(CDataUnitType& unit);
-            void displayMonitorK10_K11(CDataUnitType& unit);
-            void displayOutputAllRead(CDataUnitType& unit);
+            void displayProtectionWorkMode(CModBusDataUnit& unit);
+            void displayMonitorK10_K11(CModBusDataUnit& unit);
+            void displayOutputAllRead(CModBusDataUnit& unit);
             void displayInputsRead(const QVector<quint16>& data);
             void displayBlockProtectionRead(const QVector<quint16>& data);
-            void displayDebugInfo(const CDataUnitType& unit);
-            void displayStatusInfo(const CDataUnitType& unit);
+            void displayDebugInfo(const CModBusDataUnit& unit);
+            void displayStatusInfo(const CModBusDataUnit& unit);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
@@ -640,7 +640,7 @@
 
         private:
             Ui::ConfiguratorWindow*          ui;
-            CModbus*                         m_modbusDevice;
+            CModBus*                         m_modbus;
             CSerialPortSetting*              m_serialPortSettings_window;
             CTerminal*                       m_terminal_window;
             CIndicatorState*                 m_output_window;
