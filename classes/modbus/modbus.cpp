@@ -7,9 +7,11 @@ CModBus::CModBus(QObject* parent):
     m_queue(queue_t(0)),
     m_connect(false),
     m_block(false),
+    m_is_autochoicespeed(false),
     m_interval_timeout_response(1000),
     m_interval_timeout_silence(4),
     m_trycount(3),
+    m_try_counter(0),
     m_timer_timeout_response(nullptr),
     m_timer_timeout_silence(nullptr)
 {
@@ -281,6 +283,7 @@ void CModBus::disconnected()
     m_request = CModBusDataUnit();
     m_queue.clear();
     m_connect = false;
+    m_try_counter = 0;
     m_buffer.clear();
     unblock();
 }
@@ -289,6 +292,35 @@ void CModBus::timeoutResponce()
 {
     m_timer_timeout_response->stop();
     qDebug() << tr("Таймаут ответа: %1мс").arg(m_time_process.elapsed());
+
+    if(m_try_counter < m_trycount)
+    {
+        m_try_counter++;
+
+        QString msg_str;
+
+        if(!m_is_autochoicespeed)
+        {
+            msg_str = tr("Время ожидания ответа от устройства %1мс истекло. Попытка №%2.").arg(m_time_process.elapsed()).
+                                                                                          arg(m_try_counter);
+        }
+        else
+        {
+            msg_str = tr("Идет автоматический подбор скорости. Текущая скорость: %1 бод.").arg(m_channel->settings().baudrate);
+        }
+
+        emit errorDevice(msg_str);
+
+        CModBusDataUnit unit(m_request);
+        m_request = CModBusDataUnit();
+        unblock();
+        request(unit);
+    }
+    else
+    {
+        emit close();
+        disconnected();
+    }
 }
 //-----------------------------
 void CModBus::timeoutSilencce()

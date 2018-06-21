@@ -8255,7 +8255,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbus, &CModBus::stateChanged, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::readyRead, this, &ConfiguratorWindow::readyReadData);
     connect(m_modbus, &CModBus::rawData, m_terminal_window, &CTerminal::appendData);
-//    connect(m_modbus, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
+    connect(m_modbus, &CModBus::errorDevice, this, &ConfiguratorWindow::errorDevice);
 //    connect(m_modbus, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
 //    connect(m_modbus, &CModbus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
 //    connect(m_modbus, &CModbus::error, this, &ConfiguratorWindow::errorConnect);

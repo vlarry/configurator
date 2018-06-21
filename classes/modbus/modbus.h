@@ -25,6 +25,7 @@
 
         signals:
             void close();
+            void errorDevice(const QString&);
             void open();
             void rawData(QByteArray&, bool = true);
             void readyRead(CModBusDataUnit&);
@@ -50,9 +51,11 @@
             QByteArray      m_buffer;
             bool            m_connect;
             bool            m_block;
+            bool            m_is_autochoicespeed;
             int             m_interval_timeout_response;
             int             m_interval_timeout_silence;
             int             m_trycount;
+            int             m_try_counter;
             QTimer*         m_timer_timeout_response;
             QTimer*         m_timer_timeout_silence;
             QTime           m_time_process;
