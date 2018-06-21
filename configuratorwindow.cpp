@@ -148,9 +148,9 @@ void ConfiguratorWindow::stateChanged(bool state)
 {
     ui->toolButtonConnect->setChecked(state);
 
-//    m_status_bar->setStatusMessage(((state)?tr("Соединение с устройством установлено на скорости: %1 бод").
-//                                            arg(m_modbus->baudrate()):
-//                                            tr("Соединение с устройством разорвано")), 5000);
+    m_status_bar->setStatusMessage(((state)?tr("Соединение с устройством установлено на скорости: %1 бод").
+                                            arg(m_modbus->channel()->settings().baudrate):
+                                            tr("Соединение с устройством разорвано")), 5000);
     
     if(ui->checkboxCalibTimeout->isChecked() && state)
         chboxCalculateTimeoutStateChanged(true);
@@ -159,18 +159,18 @@ void ConfiguratorWindow::stateChanged(bool state)
 
     if(state)
     {
-//        qInfo() << tr("Порт <%1> открыт.").arg(m_modbus->portName());
+        qInfo() << tr("Порт <%1> открыт.").arg(m_modbus->channel()->settings().name);
         ui->toolButtonConnect->setText(tr("Отключиться"));
         ui->toolButtonConnect->setIconSize(QSize(24, 24));
         ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/disconnect_serial.png"));
         ui->toolButtonConnect->setToolTip(tr("Отключение от БЗУ"));
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
-        synchronization(true); // запускаем синхронизацию
+//        synchronization(true); // запускаем синхронизацию
         readJournalCount(); // читаем количество сообщений в каждом журнале
     }
     else
     {
-//        qInfo() << tr("Порт <%1> закрыт.").arg(m_modbus->portName());
+        qInfo() << tr("Порт <%1> закрыт.").arg(m_modbus->channel()->settings().name);
         ui->toolButtonConnect->setText(tr("Подключиться"));
         ui->toolButtonConnect->setIconSize(QSize(24, 24));
         ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/flag.png"));
@@ -441,7 +441,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
     unit.setProperty(tr("JOURNAL"), key);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 
     m_journal_timer->start(1000);
     m_time_process_speed.start();
@@ -1004,7 +1004,7 @@ void ConfiguratorWindow::protectionSignalStartWrite()
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveGroupWrite
@@ -1224,7 +1224,7 @@ void ConfiguratorWindow::automationAPVSignalStartWrite()
 
     unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::purposeLedsWrite
@@ -1271,11 +1271,11 @@ void ConfiguratorWindow::purposeRelayWrite()
  */
 void ConfiguratorWindow::dateTimeWrite(const QDateTime& dateTime)
 {
-//    if(!m_modbus->is_open())
-//    {
-//        noConnectMessage();
-//        return;
-//    }
+    if(!m_modbus->channel()->isOpen())
+    {
+        noConnectMessage();
+        return;
+    }
 
     QDateTime dt;
 
@@ -1295,7 +1295,7 @@ void ConfiguratorWindow::dateTimeWrite(const QDateTime& dateTime)
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //------------------------------------------------
 void ConfiguratorWindow::synchronizationDateTime()
@@ -1784,7 +1784,7 @@ void ConfiguratorWindow::protectionSignalStartRead()
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveRead
@@ -1955,7 +1955,7 @@ void ConfiguratorWindow::automationAPVSignalStartRead()
 
     unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVRead
@@ -2000,7 +2000,7 @@ void ConfiguratorWindow::dateTimeRead()
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::settingCommunicationsRead
@@ -2040,7 +2040,6 @@ void ConfiguratorWindow::processReadJournals(bool state)
 #ifdef DEBUG_JOURNAL
     qDebug() << "processReadJournals stop read journal";
 #endif
-//        m_modbus->clearQueueRequest();
 
         set.isStop = true;
     }
@@ -2080,7 +2079,7 @@ void ConfiguratorWindow::processImport()
         QMessageBox::warning(this, tr("Импорт"), tr("Не выбран допустимый пункт меню"));
 }
 //--------------------------------------------------------
-void ConfiguratorWindow::responseRead(CModBusDataUnit& unit)
+void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 {
 //    if(unit.is_empty())
 //    {
@@ -2442,11 +2441,11 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
 //-------------------------------------
 void ConfiguratorWindow::readSettings()
 {
-//    if(!m_modbus->is_open())
-//    {
-//        noConnectMessage();
-//        return;
-//    }
+    if(!m_modbus->channel()->isOpen())
+    {
+        noConnectMessage();
+        return;
+    }
 
     // чтение всех настроек
     inputAnalogGroupRead();
@@ -2470,11 +2469,11 @@ void ConfiguratorWindow::readSettings()
 //---------------------------------------
 void ConfiguratorWindow::readSetCurrent()
 {
-//    if(!m_modbus->is_open())
-//    {
-//        noConnectMessage();
-//        return;
-//    }
+    if(!m_modbus->channel()->isOpen())
+    {
+        noConnectMessage();
+        return;
+    }
 
     DeviceMenuItemType index = menuIndex();
 
@@ -2751,11 +2750,11 @@ void ConfiguratorWindow::readSetCurrent()
 //--------------------------------------
 void ConfiguratorWindow::writeSettings()
 {
-//    if(!m_modbus->is_open())
-//    {
-//        noConnectMessage();
-//        return;
-//    }
+    if(!m_modbus->channel()->isOpen())
+    {
+        noConnectMessage();
+        return;
+    }
 
     int answer = QMessageBox::question(this, tr("Сохранение настроек утройства"),
                                              tr("Вы действительно хотите перезаписать настройки?"),
@@ -3091,7 +3090,7 @@ void ConfiguratorWindow::versionSowftware()
 //-------------------------------------------------------------
 void ConfiguratorWindow::sendCalculateRead(CModBusDataUnit& unit)
 {
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
@@ -4863,7 +4862,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         CModBusDataUnit new_unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
                                addr, values);
 
-//        m_modbus->sendRequest(new_unit);
+        m_modbus->sendData(new_unit);
     }
 }
 //-----------------------------------------------------------------
@@ -5155,7 +5154,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтение настроек (FLOAT)";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //--------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
@@ -5170,7 +5169,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтение настроек (LIST).";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //---------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
@@ -5216,7 +5215,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Запись настроек (LIST).";
 #endif
-//        m_modbus->sendRequest(unit);
+        m_modbus->sendData(unit);
     }
 }
 //-----------------------------------------------------------------------------------------
@@ -5291,7 +5290,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Запись настроек (FLOAT).";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QString& last)
@@ -5313,7 +5312,7 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтение привязок (" << first << ", " << last << ").";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //-----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QString& last)
@@ -5367,7 +5366,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Запись привязок (" << first << ", " << last << ").";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
@@ -5383,7 +5382,7 @@ void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтения привязок входов.";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //-------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr)
@@ -5448,7 +5447,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Запись привязок входов к переменным.";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //--------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int last_addr)
@@ -5512,7 +5511,7 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Запись матрицы инверсий.";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //---------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function)
@@ -5528,7 +5527,7 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Режима работы защит";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
@@ -5542,7 +5541,7 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Мониторинг К10 и К11";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::sendRequestRead
@@ -5557,7 +5556,7 @@ void ConfiguratorWindow::sendRequestRead(int addr, int size, int request, CModBu
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтения (request: " << request << ").";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::sendRequestWrite
@@ -5575,7 +5574,7 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Запись (request: " << request << ").";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::sendDeviceCommand
@@ -5587,7 +5586,7 @@ void ConfiguratorWindow::sendDeviceCommand(int cmd)
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteSingleRegister, 0x3000, QVector<quint16>() << cmd);
 
     unit.setProperty("CMD", cmd);
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::sendOutputAllRequest
@@ -5610,7 +5609,7 @@ void ConfiguratorWindow::sendOutputAllRequest()
 #ifdef DEBUG_REQUEST
     qDebug() << "Запрос Чтения всех выходов.";
 #endif
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::sendInputStatesRequest
@@ -5627,7 +5626,7 @@ void ConfiguratorWindow::sendInputStatesRequest()
     qDebug() << "Запрос чтения состояний входов";
 #endif
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //-----------------------------------------------------
 void ConfiguratorWindow::sendDebugInfoRead(int channel)
@@ -5642,7 +5641,7 @@ void ConfiguratorWindow::sendDebugInfoRead(int channel)
     qDebug() << "Запрос Чтение отладочной информации, канал: " << channel;
 #endif
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //-------------------------------------
 void ConfiguratorWindow::clearIOTable()
@@ -5871,7 +5870,7 @@ void ConfiguratorWindow::dateDeviceChanged(const QDate& date)
  */
 void ConfiguratorWindow::autospeedStateChanged(bool state)
 {
-//    m_modbus->setAutospeed(state);
+    m_modbus->channel()->setAutochoicespeed(state);
 }
 /*!
  * \brief ConfiguratorWindow::panelMoved
@@ -6076,9 +6075,9 @@ void ConfiguratorWindow::readStatusInfo()
  */
 void ConfiguratorWindow::updateSerialPortSettings()
 {
-//    m_modbus->setIntervalSilence(m_serialPortSettings_window->modbusIntervalSilence());
-//    m_modbus->setTimeoutRepeat(m_serialPortSettings_window->modbusTimeout());
-//    m_modbus->setRequestCountRepeat(m_serialPortSettings_window->modbusTryCount());
+    m_modbus->setIntervalSilence(m_serialPortSettings_window->modbusIntervalSilence());
+    m_modbus->setIntervalResponce(m_serialPortSettings_window->modbusTimeout());
+    m_modbus->setTryCount(m_serialPortSettings_window->modbusTryCount());
 
     int index = ui->comboBoxCommunicationBaudrate->findText(QString("%1").arg(m_serialPortSettings_window->baudrate()));
 
@@ -6278,8 +6277,7 @@ void ConfiguratorWindow::loadSettings()
             ui->comboBoxCommunicationBaudrate->setCurrentIndex(index);
     }
 
-//    m_modbus->setBaudrateList(m_serialPortSettings_window->baudrateList());
-//    m_modbus->setAutospeed(m_serialPortSettings_window->autospeedState());
+    m_modbus->channel()->setAutochoicespeed(m_serialPortSettings_window->autospeedState());
 }
 //-------------------------------------
 void ConfiguratorWindow::saveSettings()
@@ -6973,7 +6971,7 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
     unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
     unit.setProperty(tr("JOURNAL"), key);
 
-//    m_modbus->sendRequest(unit);
+    m_modbus->sendData(unit);
 }
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSynchronization()
@@ -7659,7 +7657,7 @@ void ConfiguratorWindow::readShiftPrtEventJournal()
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
         unit.setProperty(tr("JOURNAL"), key);
 
-//        m_modbus->sendRequest(unit);
+        m_modbus->sendData(unit);
     }
 }
 //-----------------------------------------
@@ -7682,7 +7680,7 @@ void ConfiguratorWindow::readJournalCount()
 #ifdef DEBUG_JOURNAL
     qDebug() << "readJournalCount Request, addr: " << set.address.msg_count;
 #endif
-//        m_modbus->sendRequest(unit);
+        m_modbus->sendData(unit);
     }
 }
 //--------------------------------------------------
@@ -8225,7 +8223,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->toolButtonConnect, &QToolButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
     connect(m_modbus, &CModBus::stateChanged, this, &ConfiguratorWindow::stateChanged);
     connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this, &ConfiguratorWindow::refreshSerialPort);
-//    connect(m_modbus, &CModbus::dataReady, this, &ConfiguratorWindow::responseRead);
+    connect(m_modbus, &CModBus::readyRead, this, &ConfiguratorWindow::readyReadData);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));

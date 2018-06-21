@@ -485,7 +485,7 @@
             void processReadJournals(bool state);
             void processExport();
             void processImport();
-            void responseRead(CModBusDataUnit& unit);
+            void readyReadData(CModBusDataUnit& unit);
             void exitFromApp();
             void show();
             void resizeEvent(QResizeEvent* event);

@@ -3,9 +3,17 @@
 CModBus::CModBus(QObject* parent):
     QObject(parent),
     m_channel(nullptr),
-    m_request(CModBusDataUnit())
+    m_request(CModBusDataUnit()),
+    m_block(false),
+    m_interval_timeout_response(1000),
+    m_interval_timeout_silence(4),
+    m_trycount(3),
+    m_timer_timeout_response(nullptr),
+    m_timer_timeout_silence(nullptr)
 {
-    m_channel = new CConnect(this);
+    m_channel                = new CConnect(this);
+    m_timer_timeout_response = new QTimer(this);
+    m_timer_timeout_silence  = new QTimer(this);
 
     connect(m_channel, &CConnect::readyRead, this, &CModBus::readyReadData);
     connect(this, &CModBus::open, m_channel, &CConnect::open);
@@ -37,42 +45,130 @@ quint16 CModBus::crc16(QByteArray& data, size_t length)
 
     return crc;
 }
+//---------------------------
+bool CModBus::isBlock() const
+{
+    return m_block;
+}
 //--------------------------------------------
 void CModBus::readyReadData(QByteArray& bytes)
 {
     if(!m_request.isValid())
         return;
 
-    qDebug() << tr("Получены данные: %1 байт.").arg(bytes.count());
-
     m_buffer += bytes;
 
-    int size = -1;
+    int size, offset;
 
     switch(m_request.function())
     {
+        // ID, FUNCTION_CODE, BYTE NUMBERS, ...VALUES..., CRC(2 bytes)
         case CModBusDataUnit::ReadHoldingRegisters:
         case CModBusDataUnit::ReadInputRegisters:
-            size = quint8(m_request[0])*2 + 5;
+            size   = quint8(m_request[0])*2 + 5;
+            offset = 3;
         break;
 
+        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, WRITE BYTE NUMBERS MSB, WRITE BYTE NUMBERS LSB, CRC(2 bytes)
         case CModBusDataUnit::WriteMultipleRegisters:
+        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, VALUE MSB, VALUE LSB, CRC(2 bytes)
         case CModBusDataUnit::WriteSingleRegister:
-            size = 8;
+            size   = 8;
+            offset = 4;
         break;
 
         default:
-            qDebug() << tr("Неизвестный код функции: %1.").arg(m_request.toString());
-        return;
+            // ID, FUNCTION_CODE WITH BIT 0x80, CODE ERROR, CRC(2 bytes)
+            if(m_request.function() & 0x80) // в ответе устройства обнаружена ошибка
+            {
+                size = 5;
+            }
+            else
+            {
+                qDebug() << tr("Неизвестный код функции: %1.").arg(m_request.toString());
+                return;
+            }
+        break;
     }
 
-    qDebug() << tr("Расчитанный размер принимаемых данных: %1.").arg(size);
+    if(m_buffer.count() < size)
+    {
+        qDebug() << tr("Принята часть данных: %1").arg(m_buffer.count());
+        return;
+    }
+    else if(m_buffer.count() > size)
+    {
+        qDebug() << tr("Принятые данные больше по размеру, чем ожидается: %1/%2.").arg(m_buffer.count()).arg(size);
+        emit rawData(m_buffer, false);
+    }
+    else // прияты все данные
+    {
+        qDebug() << tr("Данные приняты в полном объеме %1 байт за %2мс.").arg(m_buffer.count()).arg(m_time_process.elapsed());
 
+        // расчет и проверка контрольной суммы
+        quint8 mbs = m_buffer[m_buffer.count() - 2];
+        quint8 lbs = m_buffer[m_buffer.count() - 1];
+
+        quint16 crc_receive = ((quint16)lbs << 8) | mbs;
+        quint16 crc_calculate = crc16(m_buffer, m_buffer.count() - 2);
+
+        if(crc_receive == crc_calculate)
+        {
+            quint8 id                                   = quint8(m_buffer[0]);
+            CModBusDataUnit::FunctionType code_function = CModBusDataUnit::FunctionType(quint8(m_buffer[1]));
+            CModBusDataUnit::ErrorType error            = CModBusDataUnit::ERROR_NO;
+
+            if(code_function & 0x80)
+            {
+                code_function = CModBusDataUnit::FunctionType(quint8(code_function)^0x80);
+                error         = CModBusDataUnit::ErrorType(quint8(m_buffer[2]));
+            }
+
+            if(id == m_request.id() && code_function == m_request.function())
+            {
+                CModBusDataUnit::vlist_t values;
+
+                for(int i = offset; i < size - 3; i += 2)
+                {
+                    quint8 mbs = quint8(m_buffer[i]);
+                    quint8 lbs = quint8(m_buffer[i + 1]);
+
+                    values << CModBusDataUnit::cell_t((mbs << 8) | lbs);
+                }
+
+                CModBusDataUnit unit(id, code_function, m_request.address(), values);
+
+                if(error != CModBusDataUnit::ERROR_NO)
+                    unit.setError(error);
+
+                emit readyRead(unit);
+                emit rawData(m_buffer, false);
+            }
+            else
+                qWarning() << tr("Принятые данные не соответствуют запрошенным.");
+        }
+        else
+        {
+            qWarning() << tr("Не совпадают контрольные суммы (расчитанная и принятая): %1/%2.").arg(crc_calculate).
+                                                                                                arg(crc_receive);
+        }
+    }
+
+    m_buffer.clear();
     m_request = CModBusDataUnit();
+    m_timer_timeout_response->stop();
+    m_timer_timeout_silence->start(m_interval_timeout_silence);
+}
+//-------------------
+void CModBus::block()
+{
+    m_block = true;
 }
 //------------------------------------------
 void CModBus::request(CModBusDataUnit& unit)
 {
+    block();
+
     QByteArray ba;
 
     ba.append(unit.id());
@@ -82,16 +178,16 @@ void CModBus::request(CModBusDataUnit& unit)
 
     switch(unit.function())
     {
-        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, REGISTER NUMBERS, CRC
+        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, REGISTER NUMBERS, CRC(2 bytes)
         case CModBusDataUnit::ReadHoldingRegisters:
         case CModBusDataUnit::ReadInputRegisters:
-        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, VALUE, CRC
+        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, VALUE, CRC(2 bytes)
         case CModBusDataUnit::WriteSingleRegister:
             ba.append((unit[0] >> 8)&0xFF); // MSB register numbers
             ba.append(unit[0]&0xFF); // LSB register numbers
         break;
 
-        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, REGISTER NUMBERS, ...VALUES..., CRC
+        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, REGISTER NUMBERS, ...VALUES..., CRC(2 bytes)
         case CModBusDataUnit::WriteMultipleRegisters:
             ba.append((unit.count() >> 8)&0xFF); // MSB register numbers
             ba.append(unit.count()&0xFF); // LSB register numbers
@@ -105,6 +201,7 @@ void CModBus::request(CModBusDataUnit& unit)
 
         default:
             qWarning() << tr("Неизвестный код функции: %1.").arg(unit.toString());
+            unblock();
         return;
     }
 
@@ -115,12 +212,51 @@ void CModBus::request(CModBusDataUnit& unit)
 
     m_channel->write(ba);
     m_request = unit;
+    m_timer_timeout_response->start(m_interval_timeout_response);
+    m_time_process.start();
 
     emit rawData(ba);
+}
+//---------------------
+void CModBus::unblock()
+{
+    m_block = false;
 }
 //-------------------------------------------
 void CModBus::sendData(CModBusDataUnit& unit)
 {
     if(unit.isValid())
         request(unit);
+}
+//---------------------------------------------
+void CModBus::setIntervalResponce(int interval)
+{
+    m_interval_timeout_response = interval;
+}
+//--------------------------------------------
+void CModBus::setIntervalSilence(int interval)
+{
+    m_interval_timeout_silence = interval;
+}
+//----------------------------------
+void CModBus::setTryCount(int count)
+{
+    m_trycount = count;
+}
+//-----------------------------
+void CModBus::timeoutResponce()
+{
+    m_timer_timeout_response->stop();
+}
+//-----------------------------
+void CModBus::timeoutSilencce()
+{
+    m_timer_timeout_silence->stop();
+    unblock();
+
+    if(!isBlock() && !m_queue.isEmpty()) // опрос очереди
+    {
+        CModBusDataUnit unit(m_queue.takeFirst());
+        request(unit); // отправка первого запроса из очереди
+    }
 }

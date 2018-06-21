@@ -2,6 +2,8 @@
     #define CMODBUS_H
     //----------------
     #include <QObject>
+    #include <QTimer>
+    #include <QTime>
     #include <QDebug>
     #include "modbusdataunit.h"
     #include "connect.h"
@@ -10,28 +12,47 @@
     {
         Q_OBJECT
 
+        typedef QVector<CModBusDataUnit> queue_t;
+
         public:
             explicit CModBus(QObject* parent = nullptr);
 
             CConnect* channel();
             void      sendData(CModBusDataUnit& unit);
+            void      setIntervalResponce(int interval);
+            void      setIntervalSilence(int interval);
+            void      setTryCount(int count);
 
         signals:
             void close();
             void open();
             void rawData(QByteArray&, bool = true);
+            void readyRead(CModBusDataUnit&);
             void stateChanged(bool = false);
 
         public slots:
             void readyReadData(QByteArray& bytes);
+            void timeoutResponce();
+            void timeoutSilencce();
 
         private:
-            void    request(CModBusDataUnit& unit);
+            void    block();
             quint16 crc16(QByteArray& data, size_t length);
+            bool    isBlock() const;
+            void    request(CModBusDataUnit& unit);
+            void    unblock();
 
         private:
             CConnect*       m_channel;
             CModBusDataUnit m_request;
+            queue_t         m_queue;
             QByteArray      m_buffer;
+            bool            m_block;
+            int             m_interval_timeout_response;
+            int             m_interval_timeout_silence;
+            int             m_trycount;
+            QTimer*         m_timer_timeout_response;
+            QTimer*         m_timer_timeout_silence;
+            QTime           m_time_process;
     };
 #endif // CMODBUS_H

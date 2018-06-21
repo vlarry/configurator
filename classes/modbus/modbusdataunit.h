@@ -48,9 +48,13 @@
             quint16        operator [](const int index) const;
             QVariant       property(const QString& name_property) const;
             property_t&    properties();
+            void           setAddress(quint16 address);
             void           setError(ErrorType error);
+            void           setFunction(FunctionType function);
+            void           setID(quint8 id);
             void           setProperty(const QString& name, QVariant value);
             void           setProperties(property_t& properties);
+            void           setValues(vlist_t& values);
             QString        toString() const;
             const vlist_t& values() const;
 

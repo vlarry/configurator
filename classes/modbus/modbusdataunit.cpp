@@ -136,11 +136,29 @@ CModBusDataUnit::property_t& CModBusDataUnit::properties()
 {
     return m_property;
 }
+//-----------------------------------------------
+void CModBusDataUnit::setAddress(quint16 address)
+{
+    m_address = address;
+    m_valid   = true;
+}
 //--------------------------------------------------------------
 void CModBusDataUnit::setError(CModBusDataUnit::ErrorType error)
 {
     if(error >= ERROR_NO && error <= ERROR_VALUE_REQUEST)
         m_error = error;
+}
+//-----------------------------------------------------------------------
+void CModBusDataUnit::setFunction(CModBusDataUnit::FunctionType function)
+{
+    m_function = function;
+    m_valid    = true;
+}
+//------------------------------------
+void CModBusDataUnit::setID(quint8 id)
+{
+    m_id    = id;
+    m_valid = true;
 }
 //--------------------------------------------------------------------
 void CModBusDataUnit::setProperty(const QString& name, QVariant value)
@@ -151,6 +169,12 @@ void CModBusDataUnit::setProperty(const QString& name, QVariant value)
 void CModBusDataUnit::setProperties(CModBusDataUnit::property_t& properties)
 {
     m_property = properties;
+}
+//---------------------------------------------------------------
+void CModBusDataUnit::setValues(CModBusDataUnit::vlist_t& values)
+{
+    m_values = values;
+    m_valid  = true;
 }
 //---------------------------------------
 QString CModBusDataUnit::toString() const
