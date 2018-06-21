@@ -215,10 +215,12 @@ void CModBus::request(CModBusDataUnit& unit)
             ba.append(unit[0]&0xFF); // LSB register numbers
         break;
 
-        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, REGISTER NUMBERS, ...VALUES..., CRC(2 bytes)
+        // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, REGISTER NUMBERS, BYTE NUMBERS, ...VALUES..., CRC(2 bytes)
         case CModBusDataUnit::WriteMultipleRegisters:
             ba.append((unit.count() >> 8)&0xFF); // MSB register numbers
             ba.append(unit.count()&0xFF); // LSB register numbers
+
+            ba.append(unit.count()*2); // byte numbers
 
             for(int i = 0; i < unit.count(); i++)
             {
