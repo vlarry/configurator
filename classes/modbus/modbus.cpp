@@ -4,6 +4,8 @@ CModBus::CModBus(QObject* parent):
     QObject(parent),
     m_channel(nullptr),
     m_request(CModBusDataUnit()),
+    m_queue(queue_t(0)),
+    m_connect(false),
     m_block(false),
     m_interval_timeout_response(1000),
     m_interval_timeout_silence(4),
@@ -19,6 +21,9 @@ CModBus::CModBus(QObject* parent):
     connect(this, &CModBus::open, m_channel, &CConnect::open);
     connect(this, &CModBus::close, m_channel, &CConnect::close);
     connect(m_channel, &CConnect::stateChanged, this, &CModBus::stateChanged);
+    connect(this, &CModBus::close, this, &CModBus::disconnected);
+    connect(m_timer_timeout_response, &QTimer::timeout, this, &CModBus::timeoutResponce);
+    connect(m_timer_timeout_silence, &QTimer::timeout, this, &CModBus::timeoutSilencce);
 }
 //--------------------------
 CConnect* CModBus::channel()
@@ -58,9 +63,14 @@ void CModBus::readyReadData(QByteArray& bytes)
 
     m_buffer += bytes;
 
+    if(m_buffer.count() < 2)
+        return;
+
     int size, offset;
 
-    switch(m_request.function())
+    CModBusDataUnit::FunctionType code_function = CModBusDataUnit::FunctionType(quint8(m_buffer[1]));
+
+    switch(code_function)
     {
         // ID, FUNCTION_CODE, BYTE NUMBERS, ...VALUES..., CRC(2 bytes)
         case CModBusDataUnit::ReadHoldingRegisters:
@@ -79,7 +89,7 @@ void CModBus::readyReadData(QByteArray& bytes)
 
         default:
             // ID, FUNCTION_CODE WITH BIT 0x80, CODE ERROR, CRC(2 bytes)
-            if(m_request.function() & 0x80) // в ответе устройства обнаружена ошибка
+            if(code_function & 0x80) // в ответе устройства обнаружена ошибка
             {
                 size = 5;
             }
@@ -103,6 +113,9 @@ void CModBus::readyReadData(QByteArray& bytes)
     }
     else // прияты все данные
     {
+        if(!m_connect) // синхронизация по первому принятому сообщению
+            m_connect = true;
+
         qDebug() << tr("Данные приняты в полном объеме %1 байт за %2мс.").arg(m_buffer.count()).arg(m_time_process.elapsed());
 
         // расчет и проверка контрольной суммы
@@ -115,7 +128,6 @@ void CModBus::readyReadData(QByteArray& bytes)
         if(crc_receive == crc_calculate)
         {
             quint8 id                                   = quint8(m_buffer[0]);
-            CModBusDataUnit::FunctionType code_function = CModBusDataUnit::FunctionType(quint8(m_buffer[1]));
             CModBusDataUnit::ErrorType error            = CModBusDataUnit::ERROR_NO;
 
             if(code_function & 0x80)
@@ -137,6 +149,8 @@ void CModBus::readyReadData(QByteArray& bytes)
                 }
 
                 CModBusDataUnit unit(id, code_function, m_request.address(), values);
+
+                unit.setProperties(m_request.properties()); // наследуем свойства от запроса
 
                 if(error != CModBusDataUnit::ERROR_NO)
                     unit.setError(error);
@@ -167,6 +181,20 @@ void CModBus::block()
 //------------------------------------------
 void CModBus::request(CModBusDataUnit& unit)
 {
+    if(!m_connect) // соединение неактивно
+    {
+        if(isBlock() || m_request.isValid()) // если передача заблокированна или запрос валидный, то на выход -
+                                             // в очередь не ставим, т.к. нет смысла, пока не прошла синхронизация
+            return;
+    }
+
+    if(isBlock())
+    {
+        qDebug() << tr("Добавление в очередь запроса: %1").arg(unit.toString());
+        m_queue << unit;
+        return;
+    }
+
     block();
 
     QByteArray ba;
@@ -243,10 +271,22 @@ void CModBus::setTryCount(int count)
 {
     m_trycount = count;
 }
+//--------------------------
+void CModBus::disconnected()
+{
+    m_timer_timeout_response->stop();
+    m_timer_timeout_silence->stop();
+    m_request = CModBusDataUnit();
+    m_queue.clear();
+    m_connect = false;
+    m_buffer.clear();
+    unblock();
+}
 //-----------------------------
 void CModBus::timeoutResponce()
 {
     m_timer_timeout_response->stop();
+    qDebug() << tr("Таймаут ответа: %1мс").arg(m_time_process.elapsed());
 }
 //-----------------------------
 void CModBus::timeoutSilencce()
@@ -257,6 +297,7 @@ void CModBus::timeoutSilencce()
     if(!isBlock() && !m_queue.isEmpty()) // опрос очереди
     {
         CModBusDataUnit unit(m_queue.takeFirst());
+        qDebug() << tr("Извлечение из очереди запроса: %1.").arg(unit.toString());
         request(unit); // отправка первого запроса из очереди
     }
 }

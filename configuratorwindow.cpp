@@ -165,8 +165,7 @@ void ConfiguratorWindow::stateChanged(bool state)
         ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/disconnect_serial.png"));
         ui->toolButtonConnect->setToolTip(tr("Отключение от БЗУ"));
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
-//        synchronization(true); // запускаем синхронизацию
-        readJournalCount(); // читаем количество сообщений в каждом журнале
+        synchronization(true); // запускаем синхронизацию
     }
     else
     {
@@ -2078,27 +2077,21 @@ void ConfiguratorWindow::processImport()
     else
         QMessageBox::warning(this, tr("Импорт"), tr("Не выбран допустимый пункт меню"));
 }
-//--------------------------------------------------------
+//-----------------------------------------------------------
 void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 {
-//    if(unit.is_empty())
-//    {
-//        noConnectMessage();
-//        return;
-//    }
-
-    quint8 error = unit.error();
-
-    if(error != CModBusDataUnit::ERROR_NO) // если ошибка, то выводим ее
+    if(!unit.isValid())
     {
-//        QMessageBox::warning(this, tr("Ответ устройства"),
-//                             tr("В ответе обнаружена ошибка:\n") + unit.errorStringList());
+        noConnectMessage();
+        return;
     }
-    
+
     RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
 
     if(type == CALCULATE_TYPE)
     {
+        showErrorMessage(tr("Чтение расчетных величин"), unit);
+
         RegisterAddress addr = RegisterAddress(unit.property("PART").toInt());
 
         if(addr == CALCULATE_ADDRESS_PART1)
@@ -2113,14 +2106,20 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == GENERAL_TYPE)
     {
+        showErrorMessage(tr("Чтение уставок"), unit);
+
         displaySettingResponse(unit);
     }
     else if(type == GENERAL_CONTROL_TYPE)
     {
+        showErrorMessage(tr("Чтение уставок"), unit);
+
         displaySettingControlResponce(unit);
     }
     else if(type == PURPOSE_OUT_TYPE)
     {
+        showErrorMessage(tr("Матрица привязок выходов"), unit);
+
         displayPurposeResponse(unit);
     }
     else if(type == PURPOSE_INPUT_TYPE || type == PURPOSE_INPUT_INVERSE_TYPE)
@@ -2130,6 +2129,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
         if(type == PURPOSE_INPUT_TYPE)
         {
+            showErrorMessage(tr("Матрица привязок входов"), unit);
+
             if(input_list.isEmpty())
                 input_list = unit.values();
             else
@@ -2137,6 +2138,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         }
         else if(type == PURPOSE_INPUT_INVERSE_TYPE)
         {
+            showErrorMessage(tr("Матрица привязок инверсий входов"), unit);
+
             if(input_inverse_list.isEmpty())
                 input_inverse_list = unit.values();
             else
@@ -2156,10 +2159,14 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == READ_SERIAL_NUMBER)
     {
+        showErrorMessage(tr("Чтение серийного номера"), unit);
+
         displayDeviceSerialNumber(unit.values());
     }
     else if(type == DATETIME_TYPE)
     {
+        showErrorMessage(tr("Чтение настроек Дата/Время"), unit);
+
         displayDateTime(unit);
     }
     else if(type == PORTECT_RESERVE_SIGNAL_START)
@@ -2188,22 +2195,29 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == MONITONR_PURPOSE_K10_K11_TYPE)
     {
+        showErrorMessage(tr("Мониторинг привязок К10/К11"), unit);
+
         displayMonitorK10_K11(unit);
     }
     else if(type == READ_OUTPUT_ALL)
     {
+        showErrorMessage(tr("Чтение состояний все выходы"), unit);
+
         displayOutputAllRead(unit);
     }
     else if(type == READ_INPUTS)
     {
+        showErrorMessage(tr("Чтение состояний входов"), unit);
         displayInputsRead(unit.values());
     }
     else if(type == READ_BLOCK_PROTECTION)
     {
+        showErrorMessage(tr("Чтение блокировок защит"), unit);
         displayBlockProtectionRead(unit.values());
     }
     else if(type == READ_DEBUG_INFO)
     {
+        showErrorMessage(tr("Чтение отладочной информации"), unit);
         displayDebugInfo(unit);
     }
     else if(type == READ_STATUS_MCP_INFO || type == READ_STATUS_MODULE_INFO)
@@ -6788,7 +6802,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
     if(model)
         model->setMatrixTable(matrix);
 }
-//--------------------------------------------------------------
+//----------------------------------------------------------------
 void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
 {
     RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
@@ -6804,6 +6818,11 @@ void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
     switch(type)
     {
         case READ_JOURNAL_SHIFT_PTR:
+            if(unit.error() != CModBusDataUnit::ERROR_NO)
+            {
+                QMessageBox::warning(this, tr("Чтение журнала"), tr("Ошибка перемещения указателя журнала:\n%1").
+                                     arg(CModBusDataUnit::errorDescription(unit.error())));
+            }
         break;
 
         case READ_JOURNAL_COUNT:
@@ -6981,9 +7000,11 @@ void ConfiguratorWindow::timeoutSynchronization()
 #endif
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
 
-    unit.setProperty(tr("REQUEST"), READ_SERIAL_NUMBER);
+    unit.setProperty("REQUEST", READ_SERIAL_NUMBER);
 
     m_modbus->sendData(unit);
+
+    readJournalCount(); // читаем количество сообщений в каждом журнале
 
     m_timer_synchronization->start(m_serialPortSettings_window->deviceSync());
 }
@@ -8217,20 +8238,37 @@ bool ConfiguratorWindow::deleteLogFile()
 
     return false;
 }
+//------------------------------------------------------------------------------------
+void ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit& unit)
+{
+    if(unit.error() != CModBusDataUnit::ERROR_NO)
+    {
+        QMessageBox::warning(this, title, tr("Ошибка: %1.").
+                             arg(CModBusDataUnit::errorDescription(unit.error())));
+    }
+}
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
     connect(ui->toolButtonConnect, &QToolButton::clicked, this, &ConfiguratorWindow::serialPortCtrl);
     connect(m_modbus, &CModBus::stateChanged, this, &ConfiguratorWindow::stateChanged);
-    connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this, &ConfiguratorWindow::refreshSerialPort);
+    connect(m_modbus, &CModBus::stateChanged, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::readyRead, this, &ConfiguratorWindow::readyReadData);
+    connect(m_modbus, &CModBus::rawData, m_terminal_window, &CTerminal::appendData);
+//    connect(m_modbus, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
+//    connect(m_modbus, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
+//    connect(m_modbus, &CModbus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
+//    connect(m_modbus, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
+//    connect(m_modbus, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
+//    connect(m_modbus, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
+
+    connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this,
+            &ConfiguratorWindow::refreshSerialPort);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
-//    connect(m_modbus, &CModbus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
-    connect(m_modbus, &CModBus::rawData, m_terminal_window, &CTerminal::appendData);
     connect(m_terminal_window, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
     connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
     connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
@@ -8258,7 +8296,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearKeyboardProtectionCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
     connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
-//    connect(m_modbus, &CModbus::connectDeviceState, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
@@ -8268,11 +8305,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_timer_synchronization, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSynchronization);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
     connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
-//    connect(m_modbus, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
-//    connect(m_modbus, &CModbus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
-//    connect(m_modbus, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
-//    connect(m_modbus, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
-//    connect(m_modbus, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
     connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
     connect(m_terminal_window, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);

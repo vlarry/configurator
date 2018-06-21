@@ -634,6 +634,7 @@
             QVector<QString>    loadVaribleByType(const QString& type);
             block_protection_list_t loadProtectionList();
             bool deleteLogFile();
+            void showErrorMessage(const QString& title, CModBusDataUnit& unit);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

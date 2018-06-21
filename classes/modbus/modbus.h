@@ -31,6 +31,7 @@
             void stateChanged(bool = false);
 
         public slots:
+            void disconnected();
             void readyReadData(QByteArray& bytes);
             void timeoutResponce();
             void timeoutSilencce();
@@ -47,6 +48,7 @@
             CModBusDataUnit m_request;
             queue_t         m_queue;
             QByteArray      m_buffer;
+            bool            m_connect;
             bool            m_block;
             int             m_interval_timeout_response;
             int             m_interval_timeout_silence;
