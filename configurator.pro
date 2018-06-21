@@ -28,8 +28,6 @@ SOURCES += \
         main.cpp \
         configuratorwindow.cpp \
         qcell.cpp \
-        cmodbus.cpp \
-        cdataunittype.cpp \
         cterminal.cpp \
         qcustomplot.cpp \
         cversionsoftware.cpp \
@@ -61,14 +59,15 @@ SOURCES += \
         coutputallcell.cpp \
         ctimefilterdialog.cpp \
         cdebuginfo.cpp \
-    styleloader.cpp \
-    cstatusinfo.cpp
+        styleloader.cpp \
+        cstatusinfo.cpp \
+        classes/modbus/modbusdataunit.cpp \
+        classes/modbus/modbus.cpp \
+        classes/modbus/connect.cpp
 
 HEADERS += \
         configuratorwindow.h \
         qcell.h \
-        cmodbus.h \
-        cdataunittype.h \
         cterminal.h \
         qcustomplot.h \
         cversionsoftware.h \
@@ -100,8 +99,11 @@ HEADERS += \
         coutputallcell.h \
         ctimefilterdialog.h \
         cdebuginfo.h \
-    styleloader.h \
-    cstatusinfo.h
+        styleloader.h \
+        cstatusinfo.h \
+        classes/modbus/modbusdataunit.h \
+        classes/modbus/modbus.h \
+        classes/modbus/connect.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -122,7 +124,9 @@ FORMS += \
         outputallcell.ui \
         timefilterdialog.ui \
         debuginfo.ui \
-    statusinfo.ui
+        statusinfo.ui
+
+INCLUDEPATH += "classes/modbus"
 
 win32::RC_FILE = \
                  resource/icon.rc
