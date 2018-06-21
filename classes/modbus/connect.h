@@ -31,7 +31,7 @@
             bool                  isOpen() const;
             void                  setAutochoicespeed(bool state);
             void                  setSettings(SerialPortType& settings);
-            const SerialPortType& settings() const;
+            SerialPortType&       settings();
             void                  write(const QByteArray& data);
 
         signals:

@@ -141,8 +141,8 @@ void CConnect::setSettings(CConnect::SerialPortType& settings)
 {
     m_settings = settings;
 }
-//--------------------------------------------------------
-const CConnect::SerialPortType& CConnect::settings() const
+//--------------------------------------------
+CConnect::SerialPortType& CConnect::settings()
 {
     return m_settings;
 }

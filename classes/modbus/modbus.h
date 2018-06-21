@@ -24,7 +24,10 @@
             void      setTryCount(int count);
 
         signals:
+            void autochoicespeed();
+            void baudrateChanged(QSerialPort::BaudRate);
             void close();
+            void closeDevice(bool = false);
             void errorDevice(const QString&);
             void open();
             void rawData(QByteArray&, bool = true);
@@ -32,6 +35,7 @@
             void stateChanged(bool = false);
 
         public slots:
+            void autochoicespeedProcess();
             void disconnected();
             void readyReadData(QByteArray& bytes);
             void timeoutResponce();
@@ -56,6 +60,7 @@
             int             m_interval_timeout_silence;
             int             m_trycount;
             int             m_try_counter;
+            QSerialPort::BaudRate m_baudrate_init;
             QTimer*         m_timer_timeout_response;
             QTimer*         m_timer_timeout_silence;
             QTime           m_time_process;

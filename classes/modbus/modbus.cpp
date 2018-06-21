@@ -26,6 +26,7 @@ CModBus::CModBus(QObject* parent):
     connect(this, &CModBus::close, this, &CModBus::disconnected);
     connect(m_timer_timeout_response, &QTimer::timeout, this, &CModBus::timeoutResponce);
     connect(m_timer_timeout_silence, &QTimer::timeout, this, &CModBus::timeoutSilencce);
+    connect(this, &CModBus::autochoicespeed, this, &CModBus::autochoicespeedProcess);
 }
 //--------------------------
 CConnect* CModBus::channel()
@@ -116,7 +117,15 @@ void CModBus::readyReadData(QByteArray& bytes)
     else // прияты все данные
     {
         if(!m_connect) // синхронизация по первому принятому сообщению
+        {
             m_connect = true;
+
+            if(m_baudrate_init != m_channel->settings().baudrate)
+            {
+                m_baudrate_init = m_channel->settings().baudrate;
+                emit baudrateChanged(m_baudrate_init);
+            }
+        }
 
         qDebug() << tr("Данные приняты в полном объеме %1 байт за %2мс.").arg(m_buffer.count()).arg(m_time_process.elapsed());
 
@@ -275,6 +284,34 @@ void CModBus::setTryCount(int count)
 {
     m_trycount = count;
 }
+//------------------------------------
+void CModBus::autochoicespeedProcess()
+{
+    if(!m_channel->autochoicespeed())
+        return;
+
+    if(!m_is_autochoicespeed)
+    {
+        m_baudrate_init = m_channel->settings().baudrate;
+        m_is_autochoicespeed = true;
+    }
+
+    QSerialPort::BaudRate baudrate = m_channel->baudrateNext();
+
+    if(baudrate == m_baudrate_init)
+    {
+        disconnected();
+        m_is_autochoicespeed = false;
+
+        return;
+    }
+
+    CConnect::SerialPortType& settings = m_channel->settings();
+
+    settings.baudrate = baudrate;
+
+    emit open();
+}
 //--------------------------
 void CModBus::disconnected()
 {
@@ -320,6 +357,8 @@ void CModBus::timeoutResponce()
     {
         emit close();
         disconnected();
+
+        emit autochoicespeed();
     }
 }
 //-----------------------------

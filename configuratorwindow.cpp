@@ -95,6 +95,12 @@ ConfiguratorWindow::~ConfiguratorWindow()
         m_watcher->waitForFinished();
     }
 
+    if(m_modbus)
+    {
+        if(m_modbus->channel()->isOpen())
+            emit m_modbus->close();
+    }
+
     qInfo() << tr("Завершение работы программы.");
 
     if(m_system_db.isOpen())
@@ -8256,8 +8262,8 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbus, &CModBus::readyRead, this, &ConfiguratorWindow::readyReadData);
     connect(m_modbus, &CModBus::rawData, m_terminal_window, &CTerminal::appendData);
     connect(m_modbus, &CModBus::errorDevice, this, &ConfiguratorWindow::errorDevice);
-//    connect(m_modbus, &CModbus::connectDeviceState, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
-//    connect(m_modbus, &CModbus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
+    connect(m_modbus, &CModBus::stateChanged, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
+    connect(m_modbus, &CModBus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
 //    connect(m_modbus, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
 //    connect(m_modbus, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
 //    connect(m_modbus, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
