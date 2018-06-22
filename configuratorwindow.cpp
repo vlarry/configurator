@@ -2165,6 +2165,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == PORTECT_RESERVE_SIGNAL_START)
     {
+        showErrorMessage(tr("Чтение Защиты/Резервные/Сигналы Пуска"), unit);
         displayProtectReserveSignalStart(unit.values());
     }
     else if(type == AUTOMATION_SIGNAL_START)
@@ -3471,7 +3472,7 @@ void ConfiguratorWindow::initCellBind()
 {
     QSqlQuery query(m_system_db);
 
-    if(!query.exec("SELECT * FROM iodevice WHERE type = 'SET';"))
+    if(!query.exec("SELECT * FROM iodevice WHERE type = 'SET' OR type = 'MODIFY';"))
         return;
 
     while(query.next())
@@ -4644,9 +4645,12 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
 //-------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>& data)
 {
-#ifdef DEBUG_REQUEST
-    qDebug() << "Вывод Защиты резервные Пусковые.";
-#endif
+    if(data.isEmpty())
+    {
+        qWarning() << tr("Защиты->Резервные->Сигналы пуска: нет данных.");
+        return;
+    }
+
     QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
                                                             ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
                                                             ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
@@ -6091,6 +6095,43 @@ void ConfiguratorWindow::updateSerialPortSettings()
 
     if(index != -1)
         ui->comboBoxCommunicationBaudrate->setCurrentIndex(index);
+}
+/*!
+ * \brief ConfiguratorWindow::itemComboboxChanged
+ *
+ * Обработка выпадающих списков, которые завязаны друг на друга, н-р, Уровневая 1 и Уровневая 2 (управление связано)
+ */
+void ConfiguratorWindow::indexComboBoxChanged(int index)
+{
+    QComboBox* comboBox = qobject_cast<QComboBox*>(sender());
+
+    if(comboBox)
+    {
+        if(comboBox == ui->cboxM77)
+        {
+            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(index);
+        }
+        else if(comboBox == ui->cboxProtectionLeve2_Ctrl)
+        {
+            ui->cboxM77->setCurrentIndex(index);
+        }
+        else if(comboBox == ui->cboxM65)
+        {
+            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(index);
+        }
+        else if(comboBox == ui->cboxM66)
+        {
+            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(index);
+        }
+        else if(comboBox == ui->cboxProtectionTemp2_Sensor1)
+        {
+            ui->cboxM65->setCurrentIndex(index);
+        }
+        else if(comboBox == ui->cboxProtectionTemp2_Sensor2)
+        {
+            ui->cboxM66->setCurrentIndex(index);
+        }
+    }
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
@@ -8377,4 +8418,10 @@ void ConfiguratorWindow::initConnect()
     connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
     connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
     connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this, &ConfiguratorWindow::updateSerialPortSettings);
+    connect(ui->cboxM77, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+    connect(ui->cboxProtectionLeve2_Ctrl, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+    connect(ui->cboxM65, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+    connect(ui->cboxM66, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+    connect(ui->cboxProtectionTemp2_Sensor1, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+    connect(ui->cboxProtectionTemp2_Sensor2, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
 }

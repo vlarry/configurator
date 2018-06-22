@@ -1764,7 +1764,7 @@
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>34</number>
+           <number>35</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -10170,6 +10170,34 @@
                 <layout class="QHBoxLayout" name="horizontalLayout_44">
                  <item>
                   <layout class="QGridLayout" name="gridLayout_37">
+                   <item row="2" column="1">
+                    <widget class="QComboBox" name="cboxTEMP2WorkMode">
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Имя порта</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>Сигнализация</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Откл с блок</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Откл без блок</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
                    <item row="3" column="0">
                     <widget class="QLabel" name="labelM68">
                      <property name="sizePolicy">
@@ -10202,29 +10230,6 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="cboxProtectionTemp2_Sensor2">
-                     <property name="maximumSize">
-                      <size>
-                       <width>100</width>
-                       <height>100</height>
-                      </size>
-                     </property>
-                     <property name="toolTip">
-                      <string>Имя порта</string>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Откл</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Вкл</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
                    <item row="0" column="1">
                     <widget class="QComboBox" name="cboxProtectionTemp2_Sensor1">
                      <property name="maximumSize">
@@ -10246,22 +10251,6 @@
                        <string>Вкл</string>
                       </property>
                      </item>
-                    </widget>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="lblTextProtectionTemp2_Sensor1">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Датчик 1</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
                     </widget>
                    </item>
                    <item row="4" column="1">
@@ -10289,6 +10278,38 @@
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="lblTextProtectionTemp2_Sensor1">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>Датчик 1</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_45">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>Режим работы</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -10380,24 +10401,8 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="label_45">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Режим работы</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="1">
-                    <widget class="QComboBox" name="cboxTEMP2WorkMode">
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="cboxProtectionTemp2_Sensor2">
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
@@ -10409,17 +10414,12 @@
                      </property>
                      <item>
                       <property name="text">
-                       <string>Сигнализация</string>
+                       <string>Откл</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>Откл с блок</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Откл без блок</string>
+                       <string>Вкл</string>
                       </property>
                      </item>
                     </widget>
@@ -10498,12 +10498,7 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>К.ИЛИ.Т</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>К.И.Т</string>
+                       <string>КонтВВ</string>
                       </property>
                      </item>
                      <item>
@@ -10513,7 +10508,12 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>КонтВВ</string>
+                       <string>К.И.Т</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>К.ИЛИ.Т</string>
                       </property>
                      </item>
                     </widget>
@@ -10678,12 +10678,7 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>К.ИЛИ.Т</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>К.И.Т</string>
+                       <string>КонтВВ</string>
                       </property>
                      </item>
                      <item>
@@ -10693,7 +10688,12 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>КонтВВ</string>
+                       <string>К.И.Т</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>К.ИЛИ.Т</string>
                       </property>
                      </item>
                     </widget>

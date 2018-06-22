@@ -562,6 +562,7 @@
             void testStyle(bool state);
             void readStatusInfo();
             void updateSerialPortSettings();
+            void indexComboBoxChanged(int index); // обработка комбобоксов с настройками, которые связаны с другими
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
