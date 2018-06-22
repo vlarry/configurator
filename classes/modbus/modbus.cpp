@@ -321,7 +321,6 @@ void CModBus::disconnected()
     m_timer_timeout_silence->stop();
     m_request = CModBusDataUnit();
     m_queue.clear();
-    m_connect = false;
     m_try_counter = 0;
     m_buffer.clear();
     unblock();
@@ -358,10 +357,11 @@ void CModBus::timeoutResponce()
     else
     {
         emit close();
-        disconnected();
 
-        if(m_channel->autochoicespeed())
+        if(m_channel->autochoicespeed() && !m_connect)
             emit autochoicespeed();
+
+        m_connect = false;
     }
 }
 //-----------------------------
@@ -384,5 +384,6 @@ void CModBus::userStateCtrl(bool state)
     {
         disconnected();
         m_is_autochoicespeed = false;
+        m_connect            = false;
     }
 }
