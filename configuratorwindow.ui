@@ -1764,7 +1764,7 @@
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>12</number>
+           <number>34</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -10498,12 +10498,7 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>КонтВВ</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Ток</string>
+                       <string>К.ИЛИ.Т</string>
                       </property>
                      </item>
                      <item>
@@ -10513,7 +10508,12 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>К.ИЛИ.Т</string>
+                       <string>Ток</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>КонтВВ</string>
                       </property>
                      </item>
                     </widget>
@@ -10678,12 +10678,7 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>КонтВВ</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Ток</string>
+                       <string>К.ИЛИ.Т</string>
                       </property>
                      </item>
                      <item>
@@ -10693,7 +10688,12 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>К.ИЛИ.Т</string>
+                       <string>Ток</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>КонтВВ</string>
                       </property>
                      </item>
                     </widget>
