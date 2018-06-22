@@ -63,7 +63,8 @@ SOURCES += \
         cstatusinfo.cpp \
         classes/modbus/modbusdataunit.cpp \
         classes/modbus/modbus.cpp \
-        classes/modbus/connect.cpp
+        classes/modbus/connect.cpp \
+    classes/popup/popup.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -103,7 +104,8 @@ HEADERS += \
         cstatusinfo.h \
         classes/modbus/modbusdataunit.h \
         classes/modbus/modbus.h \
-        classes/modbus/connect.h
+        classes/modbus/connect.h \
+    classes/popup/popup.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -126,7 +128,8 @@ FORMS += \
         debuginfo.ui \
         statusinfo.ui
 
-INCLUDEPATH += "classes/modbus"
+INCLUDEPATH += "classes/modbus" \
+               "classes/popup"
 
 win32::RC_FILE = \
                  resource/icon.rc

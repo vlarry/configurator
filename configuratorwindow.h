@@ -54,6 +54,7 @@
     #include "cdebuginfo.h"
     #include "cstatusinfo.h"
     #include "styleloader.h"
+    #include "popup.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     #define DEBUG_JOURNAL // отладка чтение журналов
@@ -650,6 +651,7 @@
             COutputAll*                      m_inputs_window; // состояние входов
             CDebugInfo*                      m_debuginfo_window;
             CStatusInfo*                     m_status_window;
+            PopUp*                           m_popup;
             QTimer*                          m_tim_calculate;
             QTimer*                          m_tim_debug_info;
             CVersionSoftware*                m_version_window;

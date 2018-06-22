@@ -12,6 +12,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_outputall_window(nullptr),
     m_inputs_window(nullptr),
     m_debuginfo_window(nullptr),
+    m_popup(nullptr),
     m_tim_calculate(nullptr),
     m_tim_debug_info(nullptr),
     m_version_window(nullptr),
@@ -37,6 +38,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_debuginfo_window          = new CDebugInfo(tr("Отладочная информация"), this);
     m_status_window             = new CStatusInfo;
     m_status_bar                = new CStatusBar(statusBar());
+    m_popup                     = new PopUp(this);
     m_watcher                   = new QFutureWatcher<void>(this);
     m_progressbar               = new CProgressBarWidget(this);
     m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME,
@@ -339,10 +341,14 @@ void ConfiguratorWindow::journalRead(const QString& key)
         disconnect(ui->pushButtonJournalRead, &QPushButton::clicked, this, stopProgressbar);
         m_progressbar->progressStop();
 
-        QMessageBox::information(this, tr("Чтение журнала"), tr("Чтение журнала %1 успешно завершено.\n"
-                                                                "Прочитано %2 сообщений.").
-                                                                arg(journal_name).
-                                                                arg(set.message.read_count));
+//        QMessageBox::information(this, tr("Чтение журнала"), tr("Чтение журнала %1 успешно завершено.\n"
+//                                                                "Прочитано %2 сообщений.").
+//                                                                arg(journal_name).
+//                                                                arg(set.message.read_count));
+        QString text = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 сообщений.").arg(journal_name).
+                                                                                           arg(set.message.read_count);
+        m_popup->setPopupText(text);
+        m_popup->show();
 
         return;
     }
