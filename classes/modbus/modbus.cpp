@@ -287,9 +287,6 @@ void CModBus::setTryCount(int count)
 //------------------------------------
 void CModBus::autochoicespeedProcess()
 {
-    if(!m_channel->autochoicespeed())
-        return;
-
     if(!m_is_autochoicespeed)
     {
         m_baudrate_init = m_channel->settings().baudrate;
@@ -358,7 +355,8 @@ void CModBus::timeoutResponce()
         emit close();
         disconnected();
 
-        emit autochoicespeed();
+        if(m_channel->autochoicespeed())
+            emit autochoicespeed();
     }
 }
 //-----------------------------

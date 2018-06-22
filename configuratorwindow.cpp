@@ -327,10 +327,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
         m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
         m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
 
-        QMessageBox::information(this, tr("Чтение журнала"), tr("Чтение журнала %1 успешно завершено.\n"
-                                                                "Прочитано %2 сообщений.").
-                                                                arg(m_journal_read_current->property("NAME").toString()).
-                                                                arg(set.message.read_count));
+        QString journal_name = m_journal_read_current->property("NAME").toString();
 
         m_journal_read_current = nullptr;
 
@@ -341,6 +338,11 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
         disconnect(ui->pushButtonJournalRead, &QPushButton::clicked, this, stopProgressbar);
         m_progressbar->progressStop();
+
+        QMessageBox::information(this, tr("Чтение журнала"), tr("Чтение журнала %1 успешно завершено.\n"
+                                                                "Прочитано %2 сообщений.").
+                                                                arg(journal_name).
+                                                                arg(set.message.read_count));
 
         return;
     }
@@ -7014,7 +7016,8 @@ void ConfiguratorWindow::timeoutSynchronization()
 
     if(item != DEVICE_MENU_ITEM_NONE)
     {
-        if(item >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && item <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION &&
+        if(item >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && item <=
+                   DEVICE_MENU_ITEM_JOURNALS_ISOLATION &&
                    !ui->pushButtonJournalRead->isChecked())
         {
             readJournalCount(); // читаем количество сообщений в каждом журнале
