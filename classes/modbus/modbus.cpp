@@ -372,3 +372,12 @@ void CModBus::timeoutSilencce()
         request(unit); // отправка первого запроса из очереди
     }
 }
+//-------------------------------------
+void CModBus::userStateCtrl(bool state)
+{
+    if(!state)
+    {
+        disconnected();
+        m_is_autochoicespeed = false;
+    }
+}

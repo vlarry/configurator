@@ -8286,6 +8286,7 @@ void ConfiguratorWindow::initConnect()
 //    connect(m_modbus, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
 //    connect(m_modbus, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
 
+    connect(ui->toolButtonConnect, &QPushButton::clicked, m_modbus, &CModBus::userStateCtrl);
     connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this,
             &ConfiguratorWindow::refreshSerialPort);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
