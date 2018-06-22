@@ -30,6 +30,7 @@
             void close();
             void closeDevice(bool = false);
             void errorDevice(const QString&);
+            void errorChannel(const QString&);
             void open();
             void rawData(QByteArray&, bool = true);
             void readyRead(CModBusDataUnit&);

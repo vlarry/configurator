@@ -8310,7 +8310,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbus, &CModBus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(m_modbus, &CModBus::stateChanged, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
-//    connect(m_modbus, &CModbus::error, this, &ConfiguratorWindow::errorConnect);
+    connect(m_modbus, &CModBus::errorChannel, this, &ConfiguratorWindow::errorConnect);
 //    connect(m_modbus, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
 //    connect(m_modbus, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
 

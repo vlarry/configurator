@@ -105,6 +105,7 @@ void CConnect::errorOccuredPort(QSerialPort::SerialPortError error)
     if(error == QSerialPort::NoError)
         return;
 
+    close();
     QString msg_str = tr("Ошибка последовательного порта: %1").arg(m_error_list[error]);
     qWarning() << msg_str;
     emit portError(msg_str);

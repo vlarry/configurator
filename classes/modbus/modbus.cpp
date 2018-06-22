@@ -20,13 +20,14 @@ CModBus::CModBus(QObject* parent):
     m_timer_timeout_silence  = new QTimer(this);
 
     connect(m_channel, &CConnect::readyRead, this, &CModBus::readyReadData);
+    connect(m_channel, &CConnect::stateChanged, this, &CModBus::stateChanged);
+    connect(m_channel, &CConnect::portError, this, &CModBus::errorChannel);
     connect(this, &CModBus::open, m_channel, &CConnect::open);
     connect(this, &CModBus::close, m_channel, &CConnect::close);
-    connect(m_channel, &CConnect::stateChanged, this, &CModBus::stateChanged);
     connect(this, &CModBus::close, this, &CModBus::disconnected);
+    connect(this, &CModBus::autochoicespeed, this, &CModBus::autochoicespeedProcess);
     connect(m_timer_timeout_response, &QTimer::timeout, this, &CModBus::timeoutResponce);
     connect(m_timer_timeout_silence, &QTimer::timeout, this, &CModBus::timeoutSilencce);
-    connect(this, &CModBus::autochoicespeed, this, &CModBus::autochoicespeedProcess);
 }
 //--------------------------
 CConnect* CModBus::channel()
@@ -330,6 +331,9 @@ void CModBus::timeoutResponce()
 {
     m_timer_timeout_response->stop();
     qDebug() << tr("Таймаут ответа: %1мс").arg(m_time_process.elapsed());
+
+    if(!m_channel->isOpen())
+        return;
 
     if(m_try_counter < m_trycount)
     {
