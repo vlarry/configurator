@@ -327,7 +327,9 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
     if(set.isFinish)
     {
+        qDebug() << tr("Остановка чтения журнала - сброс флага - вход.");
         set.isFinish = false;
+        qDebug() << tr("Остановка чтения журнала - сброс флага - выход.");
         return;
     }
 
@@ -4575,9 +4577,6 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
 //---------------------------------------------------------------------
 void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
 {
-#ifdef DEBUG_JOURNAL
-    qDebug() << "Вывод Чтения журнала.";
-#endif
     if(!m_journal_read_current)
     {
         return;
@@ -6843,6 +6842,9 @@ void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
 
         case READ_JOURNAL:
         {
+            if(!m_journal_read_current)
+                return;
+
             QVector<quint16> data = unit.values();
 
             if(set.message.read_count == 0) // обнуление счетчика времени передачи данных (если пришло первое сообщение)
@@ -8282,6 +8284,7 @@ void ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit&
 //-----------------------------------------------------------------
 void ConfiguratorWindow::endJournalReadProcess(const QString& text)
 {
+    qDebug() << tr("Окончание чтения журнла - вход");
     m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
     m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
 
@@ -8294,6 +8297,7 @@ void ConfiguratorWindow::endJournalReadProcess(const QString& text)
 
     m_popup->setPopupText(text);
     m_popup->show();
+    qDebug() << tr("Окончание чтения журнла - выход");
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()
