@@ -1764,7 +1764,7 @@
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>57</number>
+           <number>12</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -4581,12 +4581,12 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>Направл.</string>
+                       <string>С пуск.</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>С пуск.</string>
+                       <string>Направл.</string>
                       </property>
                      </item>
                     </widget>
