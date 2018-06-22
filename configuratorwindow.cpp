@@ -322,34 +322,12 @@ void ConfiguratorWindow::journalRead(const QString& key)
         return;
 
     journal_set_t& set = m_journal_set[key];
-    int sector_size = 4096/set.message.size; // размер сектора в сообщениях, т.е. сколько можно сообщений считать без перехода
+    int sector_size = 4096/set.message.size; // размер сектора в сообщениях, т.е. сколько можно сообщений считать
+                                             // без перехода
 
-    if((set.isStart && set.message.read_limit == set.message.read_count) || (set.isStart && set.isStop))
+    if(set.isFinish)
     {
-        m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
-        m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
-
-        QString journal_name = m_journal_read_current->property("NAME").toString();
-
-        m_journal_read_current = nullptr;
-
-        set.isStart = false;
-        set.isStop  = false;
-
-        emit buttonReadJournalStateChanged(); // отключаем кнопку чтения журналов
-
-        disconnect(ui->pushButtonJournalRead, &QPushButton::clicked, this, stopProgressbar);
-        m_progressbar->progressStop();
-
-//        QMessageBox::information(this, tr("Чтение журнала"), tr("Чтение журнала %1 успешно завершено.\n"
-//                                                                "Прочитано %2 сообщений.").
-//                                                                arg(journal_name).
-//                                                                arg(set.message.read_count));
-        QString text = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 сообщений.").arg(journal_name).
-                                                                                           arg(set.message.read_count);
-        m_popup->setPopupText(text);
-        m_popup->show();
-
+        set.isFinish = false;
         return;
     }
 
@@ -3907,11 +3885,11 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalCrash->setVisibleProperty(CJournalWidget::CRASH_PROPERTY, true);
     ui->widgetJournalHalfHour->setVisibleProperty(CJournalWidget::HALFHOUR_PROPERTY , true);
 
-    m_journal_set["CRASH"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
+    m_journal_set["CRASH"]    = journal_set_t({ 0, 0, false, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
                                                 journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
-    m_journal_set["EVENT"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
+    m_journal_set["EVENT"]    = journal_set_t({ 0, 0, false, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
                                                 journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
-    m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
+    m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
                                                 journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 }
 /*!
@@ -6910,7 +6888,34 @@ void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
                 m_journal_read_current->header()->setTextElapsedTime(QString("%1 КБ/сек.").arg(QLocale::system().toString(speed_kb, 'f', 3)));
             }
 
-            journalRead(key);
+            // Проверка условий на окончание чтения журнала
+            if(set.isStart && set.message.read_limit == set.message.read_count && !set.isStop)
+            {
+                QString journal_name = m_journal_read_current->property("NAME").toString();
+                QString text         = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
+                                       arg(journal_name).arg(set.message.read_count).arg(set.message.read_limit);
+
+                endJournalReadProcess(text);
+
+                return;
+            }
+            else if(set.isStart && set.isStop && !set.isFinish)
+            {
+                set.isStart  = false;
+                set.isStop   = false;
+                set.isFinish = true;
+
+                QString journal_name = m_journal_read_current->property("NAME").toString();
+                QString text         = tr("Чтение журнала %1 прерванно пользователем.\nПрочитано %2 из %3 сообщений.").
+                                       arg(journal_name).arg(set.message.read_count).arg(set.message.read_limit);
+
+                endJournalReadProcess(text);
+
+                return;
+            }
+
+            if(!set.isFinish)
+                journalRead(key);
         }
         break;
 
@@ -8270,6 +8275,22 @@ void ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit&
         QMessageBox::warning(this, title, tr("Ошибка: %1.").
                              arg(CModBusDataUnit::errorDescription(unit.error())));
     }
+}
+//-----------------------------------------------------------------
+void ConfiguratorWindow::endJournalReadProcess(const QString& text)
+{
+    m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
+    m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
+
+    m_journal_read_current = nullptr;
+
+    emit buttonReadJournalStateChanged(); // отключаем кнопку чтения журналов
+
+    disconnect(ui->pushButtonJournalRead, &QPushButton::clicked, this, stopProgressbar);
+    m_progressbar->progressStop();
+
+    m_popup->setPopupText(text);
+    m_popup->show();
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

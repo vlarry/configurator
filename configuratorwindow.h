@@ -274,6 +274,7 @@
                 long              msg_part;
                 bool              isStart;   // чтение первого сообщения
                 bool              isStop;    // останвка чтения сообщений
+                bool              isFinish;  // флаг сигнлализирующий об остановке чтения (работает с флаго isStop)
                 journal_address_t address;
                 journal_message_t message; 
                 QVector<quint16>  buffer;    // буфер сообщений
@@ -636,6 +637,7 @@
             block_protection_list_t loadProtectionList();
             bool deleteLogFile();
             void showErrorMessage(const QString& title, CModBusDataUnit& unit);
+            void endJournalReadProcess(const QString& text);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
