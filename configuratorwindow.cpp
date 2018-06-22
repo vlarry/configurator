@@ -7010,7 +7010,16 @@ void ConfiguratorWindow::timeoutSynchronization()
 
     m_modbus->sendData(unit);
 
-    readJournalCount(); // читаем количество сообщений в каждом журнале
+    DeviceMenuItemType item = menuIndex();
+
+    if(item != DEVICE_MENU_ITEM_NONE)
+    {
+        if(item >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && item <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION &&
+                   !ui->pushButtonJournalRead->isChecked())
+        {
+            readJournalCount(); // читаем количество сообщений в каждом журнале
+        }
+    }
 
     m_timer_synchronization->start(m_serialPortSettings_window->deviceSync());
 }
