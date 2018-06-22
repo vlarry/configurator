@@ -33,6 +33,11 @@ CConnect* CModBus::channel()
 {
     return m_channel;
 }
+//-------------------------------
+bool CModBus::isConnected() const
+{
+    return m_connect;
+}
 //-----------------------------------------------------
 quint16 CModBus::crc16(QByteArray& data, size_t length)
 {

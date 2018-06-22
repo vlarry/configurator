@@ -18,6 +18,7 @@
             explicit CModBus(QObject* parent = nullptr);
 
             CConnect* channel();
+            bool      isConnected() const;
             void      sendData(CModBusDataUnit& unit);
             void      setIntervalResponce(int interval);
             void      setIntervalSilence(int interval);

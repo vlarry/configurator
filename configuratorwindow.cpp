@@ -6029,15 +6029,18 @@ void ConfiguratorWindow::timeoutJournalRead()
 {
     m_journal_timer->stop();
 
-    ui->pushButtonJournalRead->setChecked(false);
-    m_progressbar->progressStop();
+    if(!m_modbus->isConnected())
+    {
+        ui->pushButtonJournalRead->setChecked(false);
+        m_progressbar->progressStop();
 
-    QString nameJournal;
+        QString nameJournal;
 
-    if(m_journal_read_current)
-        nameJournal = m_journal_read_current->property("NAME").toString();
+        if(m_journal_read_current)
+            nameJournal = m_journal_read_current->property("NAME").toString();
 
-    QMessageBox::warning(this, tr("Чтение журнала"), tr("Ошибка чтения журнала %1.").arg(nameJournal));
+        QMessageBox::warning(this, tr("Чтение журнала"), tr("Ошибка чтения журнала %1.").arg(nameJournal));
+    }
 }
 //--------------------------------------------
 void ConfiguratorWindow::testStyle(bool state)
