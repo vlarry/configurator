@@ -274,7 +274,6 @@
                 long              msg_part;
                 bool              isStart;   // чтение первого сообщения
                 bool              isStop;    // останвка чтения сообщений
-                bool              isFinish;  // флаг сигнлализирующий об остановке чтения (работает с флаго isStop)
                 journal_address_t address;
                 journal_message_t message; 
                 QVector<quint16>  buffer;    // буфер сообщений

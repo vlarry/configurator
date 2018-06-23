@@ -2005,7 +2005,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
 
         set.message.read_limit = set.message.read_count;
 
-//        set.isStop = true;
+        set.isStop = true;
     }
 
     journalRead(key);
@@ -3859,11 +3859,11 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalCrash->setVisibleProperty(CJournalWidget::CRASH_PROPERTY, true);
     ui->widgetJournalHalfHour->setVisibleProperty(CJournalWidget::HALFHOUR_PROPERTY , true);
 
-    m_journal_set["CRASH"]    = journal_set_t({ 0, 0, false, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
+    m_journal_set["CRASH"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
                                                 journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
-    m_journal_set["EVENT"]    = journal_set_t({ 0, 0, false, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
+    m_journal_set["EVENT"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
                                                 journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
-    m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
+    m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
                                                 journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 }
 /*!
@@ -5633,15 +5633,15 @@ void ConfiguratorWindow::startExportToPDF()
     // выбираем файл для экспорта
     QDir dir;
 
-    if(!dir.exists("reports"))
+    if(!dir.exists("outputs/reports"))
     {
-        dir.mkdir("reports");
+        dir.mkdir("outputs/reports");
     }
 
     QString selectedFilter    = tr("PDF (*.pdf)");
     QString journal_full_name = tr("Журнал %1-%2").arg(journal_name).arg(m_status_bar->serialNumberText());
     QString journal_path      = QFileDialog::getSaveFileName(this, tr("Экспорт журнала %1 в PDF").arg(journal_name),
-                                                             dir.absolutePath() + QString("/reports/%1.%2").
+                                                             dir.absolutePath() + QString("/outputs/reports/%1.%2").
                                                              arg(journal_full_name).arg("pdf"),
                                                              tr("PDF (*.pdf);;Все файлы (*.*)"), &selectedFilter);
 
@@ -6566,11 +6566,12 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     QDir dir;
 
-    if(!dir.exists("profiles"))
-        dir.mkdir("profiles");
+    if(!dir.exists("outputs/profiles"))
+        dir.mkdir("outputs/profiles");
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Открытие профиля привязок"),
-                                                    QString(dir.absolutePath() + "/%1/%2").arg("profiles").arg(fileNameDefault),
+                                                    QString(dir.absolutePath() + "/%1/%2").
+                                                    arg("outputs/profiles").arg(fileNameDefault),
                                                     tr("Профили привязок (*.prf)"));
 
     if(fileName.isEmpty())
@@ -6661,7 +6662,8 @@ void ConfiguratorWindow::importPurposeFromJSON()
     QDir dir;
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Открытие профиля привязок"),
-                                                    QString(dir.absolutePath() + "/%1/%2").arg("profiles").arg(fileNameDefault),
+                                                    QString(dir.absolutePath() + "/%1/%2").arg("outputs/profiles").
+                                                    arg(fileNameDefault),
                                                     tr("Профили привязок (*.prf)"));
 
     if(fileName.isEmpty())
@@ -6845,7 +6847,7 @@ void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
                 }
 
 
-                set.isStart = set.isFinish = false;
+                set.isStart = set.isStop = false;
                 endJournalReadProcess(text);
 
                 return;
@@ -7025,7 +7027,7 @@ void ConfiguratorWindow::importJournalToTable()
     QString selectedFilter    = tr("Базы данных (*.db)");
     QString journal_full_name = tr("Журнал %1-%2").arg(journal_name).arg(m_status_bar->serialNumberText());
     QString journal_path      = QFileDialog::getOpenFileName(this, tr("Импорт журнала %1 из базы данных").arg(journal_name),
-                                                             dir.absolutePath() + QString("/db/%1.%2").
+                                                             dir.absolutePath() + QString("/outputs/db/%1.%2").
                                                              arg(journal_full_name).arg("db"),
                                                              tr("Базы данных (*.db);;Все файлы (*.*)"), &selectedFilter);
 
@@ -7320,10 +7322,14 @@ void ConfiguratorWindow::exportJournalToDb()
 
     // выбираем файл для экспорта
     QDir dir;
+
+    if(!dir.exists("outputs/db"))
+        dir.mkdir("outputs/db");
+
     QString selectedFilter    = tr("Базы данных (*.db)");
     QString journal_full_name = tr("Журнал %1-%2").arg(journal_name).arg(m_status_bar->serialNumberText());
     QString journal_path      = QFileDialog::getSaveFileName(this, tr("Экспорт журнала %1 в базу данных").arg(journal_name),
-                                                             dir.absolutePath() + QString("/db/%1.%2").
+                                                             dir.absolutePath() + QString("/outputs/db/%1.%2").
                                                              arg(journal_full_name).arg("db"),
                                                              tr("Базы данных (*.db);;Все файлы (*.*)"), &selectedFilter,
                                                              QFileDialog::DontConfirmOverwrite);
@@ -8184,9 +8190,9 @@ bool ConfiguratorWindow::deleteLogFile()
 {
     QDir dir;
 
-    if(dir.exists("output/log.txt"))
+    if(dir.exists("outputs/log.txt"))
     {
-        if(dir.remove("output/log.txt"))
+        if(dir.remove("outputs/log.txt"))
             return true;
     }
 

@@ -2,8 +2,7 @@
 LOG.txt
 /debug
 /release
-/reposrt
-/profiles
+/outputs
 *.prf
 *.stash
 *.Release
@@ -11,4 +10,3 @@ LOG.txt
 Makefile
 configurator.pro.user.*
 ui_*.h
-db/events.db

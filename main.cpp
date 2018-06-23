@@ -40,10 +40,10 @@ void logOutput(QtMsgType type, const QMessageLogContext& context, const QString&
 
     QDir dir;
 
-    if(!dir.exists("output"))
-        dir.mkdir("output");
+    if(!dir.exists("outputs"))
+        dir.mkdir("outputs");
 
-    QFile file("output/log.txt");
+    QFile file("outputs/log.txt");
 
     if(!file.open(QFile::WriteOnly | QFile::Append))
     {
