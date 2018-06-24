@@ -4,34 +4,41 @@
     #include <QString>
     #include <QVector>
     #include <QDebug>
-    #include <QCheckBox>
     //-----------
     class CColumn
     {
         public:
+            enum StateType
+            {
+                INACTIVE,
+                INVERSE_ACTIVE,
+                NORMAL_ACTIVE
+            };
+
+        public:
             CColumn();
             CColumn(const QString& name);
-            CColumn(int bit, Qt::CheckState state, const QString& key, const QString& name, const QString& description);
+            CColumn(int bit, StateType state, const QString& key, const QString& name, const QString& description);
 
             int     bit() const;
             QString key() const;
             QString name() const;
             QString description() const;
-            Qt::CheckState state() const;
+            StateType state() const;
 
             void setBit(int bit);
             void setData(const QString& key, const QString& name, const QString& description);
             void setKey(const QString& key);
             void setName(const QString& name);
             void setDescription(const QString& description);
-            void setState(Qt::CheckState state);
+            void setState(StateType state);
 
         private:
-            int            m_bit;
-            Qt::CheckState m_state;
-            QString        m_key;
-            QString        m_name;
-            QString        m_description;
+            int       m_bit;
+            StateType m_state;
+            QString   m_key;
+            QString   m_name;
+            QString   m_description;
     };
     //--------
     class CRow

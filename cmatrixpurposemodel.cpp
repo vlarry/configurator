@@ -15,7 +15,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_
 
         for(var_t& var: item.var_list)
         {
-            columns << CColumn(var.bit, Qt::Unchecked, var.key, var.name, var.description);
+            columns << CColumn(var.bit, CColumn::INACTIVE, var.key, var.name, var.description);
         }
     }
 
@@ -110,7 +110,7 @@ bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& valu
 
     if(role == Qt::CheckStateRole)
     {
-        Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
+        CColumn::StateType state = static_cast<CColumn::StateType>(value.toInt());
 
         m_matrix[index.row()][index.column()].setState(state);
 
@@ -252,49 +252,52 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
 
     QRect checkbox_rect = QApplication::style()->subElementRect(QStyle::SE_CheckBoxIndicator, &checkboxstyle);
 
-    QPoint ct(option.rect.x() + option.rect.width()/2, option.rect.y() + option.rect.height()/2);
-    QRect  rect;
+    int cx = option.rect.x() + option.rect.width()/2;
+    int cy = option.rect.y() + option.rect.height()/2;
 
-    rect.setTopLeft(QPoint(ct.x() - checkbox_rect.width()/2, ct.y() - checkbox_rect.height()/2));
-    rect.setBottomRight(QPoint(ct.x() + checkbox_rect.width()/2, ct.y() + checkbox_rect.height()/2));
+    QPoint line_topLeft(cx - checkbox_rect.width()/2, cy - checkbox_rect.height()/2 - 1);
+    QPoint line_bottomRight(cx + checkbox_rect.width()/2, cy + checkbox_rect.height()/2 -1);
+    QPoint line_bottomLeft(cx - checkbox_rect.width()/2, cy + checkbox_rect.height()/2);
+    QPoint line_topRight(cx + checkbox_rect.width()/2, cy - checkbox_rect.height()/2);
 
-    rect.setTopLeft(QPoint(rect.left() - 1, rect.top() - 2));
-    rect.setBottomRight(QPoint(rect.right() + 1, rect.bottom()));
+    QRect rect = QRect(line_topLeft.x(), line_topLeft.y(), checkbox_rect.width(), checkbox_rect.height());
 
-    checkboxstyle.rect = option.rect;
+    painter->save();
+        painter->drawRect(rect);
 
-    checkboxstyle.rect.setLeft(option.rect.x() + option.rect.width()/2 - checkbox_rect.width()/2);
-
-    Qt::CheckState state = static_cast<Qt::CheckState>(index.model()->data(index, Qt::CheckStateRole).toInt());
-
-    if(state == Qt::Checked)
-        checkboxstyle.state = QStyle::State_On|QStyle::State_Enabled;
-    else if(state == Qt::PartiallyChecked)
-        checkboxstyle.state = QStyle::State_NoChange|QStyle::State_Enabled;
-    else if(state == Qt::Unchecked)
-        checkboxstyle.state = QStyle::State_Off|QStyle::State_Enabled;
-
-    if(m_table_type == PROTECTION_TYPE && index.row() == index.column())
-    {
-        int cx = option.rect.x() + option.rect.width()/2;
-        int cy = option.rect.y() + option.rect.height()/2;
-
-        QPoint line_topLeft(cx - checkbox_rect.width()/2, cy - checkbox_rect.height()/2 - 1);
-        QPoint line_bottomRight(cx + checkbox_rect.width()/2, cy + checkbox_rect.height()/2 -1);
-        QPoint line_bottomLeft(cx - checkbox_rect.width()/2, cy + checkbox_rect.height()/2);
-        QPoint line_topRight(cx + checkbox_rect.width()/2, cy - checkbox_rect.height()/2);
-
-        painter->save();
+        if(m_table_type == PROTECTION_TYPE && index.row() == index.column())
+        {
             painter->setPen(Qt::gray);
-            painter->drawRect(line_topLeft.x(), line_topLeft.y(), checkbox_rect.width(), checkbox_rect.height());
             painter->drawLine(line_topLeft, line_bottomRight);
             painter->drawLine(line_bottomLeft, line_topRight);
-        painter->restore();
-    }
-    else
-    {
-        QApplication::style()->drawControl(QStyle::CE_CheckBox, &checkboxstyle, painter);
-    }
+        }
+        else
+        {
+            CColumn::StateType state = static_cast<CColumn::StateType>(index.model()->data(index, Qt::CheckStateRole).toInt());
+
+            switch(state)
+            {
+                case CColumn::INACTIVE:
+                break;
+
+                case CColumn::NORMAL_ACTIVE:
+                    painter->drawLine(rect.left() + 2, rect.top() + rect.height()/2,
+                                      rect.left() + rect.width()/2, rect.bottom() - 2);
+                    painter->drawLine(rect.left() + rect.width()/2, rect.bottom() - 2,
+                                      rect.right() - 1, rect.top() + 2);
+                break;
+
+                case CColumn::INVERSE_ACTIVE:
+                    int x = rect.left() + rect.width()/4;
+                    int y = rect.top() + rect.height()/4;
+                    int w = rect.width()/2;
+                    int h = rect.height()/2;
+
+                    painter->fillRect(x, y, w + 1, h + 1, Qt::SolidPattern);
+                break;
+            }
+        }
+    painter->restore();
 }
 //----------------------------------------------------------------------------------------------------------------
 bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option,
@@ -327,19 +330,19 @@ bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, c
         if(!checkboxstyle.rect.contains(point))
             return false;
 
-        Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
+        CColumn::StateType state = static_cast<CColumn::StateType>(value.toInt());
 
-        if(state == Qt::Unchecked)
+        if(state == CColumn::INACTIVE)
         {
             if(m_inverse)
-                state = Qt::PartiallyChecked;
+                state = CColumn::INVERSE_ACTIVE;
             else
-                state = Qt::Checked;
+                state = CColumn::NORMAL_ACTIVE;
         }
-        else if(state == Qt::PartiallyChecked)
-            state = Qt::Checked;
-        else if(state == Qt::Checked)
-            state = Qt::Unchecked;
+        else if(state == CColumn::INVERSE_ACTIVE)
+            state = CColumn::NORMAL_ACTIVE;
+        else if(state == CColumn::NORMAL_ACTIVE)
+            state = CColumn::INACTIVE;
 
         return model->setData(index, state, Qt::CheckStateRole);
     }

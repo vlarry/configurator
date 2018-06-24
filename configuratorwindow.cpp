@@ -4476,9 +4476,9 @@ void ConfiguratorWindow::displayPurposeResponse(CModBusDataUnit& unit)
             bool state = (values[hword + offset_pos]&(1 << bit));
 
             if(state)
-                col.setState(Qt::Checked);
+                col.setState(CColumn::NORMAL_ACTIVE);
             else
-                col.setState(Qt::Unchecked);
+                col.setState(CColumn::INACTIVE);
         }
     }
 
@@ -4544,12 +4544,12 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
                 bool input_state   = input_data[i]&(1 << j);
                 bool inverse_state = input_inverse_data[i]&(1 << j);
 
-                Qt::CheckState state = Qt::Unchecked;
+                CColumn::StateType state = CColumn::INACTIVE;
 
                 if(input_state && !inverse_state)
-                    state = Qt::Checked;
+                    state = CColumn::NORMAL_ACTIVE;
                 else if(input_state && inverse_state)
-                    state = Qt::PartiallyChecked;
+                    state = CColumn::INVERSE_ACTIVE;
 
                 matrix[j][col_index].setState(state);
             }
@@ -4873,7 +4873,7 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
                 if(pos >= matrix.columnCount())
                     break;
 
-                matrix[row][pos].setState(((state)?Qt::Checked:Qt::Unchecked));
+                matrix[row][pos].setState(((state)?CColumn::NORMAL_ACTIVE:CColumn::INACTIVE));
             }
         }
     }
@@ -4950,7 +4950,7 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
             bool state = (row[col]&(1 << bit));
 
-            matrix[i][j].setState(((state)?Qt::Checked:Qt::Unchecked));
+            matrix[i][j].setState(((state)?CColumn::NORMAL_ACTIVE:CColumn::INACTIVE));
         }
     }
 
@@ -5374,8 +5374,8 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
             for(int k = 0; k < matrix.rowCount(); k++)
             {
-                bool state = (matrix[k][col_index].state() == Qt::Checked || matrix[k][col_index].state() == Qt::PartiallyChecked)?true:
-                                                                                                                                   false;
+                bool state = (matrix[k][col_index].state() == CColumn::NORMAL_ACTIVE ||
+                              matrix[k][col_index].state() == CColumn::INVERSE_ACTIVE)?true:false;
 
                 if(state)
                     value |= (1 << k);
@@ -5437,7 +5437,7 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
 
             for(int k = 0; k < matrix.rowCount(); k++)
             {
-                bool state = ((matrix[k][col_index].state() == Qt::PartiallyChecked)?true:false);
+                bool state = ((matrix[k][col_index].state() == CColumn::INVERSE_ACTIVE)?true:false);
 
                 if(state)
                     value |= (1 << k);
@@ -5448,7 +5448,7 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
     }
 
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
-                                                                 CModBusDataUnit::WriteMultipleRegisters);
+                                                                   CModBusDataUnit::WriteMultipleRegisters);
 
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
 
@@ -5614,7 +5614,7 @@ void ConfiguratorWindow::clearIOTable()
     {
         for(int j = 0; j < matrix.columnCount(); j++)
         {
-            matrix[i][j].setState(Qt::Unchecked);
+            matrix[i][j].setState(CColumn::INACTIVE);
         }
     }
 
@@ -6749,8 +6749,8 @@ void ConfiguratorWindow::importPurposeFromJSON()
         {
             QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
 
-            columns << CColumn(colObj["bit"].toInt(), static_cast<Qt::CheckState>(colObj["state"].toInt()), colObj["key"].toString(),
-                               colObj["name"].toString(), colObj["description"].toString());
+            columns << CColumn(colObj["bit"].toInt(), static_cast<CColumn::StateType>(colObj["state"].toInt()),
+                               colObj["key"].toString(), colObj["name"].toString(), colObj["description"].toString());
         }
 
         rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);

@@ -75,7 +75,7 @@ void CModBus::readyReadData(QByteArray& bytes)
     if(m_buffer.count() < 2)
         return;
 
-    int size, offset;
+    int size = 0, offset = 0;
 
     QString str = bytes.toHex(' ').toUpper().data();
     qDebug() << tr("Принятые данные: %1").arg(str);
@@ -382,10 +382,10 @@ void CModBus::timeoutSilencce()
 //-------------------------------------
 void CModBus::userStateCtrl(bool state)
 {
-    if(!state)
-    {
-        disconnected();
-        m_is_autochoicespeed = false;
-        m_connect            = false;
-    }
+    if(state)
+        return;
+
+    disconnected();
+    m_is_autochoicespeed = false;
+    m_connect            = false;
 }

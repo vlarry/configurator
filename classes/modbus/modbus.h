@@ -42,7 +42,7 @@
             void readyReadData(QByteArray& bytes);
             void timeoutResponce();
             void timeoutSilencce();
-            void userStateCtrl(bool state = false); // событие на нажатие кнопки пользователем (пока очистка флага m_is_autochoicespeed)
+            void userStateCtrl(bool state); // событие на нажатие кнопки пользователем (пока очистка флага m_is_autochoicespeed)
 
         private:
             void    block();
