@@ -160,7 +160,9 @@
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1             = 1201,
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2             = 1202,
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1             = 1203,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU   = 1213, // переход на коррекцию КЦУ (вкладка автоматика/выключатель)
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2             = 1204,
+                DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU   = 1214, // переход на коррекцию КЦУ (вкладка автоматика/выключатель)
                 DEVICE_MENU_PROTECT_ITEM_POWER_3U0               = 1205,
                 DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1           = 1301,
                 DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2           = 1302,

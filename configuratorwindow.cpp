@@ -2533,10 +2533,20 @@ void ConfiguratorWindow::readSetCurrent()
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1: // чтение защиты Umin1
             protectionUmin1Read();
+            automationSwitchRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2: // чтение защиты Umin2
             protectionUmin2Read();
+            automationSwitchRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU: // чтение подпункта защиты Umin1 Коррекция КЦУ
+            automationSwitchRead();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU: // чтение подпункта защиты Umin2 Коррекция КЦУ
+            automationSwitchRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_3U0: // чтение защиты 3U0
@@ -2845,10 +2855,20 @@ void ConfiguratorWindow::writeSetCurrent()
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1: // запись защиты Umin1
             protectionUmin1Write();
+            automationSwitchWrite();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2: // запись защиты Umin2
             protectionUmin2Write();
+            automationSwitchWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU: // запись подпункта защиты Umin1 Коррекция КЦУ
+            automationSwitchWrite();
+        break;
+
+        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU: // запись подпункта защиты Umin2 Коррекция КЦУ
+            automationSwitchWrite();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER_3U0: // запись защиты 3U0
@@ -3172,6 +3192,15 @@ void ConfiguratorWindow::initMenuPanel()
     QTreeWidgetItem* powerItem3U0   = new QTreeWidgetItem(protectItemPower, QStringList() << tr("3U0"),
                                                           DEVICE_MENU_PROTECT_ITEM_POWER_3U0); // защита 3U0
 
+    // подпункт защиты Umin1 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
+    QTreeWidgetItem* powerItemUmin1CorecKCU = new QTreeWidgetItem(powerItemUmin1, QStringList() << tr("Корр КЦУ"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU);
+    // подпункт защиты Umin2 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
+    QTreeWidgetItem* powerItemUmin2CorecKCU = new QTreeWidgetItem(powerItemUmin2, QStringList() << tr("Корр КЦУ"),
+                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU);
+
+    powerItemUmin1->addChild(powerItemUmin1CorecKCU);
+    powerItemUmin2->addChild(powerItemUmin2CorecKCU);
     protectItemPower->addChildren(QList<QTreeWidgetItem*>() << powerItemUmax1 << powerItemUmax2 << powerItemUmin1 <<
                                                                powerItemUmin2 << powerItem3U0);
 
@@ -3396,6 +3425,8 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2]             = 18;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1]             = 19;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2]             = 20;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin1
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin2
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_3U0]               = 21;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING]          = 22;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN]              = 23;
