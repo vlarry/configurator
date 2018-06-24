@@ -77,6 +77,9 @@ void CModBus::readyReadData(QByteArray& bytes)
 
     int size, offset;
 
+    QString str = bytes.toHex(' ').toUpper().data();
+    qDebug() << tr("Принятые данные: %1").arg(str);
+
     CModBusDataUnit::FunctionType code_function = CModBusDataUnit::FunctionType(quint8(m_buffer[1]));
 
     switch(code_function)
@@ -101,11 +104,6 @@ void CModBus::readyReadData(QByteArray& bytes)
             if(code_function & 0x80) // в ответе устройства обнаружена ошибка
             {
                 size = 5;
-            }
-            else
-            {
-                qDebug() << tr("Неизвестный код функции: %1.").arg(m_request.toString());
-                return;
             }
         break;
     }
