@@ -24,6 +24,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButtonReset">
+       <property name="text">
+        <string>Сбросить</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -37,9 +44,28 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonReset">
+      <widget class="QSpinBox" name="spinBoxUpdateData">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="minimum">
+        <number>100</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+       <property name="singleStep">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>1000</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxUpdateData">
        <property name="text">
-        <string>Сбросить</string>
+        <string>Вреия опроса, мс</string>
        </property>
       </widget>
      </item>

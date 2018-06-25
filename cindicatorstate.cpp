@@ -10,8 +10,13 @@ CIndicatorState::CIndicatorState(QWidget* parent):
     setWindowTitle(tr("Состояния выходов"));
     setWindowFlag(Qt::Window);
 
+    m_timeout_update = new QTimer(this);
+
     connect(ui->pushButtonUpdate, &QPushButton::clicked, this, &CIndicatorState::buttonUpdate);
     connect(ui->pushButtonReset, &QPushButton::clicked, this, &CIndicatorState::resetStates);
+    connect(ui->checkBoxUpdateData, &QCheckBox::clicked, this, &CIndicatorState::stateUpdateData);
+    connect(ui->spinBoxUpdateData, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
+    connect(m_timeout_update, &QTimer::timeout, this, &CIndicatorState::timeoutUpdate);
 }
 //---------------------------------
 CIndicatorState::~CIndicatorState()
@@ -136,6 +141,28 @@ void CIndicatorState::setOutputStates(const QVector<quint16>& data)
         }
     }
 }
+//-----------------------------------------------
+void CIndicatorState::stateUpdateData(bool state)
+{
+    if(state)
+        m_timeout_update->start(ui->spinBoxUpdateData->value());
+    else
+        m_timeout_update->stop();
+}
+//-----------------------------------
+void CIndicatorState::timeoutUpdate()
+{
+    emit buttonUpdate();
+}
+//------------------------------------------------------
+void CIndicatorState::timeoutValueChanged(int new_value)
+{
+    if(ui->checkBoxUpdateData->isChecked())
+    {
+        m_timeout_update->stop();
+        m_timeout_update->start(new_value);
+    }
+}
 //------------------------------------
 QStringList CIndicatorState::ledList()
 {
@@ -179,9 +206,18 @@ QStringList CIndicatorState::relayList()
 //--------------------------------------------------
 void CIndicatorState::closeEvent(QCloseEvent* event)
 {
-    emit closeWindow();
-
     QWidget::closeEvent(event);
+
+    m_timeout_update->stop();
+    emit closeWindow();
+}
+//------------------------------------------------
+void CIndicatorState::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+
+    if(ui->checkBoxUpdateData->isChecked())
+        m_timeout_update->start(ui->spinBoxUpdateData->value());
 }
 //---------------------------------
 void CIndicatorState::resetStates()
