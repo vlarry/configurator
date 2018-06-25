@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>427</width>
+    <width>519</width>
     <height>685</height>
    </rect>
   </property>
@@ -57,6 +57,32 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBoxUpdateData">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="minimum">
+        <number>100</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+       <property name="singleStep">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>1000</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxUpdateData">
+       <property name="text">
+        <string>Время опроса, мс</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

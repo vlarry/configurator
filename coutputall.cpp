@@ -3,15 +3,21 @@
 //------------------------------------------------------------
 COutputAll::COutputAll(const QString& title, QWidget* parent):
     QWidget(parent),
-    ui(new Ui::COutputAll)
+    ui(new Ui::COutputAll),
+    m_timeout_update(nullptr)
 {
     ui->setupUi(this);
 
     setWindowFlag(Qt::Window);
     setWindowTitle(title);
 
-    connect(ui->pushButtonRead, &QPushButton::clicked, this, &COutputAll::buttonRead);
+    m_timeout_update = new QTimer(this);
+
+    connect(ui->pushButtonRead, &QPushButton::clicked, this, &COutputAll::buttonUpdate);
     connect(ui->pushButtonReset, &QPushButton::clicked, this, &COutputAll::outputStateReset);
+    connect(ui->checkBoxUpdateData, &QCheckBox::clicked, this, &COutputAll::stateUpdateData);
+    connect(ui->spinBoxUpdateData, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
+    connect(m_timeout_update, &QTimer::timeout, this, &COutputAll::timeoutUpdate);
 }
 //-----------------------
 COutputAll::~COutputAll()
@@ -80,10 +86,41 @@ void COutputAll::outputStateReset()
         }
     }
 }
+//------------------------------------------
+void COutputAll::stateUpdateData(bool state)
+{
+    if(state)
+        m_timeout_update->start(ui->spinBoxUpdateData->value());
+    else
+        m_timeout_update->stop();
+}
+//------------------------------
+void COutputAll::timeoutUpdate()
+{
+    emit buttonUpdate();
+}
+//-------------------------------------------------
+void COutputAll::timeoutValueChanged(int new_value)
+{
+    if(ui->checkBoxUpdateData->isChecked())
+    {
+        m_timeout_update->stop();
+        m_timeout_update->start(new_value);
+    }
+}
 //---------------------------------------------
 void COutputAll::closeEvent(QCloseEvent* event)
 {
-    emit closeWindow();
-
     QWidget::closeEvent(event);
+
+    emit closeWindow();
+    m_timeout_update->stop();
+}
+//-------------------------------------------
+void COutputAll::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+
+    if(ui->checkBoxUpdateData->isChecked())
+        m_timeout_update->start(ui->spinBoxUpdateData->value());
 }

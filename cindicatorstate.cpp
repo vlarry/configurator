@@ -3,7 +3,8 @@
 //------------------------------------------------
 CIndicatorState::CIndicatorState(QWidget* parent):
     QWidget(parent),
-    ui(new Ui::CIndicatorState)
+    ui(new Ui::CIndicatorState),
+    m_timeout_update(nullptr)
 {
     ui->setupUi(this);
 
