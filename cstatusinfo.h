@@ -2,7 +2,10 @@
     #define CSTATUSINFO_H
     //----------------
     #include <QWidget>
+    #include <QCloseEvent>
+    #include <QShowEvent>
     #include <QMessageBox>
+    #include <QTimer>
     #include "qcell.h"
     //----------
     namespace Ui
@@ -23,15 +26,22 @@
             void updateMcpInfo(quint32 value);
             void updateModuleInfo(const QVector<quint16>& info);
 
+        public slots:
+            void stateUpdateData(bool state = false);
+            void timeoutUpdate();
+            void timeoutValueChanged(int new_value);
+
         protected:
             void closeEvent(QCloseEvent* event);
+            void showEvent(QShowEvent* event);
 
         signals:
-            void updateStatusInfo();
+            void buttonUpdate();
             void closeWindow(bool = false);
 
         private:
             Ui::CStatusInfo* ui;
             status_list_t    m_status_list;
+            QTimer*          m_timeout_update;
     };
 #endif // CSTATUSINFO_H

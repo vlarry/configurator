@@ -3,7 +3,8 @@
 //----------------------------------------
 CStatusInfo::CStatusInfo(QWidget *parent):
     QWidget(parent),
-    ui(new Ui::CStatusInfo)
+    ui(new Ui::CStatusInfo),
+    m_timeout_update(nullptr)
 {
     ui->setupUi(this);
 
@@ -22,7 +23,12 @@ CStatusInfo::CStatusInfo(QWidget *parent):
 
     ui->tableWidgetModule->horizontalHeader()->setStretchLastSection(true);
 
-    connect(ui->pushButtonStatusInfoUpdate, &QPushButton::clicked, this, updateStatusInfo);
+    m_timeout_update = new QTimer(this);
+
+    connect(ui->pushButtonStatusInfoUpdate, &QPushButton::clicked, this, buttonUpdate);
+    connect(ui->checkBoxUpdateData, &QCheckBox::clicked, this, &CStatusInfo::stateUpdateData);
+    connect(ui->spinBoxUpdateData, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
+    connect(m_timeout_update, &QTimer::timeout, this, &CStatusInfo::timeoutUpdate);
 }
 //-------------------------
 CStatusInfo::~CStatusInfo()
@@ -130,10 +136,40 @@ void CStatusInfo::updateModuleInfo(const QVector<quint16> &info)
     ui->tableWidgetModule->setItem(2, 1, itemMDVV_02_Tcpu);
     ui->tableWidgetModule->setItem(2, 2, itemMIK_01_Tcpu);
 }
+//-------------------------------------------
+void CStatusInfo::stateUpdateData(bool state)
+{
+    if(state)
+        m_timeout_update->start(ui->spinBoxUpdateData->value());
+    else
+        m_timeout_update->stop();
+}
+//-------------------------------
+void CStatusInfo::timeoutUpdate()
+{
+    emit buttonUpdate();
+}
+//--------------------------------------------------
+void CStatusInfo::timeoutValueChanged(int new_value)
+{
+    if(ui->checkBoxUpdateData->isChecked())
+    {
+        m_timeout_update->stop();
+        m_timeout_update->start(new_value);
+    }
+}
 //----------------------------------------------
 void CStatusInfo::closeEvent(QCloseEvent* event)
 {
-    emit closeWindow();
-
     QWidget::closeEvent(event);
+    m_timeout_update->stop();
+    emit closeWindow();
+}
+//--------------------------------------------
+void CStatusInfo::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+
+    if(ui->checkBoxUpdateData->isChecked())
+        m_timeout_update->start(ui->spinBoxUpdateData->value());
 }

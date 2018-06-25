@@ -8288,7 +8288,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_inputs_window, &COutputAll::closeWindow, ui->pushButtonInputs, &QPushButton::setChecked);
     connect(ui->pushButtonStatusInfo, &QPushButton::clicked, this, &ConfiguratorWindow::statusInfoVisiblity);
     connect(m_status_window, &CStatusInfo::closeWindow, ui->pushButtonStatusInfo, &QPushButton::setChecked);
-    connect(m_status_window, &CStatusInfo::updateStatusInfo, this, &ConfiguratorWindow::readStatusInfo);
+    connect(m_status_window, &CStatusInfo::buttonUpdate, this, &ConfiguratorWindow::readStatusInfo);
     connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
     connect(ui->pbtnWriteAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);
