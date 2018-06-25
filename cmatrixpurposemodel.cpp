@@ -281,10 +281,7 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
                 break;
 
                 case CColumn::NORMAL_ACTIVE:
-                    painter->drawLine(rect.left() + 2, rect.top() + rect.height()/2,
-                                      rect.left() + rect.width()/2, rect.bottom() - 2);
-                    painter->drawLine(rect.left() + rect.width()/2, rect.bottom() - 2,
-                                      rect.right() - 1, rect.top() + 2);
+                    painter->drawPixmap(rect, QPixmap(":/images/resource/images/checbox_tick.png"));
                 break;
 
                 case CColumn::INVERSE_ACTIVE:
