@@ -3,15 +3,21 @@
 //---------------------------------------------------------------------
 CMonitorPurpose::CMonitorPurpose(const QString& text, QWidget* parent):
     QWidget(parent),
-    ui(new Ui::CMonitorPurpose)
+    ui(new Ui::CMonitorPurpose),
+    m_timeout_update(nullptr)
 {
     ui->setupUi(this);
 
     setWindowTitle(text);
     setWindowFlag(Qt::Window);
 
-    connect(ui->pushButtonRead, &QPushButton::clicked, this, &CMonitorPurpose::readPurpose);
+    m_timeout_update = new QTimer(this);
+
+    connect(ui->pushButtonRead, &QPushButton::clicked, this, &CMonitorPurpose::buttonUpdate);
     connect(ui->pushButtonClear, &QPushButton::clicked, this, &CMonitorPurpose::clearTable);
+    connect(ui->checkBoxUpdateData, &QCheckBox::clicked, this, &CMonitorPurpose::stateUpdateData);
+    connect(ui->spinBoxUpdateData, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
+    connect(m_timeout_update, &QTimer::timeout, this, &CMonitorPurpose::timeoutUpdate);
 }
 //---------------------------------
 CMonitorPurpose::~CMonitorPurpose()
@@ -42,6 +48,28 @@ QTableView* CMonitorPurpose::table() const
 {
     return ui->tableViewMonitor;
 }
+//-----------------------------------------------
+void CMonitorPurpose::stateUpdateData(bool state)
+{
+    if(state)
+        m_timeout_update->start(ui->spinBoxUpdateData->value());
+    else
+        m_timeout_update->stop();
+}
+//-----------------------------------
+void CMonitorPurpose::timeoutUpdate()
+{
+    emit buttonUpdate();
+}
+//------------------------------------------------------
+void CMonitorPurpose::timeoutValueChanged(int new_value)
+{
+    if(ui->checkBoxUpdateData->isChecked())
+    {
+        m_timeout_update->stop();
+        m_timeout_update->start(new_value);
+    }
+}
 //--------------------------------
 void CMonitorPurpose::clearTable()
 {
@@ -65,7 +93,15 @@ void CMonitorPurpose::clearTable()
 //--------------------------------------------------
 void CMonitorPurpose::closeEvent(QCloseEvent* event)
 {
-    emit closeWindow();
-
     QWidget::closeEvent(event);
+    m_timeout_update->stop();
+    emit closeWindow();
+}
+//------------------------------------------------
+void CMonitorPurpose::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+
+    if(ui->checkBoxUpdateData->isChecked())
+        m_timeout_update->start(ui->spinBoxUpdateData->value());
 }
