@@ -564,6 +564,7 @@
             void readStatusInfo();
             void updateSerialPortSettings();
             void indexComboBoxChanged(int index); // обработка комбобоксов с настройками, которые связаны с другими
+            void setNewAddress(); // отправка команды на смену адреса предварительно установленного (срабатывает по таймеру);
             
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
@@ -665,6 +666,7 @@
             QTime                            m_time_process;
             QTime                            m_time_process_speed;
             QTimer*                          m_timer_synchronization;
+            QTimer*                          m_timer_new_address_set;
             CStatusBar*                      m_status_bar;
             QMap<int, QString>               m_device_code_list;
             QFutureWatcher<void>*            m_watcher;

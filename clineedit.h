@@ -2,6 +2,7 @@
     #define CLINEEDIT_H
     //------------------
     #include <QLineEdit>
+    #include <QFocusEvent>
     #include <QMouseEvent>
     #include <QKeyEvent>
     #include <QLocale>

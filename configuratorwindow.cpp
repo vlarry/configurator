@@ -17,6 +17,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_debug_info(nullptr),
     m_version_window(nullptr),
     m_timer_synchronization(nullptr),
+    m_timer_new_address_set(nullptr),
     m_status_bar(nullptr),
     m_watcher(nullptr),
     m_progressbar(nullptr),
@@ -29,6 +30,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_modbus                    = new CModBus(this);
     m_serialPortSettings_window = new CSerialPortSetting;
     m_tim_calculate             = new QTimer(this);
+    m_timer_new_address_set     = new QTimer(this);
     m_tim_debug_info            = new QTimer(this);
     m_terminal_window           = new CTerminal(this);
     m_output_window             = new CIndicatorState(this);
@@ -1286,9 +1288,13 @@ void ConfiguratorWindow::settingCommunicationsWrite()
 
     sendRequestWrite(0x26, QVector<quint16>() << (quint16)ui->spinBoxCommunicationRequestTimeout->value(), 255);
     sendRequestWrite(0x27, QVector<quint16>() << (quint16)ui->spinBoxCommunicationTimeoutSpeed->value(), 255);
-    sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
     sendRequestWrite(0x25, QVector<quint16>() << (quint16)ui->spinBoxCommunicationAddress->value(), 255);
-    sendDeviceCommand(19); // установить новый адрес MODBUS
+
+    qDebug() << tr("Сохранение таймаутов: %1, %2.").arg(ui->spinBoxCommunicationTimeoutSpeed->value()).
+                                                    arg(ui->spinBoxCommunicationAddress->value());
+
+    connect(m_timer_new_address_set, &QTimer::timeout, this, &ConfiguratorWindow::setNewAddress);
+    m_timer_new_address_set->start(500);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Read
@@ -2145,14 +2151,17 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == COMMUNICATIONS_MODBUS_TIM_REQUEST)
     {
+        showErrorMessage(tr("Чтение времени запроса устройства"), unit);
         displayCommunicationTimeoutRequest(unit.values());
     }
     else if(type == COMMUNICATIONS_MODBUS_TIM_SPEED)
     {
+        showErrorMessage(tr("Чтение скорости устройства"), unit);
         displayCommunicationTimeoutSpeed(unit.values());
     }
     else if(type == COMMUNICATIONS_MODBUS_ADDRESS)
     {
+        showErrorMessage(tr("Чтение адреса устройства"), unit);
         displayCommunicationAddress(unit.values());
     }
     else if(type == PROTECTION_WORK_MODE_TYPE)
@@ -2230,6 +2239,12 @@ void ConfiguratorWindow::show()
     ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
 
     loadSettings();
+
+    QDateTime dt(QDateTime::currentDateTime());
+
+    ui->dateEdit->setDate(dt.date());
+    ui->timeEdit->setTime(dt.time());
+    ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
 
     // управление отображением панелей
     panelVisibleCtrl(ui->centralWgt);
@@ -2445,6 +2460,12 @@ void ConfiguratorWindow::readSettings()
     automationCtrlTNRead();
     automationAVRRead();
     automationAPVRead();
+    settingCommunicationsRead();
+    dateTimeRead();
+    purposeLedsRead();
+    purposeRelayRead();
+    purposeInputRead();
+    blockProtectionCtrlRead();
 }
 //---------------------------------------
 void ConfiguratorWindow::readSetCurrent()
@@ -2771,6 +2792,12 @@ void ConfiguratorWindow::writeSettings()
     automationCtrlTNWrite();
     automationAVRWrite();
     automationAPVWrite();
+    dateTimeWrite();
+    purposeLedsWrite();
+    purposeRelayWrite();
+    purposeInputWrite();
+    blockProtectionCtrlWrite();
+    settingCommunicationsWrite();
 
     sendDeviceCommand(2);
 }
@@ -4711,6 +4738,7 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
 //---------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint16>& data)
 {
+    qDebug() << tr("Чтение таймаут запроса устройства: %1").arg(data[0]);
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationRequestTimeout->setValue(data[0]);
@@ -4719,6 +4747,7 @@ void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint1
 //-------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutSpeed(const QVector<quint16>& data)
 {
+    qDebug() << tr("Чтение таймаут скорости устройства: %1").arg(data[0]);
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationTimeoutSpeed->setValue(data[0]);
@@ -4727,6 +4756,7 @@ void ConfiguratorWindow::displayCommunicationTimeoutSpeed(const QVector<quint16>
 //--------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& data)
 {
+    qDebug() << tr("Чтение адреса устройства: %1").arg(data[0]);
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationAddress->setValue(data[0]);
@@ -6049,6 +6079,15 @@ void ConfiguratorWindow::indexComboBoxChanged(int index)
             ui->cboxM66->setCurrentIndex(index);
         }
     }
+}
+//--------------------------------------
+void ConfiguratorWindow::setNewAddress()
+{
+    m_timer_new_address_set->stop();
+    disconnect(m_timer_new_address_set, &QTimer::timeout, this, &ConfiguratorWindow::setNewAddress);
+    sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
+    sendDeviceCommand(19); // установить новый адрес MODBUS
+    sendDeviceCommand(2);
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
