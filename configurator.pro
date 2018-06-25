@@ -59,7 +59,6 @@ SOURCES += \
         coutputallcell.cpp \
         ctimefilterdialog.cpp \
         cdebuginfo.cpp \
-        styleloader.cpp \
         cstatusinfo.cpp \
         classes/modbus/modbusdataunit.cpp \
         classes/modbus/modbus.cpp \
@@ -100,7 +99,6 @@ HEADERS += \
         coutputallcell.h \
         ctimefilterdialog.h \
         cdebuginfo.h \
-        styleloader.h \
         cstatusinfo.h \
         classes/modbus/modbusdataunit.h \
         classes/modbus/modbus.h \

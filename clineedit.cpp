@@ -1,16 +1,28 @@
 #include "clineedit.h"
 //------------------------------------
 CLineEdit::CLineEdit(QWidget* parent):
-    QLineEdit(parent)
+    QLineEdit(parent),
+    m_focus(false)
 {
 
 }
 //---------------------------------------------------
 void CLineEdit::mouseReleaseEvent(QMouseEvent* event)
 {
-    QLineEdit::mouseReleaseEvent(event);
+    if(!m_focus)
+    {
+        m_focus = true;
+        selectAll();
+    }
+    else
+    {
+        QString str = selectedText();
 
-    selectAll();
+        if(str.isEmpty())
+            selectAll();
+    }
+
+    QLineEdit::mouseReleaseEvent(event);
 }
 //---------------------------------------------
 void CLineEdit::keyPressEvent(QKeyEvent* event)
@@ -21,4 +33,10 @@ void CLineEdit::keyPressEvent(QKeyEvent* event)
     {
         selectAll();
     }
+}
+//-----------------------------------------------
+void CLineEdit::focusOutEvent(QFocusEvent* event)
+{
+    m_focus = false;
+    QLineEdit::focusOutEvent(event);
 }

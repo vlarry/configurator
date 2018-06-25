@@ -18,5 +18,9 @@
         protected:
             void mouseReleaseEvent(QMouseEvent* event);
             void keyPressEvent(QKeyEvent* event);
+            void focusOutEvent(QFocusEvent* event);
+
+        private:
+            bool m_focus;
     };
 #endif // CLINEEDIT_H

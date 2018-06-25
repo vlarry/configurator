@@ -33,6 +33,7 @@
     #include <QSettings>
     #include <QVBoxLayout>
     #include <QHBoxLayout>
+    #include <QKeyEvent>
     #include "modbus.h"
     #include "cterminal.h"
     #include "cindicatorstate.h"
@@ -53,7 +54,6 @@
     #include "coutputall.h"
     #include "cdebuginfo.h"
     #include "cstatusinfo.h"
-    #include "styleloader.h"
     #include "popup.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
@@ -565,7 +565,10 @@
             void updateSerialPortSettings();
             void indexComboBoxChanged(int index); // обработка комбобоксов с настройками, которые связаны с другими
             void setNewAddress(); // отправка команды на смену адреса предварительно установленного (срабатывает по таймеру);
-            
+
+        protected:
+            void keyPressEvent(QKeyEvent* event);
+
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
             bool currentJournal(const CJournalWidget*& widget);

@@ -6010,9 +6010,6 @@ void ConfiguratorWindow::testStyle(bool state)
 
     styleFile.open(QFile::ReadOnly);
 
-    if(state)
-        StyleLoader::attach(path_to_style, QKeySequence("F7"));
-
     qApp->setStyleSheet(styleFile.readAll());
 
     styleFile.close();
@@ -6088,6 +6085,14 @@ void ConfiguratorWindow::setNewAddress()
     sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
     sendDeviceCommand(19); // установить новый адрес MODBUS
     sendDeviceCommand(2);
+}
+//------------------------------------------------------
+void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
+{
+    if(event->key() == Qt::Key_F7)
+    {
+        testStyle(true);
+    }
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
