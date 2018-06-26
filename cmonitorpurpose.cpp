@@ -84,7 +84,7 @@ void CMonitorPurpose::clearTable()
     {
         for(int j = 0; j < matrix.columnCount(); j++)
         {
-            matrix[i][j].setState(CColumn::INACTIVE);
+            matrix[i][j].setState(CColumn::UNCHECKED);
         }
     }
 

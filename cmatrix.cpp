@@ -75,7 +75,7 @@ const CRow& CMatrix::operator [](int index) const
 //-----------------------
 CColumn::CColumn():
     m_bit(-1),
-    m_state(StateType::INACTIVE),
+    m_state(StateType::UNCHECKED),
     m_key(""),
     m_name(""),
     m_description("")
@@ -85,7 +85,7 @@ CColumn::CColumn():
 //------------------------------------
 CColumn::CColumn(const QString& name):
     m_bit(-1),
-    m_state(StateType::INACTIVE),
+    m_state(StateType::UNCHECKED),
     m_key(""),
     m_name(name),
     m_description("")

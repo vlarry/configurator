@@ -10,9 +10,9 @@
         public:
             enum StateType
             {
-                INACTIVE,
-                INVERSE_ACTIVE,
-                NORMAL_ACTIVE
+                UNCHECKED,
+                INVERSE,
+                CHECKED
             };
 
         public:

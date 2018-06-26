@@ -4503,9 +4503,9 @@ void ConfiguratorWindow::displayPurposeResponse(CModBusDataUnit& unit)
             bool state = (values[hword + offset_pos]&(1 << bit));
 
             if(state)
-                col.setState(CColumn::NORMAL_ACTIVE);
+                col.setState(CColumn::CHECKED);
             else
-                col.setState(CColumn::INACTIVE);
+                col.setState(CColumn::UNCHECKED);
         }
     }
 
@@ -4571,12 +4571,12 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
                 bool input_state   = input_data[i]&(1 << j);
                 bool inverse_state = input_inverse_data[i]&(1 << j);
 
-                CColumn::StateType state = CColumn::INACTIVE;
+                CColumn::StateType state = CColumn::UNCHECKED;
 
                 if(input_state && !inverse_state)
-                    state = CColumn::NORMAL_ACTIVE;
+                    state = CColumn::CHECKED;
                 else if(input_state && inverse_state)
-                    state = CColumn::INVERSE_ACTIVE;
+                    state = CColumn::INVERSE;
 
                 matrix[j][col_index].setState(state);
             }
@@ -4903,7 +4903,7 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
                 if(pos >= matrix.columnCount())
                     break;
 
-                matrix[row][pos].setState(((state)?CColumn::NORMAL_ACTIVE:CColumn::INACTIVE));
+                matrix[row][pos].setState(((state)?CColumn::CHECKED:CColumn::UNCHECKED));
             }
         }
     }
@@ -4980,7 +4980,7 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
             bool state = (row[col]&(1 << bit));
 
-            matrix[i][j].setState(((state)?CColumn::NORMAL_ACTIVE:CColumn::INACTIVE));
+            matrix[i][j].setState(((state)?CColumn::CHECKED:CColumn::UNCHECKED));
         }
     }
 
@@ -5404,8 +5404,8 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
             for(int k = 0; k < matrix.rowCount(); k++)
             {
-                bool state = (matrix[k][col_index].state() == CColumn::NORMAL_ACTIVE ||
-                              matrix[k][col_index].state() == CColumn::INVERSE_ACTIVE)?true:false;
+                bool state = (matrix[k][col_index].state() == CColumn::CHECKED ||
+                              matrix[k][col_index].state() == CColumn::INVERSE)?true:false;
 
                 if(state)
                     value |= (1 << k);
@@ -5467,7 +5467,7 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
 
             for(int k = 0; k < matrix.rowCount(); k++)
             {
-                bool state = ((matrix[k][col_index].state() == CColumn::INVERSE_ACTIVE)?true:false);
+                bool state = ((matrix[k][col_index].state() == CColumn::INVERSE)?true:false);
 
                 if(state)
                     value |= (1 << k);
@@ -5644,7 +5644,7 @@ void ConfiguratorWindow::clearIOTable()
     {
         for(int j = 0; j < matrix.columnCount(); j++)
         {
-            matrix[i][j].setState(CColumn::INACTIVE);
+            matrix[i][j].setState(CColumn::UNCHECKED);
         }
     }
 

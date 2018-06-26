@@ -15,7 +15,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_
 
         for(var_t& var: item.var_list)
         {
-            columns << CColumn(var.bit, CColumn::INACTIVE, var.key, var.name, var.description);
+            columns << CColumn(var.bit, CColumn::UNCHECKED, var.key, var.name, var.description);
         }
     }
 
@@ -277,14 +277,14 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
 
             switch(state)
             {
-                case CColumn::INACTIVE:
+                case CColumn::UNCHECKED:
                 break;
 
-                case CColumn::NORMAL_ACTIVE:
+                case CColumn::CHECKED:
                     painter->drawPixmap(rect, QPixmap(":/images/resource/images/checbox_tick.png"));
                 break;
 
-                case CColumn::INVERSE_ACTIVE:
+                case CColumn::INVERSE:
                     int x = rect.left() + rect.width()/4;
                     int y = rect.top() + rect.height()/4;
                     int w = rect.width()/2;
@@ -329,17 +329,17 @@ bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, c
 
         CColumn::StateType state = static_cast<CColumn::StateType>(value.toInt());
 
-        if(state == CColumn::INACTIVE)
+        if(state == CColumn::UNCHECKED)
         {
             if(m_inverse)
-                state = CColumn::INVERSE_ACTIVE;
+                state = CColumn::INVERSE;
             else
-                state = CColumn::NORMAL_ACTIVE;
+                state = CColumn::CHECKED;
         }
-        else if(state == CColumn::INVERSE_ACTIVE)
-            state = CColumn::NORMAL_ACTIVE;
-        else if(state == CColumn::NORMAL_ACTIVE)
-            state = CColumn::INACTIVE;
+        else if(state == CColumn::INVERSE)
+            state = CColumn::CHECKED;
+        else if(state == CColumn::CHECKED)
+            state = CColumn::UNCHECKED;
 
         return model->setData(index, state, Qt::CheckStateRole);
     }
