@@ -1,8 +1,9 @@
 #include "cmatrixpurposemodel.h"
 //-----------------------------------------------------------------------------------------------------
 CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
-                                         QAbstractTableModel* parent):
-    QAbstractTableModel(parent)
+                                         IO_Type io_type, QAbstractTableModel* parent):
+    QAbstractTableModel(parent),
+    m_io_type(io_type)
 {
     fillHorizontalHeaderModel(m_horizontal_header, group);
     fillVerticalHeaderModel(m_vertical_header, row_labels);
@@ -28,9 +29,10 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_
     m_matrix.setRowCount(row_labels.count());
     m_matrix.setColumnCount(columns.count());
 }
-//-----------------------------------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, QAbstractTableModel* parent):
-    QAbstractTableModel(parent)
+//----------------------------------------------------------------------------------------------------------------
+CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, IO_Type io_type, QAbstractTableModel* parent):
+    QAbstractTableModel(parent),
+    m_io_type(io_type)
 {
     fillHeaderProtectionModel(labels);
 
@@ -50,10 +52,11 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, QAbstractTab
     m_matrix.setRowCount(labels.count());
     m_matrix.setColumnCount(labels.count());
 }
-//-------------------------------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& rows, const QStringList& columns,
+//------------------------------------------------------------------------------------------------------------
+CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& rows, const QStringList& columns, IO_Type io_type,
                                          QAbstractTableModel* parent):
-    QAbstractTableModel(parent)
+    QAbstractTableModel(parent),
+    m_io_type(io_type)
 {
     fillHeaderMonitorModel(rows, columns);
 
@@ -164,6 +167,16 @@ void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerMo
         return;
 
     int keys = 0;
+
+    if(m_io_type == IO_OUTPUT)
+    {
+        QStandardItem* itemGroup  = new QStandardItem("");
+        QStandardItem* cell       = new QStandardItem(tr("Запоминание выходов"));
+        cell->setData(1, Qt::UserRole);
+
+        itemGroup->appendColumn(QList<QStandardItem*>() << cell);
+        headerModel.setItem(0, keys++, itemGroup);
+    }
 
     for(int key: group.keys())
     {

@@ -4159,9 +4159,16 @@ void ConfiguratorWindow::disconnectDb(QSqlDatabase* db)
 //------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group)
 {
+    CMatrixPurposeModel::IO_Type io_type = CMatrixPurposeModel::IO_INPUT;
+
+    if(table == ui->tablewgtLedPurpose || table == ui->tablewgtRelayPurpose)
+    {
+        io_type = CMatrixPurposeModel::IO_OUTPUT;
+    }
+
     HierarchicalHeaderView* hheader = new HierarchicalHeaderView(Qt::Horizontal, table);
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
-    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group);
+    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group, io_type);
 
     bool is_inverse = false;
 
@@ -4183,10 +4190,11 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
 
     if(table == ui->tablewgtLedPurpose || table == ui->tablewgtRelayPurpose)
     {
-        table->setColumnWidth(1, 75);
-        table->setColumnWidth(2, 75);
-        table->setColumnWidth(50, 75);
-        table->setColumnWidth(51, 75);
+        table->setColumnWidth(0, 40);
+        table->setColumnWidth(1, 80);
+        table->setColumnWidth(2, 80);
+        table->setColumnWidth(50, 80);
+        table->setColumnWidth(51, 80);
     }
     else if(table == ui->tablewgtDiscreteInputPurpose)
     {

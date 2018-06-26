@@ -35,10 +35,18 @@
     class CMatrixPurposeModel: public QAbstractTableModel
     {
         public:
+            enum IO_Type
+            {
+                IO_INPUT,
+                IO_OUTPUT
+            };
+
+        public:
             CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
+                                IO_Type io_type = IO_INPUT, QAbstractTableModel* parent = nullptr);
+            CMatrixPurposeModel(const QStringList& labels, IO_Type io_type = IO_INPUT,
                                 QAbstractTableModel* parent = nullptr);
-            CMatrixPurposeModel(const QStringList& labels, QAbstractTableModel* parent = nullptr);
-            CMatrixPurposeModel(const QStringList& rows, const QStringList& columns,
+            CMatrixPurposeModel(const QStringList& rows, const QStringList& columns, IO_Type io_type = IO_INPUT,
                                 QAbstractTableModel* parent = nullptr);
             void     updateData();
             CMatrix& matrixTable();
@@ -60,6 +68,7 @@
             CMatrix            m_matrix;
             QStandardItemModel m_horizontal_header;
             QStandardItemModel m_vertical_header;
+            IO_Type            m_io_type;
     };
     //--------------------------------------------------
     class CTableItemDelegate: public QStyledItemDelegate
