@@ -53,6 +53,7 @@
             void     setMatrixTable(CMatrix& matrix);
             int      rowCount(const QModelIndex& parent = QModelIndex()) const;
             int      columnCount(const QModelIndex& parent = QModelIndex()) const;
+            IO_Type  ioDataType() const;
 
         private:
             bool          setData(const QModelIndex& index, const QVariant& value, int role);

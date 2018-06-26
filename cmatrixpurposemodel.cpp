@@ -10,6 +10,9 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_
 
     CRow::column_t columns;
 
+    if(m_io_type == IO_OUTPUT)
+        columns << CColumn(-1, CColumn::UNCHECKED, "", tr("Запоминание выходов"), "");
+
     for(int key: group.keys())
     {
         group_item_t item = group[key];
@@ -104,6 +107,11 @@ int CMatrixPurposeModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
     return m_matrix.columnCount();
+}
+//------------------------------------------------------------------
+CMatrixPurposeModel::IO_Type CMatrixPurposeModel::ioDataType() const
+{
+    return m_io_type;
 }
 //------------------------------------------------------------------------------------------
 bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& value, int role)

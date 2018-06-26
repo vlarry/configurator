@@ -87,6 +87,8 @@
                 GENERAL_TYPE, // общие (настройки/уставки)
                 GENERAL_CONTROL_TYPE, // общие настройки (выбор варианта, т.е. комбобокс) - отдельный запрос
                 PURPOSE_OUT_TYPE, // матрца привязок выходов
+                PURPOSE_OUT_MEMORY_LED_TYPE, // матрица привязок запоминания выходов светодиодов
+                PURPOSE_OUT_MEMORY_RELAY_TYPE, // матрица привязок запоминания выходов реле
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
                 PURPOSE_INPUT_INVERSE_TYPE, // матрица привязок инверсий входов
                 PROTECTION_WORK_MODE_TYPE, // чтение режима работы защит
@@ -417,6 +419,8 @@
             void purposeLedsRead();
             void purposeInputRead();
             void purposeRelayRead();
+            void purposeMemoryOutLedRead();
+            void purposeMemoryOutRelayRead();
             void dateTimeRead();
             void settingCommunicationsRead();
             void inputAnalogGeneralWrite();
@@ -482,6 +486,8 @@
             void purposeLedsWrite();
             void purposeInputWrite();
             void purposeRelayWrite();
+            void purposeMemoryOutLedWrite();
+            void purposeMemoryOutRelayWrite();
             void dateTimeWrite(const QDateTime& dateTime = QDateTime());
             void synchronizationDateTime();
             void settingCommunicationsWrite();
@@ -601,7 +607,7 @@
             void displayDateTime(CModBusDataUnit& unit);
             void displaySettingResponse(CModBusDataUnit& unit);
             void displaySettingControlResponce(const CModBusDataUnit& unit);
-            void displayPurposeResponse(CModBusDataUnit& unit);
+            void displayPurposeOutput(CModBusDataUnit& unit);
             void displayPurposeDIResponse(const QVector<quint16>& input_list, const QVector<quint16>& input_inverse_list);
             void displayJournalResponse(QVector<quint16>& data);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
@@ -617,6 +623,7 @@
             void displayBlockProtectionRead(const QVector<quint16>& data);
             void displayDebugInfo(const CModBusDataUnit& unit);
             void displayStatusInfo(const CModBusDataUnit& unit);
+            void displayMemoryOut(const CModBusDataUnit::vlist_t& values);
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;

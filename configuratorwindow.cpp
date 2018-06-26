@@ -1234,6 +1234,54 @@ void ConfiguratorWindow::purposeRelayWrite()
     sendPurposeWriteRequest("DO10", "DO11");
     sendPurposeWriteRequest("DO12", "DO13");
 }
+//----------------------------------------------
+void ConfiguratorWindow::purposeMemoryOutLedWrite()
+{
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model());
+
+    if(!model)
+        return;
+
+    CMatrix matrix = model->matrixTable();
+    QVector<quint16> data;
+
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        CColumn column = matrix[i][0];
+
+        if(column.state() == CColumn::UNCHECKED)
+            data << 0;
+        else
+            data << 1;
+    }
+
+    if(!data.isEmpty())
+        sendRequestWrite(0x90C, data, CModBusDataUnit::WriteMultipleRegisters);
+}
+//---------------------------------------------------
+void ConfiguratorWindow::purposeMemoryOutRelayWrite()
+{
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model());
+
+    if(!model)
+        return;
+
+    CMatrix matrix = model->matrixTable();
+    QVector<quint16> data;
+
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        CColumn column = matrix[i][0];
+
+        if(column.state() == CColumn::UNCHECKED)
+            data << 0;
+        else
+            data << 1;
+    }
+
+    if(!data.isEmpty())
+        sendRequestWrite(0x900, data, CModBusDataUnit::WriteMultipleRegisters);
+}
 /*!
  * \brief ConfiguratorWindow::dateTimeWrite
  *
@@ -1967,6 +2015,16 @@ void ConfiguratorWindow::purposeRelayRead()
     sendPurposeReadRequest(tr("DO10"), tr("DO11"));
     sendPurposeReadRequest(tr("DO12"), tr("DO13"));
 }
+//------------------------------------------------
+void ConfiguratorWindow::purposeMemoryOutLedRead()
+{
+    sendRequestRead(0x90C, 8, PURPOSE_OUT_MEMORY_LED_TYPE);
+}
+//--------------------------------------------------
+void ConfiguratorWindow::purposeMemoryOutRelayRead()
+{
+    sendRequestRead(0x900, 12, PURPOSE_OUT_MEMORY_RELAY_TYPE);
+}
 //-------------------------------------
 void ConfiguratorWindow::dateTimeRead()
 {
@@ -2091,7 +2149,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     {
         showErrorMessage(tr("Матрица привязок выходов"), unit);
 
-        displayPurposeResponse(unit);
+        displayPurposeOutput(unit);
     }
     else if(type == PURPOSE_INPUT_TYPE || type == PURPOSE_INPUT_INVERSE_TYPE)
     {
@@ -2198,6 +2256,10 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     else if(type == READ_STATUS_MCP_INFO || type == READ_STATUS_MODULE_INFO)
     {
         displayStatusInfo(unit);
+    }
+    else if(type == PURPOSE_OUT_MEMORY_LED_TYPE || type == PURPOSE_OUT_MEMORY_RELAY_TYPE)
+    {
+        displayMemoryOut(unit.values());
     }
 }
 //------------------------------------
@@ -2463,7 +2525,9 @@ void ConfiguratorWindow::readSettings()
     settingCommunicationsRead();
     dateTimeRead();
     purposeLedsRead();
+    purposeMemoryOutLedRead();
     purposeRelayRead();
+    purposeMemoryOutRelayRead();
     purposeInputRead();
     blockProtectionCtrlRead();
 }
@@ -2733,6 +2797,7 @@ void ConfiguratorWindow::readSetCurrent()
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // чтение настройки Светодиоды
             purposeLedsRead();
+            purposeMemoryOutLedRead();
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS:
@@ -2741,6 +2806,7 @@ void ConfiguratorWindow::readSetCurrent()
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY:
             purposeRelayRead();
+            purposeMemoryOutRelayRead();
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME:
@@ -2794,7 +2860,9 @@ void ConfiguratorWindow::writeSettings()
     automationAPVWrite();
     dateTimeWrite();
     purposeLedsWrite();
+    purposeMemoryOutLedWrite();
     purposeRelayWrite();
+    purposeMemoryOutRelayWrite();
     purposeInputWrite();
     blockProtectionCtrlWrite();
     settingCommunicationsWrite();
@@ -3061,6 +3129,7 @@ void ConfiguratorWindow::writeSetCurrent()
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // запись настройки Светодиоды
             purposeLedsWrite();
+            purposeMemoryOutLedWrite();
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS: // запись настройки Дискретные входы
@@ -3069,6 +3138,7 @@ void ConfiguratorWindow::writeSetCurrent()
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY: // запись настройки Реле
             purposeRelayWrite();
+            purposeMemoryOutRelayWrite();
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME: // запись настройки дата/время
@@ -4405,6 +4475,41 @@ void ConfiguratorWindow::displayStatusInfo(const CModBusDataUnit& unit)
     }
 }
 //-------------------------------------------------------------------------------
+void ConfiguratorWindow::displayMemoryOut(const CModBusDataUnit::vlist_t& values)
+{
+    QTableView* table = nullptr;
+
+    if(values.count() == 8) // Светодиоды
+    {
+        table = ui->tablewgtLedPurpose;
+    }
+    else if(values.count() == 12) // Реле
+    {
+        table = ui->tablewgtRelayPurpose;
+    }
+
+    if(!table)
+        return;
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+    if(!model)
+        return;
+
+    CMatrix& matrix = model->matrixTable();
+
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        CColumn& column = matrix[i][0];
+        bool value = values[i]&0x00FF;
+
+        CColumn::StateType state = ((value)?CColumn::CHECKED:CColumn::UNCHECKED);
+        column.setState(state);
+    }
+
+    model->updateData();
+}
+//-------------------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& unit)
 {
     if(!unit.isValid() || unit.count() == 0 || unit.count() > 1)
@@ -4455,7 +4560,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
     }
 }
 //------------------------------------------------------------------
-void ConfiguratorWindow::displayPurposeResponse(CModBusDataUnit& unit)
+void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
 {
     if(unit.count() == 0)
         return;
@@ -4502,6 +4607,8 @@ void ConfiguratorWindow::displayPurposeResponse(CModBusDataUnit& unit)
         int offset_pos = i*24;
 
         CRow::column_t& columns = matrix[row_index].columns();
+
+        qDebug() << tr("Колонки: %1").arg(columns.count());
 
         for(CColumn& col: columns)
         {
