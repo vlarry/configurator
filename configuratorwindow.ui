@@ -1764,7 +1764,7 @@
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="currentIndex">
-           <number>54</number>
+           <number>57</number>
           </property>
           <widget class="QWidget" name="pageInAnalogMain">
            <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -16609,30 +16609,50 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QCheckBox" name="checkBoxToolTipNotInverse">
-                   <property name="enabled">
-                    <bool>false</bool>
+                  <widget class="QToolButton" name="toolButtonToolTipNotInverse">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="contextMenuPolicy">
+                    <enum>Qt::PreventContextMenu</enum>
                    </property>
                    <property name="text">
                     <string>Включено без инверсии</string>
                    </property>
-                   <property name="checked">
+                   <property name="icon">
+                    <iconset resource="resource.qrc">
+                     <normaloff>:/images/resource/images/checkbox_checked.png</normaloff>:/images/resource/images/checkbox_checked.png</iconset>
+                   </property>
+                   <property name="popupMode">
+                    <enum>QToolButton::DelayedPopup</enum>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                   <property name="autoRaise">
                     <bool>true</bool>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QCheckBox" name="checkBoxToolTipInverse">
-                   <property name="enabled">
-                    <bool>false</bool>
+                  <widget class="QToolButton" name="toolButtonToolTipInverse">
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="contextMenuPolicy">
+                    <enum>Qt::PreventContextMenu</enum>
                    </property>
                    <property name="text">
                     <string>Включено с инверсией</string>
                    </property>
-                   <property name="checked">
-                    <bool>true</bool>
+                   <property name="icon">
+                    <iconset resource="resource.qrc">
+                     <normaloff>:/images/resource/images/checkbox_inverse.png</normaloff>:/images/resource/images/checkbox_inverse.png</iconset>
                    </property>
-                   <property name="tristate">
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                   <property name="autoRaise">
                     <bool>true</bool>
                    </property>
                   </widget>

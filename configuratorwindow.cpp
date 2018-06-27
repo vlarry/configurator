@@ -7112,7 +7112,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     {
         if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
         {
-            ui->checkBoxToolTipInverse->setCheckState(Qt::PartiallyChecked);
             ui->widgetToolTipState->show();
         }
         else

@@ -57,6 +57,8 @@
         <file>resource/images/arrow-loop.png</file>
         <file>resource/images/clock.png</file>
         <file>resource/images/checbox_tick.png</file>
+        <file>resource/images/checkbox_inverse.png</file>
+        <file>resource/images/checkbox_checked.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
