@@ -80,6 +80,16 @@ void CJournalWidget::print(const QVector<quint16>& data) const
         printHalfHour(bytes);
     }
 
+    QTableWidgetItem* itemBeg = ui->tableWidgetJournal->item(0, 1);
+    QTableWidgetItem* itemEnd = ui->tableWidgetJournal->item(ui->tableWidgetJournal->rowCount(), 1);
+
+    if(itemBeg && itemEnd)
+    {
+        ui->widgetJournalHeader->setTextTableCountMessages(QString("%1 - %2/%3").arg(itemBeg->text()).
+                                                           arg(itemEnd->text()).
+                                                           arg(ui->tableWidgetJournal->rowCount()));
+    }
+
     ui->tableWidgetJournal->resizeColumnsToContents();
     ui->tableWidgetJournal->horizontalHeader()->setStretchLastSection(true);
 }
@@ -477,9 +487,6 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
             ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
             ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
             ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
-
-            if(ui->widgetJournalHeader->stateCheckbox())
-                ui->tableWidgetJournal->scrollToBottom();
         }
     }
 }

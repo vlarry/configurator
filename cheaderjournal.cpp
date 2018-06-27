@@ -63,10 +63,10 @@ void CHeaderJournal::setTextTableCountMessages(int value)
     ui->lineEditTableMessages->setText(QString::number(value));
 }
 /*!
- * \brief CHeaderJournal::stateCheckbox
- * \return истина, если чекбокс установлен
+ * \brief CHeaderJournal::setTextTableCountMessages
+ * \param text Текст для отображения в QLineEdit
  */
-bool CHeaderJournal::stateCheckbox()
+void CHeaderJournal::setTextTableCountMessages(const QString& text)
 {
-    return ui->checkboxJournalTableScroll->isChecked();
+    ui->lineEditTableMessages->setText(text);
 }

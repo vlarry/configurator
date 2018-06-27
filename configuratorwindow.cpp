@@ -6060,6 +6060,9 @@ void ConfiguratorWindow::filterJournal(const CFilter& filter)
     if(!table || table->rowCount() == 0 || table->columnCount() < 3)
         return;
 
+    int count = 0;
+    int beg_num = -1, end_num = -1;
+
     for(int i = 0; i < table->rowCount(); i++)
     {
         QTableWidgetItem* itemDate = table->item(i, 1);
@@ -6081,8 +6084,30 @@ void ConfiguratorWindow::filterJournal(const CFilter& filter)
         else if(fdate == filter.date().begin && ftime < filter.time())
             table->setRowHidden(i, true);
         else
+        {
+            if(beg_num == -1)
+                beg_num = i; // первая видимая строка в таблице
+
+            end_num = i; // последняя видимая строка в таблице
+            count++;
             table->setRowHidden(i, false);
+        }
     }
+
+    QString text = QString("%1").arg(count);
+
+    if(beg_num != -1 && end_num != -1)
+    {
+        QTableWidgetItem* itemBeg = table->item(beg_num, 1);
+        QTableWidgetItem* itemEnd = table->item(end_num, 1);
+
+        if(itemBeg && itemEnd)
+        {
+            text = QString("%1 - %2/%3").arg(itemBeg->text()).arg(itemEnd->text()).arg(count);
+        }
+    }
+
+    m_active_journal_current->header()->setTextTableCountMessages(text);
 }
 //----------------------------------------
 void ConfiguratorWindow::stopProgressbar()
@@ -7468,10 +7493,16 @@ void ConfiguratorWindow::importJournalToTable()
     header->setTextTableCountMessages(msg_count);
     header->setTextElapsedTime(timer.elapsed());
 
-    m_progressbar->progressStop();
+    QTableWidgetItem* itemBeg = table->item(0, 1);
+    QTableWidgetItem* itemEnd = table->item(table->rowCount() - 1, 1);
 
-    if(header->stateCheckbox())
-        table->scrollToBottom();
+    if(itemBeg && itemEnd)
+    {
+        QString text = QString("%1 - %2/%3").arg(itemBeg->text()).arg(itemEnd->text()).arg(table->rowCount());
+        m_active_journal_current->header()->setTextTableCountMessages(text);
+    }
+
+    m_progressbar->progressStop();
 
     table->resizeColumnsToContents();
     table->horizontalHeader()->setStretchLastSection(true);

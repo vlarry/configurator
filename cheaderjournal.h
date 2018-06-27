@@ -23,7 +23,7 @@
             void setTextElapsedTime(int value);
             void setTextElapsedTime(const QString& text);
             void setTextTableCountMessages(int value);
-            bool stateCheckbox();
+            void setTextTableCountMessages(const QString& text);
 
         signals:
             void clickedButtonRead(bool = false);
