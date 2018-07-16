@@ -573,6 +573,7 @@
             void indexComboBoxChanged(int index); // обработка комбобоксов с настройками, которые связаны с другими
             void setNewAddress(); // отправка команды на смену адреса предварительно установленного (срабатывает по таймеру);
             void expandedWindow(); // управление разворачиванием окна
+            void mouseMove(QPoint pos);
 
         protected:
             void keyPressEvent(QKeyEvent* event);

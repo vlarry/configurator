@@ -3,7 +3,8 @@
 //----------------------------------
 CMenuBar::CMenuBar(QWidget* parent):
     QWidget(parent),
-    ui(new Ui::CMenuBar)
+    ui(new Ui::CMenuBar),
+    m_mouse_pos(QPoint(-1, -1))
 {
     ui->setupUi(this);
 
@@ -15,4 +16,33 @@ CMenuBar::CMenuBar(QWidget* parent):
 CMenuBar::~CMenuBar()
 {
     delete ui;
+}
+//------------------------------------
+QPoint CMenuBar::mousePosition() const
+{
+    return m_mouse_pos;
+}
+//------------------------------------------------
+void CMenuBar::mousePressEvent(QMouseEvent* event)
+{
+    m_mouse_pos = event->pos();
+}
+//-----------------------------------------------
+void CMenuBar::mouseMoveEvent(QMouseEvent* event)
+{
+    emit menubarMouseUpdatePosition(event->pos());
+}
+//--------------------------------------------------
+void CMenuBar::mouseReleaseEvent(QMouseEvent* event)
+{
+    Q_UNUSED(event);
+    m_mouse_pos = QPoint(-1, -1);
+}
+//------------------------------------------------------
+void CMenuBar::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    if(event->buttons() == Qt::LeftButton)
+    {
+        emit expandedWindow();
+    }
 }

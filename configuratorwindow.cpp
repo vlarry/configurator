@@ -6238,6 +6238,19 @@ void ConfiguratorWindow::expandedWindow()
     else
         showNormal();
 }
+//--------------------------------------------
+void ConfiguratorWindow::mouseMove(QPoint pos)
+{
+    if(!(windowState() & Qt::WindowMaximized))
+    {
+        QPoint mouse_pos = ui->widgetMenuBar->mousePosition();
+
+        int x = pos.x() - mouse_pos.x() + geometry().left() - ui->widgetMenuBar->geometry().left();
+        int y = pos.y() - mouse_pos.y() + geometry().top() - ui->widgetMenuBar->geometry().top();
+
+        move(x,y);
+    }
+}
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 {
@@ -8542,4 +8555,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::close);
     connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
+    connect(ui->widgetMenuBar, &CMenuBar::menubarMouseUpdatePosition, this, &ConfiguratorWindow::mouseMove);
 }
