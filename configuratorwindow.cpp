@@ -84,6 +84,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
         qInfo() << tr("Файл логирования <log.txt> удален.");
 
     refreshSerialPort();
+
+    setWindowFlag(Qt::FramelessWindowHint);
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -6226,6 +6228,16 @@ void ConfiguratorWindow::setNewAddress()
     sendDeviceCommand(19); // установить новый адрес MODBUS
     sendDeviceCommand(2);
 }
+//---------------------------------------
+void ConfiguratorWindow::expandedWindow()
+{
+    Qt::WindowStates states = windowState();
+
+    if(!(states & Qt::WindowMaximized))
+        showMaximized();
+    else
+        showNormal();
+}
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 {
@@ -8527,4 +8539,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->cboxM66, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
     connect(ui->cboxProtectionTemp2_Sensor1, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
     connect(ui->cboxProtectionTemp2_Sensor2, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+    connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::close);
+    connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
+    connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
 }

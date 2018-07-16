@@ -21,6 +21,42 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="leftMargin">
+     <number>2</number>
+    </property>
+    <property name="topMargin">
+     <number>2</number>
+    </property>
+    <property name="rightMargin">
+     <number>2</number>
+    </property>
+    <property name="bottomMargin">
+     <number>2</number>
+    </property>
+    <item>
+     <widget class="CMenuBar" name="widgetMenuBar" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="leftMargin">
+        <number>2</number>
+       </property>
+       <property name="topMargin">
+        <number>2</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <property name="bottomMargin">
+        <number>2</number>
+       </property>
+      </layout>
+     </widget>
+    </item>
     <item>
      <widget class="QTabWidget" name="tabwgtMenu">
       <property name="enabled">
@@ -16906,6 +16942,12 @@
    <class>CDockPanelItemCtrl</class>
    <extends>QPushButton</extends>
    <header>cdockpanelitemctrl.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CMenuBar</class>
+   <extends>QWidget</extends>
+   <header>menubar.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

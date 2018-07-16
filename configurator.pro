@@ -63,7 +63,8 @@ SOURCES += \
         classes/modbus/modbusdataunit.cpp \
         classes/modbus/modbus.cpp \
         classes/modbus/connect.cpp \
-    classes/popup/popup.cpp
+        classes/popup/popup.cpp \
+    classes/menubar/menubar.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -103,7 +104,8 @@ HEADERS += \
         classes/modbus/modbusdataunit.h \
         classes/modbus/modbus.h \
         classes/modbus/connect.h \
-    classes/popup/popup.h
+        classes/popup/popup.h \
+    classes/menubar/menubar.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -124,10 +126,12 @@ FORMS += \
         outputallcell.ui \
         timefilterdialog.ui \
         debuginfo.ui \
-        statusinfo.ui
+        statusinfo.ui \
+    classes/menubar/menubar.ui
 
 INCLUDEPATH += "classes/modbus" \
-               "classes/popup"
+               "classes/popup" \
+               "classes/menubar"
 
 win32::RC_FILE = \
                  resource/icon.rc

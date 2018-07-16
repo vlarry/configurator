@@ -35,6 +35,7 @@
     #include <QHBoxLayout>
     #include <QKeyEvent>
     #include "modbus.h"
+    #include "menubar.h"
     #include "cterminal.h"
     #include "cindicatorstate.h"
     #include "qcustomplot.h"
@@ -571,6 +572,7 @@
             void updateSerialPortSettings();
             void indexComboBoxChanged(int index); // обработка комбобоксов с настройками, которые связаны с другими
             void setNewAddress(); // отправка команды на смену адреса предварительно установленного (срабатывает по таймеру);
+            void expandedWindow(); // управление разворачиванием окна
 
         protected:
             void keyPressEvent(QKeyEvent* event);

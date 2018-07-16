@@ -59,6 +59,9 @@
         <file>resource/images/checbox_tick.png</file>
         <file>resource/images/checkbox_inverse.png</file>
         <file>resource/images/checkbox_checked.png</file>
+        <file>resource/images/close.png</file>
+        <file>resource/images/expanded.png</file>
+        <file>resource/images/minimize.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
