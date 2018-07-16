@@ -19,6 +19,7 @@
             explicit CMenuBar(QWidget* parent = nullptr);
             ~CMenuBar();
             QPoint mousePosition() const;
+            void   setWindowTitle(const QString& text);
 
         signals:
             void closeWindow();

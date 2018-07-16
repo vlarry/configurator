@@ -23,6 +23,11 @@ QPoint CMenuBar::mousePosition() const
     return m_mouse_pos;
 }
 //------------------------------------------------
+void CMenuBar::setWindowTitle(const QString& text)
+{
+    ui->labelTitleProgram->setText(text);
+}
+//------------------------------------------------
 void CMenuBar::mousePressEvent(QMouseEvent* event)
 {
     m_mouse_pos = event->pos();

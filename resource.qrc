@@ -62,6 +62,7 @@
         <file>resource/images/close.png</file>
         <file>resource/images/expanded.png</file>
         <file>resource/images/minimize.png</file>
+        <file>resource/images/configurator.ico</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

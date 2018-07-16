@@ -5223,7 +5223,7 @@ void ConfiguratorWindow::versionParser()
     if(!ver.isEmpty())
         title += tr(" ") + ver.last().first;
 
-    this->setWindowTitle(title);
+    ui->widgetMenuBar->setWindowTitle(title);
 }
 //---------------------------------------------------------------------------------
 int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& last)
