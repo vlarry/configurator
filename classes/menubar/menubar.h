@@ -3,10 +3,14 @@
     //----------------
     #include <QWidget>
     #include <QMouseEvent>
+    #include <QWidgetAction>
+    #include <QPushButton>
     #include <QAction>
     #include <QMenu>
     #include <QPoint>
+    #include <QShowEvent>
     #include <QDebug>
+    #include "widgetmenu.h"
     //----------
     namespace Ui
     {
@@ -42,6 +46,7 @@
             void mouseMoveEvent(QMouseEvent* event);
             void mouseReleaseEvent(QMouseEvent* event);
             void mouseDoubleClickEvent(QMouseEvent* event);
+            void showEvent(QShowEvent* event);
 
         private:
             Ui::CMenuBar* ui;

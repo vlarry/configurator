@@ -1,14 +1,14 @@
 #ifndef WIDGETMENU_H
     #define WIDGETMENU_H
     //----------------
-    #include <QWidgetAction>
+    #include <QWidget>
     //----------
     namespace Ui
     {
         class CWidgetMenu;
     }
-    //-------------------------------------
-    class CWidgetMenu: public QWidgetAction
+    //-------------------------------
+    class CWidgetMenu: public QWidget
     {
         Q_OBJECT
 

@@ -36,3 +36,8 @@ QLabel#labelWorkBZU
 {
     background-color: silver;
 }
+
+QToolButton::menu-indicator
+{
+	width: 0px;
+}
