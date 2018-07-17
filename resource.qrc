@@ -63,7 +63,7 @@
         <file>resource/images/expanded.png</file>
         <file>resource/images/minimize.png</file>
         <file>resource/images/configurator.ico</file>
-        <file>resource/images/excel.png</file>
+        <file>resource/images/export_excel.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

@@ -39,7 +39,7 @@ CMenuBar::CMenuBar(QWidget* parent):
                     tr("&Экспорт в PDF"),
                     this,
                     &CMenuBar::exportToPDFAction);
-    menuExport->addAction(QIcon(":/images/resource/images/excel.png"),
+    menuExport->addAction(QIcon(":/images/resource/images/export_excel.png"),
                     tr("&Экспорт в Excel"),
                     this,
                     &CMenuBar::exportToExcelAction);
