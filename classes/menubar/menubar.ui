@@ -44,6 +44,9 @@
       <iconset resource="../../resource.qrc">
        <normaloff>:/images/resource/images/configurator.ico</normaloff>:/images/resource/images/configurator.ico</iconset>
      </property>
+     <property name="popupMode">
+      <enum>QToolButton::InstantPopup</enum>
+     </property>
      <property name="autoRaise">
       <bool>true</bool>
      </property>

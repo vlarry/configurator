@@ -3,6 +3,8 @@
     //----------------
     #include <QWidget>
     #include <QMouseEvent>
+    #include <QAction>
+    #include <QMenu>
     #include <QPoint>
     #include <QDebug>
     //----------
@@ -20,6 +22,14 @@
             ~CMenuBar();
             QPoint mousePosition() const;
             void   setWindowTitle(const QString& text);
+
+        public slots:
+            void exportToPDFAction();
+            void exportToExcelAction();
+            void newAction();
+            void openAction();
+            void saveAction();
+            void saveAsAction();
 
         signals:
             void closeWindow();
