@@ -574,6 +574,13 @@
             void setNewAddress(); // отправка команды на смену адреса предварительно установленного (срабатывает по таймеру);
             void expandedWindow(); // управление разворачиванием окна
             void mouseMove(QPoint pos);
+            void newProject();
+            void openProject();
+            void saveProject();
+            void saveAsProject();
+            void exportToPDFProject();
+            void exportToExcelProject();
+            void closeProject();
 
         protected:
             void keyPressEvent(QKeyEvent* event);

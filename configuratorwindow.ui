@@ -84,7 +84,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
@@ -128,7 +128,7 @@
             <number>3</number>
            </property>
            <item>
-            <widget class="QPushButton" name="pbtnMenuOpen">
+            <widget class="QPushButton" name="pbtnMenuNewProject">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -148,7 +148,45 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Открыть&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Создает новый проект</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="resource.qrc">
+               <normaloff>:/images/resource/images/new.png</normaloff>:/images/resource/images/new.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pbtnMenuOpenProject">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Открывает проект</string>
              </property>
              <property name="text">
               <string/>
@@ -166,7 +204,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pbtnMenuSaveAs">
+            <widget class="QPushButton" name="pbtnMenuSaveProject">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -186,45 +224,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Сохранить как...&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="resource.qrc">
-               <normaloff>:/images/resource/images/save_as.png</normaloff>:/images/resource/images/save_as.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>24</width>
-               <height>24</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pbtnMenuSave">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>32</width>
-               <height>32</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Сохранить&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Сохраняет проект в файл</string>
              </property>
              <property name="text">
               <string/>
@@ -242,7 +242,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pbtnMenuNewCreate">
+            <widget class="QPushButton" name="pbtnMenuSaveAsProject">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -262,14 +262,14 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Создать&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Сохраняет проект в файл с новым именем</string>
              </property>
              <property name="text">
               <string/>
              </property>
              <property name="icon">
               <iconset resource="resource.qrc">
-               <normaloff>:/images/resource/images/new.png</normaloff>:/images/resource/images/new.png</iconset>
+               <normaloff>:/images/resource/images/save_as.png</normaloff>:/images/resource/images/save_as.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -300,7 +300,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Выход&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Выход из приложения</string>
              </property>
              <property name="text">
               <string/>

@@ -37,7 +37,17 @@ QLabel#labelWorkBZU
     background-color: silver;
 }
 
-QToolButton::menu-indicator
+QToolButton#toolButtonMenuIcon::menu-indicator
 {
 	width: 0px;
+}
+
+QToolButton::menu-indicator
+{
+	width: 7;
+	height: 7;
+	subcontrol-origin: padding;
+	left: -5px;
+	subcontrol-position: right center;
+	image: url(:/images/resource/images/menu_indicator.png);
 }

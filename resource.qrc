@@ -64,6 +64,8 @@
         <file>resource/images/minimize.png</file>
         <file>resource/images/configurator.ico</file>
         <file>resource/images/export_excel.png</file>
+        <file>resource/images/close_button.png</file>
+        <file>resource/images/menu_indicator.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

@@ -26,6 +26,7 @@
             ~CMenuBar();
             QPoint mousePosition() const;
             void   setWindowTitle(const QString& text);
+            CWidgetMenu* widgetMenu() const;
 
         public slots:
             void exportToPDFAction();
@@ -46,10 +47,10 @@
             void mouseMoveEvent(QMouseEvent* event);
             void mouseReleaseEvent(QMouseEvent* event);
             void mouseDoubleClickEvent(QMouseEvent* event);
-            void showEvent(QShowEvent* event);
 
         private:
             Ui::CMenuBar* ui;
             QPoint        m_mouse_pos;
+            CWidgetMenu*  m_widgetMenu;
     };
 #endif // MENUBAR_H

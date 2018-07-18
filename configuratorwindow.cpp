@@ -2331,6 +2331,10 @@ void ConfiguratorWindow::show()
     {
         ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
     }
+
+    ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
+    ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
+    ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
 }
 //-------------------------------------------------------
 void ConfiguratorWindow::resizeEvent(QResizeEvent* event)
@@ -6251,6 +6255,48 @@ void ConfiguratorWindow::mouseMove(QPoint pos)
         move(x,y);
     }
 }
+//-----------------------------------
+void ConfiguratorWindow::newProject()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
+//------------------------------------
+void ConfiguratorWindow::openProject()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
+//------------------------------------
+void ConfiguratorWindow::saveProject()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
+//--------------------------------------
+void ConfiguratorWindow::saveAsProject()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
+//-------------------------------------------
+void ConfiguratorWindow::exportToPDFProject()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
+//---------------------------------------------
+void ConfiguratorWindow::exportToExcelProject()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
+//-------------------------------------
+void ConfiguratorWindow::closeProject()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 {
@@ -8556,4 +8602,18 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
     connect(ui->widgetMenuBar, &CMenuBar::menubarMouseUpdatePosition, this, &ConfiguratorWindow::mouseMove);
+
+    connect(ui->pbtnMenuNewProject, &QPushButton::clicked, this, &ConfiguratorWindow::newProject);
+    connect(ui->pbtnMenuOpenProject, &QPushButton::clicked, this, &ConfiguratorWindow::openProject);
+    connect(ui->pbtnMenuSaveProject, &QPushButton::clicked, this, &ConfiguratorWindow::saveProject);
+    connect(ui->pbtnMenuSaveAsProject, &QPushButton::clicked, this, &ConfiguratorWindow::saveAsProject);
+
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeWindow, this, &ConfiguratorWindow::close);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::newProject, this, &ConfiguratorWindow::newProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openProject, this, &ConfiguratorWindow::openProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveProject, this, &ConfiguratorWindow::saveProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveAsProject, this, &ConfiguratorWindow::saveAsProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this, &ConfiguratorWindow::exportToPDFProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this, &ConfiguratorWindow::exportToExcelProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
 }

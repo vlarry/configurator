@@ -8,6 +8,16 @@ CMenuBar::CMenuBar(QWidget* parent):
 {
     ui->setupUi(this);
 
+    QMenu*         menu         = new QMenu;
+    QWidgetAction* widgetAction = new QWidgetAction(this);
+
+    m_widgetMenu = new CWidgetMenu(menu);
+
+    widgetAction->setDefaultWidget(m_widgetMenu);
+    menu->addAction(widgetAction);
+
+    ui->toolButtonMenuIcon->setMenu(menu);
+
     connect(ui->toolButtonCloseWindow, &QToolButton::clicked, this, &CMenuBar::closeWindow);
     connect(ui->toolButtonExpandWindow, &QToolButton::clicked, this, &CMenuBar::expandedWindow);
     connect(ui->toolButtonMinimizeWindow, &QToolButton::clicked, this, &CMenuBar::minimizeWindow);
@@ -26,6 +36,11 @@ QPoint CMenuBar::mousePosition() const
 void CMenuBar::setWindowTitle(const QString& text)
 {
     ui->labelTitleProgram->setText(text);
+}
+//---------------------------------------
+CWidgetMenu* CMenuBar::widgetMenu() const
+{
+    return m_widgetMenu;
 }
 //--------------------------------
 void CMenuBar::exportToPDFAction()
@@ -80,56 +95,4 @@ void CMenuBar::mouseDoubleClickEvent(QMouseEvent* event)
     {
         emit expandedWindow();
     }
-}
-//-----------------------------------------
-void CMenuBar::showEvent(QShowEvent* event)
-{
-    QWidget::showEvent(event);
-
-    QMenu*         menu         = new QMenu;
-    QWidgetAction* widgetAction = new QWidgetAction(this);
-    CWidgetMenu*   widgetMenu   = new CWidgetMenu(menu);
-
-    widgetAction->setDefaultWidget(widgetMenu);
-    menu->addAction(widgetAction);
-
-//    menu->addAction(QIcon(":/images/resource/images/new.png"),
-//                    tr("&Новый"),
-//                    this,
-//                    &CMenuBar::newAction,
-//                    Qt::CTRL + Qt::Key_N);
-//    menu->addAction(QIcon(":/images/resource/images/open.png"),
-//                    tr("&Открыть"),
-//                    this,
-//                    &CMenuBar::openAction,
-//                    Qt::CTRL + Qt::Key_O);
-//    QAction* saveAction = menu->addAction(QIcon(":/images/resource/images/save.png"),
-//                    tr("&Сохранить"),
-//                    this,
-//                    &CMenuBar::saveAction,
-//                    Qt::CTRL + Qt::Key_S);
-//    saveAction->setDisabled(true);
-//    QAction* saveAsAction = menu->addAction(QIcon(":/images/resource/images/save_as.png"),
-//                    tr("&Сохранить как..."),
-//                    this,
-//                    &CMenuBar::saveAction);
-//    saveAsAction->setDisabled(true);
-//    QMenu* menuExport = new QMenu(tr("&Экспорт..."), menu);
-//    menu->addMenu(menuExport);
-//    menuExport->addAction(QIcon(":/images/resource/images/export_pdf.png"),
-//                    tr("&Экспорт в PDF"),
-//                    this,
-//                    &CMenuBar::exportToPDFAction);
-//    menuExport->addAction(QIcon(":/images/resource/images/export_excel.png"),
-//                    tr("&Экспорт в Excel"),
-//                    this,
-//                    &CMenuBar::exportToExcelAction);
-//    menu->addSeparator();
-//    menu->addAction(QIcon(":/images/resource/images/exit.png"),
-//                    tr("&Закрыть"),
-//                    this,
-//                    &CMenuBar::closeWindow,
-//                    Qt::ALT + Qt::Key_F4);
-
-    ui->toolButtonMenuIcon->setMenu(menu);
 }
