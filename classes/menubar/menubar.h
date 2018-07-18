@@ -41,6 +41,7 @@
             void expandedWindow();
             void minimizeWindow();
             void menubarMouseUpdatePosition(QPoint);
+            void minimizeMenu(bool);
 
         protected:
             void mousePressEvent(QMouseEvent* event);

@@ -18,9 +18,18 @@ CMenuBar::CMenuBar(QWidget* parent):
 
     ui->toolButtonMenuIcon->setMenu(menu);
 
+    QMenu* otherButtonMenu = new QMenu(this);
+
+    QAction* actionMinimizeTabMenu = otherButtonMenu->addAction(tr("Минимизировать ленту"));
+
+    actionMinimizeTabMenu->setCheckable(true);
+
+    ui->toolButtonMinimizeTabMenu->setMenu(otherButtonMenu);
+
     connect(ui->toolButtonCloseWindow, &QToolButton::clicked, this, &CMenuBar::closeWindow);
     connect(ui->toolButtonExpandWindow, &QToolButton::clicked, this, &CMenuBar::expandedWindow);
     connect(ui->toolButtonMinimizeWindow, &QToolButton::clicked, this, &CMenuBar::minimizeWindow);
+    connect(actionMinimizeTabMenu, &QAction::triggered, this, &CMenuBar::minimizeMenu);
 }
 //-------------------
 CMenuBar::~CMenuBar()

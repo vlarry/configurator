@@ -581,6 +581,7 @@
             void exportToPDFProject();
             void exportToExcelProject();
             void closeProject();
+            void minimizeTabMenu(bool state);
 
         protected:
             void keyPressEvent(QKeyEvent* event);

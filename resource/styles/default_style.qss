@@ -37,7 +37,7 @@ QLabel#labelWorkBZU
     background-color: silver;
 }
 
-QToolButton#toolButtonMenuIcon::menu-indicator
+QToolButton#toolButtonMenuIcon::menu-indicator, QToolButton#toolButtonMinimizeTabMenu::menu-indicator
 {
 	width: 0px;
 }

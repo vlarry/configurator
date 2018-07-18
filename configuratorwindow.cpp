@@ -6297,6 +6297,11 @@ void ConfiguratorWindow::closeProject()
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
 }
+//--------------------------------------------------
+void ConfiguratorWindow::minimizeTabMenu(bool state)
+{
+
+}
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 {
@@ -8616,4 +8621,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this, &ConfiguratorWindow::exportToPDFProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this, &ConfiguratorWindow::exportToExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
+    connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
 }

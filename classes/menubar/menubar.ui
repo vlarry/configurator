@@ -53,6 +53,41 @@
     </widget>
    </item>
    <item>
+    <widget class="QToolButton" name="toolButtonMinimizeTabMenu">
+     <property name="minimumSize">
+      <size>
+       <width>28</width>
+       <height>28</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Другие кнопки</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../resource.qrc">
+       <normaloff>:/images/resource/images/down_indicator.png</normaloff>:/images/resource/images/down_indicator.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>7</width>
+       <height>7</height>
+      </size>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+S</string>
+     </property>
+     <property name="popupMode">
+      <enum>QToolButton::InstantPopup</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="labelTitleProgram">
      <property name="text">
       <string/>
