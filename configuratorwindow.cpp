@@ -77,7 +77,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
     ui->pushButtonVariableCtrl->setDir(CDockPanelItemCtrl::Right);
     ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::Bottom);
-    ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
 
     bool is_remove = deleteLogFile();
 
@@ -2297,13 +2296,13 @@ void ConfiguratorWindow::show()
 
     ui->comboBoxCommunicationParity->setCurrentIndex(1);
 
-    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel),
-                                              false);
-    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel),
-                                              false);
+    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel), false);
+    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel), false);
+    ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
 
     ui->variableDockPanel->setMinimumWidth(ui->pushButtonVariableCtrl->minimumWidth());
     ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
+    ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
 
     loadSettings();
 
@@ -2316,23 +2315,33 @@ void ConfiguratorWindow::show()
     // управление отображением панелей
     panelVisibleCtrl(ui->centralWgt);
     panelVisibleCtrl(ui->variableDockPanel);
+    panelVisibleCtrl(ui->framePanelMessage);
 
     if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
     {
-        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
+        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
     }
     else
     {
-        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
+        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
     }
 
     if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
     {
-        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
+        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
     }
     else
     {
-        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
+        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
+    }
+
+    if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
+    {
+        ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
+    }
+    else
+    {
+        ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
     }
 
     ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
@@ -5961,7 +5970,8 @@ void ConfiguratorWindow::panelMoved(int pos, int index)
 {
     Q_UNUSED(pos);
 
-    QWidget* widget = ui->splitterCentralWidget->widget(index);
+    QSplitter* splitter = qobject_cast<QSplitter*>(sender());
+    QWidget*   widget   = splitter->widget(index);
 
     panelVisibleCtrl(widget);
 }
@@ -5977,7 +5987,12 @@ void ConfiguratorWindow::panelButtonCtrlPress()
     if(!button)
         return;
 
-    QList<int> sizes = ui->splitterCentralWidget->sizes();
+    QList<int> sizes;
+
+    if(button == ui->pushButtonPanelMessage)
+        sizes = ui->splitterPanelMessage->sizes();
+    else
+        sizes = ui->splitterCentralWidget->sizes();
 
     if(sizes.count() == 3)
     {
@@ -6041,6 +6056,40 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
+            }
+        }
+    }
+    else if(sizes.count() == 2)
+    {
+        if(button == ui->pushButtonPanelMessage)
+        {
+            if(ui->framePanelMessage->height() > ui->pushButtonPanelMessage->height())
+            {
+                int h = sizes[1];
+
+                ui->framePanelMessage->setProperty("HEIGHT", h);
+
+                sizes[1] = ui->framePanelMessage->minimumHeight();
+                sizes[0] = sizes[0] + (h - sizes[1]);
+
+                ui->splitterPanelMessage->setSizes(sizes);
+
+                emit ui->splitterPanelMessage->splitterMoved(sizes[0], 0);
+            }
+            else if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->height())
+            {
+                int h         = sizes[1];
+                int newHeight = ui->framePanelMessage->property("HEIGHT").toInt();
+
+                if(newHeight <= 0)
+                    newHeight = ui->framePanelMessage->sizeHint().height();
+
+                sizes[1] = newHeight;
+                sizes[0] = sizes[0] - (newHeight - h);
+
+                ui->splitterPanelMessage->setSizes(sizes);
+
+                emit ui->splitterPanelMessage->splitterMoved(0, 0);
             }
         }
     }
@@ -8035,7 +8084,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
             {
                 ui->variableWidget->hide();
                 ui->labelVariablePanel->hide();
-                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
+                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
         else
@@ -8044,7 +8093,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
             {
                 ui->variableWidget->show();
                 ui->labelVariablePanel->show();
-                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
+                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
             }
         }
     }
@@ -8058,7 +8107,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->treewgtDeviceMenu->hide();
                 ui->labelMenuDevice->hide();
                 ui->tbntExpandItems->hide();
-                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
+                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
         else
@@ -8068,7 +8117,27 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
                 ui->treewgtDeviceMenu->show();
                 ui->labelMenuDevice->show();
                 ui->tbntExpandItems->show();
-                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
+                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
+            }
+        }
+    }
+
+    if(widget == ui->framePanelMessage || widget == ui->stwgtMain)
+    {
+        if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
+        {
+            if(!ui->tabWidgetMessage->isHidden())
+            {
+                ui->tabWidgetMessage->hide();
+                ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
+            }
+        }
+        else
+        {
+            if(ui->tabWidgetMessage->isHidden())
+            {
+                ui->tabWidgetMessage->show();
+                ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
             }
         }
     }
@@ -8526,9 +8595,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbus, &CModBus::stateChanged, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
     connect(m_modbus, &CModBus::errorChannel, this, &ConfiguratorWindow::errorConnect);
-//    connect(m_modbus, &CModbus::newBaudrate, this, &ConfiguratorWindow::setNewBaudrate);
-//    connect(m_modbus, &CModbus::saveSettings, this, &ConfiguratorWindow::saveDeviceSettings);
-
     connect(ui->toolButtonConnect, &QPushButton::clicked, m_modbus, &CModBus::userStateCtrl);
     connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this,
             &ConfiguratorWindow::refreshSerialPort);
@@ -8538,10 +8604,13 @@ void ConfiguratorWindow::initConnect()
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(m_terminal_window, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
-    connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
+    connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates,
+            &QPushButton::setChecked);
     connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
-    connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this, &ConfiguratorWindow::monitorK10K11Visiblity);
-    connect(m_monitor_purpose_window, &CMonitorPurpose::closeWindow, ui->pushButtonMonitorK10_K11, &QPushButton::setChecked);
+    connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this,
+            &ConfiguratorWindow::monitorK10K11Visiblity);
+    connect(m_monitor_purpose_window, &CMonitorPurpose::closeWindow, ui->pushButtonMonitorK10_K11,
+            &QPushButton::setChecked);
     connect(ui->pushButtonOutputAll, &QPushButton::clicked, this, &ConfiguratorWindow::outputAllVisiblity);
     connect(m_outputall_window, &COutputAll::closeWindow, ui->pushButtonOutputAll, &QPushButton::setChecked);
     connect(ui->pushButtonInputs, &QPushButton::clicked, this, &ConfiguratorWindow::inputVisiblity);
@@ -8564,7 +8633,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearKeyboardProtectionCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
     connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
-    connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
+    connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead,
+            &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
     connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
@@ -8572,14 +8642,19 @@ void ConfiguratorWindow::initConnect()
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(m_timer_synchronization, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSynchronization);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
-    connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
+    connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this,
+            &ConfiguratorWindow::deviceDefaultSettings);
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
-    connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this,
+            &ConfiguratorWindow::autospeedStateChanged);
     connect(m_terminal_window, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
+    connect(ui->splitterPanelMessage, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     connect(ui->pushButtonMenuDeviceCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
+    connect(ui->pushButtonPanelMessage, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(ui->pushButtonVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
-    connect(m_monitor_purpose_window, &CMonitorPurpose::buttonUpdate, this, &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
+    connect(m_monitor_purpose_window, &CMonitorPurpose::buttonUpdate, this,
+            &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
     connect(m_outputall_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_inputs_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendInputStatesRequest);
     connect(ui->pushButtonSyncDateTime, &QPushButton::clicked, this, &ConfiguratorWindow::synchronizationDateTime);
@@ -8591,13 +8666,16 @@ void ConfiguratorWindow::initConnect()
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
     connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
     connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
-    connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this, &ConfiguratorWindow::updateSerialPortSettings);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this,
+            &ConfiguratorWindow::updateSerialPortSettings);
     connect(ui->cboxM77, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
     connect(ui->cboxProtectionLeve2_Ctrl, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
     connect(ui->cboxM65, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
     connect(ui->cboxM66, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxProtectionTemp2_Sensor1, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxProtectionTemp2_Sensor2, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+    connect(ui->cboxProtectionTemp2_Sensor1, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(indexComboBoxChanged(int)));
+    connect(ui->cboxProtectionTemp2_Sensor2, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(indexComboBoxChanged(int)));
     connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::close);
     connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
@@ -8612,9 +8690,12 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::newProject, this, &ConfiguratorWindow::newProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openProject, this, &ConfiguratorWindow::openProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveProject, this, &ConfiguratorWindow::saveProject);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveAsProject, this, &ConfiguratorWindow::saveAsProject);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this, &ConfiguratorWindow::exportToPDFProject);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this, &ConfiguratorWindow::exportToExcelProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveAsProject, this,
+            &ConfiguratorWindow::saveAsProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this,
+            &ConfiguratorWindow::exportToPDFProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this,
+            &ConfiguratorWindow::exportToExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
 }
