@@ -5992,8 +5992,6 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
-
-//                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
             }
             else if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
             {
@@ -6009,8 +6007,6 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
-
-//                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
         else if(button == ui->pushButtonVariableCtrl)
@@ -6027,8 +6023,6 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
-
-//                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
             }
             else if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
             {
@@ -6044,8 +6038,6 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
-
-//                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
     }
@@ -6300,7 +6292,7 @@ void ConfiguratorWindow::closeProject()
 //--------------------------------------------------
 void ConfiguratorWindow::minimizeTabMenu(bool state)
 {
-
+    Q_UNUSED(state);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
