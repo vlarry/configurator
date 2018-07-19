@@ -3,7 +3,7 @@
 CDockPanelItemCtrl::CDockPanelItemCtrl(QWidget* parent):
     QPushButton(parent),
     m_text(""),
-    m_side(Left),
+    m_dir(Left),
     m_state(Open)
 {
 
@@ -12,15 +12,15 @@ CDockPanelItemCtrl::CDockPanelItemCtrl(QWidget* parent):
 CDockPanelItemCtrl::CDockPanelItemCtrl(const QString& text, QWidget* parent):
     QPushButton(parent),
     m_text(text),
-    m_side(Left),
+    m_dir(Left),
     m_state(Open)
 {
 
 }
-//-----------------------------------------------------------
-CDockPanelItemCtrl::SideType CDockPanelItemCtrl::side() const
+//---------------------------------------------------------
+CDockPanelItemCtrl::DirType CDockPanelItemCtrl::dir() const
 {
-    return m_side;
+    return m_dir;
 }
 //-------------------------------------------------------------
 CDockPanelItemCtrl::StateType CDockPanelItemCtrl::state() const
@@ -32,10 +32,10 @@ QString CDockPanelItemCtrl::text() const
 {
     return m_text;
 }
-//-----------------------------------------------------------------
-void CDockPanelItemCtrl::setSide(CDockPanelItemCtrl::SideType side)
+//--------------------------------------------------------------
+void CDockPanelItemCtrl::setDir(CDockPanelItemCtrl::DirType dir)
 {
-    m_side = side;
+    m_dir = dir;
 }
 //--------------------------------------------------------------------
 void CDockPanelItemCtrl::setState(CDockPanelItemCtrl::StateType state)
@@ -47,10 +47,20 @@ void CDockPanelItemCtrl::setText(const QString& text)
 {
     m_text = text;
 }
-//-----------------------------
-void CDockPanelItemCtrl::show()
+//---------------------------------------
+void CDockPanelItemCtrl::timeoutRepaint()
 {
+    m_timer_repaint->stop();
     updateGeometry();
+}
+//---------------------------------------------------
+void CDockPanelItemCtrl::showEvent(QShowEvent* event)
+{
+    QPushButton::showEvent(event);
+
+    m_timer_repaint = new QTimer(this);
+    connect(m_timer_repaint, &QTimer::timeout, this, &CDockPanelItemCtrl::timeoutRepaint);
+    m_timer_repaint->start(50);
 }
 //-----------------------------------------------------
 void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
@@ -67,45 +77,67 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
     f.setPointSize(8);
 
     painter.setFont(f);
-    painter.save();
 
-    painter.translate(but_rect.left(), but_rect.bottom());
-    painter.rotate(-90);
+    if(m_dir == Left || m_dir == Right)
+    {
+        painter.save();
 
-    int pos_x = but_rect.height() - painter.fontMetrics().width(m_text) - 5;
-    int pos_y = but_rect.width()/2 - painter.fontMetrics().height()/2;
-    int w     = but_rect.height();
-    int h     = painter.fontMetrics().width(m_text)*1.2f;
+        painter.translate(but_rect.left(), but_rect.bottom());
+        painter.rotate(-90);
 
-    QRect r(pos_x, pos_y, w, h);
-    painter.drawText(r, m_text);
+        QRect r(but_rect.height() - painter.fontMetrics().width(m_text) - 5,
+                but_rect.width()/2 - painter.fontMetrics().height()/2,
+                but_rect.height(), painter.fontMetrics().width(m_text)*1.2f);
+        painter.drawText(r, m_text);
 
-    painter.restore();
+        painter.restore();
+    }
+    else
+    {
+        QRect r = but_rect;
+        r.setX(r.x() + 5);
+        painter.drawText(r, Qt::AlignLeft | Qt::AlignVCenter, m_text);
+    }
 
     int cx = but_rect.width()/2;
     int cy = but_rect.height()/2;
 
-    QPolygon polygon_left, polygon_right, polygon;
+    QPolygon polygon;
+    QPolygon polygon_open, polygon_close;
 
-    polygon_left << QPoint(cx - 4, cy) << QPoint(cx + 4, cy - 6) << QPoint(cx + 4, cy + 6);
-    polygon_right << QPoint(cx - 4, cy - 6) << QPoint(cx + 4, cy) << QPoint(cx - 4, cy + 6);
+    switch(m_dir)
+    {
+        case Left:
+            polygon_open << QPoint(cx - 4, cy) << QPoint(cx + 4, cy - 6) << QPoint(cx + 4, cy + 6);
+            polygon_close << QPoint(cx - 4, cy - 6) << QPoint(cx + 4, cy) << QPoint(cx - 4, cy + 6);
+        break;
+
+        case Right:
+            polygon_close << QPoint(cx - 4, cy) << QPoint(cx + 4, cy - 6) << QPoint(cx + 4, cy + 6);
+            polygon_open << QPoint(cx - 4, cy - 6) << QPoint(cx + 4, cy) << QPoint(cx - 4, cy + 6);
+        break;
+
+        case Top:
+            polygon_open << QPoint(cx - 6, cy + 4) << QPoint(cx + 6, cy + 4) << QPoint(cx, cy - 4);
+            polygon_close << QPoint(cx - 6, cy - 4) << QPoint(cx + 6, cy - 4) << QPoint(cx, cy + 4);
+        break;
+
+        case Bottom:
+            polygon_close << QPoint(cx - 6, cy + 4) << QPoint(cx + 6, cy + 4) << QPoint(cx, cy - 4);
+            polygon_open << QPoint(cx - 6, cy - 4) << QPoint(cx + 6, cy - 4) << QPoint(cx, cy + 4);
+        break;
+    }
 
     if(m_state == Close)
     {
-        if(m_side == Left)
-            polygon = polygon_left;
-        else if(m_side == Right)
-            polygon = polygon_right;
+        polygon = polygon_close;
     }
     else if(m_state == Open)
     {
-        if(m_side == Left)
-            polygon = polygon_right;
-        else if(m_side == Right)
-            polygon = polygon_left;
+        polygon = polygon_open;
     }
 
-    painter.setBrush(Qt::green);
+    painter.setBrush(Qt::darkGreen);
     painter.drawPolygon(polygon);
 }
 

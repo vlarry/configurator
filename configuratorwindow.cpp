@@ -73,8 +73,11 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 
     ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
     ui->pushButtonVariableCtrl->setText(tr("Панель измерений"));
-    ui->pushButtonMenuDeviceCtrl->setSide(CDockPanelItemCtrl::Left);
-    ui->pushButtonVariableCtrl->setSide(CDockPanelItemCtrl::Right);
+    ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
+    ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
+    ui->pushButtonVariableCtrl->setDir(CDockPanelItemCtrl::Right);
+    ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::Bottom);
+    ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
 
     bool is_remove = deleteLogFile();
 
