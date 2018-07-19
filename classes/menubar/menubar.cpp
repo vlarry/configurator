@@ -26,6 +26,8 @@ CMenuBar::CMenuBar(QWidget* parent):
 
     ui->toolButtonMinimizeTabMenu->setMenu(otherButtonMenu);
 
+    ui->toolButtonMinimizeTabMenu->hide(); // скрытие кнопки, т.к. не удалось пока реализовать функционал
+
     connect(ui->toolButtonCloseWindow, &QToolButton::clicked, this, &CMenuBar::closeWindow);
     connect(ui->toolButtonExpandWindow, &QToolButton::clicked, this, &CMenuBar::expandedWindow);
     connect(ui->toolButtonMinimizeWindow, &QToolButton::clicked, this, &CMenuBar::minimizeWindow);
