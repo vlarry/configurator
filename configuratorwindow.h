@@ -582,6 +582,7 @@
             void exportToExcelProject();
             void closeProject();
             void minimizeTabMenu(bool state);
+            void panelMessageVisiblity(bool state = false);
 
         protected:
             void keyPressEvent(QKeyEvent* event);

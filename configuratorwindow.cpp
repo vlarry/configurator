@@ -2344,6 +2344,11 @@ void ConfiguratorWindow::show()
         ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
     }
 
+    if(ui->checkBoxPanelMessage->isChecked())
+        ui->framePanelMessage->show();
+    else
+        ui->framePanelMessage->hide();
+
     ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
     ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
     ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
@@ -6346,6 +6351,14 @@ void ConfiguratorWindow::minimizeTabMenu(bool state)
 {
     Q_UNUSED(state);
 }
+//--------------------------------------------------------
+void ConfiguratorWindow::panelMessageVisiblity(bool state)
+{
+    if(state)
+        ui->framePanelMessage->show();
+    else
+        ui->framePanelMessage->hide();
+}
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 {
@@ -6536,6 +6549,11 @@ void ConfiguratorWindow::loadSettings()
         m_settings->beginGroup("mainwindow");
             restoreGeometry(m_settings->value("geometry").toByteArray());
             ui->splitterCentralWidget->restoreState(m_settings->value("panel").toByteArray());
+            ui->splitterPanelMessage->restoreState(m_settings->value("downpanel").toByteArray());
+        m_settings->endGroup();
+
+        m_settings->beginGroup("settings");
+            ui->checkBoxPanelMessage->setChecked(m_settings->value("downpanel_state").toBool());
         m_settings->endGroup();
     }
 
@@ -6579,6 +6597,11 @@ void ConfiguratorWindow::saveSettings()
         m_settings->beginGroup("mainwindow");
             m_settings->setValue("geometry", saveGeometry());
             m_settings->setValue("panel", ui->splitterCentralWidget->saveState());
+            m_settings->setValue("downpanel", ui->splitterPanelMessage->saveState());
+        m_settings->endGroup();
+
+        m_settings->beginGroup("settings");
+            m_settings->setValue("downpanel_state", ui->checkBoxPanelMessage->isChecked());
         m_settings->endGroup();
     }
 }
@@ -8698,4 +8721,5 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::exportToExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
+    connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
 }
