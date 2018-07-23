@@ -56,6 +56,7 @@
     #include "cdebuginfo.h"
     #include "cstatusinfo.h"
     #include "popup.h"
+    #include "tabwidget.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     #define DEBUG_JOURNAL // отладка чтение журналов

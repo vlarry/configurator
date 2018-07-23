@@ -64,8 +64,9 @@ SOURCES += \
         classes/modbus/modbus.cpp \
         classes/modbus/connect.cpp \
         classes/popup/popup.cpp \
-    classes/menubar/menubar.cpp \
-    classes/menubar/widgetmenu.cpp
+        classes/menubar/menubar.cpp \
+        classes/menubar/widgetmenu.cpp \
+        classes/tabwidget/tabwidget.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -106,8 +107,9 @@ HEADERS += \
         classes/modbus/modbus.h \
         classes/modbus/connect.h \
         classes/popup/popup.h \
-    classes/menubar/menubar.h \
-    classes/menubar/widgetmenu.h
+        classes/menubar/menubar.h \
+        classes/menubar/widgetmenu.h \
+        classes/tabwidget/tabwidget.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -129,12 +131,13 @@ FORMS += \
         timefilterdialog.ui \
         debuginfo.ui \
         statusinfo.ui \
-    classes/menubar/menubar.ui \
-    classes/menubar/widgetmenu.ui
+        classes/menubar/menubar.ui \
+        classes/menubar/widgetmenu.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \
-               "classes/menubar"
+               "classes/menubar" \
+               "classes/tabwidget"
 
 win32::RC_FILE = \
                  resource/icon.rc

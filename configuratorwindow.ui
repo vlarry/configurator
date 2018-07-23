@@ -16890,7 +16890,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QTabWidget" name="tabWidgetMessage">
+             <widget class="CTabWidget" name="tabWidgetMessage">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -17061,6 +17061,12 @@
    <class>CMenuBar</class>
    <extends>QWidget</extends>
    <header>menubar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>tabwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
