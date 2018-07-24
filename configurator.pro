@@ -66,7 +66,8 @@ SOURCES += \
         classes/popup/popup.cpp \
         classes/menubar/menubar.cpp \
         classes/menubar/widgetmenu.cpp \
-        classes/tabwidget/tabwidget.cpp
+        classes/tabwidget/tabwidget.cpp \
+    classes/calibrationwidget/calibrationwidget.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -109,7 +110,8 @@ HEADERS += \
         classes/popup/popup.h \
         classes/menubar/menubar.h \
         classes/menubar/widgetmenu.h \
-        classes/tabwidget/tabwidget.h
+        classes/tabwidget/tabwidget.h \
+    classes/calibrationwidget/calibrationwidget.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -132,12 +134,14 @@ FORMS += \
         debuginfo.ui \
         statusinfo.ui \
         classes/menubar/menubar.ui \
-        classes/menubar/widgetmenu.ui
+        classes/menubar/widgetmenu.ui \
+    classes/calibrationwidget/calibrationwidget.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \
                "classes/menubar" \
-               "classes/tabwidget"
+               "classes/tabwidget" \
+               "classes/calibrationwidget"
 
 win32::RC_FILE = \
                  resource/icon.rc

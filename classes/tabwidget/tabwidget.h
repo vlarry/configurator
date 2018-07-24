@@ -4,6 +4,8 @@
     #include <QTabWidget>
     #include <QEvent>
     #include <QMouseEvent>
+    #include <QDropEvent>
+    #include <QDragEnterEvent>
     #include <QDebug>
     //---------------------------------
     class CTabWidget: public QTabWidget
@@ -17,5 +19,6 @@
         protected:
 
         private:
+
     };
 #endif // TABWIDGET_H

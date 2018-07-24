@@ -4,6 +4,7 @@ CTabWidget::CTabWidget(QWidget* parent):
     QTabWidget(parent)
 {
     setMouseTracking(true);
+    setAcceptDrops(true);
 
     connect(this, &CTabWidget::tabBarDoubleClicked, this, &CTabWidget::tabDoubleClicked);
 }

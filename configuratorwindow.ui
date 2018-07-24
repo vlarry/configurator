@@ -1838,7 +1838,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>20</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -2073,7 +2073,7 @@
             </layout>
            </widget>
            <widget class="QWidget" name="pageInAnalogCalibration">
-            <layout class="QVBoxLayout" name="verticalLayout_59">
+            <layout class="QVBoxLayout" name="verticalLayout_73">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
@@ -2907,17 +2907,33 @@
               </layout>
              </item>
              <item>
-              <spacer name="verticalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>128</height>
-                </size>
-               </property>
-              </spacer>
+              <widget class="QTabWidget" name="tabWidgetCalibration">
+               <widget class="QWidget" name="tabCurrentCalibration">
+                <attribute name="title">
+                 <string>Ток</string>
+                </attribute>
+                <layout class="QVBoxLayout" name="verticalLayout_59">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="CCalibrationWidget" name="widgetCalibrationOfCurrent" native="true"/>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -16589,7 +16605,9 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="pageKeyboard"/>
+           <widget class="QWidget" name="pageKeyboard">
+            <layout class="QHBoxLayout" name="horizontalLayout_115"/>
+           </widget>
            <widget class="QWidget" name="pageSetLedPurpose">
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
@@ -17067,6 +17085,12 @@
    <class>CTabWidget</class>
    <extends>QTabWidget</extends>
    <header>tabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CCalibrationWidget</class>
+   <extends>QWidget</extends>
+   <header>calibrationwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
