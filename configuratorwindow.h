@@ -113,7 +113,11 @@
                 AUTOMATION_SIGNAL_START,
                 COMMUNICATIONS_MODBUS_ADDRESS,
                 COMMUNICATIONS_MODBUS_TIM_REQUEST,
-                COMMUNICATIONS_MODBUS_TIM_SPEED
+                COMMUNICATIONS_MODBUS_TIM_SPEED,
+                CALIBRATION_CURRENT_IA, // калибровка токовго коэффициента Ia
+                CALIBRATION_CURRENT_IB, // калибровка токовго коэффициента Ib
+                CALIBRATION_CURRENT_IC, // калибровка токовго коэффициента Ic
+                CALIBRATION_CURRENT_3I0 // калибровка токовго коэффициента 3I0
             };
             //------------------
             enum RequestFunction
@@ -539,6 +543,7 @@
             void sendOutputAllRequest();
             void sendInputStatesRequest();
             void sendDebugInfoRead(int channel);
+            void sendRequestCalibrationCurrentRead();
             void clearIOTable();
             void clearJournal();
             void menuPanelCtrl();
@@ -584,6 +589,9 @@
             void closeProject();
             void minimizeTabMenu(bool state);
             void panelMessageVisiblity(bool state = false);
+            void calibrationOfCurrent();
+            void calibrationOfCurrentTimeout();
+            void calibrationOfCurrentPauseRequestTimeout();
 
         protected:
             void keyPressEvent(QKeyEvent* event);
@@ -664,6 +672,7 @@
             bool deleteLogFile();
             void showErrorMessage(const QString& title, CModBusDataUnit& unit);
             void endJournalReadProcess(const QString& text);
+            float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
@@ -706,6 +715,8 @@
             limit_unit_t                     m_limits; // лимиты редактируемых величин
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
             QTimer*                          m_journal_timer; // проверка на обрыв чтения журнала
+            QTimer*                          m_timer_calibration_current; // таймер набора данных для калибровки токовых коэффициентов
+            QTimer*                          m_timer_calib_cur_pause_request; // пауза между запросами при калибровке токовых коэффициентов
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

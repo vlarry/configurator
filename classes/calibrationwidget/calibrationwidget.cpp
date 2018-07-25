@@ -6,11 +6,145 @@ CCalibrationWidget::CCalibrationWidget(QWidget* parent):
     ui(new Ui::CCalibrationWidget)
 {
     ui->setupUi(this);
+
+    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::calibration);
+    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::stateButton);
+    connect(this, &CCalibrationWidget::calibrationEnd, this, &CCalibrationWidget::stateButton);
 }
 //---------------------------------------
 CCalibrationWidget::~CCalibrationWidget()
 {
     delete ui;
+}
+//-------------------------------------------
+QCheckBox* CCalibrationWidget::ctrlIa() const
+{
+    return ui->checkBoxIa;
+}
+//-------------------------------------------
+QCheckBox* CCalibrationWidget::ctrlIb() const
+{
+    return ui->checkBoxIb;
+}
+//-------------------------------------------
+QCheckBox* CCalibrationWidget::ctrlIc() const
+{
+    return ui->checkBoxIc;
+}
+//--------------------------------------------
+QCheckBox* CCalibrationWidget::ctrl3I0() const
+{
+    return ui->checkBox3I0;
+}
+//-----------------------------------------
+int CCalibrationWidget::timeSetData() const
+{
+    return ui->spinBoxTimeSetData->value();
+}
+//----------------------------------------------
+int CCalibrationWidget::timePauseRequest() const
+{
+    return ui->spinBoxPauseRequest->value();
+}
+//----------------------------------------------------
+void CCalibrationWidget::addCalibrationIa(float value)
+{
+    m_calibration_current_data.Ia << value;
+}
+//----------------------------------------------------
+void CCalibrationWidget::addCalibrationIb(float value)
+{
+    m_calibration_current_data.Ib << value;
+}
+//----------------------------------------------------
+void CCalibrationWidget::addCalibrationIc(float value)
+{
+    m_calibration_current_data.Ic << value;
+}
+//-----------------------------------------------------
+void CCalibrationWidget::addCalibration3I0(float value)
+{
+    m_calibration_current_data._3I0 << value;
+}
+//---------------------------------------------------------------------------------------------
+const CCalibrationWidget::calibration_current_t& CCalibrationWidget::calibrationCurrent() const
+{
+    return m_calibration_current_data;
+}
+//----------------------------------------------------------
+float CCalibrationWidget::calibrationCurrentStandard() const
+{
+    return QLocale::system().toFloat(ui->lineEditCurrentStandard->text());
+}
+//-------------------------------------------------------------
+float CCalibrationWidget::calibrationCurrentStandard3I0() const
+{
+    return QLocale::system().toFloat(ui->lineEditCurrentStandard3I0->text());
+}
+//-----------------------------------------------
+void CCalibrationWidget::setFactorIa(float value)
+{
+    ui->lineEditFactorIa->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-----------------------------------------------
+void CCalibrationWidget::setFactorIb(float value)
+{
+    ui->lineEditFactorIb->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-----------------------------------------------
+void CCalibrationWidget::setFactorIc(float value)
+{
+    ui->lineEditFactorIc->setText(QLocale::system().toString(value, 'f', 6));
+}
+//------------------------------------------------
+void CCalibrationWidget::setFactor3I0(float value)
+{
+    ui->lineEditFactor3I0->setText(QLocale::system().toString(value, 'f', 6));
+}
+//------------------------------------------------
+void CCalibrationWidget::setMeasureIa(float value)
+{
+    ui->lineEditMeasuredD01->setText(QLocale::system().toString(value, 'f', 6));
+}
+//------------------------------------------------
+void CCalibrationWidget::setMeasureIb(float value)
+{
+    ui->lineEditMeasuredD02->setText(QLocale::system().toString(value, 'f', 6));
+}
+//------------------------------------------------
+void CCalibrationWidget::setMeasureIc(float value)
+{
+    ui->lineEditMeasuredD03->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------------
+void CCalibrationWidget::setMeasure3I0(float value)
+{
+    ui->lineEditMeasuredD04->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------
+void CCalibrationWidget::setAmIa(float value)
+{
+    ui->lineEditAmCH03->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------
+void CCalibrationWidget::setAmIb(float value)
+{
+    ui->lineEditAmCH04->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------
+void CCalibrationWidget::setAmIc(float value)
+{
+    ui->lineEditAmCH05->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------
+void CCalibrationWidget::setAm3I0(float value)
+{
+    ui->lineEditAmCH02->setText(QLocale::system().toString(value, 'f', 6));
+}
+//----------------------------------------------
+void CCalibrationWidget::stateButton(bool state)
+{
+    ui->pushButtonCalibration->setEnabled(!state);
 }
 //-----------------------------------------------------
 void CCalibrationWidget::paintEvent(QPaintEvent* event)

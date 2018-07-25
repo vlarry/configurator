@@ -23,15 +23,15 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_progressbar(nullptr),
     m_settings(nullptr),
     m_active_journal_current(nullptr),
-    m_journal_read_current(nullptr)
+    m_journal_read_current(nullptr),
+    m_journal_timer(nullptr),
+    m_timer_calibration_current(nullptr),
+    m_timer_calib_cur_pause_request(nullptr)
 {
     ui->setupUi(this);
 
     m_modbus                    = new CModBus(this);
     m_serialPortSettings_window = new CSerialPortSetting;
-    m_tim_calculate             = new QTimer(this);
-    m_timer_new_address_set     = new QTimer(this);
-    m_tim_debug_info            = new QTimer(this);
     m_terminal_window           = new CTerminal(this);
     m_output_window             = new CIndicatorState(this);
     m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
@@ -45,8 +45,14 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_progressbar               = new CProgressBarWidget(this);
     m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME,
                                                 "configurator", this);
-    m_timer_synchronization     = new QTimer(this);
-    m_journal_timer             = new QTimer(this);
+
+    m_tim_calculate                 = new QTimer(this);
+    m_timer_new_address_set         = new QTimer(this);
+    m_tim_debug_info                = new QTimer(this);
+    m_timer_synchronization         = new QTimer(this);
+    m_journal_timer                 = new QTimer(this);
+    m_timer_calibration_current     = new QTimer(this);
+    m_timer_calib_cur_pause_request = new QTimer(this);
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -2265,6 +2271,43 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     {
         displayMemoryOut(unit.values());
     }
+    if(type >= CALIBRATION_CURRENT_IA && type <= CALIBRATION_CURRENT_3I0)
+    {
+        showErrorMessage(tr("Чтение расчетных значений токов"), unit);
+
+        if(unit.count() != 2)
+            return;
+
+        union
+        {
+            quint16 v[2];
+            float   f;
+        } value;
+
+        value.v[0] = unit[1];
+        value.v[1] = unit[0];
+
+        switch(type)
+        {
+            case CALIBRATION_CURRENT_IA:
+                ui->widgetCalibrationOfCurrent->addCalibrationIa(value.f);
+            break;
+
+            case CALIBRATION_CURRENT_IB:
+                ui->widgetCalibrationOfCurrent->addCalibrationIb(value.f);
+            break;
+
+            case CALIBRATION_CURRENT_IC:
+                ui->widgetCalibrationOfCurrent->addCalibrationIc(value.f);
+            break;
+
+            case CALIBRATION_CURRENT_3I0:
+                ui->widgetCalibrationOfCurrent->addCalibration3I0(value.f);
+            break;
+
+            default: break;
+        }
+    }
 }
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
@@ -3207,7 +3250,7 @@ void ConfiguratorWindow::versionSowftware()
 {
     m_version_window->show();
 }
-//-------------------------------------------------------------
+//---------------------------------------------------------------
 void ConfiguratorWindow::sendCalculateRead(CModBusDataUnit& unit)
 {
     m_modbus->sendData(unit);
@@ -5737,6 +5780,15 @@ void ConfiguratorWindow::sendDebugInfoRead(int channel)
 
     m_modbus->sendData(unit);
 }
+/*!
+ * \brief ConfiguratorWindow::sendRequestCalibrationCurrentRead
+ *
+ * Запрос на чтение текущих значений токов
+ */
+void ConfiguratorWindow::sendRequestCalibrationCurrentRead()
+{
+
+}
 //-------------------------------------
 void ConfiguratorWindow::clearIOTable()
 {
@@ -6358,6 +6410,97 @@ void ConfiguratorWindow::panelMessageVisiblity(bool state)
         ui->framePanelMessage->show();
     else
         ui->framePanelMessage->hide();
+}
+/*!
+ * \brief ConfiguratorWindow::calibrationOfCurrent
+ *
+ * Слот для запуска калибровки токовых коэффициентов
+ */
+void ConfiguratorWindow::calibrationOfCurrent()
+{
+    QCheckBox* checkBoxIa  = ui->widgetCalibrationOfCurrent->ctrlIa();
+    QCheckBox* checkBoxIb  = ui->widgetCalibrationOfCurrent->ctrlIb();
+    QCheckBox* checkBoxIc  = ui->widgetCalibrationOfCurrent->ctrlIc();
+    QCheckBox* checkBox3I0 = ui->widgetCalibrationOfCurrent->ctrl3I0();
+
+    int calib_data_set = ui->widgetCalibrationOfCurrent->timeSetData()*1000;
+    int calib_pause    = ui->widgetCalibrationOfCurrent->timePauseRequest();
+
+    CModBusDataUnit unit_Ia(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 64, 2);
+    CModBusDataUnit unit_Ib(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 66, 2);
+    CModBusDataUnit unit_Ic(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 68, 2);
+    CModBusDataUnit unit_3I0(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 70, 2);
+
+    unit_Ia.setProperty("REQUEST", CALIBRATION_CURRENT_IA);
+    unit_Ib.setProperty("REQUEST", CALIBRATION_CURRENT_IB);
+    unit_Ic.setProperty("REQUEST", CALIBRATION_CURRENT_IC);
+    unit_3I0.setProperty("REQUEST", CALIBRATION_CURRENT_3I0);
+
+    if(!m_timer_calibration_current->isActive()) // если таймер набора данных не запущен, то читаем калибровки
+    {
+        inputAnalogCalibrateRead();
+    }
+
+    if(checkBoxIa->isChecked())
+        m_modbus->sendData(unit_Ia);
+    if(checkBoxIb->isChecked())
+        m_modbus->sendData(unit_Ib);
+    if(checkBoxIc->isChecked())
+        m_modbus->sendData(unit_Ic);
+    if(checkBox3I0->isChecked())
+        m_modbus->sendData(unit_3I0);
+
+    if(!m_timer_calibration_current->isActive())
+    {
+        m_timer_calibration_current->start(calib_data_set);
+    }
+
+    if(calib_data_set > calib_pause)
+        m_timer_calib_cur_pause_request->start(calib_pause);
+}
+/*!
+ * \brief ConfiguratorWindow::calibrationOfCurrentTimeout
+ *
+ * Таймаут набора данных для расчета калибровочного коэффициента
+ */
+void ConfiguratorWindow::calibrationOfCurrentTimeout()
+{
+
+    m_timer_calib_cur_pause_request->stop();
+    m_timer_calibration_current->stop();
+
+    CCalibrationWidget::calibration_current_t calib = ui->widgetCalibrationOfCurrent->calibrationCurrent();
+
+    float newFactor = -1;
+
+    if(!calib.Ia.isEmpty())
+    {
+        float standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
+        float cur_factor = QLocale::system().toFloat(ui->leKIA->text());
+
+        newFactor = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ia);
+
+        float measure = 0;
+
+        for(float value: calib.Ia)
+            measure += value;
+
+        ui->widgetCalibrationOfCurrent->setFactorIa(newFactor);
+        ui->widgetCalibrationOfCurrent->setMeasureIa(measure/calib.Ia.count());
+    }
+
+    emit ui->widgetCalibrationOfCurrent->calibrationEnd(false);
+}
+/*!
+ * \brief ConfiguratorWindow::calibrationOfCurrentPauseRequestTimeout
+ *
+ * Таймаут между запросами набора данных
+ */
+void ConfiguratorWindow::calibrationOfCurrentPauseRequestTimeout()
+{
+    m_timer_calib_cur_pause_request->stop();
+
+    calibrationOfCurrent();
 }
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
@@ -8606,6 +8749,19 @@ void ConfiguratorWindow::endJournalReadProcess(const QString& text)
     m_popup->setPopupText(text);
     m_popup->show();
 }
+//---------------------------------------------------------------------------------------------------------------------
+float ConfiguratorWindow::newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list)
+{
+    float measure = 0;
+
+    if(measure_list.count() > 1)
+        standard *= measure_list.count();
+
+    for(float value: measure_list)
+        measure += value;
+
+    return (standard/measure)*cur_factor;
+}
 //------------------------------------
 void ConfiguratorWindow::initConnect()
 {
@@ -8722,4 +8878,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
+    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
+            &ConfiguratorWindow::calibrationOfCurrent);
+    connect(m_timer_calibration_current, &QTimer::timeout, this, &ConfiguratorWindow::calibrationOfCurrentTimeout);
+    connect(m_timer_calib_cur_pause_request, &QTimer::timeout, this,
+            &ConfiguratorWindow::calibrationOfCurrentPauseRequestTimeout);
 }
