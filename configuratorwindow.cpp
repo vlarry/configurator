@@ -1863,6 +1863,18 @@ void ConfiguratorWindow::protectionControlGroupRead()
     protectionVacuumRead();
 }
 /*!
+ * \brief ConfiguratorWindow::amplitudeReadOfCurrent
+ *
+ * Чтение амплитуд по фазам
+ */
+void ConfiguratorWindow::amplitudeReadOfCurrent()
+{
+    sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
+    sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
+    sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
+    sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
+}
+/*!
  * \brief ConfiguratorWindow::automationSwitchRead
  *
  * Чтение автоматика Выключатель
@@ -2303,6 +2315,43 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
             case CALIBRATION_CURRENT_3I0:
                 ui->widgetCalibrationOfCurrent->addCalibration3I0(value.f);
+            break;
+
+            default: break;
+        }
+    }
+    else if(type >= AMPLITUDE_READ_CH2 && type <= AMPLITUDE_READ_CH5)
+    {
+        showErrorMessage(tr("Чтение амплитуд по каналам"), unit);
+
+        if(unit.count() != 2)
+            return;
+
+        union
+        {
+            quint16 v[2];
+            float   f;
+        } value;
+
+        value.v[0] = unit[1];
+        value.v[1] = unit[0];
+
+        switch(type)
+        {
+            case AMPLITUDE_READ_CH2:
+                ui->widgetCalibrationOfCurrent->setAm3I0(value.f);
+            break;
+
+            case AMPLITUDE_READ_CH3:
+                ui->widgetCalibrationOfCurrent->setAmIa(value.f);
+            break;
+
+            case AMPLITUDE_READ_CH4:
+                ui->widgetCalibrationOfCurrent->setAmIb(value.f);
+            break;
+
+            case AMPLITUDE_READ_CH5:
+                ui->widgetCalibrationOfCurrent->setAmIc(value.f);
             break;
 
             default: break;
@@ -6430,6 +6479,7 @@ void ConfiguratorWindow::calibrationOfCurrent()
     if(!m_timer_calibration_current->isActive()) // если таймер набора данных не запущен, то читаем калибровки
     {
         inputAnalogCalibrateRead();
+        amplitudeReadOfCurrent();
     }
 
     if(checkBoxIa->isChecked())

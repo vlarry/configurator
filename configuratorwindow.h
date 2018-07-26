@@ -118,7 +118,11 @@
                 CALIBRATION_CURRENT_IA, // калибровка токовго коэффициента Ia
                 CALIBRATION_CURRENT_IB, // калибровка токовго коэффициента Ib
                 CALIBRATION_CURRENT_IC, // калибровка токовго коэффициента Ic
-                CALIBRATION_CURRENT_3I0 // калибровка токовго коэффициента 3I0
+                CALIBRATION_CURRENT_3I0, // калибровка токовго коэффициента 3I0
+                AMPLITUDE_READ_CH2, // амплитуда канала №2
+                AMPLITUDE_READ_CH3, // амплитуда канала №3
+                AMPLITUDE_READ_CH4, // амплитуда канала №4
+                AMPLITUDE_READ_CH5, // амплитуда канала №5
             };
             //------------------
             enum RequestFunction
@@ -412,6 +416,7 @@
             void protectionBRURead();
             void protectionVacuumRead();
             void protectionControlGroupRead();
+            void amplitudeReadOfCurrent();
             void automationSwitchRead();
             void automationSwitchTruckRead();
             void automationBlockRead();
