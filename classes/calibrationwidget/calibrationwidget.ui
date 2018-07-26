@@ -62,6 +62,25 @@
          <property name="bottomMargin">
           <number>5</number>
          </property>
+         <item row="3" column="4">
+          <widget class="QLabel" name="label_6">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>D03</string>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
          <item row="5" column="0">
           <widget class="QLineEdit" name="lineEditCurrentStandard3I0">
            <property name="sizePolicy">
@@ -69,6 +88,9 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Эталонное значение</string>
            </property>
            <property name="text">
             <string>0,0000</string>
@@ -86,30 +108,14 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>Состояние 3I0</string>
+           </property>
            <property name="layoutDirection">
             <enum>Qt::RightToLeft</enum>
            </property>
            <property name="text">
             <string>3I0</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="5">
-          <widget class="QLineEdit" name="lineEditMeasuredD04">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>0,0000</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -120,6 +126,9 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Расчитанный коэффициент для фазы 3I0</string>
            </property>
            <property name="text">
             <string>0,0000</string>
@@ -148,6 +157,28 @@
            </property>
           </widget>
          </item>
+         <item row="5" column="5">
+          <widget class="QLineEdit" name="lineEditMeasuredD04">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Среднее арифметическое и среднеквадратическое значение 3I0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>0,0000</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
          <item row="5" column="10">
           <widget class="QLineEdit" name="lineEditAmCH02">
            <property name="sizePolicy">
@@ -155,6 +186,31 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Амплитуда канала 2</string>
+           </property>
+           <property name="text">
+            <string>0,0000</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="5">
+          <widget class="QLineEdit" name="lineEditMeasuredD02">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Среднее арифметическое и среднеквадратическое значение фазы В&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>0,0000</string>
@@ -183,8 +239,8 @@
            </property>
           </spacer>
          </item>
-         <item row="2" column="5">
-          <widget class="QLineEdit" name="lineEditMeasuredD02">
+         <item row="1" column="4">
+          <widget class="QLabel" name="label_5">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -192,26 +248,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>0,0000</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="4">
-          <widget class="QLabel" name="label_6">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>D03</string>
+            <string>D01</string>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
@@ -229,6 +266,9 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Среднее арифметическое и среднеквадратическое значение фазы А&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>0,0000</string>
            </property>
@@ -237,25 +277,6 @@
            </property>
            <property name="readOnly">
             <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="4">
-          <widget class="QLabel" name="label_5">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>D01</string>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -278,8 +299,8 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="5">
-          <widget class="QLineEdit" name="lineEditMeasuredD03">
+         <item row="1" column="9">
+          <widget class="QLabel" name="label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -287,45 +308,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>0,0000</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="5">
-          <widget class="QLabel" name="label_8">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Измеренное</string>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="7">
-          <widget class="QLabel" name="label_9">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Коэффициент</string>
+            <string>CH03</string>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
@@ -343,6 +326,9 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>Амплитуда канала 3</string>
+           </property>
            <property name="text">
             <string>0,0000</string>
            </property>
@@ -354,16 +340,16 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="9">
-          <widget class="QLabel" name="label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+         <item row="0" column="7">
+          <widget class="QLabel" name="label_9">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="text">
-            <string>CH03</string>
+            <string>Коэффициент</string>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
@@ -392,22 +378,22 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="10">
-          <widget class="QLineEdit" name="lineEditAmCH05">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+         <item row="0" column="5">
+          <widget class="QLabel" name="label_8">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="text">
-            <string>0,0000</string>
+            <string>Измеренное</string>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -418,6 +404,9 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Амплитуда канала 4</string>
            </property>
            <property name="text">
             <string>0,0000</string>
@@ -457,11 +446,36 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>Расчитанный коэффициент для фазы В</string>
+           </property>
            <property name="text">
             <string>0,0000</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="10">
+          <widget class="QLineEdit" name="lineEditAmCH05">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Амплитуда канала 5</string>
+           </property>
+           <property name="text">
+            <string>0,0000</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -473,11 +487,71 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="toolTip">
+            <string>Эталонное значение</string>
+           </property>
            <property name="text">
             <string>0,0000</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QCheckBox" name="checkBoxIa">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Состояние фазы А</string>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::RightToLeft</enum>
+           </property>
+           <property name="text">
+            <string>Ia</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="7">
+          <widget class="QLineEdit" name="lineEditFactorIa">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Расчитанный коэффициент для фазы А</string>
+           </property>
+           <property name="text">
+            <string>0,0000</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QCheckBox" name="checkBoxIb">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Состояние фазы В</string>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::RightToLeft</enum>
+           </property>
+           <property name="text">
+            <string>Ib</string>
            </property>
           </widget>
          </item>
@@ -508,75 +582,14 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text">
-            <string>0,0000</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="7">
-          <widget class="QLineEdit" name="lineEditFactorIa">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+           <property name="toolTip">
+            <string>Расчитанный коэффициент для фазы С</string>
            </property>
            <property name="text">
             <string>0,0000</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QCheckBox" name="checkBoxIa">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-           </property>
-           <property name="text">
-            <string>Ia</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QCheckBox" name="checkBoxIb">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-           </property>
-           <property name="text">
-            <string>Ib</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QCheckBox" name="checkBoxIc">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-           </property>
-           <property name="text">
-            <string>Ic</string>
            </property>
           </widget>
          </item>
@@ -595,6 +608,41 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="2" column="6">
+          <spacer name="horizontalSpacer_60">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>37</width>
+             <height>17</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="5" column="4">
+          <widget class="QLabel" name="label_11">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>D04</string>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
          </item>
          <item row="0" column="10">
           <widget class="QLabel" name="label_10">
@@ -631,22 +679,6 @@
            </property>
           </spacer>
          </item>
-         <item row="2" column="6">
-          <spacer name="horizontalSpacer_60">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>37</width>
-             <height>17</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="4" column="10">
           <spacer name="verticalSpacer_2">
            <property name="orientation">
@@ -663,22 +695,44 @@
            </property>
           </spacer>
          </item>
-         <item row="5" column="4">
-          <widget class="QLabel" name="label_11">
+         <item row="3" column="2">
+          <widget class="QCheckBox" name="checkBoxIc">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text">
-            <string>D04</string>
+           <property name="toolTip">
+            <string>Состояние фазы С</string>
            </property>
-           <property name="scaledContents">
-            <bool>true</bool>
+           <property name="layoutDirection">
+            <enum>Qt::RightToLeft</enum>
+           </property>
+           <property name="text">
+            <string>Ic</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="5">
+          <widget class="QLineEdit" name="lineEditMeasuredD03">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Среднее арифметическое и среднеквадратическое значение фазы С&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>0,0000</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

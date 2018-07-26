@@ -104,28 +104,28 @@ void CCalibrationWidget::setFactor3I0(float value)
 //-------------------------------------------------------------------
 void CCalibrationWidget::setMeasureIa(float average, float deviation)
 {
-    QString text = QString("%1/%2").arg(QLocale::system().toString(average, 'f', 6)).
+    QString text = QString("%1 (%2)").arg(QLocale::system().toString(average, 'f', 6)).
                                     arg(QLocale::system().toString(deviation, 'f', 6));
     ui->lineEditMeasuredD01->setText(text);
 }
 //-------------------------------------------------------------------
 void CCalibrationWidget::setMeasureIb(float average, float deviation)
 {
-    QString text = QString("%1/%2").arg(QLocale::system().toString(average, 'f', 6)).
+    QString text = QString("%1 (%2)").arg(QLocale::system().toString(average, 'f', 6)).
                                     arg(QLocale::system().toString(deviation, 'f', 6));
     ui->lineEditMeasuredD02->setText(text);
 }
 //-------------------------------------------------------------------
 void CCalibrationWidget::setMeasureIc(float average, float deviation)
 {
-    QString text = QString("%1/%2").arg(QLocale::system().toString(average, 'f', 6)).
+    QString text = QString("%1 (%2)").arg(QLocale::system().toString(average, 'f', 6)).
                                     arg(QLocale::system().toString(deviation, 'f', 6));
     ui->lineEditMeasuredD03->setText(text);
 }
 //--------------------------------------------------------------------
 void CCalibrationWidget::setMeasure3I0(float average, float deviation)
 {
-    QString text = QString("%1/%2").arg(QLocale::system().toString(average, 'f', 6)).
+    QString text = QString("%1 (%2)").arg(QLocale::system().toString(average, 'f', 6)).
                                     arg(QLocale::system().toString(deviation, 'f', 6));
     ui->lineEditMeasuredD04->setText(text);
 }
