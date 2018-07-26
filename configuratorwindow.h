@@ -441,6 +441,7 @@
             void automationAVRRead();
             void automationAPVSignalStartRead();
             void automationAPVRead();
+            void calibrationOfCurrentWrite();
             void purposeLedsRead();
             void purposeInputRead();
             void purposeRelayRead();

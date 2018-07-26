@@ -2007,6 +2007,92 @@ void ConfiguratorWindow::automationAPVRead()
     sendSettingControlReadRequest("M87");
     sendSettingReadRequest(tr("M88"), tr("M89"), CModBusDataUnit::ReadHoldingRegisters, 4);
 }
+/*!
+ * \brief ConfiguratorWindow::calibrationOfCurrentWrite
+ *
+ * Запись калибровок по току
+ */
+void ConfiguratorWindow::calibrationOfCurrentWrite()
+{
+    float Ia   = 0;
+    float Ib   = 0;
+    float Ic   = 0;
+    float _3I0 = 0;
+
+    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+        Ia  = ui->widgetCalibrationOfCurrent->calibrationCurrentIa();
+    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+        Ib = ui->widgetCalibrationOfCurrent->calibrationCurrentIb();
+    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+        Ic  = ui->widgetCalibrationOfCurrent->calibrationCurrentIc();
+    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
+        _3I0 = ui->widgetCalibrationOfCurrent->calibrationCurrent3I0();
+
+    if(Ia == 0 && Ib == 0 && Ic == 0 && _3I0 == 0)
+        return;
+
+    QString str;
+    QString textValue;
+
+    textValue += ((Ia != 0)?QString("Ia = %1\n").arg(QLocale::system().toString(Ia, 'f', 6)):"");
+    textValue += ((Ib != 0)?QString("Ib = %1\n").arg(QLocale::system().toString(Ib, 'f', 6)):"");
+    textValue += ((Ic != 0)?QString("Ic = %1\n").arg(QLocale::system().toString(Ic, 'f', 6)):"");
+    textValue += ((_3I0 != 0)?QString("3I0 = %1\n").arg(QLocale::system().toString(_3I0, 'f', 6)):"");
+
+    str = tr("Вы хотите сохранить новые калибровки?\n%1").arg(textValue);
+
+    int res = QMessageBox::question(this, tr("Запись калибровок по току"), str);
+
+    qInfo() << tr("Запись новых калибровочных коэффициентов по току:\n%1").arg(textValue);
+
+    if(res == QMessageBox::No)
+    {
+        qInfo() << tr("Отказ пользователя от записи калибровочных коэффициетов по току");
+        return;
+    }
+
+    if(Ia != 0)
+        ui->leKIA->setText(QLocale::system().toString(Ia, 'f', 6));
+    if(Ib != 0)
+        ui->leKIB->setText(QLocale::system().toString(Ib, 'f', 6));
+    if(Ic != 0)
+        ui->leKIC->setText(QLocale::system().toString(Ic, 'f', 6));
+    if(_3I0 != 0)
+        ui->leK3I0->setText(QLocale::system().toString(_3I0, 'f', 6));
+
+    union
+    {
+        quint16 i[2];
+        float   f;
+    } value;
+
+    value.f = Ia;
+    CModBusDataUnit unit_Ia(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
+                            addressSettingKey("KIA"), QVector<quint16>() << value.i[1] << value.i[0]);
+
+    value.f = Ib;
+    CModBusDataUnit unit_Ib(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
+                            addressSettingKey("KIB"), QVector<quint16>() << value.i[1] << value.i[0]);
+
+    value.f = Ic;
+    CModBusDataUnit unit_Ic(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
+                            addressSettingKey("KIC"), QVector<quint16>() << value.i[1] << value.i[0]);
+
+    value.f = _3I0;
+    CModBusDataUnit unit_3I0(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
+                            addressSettingKey("K3I0"), QVector<quint16>() << value.i[1] << value.i[0]);
+
+    if(Ia != 0)
+        m_modbus->sendData(unit_Ia);
+    if(Ib != 0)
+        m_modbus->sendData(unit_Ib);
+    if(Ic != 0)
+        m_modbus->sendData(unit_Ic);
+    if(_3I0!= 0)
+        m_modbus->sendData(unit_3I0);
+
+    qInfo() << tr("Запись новых калибровочных коэффициентов по току подтверждена");
+}
 //----------------------------------------
 void ConfiguratorWindow::purposeLedsRead()
 {
@@ -2046,7 +2132,8 @@ void ConfiguratorWindow::purposeMemoryOutRelayRead()
 //-------------------------------------
 void ConfiguratorWindow::dateTimeRead()
 {
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, 0x2000, QVector<quint16>() << 4);
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, 0x2000,
+                         QVector<quint16>() << 4);
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
@@ -9015,4 +9102,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
             &ConfiguratorWindow::calibrationOfCurrent);
+    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
 }

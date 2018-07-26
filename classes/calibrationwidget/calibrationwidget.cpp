@@ -10,6 +10,7 @@ CCalibrationWidget::CCalibrationWidget(QWidget* parent):
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::calibration);
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::stateButton);
     connect(this, &CCalibrationWidget::calibrationEnd, this, &CCalibrationWidget::stateButton);
+    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidget::apply);
 }
 //---------------------------------------
 CCalibrationWidget::~CCalibrationWidget()
@@ -80,6 +81,26 @@ float CCalibrationWidget::calibrationCurrentStandard() const
 float CCalibrationWidget::calibrationCurrentStandard3I0() const
 {
     return QLocale::system().toFloat(ui->lineEditCurrentStandard3I0->text());
+}
+//----------------------------------------------------
+float CCalibrationWidget::calibrationCurrentIa() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorIa->text());
+}
+//----------------------------------------------------
+float CCalibrationWidget::calibrationCurrentIb() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorIb->text());
+}
+//----------------------------------------------------
+float CCalibrationWidget::calibrationCurrentIc() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorIc->text());
+}
+//-----------------------------------------------------
+float CCalibrationWidget::calibrationCurrent3I0() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactor3I0->text());
 }
 //-----------------------------------------------
 void CCalibrationWidget::setFactorIa(float value)

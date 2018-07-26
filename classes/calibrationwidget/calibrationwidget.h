@@ -46,6 +46,10 @@
             const calibration_current_t& calibrationCurrent() const;
             float                        calibrationCurrentStandard() const;
             float                        calibrationCurrentStandard3I0() const;
+            float                        calibrationCurrentIa() const;
+            float                        calibrationCurrentIb() const;
+            float                        calibrationCurrentIc() const;
+            float                        calibrationCurrent3I0() const;
 
             void setFactorIa(float value);
             void setFactorIb(float value);
@@ -63,6 +67,7 @@
             void setAm3I0(float value);
 
         signals:
+            void apply();
             void calibration();
             void calibrationEnd(bool = false);
 
