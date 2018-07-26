@@ -5780,15 +5780,6 @@ void ConfiguratorWindow::sendDebugInfoRead(int channel)
 
     m_modbus->sendData(unit);
 }
-/*!
- * \brief ConfiguratorWindow::sendRequestCalibrationCurrentRead
- *
- * Запрос на чтение текущих значений токов
- */
-void ConfiguratorWindow::sendRequestCalibrationCurrentRead()
-{
-
-}
 //-------------------------------------
 void ConfiguratorWindow::clearIOTable()
 {
@@ -6465,28 +6456,73 @@ void ConfiguratorWindow::calibrationOfCurrent()
  */
 void ConfiguratorWindow::calibrationOfCurrentTimeout()
 {
-
     m_timer_calib_cur_pause_request->stop();
     m_timer_calibration_current->stop();
 
     CCalibrationWidget::calibration_current_t calib = ui->widgetCalibrationOfCurrent->calibrationCurrent();
 
-    float newFactor = -1;
-
     if(!calib.Ia.isEmpty())
     {
-        float standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
-        float cur_factor = QLocale::system().toFloat(ui->leKIA->text());
-
-        newFactor = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ia);
-
-        float measure = 0;
-
-        for(float value: calib.Ia)
-            measure += value;
+        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
+        float   cur_factor = QLocale::system().toFloat(ui->leKIA->text());
+        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ia);
+        QPointF deviation  = standardDeviation(calib.Ia);
 
         ui->widgetCalibrationOfCurrent->setFactorIa(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIa(measure/calib.Ia.count());
+        ui->widgetCalibrationOfCurrent->setMeasureIa(deviation.x(), deviation.y());
+        qDebug() << tr("Калибровка тока фазы А");
+        for(float value: calib.Ia)
+            qDebug() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qDebug() << QString("%1/%2").arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                                     arg(QLocale::system().toString(deviation.y(), 'f', 6));
+    }
+
+    if(!calib.Ib.isEmpty())
+    {
+        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
+        float   cur_factor = QLocale::system().toFloat(ui->leKIB->text());
+        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ib);
+        QPointF deviation  = standardDeviation(calib.Ib);
+
+        ui->widgetCalibrationOfCurrent->setFactorIb(newFactor);
+        ui->widgetCalibrationOfCurrent->setMeasureIb(deviation.x(), deviation.y());
+        qDebug() << tr("Калибровка тока фазы B");
+        for(float value: calib.Ib)
+            qDebug() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qDebug() << QString("%1/%2").arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                                     arg(QLocale::system().toString(deviation.y(), 'f', 6));
+    }
+
+    if(!calib.Ic.isEmpty())
+    {
+        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
+        float   cur_factor = QLocale::system().toFloat(ui->leKIC->text());
+        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ic);
+        QPointF deviation  = standardDeviation(calib.Ic);
+
+        ui->widgetCalibrationOfCurrent->setFactorIc(newFactor);
+        ui->widgetCalibrationOfCurrent->setMeasureIc(deviation.x(), deviation.y());
+        qDebug() << tr("Калибровка тока фазы C");
+        for(float value: calib.Ic)
+            qDebug() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qDebug() << QString("%1/%2").arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                                     arg(QLocale::system().toString(deviation.y(), 'f', 6));
+    }
+
+    if(!calib._3I0.isEmpty())
+    {
+        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0();
+        float   cur_factor = QLocale::system().toFloat(ui->leK3I0->text());
+        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib._3I0);
+        QPointF deviation  = standardDeviation(calib._3I0);
+
+        ui->widgetCalibrationOfCurrent->setFactor3I0(newFactor);
+        ui->widgetCalibrationOfCurrent->setMeasure3I0(deviation.x(), deviation.y());
+        qDebug() << tr("Калибровка среднего тока 3I0");
+        for(float value: calib._3I0)
+            qDebug() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qDebug() << QString("%1/%2").arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                                     arg(QLocale::system().toString(deviation.y(), 'f', 6));
     }
 
     emit ui->widgetCalibrationOfCurrent->calibrationEnd(false);
@@ -8761,6 +8797,29 @@ float ConfiguratorWindow::newCalibrationOfCurrentFactor(float standard, float cu
         measure += value;
 
     return (standard/measure)*cur_factor;
+}
+/*!
+ * \brief ConfiguratorWindow::standardDeviation
+ * \param list Набор данных
+ * \return Среднее значение + среднеквадратичное отклонение ввиде QPointF(среднее значение, среднеквадратичное отклонение)
+ */
+QPointF ConfiguratorWindow::standardDeviation(QVector<float>& list)
+{
+    float average = 0;
+
+    for(float value: list)
+        average += value;
+
+    average /= list.count();
+
+    float deviation = 0;
+
+    for(float value: list)
+        deviation += (value - average)*(value - average);
+
+    deviation = sqrt(deviation/(list.count() - 1));
+
+    return QPointF(average, deviation);
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

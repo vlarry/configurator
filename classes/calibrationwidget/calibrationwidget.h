@@ -52,10 +52,10 @@
             void setFactorIc(float value);
             void setFactor3I0(float value);
 
-            void setMeasureIa(float value);
-            void setMeasureIb(float value);
-            void setMeasureIc(float value);
-            void setMeasure3I0(float value);
+            void setMeasureIa(float average, float deviation);
+            void setMeasureIb(float average, float deviation);
+            void setMeasureIc(float average, float deviation);
+            void setMeasure3I0(float average, float deviation);
 
             void setAmIa(float value);
             void setAmIb(float value);

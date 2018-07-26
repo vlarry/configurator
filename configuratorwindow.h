@@ -34,6 +34,7 @@
     #include <QVBoxLayout>
     #include <QHBoxLayout>
     #include <QKeyEvent>
+    #include <cmath>
     #include "modbus.h"
     #include "menubar.h"
     #include "cterminal.h"
@@ -543,7 +544,6 @@
             void sendOutputAllRequest();
             void sendInputStatesRequest();
             void sendDebugInfoRead(int channel);
-            void sendRequestCalibrationCurrentRead();
             void clearIOTable();
             void clearJournal();
             void menuPanelCtrl();
@@ -673,6 +673,7 @@
             void showErrorMessage(const QString& title, CModBusDataUnit& unit);
             void endJournalReadProcess(const QString& text);
             float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
+            QPointF standardDeviation(QVector<float>& list);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
