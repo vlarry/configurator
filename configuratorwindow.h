@@ -341,6 +341,19 @@
                 QString description;
                 QVector<block_protection_purpose_t> purpose;
             };
+            /*!
+             * \brief The calibration_current_t struct
+             *
+             * Структура описывающая переменные для выполнения калибровок по току
+             */
+            struct calibration_current_t
+            {
+                int                      request_all; // всего запросов
+                int                      request_count; // количество отправленных запросов
+                int                      pause; // пауза между запросами в мс
+                QVector<CModBusDataUnit> units; // массив запросов
+                QTimer*                  timer; // таймер отправки запросов
+            };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
             typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;
@@ -595,8 +608,7 @@
             void minimizeTabMenu(bool state);
             void panelMessageVisiblity(bool state = false);
             void calibrationOfCurrent();
-            void calibrationOfCurrentTimeout();
-            void calibrationOfCurrentPauseRequestTimeout();
+            void calibrationOfCurrentRequest();
 
         protected:
             void keyPressEvent(QKeyEvent* event);
@@ -650,6 +662,7 @@
             void displayDebugInfo(const CModBusDataUnit& unit);
             void displayStatusInfo(const CModBusDataUnit& unit);
             void displayMemoryOut(const CModBusDataUnit::vlist_t& values);
+            void displayCalibrationOfCurrent();
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
@@ -721,8 +734,7 @@
             limit_unit_t                     m_limits; // лимиты редактируемых величин
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
             QTimer*                          m_journal_timer; // проверка на обрыв чтения журнала
-            QTimer*                          m_timer_calibration_current; // таймер набора данных для калибровки токовых коэффициентов
-            QTimer*                          m_timer_calib_cur_pause_request; // пауза между запросами при калибровке токовых коэффициентов
+            calibration_current_t            m_calib_of_current; // структура для калибровок по току
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

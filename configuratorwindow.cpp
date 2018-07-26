@@ -24,9 +24,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_settings(nullptr),
     m_active_journal_current(nullptr),
     m_journal_read_current(nullptr),
-    m_journal_timer(nullptr),
-    m_timer_calibration_current(nullptr),
-    m_timer_calib_cur_pause_request(nullptr)
+    m_journal_timer(nullptr)
 {
     ui->setupUi(this);
 
@@ -51,8 +49,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_debug_info                = new QTimer(this);
     m_timer_synchronization         = new QTimer(this);
     m_journal_timer                 = new QTimer(this);
-    m_timer_calibration_current     = new QTimer(this);
-    m_timer_calib_cur_pause_request = new QTimer(this);
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -6458,13 +6454,19 @@ void ConfiguratorWindow::panelMessageVisiblity(bool state)
  */
 void ConfiguratorWindow::calibrationOfCurrent()
 {
+    m_calib_of_current = { 0, 0, 0, QVector<CModBusDataUnit>(0), nullptr };
+
     QCheckBox* checkBoxIa  = ui->widgetCalibrationOfCurrent->ctrlIa();
     QCheckBox* checkBoxIb  = ui->widgetCalibrationOfCurrent->ctrlIb();
     QCheckBox* checkBoxIc  = ui->widgetCalibrationOfCurrent->ctrlIc();
     QCheckBox* checkBox3I0 = ui->widgetCalibrationOfCurrent->ctrl3I0();
 
-    int calib_data_set = ui->widgetCalibrationOfCurrent->timeSetData()*1000;
-    int calib_pause    = ui->widgetCalibrationOfCurrent->timePauseRequest();
+    if(!checkBoxIa->isChecked() && !checkBoxIb->isChecked() && !checkBoxIc->isChecked() &&
+       !checkBox3I0->isChecked())
+    {
+        QMessageBox::warning(this, tr("Калибровка по току"), tr("Нет выбранных каналов для калибровки"));
+        return;
+    }
 
     CModBusDataUnit unit_Ia(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 64, 2);
     CModBusDataUnit unit_Ib(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 66, 2);
@@ -6476,41 +6478,36 @@ void ConfiguratorWindow::calibrationOfCurrent()
     unit_Ic.setProperty("REQUEST", CALIBRATION_CURRENT_IC);
     unit_3I0.setProperty("REQUEST", CALIBRATION_CURRENT_3I0);
 
-    if(!m_timer_calibration_current->isActive()) // если таймер набора данных не запущен, то читаем калибровки
-    {
-        inputAnalogCalibrateRead();
-        amplitudeReadOfCurrent();
-    }
+    m_calib_of_current.request_all = (ui->widgetCalibrationOfCurrent->timeSetData()*1000)/
+                                     ui->widgetCalibrationOfCurrent->timePauseRequest();
+    m_calib_of_current.pause = ui->widgetCalibrationOfCurrent->timePauseRequest();
+    m_calib_of_current.timer = new QTimer;
+
+    connect(m_calib_of_current.timer, &QTimer::timeout, this, &ConfiguratorWindow::calibrationOfCurrentRequest);
 
     if(checkBoxIa->isChecked())
-        m_modbus->sendData(unit_Ia);
+        m_calib_of_current.units << unit_Ia;
     if(checkBoxIb->isChecked())
-        m_modbus->sendData(unit_Ib);
+        m_calib_of_current.units << unit_Ib;
     if(checkBoxIc->isChecked())
-        m_modbus->sendData(unit_Ic);
+        m_calib_of_current.units << unit_Ic;
     if(checkBox3I0->isChecked())
-        m_modbus->sendData(unit_3I0);
+        m_calib_of_current.units << unit_3I0;
 
-    if(!m_timer_calibration_current->isActive())
-    {
-        m_timer_calibration_current->start(calib_data_set);
-    }
-
-    if(calib_data_set > calib_pause)
-        m_timer_calib_cur_pause_request->start(calib_pause);
+    inputAnalogCalibrateRead();
+    amplitudeReadOfCurrent();
+    calibrationOfCurrentRequest();
 }
 /*!
- * \brief ConfiguratorWindow::calibrationOfCurrentTimeout
+ * \brief ConfiguratorWindow::displayCalibrationOfCurrent
  *
- * Таймаут набора данных для расчета калибровочного коэффициента
+ * Расчет и вывод новых калибровочных коэффициентов
  */
-void ConfiguratorWindow::calibrationOfCurrentTimeout()
+void ConfiguratorWindow::displayCalibrationOfCurrent()
 {
-    m_timer_calib_cur_pause_request->stop();
-    m_timer_calibration_current->stop();
-
     CCalibrationWidget::calibration_current_t calib = ui->widgetCalibrationOfCurrent->calibrationCurrent();
 
+    qInfo() << tr("Калибровка по току:");
     if(!calib.Ia.isEmpty())
     {
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
@@ -6520,11 +6517,14 @@ void ConfiguratorWindow::calibrationOfCurrentTimeout()
 
         ui->widgetCalibrationOfCurrent->setFactorIa(newFactor);
         ui->widgetCalibrationOfCurrent->setMeasureIa(deviation.x(), deviation.y());
-        qDebug() << tr("Калибровка тока фазы А");
+        qInfo() << tr("Калибровка тока фазы А");
         for(float value: calib.Ia)
-            qDebug() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qDebug() << QString("%1/%2").arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                                     arg(QLocale::system().toString(deviation.y(), 'f', 6));
+            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIA->text());
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib.Ib.isEmpty())
@@ -6536,11 +6536,14 @@ void ConfiguratorWindow::calibrationOfCurrentTimeout()
 
         ui->widgetCalibrationOfCurrent->setFactorIb(newFactor);
         ui->widgetCalibrationOfCurrent->setMeasureIb(deviation.x(), deviation.y());
-        qDebug() << tr("Калибровка тока фазы B");
+        qInfo() << tr("Калибровка тока фазы B");
         for(float value: calib.Ib)
-            qDebug() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qDebug() << QString("%1/%2").arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                                     arg(QLocale::system().toString(deviation.y(), 'f', 6));
+            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIB->text());
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib.Ic.isEmpty())
@@ -6552,11 +6555,14 @@ void ConfiguratorWindow::calibrationOfCurrentTimeout()
 
         ui->widgetCalibrationOfCurrent->setFactorIc(newFactor);
         ui->widgetCalibrationOfCurrent->setMeasureIc(deviation.x(), deviation.y());
-        qDebug() << tr("Калибровка тока фазы C");
+        qInfo() << tr("Калибровка тока фазы C");
         for(float value: calib.Ic)
-            qDebug() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qDebug() << QString("%1/%2").arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                                     arg(QLocale::system().toString(deviation.y(), 'f', 6));
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIC->text());
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib._3I0.isEmpty())
@@ -6568,25 +6574,45 @@ void ConfiguratorWindow::calibrationOfCurrentTimeout()
 
         ui->widgetCalibrationOfCurrent->setFactor3I0(newFactor);
         ui->widgetCalibrationOfCurrent->setMeasure3I0(deviation.x(), deviation.y());
-        qDebug() << tr("Калибровка среднего тока 3I0");
+        qInfo() << tr("Калибровка среднего тока 3I0");
         for(float value: calib._3I0)
-            qDebug() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qDebug() << QString("%1/%2").arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                                     arg(QLocale::system().toString(deviation.y(), 'f', 6));
+            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leK3I0->text());
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     emit ui->widgetCalibrationOfCurrent->calibrationEnd(false);
 }
 /*!
- * \brief ConfiguratorWindow::calibrationOfCurrentPauseRequestTimeout
+ * \brief ConfiguratorWindow::calibrationOfCurrentRequest
  *
- * Таймаут между запросами набора данных
+ * Отправка запросов на калибровку по току
  */
-void ConfiguratorWindow::calibrationOfCurrentPauseRequestTimeout()
+void ConfiguratorWindow::calibrationOfCurrentRequest()
 {
-    m_timer_calib_cur_pause_request->stop();
+    m_calib_of_current.timer->stop();
 
-    calibrationOfCurrent();
+    if(m_calib_of_current.request_all == 0)
+        m_calib_of_current.request_all = 1;
+
+    if(m_calib_of_current.request_count < m_calib_of_current.request_all)
+    {
+        for(CModBusDataUnit& unit: m_calib_of_current.units)
+            m_modbus->sendData(unit);
+
+        m_calib_of_current.request_count++;
+        m_calib_of_current.timer->start(m_calib_of_current.pause);
+    }
+    else
+    {
+        disconnect(m_calib_of_current.timer, &QTimer::timeout, this,
+                   &ConfiguratorWindow::calibrationOfCurrentRequest);
+        delete m_calib_of_current.timer;
+        displayCalibrationOfCurrent();
+    }
 }
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
@@ -8989,7 +9015,4 @@ void ConfiguratorWindow::initConnect()
     connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
             &ConfiguratorWindow::calibrationOfCurrent);
-    connect(m_timer_calibration_current, &QTimer::timeout, this, &ConfiguratorWindow::calibrationOfCurrentTimeout);
-    connect(m_timer_calib_cur_pause_request, &QTimer::timeout, this,
-            &ConfiguratorWindow::calibrationOfCurrentPauseRequestTimeout);
 }

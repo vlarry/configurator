@@ -19,7 +19,7 @@
 
             CConnect* channel();
             bool      isConnected() const;
-            void      sendData(CModBusDataUnit& unit);
+            void      sendData(CModBusDataUnit& unit, int count = 1);
             void      setIntervalResponce(int interval);
             void      setIntervalSilence(int interval);
             void      setTryCount(int count);

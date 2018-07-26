@@ -267,11 +267,18 @@ void CModBus::unblock()
 {
     m_block = false;
 }
-//-------------------------------------------
-void CModBus::sendData(CModBusDataUnit& unit)
+/*!
+ * \brief CModBus::sendData
+ * \param unit Запрос
+ * \param count Количество повторений запроса - по умолчанию один
+ */
+void CModBus::sendData(CModBusDataUnit& unit, int count)
 {
     if(unit.isValid())
-        request(unit);
+    {
+        for(int i = 0; i < count; i++)
+            request(unit); // отправляем запрос заданное количество раз
+    }
 }
 //---------------------------------------------
 void CModBus::setIntervalResponce(int interval)
