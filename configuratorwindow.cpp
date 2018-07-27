@@ -6488,9 +6488,6 @@ void ConfiguratorWindow::newProject()
 //------------------------------------
 void ConfiguratorWindow::openProject()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
-
     QDir dir;
     QString fileName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
                                                     QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
@@ -6560,9 +6557,6 @@ void ConfiguratorWindow::openProject()
 //------------------------------------
 void ConfiguratorWindow::saveProject()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
-
     QDir dir;
 
     if(!dir.exists("outputs/projects"))
