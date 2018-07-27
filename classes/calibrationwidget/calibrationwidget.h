@@ -44,12 +44,15 @@
             void                         addCalibrationIc(float value);
             void                         addCalibration3I0(float value);
             const calibration_current_t& calibrationCurrent() const;
-            float                        calibrationCurrentStandard() const;
+            float                        calibrationCurrentStandardPhase() const;
             float                        calibrationCurrentStandard3I0() const;
             float                        calibrationCurrentIa() const;
             float                        calibrationCurrentIb() const;
             float                        calibrationCurrentIc() const;
             float                        calibrationCurrent3I0() const;
+
+            void setCurrentStandardPhase(float value);
+            void setCurrentStandard3I0(float value);
 
             void setFactorIa(float value);
             void setFactorIb(float value);

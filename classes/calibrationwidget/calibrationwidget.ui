@@ -480,7 +480,7 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLineEdit" name="lineEditCurrentStandard">
+          <widget class="QLineEdit" name="lineEditCurrentStandardPhase">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>

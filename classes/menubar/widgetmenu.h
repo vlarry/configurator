@@ -38,6 +38,7 @@
 
         public slots:
             void clicked();
+            void addOpenDocument(const QString& doc);
 
         signals:
             void closeWindow();
@@ -48,6 +49,7 @@
             void exportToPDFProject();
             void exportToExcelProject();
             void closeProject();
+            void addDocument(const QString&);
 
         private:
             void createMenuButtonGroup();

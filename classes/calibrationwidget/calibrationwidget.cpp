@@ -72,10 +72,10 @@ const CCalibrationWidget::calibration_current_t& CCalibrationWidget::calibration
 {
     return m_calibration_current_data;
 }
-//----------------------------------------------------------
-float CCalibrationWidget::calibrationCurrentStandard() const
+//---------------------------------------------------------------
+float CCalibrationWidget::calibrationCurrentStandardPhase() const
 {
-    return QLocale::system().toFloat(ui->lineEditCurrentStandard->text());
+    return QLocale::system().toFloat(ui->lineEditCurrentStandardPhase->text());
 }
 //-------------------------------------------------------------
 float CCalibrationWidget::calibrationCurrentStandard3I0() const
@@ -101,6 +101,16 @@ float CCalibrationWidget::calibrationCurrentIc() const
 float CCalibrationWidget::calibrationCurrent3I0() const
 {
     return QLocale::system().toFloat(ui->lineEditFactor3I0->text());
+}
+//-----------------------------------------------------------
+void CCalibrationWidget::setCurrentStandardPhase(float value)
+{
+    ui->lineEditCurrentStandardPhase->setText(QLocale::system().toString(value, 'f', 6));
+}
+//---------------------------------------------------------
+void CCalibrationWidget::setCurrentStandard3I0(float value)
+{
+    ui->lineEditCurrentStandard3I0->setText(QLocale::system().toString(value, 'f', 6));
 }
 //-----------------------------------------------
 void CCalibrationWidget::setFactorIa(float value)

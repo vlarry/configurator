@@ -6490,12 +6490,111 @@ void ConfiguratorWindow::openProject()
 {
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
+
+    QDir dir;
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
+                                                    QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
+                                                    arg("project"), tr("Проекты (*.prj)"));
+
+    if(fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+
+    if(!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox::warning(this, tr("Открытие файла проекта"), tr("Невозможно открыть файл проекта: ").
+                                                                 arg(file.errorString()));
+
+        return;
+    }
+
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(file.readAll());
+
+    file.close();
+
+    if(!jsonDocument.isObject())
+    {
+        qWarning() << tr("Неопознаный формат файла проекта.");
+        return;
+    }
+
+    QJsonObject objCalibration = jsonDocument.object();
+    QJsonValue  valCalibration = objCalibration.value("calibration");
+
+    if(!valCalibration.isObject())
+    {
+        qWarning() << tr("Не найден объект <calibration> в файле проекта.");
+        return;
+    }
+
+    QJsonObject objCurrent = valCalibration.toObject();
+    QJsonValue  valCurrent = objCurrent.value("current");
+
+    if(!valCalibration.isObject())
+    {
+        qWarning() << tr("Не найден объект <current> в файле проекта.");
+        return;
+    }
+
+    QJsonObject objStandard = valCurrent.toObject();
+    QJsonValue  valStandard = objStandard.value("standard");
+
+    if(!valStandard.isObject())
+    {
+        qWarning() << tr("Не найден объект <standard> в файле проекта.");
+        return;
+    }
+
+    QJsonObject objStandardField      = valStandard.toObject();
+    QJsonValue  valStandardFieldPhase = objStandardField.value("phase");
+    QJsonValue  valStandardField3I0   = objStandardField.value("3I0");
+
+    if(valStandardFieldPhase.isString())
+        ui->widgetCalibrationOfCurrent->setCurrentStandardPhase(valStandardFieldPhase.toString().toFloat());
+    if(valStandardField3I0.isString())
+        ui->widgetCalibrationOfCurrent->setCurrentStandard3I0(valStandardField3I0.toString().toFloat());
+
+    emit ui->widgetMenuBar->widgetMenu()->addDocument(fileName);
 }
 //------------------------------------
 void ConfiguratorWindow::saveProject()
 {
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
+
+    QDir dir;
+
+    if(!dir.exists("outputs/projects"))
+        dir.mkdir("outputs/projects");
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Запись файла проекта"),
+                                                    QString(dir.absolutePath() + "/%1/%2").
+                                                    arg("outputs/projects").arg("project.prj"),
+                                                    tr("Файлы проектов (*.prj)"));
+
+    if(fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+
+    if(!file.open(QFile::WriteOnly))
+    {
+        QMessageBox::warning(this, tr("Сохранение файла проекта"), tr("Невозможно создать файл для записи \"%1\"").
+                                                                   arg(fileName));
+        return;
+    }
+
+    QString textStandardPhase = QString::number(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase(), 'f', 6);
+    QString textStandard3I0 = QString::number(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0(), 'f', 6);
+    QString textStandard = QString("\"standard\":\n\t\t\t{\n\t\t\t\t\"phase\": \"%1\","
+                                   "\n\t\t\t\t\"3I0\": \"%2\"\n\t\t\t}").arg(textStandardPhase).arg(textStandard3I0);
+    QString textCurrent     = QString("\"current\":\n\t\t{\n\t\t\t%1\n\t\t}").arg(textStandard);
+    QString textCalibration = QString("\"calibration\":\n\t{\n\t\t%1\n\t}").arg(textCurrent);
+    QString text            = QString("{\n\t%1\n}").arg(textCalibration);
+
+    file.write(text.toStdString().c_str());
+    file.close();
 }
 //--------------------------------------
 void ConfiguratorWindow::saveAsProject()
@@ -6597,7 +6696,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
     qInfo() << tr("Калибровка по току:");
     if(!calib.Ia.isEmpty())
     {
-        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
+        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
         float   cur_factor = QLocale::system().toFloat(ui->leKIA->text());
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ia);
         QPointF deviation  = standardDeviation(calib.Ia);
@@ -6616,7 +6715,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
 
     if(!calib.Ib.isEmpty())
     {
-        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
+        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
         float   cur_factor = QLocale::system().toFloat(ui->leKIB->text());
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ib);
         QPointF deviation  = standardDeviation(calib.Ib);
@@ -6635,7 +6734,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
 
     if(!calib.Ic.isEmpty())
     {
-        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard();
+        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
         float   cur_factor = QLocale::system().toFloat(ui->leKIC->text());
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ic);
         QPointF deviation  = standardDeviation(calib.Ic);

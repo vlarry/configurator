@@ -33,6 +33,9 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonExportProject->setMenu(menu);
     ui->toolButtonExportProject->setCheckable(false);
 
+    ui->listWidgetOpenDocument->setPalette(palette());
+    ui->listWidgetOpenDocument->hide();
+
     connect(ui->toolButtonExit, &QToolButton::clicked, this, &CWidgetMenu::closeWindow);
     connect(ui->toolButtonNewProject, &QToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonOpenProject, &QToolButton::clicked, this, &CWidgetMenu::clicked);
@@ -41,11 +44,20 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonExportToPDF, &QToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonExportToExcel, &QToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonCloseProject, &QToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(this, &CWidgetMenu::addDocument, this, &CWidgetMenu::addOpenDocument);
 }
 //-------------------------
 CWidgetMenu::~CWidgetMenu()
 {
     delete ui;
+}
+//---------------------------------------------------
+void CWidgetMenu::addOpenDocument(const QString& doc)
+{
+    if(ui->listWidgetOpenDocument->isHidden())
+        ui->listWidgetOpenDocument->show();
+
+    ui->listWidgetOpenDocument->addItem(doc);
 }
 //--------------------------------------------------------
 bool CWidgetMenu::eventFilter(QObject* obj, QEvent* event)
