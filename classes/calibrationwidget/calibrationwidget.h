@@ -78,7 +78,7 @@
 
         public slots:
             void stateButton(bool state = false);
-            void valueCurrentStandardChanged(const QString& text);
+            void valueCurrentStandardChanged(const QString&);
             void stateChoiceCurrentChannelChanged(bool);
 
         protected:
