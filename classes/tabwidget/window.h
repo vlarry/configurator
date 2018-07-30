@@ -4,6 +4,7 @@
     #include <QWidget>
     #include <QApplication>
     #include <QMouseEvent>
+    #include <QVBoxLayout>
     #include <QDebug>
     #include "widgetmimedata.h"
     #include "widgetdrag.h"

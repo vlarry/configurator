@@ -7,10 +7,29 @@ CCalibrationWidget::CCalibrationWidget(QWidget* parent):
 {
     ui->setupUi(this);
 
+    ui->pushButtonCalibration->setDisabled(true);
+    ui->pushButtonApply->setDisabled(true);
+
+    QDoubleValidator* validator = new QDoubleValidator(0.000001, 10000, 6, this);
+    validator->setNotation(QDoubleValidator::StandardNotation);
+
+    ui->lineEditCurrentStandardPhase->setValidator(validator);
+    ui->lineEditCurrentStandard3I0->setValidator(validator);
+    ui->lineEditFactorIa->setValidator(validator);
+    ui->lineEditFactorIb->setValidator(validator);
+    ui->lineEditFactorIc->setValidator(validator);
+    ui->lineEditFactor3I0->setValidator(validator);
+
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::calibration);
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::stateButton);
     connect(this, &CCalibrationWidget::calibrationEnd, this, &CCalibrationWidget::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidget::apply);
+//    connect(ui->lineEditCurrentStandardPhase, &QLineEdit::textChanged, this, &CCalibrationWidget::valueCurrentStandardChanged);
+//    connect(ui->lineEditCurrentStandard3I0, &QLineEdit::editingFinished, this, &CCalibrationWidget::valueCurrentStandardChanged);
+    connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidget::stateChoiceCurrentChannelChanged);
+    connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidget::stateChoiceCurrentChannelChanged);
+    connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidget::stateChoiceCurrentChannelChanged);
+    connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidget::stateChoiceCurrentChannelChanged);
 }
 //---------------------------------------
 CCalibrationWidget::~CCalibrationWidget()
@@ -102,6 +121,12 @@ float CCalibrationWidget::calibrationCurrent3I0() const
 {
     return QLocale::system().toFloat(ui->lineEditFactor3I0->text());
 }
+//------------------------------------------------
+void CCalibrationWidget::calibrationCurrentClear()
+{
+    m_calibration_current_data = calibration_current_t({ calibration_data_t(0), calibration_data_t(0), calibration_data_t(0),
+                                                         calibration_data_t(0) });
+}
 //-----------------------------------------------------------
 void CCalibrationWidget::setCurrentStandardPhase(float value)
 {
@@ -184,6 +209,50 @@ void CCalibrationWidget::setAm3I0(float value)
 void CCalibrationWidget::stateButton(bool state)
 {
     ui->pushButtonCalibration->setEnabled(!state);
+}
+//-----------------------------------------------------------------------
+void CCalibrationWidget::valueCurrentStandardChanged(const QString& text)
+{
+
+}
+//-------------------------------------------------------------
+void CCalibrationWidget::stateChoiceCurrentChannelChanged(bool)
+{
+    float phase = QLocale::system().toFloat(ui->lineEditCurrentStandardPhase->text());
+    float _3I0  = QLocale::system().toFloat(ui->lineEditCurrentStandard3I0->text());
+
+    qDebug() << QString("phase: %1, 3I0: %2").arg(phase).arg(_3I0);
+
+    if(ui->checkBoxIa->isChecked() || ui->checkBoxIb->isChecked() || ui->checkBoxIc->isChecked())
+    {
+        if(phase > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else if(ui->checkBox3I0->isChecked() && _3I0 > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else
+            ui->pushButtonCalibration->setDisabled(true);
+
+        return;
+    }
+
+    if(ui->checkBox3I0->isChecked())
+    {
+        if(_3I0 > 0)
+            ui->pushButtonCalibration->setEnabled(true);
+        else if((ui->checkBoxIa->isChecked() || ui->checkBoxIb->isChecked() || ui->checkBoxIc->isChecked()) &&
+                (phase > 0))
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+
+        return;
+    }
+
+    ui->pushButtonCalibration->setDisabled(true);
 }
 //-----------------------------------------------------
 void CCalibrationWidget::paintEvent(QPaintEvent* event)

@@ -15,7 +15,7 @@
         class CTerminal;
     }
     //-----------------------------
-    class CTerminal: public CWindow
+    class CTerminal: public QWidget
     {
         Q_OBJECT
     

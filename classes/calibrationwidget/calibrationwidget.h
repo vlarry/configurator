@@ -6,6 +6,7 @@
     #include <QLayoutItem>
     #include <QCheckBox>
     #include <QDebug>
+    #include <QDoubleValidator>
     //----------
     namespace Ui
     {
@@ -50,6 +51,7 @@
             float                        calibrationCurrentIb() const;
             float                        calibrationCurrentIc() const;
             float                        calibrationCurrent3I0() const;
+            void                         calibrationCurrentClear();
 
             void setCurrentStandardPhase(float value);
             void setCurrentStandard3I0(float value);
@@ -76,6 +78,8 @@
 
         public slots:
             void stateButton(bool state = false);
+            void valueCurrentStandardChanged(const QString& text);
+            void stateChoiceCurrentChannelChanged(bool);
 
         protected:
             void paintEvent(QPaintEvent* event);

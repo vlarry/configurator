@@ -2,7 +2,7 @@
 #include "ui_cterminal.h"
 //------------------------------------
 CTerminal::CTerminal(QWidget* parent):
-    CWindow(parent),
+    QWidget(parent),
     ui(new Ui::CTerminal)
 {
     ui->setupUi(this);
@@ -34,7 +34,7 @@ CTerminal::~CTerminal()
 //--------------------
 void CTerminal::show()
 {
-    CWindow::show();
+    QWidget::show();
 
     if(!ui->lineEditDeviceCommand->text().isEmpty())
         ui->lineEditDeviceCommand->selectAll();
@@ -61,7 +61,7 @@ void CTerminal::closeEvent(QCloseEvent* event)
 {
     emit closeTerminal(Qt::Unchecked);
     
-    CWindow::closeEvent(event);
+    QWidget::closeEvent(event);
 }
 //----------------------------------------------------------
 bool CTerminal::eventFilter(QObject* watched, QEvent* event)

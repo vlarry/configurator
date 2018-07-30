@@ -6659,7 +6659,7 @@ void ConfiguratorWindow::calibrationOfCurrent()
     unit_3I0.setProperty("REQUEST", CALIBRATION_CURRENT_3I0);
 
     m_calib_of_current.request_all = (ui->widgetCalibrationOfCurrent->timeSetData()*1000)/
-                                     ui->widgetCalibrationOfCurrent->timePauseRequest();
+                                      ui->widgetCalibrationOfCurrent->timePauseRequest();
     m_calib_of_current.pause = ui->widgetCalibrationOfCurrent->timePauseRequest();
     m_calib_of_current.timer = new QTimer;
 
@@ -6675,7 +6675,6 @@ void ConfiguratorWindow::calibrationOfCurrent()
         m_calib_of_current.units << unit_3I0;
 
     inputAnalogCalibrateRead();
-    amplitudeReadOfCurrent();
     calibrationOfCurrentRequest();
 }
 /*!
@@ -6764,6 +6763,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
+    ui->widgetCalibrationOfCurrent->calibrationCurrentClear();
     emit ui->widgetCalibrationOfCurrent->calibrationEnd(false);
 }
 /*!
@@ -6780,6 +6780,8 @@ void ConfiguratorWindow::calibrationOfCurrentRequest()
 
     if(m_calib_of_current.request_count < m_calib_of_current.request_all)
     {
+        amplitudeReadOfCurrent();
+
         for(CModBusDataUnit& unit: m_calib_of_current.units)
             m_modbus->sendData(unit);
 
