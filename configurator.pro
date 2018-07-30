@@ -67,7 +67,10 @@ SOURCES += \
         classes/menubar/menubar.cpp \
         classes/menubar/widgetmenu.cpp \
         classes/tabwidget/tabwidget.cpp \
-    classes/calibrationwidget/calibrationwidget.cpp
+    classes/calibrationwidget/calibrationwidget.cpp \
+    classes/tabwidget/widgetmimedata.cpp \
+    classes/tabwidget/widgetdrag.cpp \
+    classes/tabwidget/window.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -111,7 +114,10 @@ HEADERS += \
         classes/menubar/menubar.h \
         classes/menubar/widgetmenu.h \
         classes/tabwidget/tabwidget.h \
-    classes/calibrationwidget/calibrationwidget.h
+    classes/calibrationwidget/calibrationwidget.h \
+    classes/tabwidget/widgetmimedata.h \
+    classes/tabwidget/widgetdrag.h \
+    classes/tabwidget/window.h
 
 FORMS += \
         configuratorwindow.ui \

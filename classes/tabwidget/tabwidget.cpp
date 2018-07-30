@@ -23,3 +23,19 @@ void CTabWidget::tabDoubleClicked(int index)
 
     removeTab(index);
 }
+//-----------------------------------------------------
+void CTabWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+    if(event->mimeData()->hasFormat(CWidgetMimeData::mimeType()))
+        event->acceptProposedAction();
+}
+//-------------------------------------------
+void CTabWidget::dropEvent(QDropEvent* event)
+{
+    const CWidgetMimeData* wmd = dynamic_cast<const CWidgetMimeData*>(event->mimeData());
+
+    if(wmd)
+    {
+        qDebug() << "dropEvent";
+    }
+}

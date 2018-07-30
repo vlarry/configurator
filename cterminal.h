@@ -3,15 +3,19 @@
     //----------------
     #include <QWidget>
     #include <QCloseEvent>
-    #include <QDebug>
+    #include <QMouseEvent>
+    #include <QMimeData>
+    #include <QDrag>
     #include <QIntValidator>
+    #include <QDebug>
+    #include "window.h"
     //----------
     namespace Ui
     {
         class CTerminal;
     }
     //-----------------------------
-    class CTerminal: public QWidget
+    class CTerminal: public CWindow
     {
         Q_OBJECT
     
@@ -30,7 +34,7 @@
 
         private slots:
             void convertDeviceCommand();
-            
+
         private:
             void closeEvent(QCloseEvent* event);
             bool eventFilter(QObject* watched, QEvent* event);

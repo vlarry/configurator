@@ -1,8 +1,8 @@
 #include "cterminal.h"
 #include "ui_cterminal.h"
 //------------------------------------
-CTerminal::CTerminal(QWidget *parent):
-    QWidget(parent),
+CTerminal::CTerminal(QWidget* parent):
+    CWindow(parent),
     ui(new Ui::CTerminal)
 {
     ui->setupUi(this);
@@ -22,6 +22,9 @@ CTerminal::CTerminal(QWidget *parent):
     ui->lineEditDeviceCommand->setValidator(new QIntValidator(1, 99));
 
     connect(ui->pushButtonSendDeviceCommand, &QPushButton::clicked, this, &CTerminal::convertDeviceCommand);
+    setAcceptDrops(true);
+
+    setMouseTracking(true);
 }
 //---------------------
 CTerminal::~CTerminal()
@@ -31,7 +34,7 @@ CTerminal::~CTerminal()
 //--------------------
 void CTerminal::show()
 {
-    QWidget::show();
+    CWindow::show();
 
     if(!ui->lineEditDeviceCommand->text().isEmpty())
         ui->lineEditDeviceCommand->selectAll();
@@ -58,7 +61,7 @@ void CTerminal::closeEvent(QCloseEvent* event)
 {
     emit closeTerminal(Qt::Unchecked);
     
-    QWidget::closeEvent(event);
+    CWindow::closeEvent(event);
 }
 //----------------------------------------------------------
 bool CTerminal::eventFilter(QObject* watched, QEvent* event)
