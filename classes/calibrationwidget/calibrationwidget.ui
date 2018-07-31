@@ -839,12 +839,15 @@
            <property name="text">
             <string>Выполнить</string>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="pushButtonApply">
            <property name="text">
-            <string>Применить</string>
+            <string>Сохранить</string>
            </property>
           </widget>
          </item>

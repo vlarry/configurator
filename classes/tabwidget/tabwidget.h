@@ -4,6 +4,7 @@
     #include <QTabWidget>
     #include <QEvent>
     #include <QMouseEvent>
+    #include <QTabBar>
     #include <QDropEvent>
     #include <QDragEnterEvent>
     #include <QDragMoveEvent>

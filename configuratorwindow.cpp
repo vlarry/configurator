@@ -1865,10 +1865,14 @@ void ConfiguratorWindow::protectionControlGroupRead()
  */
 void ConfiguratorWindow::amplitudeReadOfCurrent()
 {
-    sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
-    sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
-    sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
-    sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
+    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
+        sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
+    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+        sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
+    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+        sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
+    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+        sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchRead

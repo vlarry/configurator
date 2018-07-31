@@ -8,7 +8,6 @@ CCalibrationWidget::CCalibrationWidget(QWidget* parent):
     ui->setupUi(this);
 
     ui->pushButtonCalibration->setDisabled(true);
-    ui->pushButtonApply->setDisabled(true);
 
     QDoubleValidator* validator = new QDoubleValidator(0.000001, 10000, 6, this);
     validator->setNotation(QDoubleValidator::StandardNotation);
@@ -20,7 +19,7 @@ CCalibrationWidget::CCalibrationWidget(QWidget* parent):
     ui->lineEditFactorIc->setValidator(validator);
     ui->lineEditFactor3I0->setValidator(validator);
 
-    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::calibration);
+    connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidget::calibration);
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::stateButton);
     connect(this, &CCalibrationWidget::calibrationEnd, this, &CCalibrationWidget::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidget::apply);
@@ -209,6 +208,8 @@ void CCalibrationWidget::setAm3I0(float value)
 void CCalibrationWidget::stateButton(bool state)
 {
     ui->pushButtonCalibration->setEnabled(!state);
+    ui->pushButtonApply->setEnabled(!state);
+    ui->pushButtonCalibration->setChecked(state);
 }
 //------------------------------------------------------------------
 void CCalibrationWidget::valueCurrentStandardChanged(const QString&)
@@ -220,7 +221,9 @@ void CCalibrationWidget::valueCurrentStandardChanged(const QString&)
     if(le == ui->lineEditCurrentStandardPhase)
     {
         if((ui->checkBoxIa->isChecked() || ui->checkBoxIb->isChecked() || ui->checkBoxIc->isChecked()) && phase > 0)
+        {
             ui->pushButtonCalibration->setEnabled(true);
+        }
         else if(ui->checkBox3I0->isChecked() && _3I0 > 0)
             ui->pushButtonCalibration->setEnabled(true);
         else
@@ -273,6 +276,8 @@ void CCalibrationWidget::stateChoiceCurrentChannelChanged(bool)
         {
             ui->pushButtonCalibration->setEnabled(true);
         }
+        else
+            ui->pushButtonCalibration->setDisabled(true);
 
         return;
     }
