@@ -220,7 +220,11 @@ void CMatrixPurposeModel::fillVerticalHeaderModel(QStandardItemModel& headerMode
 //----------------------------------------------------------------------------
 void CMatrixPurposeModel::fillHeaderProtectionModel(const QStringList& labels)
 {
-    int columns = 0;
+    QStandardItem* hitemGroup = new QStandardItem(tr("Заблокировать защиту"));
+    m_horizontal_header.setItem(0, 0, hitemGroup);
+    QStandardItem* vitemGroup = new QStandardItem(tr("Блокирующая защита"));
+    vitemGroup->setData(1, Qt::UserRole);
+    m_vertical_header.setItem(0, 0, vitemGroup);
 
     for(const QString& label: labels)
     {
@@ -229,9 +233,12 @@ void CMatrixPurposeModel::fillHeaderProtectionModel(const QStringList& labels)
 
         hitem->setData(1, Qt::UserRole);
 
-        m_horizontal_header.setItem(0, columns, hitem);
-        m_vertical_header.setItem(0, columns++, vitem);
+        hitemGroup->appendColumn(QList<QStandardItem*>() << hitem);
+        vitemGroup->appendColumn(QList<QStandardItem*>() << vitem);
     }
+
+    m_horizontal_header.setItem(0, 0, hitemGroup);
+    m_vertical_header.setItem(0, 0, vitemGroup);
 }
 //---------------------------------------------------------------------------------------------------
 void CMatrixPurposeModel::fillHeaderMonitorModel(const QStringList& rows, const QStringList& columns)
