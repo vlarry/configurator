@@ -2390,18 +2390,32 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         {
             case CALIBRATION_CURRENT_IA:
                 ui->widgetCalibrationOfCurrent->addCalibrationIa(value.f);
+                emit ui->widgetCalibrationOfCurrent->dataIncrement();
             break;
 
             case CALIBRATION_CURRENT_IB:
                 ui->widgetCalibrationOfCurrent->addCalibrationIb(value.f);
+                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
             break;
 
             case CALIBRATION_CURRENT_IC:
                 ui->widgetCalibrationOfCurrent->addCalibrationIc(value.f);
+                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
+                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+                {
+                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
+                }
             break;
 
             case CALIBRATION_CURRENT_3I0:
                 ui->widgetCalibrationOfCurrent->addCalibration3I0(value.f);
+                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
+                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked() &&
+                        !ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+                {
+                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
+                }
             break;
 
             default: break;
@@ -2426,19 +2440,19 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         switch(type)
         {
             case AMPLITUDE_READ_CH2:
-                ui->widgetCalibrationOfCurrent->setAm3I0(value.f);
+                ui->widgetCalibrationOfCurrent->setDeviation3I0(value.f);
             break;
 
             case AMPLITUDE_READ_CH3:
-                ui->widgetCalibrationOfCurrent->setAmIa(value.f);
+                ui->widgetCalibrationOfCurrent->setDeviationIa(value.f);
             break;
 
             case AMPLITUDE_READ_CH4:
-                ui->widgetCalibrationOfCurrent->setAmIb(value.f);
+                ui->widgetCalibrationOfCurrent->setDeviationIb(value.f);
             break;
 
             case AMPLITUDE_READ_CH5:
-                ui->widgetCalibrationOfCurrent->setAmIc(value.f);
+                ui->widgetCalibrationOfCurrent->setDeviationIc(value.f);
             break;
 
             default: break;
@@ -6662,10 +6676,9 @@ void ConfiguratorWindow::calibrationOfCurrent()
     unit_Ic.setProperty("REQUEST", CALIBRATION_CURRENT_IC);
     unit_3I0.setProperty("REQUEST", CALIBRATION_CURRENT_3I0);
 
-    m_calib_of_current.request_all = (ui->widgetCalibrationOfCurrent->timeSetData()*1000)/
-                                      ui->widgetCalibrationOfCurrent->timePauseRequest();
-    m_calib_of_current.pause = ui->widgetCalibrationOfCurrent->timePauseRequest();
-    m_calib_of_current.timer = new QTimer;
+    m_calib_of_current.request_all = ui->widgetCalibrationOfCurrent->dataSetCount();
+    m_calib_of_current.pause       = ui->widgetCalibrationOfCurrent->timePauseRequest();
+    m_calib_of_current.timer       = new QTimer;
 
     connect(m_calib_of_current.timer, &QTimer::timeout, this, &ConfiguratorWindow::calibrationOfCurrentRequest);
 
@@ -6699,7 +6712,8 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         QPointF deviation  = standardDeviation(calib.Ia);
 
         ui->widgetCalibrationOfCurrent->setFactorIa(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIa(deviation.x(), deviation.y());
+        ui->widgetCalibrationOfCurrent->setMeasureIa(deviation.x());
+        ui->widgetCalibrationOfCurrent->setDeviationIa(deviation.y());
         qInfo() << tr("Калибровка тока фазы А");
         for(float value: calib.Ia)
             qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
@@ -6718,7 +6732,8 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         QPointF deviation  = standardDeviation(calib.Ib);
 
         ui->widgetCalibrationOfCurrent->setFactorIb(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIb(deviation.x(), deviation.y());
+        ui->widgetCalibrationOfCurrent->setMeasureIb(deviation.x());
+        ui->widgetCalibrationOfCurrent->setDeviationIb(deviation.y());
         qInfo() << tr("Калибровка тока фазы B");
         for(float value: calib.Ib)
             qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
@@ -6737,7 +6752,8 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         QPointF deviation  = standardDeviation(calib.Ic);
 
         ui->widgetCalibrationOfCurrent->setFactorIc(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIc(deviation.x(), deviation.y());
+        ui->widgetCalibrationOfCurrent->setMeasureIc(deviation.x());
+        ui->widgetCalibrationOfCurrent->setDeviationIc(deviation.y());
         qInfo() << tr("Калибровка тока фазы C");
         for(float value: calib.Ic)
             qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
@@ -6756,7 +6772,8 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         QPointF deviation  = standardDeviation(calib._3I0);
 
         ui->widgetCalibrationOfCurrent->setFactor3I0(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasure3I0(deviation.x(), deviation.y());
+        ui->widgetCalibrationOfCurrent->setMeasure3I0(deviation.x());
+        ui->widgetCalibrationOfCurrent->setDeviation3I0(deviation.y());
         qInfo() << tr("Калибровка среднего тока 3I0");
         for(float value: calib._3I0)
             qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
@@ -6784,8 +6801,6 @@ void ConfiguratorWindow::calibrationOfCurrentRequest()
 
     if(m_calib_of_current.request_count < m_calib_of_current.request_all)
     {
-        amplitudeReadOfCurrent();
-
         for(CModBusDataUnit& unit: m_calib_of_current.units)
             m_modbus->sendData(unit);
 
@@ -9202,4 +9217,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
+    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
 }

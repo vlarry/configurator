@@ -19,7 +19,9 @@ CCalibrationWidget::CCalibrationWidget(QWidget* parent):
     ui->lineEditFactorIc->setValidator(validator);
     ui->lineEditFactor3I0->setValidator(validator);
 
-    connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidget::calibration);
+    ui->progressBarDataSet->hide();
+
+    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::calibration);
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidget::stateButton);
     connect(this, &CCalibrationWidget::calibrationEnd, this, &CCalibrationWidget::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidget::apply);
@@ -29,6 +31,8 @@ CCalibrationWidget::CCalibrationWidget(QWidget* parent):
     connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidget::stateChoiceCurrentChannelChanged);
     connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidget::stateChoiceCurrentChannelChanged);
     connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidget::stateChoiceCurrentChannelChanged);
+    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidget::saveCalibrationToFlash);
+    connect(this, &CCalibrationWidget::dataIncrement, this, &CCalibrationWidget::progressBarIncrement);
 }
 //---------------------------------------
 CCalibrationWidget::~CCalibrationWidget()
@@ -55,10 +59,10 @@ QCheckBox* CCalibrationWidget::ctrl3I0() const
 {
     return ui->checkBox3I0;
 }
-//-----------------------------------------
-int CCalibrationWidget::timeSetData() const
+//------------------------------------------
+int CCalibrationWidget::dataSetCount() const
 {
-    return ui->spinBoxTimeSetData->value();
+    return ui->spinBoxSetDataCount->value();
 }
 //----------------------------------------------
 int CCalibrationWidget::timePauseRequest() const
@@ -156,60 +160,57 @@ void CCalibrationWidget::setFactor3I0(float value)
 {
     ui->lineEditFactor3I0->setText(QLocale::system().toString(value, 'f', 6));
 }
-//-------------------------------------------------------------------
-void CCalibrationWidget::setMeasureIa(float average, float deviation)
+//--------------------------------------------------
+void CCalibrationWidget::setMeasureIa(float average)
 {
-    QString text = QString("%1 (%2)").arg(QLocale::system().toString(average, 'f', 6)).
-                                    arg(QLocale::system().toString(deviation, 'f', 6));
-    ui->lineEditMeasuredD01->setText(text);
+    ui->lineEditMeasuredD01->setText(QLocale::system().toString(average, 'f', 6));
 }
-//-------------------------------------------------------------------
-void CCalibrationWidget::setMeasureIb(float average, float deviation)
+//--------------------------------------------------
+void CCalibrationWidget::setMeasureIb(float average)
 {
-    QString text = QString("%1 (%2)").arg(QLocale::system().toString(average, 'f', 6)).
-                                    arg(QLocale::system().toString(deviation, 'f', 6));
-    ui->lineEditMeasuredD02->setText(text);
+    ui->lineEditMeasuredD02->setText(QLocale::system().toString(average, 'f', 6));
 }
-//-------------------------------------------------------------------
-void CCalibrationWidget::setMeasureIc(float average, float deviation)
+//--------------------------------------------------
+void CCalibrationWidget::setMeasureIc(float average)
 {
-    QString text = QString("%1 (%2)").arg(QLocale::system().toString(average, 'f', 6)).
-                                    arg(QLocale::system().toString(deviation, 'f', 6));
-    ui->lineEditMeasuredD03->setText(text);
+    ui->lineEditMeasuredD03->setText(QLocale::system().toString(average, 'f', 6));
 }
-//--------------------------------------------------------------------
-void CCalibrationWidget::setMeasure3I0(float average, float deviation)
+//---------------------------------------------------
+void CCalibrationWidget::setMeasure3I0(float average)
 {
-    QString text = QString("%1 (%2)").arg(QLocale::system().toString(average, 'f', 6)).
-                                    arg(QLocale::system().toString(deviation, 'f', 6));
-    ui->lineEditMeasuredD04->setText(text);
+    ui->lineEditMeasuredD04->setText(QLocale::system().toString(average, 'f', 6));
 }
-//-------------------------------------------
-void CCalibrationWidget::setAmIa(float value)
+//--------------------------------------------------
+void CCalibrationWidget::setDeviationIa(float value)
 {
-    ui->lineEditAmCH03->setText(QLocale::system().toString(value, 'f', 6));
+    ui->lineEditDeviationIa->setText(QLocale::system().toString(value, 'f', 6));
 }
-//-------------------------------------------
-void CCalibrationWidget::setAmIb(float value)
+//--------------------------------------------------
+void CCalibrationWidget::setDeviationIb(float value)
 {
-    ui->lineEditAmCH04->setText(QLocale::system().toString(value, 'f', 6));
+    ui->lineEditDeviationIb->setText(QLocale::system().toString(value, 'f', 6));
 }
-//-------------------------------------------
-void CCalibrationWidget::setAmIc(float value)
+//--------------------------------------------------
+void CCalibrationWidget::setDeviationIc(float value)
 {
-    ui->lineEditAmCH05->setText(QLocale::system().toString(value, 'f', 6));
+    ui->lineEditDeviationIc->setText(QLocale::system().toString(value, 'f', 6));
 }
-//--------------------------------------------
-void CCalibrationWidget::setAm3I0(float value)
+//---------------------------------------------------
+void CCalibrationWidget::setDeviation3I0(float value)
 {
-    ui->lineEditAmCH02->setText(QLocale::system().toString(value, 'f', 6));
+    ui->lineEditDeviation3I0->setText(QLocale::system().toString(value, 'f', 6));
 }
 //----------------------------------------------
 void CCalibrationWidget::stateButton(bool state)
 {
     ui->pushButtonCalibration->setEnabled(!state);
     ui->pushButtonApply->setEnabled(!state);
+    ui->pushButtonSaveToFlash->setEnabled(!state);
     ui->pushButtonCalibration->setChecked(state);
+    ui->progressBarDataSet->setVisible(state);
+
+    if(state)
+        ui->progressBarDataSet->setValue(0);
 }
 //------------------------------------------------------------------
 void CCalibrationWidget::valueCurrentStandardChanged(const QString&)
@@ -283,6 +284,28 @@ void CCalibrationWidget::stateChoiceCurrentChannelChanged(bool)
     }
 
     ui->pushButtonCalibration->setDisabled(true);
+}
+//-----------------------------------------------
+void CCalibrationWidget::saveCalibrationToFlash()
+{
+    int answer = QMessageBox::question(this, tr("Запись калибровок по току в устройство"),
+                                             tr("Вы действительно хотите сохранить "
+                                                "\nновые калибровочные коэффициенты "
+                                                "\nв память устройства?"));
+    if(answer == QMessageBox::Yes)
+    {
+        qInfo() << tr("Сохранение калибровочных коэффициентов по току пользователем во флеш.");
+        emit saveToFlash(2);
+    }
+    else
+        qInfo() << tr("Отказ от сохранения калибровочных коэффициентов по току во флеш.");
+}
+//---------------------------------------------
+void CCalibrationWidget::progressBarIncrement()
+{
+    int count = ui->progressBarDataSet->value();
+    int step  = 100/ui->spinBoxSetDataCount->value();
+    ui->progressBarDataSet->setValue(count + step);
 }
 //-----------------------------------------------------
 void CCalibrationWidget::paintEvent(QPaintEvent* event)

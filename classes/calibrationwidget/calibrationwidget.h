@@ -7,6 +7,7 @@
     #include <QCheckBox>
     #include <QDebug>
     #include <QDoubleValidator>
+    #include <QMessageBox>
     //----------
     namespace Ui
     {
@@ -37,7 +38,7 @@
             QCheckBox* ctrlIc() const;
             QCheckBox* ctrl3I0() const;
 
-            int timeSetData() const;
+            int dataSetCount() const;
             int timePauseRequest() const;
 
             void                         addCalibrationIa(float value);
@@ -61,25 +62,29 @@
             void setFactorIc(float value);
             void setFactor3I0(float value);
 
-            void setMeasureIa(float average, float deviation);
-            void setMeasureIb(float average, float deviation);
-            void setMeasureIc(float average, float deviation);
-            void setMeasure3I0(float average, float deviation);
+            void setMeasureIa(float average);
+            void setMeasureIb(float average);
+            void setMeasureIc(float average);
+            void setMeasure3I0(float average);
 
-            void setAmIa(float value);
-            void setAmIb(float value);
-            void setAmIc(float value);
-            void setAm3I0(float value);
+            void setDeviationIa(float value);
+            void setDeviationIb(float value);
+            void setDeviationIc(float value);
+            void setDeviation3I0(float value);
 
         signals:
             void apply();
+            void saveToFlash(int);
             void calibration();
             void calibrationEnd(bool = false);
+            void dataIncrement();
 
         public slots:
             void stateButton(bool state = false);
             void valueCurrentStandardChanged(const QString&);
             void stateChoiceCurrentChannelChanged(bool);
+            void saveCalibrationToFlash();
+            void progressBarIncrement();
 
         protected:
             void paintEvent(QPaintEvent* event);
