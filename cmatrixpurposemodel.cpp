@@ -31,54 +31,48 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, IO_Type io_t
     QAbstractTableModel(parent),
     m_io_type(io_type)
 {
-//    fillHeaderProtectionModel(labels);
+    fillHeaderProtectionModel(labels);
 
-//    CRow::column_t columns;
+    CRow::ColumnArray columns;
 
-//    for(const QString& label: labels)
-//    {
-//        columns << CColumn(label);
-//    }
+    for(const QString& label: labels)
+    {
+        columns << CColumn(unit_t({ label, "", "", -1, UNCHECKED }));
+    }
 
-//    for(const QString& label: labels)
-//    {
-//        CRow row("", label, columns);
-//        m_matrix.addRow(row);
-//    }
-
-//    m_matrix.setRowCount(labels.count());
-//    m_matrix.setColumnCount(labels.count());
+    for(const QString& label: labels)
+    {
+        CRow row(unit_t({ "", label, "", -1, UNCHECKED }), columns);
+        m_matrix.addRow(row);
+    }
 }
 //------------------------------------------------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& rows, const QStringList& columns, IO_Type io_type,
+CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& columns, const QStringList& rows, IO_Type io_type,
                                          QAbstractTableModel* parent):
     QAbstractTableModel(parent),
     m_io_type(io_type)
 {
-//    fillHeaderMonitorModel(rows, columns);
+    fillHeaderMonitorModel(rows, columns);
 
-//    CRow::column_t column_list;
+    CRow::ColumnArray column_array;
 
-//    for(const QString& column_label: columns)
-//        column_list << CColumn(column_label);
+    for(const QString& column_label: columns)
+        column_array << CColumn(unit_t({ column_label, "", "", -1, UNCHECKED }));
 
-//    for(const QString& row_label: rows)
-//    {
-//        CRow row("", row_label, column_list);
-//        m_matrix.addRow(row);
-//    }
-
-//    m_matrix.setRowCount(rows.count());
-//    m_matrix.setColumnCount(columns.count());
+    for(const QString& row_label: rows)
+    {
+        CRow row(unit_t({ "", row_label, "", -1, UNCHECKED }), column_array);
+        m_matrix.addRow(row);
+    }
 }
 //------------------------------------
 void CMatrixPurposeModel::updateData()
 {
     // обновление модели
-//    QModelIndex topLeft     = createIndex(0, 0);
-//    QModelIndex bottomRight = createIndex(m_matrix.rowCount() - 1, m_matrix.columnCount() - 1);
+    QModelIndex topLeft     = createIndex(0, 0);
+    QModelIndex bottomRight = createIndex(m_matrix.rowCount() - 1, m_matrix.columnCount() - 1);
 
-//    emit dataChanged(topLeft, bottomRight);
+    emit dataChanged(topLeft, bottomRight);
 }
 //-----------------------------------------
 CMatrix& CMatrixPurposeModel::matrixTable()

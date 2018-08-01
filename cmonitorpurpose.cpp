@@ -80,13 +80,10 @@ void CMonitorPurpose::clearTable()
 
     CMatrix& matrix = model->matrixTable();
 
-//    for(int i = 0; i < matrix.rowCount(); i++)
-//    {
-//        for(int j = 0; j < matrix.columnCount(); j++)
-//        {
-//            matrix[i][j].setState(CColumn::UNCHECKED);
-//        }
-//    }
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        matrix[i].data().state = UNCHECKED;
+    }
 
     model->updateData();
 }
