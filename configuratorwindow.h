@@ -685,7 +685,7 @@
             QDateTime           unpackDateTime(QVector<quint8>& data);
             void                convertDataHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
             group_t             createVariableGroup(const QString& io_key);
-            QVector<QPair<QString, QString> > loadLabelRows(const QString& type);
+            QVector<QPair<QString, QString> > loadLabelColumns(const QString& type);
             QVector<QString>    loadVaribleByType(const QString& type);
             block_protection_list_t loadProtectionList();
             bool deleteLogFile();

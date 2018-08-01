@@ -42,7 +42,7 @@
             };
 
         public:
-            CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
+            CMatrixPurposeModel(QVector<QPair<QString, QString> >& label_columns, group_t& group,
                                 IO_Type io_type = IO_INPUT, QAbstractTableModel* parent = nullptr);
             CMatrixPurposeModel(const QStringList& labels, IO_Type io_type = IO_INPUT,
                                 QAbstractTableModel* parent = nullptr);
@@ -59,8 +59,8 @@
             bool          setData(const QModelIndex& index, const QVariant& value, int role);
             QVariant      data(const QModelIndex& index, int role = Qt::DisplayRole) const;
             Qt::ItemFlags flags(const QModelIndex& index) const;
-            void          fillHorizontalHeaderModel(QStandardItemModel& headerModel, group_t& group);
-            void          fillVerticalHeaderModel(QStandardItemModel& headerModel,
+            void          fillVerticalHeaderModel(QStandardItemModel& headerModel, group_t& group);
+            void          fillHorizontalHeaderModel(QStandardItemModel& headerModel,
                                                   const QVector<QPair<QString, QString> >& labels);
             void          fillHeaderProtectionModel(const QStringList& labels);
             void          fillHeaderMonitorModel(const QStringList& rows, const QStringList& columns);

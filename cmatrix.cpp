@@ -1,223 +1,100 @@
 #include "cmatrix.h"
 //-----------------
-CMatrix::CMatrix():
-    m_rows(row_t(0, CRow())),
-    m_rowCount(0),
-    m_columnCount(0)
+CColumn::CColumn():
+    m_data({ "", "", "", -1, UNCHECKED })
 {
 
 }
-//------------------------------------------------------
-CMatrix::CMatrix(CMatrix::row_t& rows, int columnCount):
-    m_rows(rows),
-    m_rowCount(rows.count()),
-    m_columnCount(columnCount)
+//-----------------------------------
+CColumn::CColumn(const unit_t& data):
+    m_data(data)
 {
 
 }
-//--------------------------------
-void CMatrix::addRow(CRow& row)
+//---------------------
+unit_t& CColumn::data()
 {
-    m_rows.push_back(row);
+    return m_data;
 }
-//-----------------------------
-CMatrix::row_t& CMatrix::rows()
+//---------------------------------
+const unit_t& CColumn::data() const
 {
-    return m_rows;
+    return m_data;
 }
-//--------------------------------------------
-int CMatrix::rowIndexByKey(const QString& key)
+//-----------
+CRow::CRow():
+    m_data({ "", "", "", -1, UNCHECKED }),
+    m_column_array(0)
 {
-    int index = -1;
 
-    for(int i = 0; i < m_rowCount; i++)
-    {
-        if(m_rows[i].key().toUpper() == key.toUpper())
-        {
-            index = i;
-            break;
-        }
-    }
-
-    return index;
 }
-//---------------------------
-int CMatrix::rowCount() const
+//---------------------------------------------------------------
+CRow::CRow(const unit_t& data, const CRow::ColumnArray& columns):
+    m_data(data),
+    m_column_array(columns)
 {
-    return m_rowCount;
+
+}
+//------------------
+unit_t& CRow::data()
+{
+    return m_data;
 }
 //------------------------------
-int CMatrix::columnCount() const
+const unit_t& CRow::data() const
 {
-    return m_columnCount;
+    return m_data;
 }
-//----------------------------------
-void CMatrix::setRowCount(int count)
+//---------------------
+int CRow::count() const
 {
-    m_rowCount = count;
-}
-//-------------------------------------
-void CMatrix::setColumnCount(int count)
-{
-    m_columnCount = count;
-}
-//-----------------------------------
-CRow& CMatrix::operator [](int index)
-{
-    return m_rows[index];
-}
-//-----------------------------------------------
-const CRow& CMatrix::operator [](int index) const
-{
-    return m_rows[index];
-}
-//-----Класс колонка-----
-//-----------------------
-CColumn::CColumn():
-    m_bit(-1),
-    m_state(StateType::UNCHECKED),
-    m_key(""),
-    m_name(""),
-    m_description("")
-{
-
-}
-//------------------------------------
-CColumn::CColumn(const QString& name):
-    m_bit(-1),
-    m_state(StateType::UNCHECKED),
-    m_key(""),
-    m_name(name),
-    m_description("")
-{
-
-}
-//--------------------------------------------------------------------------------------------------------------
-CColumn::CColumn(int bit, StateType state, const QString& key, const QString& name, const QString& description):
-    m_bit(bit),
-    m_state(state),
-    m_key(key),
-    m_name(name),
-    m_description(description)
-{
-
-}
-//----------------------
-int CColumn::bit() const
-{
-    return m_bit;
-}
-//--------------------------
-QString CColumn::key() const
-{
-    return m_key;
-}
-//---------------------------
-QString CColumn::name() const
-{
-    return m_name;
-}
-//----------------------------------
-QString CColumn::description() const
-{
-    return m_description;
-}
-//---------------------------------------
-CColumn::StateType CColumn::state() const
-{
-    return m_state;
-}
-//---------------------------
-void CColumn::setBit(int bit)
-{
-    m_bit = bit;
-}
-//----------------------------------------------------------------------------------------
-void CColumn::setData(const QString& key, const QString& name, const QString& description)
-{
-    m_key         = key;
-    m_name        = name;
-    m_description = description;
-}
-//--------------------------------------
-void CColumn::setKey(const QString& key)
-{
-    m_key = key;
-}
-//----------------------------------------
-void CColumn::setName(const QString& name)
-{
-    m_name = name;
-}
-//------------------------------------------------------
-void CColumn::setDescription(const QString& description)
-{
-    m_description = description;
-}
-//-------------------------------------
-void CColumn::setState(StateType state)
-{
-    m_state = state;
-}
-//--Класс строка---
-//-----------------
-CRow::CRow():
-    m_key(""),
-    m_name(""),
-    m_columns(column_t(0, CColumn()))
-{
-
-}
-//---------------------------------------------------------------------------
-CRow::CRow(const QString& key, const QString& name, CRow::column_t& columns):
-    m_key(key),
-    m_name(name),
-    m_columns(columns)
-{
-
-}
-//-----------------------------------
-void CRow::addColumn(CColumn& column)
-{
-    m_columns.push_back(column);
-}
-//-----------------------
-QString CRow::key() const
-{
-    return m_key;
-}
-//------------------------
-QString CRow::name() const
-{
-    return m_name;
-}
-//-----------------------------
-CRow::column_t& CRow::columns()
-{
-    return m_columns;
-}
-//-----------------------------------
-void CRow::setKey(const QString &key)
-{
-    m_key = key;
-}
-//-------------------------------------
-void CRow::setName(const QString& name)
-{
-    m_name = name;
-}
-//--------------------------------------------
-void CRow::setColumns(CRow::column_t& columns)
-{
-    m_columns = columns;
+    return m_column_array.count();
 }
 //-----------------------------------
 CColumn& CRow::operator [](int index)
 {
-    return m_columns[index];
+    Q_ASSERT(index >= 0 && index <= m_column_array.count());
+    return m_column_array[index];
 }
 //-----------------------------------------------
 const CColumn& CRow::operator [](int index) const
 {
-    return m_columns[index];
+    Q_ASSERT(index >= 0 && index <= m_column_array.count());
+    return m_column_array[index];
+}
+//-----------------
+CMatrix::CMatrix():
+    m_matrix(0)
+{
+
+}
+//-----------------------------------
+void CMatrix::addRow(const CRow& row)
+{
+    m_matrix.push_back(row);
+}
+//------------------------------
+int CMatrix::columnCount() const
+{
+    if(m_matrix.isEmpty())
+        return 0;
+
+    return m_matrix[0].count();
+}
+//---------------------------
+int CMatrix::rowCount() const
+{
+    return m_matrix.count();
+}
+//-----------------------------------
+CRow& CMatrix::operator [](int index)
+{
+    Q_ASSERT(index >= 0 && index <= m_matrix.count());
+    return m_matrix[index];
+}
+//-----------------------------------------------
+const CRow& CMatrix::operator [](int index) const
+{
+    Q_ASSERT(index >= 0 && index <= m_matrix.count());
+    return m_matrix[index];
 }

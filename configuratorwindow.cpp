@@ -235,44 +235,44 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
 
     CMatrix matrix = model->matrixTable();
 
-    if(matrix.rowCount() == 0)
-        return;
+//    if(matrix.rowCount() == 0)
+//        return;
 
-    for(int i = 0; i < matrix.rowCount(); i++)
-    {
-        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
-        QVector<quint16> values = QVector<quint16>(24, 0);
+//    for(int i = 0; i < matrix.rowCount(); i++)
+//    {
+//        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
+//        QVector<quint16> values = QVector<quint16>(24, 0);
 
-        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
-        {
-            if(i == j)
-            {
-                pos--;
-                continue;
-            }
+//        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
+//        {
+//            if(i == j)
+//            {
+//                pos--;
+//                continue;
+//            }
 
-            block_protection_purpose_t purpose = purpose_list[pos];
+//            block_protection_purpose_t purpose = purpose_list[pos];
 
-            int col = purpose.bit/16;
-            int bit = purpose.bit%16;
+//            int col = purpose.bit/16;
+//            int bit = purpose.bit%16;
 
-            bool state = matrix[i][j].state();
+//            bool state = matrix[i][j].state();
 
-            quint16 value = values[col];
+//            quint16 value = values[col];
 
-            if(state)
-                value |= (1 << bit);
+//            if(state)
+//                value |= (1 << bit);
 
-            values[col] = value;
-        }
+//            values[col] = value;
+//        }
 
-        QVector<quint16> tvalues;
+//        QVector<quint16> tvalues;
 
-        for(int k = 0; k < values.count() - 1; k += 2)
-            tvalues << values[k + 1] << values[k];
+//        for(int k = 0; k < values.count() - 1; k += 2)
+//            tvalues << values[k + 1] << values[k];
 
-        sendRequestWrite(m_block_list[i].address, tvalues, -1);
-    }
+//        sendRequestWrite(m_block_list[i].address, tvalues, -1);
+//    }
 }
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
@@ -1251,15 +1251,15 @@ void ConfiguratorWindow::purposeMemoryOutLedWrite()
     CMatrix matrix = model->matrixTable();
     QVector<quint16> data;
 
-    for(int i = 0; i < matrix.rowCount(); i++)
-    {
-        CColumn column = matrix[i][0];
+//    for(int i = 0; i < matrix.rowCount(); i++)
+//    {
+//        CColumn column = matrix[i][0];
 
-        if(column.state() == CColumn::UNCHECKED)
-            data << 0;
-        else
-            data << 1;
-    }
+//        if(column.state() == CColumn::UNCHECKED)
+//            data << 0;
+//        else
+//            data << 1;
+//    }
 
     if(!data.isEmpty())
         sendRequestWrite(0x90C, data, CModBusDataUnit::WriteMultipleRegisters);
@@ -1275,15 +1275,15 @@ void ConfiguratorWindow::purposeMemoryOutRelayWrite()
     CMatrix matrix = model->matrixTable();
     QVector<quint16> data;
 
-    for(int i = 0; i < matrix.rowCount(); i++)
-    {
-        CColumn column = matrix[i][0];
+//    for(int i = 0; i < matrix.rowCount(); i++)
+//    {
+//        CColumn column = matrix[i][0];
 
-        if(column.state() == CColumn::UNCHECKED)
-            data << 0;
-        else
-            data << 1;
-    }
+//        if(column.state() == CColumn::UNCHECKED)
+//            data << 0;
+//        else
+//            data << 1;
+//    }
 
     if(!data.isEmpty())
         sendRequestWrite(0x900, data, CModBusDataUnit::WriteMultipleRegisters);
@@ -3860,7 +3860,7 @@ void ConfiguratorWindow::initModelTables()
 
     if(!group.isEmpty())
     {
-        QVector<QPair<QString, QString> > labels = loadLabelRows("LED");
+        QVector<QPair<QString, QString> > labels = loadLabelColumns("LED");
         initTable(ui->tablewgtLedPurpose, labels, group);
     }
 
@@ -3868,7 +3868,7 @@ void ConfiguratorWindow::initModelTables()
 
     if(!group.isEmpty())
     {
-        QVector<QPair<QString, QString> > labels = loadLabelRows("RELAY");
+        QVector<QPair<QString, QString> > labels = loadLabelColumns("RELAY");
         initTable(ui->tablewgtRelayPurpose, labels, group);
     }
 
@@ -3876,7 +3876,7 @@ void ConfiguratorWindow::initModelTables()
 
     if(!group.isEmpty())
     {
-        QVector<QPair<QString, QString> > labels = loadLabelRows("INPUT");
+        QVector<QPair<QString, QString> > labels = loadLabelColumns("INPUT");
         initTable(ui->tablewgtDiscreteInputPurpose, labels, group);
     }
 
@@ -4714,14 +4714,14 @@ void ConfiguratorWindow::displayMemoryOut(const CModBusDataUnit::vlist_t& values
 
     CMatrix& matrix = model->matrixTable();
 
-    for(int i = 0; i < matrix.rowCount(); i++)
-    {
-        CColumn& column = matrix[i][0];
-        bool value = values[i]&0x00FF;
+//    for(int i = 0; i < matrix.rowCount(); i++)
+//    {
+//        CColumn& column = matrix[i][0];
+//        bool value = values[i]&0x00FF;
 
-        CColumn::StateType state = ((value)?CColumn::CHECKED:CColumn::UNCHECKED);
-        column.setState(state);
-    }
+//        CColumn::StateType state = ((value)?CColumn::CHECKED:CColumn::UNCHECKED);
+//        column.setState(state);
+//    }
 
     model->updateData();
 }
@@ -4808,37 +4808,37 @@ void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
 
     CMatrix& matrix = model->matrixTable();
 
-    int offset = matrix.rowIndexByKey(first);
+//    int offset = matrix.rowIndexByKey(first);
 
-    QVector<quint16> values;
+//    QVector<quint16> values;
 
-    for(int i = 0; i < unit.count() - 1; i += 2) // изменение младшего со старшим
-    {
-        values << unit[i + 1] << unit[i];
-    }
+//    for(int i = 0; i < unit.count() - 1; i += 2) // изменение младшего со старшим
+//    {
+//        values << unit[i + 1] << unit[i];
+//    }
 
-    for(int i = 0; i < rowCount; i++)
-    {
-        int row_index  = i + offset;
-        int offset_pos = i*24;
+//    for(int i = 0; i < rowCount; i++)
+//    {
+//        int row_index  = i + offset;
+//        int offset_pos = i*24;
 
-        CRow::column_t& columns = matrix[row_index].columns();
+//        CRow::column_t& columns = matrix[row_index].columns();
 
-        qDebug() << tr("Колонки: %1").arg(columns.count());
+//        qDebug() << tr("Колонки: %1").arg(columns.count());
 
-        for(CColumn& col: columns)
-        {
-            int hword = col.bit()/16;
-            int bit   = col.bit()%16;
+//        for(CColumn& col: columns)
+//        {
+//            int hword = col.bit()/16;
+//            int bit   = col.bit()%16;
 
-            bool state = (values[hword + offset_pos]&(1 << bit));
+//            bool state = (values[hword + offset_pos]&(1 << bit));
 
-            if(state)
-                col.setState(CColumn::CHECKED);
-            else
-                col.setState(CColumn::UNCHECKED);
-        }
-    }
+//            if(state)
+//                col.setState(CColumn::CHECKED);
+//            else
+//                col.setState(CColumn::UNCHECKED);
+//        }
+//    }
 
     model->updateData();
 }
@@ -4860,59 +4860,59 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
     CMatrixPurposeModel* model  = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
     CMatrix&             matrix = model->matrixTable();
 
-    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
-        return;
+//    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+//        return;
 
-    QVector<quint32> input_data;
+//    QVector<quint32> input_data;
 
-    for(int i = 0; i < (input_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
-    {                                                    // каждые 32 бита хранят состояния входов для переменной
-        quint32 value = ((input_list[i] << 16) | input_list[i + 1]);
-        input_data << value;
-    }
+//    for(int i = 0; i < (input_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
+//    {                                                    // каждые 32 бита хранят состояния входов для переменной
+//        quint32 value = ((input_list[i] << 16) | input_list[i + 1]);
+//        input_data << value;
+//    }
 
-    QVector<quint32> input_inverse_data;
+//    QVector<quint32> input_inverse_data;
 
-    for(int i = 0; i < (input_inverse_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
-    {                                                            // каждые 32 бита хранят состояния инверсий входов для переменной
-        quint32 value = ((input_inverse_list[i] << 16) | input_inverse_list[i + 1]);
-        input_inverse_data << value;
-    }
+//    for(int i = 0; i < (input_inverse_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
+//    {                                                            // каждые 32 бита хранят состояния инверсий входов для переменной
+//        quint32 value = ((input_inverse_list[i] << 16) | input_inverse_list[i + 1]);
+//        input_inverse_data << value;
+//    }
 
-    for(int i = 0; i < input_data.count(); i++)
-    {
-        QString key = var_list[i].toUpper();
+//    for(int i = 0; i < input_data.count(); i++)
+//    {
+//        QString key = var_list[i].toUpper();
 
-        int col_index = -1;
+//        int col_index = -1;
 
-        for(int k = 0; k < matrix.columnCount(); k++) // производим поиск позиции текущей переменной в колонках, т.к. колонки
-        {                                             // идут не по порядку - разбиты на группы (позиция переменной в var_list
-                                                      // определяет ее положение в полученных данных учитывая смещение)
-            if(matrix[0][k].key().toUpper() == key)
-            {
-                col_index = k;
-                break;
-            }
-        }
+//        for(int k = 0; k < matrix.columnCount(); k++) // производим поиск позиции текущей переменной в колонках, т.к. колонки
+//        {                                             // идут не по порядку - разбиты на группы (позиция переменной в var_list
+//                                                      // определяет ее положение в полученных данных учитывая смещение)
+//            if(matrix[0][k].key().toUpper() == key)
+//            {
+//                col_index = k;
+//                break;
+//            }
+//        }
 
-        if(col_index != -1)
-        {
-            for(int j = 0; j < matrix.rowCount(); j++)
-            {
-                bool input_state   = input_data[i]&(1 << j);
-                bool inverse_state = input_inverse_data[i]&(1 << j);
+//        if(col_index != -1)
+//        {
+//            for(int j = 0; j < matrix.rowCount(); j++)
+//            {
+//                bool input_state   = input_data[i]&(1 << j);
+//                bool inverse_state = input_inverse_data[i]&(1 << j);
 
-                CColumn::StateType state = CColumn::UNCHECKED;
+//                CColumn::StateType state = CColumn::UNCHECKED;
 
-                if(input_state && !inverse_state)
-                    state = CColumn::CHECKED;
-                else if(input_state && inverse_state)
-                    state = CColumn::INVERSE;
+//                if(input_state && !inverse_state)
+//                    state = CColumn::CHECKED;
+//                else if(input_state && inverse_state)
+//                    state = CColumn::INVERSE;
 
-                matrix[j][col_index].setState(state);
-            }
-        }
-    }
+//                matrix[j][col_index].setState(state);
+//            }
+//        }
+//    }
 
     model->updateData();
 }
@@ -5218,26 +5218,26 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
 
     CMatrix& matrix = model->matrixTable();
 
-    for(int row = 0; row < matrix.rowCount(); row++)
-    {
-        int offset = row*24;
+//    for(int row = 0; row < matrix.rowCount(); row++)
+//    {
+//        int offset = row*24;
 
-        for(int column = 0; column < matrix.columnCount(); column++)
-        {
-            quint16 value = unit[column + offset];
+//        for(int column = 0; column < matrix.columnCount(); column++)
+//        {
+//            quint16 value = unit[column + offset];
 
-            for(quint8 bit = 0; bit < sizeof(value)*8; bit++)
-            {
-                bool state = (value&(1 << bit));
-                int  pos   = (sizeof(value)*8)*column + bit;
+//            for(quint8 bit = 0; bit < sizeof(value)*8; bit++)
+//            {
+//                bool state = (value&(1 << bit));
+//                int  pos   = (sizeof(value)*8)*column + bit;
 
-                if(pos >= matrix.columnCount())
-                    break;
+//                if(pos >= matrix.columnCount())
+//                    break;
 
-                matrix[row][pos].setState(((state)?CColumn::CHECKED:CColumn::UNCHECKED));
-            }
-        }
-    }
+//                matrix[row][pos].setState(((state)?CColumn::CHECKED:CColumn::UNCHECKED));
+//            }
+//        }
+//    }
 
     model->updateData();
 }
@@ -5292,28 +5292,28 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
     CMatrix& matrix = model->matrixTable();
 
-    for(int i = 0; i < matrix.rowCount(); i++)
-    {
-        QVector<quint16> row = data_buf[i];
-        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
+//    for(int i = 0; i < matrix.rowCount(); i++)
+//    {
+//        QVector<quint16> row = data_buf[i];
+//        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
 
-        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
-        {
-            if(i == j)
-            {
-                pos--;
-                continue;
-            }
+//        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
+//        {
+//            if(i == j)
+//            {
+//                pos--;
+//                continue;
+//            }
 
-            block_protection_purpose_t purpose = purpose_list[pos];
-            int col = purpose.bit/16;
-            int bit = purpose.bit%16;
+//            block_protection_purpose_t purpose = purpose_list[pos];
+//            int col = purpose.bit/16;
+//            int bit = purpose.bit%16;
 
-            bool state = (row[col]&(1 << bit));
+//            bool state = (row[col]&(1 << bit));
 
-            matrix[i][j].setState(((state)?CColumn::CHECKED:CColumn::UNCHECKED));
-        }
-    }
+//            matrix[i][j].setState(((state)?CColumn::CHECKED:CColumn::UNCHECKED));
+//        }
+//    }
 
     data_buf.clear();
     model->updateData();
@@ -5637,47 +5637,47 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
 
     CMatrix matrix = static_cast<CMatrixPurposeModel*>(table->model())->matrixTable();
 
-    int bIndex = matrix.rowIndexByKey(first);
-    int eIndex = matrix.rowIndexByKey(last);
+//    int bIndex = matrix.rowIndexByKey(first);
+//    int eIndex = matrix.rowIndexByKey(last);
 
-    if(bIndex == -1 || eIndex == -1)
-        return;
+//    if(bIndex == -1 || eIndex == -1)
+//        return;
 
-    int hword_size = (eIndex - bIndex + 1)*24;
+//    int hword_size = (eIndex - bIndex + 1)*24;
 
-    QVector<quint16> data = QVector<quint16>(hword_size, 0); // создаем вектор размерностью hword_size полуслов со значением 0
+//    QVector<quint16> data = QVector<quint16>(hword_size, 0); // создаем вектор размерностью hword_size полуслов со значением 0
 
-    for(int i = 0; i <= (eIndex - bIndex); i++)
-    {
-        int index      = i + bIndex;
-        int offset_pos = i*24;
+//    for(int i = 0; i <= (eIndex - bIndex); i++)
+//    {
+//        int index      = i + bIndex;
+//        int offset_pos = i*24;
 
-        for(CColumn& col: matrix[index].columns())
-        {
-            quint16 hword = col.bit()/16;
-            quint16 bit   = col.bit()%16;
+//        for(CColumn& col: matrix[index].columns())
+//        {
+//            quint16 hword = col.bit()/16;
+//            quint16 bit   = col.bit()%16;
 
-            if(col.state())
-            {
-                data[hword + offset_pos] |= (1 << bit);
-            }
-        }
-    }
+//            if(col.state())
+//            {
+//                data[hword + offset_pos] |= (1 << bit);
+//            }
+//        }
+//    }
 
-    QVector<quint16> values;
+//    QVector<quint16> values;
 
-    for(int i = 0; i < (data.count() - 1); i += 2)
-        values << data[i + 1] << data[i];
+//    for(int i = 0; i < (data.count() - 1); i += 2)
+//        values << data[i + 1] << data[i];
 
-    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
-                                                                 CModBusDataUnit::WriteMultipleRegisters);
+//    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
+//                                                                 CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, addressPurposeKey(first), values);
+//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, addressPurposeKey(first), values);
 
-    unit.setProperty(tr("FIRST"), first);
-    unit.setProperty(tr("LAST"), last);
+//    unit.setProperty(tr("FIRST"), first);
+//    unit.setProperty(tr("LAST"), last);
 
-    m_modbus->sendData(unit);
+//    m_modbus->sendData(unit);
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
@@ -5703,58 +5703,58 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
     CMatrix matrix = model->matrixTable();
 
-    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
-        return;
+//    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+//        return;
 
-    QVector<QString> var_list = loadVaribleByType("DI");
+//    QVector<QString> var_list = loadVaribleByType("DI");
 
-    int bIndex = (first_addr - 512)/2;
-    int eIndex = (670 - last_addr)/2;
+//    int bIndex = (first_addr - 512)/2;
+//    int eIndex = (670 - last_addr)/2;
 
-    QVector<quint16> values;
+//    QVector<quint16> values;
 
-    for(int i = bIndex; i < var_list.count() - eIndex; i++)
-    {
-        QString key       = var_list[i].toUpper();
-        int     col_index = -1;
+//    for(int i = bIndex; i < var_list.count() - eIndex; i++)
+//    {
+//        QString key       = var_list[i].toUpper();
+//        int     col_index = -1;
 
-        for(int j = 0; j < matrix.columnCount(); j++)
-        {
-            QString col_key = matrix[0][j].key().toUpper();
+//        for(int j = 0; j < matrix.columnCount(); j++)
+//        {
+//            QString col_key = matrix[0][j].key().toUpper();
 
-            if(key == col_key)
-            {
-                col_index = j;
-                break;
-            }
-        }
+//            if(key == col_key)
+//            {
+//                col_index = j;
+//                break;
+//            }
+//        }
 
-        if(col_index != -1)
-        {
-            quint32 value = 0;
+//        if(col_index != -1)
+//        {
+//            quint32 value = 0;
 
-            for(int k = 0; k < matrix.rowCount(); k++)
-            {
-                bool state = (matrix[k][col_index].state() == CColumn::CHECKED ||
-                              matrix[k][col_index].state() == CColumn::INVERSE)?true:false;
+//            for(int k = 0; k < matrix.rowCount(); k++)
+//            {
+//                bool state = (matrix[k][col_index].state() == CColumn::CHECKED ||
+//                              matrix[k][col_index].state() == CColumn::INVERSE)?true:false;
 
-                if(state)
-                    value |= (1 << k);
-            }
+//                if(state)
+//                    value |= (1 << k);
+//            }
 
-            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
-        }
-    }
+//            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+//        }
+//    }
 
-    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
-                                                                 CModBusDataUnit::WriteMultipleRegisters);
+//    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
+//                                                                 CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
+//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
 
-    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
-    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
+//    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
+//    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 
-    m_modbus->sendData(unit);
+//    m_modbus->sendData(unit);
 }
 //--------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int last_addr)
@@ -5766,57 +5766,57 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
 
     CMatrix matrix = model->matrixTable();
 
-    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
-        return;
+//    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+//        return;
 
-    QVector<QString> var_list = loadVaribleByType("DI");
+//    QVector<QString> var_list = loadVaribleByType("DI");
 
-    int bIndex = (first_addr - 768)/2;
-    int eIndex = (926 - last_addr)/2;
+//    int bIndex = (first_addr - 768)/2;
+//    int eIndex = (926 - last_addr)/2;
 
-    QVector<quint16> values;
+//    QVector<quint16> values;
 
-    for(int i = bIndex; i < var_list.count() - eIndex; i++)
-    {
-        QString key       = var_list[i].toUpper();
-        int     col_index = -1;
+//    for(int i = bIndex; i < var_list.count() - eIndex; i++)
+//    {
+//        QString key       = var_list[i].toUpper();
+//        int     col_index = -1;
 
-        for(int j = 0; j < matrix.columnCount(); j++)
-        {
-            QString col_key = matrix[0][j].key().toUpper();
+//        for(int j = 0; j < matrix.columnCount(); j++)
+//        {
+//            QString col_key = matrix[0][j].key().toUpper();
 
-            if(key == col_key)
-            {
-                col_index = j;
-                break;
-            }
-        }
+//            if(key == col_key)
+//            {
+//                col_index = j;
+//                break;
+//            }
+//        }
 
-        if(col_index != -1)
-        {
-            quint32 value = 0;
+//        if(col_index != -1)
+//        {
+//            quint32 value = 0;
 
-            for(int k = 0; k < matrix.rowCount(); k++)
-            {
-                bool state = ((matrix[k][col_index].state() == CColumn::INVERSE)?true:false);
+//            for(int k = 0; k < matrix.rowCount(); k++)
+//            {
+//                bool state = ((matrix[k][col_index].state() == CColumn::INVERSE)?true:false);
 
-                if(state)
-                    value |= (1 << k);
-            }
+//                if(state)
+//                    value |= (1 << k);
+//            }
 
-            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
-        }
-    }
+//            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+//        }
+//    }
 
-    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
-                                                                   CModBusDataUnit::WriteMultipleRegisters);
+//    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
+//                                                                   CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
+//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
 
-    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
-    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
+//    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
+//    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 
-    m_modbus->sendData(unit);
+//    m_modbus->sendData(unit);
 }
 //---------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function)
@@ -5971,13 +5971,13 @@ void ConfiguratorWindow::clearIOTable()
 
     CMatrix& matrix = model->matrixTable();
 
-    for(int i = 0; i < matrix.rowCount(); i++)
-    {
-        for(int j = 0; j < matrix.columnCount(); j++)
-        {
-            matrix[i][j].setState(CColumn::UNCHECKED);
-        }
-    }
+//    for(int i = 0; i < matrix.rowCount(); i++)
+//    {
+//        for(int j = 0; j < matrix.columnCount(); j++)
+//        {
+//            matrix[i][j].setState(CColumn::UNCHECKED);
+//        }
+//    }
 
     model->updateData();
 }
@@ -7375,8 +7375,8 @@ void ConfiguratorWindow::exportPurposeToJSON()
         fileNameDefault = "relay";
     }
 
-    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
-        return;
+//    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+//        return;
 
     QDir dir;
 
@@ -7406,30 +7406,30 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     json["type"] = typeName;
 
-    for(int i = 0; i < matrix.rowCount(); i++)
-    {
-        QJsonObject trowCurObj;
-        QJsonArray  columnArr;
+//    for(int i = 0; i < matrix.rowCount(); i++)
+//    {
+//        QJsonObject trowCurObj;
+//        QJsonArray  columnArr;
 
-        for(int j = 0; j < matrix.columnCount(); j++)
-        {
-            QJsonObject tcolumnObj;
+//        for(int j = 0; j < matrix.columnCount(); j++)
+//        {
+//            QJsonObject tcolumnObj;
 
-            tcolumnObj["state"]       = int(matrix[i][j].state());
-            tcolumnObj["bit"]         = matrix[i][j].bit();
-            tcolumnObj["key"]         = matrix[i][j].key();
-            tcolumnObj["name"]        = matrix[i][j].name();
-            tcolumnObj["description"] = matrix[i][j].description();
+//            tcolumnObj["state"]       = int(matrix[i][j].state());
+//            tcolumnObj["bit"]         = matrix[i][j].bit();
+//            tcolumnObj["key"]         = matrix[i][j].key();
+//            tcolumnObj["name"]        = matrix[i][j].name();
+//            tcolumnObj["description"] = matrix[i][j].description();
 
-            columnArr.append(tcolumnObj);
-        }
+//            columnArr.append(tcolumnObj);
+//        }
 
-        trowCurObj["key"]     = matrix[i].key();
-        trowCurObj["name"]    = matrix[i].name();
-        trowCurObj["columns"] = columnArr;
+//        trowCurObj["key"]     = matrix[i].key();
+//        trowCurObj["name"]    = matrix[i].name();
+//        trowCurObj["columns"] = columnArr;
 
-        rowArr.append(trowCurObj);
-    }
+//        rowArr.append(trowCurObj);
+//    }
 
     json["data"] = rowArr;
 
@@ -7511,40 +7511,40 @@ void ConfiguratorWindow::importPurposeFromJSON()
     if(dataArr.isEmpty())
         return;
 
-    CMatrix::row_t rows;
-    int            columnCount = 0;
+//    CMatrix::row_t rows;
+//    int            columnCount = 0;
 
-    for(int i = 0; i < dataArr.count(); i++)
-    {
-        QJsonObject rowObj = dataArr[i].toObject(); // получаем объект строки из массива
+//    for(int i = 0; i < dataArr.count(); i++)
+//    {
+//        QJsonObject rowObj = dataArr[i].toObject(); // получаем объект строки из массива
 
-        if(rowObj.isEmpty())
-            continue;
+//        if(rowObj.isEmpty())
+//            continue;
 
-        QJsonArray colArr = rowObj["columns"].toArray(); // получение массива данных - колонки
+//        QJsonArray colArr = rowObj["columns"].toArray(); // получение массива данных - колонки
 
-        if(colArr.isEmpty())
-            continue;
+//        if(colArr.isEmpty())
+//            continue;
 
-        CRow::column_t columns;
+//        CRow::column_t columns;
 
-        for(int j = 0; j < colArr.count(); j++)
-        {
-            QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
+//        for(int j = 0; j < colArr.count(); j++)
+//        {
+//            QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
 
-            columns << CColumn(colObj["bit"].toInt(), static_cast<CColumn::StateType>(colObj["state"].toInt()),
-                               colObj["key"].toString(), colObj["name"].toString(), colObj["description"].toString());
-        }
+//            columns << CColumn(colObj["bit"].toInt(), static_cast<CColumn::StateType>(colObj["state"].toInt()),
+//                               colObj["key"].toString(), colObj["name"].toString(), colObj["description"].toString());
+//        }
 
-        rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);
+//        rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);
 
-        columnCount = columns.count();
-    }
+//        columnCount = columns.count();
+//    }
 
-    CMatrix matrix(rows, columnCount);
+//    CMatrix matrix(rows, columnCount);
 
-    if(model)
-        model->setMatrixTable(matrix);
+//    if(model)
+//        model->setMatrixTable(matrix);
 }
 //----------------------------------------------------------------
 void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
@@ -8948,8 +8948,8 @@ group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
 
     return group;
 }
-//--------------------------------------------------------------------------------------
-QVector<QPair<QString, QString> > ConfiguratorWindow::loadLabelRows(const QString& type)
+//-----------------------------------------------------------------------------------------
+QVector<QPair<QString, QString> > ConfiguratorWindow::loadLabelColumns(const QString& type)
 {
     QVector<QPair<QString, QString> > labels;
 
