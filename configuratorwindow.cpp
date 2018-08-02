@@ -1251,15 +1251,11 @@ void ConfiguratorWindow::purposeMemoryOutLedWrite()
     CMatrix matrix = model->matrix();
     QVector<quint16> data;
 
-//    for(int i = 0; i < matrix.rowCount(); i++)
-//    {
-//        CColumn column = matrix[i][0];
-
-//        if(column.state() == CColumn::UNCHECKED)
-//            data << 0;
-//        else
-//            data << 1;
-//    }
+    for(int i = 0; i < matrix.columnCount(); i++)
+    {
+        CColumn column = matrix[0][i];
+        data << ((column.data().state == CHECKED)?1:0);
+    }
 
     if(!data.isEmpty())
         sendRequestWrite(0x90C, data, CModBusDataUnit::WriteMultipleRegisters);
@@ -1275,15 +1271,11 @@ void ConfiguratorWindow::purposeMemoryOutRelayWrite()
     CMatrix matrix = model->matrix();
     QVector<quint16> data;
 
-//    for(int i = 0; i < matrix.rowCount(); i++)
-//    {
-//        CColumn column = matrix[i][0];
-
-//        if(column.state() == CColumn::UNCHECKED)
-//            data << 0;
-//        else
-//            data << 1;
-//    }
+    for(int i = 0; i < matrix.columnCount(); i++)
+    {
+        CColumn column = matrix[0][i];
+        data << ((column.data().state == CHECKED)?1:0);
+    }
 
     if(!data.isEmpty())
         sendRequestWrite(0x900, data, CModBusDataUnit::WriteMultipleRegisters);
