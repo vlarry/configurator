@@ -4714,14 +4714,14 @@ void ConfiguratorWindow::displayMemoryOut(const CModBusDataUnit::vlist_t& values
 
     CMatrix& matrix = model->matrix();
 
-//    for(int i = 0; i < matrix.rowCount(); i++)
-//    {
-//        CColumn& column = matrix[i][0];
-//        bool value = values[i]&0x00FF;
+    for(int i = 0; i < matrix.columnCount(); i++)
+    {
+        CColumn& column = matrix[0][i];
+        bool value = values[i]&0x00FF;
 
-//        StateType state = ((value)?CHECKED:UNCHECKED);
-//        column.data().state = state;
-//    }
+        StateType state = ((value)?CHECKED:UNCHECKED);
+        column.data().state = state;
+    }
 
     model->updateData();
 }
