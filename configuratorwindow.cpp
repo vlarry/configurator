@@ -5644,47 +5644,47 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
 
     CMatrix matrix = static_cast<CMatrixPurposeModel*>(table->model())->matrix();
 
-//    int bIndex = matrix.rowIndexByKey(first);
-//    int eIndex = matrix.rowIndexByKey(last);
+    int bIndex = matrix.columnIndexByKey(first);
+    int eIndex = matrix.columnIndexByKey(last);
 
-//    if(bIndex == -1 || eIndex == -1)
-//        return;
+    if(bIndex == -1 || eIndex == -1)
+        return;
 
-//    int hword_size = (eIndex - bIndex + 1)*24;
+    int hword_size = (eIndex - bIndex + 1)*24;
 
-//    QVector<quint16> data = QVector<quint16>(hword_size, 0); // создаем вектор размерностью hword_size полуслов со значением 0
+    QVector<quint16> data = QVector<quint16>(hword_size, 0); // создаем вектор размерностью hword_size полуслов со значением 0
 
-//    for(int i = 0; i <= (eIndex - bIndex); i++)
-//    {
-//        int index      = i + bIndex;
-//        int offset_pos = i*24;
+    for(int i = 0; i <= (eIndex - bIndex); i++) // обход колонок
+    {
+        int index      = i + bIndex;
+        int offset_pos = i*24;
 
-//        for(CColumn& col: matrix[index].columns())
-//        {
-//            quint16 hword = col.bit()/16;
-//            quint16 bit   = col.bit()%16;
+        for(int j = 1; j < matrix.rowCount(); j++)
+        {
+            quint16 hword = matrix[j].data().position/16;
+            quint16 bit   = matrix[j].data().position%16;
 
-//            if(col.state())
-//            {
-//                data[hword + offset_pos] |= (1 << bit);
-//            }
-//        }
-//    }
+            StateType state = matrix[j][index].data().state;
 
-//    QVector<quint16> values;
+            if(state == CHECKED)
+                data[hword + offset_pos] |= (1 << bit);
+        }
+    }
 
-//    for(int i = 0; i < (data.count() - 1); i += 2)
-//        values << data[i + 1] << data[i];
+    QVector<quint16> values;
 
-//    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
-//                                                                 CModBusDataUnit::WriteMultipleRegisters);
+    for(int i = 0; i < (data.count() - 1); i += 2)
+        values << data[i + 1] << data[i];
 
-//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, addressPurposeKey(first), values);
+    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
+                                                                   CModBusDataUnit::WriteMultipleRegisters);
 
-//    unit.setProperty(tr("FIRST"), first);
-//    unit.setProperty(tr("LAST"), last);
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, addressPurposeKey(first), values);
 
-//    m_modbus->sendData(unit);
+    unit.setProperty(tr("FIRST"), first);
+    unit.setProperty(tr("LAST"), last);
+
+    m_modbus->sendData(unit);
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
@@ -5692,7 +5692,7 @@ void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
     int size = last_addr - first_addr + 2;
 
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, first_addr,
-                                                 QVector<quint16>() << size);
+                                                                  QVector<quint16>() << size);
 
     unit.setProperty(tr("REQUEST"), ((first_addr < 768)?PURPOSE_INPUT_TYPE:PURPOSE_INPUT_INVERSE_TYPE));
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
