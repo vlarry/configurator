@@ -5201,26 +5201,26 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
 
     CMatrix& matrix = model->matrix();
 
-//    for(int row = 0; row < matrix.rowCount(); row++)
-//    {
-//        int offset = row*24;
+    for(int col = 0; col < matrix.columnCount(); col++)
+    {
+        int offset = col*24;
 
-//        for(int column = 0; column < matrix.columnCount(); column++)
-//        {
-//            quint16 value = unit[column + offset];
+        for(int row = 0; row < matrix.rowCount(); row++)
+        {
+            quint16 value = unit[row + offset];
 
-//            for(quint8 bit = 0; bit < sizeof(value)*8; bit++)
-//            {
-//                bool state = (value&(1 << bit));
-//                int  pos   = (sizeof(value)*8)*column + bit;
+            for(quint8 bit = 0; bit < sizeof(value)*8; bit++)
+            {
+                bool state = (value&(1 << bit));
+                int  pos   = (sizeof(value)*8)*row + bit;
 
-//                if(pos >= matrix.columnCount())
-//                    break;
+                if(pos >= matrix.rowCount())
+                    break;
 
-//                matrix[row][pos].setState(((state)?CColumn::CHECKED:CColumn::UNCHECKED));
-//            }
-//        }
-//    }
+                matrix[pos][col].data().state = ((state)?CHECKED:UNCHECKED);
+            }
+        }
+    }
 
     model->updateData();
 }
