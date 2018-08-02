@@ -4867,59 +4867,59 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
     CMatrixPurposeModel* model  = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
     CMatrix&             matrix = model->matrix();
 
-//    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
-//        return;
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
 
-//    QVector<quint32> input_data;
+    QVector<quint32> input_data;
 
-//    for(int i = 0; i < (input_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
-//    {                                                    // каждые 32 бита хранят состояния входов для переменной
-//        quint32 value = ((input_list[i] << 16) | input_list[i + 1]);
-//        input_data << value;
-//    }
+    for(int i = 0; i < (input_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
+    {                                                    // каждые 32 бита хранят состояния входов для переменной
+        quint32 value = ((input_list[i] << 16) | input_list[i + 1]);
+        input_data << value;
+    }
 
-//    QVector<quint32> input_inverse_data;
+    QVector<quint32> input_inverse_data;
 
-//    for(int i = 0; i < (input_inverse_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
-//    {                                                            // каждые 32 бита хранят состояния инверсий входов для переменной
-//        quint32 value = ((input_inverse_list[i] << 16) | input_inverse_list[i + 1]);
-//        input_inverse_data << value;
-//    }
+    for(int i = 0; i < (input_inverse_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
+    {                                                            // каждые 32 бита хранят состояния инверсий входов для переменной
+        quint32 value = ((input_inverse_list[i] << 16) | input_inverse_list[i + 1]);
+        input_inverse_data << value;
+    }
 
-//    for(int i = 0; i < input_data.count(); i++)
-//    {
-//        QString key = var_list[i].toUpper();
+    for(int i = 0; i < input_data.count(); i++)
+    {
+        QString key = var_list[i].toUpper();
 
-//        int col_index = -1;
+        int row_index = -1;
 
-//        for(int k = 0; k < matrix.columnCount(); k++) // производим поиск позиции текущей переменной в колонках, т.к. колонки
-//        {                                             // идут не по порядку - разбиты на группы (позиция переменной в var_list
-//                                                      // определяет ее положение в полученных данных учитывая смещение)
-//            if(matrix[0][k].key().toUpper() == key)
-//            {
-//                col_index = k;
-//                break;
-//            }
-//        }
+        for(int k = 0; k < matrix.rowCount(); k++) // производим поиск позиции текущей переменной в строках, т.к. строки
+        {                                          // идут не по порядку - разбиты на группы (позиция переменной в var_list
+                                                   // определяет ее положение в полученных данных учитывая смещение)
+            if(matrix[k].data().key.toUpper() == key)
+            {
+                row_index = k;
+                break;
+            }
+        }
 
-//        if(col_index != -1)
-//        {
-//            for(int j = 0; j < matrix.rowCount(); j++)
-//            {
-//                bool input_state   = input_data[i]&(1 << j);
-//                bool inverse_state = input_inverse_data[i]&(1 << j);
+        if(row_index != -1)
+        {
+            for(int j = 0; j < matrix.columnCount(); j++)
+            {
+                bool input_state   = input_data[i]&(1 << j);
+                bool inverse_state = input_inverse_data[i]&(1 << j);
 
-//                CColumn::StateType state = CColumn::UNCHECKED;
+                StateType state = UNCHECKED;
 
-//                if(input_state && !inverse_state)
-//                    state = CColumn::CHECKED;
-//                else if(input_state && inverse_state)
-//                    state = CColumn::INVERSE;
+                if(input_state && !inverse_state)
+                    state = CHECKED;
+                else if(input_state && inverse_state)
+                    state = INVERSE;
 
-//                matrix[j][col_index].setState(state);
-//            }
-//        }
-//    }
+                matrix[row_index][j].data().state = state;
+            }
+        }
+    }
 
     model->updateData();
 }
