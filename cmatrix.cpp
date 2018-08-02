@@ -50,6 +50,16 @@ int CRow::count() const
 {
     return m_column_array.count();
 }
+//--------------------------------
+CRow::ColumnArray &CRow::columns()
+{
+    return m_column_array;
+}
+//--------------------------------------------
+const CRow::ColumnArray &CRow::columns() const
+{
+    return m_column_array;
+}
 //-----------------------------------
 CColumn& CRow::operator [](int index)
 {
@@ -85,6 +95,40 @@ int CMatrix::columnCount() const
 int CMatrix::rowCount() const
 {
     return m_matrix.count();
+}
+//-----------------------------------------------
+int CMatrix::columnIndexByKey(const QString& key)
+{
+    if(m_matrix.isEmpty())
+        return -1;
+
+    CRow::ColumnArray columns = m_matrix[0].columns();
+
+    if(columns.isEmpty())
+        return -1;
+
+    int index = -1;
+
+    for(int i = 0; i < columns.count(); i++)
+    {
+        if(columns[i].data().key.toUpper() == key.toUpper())
+        {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
+//--------------------------------
+CMatrix::RowArray& CMatrix::rows()
+{
+    return m_matrix;
+}
+//--------------------------------------------
+const CMatrix::RowArray& CMatrix::rows() const
+{
+    return m_matrix;
 }
 //-----------------------------------
 CRow& CMatrix::operator [](int index)

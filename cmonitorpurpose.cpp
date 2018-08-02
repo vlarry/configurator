@@ -78,7 +78,7 @@ void CMonitorPurpose::clearTable()
     if(!model)
         return;
 
-    CMatrix& matrix = model->matrixTable();
+    CMatrix& matrix = model->matrix();
 
     for(int i = 0; i < matrix.rowCount(); i++)
     {

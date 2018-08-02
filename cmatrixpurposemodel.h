@@ -49,7 +49,7 @@
             CMatrixPurposeModel(const QStringList& rows, const QStringList& columns, IO_Type io_type = IO_INPUT,
                                 QAbstractTableModel* parent = nullptr);
             void     updateData();
-            CMatrix& matrixTable();
+            CMatrix& matrix();
             void     setMatrixTable(CMatrix& matrix);
             int      rowCount(const QModelIndex& parent = QModelIndex()) const;
             int      columnCount(const QModelIndex& parent = QModelIndex()) const;

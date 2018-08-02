@@ -15,14 +15,18 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& labe
         columns << CColumn(unit_t({ column.first, "", column.second, -1, UNCHECKED }));
     }
 
+    if(m_io_type == IO_OUTPUT)
+    {
+        m_matrix.addRow(CRow(unit_t({ "", tr("Запоминание выходов"), "", -1, UNCHECKED }), columns));
+    }
+
     for(int group_id: group.keys())
     {
         group_item_t item = group[group_id];
 
         for(const var_t& var: item.var_list)
         {
-            CRow row(unit_t({ var.key, var.name, var.description, var.bit, UNCHECKED }), columns);
-            m_matrix.addRow(row);
+            m_matrix.addRow(CRow(unit_t({ var.key, var.name, var.description, var.bit, UNCHECKED }), columns));
         }
     }
 }
@@ -42,8 +46,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, IO_Type io_t
 
     for(const QString& label: labels)
     {
-        CRow row(unit_t({ "", label, "", -1, UNCHECKED }), columns);
-        m_matrix.addRow(row);
+        m_matrix.addRow(CRow(unit_t({ "", label, "", -1, UNCHECKED }), columns));
     }
 }
 //------------------------------------------------------------------------------------------------------------
@@ -61,8 +64,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& columns, const QStri
 
     for(const QString& row_label: rows)
     {
-        CRow row(unit_t({ "", row_label, "", -1, UNCHECKED }), column_array);
-        m_matrix.addRow(row);
+        m_matrix.addRow(CRow(unit_t({ "", row_label, "", -1, UNCHECKED }), column_array));
     }
 }
 //------------------------------------
@@ -74,8 +76,8 @@ void CMatrixPurposeModel::updateData()
 
     emit dataChanged(topLeft, bottomRight);
 }
-//-----------------------------------------
-CMatrix& CMatrixPurposeModel::matrixTable()
+//------------------------------------
+CMatrix& CMatrixPurposeModel::matrix()
 {
     return m_matrix;
 }
@@ -111,7 +113,7 @@ bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& valu
     {
         StateType state = static_cast<StateType>(value.toInt());
 
-        m_matrix[index.row()].data().state = state;
+        m_matrix[index.row()][index.column()].data().state = state;
 
         emit dataChanged(index, index);
 
@@ -125,7 +127,7 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
 {
     if(role == Qt::CheckStateRole)
     {
-        return static_cast<Qt::CheckState>(m_matrix[index.row()].data().state);
+        return static_cast<Qt::CheckState>(m_matrix[index.row()][index.column()].data().state);
     }
 
     if(role == Qt::ToolTipRole)

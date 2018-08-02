@@ -47,6 +47,8 @@
             const unit_t& data() const;
 
             int count() const;
+            ColumnArray& columns();
+            const ColumnArray& columns() const;
 
             CColumn&       operator [](int index);
             const CColumn& operator [](int index) const;
@@ -67,6 +69,10 @@
             void addRow(const CRow& row);
             int  columnCount() const;
             int  rowCount() const;
+            int  columnIndexByKey(const QString& key);
+
+            RowArray&       rows();
+            const RowArray& rows() const;
 
             CRow&       operator [](int index);
             const CRow& operator [](int index) const;

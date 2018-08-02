@@ -233,46 +233,46 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
     if(!model)
         return;
 
-    CMatrix matrix = model->matrixTable();
+    CMatrix matrix = model->matrix();
 
-//    if(matrix.rowCount() == 0)
-//        return;
+    if(matrix.rowCount() == 0)
+        return;
 
-//    for(int i = 0; i < matrix.rowCount(); i++)
-//    {
-//        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
-//        QVector<quint16> values = QVector<quint16>(24, 0);
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
+        QVector<quint16> values = QVector<quint16>(24, 0);
 
-//        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
-//        {
-//            if(i == j)
-//            {
-//                pos--;
-//                continue;
-//            }
+        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
+        {
+            if(i == j)
+            {
+                pos--;
+                continue;
+            }
 
-//            block_protection_purpose_t purpose = purpose_list[pos];
+            block_protection_purpose_t purpose = purpose_list[pos];
 
-//            int col = purpose.bit/16;
-//            int bit = purpose.bit%16;
+            int col = purpose.bit/16;
+            int bit = purpose.bit%16;
 
-//            bool state = matrix[i][j].state();
+            bool state = matrix[i][j].data().state;
 
-//            quint16 value = values[col];
+            quint16 value = values[col];
 
-//            if(state)
-//                value |= (1 << bit);
+            if(state)
+                value |= (1 << bit);
 
-//            values[col] = value;
-//        }
+            values[col] = value;
+        }
 
-//        QVector<quint16> tvalues;
+        QVector<quint16> tvalues;
 
-//        for(int k = 0; k < values.count() - 1; k += 2)
-//            tvalues << values[k + 1] << values[k];
+        for(int k = 0; k < values.count() - 1; k += 2)
+            tvalues << values[k + 1] << values[k];
 
-//        sendRequestWrite(m_block_list[i].address, tvalues, -1);
-//    }
+        sendRequestWrite(m_block_list[i].address, tvalues, -1);
+    }
 }
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
@@ -1248,7 +1248,7 @@ void ConfiguratorWindow::purposeMemoryOutLedWrite()
     if(!model)
         return;
 
-    CMatrix matrix = model->matrixTable();
+    CMatrix matrix = model->matrix();
     QVector<quint16> data;
 
 //    for(int i = 0; i < matrix.rowCount(); i++)
@@ -1272,7 +1272,7 @@ void ConfiguratorWindow::purposeMemoryOutRelayWrite()
     if(!model)
         return;
 
-    CMatrix matrix = model->matrixTable();
+    CMatrix matrix = model->matrix();
     QVector<quint16> data;
 
 //    for(int i = 0; i < matrix.rowCount(); i++)
@@ -4712,20 +4712,20 @@ void ConfiguratorWindow::displayMemoryOut(const CModBusDataUnit::vlist_t& values
     if(!model)
         return;
 
-    CMatrix& matrix = model->matrixTable();
+    CMatrix& matrix = model->matrix();
 
 //    for(int i = 0; i < matrix.rowCount(); i++)
 //    {
 //        CColumn& column = matrix[i][0];
 //        bool value = values[i]&0x00FF;
 
-//        CColumn::StateType state = ((value)?CColumn::CHECKED:CColumn::UNCHECKED);
-//        column.setState(state);
+//        StateType state = ((value)?CHECKED:UNCHECKED);
+//        column.data().state = state;
 //    }
 
     model->updateData();
 }
-//-------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& unit)
 {
     if(!unit.isValid() || unit.count() == 0 || unit.count() > 1)
@@ -4778,6 +4778,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
 //------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
 {
+    qDebug() << "ЗАПРОС ПРИВЯЗОК ВЫХОДОВ";
     if(unit.count() == 0)
         return;
 
@@ -4790,10 +4791,10 @@ void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
     int faddr = addressPurposeKey(first);
     int eaddr = addressPurposeKey(last);
 
-    int rowCount = (eaddr - faddr)/24 + 1; // 24 полуслова хранит до 384 переменных, т.е. при чтении одной
-                                           // переменной мы получим 24 полуслова
+    int columnCount = (eaddr - faddr)/24 + 1; // 24 полуслова хранит до 384 переменных, т.е. при чтении одной
+                                              // переменной мы получим 24 полуслова
 
-    if(rowCount == 0)
+    if(columnCount == 0)
         return;
 
     QTableView* table = tableMatrixFromKeys(first, last); // поиск таблицы по ключам
@@ -4806,39 +4807,45 @@ void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
     if(!model)
         return;
 
-    CMatrix& matrix = model->matrixTable();
+    CMatrix& matrix = model->matrix();
 
-//    int offset = matrix.rowIndexByKey(first);
+    qDebug() << tr("Количество строк в моделе выходов: %1").arg(model->rowCount());
 
-//    QVector<quint16> values;
+    int col_offset = matrix.columnIndexByKey(first); // получаем начальный индекс колонки для которой обрабатывается запрос
+                                                     // например, если first = LED1, то получим 0, или first = LED3 -> 2
+    if(col_offset == -1)
+        return;
 
-//    for(int i = 0; i < unit.count() - 1; i += 2) // изменение младшего со старшим
-//    {
-//        values << unit[i + 1] << unit[i];
-//    }
+    QVector<quint16> values;
 
-//    for(int i = 0; i < rowCount; i++)
-//    {
-//        int row_index  = i + offset;
-//        int offset_pos = i*24;
+    for(int i = 0; i < unit.count() - 1; i += 2) // изменение младшего со старшим
+    {
+        values << unit[i + 1] << unit[i];
+    }
 
-//        CRow::column_t& columns = matrix[row_index].columns();
+    for(int i = 0; i < columnCount; i++)
+    {
+        int column_index = i + col_offset; // индекс столбца (запрос разбит на несколько частей, н-р: LED = 4 запроса
+        int offset_pos   = i*24; // смещение в данных, т.е. 24 ячейки длина одного запроса
 
-//        qDebug() << tr("Колонки: %1").arg(columns.count());
+        CMatrix::RowArray& rows = matrix.rows();
 
-//        for(CColumn& col: columns)
-//        {
-//            int hword = col.bit()/16;
-//            int bit   = col.bit()%16;
+        qDebug() << tr("Количество строк в таблице выходов: %1").arg(matrix.rowCount());
 
-//            bool state = (values[hword + offset_pos]&(1 << bit));
+        for(CRow& row: rows)
+        {
+            int pos = row.data().position;
 
-//            if(state)
-//                col.setState(CColumn::CHECKED);
-//            else
-//                col.setState(CColumn::UNCHECKED);
-//        }
-//    }
+            if(pos == -1)
+                continue;
+
+            int word   = pos/16;
+            int bit    = pos%16;
+            bool state = (values[word + offset_pos]&(1 << bit));
+
+            row[column_index].data().state = (state)?CHECKED:UNCHECKED;
+        }
+    }
 
     model->updateData();
 }
@@ -4858,7 +4865,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
         return;
 
     CMatrixPurposeModel* model  = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
-    CMatrix&             matrix = model->matrixTable();
+    CMatrix&             matrix = model->matrix();
 
 //    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
 //        return;
@@ -5216,7 +5223,7 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
     if(!model)
         return;
 
-    CMatrix& matrix = model->matrixTable();
+    CMatrix& matrix = model->matrix();
 
 //    for(int row = 0; row < matrix.rowCount(); row++)
 //    {
@@ -5290,30 +5297,30 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
         return;
     }
 
-    CMatrix& matrix = model->matrixTable();
+    CMatrix& matrix = model->matrix();
 
-//    for(int i = 0; i < matrix.rowCount(); i++)
-//    {
-//        QVector<quint16> row = data_buf[i];
-//        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        QVector<quint16> row = data_buf[i];
+        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
 
-//        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
-//        {
-//            if(i == j)
-//            {
-//                pos--;
-//                continue;
-//            }
+        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
+        {
+            if(i == j)
+            {
+                pos--;
+                continue;
+            }
 
-//            block_protection_purpose_t purpose = purpose_list[pos];
-//            int col = purpose.bit/16;
-//            int bit = purpose.bit%16;
+            block_protection_purpose_t purpose = purpose_list[pos];
+            int col = purpose.bit/16;
+            int bit = purpose.bit%16;
 
-//            bool state = (row[col]&(1 << bit));
+            bool state = (row[col]&(1 << bit));
 
-//            matrix[i][j].setState(((state)?CColumn::CHECKED:CColumn::UNCHECKED));
-//        }
-//    }
+            matrix[i][j].data().state = ((state)?CHECKED:UNCHECKED);
+        }
+    }
 
     data_buf.clear();
     model->updateData();
@@ -5619,7 +5626,7 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
     int size = laddr - faddr + 24; // получаем размер считываемого блока с учетом выравнивания в 48 байт (одна строка)
 
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, faddr,
-                                                 QVector<quint16>() << size);
+                                                                  QVector<quint16>() << size);
 
     unit.setProperty("REQUEST", PURPOSE_OUT_TYPE);
     unit.setProperty("FIRST", first);
@@ -5635,7 +5642,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     if(!table)
         return;
 
-    CMatrix matrix = static_cast<CMatrixPurposeModel*>(table->model())->matrixTable();
+    CMatrix matrix = static_cast<CMatrixPurposeModel*>(table->model())->matrix();
 
 //    int bIndex = matrix.rowIndexByKey(first);
 //    int eIndex = matrix.rowIndexByKey(last);
@@ -5701,7 +5708,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     if(!model)
         return;
 
-    CMatrix matrix = model->matrixTable();
+    CMatrix matrix = model->matrix();
 
 //    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
 //        return;
@@ -5764,7 +5771,7 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
     if(!model)
         return;
 
-    CMatrix matrix = model->matrixTable();
+    CMatrix matrix = model->matrix();
 
 //    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
 //        return;
@@ -5969,15 +5976,15 @@ void ConfiguratorWindow::clearIOTable()
     if(!model)
         return;
 
-    CMatrix& matrix = model->matrixTable();
+    CMatrix& matrix = model->matrix();
 
-//    for(int i = 0; i < matrix.rowCount(); i++)
-//    {
-//        for(int j = 0; j < matrix.columnCount(); j++)
-//        {
-//            matrix[i][j].setState(CColumn::UNCHECKED);
-//        }
-//    }
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        for(int j = 0; j < matrix.columnCount(); j++)
+        {
+            matrix[i][j].data().state = UNCHECKED;
+        }
+    }
 
     model->updateData();
 }
@@ -7358,19 +7365,19 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
     {
-        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->matrixTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model())->matrix();
         typeName        = "LED";
         fileNameDefault = "led";
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
-        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->matrixTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model())->matrix();
         typeName        = "INPUT";
         fileNameDefault = "input";
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
     {
-        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->matrixTable();
+        matrix          = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model())->matrix();
         typeName        = "RELAY";
         fileNameDefault = "relay";
     }
