@@ -4463,23 +4463,7 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
     table->resizeRowsToContents();
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-
-    table->setColumnWidth(0, 100);
-
-    if(table == ui->tablewgtLedPurpose || table == ui->tablewgtRelayPurpose)
-    {
-        table->setColumnWidth(0, 40);
-        table->setColumnWidth(1, 80);
-        table->setColumnWidth(2, 80);
-        table->setColumnWidth(50, 80);
-        table->setColumnWidth(51, 80);
-    }
-    else if(table == ui->tablewgtDiscreteInputPurpose)
-    {
-        table->setColumnWidth(1, 150);
-        table->setColumnWidth(26, 120);
-        table->setColumnWidth(75, 100);
-    }
+    table->horizontalHeader()->sectionResizeMode(QHeaderView::ResizeToContents);
 }
 //----------------------------------------------------------------------------------------------
 void ConfiguratorWindow::initTableProtection(QTableView* table, block_protection_list_t& labels)
@@ -5702,58 +5686,58 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
     CMatrix matrix = model->matrix();
 
-//    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
-//        return;
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
 
-//    QVector<QString> var_list = loadVaribleByType("DI");
+    QVector<QString> var_list = loadVaribleByType("DI");
 
-//    int bIndex = (first_addr - 512)/2;
-//    int eIndex = (670 - last_addr)/2;
+    int bIndex = (first_addr - 512)/2;
+    int eIndex = (670 - last_addr)/2;
 
-//    QVector<quint16> values;
+    QVector<quint16> values;
 
-//    for(int i = bIndex; i < var_list.count() - eIndex; i++)
-//    {
-//        QString key       = var_list[i].toUpper();
-//        int     col_index = -1;
+    for(int i = bIndex; i < var_list.count() - eIndex; i++)
+    {
+        QString key       = var_list[i].toUpper();
+        int     row_index = -1;
 
-//        for(int j = 0; j < matrix.columnCount(); j++)
-//        {
-//            QString col_key = matrix[0][j].key().toUpper();
+        for(int j = 0; j < matrix.rowCount(); j++)
+        {
+            QString row_key = matrix[j].data().key.toUpper();
 
-//            if(key == col_key)
-//            {
-//                col_index = j;
-//                break;
-//            }
-//        }
+            if(key == row_key)
+            {
+                row_index = j;
+                break;
+            }
+        }
 
-//        if(col_index != -1)
-//        {
-//            quint32 value = 0;
+        if(row_index != -1)
+        {
+            quint32 value = 0;
 
-//            for(int k = 0; k < matrix.rowCount(); k++)
-//            {
-//                bool state = (matrix[k][col_index].state() == CColumn::CHECKED ||
-//                              matrix[k][col_index].state() == CColumn::INVERSE)?true:false;
+            for(int k = 0; k < matrix.columnCount(); k++)
+            {
+                bool state = ((matrix[row_index][k].data().state == CHECKED ||
+                               matrix[row_index][k].data().state == INVERSE)?true:false);
 
-//                if(state)
-//                    value |= (1 << k);
-//            }
+                if(state)
+                    value |= (1 << k);
+            }
 
-//            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
-//        }
-//    }
+            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+        }
+    }
 
-//    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
-//                                                                 CModBusDataUnit::WriteMultipleRegisters);
+    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
+                                                                 CModBusDataUnit::WriteMultipleRegisters);
 
-//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
 
-//    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
-//    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
+    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
+    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 
-//    m_modbus->sendData(unit);
+    m_modbus->sendData(unit);
 }
 //--------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int last_addr)
@@ -5765,57 +5749,57 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
 
     CMatrix matrix = model->matrix();
 
-//    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
-//        return;
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
 
-//    QVector<QString> var_list = loadVaribleByType("DI");
+    QVector<QString> var_list = loadVaribleByType("DI");
 
-//    int bIndex = (first_addr - 768)/2;
-//    int eIndex = (926 - last_addr)/2;
+    int bIndex = (first_addr - 768)/2;
+    int eIndex = (926 - last_addr)/2;
 
-//    QVector<quint16> values;
+    QVector<quint16> values;
 
-//    for(int i = bIndex; i < var_list.count() - eIndex; i++)
-//    {
-//        QString key       = var_list[i].toUpper();
-//        int     col_index = -1;
+    for(int i = bIndex; i < var_list.count() - eIndex; i++)
+    {
+        QString key       = var_list[i].toUpper();
+        int     row_index = -1;
 
-//        for(int j = 0; j < matrix.columnCount(); j++)
-//        {
-//            QString col_key = matrix[0][j].key().toUpper();
+        for(int j = 0; j < matrix.rowCount(); j++)
+        {
+            QString row_key = matrix[j].data().key.toUpper();
 
-//            if(key == col_key)
-//            {
-//                col_index = j;
-//                break;
-//            }
-//        }
+            if(key == row_key)
+            {
+                row_index = j;
+                break;
+            }
+        }
 
-//        if(col_index != -1)
-//        {
-//            quint32 value = 0;
+        if(row_index != -1)
+        {
+            quint32 value = 0;
 
-//            for(int k = 0; k < matrix.rowCount(); k++)
-//            {
-//                bool state = ((matrix[k][col_index].state() == CColumn::INVERSE)?true:false);
+            for(int k = 0; k < matrix.columnCount(); k++)
+            {
+                bool state = ((matrix[row_index][k].data().state == INVERSE)?true:false);
 
-//                if(state)
-//                    value |= (1 << k);
-//            }
+                if(state)
+                    value |= (1 << k);
+            }
 
-//            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
-//        }
-//    }
+            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+        }
+    }
 
-//    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
-//                                                                   CModBusDataUnit::WriteMultipleRegisters);
+    CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
+                                                                   CModBusDataUnit::WriteMultipleRegisters);
 
-//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
 
-//    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
-//    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
+    unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
+    unit.setProperty(tr("LAST_ADDRESS"), last_addr);
 
-//    m_modbus->sendData(unit);
+    m_modbus->sendData(unit);
 }
 //---------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function)

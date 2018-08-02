@@ -133,7 +133,7 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
     if(role == Qt::ToolTipRole)
     {
         return QString("%1: %2").arg(m_matrix[index.row()].data().name).
-                                 arg(m_matrix[index.row()].data().description);
+                                 arg(m_matrix[index.row()][index.column()].data().description);
     }
 
     if(role == HierarchicalHeaderView::HorizontalHeaderDataRole)
