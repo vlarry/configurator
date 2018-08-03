@@ -7358,8 +7358,8 @@ void ConfiguratorWindow::exportPurposeToJSON()
         fileNameDefault = "relay";
     }
 
-//    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
-//        return;
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
 
     QDir dir;
 
@@ -7374,52 +7374,68 @@ void ConfiguratorWindow::exportPurposeToJSON()
     if(fileName.isEmpty())
         return;
 
+    m_progressbar->setProgressTitle(tr("Экспорт профиля привязок %1").arg(((typeName == "LED")?tr("Светодиоды"):
+                                                                           (typeName == "INPUT")?tr("Входы"):tr("Реле"))));
+    m_progressbar->setSettings(0, matrix.rowCount(), tr("строк"));
+    m_progressbar->progressStart();
+
+    // Начало формирования файла JSON
+    QJsonObject objJson;
+    QJsonArray  arrRows;
+    for(int irow = 0; irow < matrix.rowCount(); irow++)
+    {
+        CRow row = matrix[irow];
+
+        QJsonObject objRow
+        {
+            { "key", row.data().key },
+            { "name", row.data().name },
+            { "description", row.data().description },
+            { "position", row.data().position },
+            { "state", ((row.data().state == UNCHECKED)?UNCHECKED:(row.data().state == CHECKED)?CHECKED:INVERSE) }
+        };
+
+        QJsonArray arrColumns;
+
+        for(const CColumn& column: row.columns())
+        {
+            QJsonObject objColumn
+            {
+                { "key", column.data().key },
+                { "name", column.data().name },
+                { "description", column.data().description },
+                { "position", column.data().position },
+                { "state", ((column.data().state == UNCHECKED)?UNCHECKED:(column.data().state == CHECKED)?CHECKED:INVERSE) }
+            };
+
+            arrColumns += objColumn;
+        }
+
+        objRow["columns"] = arrColumns;
+        arrRows += objRow;
+
+        emit m_progressbar->increment();
+    }
+
+    objJson["type"] = typeName;
+    objJson["rows"] = arrRows;
+
+    QJsonDocument docJson(objJson);
+    // Конец формирования файла JSON
+
     QFile file(fileName);
 
     if(!file.open(QFile::WriteOnly))
     {
-        QMessageBox::warning(this, tr("Сохранение профиля привязок"), tr("Невозможно создать файл для записи \"") +
-                             fileName + QString("\""));
+        QMessageBox::warning(this, tr("Сохранение профиля привязок"), tr("Невозможно создать файл для записи \"%1\"").
+                                                                      arg(fileName));
 
         return;
     }
 
-    QJsonObject json;
-    QJsonArray  rowArr;
-
-    json["type"] = typeName;
-
-//    for(int i = 0; i < matrix.rowCount(); i++)
-//    {
-//        QJsonObject trowCurObj;
-//        QJsonArray  columnArr;
-
-//        for(int j = 0; j < matrix.columnCount(); j++)
-//        {
-//            QJsonObject tcolumnObj;
-
-//            tcolumnObj["state"]       = int(matrix[i][j].state());
-//            tcolumnObj["bit"]         = matrix[i][j].bit();
-//            tcolumnObj["key"]         = matrix[i][j].key();
-//            tcolumnObj["name"]        = matrix[i][j].name();
-//            tcolumnObj["description"] = matrix[i][j].description();
-
-//            columnArr.append(tcolumnObj);
-//        }
-
-//        trowCurObj["key"]     = matrix[i].key();
-//        trowCurObj["name"]    = matrix[i].name();
-//        trowCurObj["columns"] = columnArr;
-
-//        rowArr.append(trowCurObj);
-//    }
-
-    json["data"] = rowArr;
-
-    QJsonDocument doc(json);
-
-    file.write(doc.toJson());
+    file.write(docJson.toJson());
     file.close();
+    m_progressbar->progressStop();
 }
 //----------------------------------------------
 void ConfiguratorWindow::importPurposeFromJSON()
@@ -7438,6 +7454,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
         typeNameDescription = tr("Светодиоды");
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model());
+        emit ui->pbtnClearLedOutput->clicked();
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
     {
@@ -7446,6 +7463,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
         typeNameDescription = tr("Дискретные входы");
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtDiscreteInputPurpose->model());
+        emit ui->pbtnClearDiscreteInput->clicked();
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
     {
@@ -7454,7 +7472,13 @@ void ConfiguratorWindow::importPurposeFromJSON()
         typeNameDescription = tr("Реле");
 
         model = static_cast<CMatrixPurposeModel*>(ui->tablewgtRelayPurpose->model());
+        emit ui->pbtnClearRelayOutput->clicked();
     }
+
+    CMatrix& matrix = model->matrix();
+
+    if(matrix.rowCount() == 0 || matrix.columnCount() == 0)
+        return;
 
     QDir dir;
 
@@ -7480,54 +7504,61 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     file.close();
 
-    QJsonObject rootObj = json.object(); // корневой объект
-
-    if(rootObj["type"].toString().toUpper() != typeName)
+    if(!json.isObject())
     {
-        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Неправильный тип привязок. Ожидаются: %1").
-                                                                  arg(typeNameDescription));
+        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Неизвестный формат файла привязок"));
         return;
     }
 
-    QJsonArray dataArr = rootObj.value("data").toArray(); // получение массива данных - строки
+    QString t = json["type"].toString();
 
-    if(dataArr.isEmpty())
+    if(t.toUpper() != typeName.toUpper())
+    {
+        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Ошибка типа файла привязок.\nВыберите другой файл."));
         return;
+    }
 
-//    CMatrix::row_t rows;
-//    int            columnCount = 0;
+    QJsonArray arrRows = json["rows"].toArray();
 
-//    for(int i = 0; i < dataArr.count(); i++)
-//    {
-//        QJsonObject rowObj = dataArr[i].toObject(); // получаем объект строки из массива
+    if(matrix.rowCount() != arrRows.count())
+    {
+        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Количество привязок в файле не соответствует\n"
+                                                                     "количеству привязок в таблице."));
+        return;
+    }
 
-//        if(rowObj.isEmpty())
-//            continue;
+    m_progressbar->setProgressTitle(tr("Импорт профиля привязок %1").arg(((typeName == "LED")?tr("Светодиоды"):
+                                                                          (typeName == "INPUT")?tr("Входы"):tr("Реле"))));
+    m_progressbar->setSettings(0, matrix.rowCount(), tr("строк"));
+    m_progressbar->progressStart();
 
-//        QJsonArray colArr = rowObj["columns"].toArray(); // получение массива данных - колонки
+    for(int i = 0; i < matrix.rowCount(); i++)
+    {
+        QJsonObject objRow = arrRows[i].toObject();
+        CRow& row = matrix[i];
 
-//        if(colArr.isEmpty())
-//            continue;
+        row.data().state = static_cast<StateType>(objRow["state"].toInt());
 
-//        CRow::column_t columns;
+        QJsonArray arrColumns = objRow["columns"].toArray();
 
-//        for(int j = 0; j < colArr.count(); j++)
-//        {
-//            QJsonObject colObj = colArr[j].toObject(); // получаем колонку из массива
+        if(arrColumns.count() != matrix.columnCount())
+        {
+            qDebug() << tr("Количество колонок в строке %1 не соответствует количеству колонок в файле.").arg(i);
+            continue;
+        }
 
-//            columns << CColumn(colObj["bit"].toInt(), static_cast<CColumn::StateType>(colObj["state"].toInt()),
-//                               colObj["key"].toString(), colObj["name"].toString(), colObj["description"].toString());
-//        }
+        for(int j  = 0; j < matrix.columnCount(); j++)
+        {
+            QJsonObject objColumn = arrColumns[j].toObject();
+            CColumn& column = row[j];
+            column.data().state = static_cast<StateType>(objColumn["state"].toInt());
+        }
 
-//        rows << CRow(rowObj["key"].toString(), rowObj["name"].toString(), columns);
+        m_progressbar->increment();
+    }
 
-//        columnCount = columns.count();
-//    }
-
-//    CMatrix matrix(rows, columnCount);
-
-//    if(model)
-//        model->setMatrixTable(matrix);
+    model->updateData();
+    m_progressbar->progressStop();
 }
 //----------------------------------------------------------------
 void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)

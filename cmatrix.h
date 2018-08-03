@@ -8,8 +8,8 @@
     enum StateType
     {
         UNCHECKED,
-        INVERSE,
-        CHECKED
+        CHECKED,
+        INVERSE
     };
     //-----------
     struct unit_t
