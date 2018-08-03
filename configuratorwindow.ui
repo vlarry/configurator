@@ -84,7 +84,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>5</number>
       </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
@@ -1838,7 +1838,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>60</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_63">

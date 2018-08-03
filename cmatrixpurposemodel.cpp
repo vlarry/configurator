@@ -1,36 +1,34 @@
 #include "cmatrixpurposemodel.h"
-//-----------------------------------------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& row_labels, group_t& group,
+//--------------------------------------------------------------------------------------------------------
+CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& label_columns, group_t& group,
                                          IO_Type io_type, QAbstractTableModel* parent):
     QAbstractTableModel(parent),
     m_io_type(io_type)
 {
-    fillHorizontalHeaderModel(m_horizontal_header, group);
-    fillVerticalHeaderModel(m_vertical_header, row_labels);
+    fillVerticalHeaderModel(m_vertical_header, group);
+    fillHorizontalHeaderModel(m_horizontal_header, label_columns);
 
-    CRow::column_t columns;
+    CRow::ColumnArray columns;
+
+    for(const QPair<QString, QString>& column: label_columns) // создаем список колонок таблицы
+    {
+        columns << CColumn(unit_t({ column.first, "", column.second, -1, UNCHECKED }));
+    }
 
     if(m_io_type == IO_OUTPUT)
-        columns << CColumn(-1, CColumn::UNCHECKED, "", tr("Запоминание выходов"), "");
-
-    for(int key: group.keys())
     {
-        group_item_t item = group[key];
+        m_matrix.addRow(CRow(unit_t({ "", tr("Запоминание выходов"), "", -1, UNCHECKED }), columns));
+    }
 
-        for(var_t& var: item.var_list)
+    for(int group_id: group.keys())
+    {
+        group_item_t item = group[group_id];
+
+        for(const var_t& var: item.var_list)
         {
-            columns << CColumn(var.bit, CColumn::UNCHECKED, var.key, var.name, var.description);
+            m_matrix.addRow(CRow(unit_t({ var.key, var.name, var.description, var.bit, UNCHECKED }), columns));
         }
     }
-
-    for(const QPair<QString, QString>& label: row_labels)
-    {
-        CRow row(label.first, label.second, columns);
-        m_matrix.addRow(row);
-    }
-
-    m_matrix.setRowCount(row_labels.count());
-    m_matrix.setColumnCount(columns.count());
 }
 //----------------------------------------------------------------------------------------------------------------
 CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, IO_Type io_type, QAbstractTableModel* parent):
@@ -39,43 +37,35 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, IO_Type io_t
 {
     fillHeaderProtectionModel(labels);
 
-    CRow::column_t columns;
+    CRow::ColumnArray columns;
 
     for(const QString& label: labels)
     {
-        columns << CColumn(label);
+        columns << CColumn(unit_t({ label, "", "", -1, UNCHECKED }));
     }
 
     for(const QString& label: labels)
     {
-        CRow row("", label, columns);
-        m_matrix.addRow(row);
+        m_matrix.addRow(CRow(unit_t({ "", label, "", -1, UNCHECKED }), columns));
     }
-
-    m_matrix.setRowCount(labels.count());
-    m_matrix.setColumnCount(labels.count());
 }
 //------------------------------------------------------------------------------------------------------------
-CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& rows, const QStringList& columns, IO_Type io_type,
+CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& columns, const QStringList& rows, IO_Type io_type,
                                          QAbstractTableModel* parent):
     QAbstractTableModel(parent),
     m_io_type(io_type)
 {
     fillHeaderMonitorModel(rows, columns);
 
-    CRow::column_t column_list;
+    CRow::ColumnArray column_array;
 
     for(const QString& column_label: columns)
-        column_list << CColumn(column_label);
+        column_array << CColumn(unit_t({ column_label, "", "", -1, UNCHECKED }));
 
     for(const QString& row_label: rows)
     {
-        CRow row("", row_label, column_list);
-        m_matrix.addRow(row);
+        m_matrix.addRow(CRow(unit_t({ "", row_label, "", -1, UNCHECKED }), column_array));
     }
-
-    m_matrix.setRowCount(rows.count());
-    m_matrix.setColumnCount(columns.count());
 }
 //------------------------------------
 void CMatrixPurposeModel::updateData()
@@ -86,8 +76,8 @@ void CMatrixPurposeModel::updateData()
 
     emit dataChanged(topLeft, bottomRight);
 }
-//-----------------------------------------
-CMatrix& CMatrixPurposeModel::matrixTable()
+//------------------------------------
+CMatrix& CMatrixPurposeModel::matrix()
 {
     return m_matrix;
 }
@@ -121,9 +111,9 @@ bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& valu
 
     if(role == Qt::CheckStateRole)
     {
-        CColumn::StateType state = static_cast<CColumn::StateType>(value.toInt());
+        StateType state = static_cast<StateType>(value.toInt());
 
-        m_matrix[index.row()][index.column()].setState(state);
+        m_matrix[index.row()][index.column()].data().state = state;
 
         emit dataChanged(index, index);
 
@@ -137,12 +127,13 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
 {
     if(role == Qt::CheckStateRole)
     {
-        return static_cast<Qt::CheckState>(m_matrix[index.row()][index.column()].state());
+        return static_cast<Qt::CheckState>(m_matrix[index.row()][index.column()].data().state);
     }
 
     if(role == Qt::ToolTipRole)
     {
-        return QString("%1: %2").arg(m_matrix[index.row()].name()).arg(m_matrix[index.row()][index.column()].description());
+        return QString("%1: %2").arg(m_matrix[index.row()].data().name).
+                                 arg(m_matrix[index.row()][index.column()].data().description);
     }
 
     if(role == HierarchicalHeaderView::HorizontalHeaderDataRole)
@@ -168,8 +159,8 @@ Qt::ItemFlags CMatrixPurposeModel::flags(const QModelIndex& index) const
 
     return itemFlags;
 }
-//--------------------------------------------------------------------------------------------------
-void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerModel, group_t& group)
+//------------------------------------------------------------------------------------------------
+void CMatrixPurposeModel::fillVerticalHeaderModel(QStandardItemModel& headerModel, group_t& group)
 {
     if(group.isEmpty())
         return;
@@ -178,9 +169,10 @@ void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerMo
 
     if(m_io_type == IO_OUTPUT)
     {
-        QStandardItem* itemGroup  = new QStandardItem("");
-        QStandardItem* cell       = new QStandardItem(tr("Запоминание выходов"));
-        cell->setData(1, Qt::UserRole);
+        QStandardItem* itemGroup = new QStandardItem("");
+        QStandardItem* cell      = new QStandardItem(tr("Запоминание выходов"));
+
+        itemGroup->setData(1, Qt::UserRole);
 
         itemGroup->appendColumn(QList<QStandardItem*>() << cell);
         headerModel.setItem(0, keys++, itemGroup);
@@ -192,13 +184,14 @@ void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerMo
         QStandardItem* itemGroup  = new QStandardItem(group_item.name);
         QVector<var_t> var_list   = group_item.var_list;
 
+        itemGroup->setData(1, Qt::UserRole);
+
         if(var_list.isEmpty())
             continue;
 
         for(var_t var: var_list)
         {
             QStandardItem* cell = new QStandardItem(var.name + QString(3, ' ') + QString("(%1)").arg(var.key));
-            cell->setData(1, Qt::UserRole);
 
             itemGroup->appendColumn(QList<QStandardItem*>() << cell);
         }
@@ -206,9 +199,9 @@ void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerMo
         headerModel.setItem(0, keys++, itemGroup);
     }
 }
-//--------------------------------------------------------------------------------
-void CMatrixPurposeModel::fillVerticalHeaderModel(QStandardItemModel& headerModel,
-                                                  const QVector<QPair<QString, QString> >& labels)
+//----------------------------------------------------------------------------------
+void CMatrixPurposeModel::fillHorizontalHeaderModel(QStandardItemModel& headerModel,
+                                                    const QVector<QPair<QString, QString> >& labels)
 {
     int columns = 0;
 
@@ -301,18 +294,18 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
         }
         else
         {
-            CColumn::StateType state = static_cast<CColumn::StateType>(index.model()->data(index, Qt::CheckStateRole).toInt());
+            StateType state = static_cast<StateType>(index.model()->data(index, Qt::CheckStateRole).toInt());
 
             switch(state)
             {
-                case CColumn::UNCHECKED:
+                case UNCHECKED:
                 break;
 
-                case CColumn::CHECKED:
+                case CHECKED:
                     painter->drawPixmap(rect, QPixmap(":/images/resource/images/checbox_tick.png"));
                 break;
 
-                case CColumn::INVERSE:
+                case INVERSE:
                     int x = rect.left() + rect.width()/4;
                     int y = rect.top() + rect.height()/4;
                     int w = rect.width()/2;
@@ -355,19 +348,19 @@ bool CTableItemDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, c
         if(!checkboxstyle.rect.contains(point))
             return false;
 
-        CColumn::StateType state = static_cast<CColumn::StateType>(value.toInt());
+        StateType state = static_cast<StateType>(value.toInt());
 
-        if(state == CColumn::UNCHECKED)
+        if(state == UNCHECKED)
         {
             if(m_inverse)
-                state = CColumn::INVERSE;
+                state = INVERSE;
             else
-                state = CColumn::CHECKED;
+                state = CHECKED;
         }
-        else if(state == CColumn::INVERSE)
-            state = CColumn::CHECKED;
-        else if(state == CColumn::CHECKED)
-            state = CColumn::UNCHECKED;
+        else if(state == INVERSE)
+            state = CHECKED;
+        else if(state == CHECKED)
+            state = UNCHECKED;
 
         return model->setData(index, state, Qt::CheckStateRole);
     }

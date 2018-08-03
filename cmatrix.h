@@ -4,97 +4,80 @@
     #include <QString>
     #include <QVector>
     #include <QDebug>
+    //------------
+    enum StateType
+    {
+        UNCHECKED,
+        CHECKED,
+        INVERSE
+    };
+    //-----------
+    struct unit_t
+    {
+        QString   key;
+        QString   name;
+        QString   description;
+        int       position;
+        StateType state;
+    };
     //-----------
     class CColumn
     {
         public:
-            enum StateType
-            {
-                UNCHECKED,
-                INVERSE,
-                CHECKED
-            };
-
-        public:
             CColumn();
-            CColumn(const QString& name);
-            CColumn(int bit, StateType state, const QString& key, const QString& name, const QString& description);
+            CColumn(const unit_t& data);
 
-            int     bit() const;
-            QString key() const;
-            QString name() const;
-            QString description() const;
-            StateType state() const;
-
-            void setBit(int bit);
-            void setData(const QString& key, const QString& name, const QString& description);
-            void setKey(const QString& key);
-            void setName(const QString& name);
-            void setDescription(const QString& description);
-            void setState(StateType state);
+            unit_t& data();
+            const unit_t& data() const;
 
         private:
-            int       m_bit;
-            StateType m_state;
-            QString   m_key;
-            QString   m_name;
-            QString   m_description;
+            unit_t m_data;
     };
     //--------
     class CRow
     {
         public:
-            typedef QVector<CColumn> column_t;
+            typedef QVector<CColumn> ColumnArray;
 
         public:
             CRow();
-            CRow(const QString& key, const QString& name, column_t& columns);
+            CRow(const unit_t& data, const ColumnArray& columns = ColumnArray(0));
 
-            void addColumn(CColumn& column);
+            unit_t& data();
+            const unit_t& data() const;
 
-            QString   key() const;
-            QString   name() const;
-            column_t& columns();
-
-            void setKey(const QString& key);
-            void setName(const QString& name);
-            void setColumns(column_t& columns);
+            int count() const;
+            ColumnArray& columns();
+            const ColumnArray& columns() const;
 
             CColumn&       operator [](int index);
             const CColumn& operator [](int index) const;
 
         private:
-            QString  m_key;
-            QString  m_name;
-            column_t m_columns;
+            unit_t      m_data;
+            ColumnArray m_column_array;
     };
     //-----------
     class CMatrix
     {
         public:
-            typedef QVector<CRow> row_t;
+            typedef QVector<CRow> RowArray;
 
         public:
             CMatrix();
-            CMatrix(row_t& rows, int columnCount);
 
-            void addRow(CRow& row);
+            void addRow(const CRow& row);
+            int  columnCount() const;
+            int  rowCount() const;
+            int  columnIndexByKey(const QString& key);
 
-            row_t& rows();
-
-            int rowIndexByKey(const QString& key);
-            int rowCount() const;
-            int columnCount() const;
-
-            void setRowCount(int count);
-            void setColumnCount(int count);
+            RowArray&       rows();
+            const RowArray& rows() const;
 
             CRow&       operator [](int index);
             const CRow& operator [](int index) const;
 
         private:
-            row_t m_rows;
-            int   m_rowCount;
-            int   m_columnCount;
+            RowArray m_matrix;
     };
 #endif // CMATRIX_H
