@@ -1,0 +1,189 @@
+/* ОПИСАНИЕ КЛАССОВ
+/* ОПИСАНИЕ КЛАССОВ
+ * QLabel - поверхность для вывода текста
+ * QLineEdit - поле для ввода/вывода текста
+ * QComboBox - Выпадающий список
+ * QPushButton - кнопки
+ * QToolButton - инструментальная кнопка (с пикторграммой)
+ * QFrame - окно для распределения других виджетов
+ * QWidget - виджет тоже что и QFrame, но имеет менее развитый функционал
+ * QMainWindow - главной окно - на нем находятся все QFrame и QWidget с кнопками, полями и т.д. и т.п.
+ * QCheckBox - чекбокс (отметка какой-либо настройки галочкой)
+ * QRadioButton - радиокнопка выбор одного эксклюзивного пункта из списка
+ * QTableView - табличное представление
+ * QListWidget - представление списка
+ * QTreeView - дерево (используется для меню устройства)
+ * QHeaderView - заголовок таблиц QTableView
+ * QTabWidget - панель с закладками (меню программы)
+ 
+ ССЫЛКА ГДЕ МОЖНО ПОСМОТРЕТЬ ПРИМЕРЫ СТИЛЕЙ ДЛЯ РАЗНЫХ КЛАССОВ (тоже что и CSS в HTML):
+ http://doc.qt.io/qt-5/stylesheet-examples.html
+*/
+
+/* Настройка цветов таб панелей */
+QTabWidget
+{
+    background-color: blue;
+}
+
+/*Настройа цвета основного окна */
+QMainWindow
+{
+	background-color: lightgray;
+}
+
+/* Настройа для фоновых цветов панелей */
+QFrame
+{
+	background-color: lightgray;
+}
+
+QWidget
+{
+	background-color: lightgray;
+}
+
+/* Настройка цветов для всех кнопок */
+QPushButton, QToolButton
+{
+	background-color: darkgray;
+}
+
+/* Удаление стрелки-индикатора на иконке-меню приложения */
+QToolButton#toolButtonMenuIcon::menu-indicator
+{
+	width: 0px;
+}
+
+/* Удаление стрелки-индикатора на иконке "Другие кнопки" */
+QToolButton#toolButtonMinimizeTabMenu::menu-indicator
+{
+	width: 0px;
+}
+
+/* Настройка стрелки-индикатора меню справа по центру */
+QToolButton::menu-indicator
+{
+	width: 7px;
+	height: 7px;
+	subcontrol-origin: padding;
+	left: -5px;
+	subcontrol-position: right center;
+	image: url(:/images/resource/images/menu_indicator.png);
+}
+
+/* Настройка цветов для всех лабелей (подписи) */
+QLabel
+{
+	background-color: silver;
+}
+
+/* Настройа цветов для чекбоксов */
+QCheckBox
+{
+	background-color: lightgray;
+}
+
+/* Настройка цветов полей ввода */
+QLineEdit
+{
+	background-color: whitesmoke;
+}
+
+/* Настройка цветов подписей */
+QLabel
+{
+	background-color: lightgray;
+}
+
+/* Настройка цветов выпадающих списков */
+QComboBox
+{
+	background-color: lightblue;
+}
+
+/* Настройка цветов заголовков таблиц */
+QHeaderView::section
+{
+	background-color: silver;
+}
+
+/* Настройа цветов для панели "Настройка->Работа с блоком БЗУ" */
+QWidget#widgetWorkBZU QToolButton,
+QWidget#widgetWorkBZU QCheckBox,
+QWidget#widgetWorkBZU QLabel
+{
+	background-color: darkgray;
+}
+
+QWidget#widgetWorkBZU QSpinBox
+{
+	background-color: silver;
+}
+
+/*Настройа цветов панелей "Меню устройства" и "Расчетные величины"*/
+QFrame#menuDeviceDockPanel, QFrame#variableDockPanel
+{
+	background-color: lightgray;
+}
+
+/* Настройа цветов кнопок и заголовков панелей "Меню устройства" и "Расчетные величины"
+   цвета можно брать из палитры HTML или задавать кодом #RRGGBB */
+QFrame#menuDeviceDockPanel QPushButton,
+QFrame#variableDockPanel   QPushButton,
+QFrame#menuDeviceDockPanel QToolButton,
+QFrame#menuDeviceDockPanel QLabel#labelMenuDevice,
+QFrame#variableDockPanel   QLabel#labelVariablePanel
+{
+	background-color: darkgray;
+	color: ghostwhite;
+}
+
+/* Настройка цветов подписей и полей ввода панели "Расчетные величины" */
+QFrame#variableDockPanel QLabel,
+QFrame#variableDockPanel QLineEdit
+{
+	background-color: whitesmoke;
+}
+
+/* Настройка цветов всех полос прокрутки */
+QFrame#variableDockPanel QScrollBar
+{
+	background-color: darkgray;
+}
+
+/* Настройка цветов полосы прокрутки панели "Расчетные величины" */
+QFrame#variableDockPanel QScrollBar
+{
+	background-color: darkgray;
+}
+
+/* ЭТИ НАСТРОЙКИ НЕ ЖЕЛАТЕЛЬНО ИЗМЕНЯТЬ - ИНАЧЕ ОТКЛЮЧИТЬСЯ ВИЗУАЛИЗАЦИЯ В ПАНЕЛИ МЕНЮ УСТРОЙСТВА */
+QFrame#menuDeviceDockPanel QTreeView::branch:has-siblings:!adjoins-item 
+{
+    border-image: url(:/images/resource/images/stylesheet-vline.png) 0;
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:has-siblings:adjoins-item 
+{
+    border-image: url(:/images/resource/images/stylesheet-branch-more.png) 0;
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:!has-children:!has-siblings:adjoins-item 
+{
+    border-image: url(:/images/resource/images/stylesheet-branch-end.png) 0;
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:has-children:!has-siblings:closed,
+QFrame#menuDeviceDockPanel QTreeView::branch:closed:has-children:has-siblings 
+{
+        border-image: none;
+        image: url(:/images/resource/images/branch_close.png);
+}
+
+QFrame#menuDeviceDockPanel QTreeView::branch:open:has-children:!has-siblings,
+QFrame#menuDeviceDockPanel QTreeView::branch:open:has-children:has-siblings  
+{
+        border-image: none;
+        image: url(:/images/resource/images/branch_open.png);
+}
