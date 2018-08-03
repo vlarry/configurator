@@ -53,6 +53,13 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
+    bool is_remove = deleteLogFile();
+
+    qInfo() << tr("Запуск программы...");
+
+    if(is_remove)
+        qInfo() << tr("Файл логирования <log.txt> удален.");
+
     connectSystemDb();
     initJournals();
     initMenuPanel();
@@ -79,13 +86,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
     ui->pushButtonVariableCtrl->setDir(CDockPanelItemCtrl::Right);
     ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::Bottom);
-
-    bool is_remove = deleteLogFile();
-
-    qInfo() << tr("Запуск программы...");
-
-    if(is_remove)
-        qInfo() << tr("Файл логирования <log.txt> удален.");
 
     refreshSerialPort();
 
@@ -4434,8 +4434,8 @@ void ConfiguratorWindow::disconnectDb(QSqlDatabase* db)
 
     QSqlDatabase::removeDatabase("db");
 }
-//------------------------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QString> >& row_labels, group_t& group)
+//--------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QString> >& column_labels, group_t& group_rows)
 {
     CMatrixPurposeModel::IO_Type io_type = CMatrixPurposeModel::IO_INPUT;
 
@@ -4446,7 +4446,7 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
 
     HierarchicalHeaderView* hheader = new HierarchicalHeaderView(Qt::Horizontal, table);
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, table);
-    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, group, io_type);
+    CMatrixPurposeModel*    model   = new CMatrixPurposeModel(column_labels, group_rows, io_type);
 
     bool is_inverse = false;
 
@@ -4459,11 +4459,45 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
     table->setHorizontalHeader(hheader);
     table->setVerticalHeader(vheader);
     table->setModel(model);
-    table->resizeColumnsToContents();
-    table->resizeRowsToContents();
-    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    table->horizontalHeader()->sectionResizeMode(QHeaderView::ResizeToContents);
+
+    int row_index = 0;
+
+    if(table == ui->tablewgtLedPurpose || table == ui->tablewgtRelayPurpose)
+        row_index = 1; // для таблиц привязок Светодиоды и Реле начало с первой строки, т.к. нулевая это Запоминание выходов
+
+    for(int group_id: group_rows.keys())
+    {
+        group_item_t item = group_rows[group_id];
+
+        if(item.name.isEmpty())
+        {
+            row_index++;
+            continue;
+        }
+
+        if(item.var_list.isEmpty())
+            continue;
+
+        QFontMetrics fm_table = table->fontMetrics();
+        int text_width = fm_table.width(item.name)*1.2;
+
+        if((item.var_list.count()*fm_table.height()) < text_width)
+        {
+            int h = fm_table.height();
+
+            if(text_width/item.var_list.count() <= (h + 5))
+                h += 10;
+            else
+                h = text_width/item.var_list.count();
+
+            for(int i = row_index; i < (row_index + item.var_list.count()); i++)
+            {
+                table->verticalHeader()->resizeSection(i, h);
+            }
+        }
+
+        row_index += item.var_list.count();
+    }
 }
 //----------------------------------------------------------------------------------------------
 void ConfiguratorWindow::initTableProtection(QTableView* table, block_protection_list_t& labels)
@@ -8956,7 +8990,8 @@ group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
                 }
             }
 
-            group[id] = group_item_t({ group_name, group_description, var_list });
+            if(!var_list.isEmpty())
+                group[id] = group_item_t({ group_name, group_description, var_list });
         }
     }
 

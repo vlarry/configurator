@@ -27,7 +27,7 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& labe
         for(const var_t& var: item.var_list)
         {
             m_matrix.addRow(CRow(unit_t({ var.key, var.name, var.description, var.bit, UNCHECKED }), columns));
-        }
+        };
     }
 }
 //----------------------------------------------------------------------------------------------------------------
