@@ -83,6 +83,10 @@ int main(int argc, char* argv[])
 
     ConfiguratorWindow w;
     w.show();
+
+    QXlsx::Document xlsx;
+    xlsx.write("A1", "Hello Qt!");
+    xlsx.saveAs("d:/Test.xlsx");
     
     return a.exec();
 }

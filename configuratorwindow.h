@@ -58,6 +58,7 @@
     #include "cstatusinfo.h"
     #include "popup.h"
     #include "tabwidget.h"
+    #include "xlsx/xlsxdocument.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
     #define DEBUG_JOURNAL // отладка чтение журналов

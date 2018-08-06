@@ -67,10 +67,10 @@ SOURCES += \
         classes/menubar/menubar.cpp \
         classes/menubar/widgetmenu.cpp \
         classes/tabwidget/tabwidget.cpp \
-    classes/calibrationwidget/calibrationwidget.cpp \
-    classes/tabwidget/widgetmimedata.cpp \
-    classes/tabwidget/widgetdrag.cpp \
-    classes/tabwidget/window.cpp
+        classes/calibrationwidget/calibrationwidget.cpp \
+        classes/tabwidget/widgetmimedata.cpp \
+        classes/tabwidget/widgetdrag.cpp \
+        classes/tabwidget/window.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -114,10 +114,10 @@ HEADERS += \
         classes/menubar/menubar.h \
         classes/menubar/widgetmenu.h \
         classes/tabwidget/tabwidget.h \
-    classes/calibrationwidget/calibrationwidget.h \
-    classes/tabwidget/widgetmimedata.h \
-    classes/tabwidget/widgetdrag.h \
-    classes/tabwidget/window.h
+        classes/calibrationwidget/calibrationwidget.h \
+        classes/tabwidget/widgetmimedata.h \
+        classes/tabwidget/widgetdrag.h \
+        classes/tabwidget/window.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -141,13 +141,16 @@ FORMS += \
         statusinfo.ui \
         classes/menubar/menubar.ui \
         classes/menubar/widgetmenu.ui \
-    classes/calibrationwidget/calibrationwidget.ui
+        classes/calibrationwidget/calibrationwidget.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \
                "classes/menubar" \
                "classes/tabwidget" \
-               "classes/calibrationwidget"
+               "classes/calibrationwidget" \
+               "classes/excel"
+
+include(classes/excel/xlsx/qtxlsx.pri)
 
 win32::RC_FILE = \
                  resource/icon.rc
