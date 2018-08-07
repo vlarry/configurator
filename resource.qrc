@@ -67,6 +67,7 @@
         <file>resource/images/close_button.png</file>
         <file>resource/images/menu_indicator.png</file>
         <file>resource/images/down_indicator.png</file>
+        <file>resource/images/import_excel.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

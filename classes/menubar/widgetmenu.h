@@ -25,6 +25,8 @@
                 EXPORTPROJECT,
                 EXPORTTOPDFPROJECT,
                 EXPORTTOEXCELPROJECT,
+                IMPORTPROJECT,
+                IMPORTFROMEXCELPROJECT,
                 CLOSEPROJECT,
                 EXITAPPLICATION
             };
@@ -48,6 +50,7 @@
             void saveAsProject();
             void exportToPDFProject();
             void exportToExcelProject();
+            void importFromExcelProject();
             void closeProject();
             void addDocument(const QString&);
 

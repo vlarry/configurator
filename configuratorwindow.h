@@ -606,6 +606,7 @@
             void saveAsProject();
             void exportToPDFProject();
             void exportToExcelProject();
+            void importFromExcelProject();
             void closeProject();
             void minimizeTabMenu(bool state);
             void panelMessageVisiblity(bool state = false);

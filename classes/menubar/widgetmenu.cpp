@@ -14,6 +14,8 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonExportProject->setProperty("ID", EXPORTPROJECT);
     ui->toolButtonExportToPDF->setProperty("ID", EXPORTTOPDFPROJECT);
     ui->toolButtonExportToExcel->setProperty("ID", EXPORTTOEXCELPROJECT);
+    ui->toolButtonImportProject->setProperty("ID", IMPORTPROJECT);
+    ui->toolButtonImportFromExcel->setProperty("ID", IMPORTFROMEXCELPROJECT);
     ui->toolButtonCloseProject->setProperty("ID", CLOSEPROJECT);
     ui->toolButtonExit->setProperty("ID", EXITAPPLICATION);
 
@@ -22,6 +24,7 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonSaveProject->installEventFilter(this);
     ui->toolButtonSaveAsProject->installEventFilter(this);
     ui->toolButtonExportProject->installEventFilter(this);
+    ui->toolButtonImportProject->installEventFilter(this);
     ui->toolButtonCloseProject->installEventFilter(this);
 
     ui->toolButtonNewProject->setShortcut(QKeySequence("CTRL+N"));
@@ -33,6 +36,9 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonExportProject->setMenu(menu);
     ui->toolButtonExportProject->setCheckable(false);
 
+    ui->toolButtonImportProject->setMenu(menu);
+    ui->toolButtonImportProject->setCheckable(false);
+
     ui->listWidgetOpenDocument->setPalette(palette());
     ui->listWidgetOpenDocument->hide();
 
@@ -43,6 +49,7 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonSaveAsProject, &QToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonExportToPDF, &QToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonExportToExcel, &QToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(ui->toolButtonImportFromExcel, &QToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonCloseProject, &QToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(this, &CWidgetMenu::addDocument, this, &CWidgetMenu::addOpenDocument);
 }
@@ -74,10 +81,12 @@ bool CWidgetMenu::eventFilter(QObject* obj, QEvent* event)
             {
                 ButtonIDType button_id = static_cast<ButtonIDType>(property_button.toInt());
 
-                if(button_id != EXPORTPROJECT)
+                if(button_id != EXPORTPROJECT && button_id != IMPORTPROJECT)
                     ui->stackedWidgetMenuFunction->setCurrentIndex(0);
-                else
+                else if(button_id == EXPORTPROJECT)
                     ui->stackedWidgetMenuFunction->setCurrentIndex(1);
+                else if(button_id == IMPORTPROJECT)
+                    ui->stackedWidgetMenuFunction->setCurrentIndex(2);
 
                 return true;
             }
@@ -122,6 +131,10 @@ void CWidgetMenu::clicked()
 
         case EXPORTTOEXCELPROJECT:
             emit exportToExcelProject();
+        break;
+
+        case IMPORTFROMEXCELPROJECT:
+            emit importFromExcelProject();
         break;
 
         case CLOSEPROJECT:

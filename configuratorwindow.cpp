@@ -6649,6 +6649,12 @@ void ConfiguratorWindow::exportToExcelProject()
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
 }
+//-----------------------------------------------
+void ConfiguratorWindow::importFromExcelProject()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
 //-------------------------------------
 void ConfiguratorWindow::closeProject()
 {
@@ -9316,6 +9322,8 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::exportToPDFProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this,
             &ConfiguratorWindow::exportToExcelProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importFromExcelProject, this,
+            &ConfiguratorWindow::importFromExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
