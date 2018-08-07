@@ -16635,7 +16635,7 @@
               </layout>
              </item>
              <item>
-              <widget class="QTableView" name="tablewgtLedPurpose"/>
+              <widget class="CPurposeTableView" name="tablewgtLedPurpose"/>
              </item>
             </layout>
            </widget>
@@ -16755,7 +16755,7 @@
               </layout>
              </item>
              <item>
-              <widget class="QTableView" name="tablewgtDiscreteInputPurpose"/>
+              <widget class="CPurposeTableView" name="tablewgtDiscreteInputPurpose"/>
              </item>
             </layout>
            </widget>
@@ -16786,7 +16786,7 @@
               </layout>
              </item>
              <item>
-              <widget class="QTableView" name="tablewgtRelayPurpose"/>
+              <widget class="CPurposeTableView" name="tablewgtRelayPurpose"/>
              </item>
             </layout>
            </widget>
@@ -16817,7 +16817,7 @@
               </layout>
              </item>
              <item>
-              <widget class="QTableView" name="tablewgtKeyboardPurpose"/>
+              <widget class="CPurposeTableView" name="tablewgtKeyboardPurpose"/>
              </item>
             </layout>
            </widget>
@@ -16848,7 +16848,7 @@
               </layout>
              </item>
              <item>
-              <widget class="QTableView" name="tablewgtProtectionCtrl"/>
+              <widget class="CPurposeTableView" name="tablewgtProtectionCtrl"/>
              </item>
             </layout>
            </widget>
@@ -17092,6 +17092,11 @@
    <extends>QWidget</extends>
    <header>calibrationwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CPurposeTableView</class>
+   <extends>QTableView</extends>
+   <header>purposetableview.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

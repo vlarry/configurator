@@ -70,7 +70,8 @@ SOURCES += \
         classes/calibrationwidget/calibrationwidget.cpp \
         classes/tabwidget/widgetmimedata.cpp \
         classes/tabwidget/widgetdrag.cpp \
-        classes/tabwidget/window.cpp
+        classes/tabwidget/window.cpp \
+        classes/tableviews/purposetableview.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -117,7 +118,8 @@ HEADERS += \
         classes/calibrationwidget/calibrationwidget.h \
         classes/tabwidget/widgetmimedata.h \
         classes/tabwidget/widgetdrag.h \
-        classes/tabwidget/window.h
+        classes/tabwidget/window.h \
+        classes/tableviews/purposetableview.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -148,7 +150,8 @@ INCLUDEPATH += "classes/modbus" \
                "classes/menubar" \
                "classes/tabwidget" \
                "classes/calibrationwidget" \
-               "classes/excel"
+               "classes/excel" \
+               "classes/tableviews"
 
 include(classes/excel/xlsx/qtxlsx.pri)
 

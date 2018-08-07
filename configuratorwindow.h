@@ -611,6 +611,7 @@
             void panelMessageVisiblity(bool state = false);
             void calibrationOfCurrent();
             void calibrationOfCurrentRequest();
+            void resizeColumns();
 
         protected:
             void keyPressEvent(QKeyEvent* event);

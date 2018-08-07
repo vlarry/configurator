@@ -132,8 +132,8 @@ QVariant CMatrixPurposeModel::data(const QModelIndex& index, int role) const
 
     if(role == Qt::ToolTipRole)
     {
-        return QString("%1: %2").arg(m_matrix[index.row()].data().name).
-                                 arg(m_matrix[index.row()][index.column()].data().description);
+        return QString("%1: %2").arg(m_matrix[index.row()][index.column()].data().description).
+                                 arg(m_matrix[index.row()].data().name);
     }
 
     if(role == HierarchicalHeaderView::HorizontalHeaderDataRole)
@@ -284,6 +284,9 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
     QRect rect = QRect(line_topLeft.x(), line_topLeft.y(), checkbox_rect.width(), checkbox_rect.height());
 
     painter->save();
+        if(option.state & QStyle::State_Selected)
+            painter->fillRect(option.rect, Qt::gray);
+
         painter->drawRect(rect);
 
         if(m_table_type == PROTECTION_TYPE && index.row() == index.column())

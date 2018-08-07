@@ -6191,14 +6191,7 @@ void ConfiguratorWindow::panelMoved(int pos, int index)
     panelVisibleCtrl(widget);
 
     // Изменение ширины колонок при ресайзе (медленно работает перемещение панелей из-за перерасчета ширины колонок
-//    DeviceMenuItemType menu_index = menuIndex();
-
-//    if(menu_index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
-//       menu_index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||
-//       menu_index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
-//    {
-//        widgetStackIndexChanged(0); // параметр не используется
-//    }
+//    resizeColumns();
 }
 /*!
  * \brief ConfiguratorWindow::panelButtonCtrlPress
@@ -6320,14 +6313,7 @@ void ConfiguratorWindow::panelButtonCtrlPress()
     }
 
     // Изменение ширины колонок при ресайзе
-    DeviceMenuItemType index = menuIndex();
-
-    if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
-       index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||
-       index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
-    {
-        widgetStackIndexChanged(0); // параметр не используется
-    }
+    resizeColumns();
 }
 /*!
  * \brief ConfiguratorWindow::filterJournal
@@ -6850,6 +6836,50 @@ void ConfiguratorWindow::calibrationOfCurrentRequest()
                    &ConfiguratorWindow::calibrationOfCurrentRequest);
         delete m_calib_of_current.timer;
         displayCalibrationOfCurrent();
+    }
+}
+//--------------------------------------
+void ConfiguratorWindow::resizeColumns()
+{
+    DeviceMenuItemType index = menuIndex();
+
+    if(index == -1)
+        return;
+
+    QTableView* table = nullptr;
+    QString     str   = "";
+
+    if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
+    {
+        table = ui->tablewgtLedPurpose;
+        str   = tr("Светодиод");
+    }
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
+    {
+        table = ui->tablewgtDiscreteInputPurpose;
+        str   = tr("Вход");
+    }
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
+    {
+        table = ui->tablewgtRelayPurpose;
+        str   = tr("Реле");
+    }
+
+    if(!table)
+        return;
+
+    QFontMetrics            fm_table = table->fontMetrics();
+    HierarchicalHeaderView* header   = static_cast<HierarchicalHeaderView*>(table->horizontalHeader());
+
+    int w_header = header->width()/table->model()->columnCount();
+
+    for(int i = 0; i < table->model()->columnCount(); i++)
+    {
+        QString text = QString("%1 %2").arg(str).arg(header->model()->headerData(i, Qt::Horizontal).toString());
+
+        int w_text = fm_table.width(text)*1.2f;
+
+        header->resizeSection(i, ((w_header < w_text)?w_text:w_header));
     }
 }
 //------------------------------------------------------
@@ -7809,62 +7839,11 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         else
             ui->widgetToolTipState->hide();
 
-        QTableView* table = nullptr;
-        QString     str   = "";
-
-        if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
-        {
-            table = ui->tablewgtLedPurpose;
-            str   = tr("Светодиод");
-        }
-        else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
-        {
-            table = ui->tablewgtDiscreteInputPurpose;
-            str   = tr("Вход");
-        }
-        else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
-        {
-            table = ui->tablewgtRelayPurpose;
-            str   = tr("Реле");
-        }
-
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
         ui->pushButtonDefaultSettings->setVisible(true);
 
-        if(!table)
-            return;
-
-        QFontMetrics            fm_table = table->fontMetrics();
-        HierarchicalHeaderView* header   = static_cast<HierarchicalHeaderView*>(table->horizontalHeader());
-
-        if(header && (table->width() - table->verticalHeader()->width()) > table->horizontalHeader()->width())
-        {
-            int w_header = table->horizontalHeader()->width()/header->model()->columnCount();
-
-            for(int i = 0; i < header->model()->columnCount(); i++)
-            {
-                QString text = QString("%1 %2").arg(str).arg(header->model()->headerData(i, Qt::Horizontal).toString());
-                int     w    = fm_table.width(text);
-
-                qDebug() << text;
-
-                if(!text.isEmpty() && (w < w_header))
-                {
-                    header->resizeSection(i, w_header);
-                }
-                else
-                    header->resizeSection(i, fm_table.width(text)*1.2);
-            }
-        }
-        else
-        {
-            for(int i = 0; i < header->model()->columnCount(); i++)
-            {
-                QString text = QString("%1 %2").arg(str).arg(header->model()->headerData(i, Qt::Horizontal).toString());
-                header->resizeSection(i, fm_table.width(text)*1.2);
-            }
-        }
+        resizeColumns();
     }
 }
 //-----------------------------------------------------------------------
