@@ -7077,6 +7077,8 @@ void ConfiguratorWindow::loadSettings()
 
         m_settings->beginGroup("settings");
             ui->checkBoxPanelMessage->setChecked(m_settings->value("downpanel_state").toBool());
+            ui->menuDeviceDockPanel->setProperty("WIDTH", m_settings->value("panel_menu_width", 100).toInt());
+            ui->variableDockPanel->setProperty("WIDTH", m_settings->value("panel_variable_width", 100).toInt());
         m_settings->endGroup();
     }
 
@@ -7125,6 +7127,8 @@ void ConfiguratorWindow::saveSettings()
 
         m_settings->beginGroup("settings");
             m_settings->setValue("downpanel_state", ui->checkBoxPanelMessage->isChecked());
+            m_settings->setValue("panel_menu_width", ui->menuDeviceDockPanel->property("WIDTH").toInt());
+            m_settings->setValue("panel_variable_width", ui->variableDockPanel->property("WIDTH").toInt());
         m_settings->endGroup();
     }
 }
