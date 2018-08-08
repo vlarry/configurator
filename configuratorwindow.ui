@@ -1838,7 +1838,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>60</number>
+            <number>38</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -1857,7 +1857,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_60">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_48">
+                   <layout class="QGridLayout" name="gridLayoutInAnalogMain">
                     <item row="1" column="1">
                      <widget class="CLineEdit" name="leM02">
                       <property name="sizePolicy">
@@ -2077,7 +2077,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
-                <layout class="QGridLayout" name="gridLayout_8">
+                <layout class="QGridLayout" name="gridLayoutInAnalogCalibration">
                  <property name="sizeConstraint">
                   <enum>QLayout::SetMinimumSize</enum>
                  </property>
@@ -2957,7 +2957,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_3">
+                   <layout class="QGridLayout" name="gridLayoutMTZ1">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxM05">
                       <property name="maximumSize">
@@ -3277,7 +3277,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_10">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_9">
+                   <layout class="QGridLayout" name="gridLayoutMTZ2">
                     <item row="3" column="1">
                      <widget class="CLineEdit" name="leM11">
                       <property name="sizePolicy">
@@ -3561,7 +3561,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_11">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_15">
+                   <layout class="QGridLayout" name="gridLayoutMTZ3">
                     <item row="4" column="1">
                      <widget class="CLineEdit" name="leK22">
                       <property name="sizePolicy">
@@ -3846,39 +3846,43 @@
             </layout>
            </widget>
            <widget class="QWidget" name="pageMTZ3_Steep">
-            <layout class="QHBoxLayout" name="horizontalLayout_52">
+            <layout class="QHBoxLayout" name="horizontalLayout_53">
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_12">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_53">
+                <layout class="QHBoxLayout" name="horizontalLayout_52">
                  <item>
-                  <widget class="QLabel" name="labelTZ1">
-                   <property name="text">
-                    <string>Туст</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="CLineEdit" name="leTZ1">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="inputMask">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="maxLength">
-                    <number>32767</number>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <layout class="QGridLayout" name="gridLayoutMTZ3_Steep">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelTZ1">
+                     <property name="text">
+                      <string>Туст</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="CLineEdit" name="leTZ1">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <spacer name="horizontalSpacer_13">
@@ -3952,39 +3956,43 @@
             </layout>
            </widget>
            <widget class="QWidget" name="pageMTZ3_Sloping">
-            <layout class="QHBoxLayout" name="horizontalLayout_74">
+            <layout class="QHBoxLayout" name="horizontalLayout_76">
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_13">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_76">
+                <layout class="QHBoxLayout" name="horizontalLayout_74">
                  <item>
-                  <widget class="QLabel" name="labelTZ2">
-                   <property name="text">
-                    <string>Туст</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="CLineEdit" name="leTZ2">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="inputMask">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="maxLength">
-                    <number>32767</number>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <layout class="QGridLayout" name="gridLayoutMTZ3_Sloping">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelTZ2">
+                     <property name="text">
+                      <string>Туст</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="CLineEdit" name="leTZ2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <spacer name="horizontalSpacer_34">
@@ -4064,33 +4072,37 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_77">
                  <item>
-                  <widget class="QLabel" name="labelTZ3">
-                   <property name="text">
-                    <string>K</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="CLineEdit" name="leTZ3">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="inputMask">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="maxLength">
-                    <number>32767</number>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <layout class="QGridLayout" name="gridLayoutMTZ3_Inverse">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelTZ3">
+                     <property name="text">
+                      <string>K</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="CLineEdit" name="leTZ3">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <spacer name="horizontalSpacer_35">
@@ -4170,33 +4182,37 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_78">
                  <item>
-                  <widget class="QLabel" name="labelTZ4">
-                   <property name="text">
-                    <string>K</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="CLineEdit" name="leTZ4">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="inputMask">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="maxLength">
-                    <number>32767</number>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <layout class="QGridLayout" name="gridLayoutMTZ3_DurInverse">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelTZ4">
+                     <property name="text">
+                      <string>K</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="CLineEdit" name="leTZ4">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <spacer name="horizontalSpacer_36">
@@ -4264,102 +4280,114 @@
             </layout>
            </widget>
            <widget class="QWidget" name="pageMTZ3_Back">
-            <layout class="QVBoxLayout" name="verticalLayout_20">
+            <layout class="QHBoxLayout" name="horizontalLayout_116">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_112">
+              <layout class="QVBoxLayout" name="verticalLayout_20">
                <item>
-                <widget class="QLabel" name="labelTZ5">
-                 <property name="text">
-                  <string>Tx</string>
-                 </property>
-                </widget>
+                <layout class="QHBoxLayout" name="horizontalLayout_112">
+                 <item>
+                  <layout class="QGridLayout" name="gridLayoutMTZ3_Back">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelTZ5">
+                     <property name="text">
+                      <string>Tx</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="CLineEdit" name="leTZ5">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_64">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
                <item>
-                <widget class="CLineEdit" name="leTZ5">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="inputMask">
-                  <string/>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="maxLength">
-                  <number>32767</number>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_64">
+                <spacer name="verticalSpacer_21">
                  <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                  <enum>Qt::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>40</width>
-                   <height>20</height>
+                   <width>20</width>
+                   <height>351</height>
                   </size>
                  </property>
                 </spacer>
                </item>
               </layout>
              </item>
-             <item>
-              <spacer name="verticalSpacer_21">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>351</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageMTZ3_StrInverse">
-            <layout class="QHBoxLayout" name="horizontalLayout_87">
+            <layout class="QHBoxLayout" name="horizontalLayout_117">
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_26">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_117">
+                <layout class="QHBoxLayout" name="horizontalLayout_87">
                  <item>
-                  <widget class="QLabel" name="labelTZ6">
-                   <property name="text">
-                    <string>K</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="CLineEdit" name="leTZ6">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="inputMask">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="maxLength">
-                    <number>32767</number>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <layout class="QGridLayout" name="gridLayoutMTZ3_StrInverse">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelTZ6">
+                     <property name="text">
+                      <string>K</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="CLineEdit" name="leTZ6">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <spacer name="horizontalSpacer_66">
@@ -4433,39 +4461,43 @@
             </layout>
            </widget>
            <widget class="QWidget" name="pageMTZ3_ExtInverse">
-            <layout class="QHBoxLayout" name="horizontalLayout_88">
+            <layout class="QHBoxLayout" name="horizontalLayout_118">
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_33">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_118">
+                <layout class="QHBoxLayout" name="horizontalLayout_88">
                  <item>
-                  <widget class="QLabel" name="labelTZ7">
-                   <property name="text">
-                    <string>K</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="CLineEdit" name="leTZ7">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="inputMask">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="maxLength">
-                    <number>32767</number>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <layout class="QGridLayout" name="gridLayoutMTZ3_ExtInverse">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="labelTZ7">
+                     <property name="text">
+                      <string>K</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="CLineEdit" name="leTZ7">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="inputMask">
+                      <string/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="maxLength">
+                      <number>32767</number>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <spacer name="horizontalSpacer_67">
@@ -4558,7 +4590,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_12">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_16">
+                   <layout class="QGridLayout" name="gridLayoutMTZ4">
                     <item row="6" column="1">
                      <widget class="CLineEdit" name="leX05">
                       <property name="sizePolicy">
@@ -4918,7 +4950,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_19">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_22">
+                   <layout class="QGridLayout" name="gridLayoutOZZ1">
                     <item row="2" column="1">
                      <widget class="CLineEdit" name="leM23">
                       <property name="sizePolicy">
@@ -5159,7 +5191,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_20">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_23">
+                   <layout class="QGridLayout" name="gridLayoutOZZ2">
                     <item row="4" column="1">
                      <widget class="CLineEdit" name="leX07a">
                       <property name="sizePolicy">
@@ -5400,7 +5432,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_21">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_24">
+                   <layout class="QGridLayout" name="gridLayoutNZZ1">
                     <item row="2" column="0">
                      <widget class="QLabel" name="labelM26">
                       <property name="text">
@@ -5907,7 +5939,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_22">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_26">
+                   <layout class="QGridLayout" name="gridLayoutNZZ2">
                     <item row="4" column="0">
                      <widget class="QLabel" name="labelK29">
                       <property name="text">
@@ -6414,7 +6446,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_25">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_17">
+                   <layout class="QGridLayout" name="gridLayoutUmax1">
                     <item row="3" column="0">
                      <widget class="QLabel" name="labelM34">
                       <property name="text">
@@ -6678,7 +6710,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_26">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_18">
+                   <layout class="QGridLayout" name="gridLayoutUmax2">
                     <item row="2" column="0">
                      <widget class="QLabel" name="labelM36">
                       <property name="text">
@@ -6924,7 +6956,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_27">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_19">
+                   <layout class="QGridLayout" name="gridLayoutUmin1">
                     <item row="3" column="1">
                      <widget class="QComboBox" name="cboxM40">
                       <property name="maximumSize">
@@ -7236,7 +7268,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_28">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_20">
+                   <layout class="QGridLayout" name="gridLayoutUmin2">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxM43">
                       <property name="maximumSize">
@@ -7548,7 +7580,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_29">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_21">
+                   <layout class="QGridLayout" name="gridLayout3U0">
                     <item row="3" column="1">
                      <widget class="CLineEdit" name="leM50">
                       <property name="sizePolicy">
@@ -7795,7 +7827,7 @@
                    <number>9</number>
                   </property>
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_27">
+                   <layout class="QGridLayout" name="gridLayoutMotorStarting">
                     <item row="0" column="0">
                      <widget class="QLabel" name="labelM19">
                       <property name="text">
@@ -8042,7 +8074,7 @@
                    <number>9</number>
                   </property>
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_28">
+                   <layout class="QGridLayout" name="gridLayoutMotorImin">
                     <item row="0" column="0">
                      <widget class="QLabel" name="labelM29">
                       <property name="text">
@@ -8283,7 +8315,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_32">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_29">
+                   <layout class="QGridLayout" name="gridLayoutACHR1">
                     <item row="2" column="0">
                      <widget class="QLabel" name="labelM52">
                       <property name="text">
@@ -8562,7 +8594,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_33">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_30">
+                   <layout class="QGridLayout" name="gridLayoutACHR2">
                     <item row="4" column="1">
                      <widget class="CLineEdit" name="leM58">
                       <property name="sizePolicy">
@@ -8841,7 +8873,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_34">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_31">
+                   <layout class="QGridLayout" name="gridLayoutACHR3">
                     <item row="4" column="1">
                      <widget class="CLineEdit" name="leM62">
                       <property name="sizePolicy">
@@ -9120,7 +9152,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_40">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_32">
+                   <layout class="QGridLayout" name="gridLayoutArc">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxM63">
                       <property name="sizePolicy">
@@ -9364,7 +9396,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_89">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_33">
+                   <layout class="QGridLayout" name="gridLayoutExt1">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxM71">
                       <property name="sizePolicy">
@@ -9559,7 +9591,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_90">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_34">
+                   <layout class="QGridLayout" name="gridLayoutExt2">
                     <item row="0" column="0">
                      <widget class="QLabel" name="labelM73">
                       <property name="sizePolicy">
@@ -9754,7 +9786,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_91">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_35">
+                   <layout class="QGridLayout" name="gridLayoutExt3">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxM75">
                       <property name="sizePolicy">
@@ -9949,7 +9981,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_43">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_36">
+                   <layout class="QGridLayout" name="gridLayoutTemp1">
                     <item row="4" column="1">
                      <widget class="CLineEdit" name="leM69">
                       <property name="sizePolicy">
@@ -10259,7 +10291,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_44">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_37">
+                   <layout class="QGridLayout" name="gridLayoutTemp2">
                     <item row="2" column="1">
                      <widget class="QComboBox" name="cboxTEMP2WorkMode">
                       <property name="maximumSize">
@@ -10569,7 +10601,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_47">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_38">
+                   <layout class="QGridLayout" name="gridLayoutLevel1">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxM77">
                       <property name="maximumSize">
@@ -10749,7 +10781,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_48">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_39">
+                   <layout class="QGridLayout" name="gridLayoutLevel2">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxProtectionLeve2_Ctrl">
                       <property name="maximumSize">
@@ -10929,7 +10961,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_41">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_40">
+                   <layout class="QGridLayout" name="gridLayoutSignalStart">
                     <item row="7" column="0">
                      <widget class="QLabel" name="labelN58">
                       <property name="text">
@@ -11972,7 +12004,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_102">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_10">
+                   <layout class="QGridLayout" name="gridLayoutBRU">
                     <item row="0" column="0">
                      <widget class="QLabel" name="labelM93">
                       <property name="sizePolicy">
@@ -12323,7 +12355,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_103">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_11">
+                   <layout class="QGridLayout" name="gridLayoutVacuum">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxM90">
                       <property name="sizePolicy">
@@ -12645,7 +12677,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_76">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_6">
+                   <layout class="QGridLayout" name="gridLayoutDisconnectors">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxK32">
                       <property name="maximumSize">
@@ -13254,7 +13286,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_67">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_45">
+                   <layout class="QGridLayout" name="gridLayoutDisconnectorTruck">
                     <item row="4" column="1">
                      <widget class="CLineEdit" name="leK58">
                       <property name="sizePolicy">
@@ -13528,7 +13560,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_54">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_41">
+                   <layout class="QGridLayout" name="gridLayoutBlock">
                     <item row="1" column="1">
                      <widget class="QComboBox" name="cboxK14">
                       <property name="sizePolicy">
@@ -13719,7 +13751,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_64">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_42">
+                   <layout class="QGridLayout" name="gridLayoutDisconnectBus">
                     <item row="1" column="0">
                      <widget class="QLabel" name="labelK38">
                       <property name="text">
@@ -13993,7 +14025,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_65">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_43">
+                   <layout class="QGridLayout" name="gridLayoutDisconnectLine">
                     <item row="0" column="1">
                      <widget class="QComboBox" name="cboxK35">
                       <property name="maximumSize">
@@ -14267,7 +14299,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_66">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_44">
+                   <layout class="QGridLayout" name="gridLayoutDisconnectEarth">
                     <item row="4" column="1">
                      <widget class="CLineEdit" name="leK56">
                       <property name="sizePolicy">
@@ -14541,7 +14573,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_68">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_46">
+                   <layout class="QGridLayout" name="gridLayoutCtrlTN">
                     <item row="0" column="0">
                      <widget class="QLabel" name="labelK18">
                       <property name="sizePolicy">
@@ -14671,7 +14703,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_111">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_12">
+                   <layout class="QGridLayout" name="gridLayoutAVR">
                     <item row="3" column="0">
                      <widget class="QLabel" name="labelM84">
                       <property name="sizePolicy">
@@ -14912,7 +14944,7 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_61">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_13">
+                   <layout class="QGridLayout" name="gridLayoutAPV">
                     <item row="1" column="0">
                      <widget class="QLabel" name="labelM88">
                       <property name="sizePolicy">
@@ -15080,7 +15112,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_51">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_47">
+                   <layout class="QGridLayout" name="gridLayoutAPVSignalStart">
                     <item row="7" column="0">
                      <widget class="QLabel" name="labelN58_2">
                       <property name="text">

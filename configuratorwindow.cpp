@@ -6648,6 +6648,106 @@ void ConfiguratorWindow::exportToExcelProject()
 {
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
+
+    QXlsx::Document xlsx;
+
+    xlsx.addSheet(tr("Защиты"));
+
+    xlsx.write("A1", tr("Имя"));
+    xlsx.write("B1", tr("Параметр"));
+    xlsx.write("C1", tr("Значение"));
+    xlsx.write("D1", tr("Диапазон"));
+
+    QXlsx::Format format_header;
+    format_header.setFontBold(true);
+    format_header.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
+    format_header.setVerticalAlignment(QXlsx::Format::AlignBottom);
+
+    xlsx.setColumnFormat("A1:D1", format_header);
+
+    xlsx.setColumnWidth("A1", 30);
+    xlsx.setColumnWidth("B1", 50);
+    xlsx.setColumnWidth("C1", 50);
+    xlsx.setColumnWidth("D1", 20);
+
+    writeDataToExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
+    writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ1);
+    writeDataToExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ1);
+    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
+    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
+    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
+    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
+    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
+    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
+    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
+    writeDataToExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ1);
+    writeDataToExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
+    writeDataToExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
+    writeDataToExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
+    writeDataToExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
+    writeDataToExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
+    writeDataToExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
+    writeDataToExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
+    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
+    writeDataToExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
+    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
+    writeDataToExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
+    writeDataToExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
+    writeDataToExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
+    writeDataToExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
+    writeDataToExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
+    writeDataToExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
+    writeDataToExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
+    writeDataToExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
+    writeDataToExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
+    writeDataToExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
+    writeDataToExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
+    writeDataToExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
+    writeDataToExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
+    writeDataToExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
+    writeDataToExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
+    writeDataToExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
+    writeDataToExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
+
+    xlsx.addSheet(tr("Автоматика"));
+
+    xlsx.write("A1", tr("Имя"));
+    xlsx.write("B1", tr("Параметр"));
+    xlsx.write("C1", tr("Значение"));
+    xlsx.write("D1", tr("Диапазон"));
+    xlsx.setColumnFormat("A1:D1", format_header);
+    xlsx.setColumnWidth("A1", 30);
+    xlsx.setColumnWidth("B1", 50);
+    xlsx.setColumnWidth("C1", 50);
+    xlsx.setColumnWidth("D1", 20);
+
+    writeDataToExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors, -1);
+    writeDataToExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
+    writeDataToExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
+    writeDataToExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
+    writeDataToExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
+    writeDataToExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
+    writeDataToExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
+    writeDataToExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
+    writeDataToExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
+    writeDataToExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
+
+    xlsx.addSheet(tr("Аналоговые входы"));
+
+    xlsx.write("A1", tr("Имя"));
+    xlsx.write("B1", tr("Параметр"));
+    xlsx.write("C1", tr("Значение"));
+    xlsx.write("D1", tr("Диапазон"));
+    xlsx.setColumnFormat("A1:D1", format_header);
+    xlsx.setColumnWidth("A1", 30);
+    xlsx.setColumnWidth("B1", 50);
+    xlsx.setColumnWidth("C1", 50);
+    xlsx.setColumnWidth("D1", 20);
+
+    writeDataToExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain, -1);
+    writeDataToExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
+
+    xlsx.saveAs("d:/test.xlsx");
 }
 //-----------------------------------------------
 void ConfiguratorWindow::importFromExcelProject()
@@ -9208,6 +9308,106 @@ QPointF ConfiguratorWindow::standardDeviation(QVector<float>& list)
     deviation = sqrt(deviation/(list.count() - 1));
 
     return QPointF(average, deviation);
+}
+/*!
+ * \brief ConfiguratorWindow::writeDataToExcel
+ * \param doc Текущий документ Excel
+ * \param name_group Имя группы (н-р, МТЗ1)
+ * \param grid Указатель на грид в котором находятся поля с данными
+ * \return возвращает индекс последней строки
+ *
+ * Запись уставок из грида в excel
+ */
+int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const QString& name_group, const QGridLayout* grid, int offset)
+{
+    if(!grid)
+        return -1;
+
+    static int row_offset = 2;
+
+    if(offset == -1)
+        row_offset = 2;
+    else
+        row_offset += offset;
+
+    if(!name_group.isEmpty())
+        doc.write(QString("A%1").arg(row_offset++), name_group);
+
+    int pos_first  = row_offset; // позиция начала сворачивания группы строк
+    int rows       = grid->rowCount();
+    int columns    = grid->columnCount();
+    int row_count  = 0; // счетчик вставленных строк в Excel
+
+    for(int col = 0; col < columns - 1; col += 2)
+    {
+        int col_pos = col;
+
+        if(columns%2 && col != 0)
+            col_pos++;
+
+        for(int row = 0; row < rows; row++)
+        {
+            QLayoutItem* layout_item_value = grid->itemAtPosition(row, col_pos + 1);
+            QLayoutItem* layout_item_param = grid->itemAtPosition(row, col_pos);
+
+            if(!layout_item_value || !layout_item_param)
+                continue;
+
+            QWidget* wgt_value = layout_item_value->widget();
+            QWidget* wgt_param = layout_item_param->widget();
+
+            if(!wgt_value || !wgt_param)
+                continue;
+
+            QString name_param  = qobject_cast<QLabel*>(wgt_param)->text();
+            QString str_value   = "";
+            QString value_range = "";
+
+            if(QString(wgt_value->metaObject()->className()).toUpper() == "QCOMBOBOX")
+            {
+                QComboBox* cb = qobject_cast<QComboBox*>(wgt_value);
+
+                if(cb)
+                {
+                    for(int i = 0; i < cb->count(); i++)
+                    {
+                        str_value += QString("%1 - %2").arg(i + 1).arg(cb->itemText(i));
+
+                        if(i != cb->count() - 1)
+                            str_value += "; ";
+                    }
+                }
+            }
+            else if(QString(wgt_value->metaObject()->className()).toUpper() == "CLINEEDIT")
+            {
+                CLineEdit* le = qobject_cast<CLineEdit*>(wgt_value);
+                str_value = le->text();
+                int pos = name_param.indexOf('(');
+
+                if(pos != -1)
+                {
+                    value_range = name_param.mid(pos, name_param.length() - 1);
+                    name_param  = name_param.mid(0, pos - 1);
+                }
+            }
+
+            int row_pos = row;
+
+            if(col != 0)
+                row_pos = row_count;
+
+            doc.write(QString("B%1").arg(row_pos + row_offset), name_param);
+            doc.write(QString("C%1").arg(row_pos + row_offset), str_value);
+            doc.write(QString("D%1").arg(row_pos + row_offset), value_range);
+
+            row_count++;
+        }
+    }
+
+    row_offset += row_count;
+    doc.groupRows(pos_first, row_offset - 1, true);
+
+    return row_offset;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()
