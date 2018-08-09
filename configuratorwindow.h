@@ -696,7 +696,9 @@
             void endJournalReadProcess(const QString& text);
             float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
             QPointF standardDeviation(QVector<float>& list);
-            int writeDataToExcel(QXlsx::Document &doc, const QString& name_group, const QGridLayout* grid, int offset = 0);
+            int writeDataToExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid, int offset = 0);
+            void readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid);
+            int groupPositionInExcel(QXlsx::Document& doc, const QString& group);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

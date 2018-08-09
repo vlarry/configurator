@@ -73,7 +73,9 @@ void CProgressBarWidget::setSettings(int min, int max, const QString& format)
     ui->progressBar->setFormat("");
     ui->progressBar->setRange(min, max);
     ui->progressBar->setValue(min);
-    m_format = format;
+
+    if(!format.isEmpty())
+        m_format = format;
 }
 //---------------------------------------------------
 void CProgressBarWidget::progressIncrement(int value)

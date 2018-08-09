@@ -5477,6 +5477,123 @@ int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& la
 
     return -1;
 }
+/*!
+ * \brief ConfiguratorWindow::readDataFromExcel
+ * \param doc Текущий документ Excel
+ * \param is_next_group Следующая запись начинается с новой группы, т.е. имеет отдельный заголовок
+ * \param grid Указатель на грид в котором находятся поля с данными
+ */
+void ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid)
+{
+    int beg_offset = 0;
+
+    if(!group.isEmpty())
+    {
+        beg_offset = groupPositionInExcel(doc, group);
+
+        if(beg_offset == -1)
+        {
+            qWarning() << tr("Чтение данных из файла Excel: группа <%1> не найдена.").arg(group);
+            return;
+        }
+    }
+
+    static int offset = 0;
+
+    if(!group.isEmpty())
+        offset = beg_offset;
+
+    int rows    = grid->rowCount();
+    int columns = grid->columnCount();
+    int count   = 0;
+
+    for(int col = 0; col < columns - 1; col += 2)
+    {
+        int col_index = col;
+        int row_index = col/2;
+
+        if(columns%2 && col != 0)
+            col_index++;
+
+        for(int row = 0; row < rows; row++)
+        {
+            int cell_index = row + rows*row_index + offset;
+
+            QLayoutItem* layout_item = grid->itemAtPosition(row, col_index + 1);
+
+            if(layout_item)
+            {
+                QWidget* wgt = layout_item->widget();
+
+                if(wgt)
+                {
+                    if(QString(wgt->metaObject()->className()).toUpper() == "QCOMBOBOX")
+                    {
+                        QComboBox* cb = qobject_cast<QComboBox*>(wgt);
+
+                        if(cb)
+                        {
+                            int pos = doc.read(cell_index, 3).toInt();
+
+                            if(pos >= 1)
+                                cb->setCurrentIndex(pos - 1);
+                        }
+                    }
+                    else if(QString(wgt->metaObject()->className()).toUpper() == "CLINEEDIT")
+                    {
+                        CLineEdit* le = qobject_cast<CLineEdit*>(wgt);
+
+                        if(le)
+                        {
+                            bool    is_ok    = false;
+                            QString cell_val = doc.read(cell_index, 3).toString();
+                            float   number   = QLocale::system().toFloat(cell_val, &is_ok);
+
+                            if(is_ok)
+                            {
+                                le->setText(QLocale::system().toString(number, 'f', 6));
+                            }
+                            else
+                                qWarning() << tr("Чтение данных из файла Excel: невозможно преобразование в число <%1>.").arg(group);
+                        }
+                    }
+
+                    count++;
+                }
+            }
+        }
+    }
+
+    offset += count;
+
+    m_progressbar->increment();
+}
+/*!
+ * \brief ConfiguratorWindow::groupPositionInExcel
+ * \param doc Документ Excel
+ * \param group Имя группы позицию которой необходимо найти
+ * \return Позиция начала данных группы, или -1 если не найдена такая группа
+ */
+int ConfiguratorWindow::groupPositionInExcel(QXlsx::Document& doc, const QString& group)
+{
+    int result = -1;
+
+    for(int row = 1; row <= doc.dimension().lastRow(); row++)
+    {
+        QString cell_text = doc.read(row, 1).toString();
+
+        if(cell_text.isEmpty())
+            continue;
+
+        if(cell_text.toUpper() == group.toUpper())
+        {
+            result = row + 1;
+            break;
+        }
+    }
+
+    return result;
+}
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
                                                 CModBusDataUnit::FunctionType type, int size)
@@ -6646,8 +6763,22 @@ void ConfiguratorWindow::exportToPDFProject()
 //---------------------------------------------
 void ConfiguratorWindow::exportToExcelProject()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
+    QDir dir;
+
+    if(!dir.exists("outputs/excel"))
+        dir.mkdir("outputs/excel");
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Экспорт в Excel"),
+                                                    QString(dir.absolutePath() + "/%1/%2").
+                                                    arg("outputs/excel").arg("settings"),
+                                                    tr("Excel (*.xlsx)"));
+
+    if(fileName.isEmpty())
+        return;
+
+    m_progressbar->setProgressTitle(tr("Экспорт уставок в Excel"));
+    m_progressbar->setSettings(0, 50);
+    m_progressbar->progressStart();
 
     QXlsx::Document xlsx;
 
@@ -6671,8 +6802,8 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.setColumnWidth("D1", 50);
 
     writeDataToExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
-    writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ1);
-    writeDataToExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ1);
+    writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
+    writeDataToExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
@@ -6680,7 +6811,7 @@ void ConfiguratorWindow::exportToExcelProject()
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
-    writeDataToExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ1);
+    writeDataToExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
     writeDataToExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
     writeDataToExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
     writeDataToExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
@@ -6747,13 +6878,105 @@ void ConfiguratorWindow::exportToExcelProject()
     writeDataToExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain, -1);
     writeDataToExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
 
-    xlsx.saveAs("d:/test.xlsx");
+    xlsx.selectSheet(tr("Защиты"));
+    xlsx.saveAs(fileName);
+
+    m_progressbar->progressStop();
 }
 //-----------------------------------------------
 void ConfiguratorWindow::importFromExcelProject()
 {
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
+
+    QDir dir;
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Импорт уставок из Excel"),
+                                                    QString(dir.absolutePath() + "/%1/%2").arg("outputs/excel").
+                                                    arg("settings"),
+                                                    tr("Excel (*.xlsx)"));
+
+    if(fileName.isEmpty())
+        return;
+
+    m_progressbar->setProgressTitle(tr("Импорт уставок из Excel"));
+    m_progressbar->setSettings(0, 50);
+    m_progressbar->progressStart();
+
+    QXlsx::Document xlsx(fileName);
+
+    if(!xlsx.selectSheet(tr("Защиты")))
+    {
+        qWarning() << tr("Импорт данных из файла Excel: лист <Защиты> не найден.");
+        return;
+    }
+
+    readDataFromExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
+    readDataFromExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
+    readDataFromExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
+    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
+    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
+    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
+    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
+    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
+    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
+    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
+    readDataFromExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
+    readDataFromExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
+    readDataFromExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
+    readDataFromExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
+    readDataFromExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
+    readDataFromExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
+    readDataFromExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
+    readDataFromExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
+    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
+    readDataFromExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
+    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
+    readDataFromExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
+    readDataFromExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
+    readDataFromExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
+    readDataFromExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
+    readDataFromExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
+    readDataFromExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
+    readDataFromExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
+    readDataFromExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
+    readDataFromExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
+    readDataFromExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
+    readDataFromExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
+    readDataFromExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
+    readDataFromExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
+    readDataFromExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
+    readDataFromExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
+    readDataFromExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
+    readDataFromExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
+
+    if(!xlsx.selectSheet(tr("Автоматика")))
+    {
+        qWarning() << tr("Импорт данных из файла Excel: лист <Автоматика> не найден.");
+        return;
+    }
+
+    readDataFromExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors);
+    readDataFromExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
+    readDataFromExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
+    readDataFromExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
+    readDataFromExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
+    readDataFromExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
+    readDataFromExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
+    readDataFromExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
+    readDataFromExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
+    readDataFromExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
+
+    if(!xlsx.selectSheet(tr("Аналоговые входы")))
+    {
+        qWarning() << tr("Импорт данных из файла Excel: лист <Аналоговые входы> не найден.");
+        return;
+    }
+
+    readDataFromExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain);
+    readDataFromExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
+
+    m_progressbar->progressStop();
 }
 //-------------------------------------
 void ConfiguratorWindow::closeProject()
@@ -9318,7 +9541,7 @@ QPointF ConfiguratorWindow::standardDeviation(QVector<float>& list)
  *
  * Запись уставок из грида в excel
  */
-int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const QString& name_group, const QGridLayout* grid, int offset)
+int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid, int offset)
 {
     if(!grid)
         return -1;
@@ -9330,8 +9553,8 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const QString& na
     else
         row_offset += offset;
 
-    if(!name_group.isEmpty())
-        doc.write(QString("A%1").arg(row_offset++), name_group);
+    if(!group.isEmpty())
+        doc.write(QString("A%1").arg(row_offset++), group);
 
     int pos_first  = row_offset; // позиция начала сворачивания группы строк
     int rows       = grid->rowCount();
@@ -9408,6 +9631,8 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const QString& na
 
     row_offset += row_count;
     doc.groupRows(pos_first, row_offset - 1, true);
+
+    emit m_progressbar->increment();
 
     return row_offset;
 }

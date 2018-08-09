@@ -30,7 +30,7 @@
             void progressIncrement(int value = 1);
             void progressStart();
             void progressStop();
-            void setSettings(int min, int max, const QString& format);
+            void setSettings(int min, int max, const QString& format = "");
 
         signals:
             void settingChanged(int min, int max, const QString& format);
