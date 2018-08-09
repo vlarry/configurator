@@ -6667,8 +6667,8 @@ void ConfiguratorWindow::exportToExcelProject()
 
     xlsx.setColumnWidth("A1", 30);
     xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 50);
-    xlsx.setColumnWidth("D1", 20);
+    xlsx.setColumnWidth("C1", 20);
+    xlsx.setColumnWidth("D1", 50);
 
     writeDataToExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
     writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ1);
@@ -6718,8 +6718,8 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.setColumnFormat("A1:D1", format_header);
     xlsx.setColumnWidth("A1", 30);
     xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 50);
-    xlsx.setColumnWidth("D1", 20);
+    xlsx.setColumnWidth("C1", 20);
+    xlsx.setColumnWidth("D1", 50);
 
     writeDataToExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors, -1);
     writeDataToExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
@@ -6741,8 +6741,8 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.setColumnFormat("A1:D1", format_header);
     xlsx.setColumnWidth("A1", 30);
     xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 50);
-    xlsx.setColumnWidth("D1", 20);
+    xlsx.setColumnWidth("C1", 20);
+    xlsx.setColumnWidth("D1", 50);
 
     writeDataToExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain, -1);
     writeDataToExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
@@ -9371,11 +9371,13 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const QString& na
                 {
                     for(int i = 0; i < cb->count(); i++)
                     {
-                        str_value += QString("%1 - %2").arg(i + 1).arg(cb->itemText(i));
+                        value_range += QString("%1 - %2").arg(i + 1).arg(cb->itemText(i));
 
                         if(i != cb->count() - 1)
-                            str_value += "; ";
+                            value_range += "; ";
                     }
+
+                    str_value = QString("%1").arg(cb->currentIndex() + 1);
                 }
             }
             else if(QString(wgt_value->metaObject()->className()).toUpper() == "CLINEEDIT")
