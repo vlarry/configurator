@@ -285,7 +285,7 @@ void CTableItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
 
     painter->save();
         if(option.state & QStyle::State_Selected)
-            painter->fillRect(option.rect, Qt::gray);
+            painter->fillRect(option.rect, QBrush(QColor(239, 239, 239)));
 
         painter->drawRect(rect);
 
