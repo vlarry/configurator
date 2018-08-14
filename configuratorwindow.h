@@ -60,9 +60,10 @@
     #include "tabwidget.h"
     #include "dragwidget.h"
     #include "xlsx/xlsxdocument.h"
+    #include "devicemenumodel.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
-    #define DEBUG_JOURNAL // отладка чтение журналов
+//    #define DEBUG_JOURNAL // отладка чтение журналов
 //    #define DEBUG_FUNCTION // отладка всего остального
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");

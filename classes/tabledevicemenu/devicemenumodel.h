@@ -1,11 +1,44 @@
 #ifndef DEVICEMENUMODEL_H
     #define DEVICEMENUMODEL_H
-    //----------------------------
-    #include <QAbstractTableModel>
-    //------------------------------------------------
-    class CDeviceMenuModel: public QAbstractTableModel
+    //---------------------
+    #include <QTableWidget>
+    #include <QTableWidgetItem>
+    #include <QHeaderView>
+    #include <QHBoxLayout>
+    //-----------------------------------------------
+    class CDeviceMenuTableWidget: public QTableWidget
     {
         public:
-            CDeviceMenuModel(QAbstractTableModel* parent = nullptr);
+            enum RowType
+            {
+                HEADER,
+                ITEM
+            };
+            //-----------
+            struct item_t
+            {
+                QString  name;
+                QWidget* item;
+            };
+            //------------------------------------
+            typedef QVector<item_t> column_list_t;
+            typedef QVector<column_list_t> row_list_t;
+            //------------
+            struct group_t
+            {
+                QString    name;
+                row_list_t rows;
+            };
+
+        public:
+            CDeviceMenuTableWidget(QWidget* parent = nullptr);
+            void setColumns(const QStringList& columns);
+            void addGroup(group_t& group);
+
+        private slots:
+            void rowClicked(QTableWidgetItem* item);
+
+        private:
+            QMap<int, int> m_group_rows;
     };
 #endif // DEVICEMENUMODEL_H

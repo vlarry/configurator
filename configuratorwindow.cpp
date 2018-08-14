@@ -3776,6 +3776,109 @@ void ConfiguratorWindow::initMenuPanel()
 //    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 60;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 61;
+
+    ui->tableViewProtectionGroupMTZ->setColumns(QStringList() << tr("Имя") << tr("Параметр") << tr("Предел"));
+
+    CDeviceMenuTableWidget::column_list_t mtz1Row1 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelM05 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->cboxM05 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz1Row2 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelMTZ1WorkMode }),
+        CDeviceMenuTableWidget::item_t({ "", ui->cboxMTZ1WorkMode }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz1Row3 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelM06 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->leM06 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz1Row4 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelM08 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->leM08 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz1Row5 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelK31 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->leK31 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz1Row6 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelX01 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->leX01 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::row_list_t rowGroupMTZ1 = CDeviceMenuTableWidget::row_list_t(
+    {
+        mtz1Row1, mtz1Row2, mtz1Row3, mtz1Row4, mtz1Row5, mtz1Row6
+    });
+
+    CDeviceMenuTableWidget::group_t groupMTZ1 = { tr("МТЗ1"), rowGroupMTZ1 };
+
+    CDeviceMenuTableWidget::column_list_t mtz2Row1 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelM09 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->cboxM09 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz2Row2 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelMTZ2WorkMode }),
+        CDeviceMenuTableWidget::item_t({ "", ui->cboxMTZ2WorkMode }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz2Row3 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelM10 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->leM10 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz2Row4 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelM11 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->leM11 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz2Row5 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelM12 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->leM12 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::column_list_t mtz2Row6 = CDeviceMenuTableWidget::column_list_t(
+    {
+        CDeviceMenuTableWidget::item_t({ "", ui->labelX03 }),
+        CDeviceMenuTableWidget::item_t({ "", ui->leX03 }),
+        CDeviceMenuTableWidget::item_t({ "", nullptr })
+    });
+
+    CDeviceMenuTableWidget::row_list_t rowGroupMTZ2 = CDeviceMenuTableWidget::row_list_t(
+    {
+        mtz2Row1, mtz2Row2, mtz2Row3, mtz2Row4, mtz2Row5, mtz2Row6
+    });
+
+    CDeviceMenuTableWidget::group_t groupMTZ2 = { tr("МТЗ2"), rowGroupMTZ2 };
+
+    ui->tableViewProtectionGroupMTZ->addGroup(groupMTZ1);
+    ui->tableViewProtectionGroupMTZ->addGroup(groupMTZ2);
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
