@@ -3,14 +3,11 @@
 CDeviceMenuTableWidget::CDeviceMenuTableWidget(QWidget* parent):
     QTableWidget(parent)
 {
-    setShowGrid(false);
+//    setShowGrid(false);
     horizontalHeader()->setHighlightSections(false);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::NoSelection);
     verticalHeader()->hide();
-    setColumnWidth(0, 200);
-    setColumnWidth(1, 200);
-    setColumnWidth(2, 200);
 
     connect(this, &CDeviceMenuTableWidget::itemClicked, this, &CDeviceMenuTableWidget::rowClicked);
 }
@@ -26,18 +23,20 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
     int row = rowCount();
     QFont f = font();
     f.setBold(true);
-    QLinearGradient gradient(0, 0, 0, 20);
-    gradient.setColorAt(0, Qt::lightGray);
-    gradient.setColorAt(0.5, Qt::gray);
-    gradient.setColorAt(1, Qt::lightGray);
+
     QTableWidgetItem* item = new QTableWidgetItem;
 
     item->setText(group.name);
     item->setTextAlignment(Qt::AlignCenter);
-    item->setBackground(QBrush(gradient));
     item->setFont(f);
     item->setData(Qt::UserRole + 100, HEADER);
     insertRow(row);
+
+    QLinearGradient gradient(0, 0, 0, rowHeight(row));
+    gradient.setColorAt(0, QColor(230, 230, 230));
+    gradient.setColorAt(0.5, Qt::lightGray);
+    gradient.setColorAt(1, QColor(230, 230, 230));
+    item->setBackground(QBrush(gradient));
 
     m_group_rows[row] = group.rows.count(); // количество строк в группе
 
@@ -75,6 +74,18 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
                 setCellWidget(row_index, j, wgt);
             }
         }
+    }
+
+    emit rowClicked(item);
+}
+//-------------------------------------------------------
+void CDeviceMenuTableWidget::showEvent(QShowEvent* event)
+{
+    QTableWidget::showEvent(event);
+
+    for(int i = 0; i < columnCount(); i++)
+    {
+        setColumnWidth(i, 250);
     }
 }
 //-------------------------------------------------------------

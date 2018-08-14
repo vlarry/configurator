@@ -5,6 +5,9 @@
     #include <QTableWidgetItem>
     #include <QHeaderView>
     #include <QHBoxLayout>
+    #include <QShowEvent>
+    #include <QPaintEvent>
+    #include <QPainter>
     //-----------------------------------------------
     class CDeviceMenuTableWidget: public QTableWidget
     {
@@ -34,6 +37,9 @@
             CDeviceMenuTableWidget(QWidget* parent = nullptr);
             void setColumns(const QStringList& columns);
             void addGroup(group_t& group);
+
+        protected:
+            void showEvent(QShowEvent* event);
 
         private slots:
             void rowClicked(QTableWidgetItem* item);

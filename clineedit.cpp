@@ -4,7 +4,7 @@ CLineEdit::CLineEdit(QWidget* parent):
     QLineEdit(parent),
     m_focus(false)
 {
-
+    setText(QLocale::system().toString(0.0f, 'f', 6));
 }
 //---------------------------------------------------
 void CLineEdit::mouseReleaseEvent(QMouseEvent* event)
