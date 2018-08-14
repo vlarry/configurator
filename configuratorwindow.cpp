@@ -30,7 +30,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 
     m_modbus                    = new CModBus(this);
     m_serialPortSettings_window = new CSerialPortSetting;
-    m_terminal_window           = new CTerminal(this);
+    m_terminal_window           = new CDragWidget(tr("Терминал"));
     m_output_window             = new CIndicatorState(this);
     m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
     m_outputall_window          = new COutputAll(tr("Все выходы"), this);
@@ -49,6 +49,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_debug_info                = new QTimer(this);
     m_timer_synchronization         = new QTimer(this);
     m_journal_timer                 = new QTimer(this);
+
+    m_terminal_window->setWidget(new CTerminal(this));
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -3773,6 +3775,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 58;
 //    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 60;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 61;
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -6763,6 +6766,7 @@ void ConfiguratorWindow::exportToPDFProject()
 //---------------------------------------------
 void ConfiguratorWindow::exportToExcelProject()
 {
+    qDebug() << tr("Экспорт уставок в Excel");
     QDir dir;
 
     if(!dir.exists("outputs/excel"))
@@ -9645,7 +9649,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbus, &CModBus::stateChanged, this, &ConfiguratorWindow::stateChanged);
     connect(m_modbus, &CModBus::stateChanged, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::readyRead, this, &ConfiguratorWindow::readyReadData);
-    connect(m_modbus, &CModBus::rawData, m_terminal_window, &CTerminal::appendData);
+
     connect(m_modbus, &CModBus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(m_modbus, &CModBus::stateChanged, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
@@ -9658,7 +9662,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
-    connect(m_terminal_window, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
+
     connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates,
             &QPushButton::setChecked);
     connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
@@ -9702,7 +9706,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
     connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this,
             &ConfiguratorWindow::autospeedStateChanged);
-    connect(m_terminal_window, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
+
     connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     connect(ui->splitterPanelMessage, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     connect(ui->pushButtonMenuDeviceCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
@@ -9760,4 +9764,13 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
+
+    CTerminal* terminal = qobject_cast<CTerminal*>(m_terminal_window->widget());
+
+    if(terminal)
+    {
+        connect(m_modbus, &CModBus::rawData, terminal, &CTerminal::appendData);
+        connect(terminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
+        connect(terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
+    }
 }

@@ -1838,7 +1838,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>61</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -3179,7 +3179,7 @@
                      </widget>
                     </item>
                     <item row="1" column="0">
-                     <widget class="QLabel" name="cboxMTZ1WorkMode_2">
+                     <widget class="QLabel" name="labelMTZ1WorkMode">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                         <horstretch>0</horstretch>
@@ -16881,6 +16881,13 @@
              </item>
              <item>
               <widget class="CPurposeTableView" name="tablewgtProtectionCtrl"/>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="pageProtectionGroupMTZ">
+            <layout class="QVBoxLayout" name="verticalLayout_74">
+             <item>
+              <widget class="QTableView" name="tableViewProtectionGroupMTZ"/>
              </item>
             </layout>
            </widget>

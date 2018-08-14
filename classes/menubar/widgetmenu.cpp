@@ -107,6 +107,8 @@ void CWidgetMenu::clicked()
 
     ButtonIDType button_id = static_cast<ButtonIDType>(button->property("ID").toInt());
 
+    qDebug() << tr("ID кнопки: %1").arg(button_id);
+
     switch(button_id)
     {
         case NEWPROJECT:

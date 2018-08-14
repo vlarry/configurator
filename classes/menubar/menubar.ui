@@ -42,7 +42,13 @@
      </property>
      <property name="icon">
       <iconset resource="../../resource.qrc">
-       <normaloff>:/images/resource/images/configurator.ico</normaloff>:/images/resource/images/configurator.ico</iconset>
+       <normaloff>:/images/resource/images/configurator.png</normaloff>:/images/resource/images/configurator.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
      </property>
      <property name="popupMode">
       <enum>QToolButton::InstantPopup</enum>

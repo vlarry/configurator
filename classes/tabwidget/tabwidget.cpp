@@ -28,18 +28,10 @@ void CTabWidget::tabDoubleClicked(int index)
 //-----------------------------------------------------
 void CTabWidget::dragEnterEvent(QDragEnterEvent* event)
 {
-    qDebug() << "dragEnterEvent";
-    if(event->mimeData()->hasFormat(CWidgetMimeData::mimeType()))
-        event->acceptProposedAction();
+    Q_UNUSED(event);
 }
 //-------------------------------------------
 void CTabWidget::dropEvent(QDropEvent* event)
 {
-    qDebug() << "dropEvent";
-    const CWidgetMimeData* wmd = dynamic_cast<const CWidgetMimeData*>(event->mimeData());
-
-    if(wmd)
-    {
-        qDebug() << "dropEvent";
-    }
+    Q_UNUSED(event);
 }

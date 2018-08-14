@@ -68,10 +68,9 @@ SOURCES += \
         classes/menubar/widgetmenu.cpp \
         classes/tabwidget/tabwidget.cpp \
         classes/calibrationwidget/calibrationwidget.cpp \
-        classes/tabwidget/widgetmimedata.cpp \
-        classes/tabwidget/widgetdrag.cpp \
-        classes/tabwidget/window.cpp \
-        classes/tableviews/purposetableview.cpp
+        classes/tableviews/purposetableview.cpp \
+    classes/tabledevicemenu/devicemenumodel.cpp \
+    classes/tabwidget/dragwidget.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -116,10 +115,9 @@ HEADERS += \
         classes/menubar/widgetmenu.h \
         classes/tabwidget/tabwidget.h \
         classes/calibrationwidget/calibrationwidget.h \
-        classes/tabwidget/widgetmimedata.h \
-        classes/tabwidget/widgetdrag.h \
-        classes/tabwidget/window.h \
-        classes/tableviews/purposetableview.h
+        classes/tableviews/purposetableview.h \
+    classes/tabledevicemenu/devicemenumodel.h \
+    classes/tabwidget/dragwidget.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -143,7 +141,8 @@ FORMS += \
         statusinfo.ui \
         classes/menubar/menubar.ui \
         classes/menubar/widgetmenu.ui \
-        classes/calibrationwidget/calibrationwidget.ui
+        classes/calibrationwidget/calibrationwidget.ui \
+    classes/tabwidget/dragwidget.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \
@@ -151,7 +150,8 @@ INCLUDEPATH += "classes/modbus" \
                "classes/tabwidget" \
                "classes/calibrationwidget" \
                "classes/excel" \
-               "classes/tableviews"
+               "classes/tableviews" \
+               "classes/tabledevicemenu"
 
 include(classes/excel/xlsx/qtxlsx.pri)
 

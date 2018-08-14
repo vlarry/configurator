@@ -25,6 +25,8 @@ CTerminal::CTerminal(QWidget* parent):
     setAcceptDrops(true);
 
     setMouseTracking(true);
+
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint);
 }
 //---------------------
 CTerminal::~CTerminal()

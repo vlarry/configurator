@@ -8,10 +8,7 @@
     #include <QDropEvent>
     #include <QDragEnterEvent>
     #include <QDragMoveEvent>
-    #include <QMimeData>
     #include <QDebug>
-    #include "widgetmimedata.h"
-    #include "widgetdrag.h"
     //---------------------------------
     class CTabWidget: public QTabWidget
     {

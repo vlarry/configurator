@@ -58,6 +58,7 @@
     #include "cstatusinfo.h"
     #include "popup.h"
     #include "tabwidget.h"
+    #include "dragwidget.h"
     #include "xlsx/xlsxdocument.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
@@ -707,7 +708,7 @@
             Ui::ConfiguratorWindow*          ui;
             CModBus*                         m_modbus;
             CSerialPortSetting*              m_serialPortSettings_window;
-            CTerminal*                       m_terminal_window;
+            CDragWidget*                     m_terminal_window;
             CIndicatorState*                 m_output_window;
             CMonitorPurpose*                 m_monitor_purpose_window;
             COutputAll*                      m_outputall_window;
