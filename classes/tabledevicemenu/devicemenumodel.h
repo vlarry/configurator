@@ -8,6 +8,9 @@
     #include <QShowEvent>
     #include <QPaintEvent>
     #include <QPainter>
+    #include <QLabel>
+    #include <QComboBox>
+    #include "clineedit.h"
     //-----------------------------------------------
     class CDeviceMenuTableWidget: public QTableWidget
     {
