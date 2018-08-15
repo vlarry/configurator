@@ -20,63 +20,63 @@ void CDeviceMenuTableWidget::setColumns(const QStringList& columns)
 //---------------------------------------------------
 void CDeviceMenuTableWidget::addGroup(group_t& group)
 {
-    int row = rowCount();
-    QFont f = font();
-    f.setBold(true);
+//    int row = rowCount();
+//    QFont f = font();
+//    f.setBold(true);
 
-    QTableWidgetItem* item = new QTableWidgetItem;
+//    QTableWidgetItem* item = new QTableWidgetItem;
 
-    item->setText(group.name);
-    item->setTextAlignment(Qt::AlignCenter);
-    item->setFont(f);
-    item->setData(Qt::UserRole + 100, HEADER);
-    insertRow(row);
+//    item->setText(group.name);
+//    item->setTextAlignment(Qt::AlignCenter);
+//    item->setFont(f);
+//    item->setData(Qt::UserRole + 100, HEADER);
+//    insertRow(row);
 
-    QLinearGradient gradient(0, 0, 0, rowHeight(row));
-    gradient.setColorAt(0, QColor(230, 230, 230));
-    gradient.setColorAt(0.5, Qt::lightGray);
-    gradient.setColorAt(1, QColor(230, 230, 230));
-    item->setBackground(QBrush(gradient));
+//    QLinearGradient gradient(0, 0, 0, rowHeight(row));
+//    gradient.setColorAt(0, QColor(230, 230, 230));
+//    gradient.setColorAt(0.5, Qt::lightGray);
+//    gradient.setColorAt(1, QColor(230, 230, 230));
+//    item->setBackground(QBrush(gradient));
 
-    m_group_rows[row] = group.rows.count(); // количество строк в группе
+//    m_group_rows[row] = group.rows.count(); // количество строк в группе
 
-    for(int i = 0; i < columnCount(); i++)
-        setItem(row, i, item);
+//    for(int i = 0; i < columnCount(); i++)
+//        setItem(row, i, item);
 
-    setSpan(row, 0, 1, colorCount());
+//    setSpan(row, 0, 1, colorCount());
 
-    row++;
+//    row++;
 
-    for(int i = 0; i < group.rows.count(); i++)
-    {
-        column_list_t columns = group.rows[i];
+//    for(int i = 0; i < group.rows.count(); i++)
+//    {
+//        column_list_t columns = group.rows[i];
 
-        if(columns.count() != columnCount())
-            continue;
+//        if(columns.count() != columnCount())
+//            continue;
 
-        int row_index = row + i;
+//        int row_index = row + i;
 
-        insertRow(row_index);
+//        insertRow(row_index);
 
-        for(int j = 0; j < columns.count(); j++)
-        {
-            item_t column = columns[j];
+//        for(int j = 0; j < columns.count(); j++)
+//        {
+//            item_t column = columns[j];
 
-            if(column.item)
-            {
-                QWidget*     wgt = new QWidget;
-                QHBoxLayout* l   = new QHBoxLayout(wgt);
+//            if(column.item)
+//            {
+//                QWidget*     wgt = new QWidget;
+//                QHBoxLayout* l   = new QHBoxLayout(wgt);
 
-                l->addWidget(column.item);
-                l->setAlignment(Qt::AlignCenter);
-                l->setContentsMargins(0, 0, 0, 0);
+//                l->addWidget(column.item);
+//                l->setAlignment(Qt::AlignCenter);
+//                l->setContentsMargins(0, 0, 0, 0);
 
-                setCellWidget(row_index, j, wgt);
-            }
-        }
-    }
+//                setCellWidget(row_index, j, wgt);
+//            }
+//        }
+//    }
 
-    emit rowClicked(item);
+//    emit rowClicked(item);
 }
 //-------------------------------------------------------
 void CDeviceMenuTableWidget::showEvent(QShowEvent* event)

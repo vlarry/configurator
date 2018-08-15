@@ -3879,6 +3879,8 @@ void ConfiguratorWindow::initMenuPanel()
 
 //    ui->tableViewProtectionGroupMTZ->addGroup(groupMTZ1);
 //    ui->tableViewProtectionGroupMTZ->addGroup(groupMTZ2);
+
+    loadMenuGroup(tr("МТЗ1"));
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -5699,6 +5701,46 @@ int ConfiguratorWindow::groupPositionInExcel(QXlsx::Document& doc, const QString
     }
 
     return result;
+}
+//------------------------------------------------------------------------------------------
+CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString& group_name)
+{
+    QSqlQuery query(m_system_db);
+    CDeviceMenuTableWidget::group_t group;
+    int group_id = -1;
+
+    if(!query.exec(QString("SELECT id FROM menu_group WHERE name=\"%1\";").arg(group_name)))
+    {
+        qWarning() << tr("Не удалось прочитать ID группы \"%1\", (%2)").arg(group_name).arg(query.lastError().text());
+    }
+
+    if(query.first())
+        group_id = query.value("id").toInt();
+
+    group.name = group_name;
+
+    if(!query.exec(QString("SELECT * FROM iodevice WHERE sort_id=%1").arg(group_id)))
+    {
+        qWarning() << tr("Не удалось прочитать свойства группы с ID=%1 (%2)").arg(group_id).arg(query.lastError().text());
+    }
+
+    while(query.next())
+    {
+        CDeviceMenuTableWidget::item_t item;
+
+        item.key      = query.value("key").toString();
+        item.address  = query.value("address").toInt();
+        item.obj_name = query.value("widget").toString();
+        item.unit     = CDeviceMenuTableWidget::measure_t({ query.value("limit_min").toInt(),
+                                                            query.value("limit_max").toInt(),
+                                                            query.value("unit_measure").toString() });
+        item.type     = query.value("data_type").toString();
+        item.name     = query.value("description").toString();
+
+        group.items << item;
+    }
+
+    return group;
 }
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
