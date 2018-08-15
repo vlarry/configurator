@@ -13,7 +13,7 @@ CDragWidget::CDragWidget(const QString& title, QWidget* parent):
     setFont(f);
     setWindowTitle(title);
 
-    this->setWindowFlags(Qt::SubWindow | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+//    this->setWindowFlags(Qt::SubWindow | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     ui->labelHeader->installEventFilter(this);
 }

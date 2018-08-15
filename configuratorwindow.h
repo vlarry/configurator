@@ -701,6 +701,7 @@
             int writeDataToExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid, int offset = 0);
             void readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid);
             int groupPositionInExcel(QXlsx::Document& doc, const QString& group);
+            void loadMenuGroup(const QString& group);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

@@ -20,7 +20,17 @@
             //-----------
             struct item_t
             {
-                QString  name;
+                QString  key;
+                int      address;
+                QString  obj_name;
+                struct   measure
+                {
+                    int     min;
+                    int     max;
+                    QString unit;
+                };
+                QString type;
+                QString name;
                 QWidget* item;
             };
             //------------------------------------

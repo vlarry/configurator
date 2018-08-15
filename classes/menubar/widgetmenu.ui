@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>579</width>
-    <height>283</height>
+    <height>321</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,7 +40,7 @@
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
        <item>
-        <widget class="QToolButton" name="toolButtonNewProject">
+        <widget class="CToolButton" name="toolButtonNewProject">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -72,7 +72,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButtonOpenProject">
+        <widget class="CToolButton" name="toolButtonOpenProject">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -104,7 +104,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButtonSaveProject">
+        <widget class="CToolButton" name="toolButtonSaveProject">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -136,7 +136,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButtonSaveAsProject">
+        <widget class="CToolButton" name="toolButtonSaveAsProject">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -168,7 +168,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButtonExportProject">
+        <widget class="CToolButton" name="toolButtonExportProject">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -200,7 +200,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButtonImportProject">
+        <widget class="CToolButton" name="toolButtonImportProject">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -232,7 +232,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="toolButtonCloseProject">
+        <widget class="CToolButton" name="toolButtonCloseProject">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -290,7 +290,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="pageGeneral">
         <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -353,7 +353,7 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <widget class="QToolButton" name="toolButtonExportToPDF">
+              <widget class="CToolButton" name="toolButtonExportToPDF">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -379,7 +379,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QToolButton" name="toolButtonExportToExcel">
+              <widget class="CToolButton" name="toolButtonExportToExcel">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -441,7 +441,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
-            <widget class="QToolButton" name="toolButtonImportFromExcel">
+            <widget class="CToolButton" name="toolButtonImportFromExcel">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -529,7 +529,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButtonExit">
+      <widget class="CToolButton" name="toolButtonExit">
        <property name="toolTip">
         <string>Выход из приложения</string>
        </property>
@@ -555,6 +555,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CToolButton</class>
+   <extends>QToolButton</extends>
+   <header>toolbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../resource.qrc"/>
  </resources>

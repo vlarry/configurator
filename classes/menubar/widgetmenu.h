@@ -35,11 +35,9 @@
             explicit CWidgetMenu(QWidget* parent = nullptr);
             ~CWidgetMenu();
 
-        protected:
-            bool eventFilter(QObject* obj, QEvent* event);
-
         public slots:
             void clicked();
+            void hoverChanged(int id);
             void addOpenDocument(const QString& doc);
 
         signals:

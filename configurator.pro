@@ -70,7 +70,8 @@ SOURCES += \
         classes/calibrationwidget/calibrationwidget.cpp \
         classes/tableviews/purposetableview.cpp \
     classes/tabledevicemenu/devicemenumodel.cpp \
-    classes/tabwidget/dragwidget.cpp
+    classes/tabwidget/dragwidget.cpp \
+    classes/menubar/toolbutton.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -117,7 +118,8 @@ HEADERS += \
         classes/calibrationwidget/calibrationwidget.h \
         classes/tableviews/purposetableview.h \
     classes/tabledevicemenu/devicemenumodel.h \
-    classes/tabwidget/dragwidget.h
+    classes/tabwidget/dragwidget.h \
+    classes/menubar/toolbutton.h
 
 FORMS += \
         configuratorwindow.ui \
