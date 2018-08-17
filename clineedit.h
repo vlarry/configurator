@@ -14,8 +14,17 @@
         Q_OBJECT
 
         public:
+            enum ValidatorType
+            {
+                INT,
+                FLOAT
+            };
+
+        public:
             CLineEdit(QWidget* parent = nullptr);
             bool isValidateText(const QString& text) const;
+            void setValidatorType(ValidatorType type);
+            ValidatorType validatorType() const;
 
         protected:
             void mouseReleaseEvent(QMouseEvent* event);
@@ -26,6 +35,7 @@
             void validateTextChanged(const QString& text);
 
         private:
-            bool m_focus;
+            bool          m_focus;
+            ValidatorType m_validator_type;
     };
 #endif // CLINEEDIT_H

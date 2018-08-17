@@ -104,11 +104,13 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
             {
                 le->setValidator(new QIntValidator(min, max, le));
                 le->setText(QLocale::system().toString(((min < 0.0f)?0:int(min))));
+                le->setValidatorType(CLineEdit::INT);
             }
             else if(item.type.toUpper() == "FLOAT")
             {
                 le->setValidator(new QDoubleValidator(min, max, 6, le));
                 le->setText(QLocale::system().toString(min, 'f', 6));
+                le->setValidatorType(CLineEdit::FLOAT);
             }
 
             widget = le;
