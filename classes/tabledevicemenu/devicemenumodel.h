@@ -23,22 +23,24 @@
             //--------------
             struct measure_t
             {
-                int     min;
-                int     max;
+                float   min;
+                float   max;
                 QString unit;
             };
+            //------------
+            struct item_t;
+            typedef QVector<item_t> item_list_t;
             //-----------
             struct item_t
             {
-                QString   key;
-                int       address;
-                QString   obj_name;
-                measure_t unit;
-                QString   type;
-                QString   name;
+                QString     key;
+                int         address;
+                QString     obj_name;
+                measure_t   unit;
+                QString     type;
+                QString     name;
+                item_list_t subitems;
             };
-            //----------------------------------
-            typedef QVector<item_t> item_list_t;
             //------------
             struct group_t
             {

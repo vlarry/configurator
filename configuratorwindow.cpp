@@ -5637,11 +5637,30 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
         item.key      = query.value("key").toString();
         item.address  = query.value("address").toInt();
         item.obj_name = query.value("widget").toString();
-        item.unit     = CDeviceMenuTableWidget::measure_t({ query.value("limit_min").toInt(),
-                                                            query.value("limit_max").toInt(),
+        item.unit     = CDeviceMenuTableWidget::measure_t({ query.value("limit_min").toFloat(),
+                                                            query.value("limit_max").toFloat(),
                                                             query.value("unit_measure").toString() });
         item.type     = query.value("data_type").toString();
         item.name     = query.value("description").toString();
+
+        if(item.type.toUpper() == "LIST") // если тип - "СПИСОК", то читаем список подпунктов
+        {
+            QSqlQuery query_list(m_system_db);
+
+            if(query_list.exec(QString("SELECT name FROM menu_item_choice WHERE key=\"%1\";").arg(item.key)))
+            {
+               CDeviceMenuTableWidget::item_list_t subitemlist;
+
+               while(query_list.next())
+               {
+                   CDeviceMenuTableWidget::item_t subitem;
+                   subitem.name = query_list.value("name").toString();
+                   subitemlist << subitem;
+               }
+
+               item.subitems = subitemlist;
+            }
+        }
 
         group.items << item;
     }
@@ -6856,9 +6875,9 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.setColumnWidth("C1", 20);
     xlsx.setColumnWidth("D1", 50);
 
-    writeDataToExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
-    writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
-    writeDataToExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
+//    writeDataToExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
+//    writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
+//    writeDataToExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
@@ -6866,7 +6885,7 @@ void ConfiguratorWindow::exportToExcelProject()
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
     writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
-    writeDataToExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
+//    writeDataToExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
     writeDataToExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
     writeDataToExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
     writeDataToExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
@@ -6966,9 +6985,9 @@ void ConfiguratorWindow::importFromExcelProject()
         return;
     }
 
-    readDataFromExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
-    readDataFromExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
-    readDataFromExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
+//    readDataFromExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
+//    readDataFromExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
+//    readDataFromExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
     readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
     readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
     readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
@@ -6976,7 +6995,7 @@ void ConfiguratorWindow::importFromExcelProject()
     readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
     readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
     readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
-    readDataFromExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
+//    readDataFromExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
     readDataFromExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
     readDataFromExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
     readDataFromExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);

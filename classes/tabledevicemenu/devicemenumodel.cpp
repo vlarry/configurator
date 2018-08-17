@@ -70,20 +70,54 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
         QHBoxLayout* wgt_layout = new QHBoxLayout(label_name);
         QWidget*     widget     = nullptr;
 
-        if(item.type.toUpper() == "NUM") // Тип равен ЧИСЛО, значит это комбобокс
+        if(item.type.toUpper() == "LIST") // Тип равен СПИСОК, значит это комбобокс
         {
-            widget = new QComboBox(wgt);
-            widget->setObjectName(QString("comboBox%1").arg(item.key));
+            QComboBox* cb = new QComboBox(wgt);
+            cb->setObjectName(QString("comboBox%1").arg(item.key));
+
+            QStringList subitemlist;
+
+            for(const CDeviceMenuTableWidget::item_t& subitem: item.subitems)
+                subitemlist << subitem.name;
+
+            if(!subitemlist.isEmpty())
+                cb->addItems(subitemlist);
+
+            widget = cb;
         }
         else // иначе поле ввода
         {
-            widget = new CLineEdit(wgt);
-            widget->setObjectName(QString("lineEdit%1").arg(item.key));
+            CLineEdit* le = new CLineEdit(wgt);
+            le->setObjectName(QString("lineEdit%1").arg(item.key));
+            le->setAlignment(Qt::AlignCenter);
+
+            float min = item.unit.min;
+            float max = item.unit.max;
+
+            if(min == 0 && max == 0)
+            {
+                min = 0.0f;
+                max = 1000.0f;
+            }
+
+            if(item.type.toUpper() == "INT")
+            {
+                le->setValidator(new QIntValidator(min, max, le));
+                le->setText(QLocale::system().toString(((min < 0.0f)?0:int(min))));
+            }
+            else if(item.type.toUpper() == "FLOAT")
+            {
+                le->setValidator(new QDoubleValidator(min, max, 6, le));
+                le->setText(QLocale::system().toString(min, 'f', 6));
+            }
+
+            widget = le;
         }
 
+        widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
         wgt_layout->addWidget(widget);
         wgt_layout->setAlignment(Qt::AlignCenter);
-        wgt_layout->setContentsMargins(0, 0, 0, 0);
+        wgt_layout->setContentsMargins(75, 0, 75, 0);
         wgt->setLayout(wgt_layout);
 
         setCellWidget(row_index, 1, wgt);
