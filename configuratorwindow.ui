@@ -2937,7 +2937,13 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="pageMTZ1"/>
+           <widget class="QWidget" name="pageMTZGroup">
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupMTZ"/>
+             </item>
+            </layout>
+           </widget>
            <widget class="QWidget" name="pageMTZ2"/>
            <widget class="QWidget" name="pageMTZ3"/>
            <widget class="QWidget" name="pageMTZ3_Steep">
@@ -15617,13 +15623,6 @@
              </item>
              <item>
               <widget class="CPurposeTableView" name="tablewgtProtectionCtrl"/>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="pageProtectionGroupMTZ">
-            <layout class="QVBoxLayout" name="verticalLayout_74">
-             <item>
-              <widget class="CDeviceMenuTableWidget" name="tableViewProtectionGroupMTZ"/>
              </item>
             </layout>
            </widget>

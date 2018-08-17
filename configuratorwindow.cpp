@@ -3701,7 +3701,6 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_MEASURES_ROOT]   = 10000;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ROOT]   = 10000;
 
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]     = 10000;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]       = 10000;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]    = 10000;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]   = 10000;
@@ -3713,17 +3712,18 @@ void ConfiguratorWindow::initMenuPanel()
 
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL] = 0;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB]   = 1;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2]            = 3;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3]            = 4;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP] = 5;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP]  = 6;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV]   = 7;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV]  = 8;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK]  = 9;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV]  = 10;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV]  = 11;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4]            = 12;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 2;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2]            = 3;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3]            = 4;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP] = 5;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP]  = 6;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV]   = 7;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV]  = 8;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK]  = 9;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV]  = 10;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV]  = 11;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4]            = 12;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1]           = 13;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2]           = 14;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1]           = 15;
@@ -3775,18 +3775,17 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 58;
 //    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 60;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 61;
 
-    ui->tableViewProtectionGroupMTZ->setColumns(QStringList() << tr("Имя") << tr("Параметр") << tr("Предел"));
+    ui->tableWidgetProtectionGroupMTZ->setColumns(QStringList() << tr("Имя") << tr("Параметр") << tr("Предел"));
 
     CDeviceMenuTableWidget::group_t group = loadMenuGroup(tr("МТЗ1"));
-    ui->tableViewProtectionGroupMTZ->addGroup(group);
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ2"));
-    ui->tableViewProtectionGroupMTZ->addGroup(group);
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ3"));
-    ui->tableViewProtectionGroupMTZ->addGroup(group);
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ4"));
-    ui->tableViewProtectionGroupMTZ->addGroup(group);
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()

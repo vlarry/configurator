@@ -6,6 +6,7 @@
     #include <QMouseEvent>
     #include <QKeyEvent>
     #include <QLocale>
+    #include <QDoubleValidator>
     #include <QDebug>
     //-------------------------------
     class CLineEdit: public QLineEdit
@@ -14,11 +15,15 @@
 
         public:
             CLineEdit(QWidget* parent = nullptr);
+            bool isValidateText(const QString& text) const;
 
         protected:
             void mouseReleaseEvent(QMouseEvent* event);
             void keyPressEvent(QKeyEvent* event);
             void focusOutEvent(QFocusEvent* event);
+
+        private slots:
+            void validateTextChanged(const QString& text);
 
         private:
             bool m_focus;
