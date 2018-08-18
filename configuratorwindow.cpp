@@ -3713,6 +3713,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL] = 0;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB]   = 1;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 2;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]                   = 3;
 //    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
 //    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2]            = 3;
 //    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3]            = 4;
@@ -3728,13 +3729,13 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2]           = 14;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1]           = 15;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2]           = 16;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1]             = 17;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2]             = 18;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1]             = 19;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2]             = 20;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin1
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin2
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_3U0]               = 21;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1]             = 17;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2]             = 18;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1]             = 19;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2]             = 20;
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin1
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin2
+//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_3U0]               = 21;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING]          = 22;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN]              = 23;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1]         = 24;
@@ -3776,9 +3777,14 @@ void ConfiguratorWindow::initMenuPanel()
 //    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 60;
 
-    ui->tableWidgetProtectionGroupMTZ->setColumns(QStringList() << tr("Имя") << tr("Параметр") << tr("Предел"));
+    QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел");
 
-    CDeviceMenuTableWidget::group_t group = loadMenuGroup(tr("МТЗ1"));
+    ui->tableWidgetProtectionGroupMTZ->setColumns(columns);
+    ui->tableWidgetProtectionGroupPower->setColumns(columns);
+
+    CDeviceMenuTableWidget::group_t group;
+    // группа по току
+    group = loadMenuGroup(tr("МТЗ1"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ2"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
@@ -3786,6 +3792,20 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ4"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("МТЗ4"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+
+    // группа по напряжению
+    group = loadMenuGroup(tr("Umax1"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("Umax2"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("Umin1"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("Umin2"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("3U0"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
