@@ -3714,6 +3714,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB]   = 1;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 2;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]                   = 3;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]                = 4;
 //    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
 //    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2]            = 3;
 //    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3]            = 4;
@@ -3781,6 +3782,7 @@ void ConfiguratorWindow::initMenuPanel()
 
     ui->tableWidgetProtectionGroupMTZ->setColumns(columns);
     ui->tableWidgetProtectionGroupPower->setColumns(columns);
+    ui->tableWidgetProtectionGroupDirect->setColumns(columns);
 
     CDeviceMenuTableWidget::group_t group;
     // группа по току
@@ -3806,6 +3808,16 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupPower->addGroup(group);
     group = loadMenuGroup(tr("3U0"));
     ui->tableWidgetProtectionGroupPower->addGroup(group);
+
+    // группа направленные
+    group = loadMenuGroup(tr("ОЗЗ1"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("ОЗЗ2"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("НЗЗ1"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("НЗЗ2"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()

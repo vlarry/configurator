@@ -1838,7 +1838,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>3</number>
+            <number>4</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_63">
@@ -2951,7 +2951,13 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="pageMTZ3"/>
+           <widget class="QWidget" name="pageMTZ3">
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <item>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupDirect"/>
+             </item>
+            </layout>
+           </widget>
            <widget class="QWidget" name="pageMTZ3_Steep">
             <layout class="QHBoxLayout" name="horizontalLayout_53">
              <item>
