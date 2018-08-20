@@ -937,52 +937,52 @@ void ConfiguratorWindow::protectionLevel2Write()
  */
 void ConfiguratorWindow::protectionSignalStartWrite()
 {
-    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
-                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
-                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
-                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
-                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
-                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
-                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
-                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
-                                                            ui->cboxV96;
+//    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
+//                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
+//                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
+//                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
+//                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
+//                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
+//                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
+//                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
+//                                                            ui->cboxV96;
 
-    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+//    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
 
-    for(QComboBox* box: box_list)
-    {
-        QString key = box->objectName().remove("cbox");
+//    for(QComboBox* box: box_list)
+//    {
+//        QString key = box->objectName().remove("cbox");
 
-        if(key.isEmpty())
-            continue;
+//        if(key.isEmpty())
+//            continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < data.count())
-        {
-            int item_pos = box->currentIndex();
+//        if(val_pos < data.count())
+//        {
+//            int item_pos = box->currentIndex();
 
-            if(item_pos == 1)
-                data[val_pos] |= (1 << bit_pos);
-        }
-    }
+//            if(item_pos == 1)
+//                data[val_pos] |= (1 << bit_pos);
+//        }
+//    }
 
-    QVector<quint16> tdata;
+//    QVector<quint16> tdata;
 
-    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-    {
-        tdata << data[i + 1] << data[i];
-    }
+//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+//    {
+//        tdata << data[i + 1] << data[i];
+//    }
 
-    int addr = addressSettingKey("M80");
+//    int addr = addressSettingKey("M80");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
+//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
 
-    unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
+//    unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
-    m_modbus->sendData(unit);
+//    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveGroupWrite
@@ -1157,52 +1157,52 @@ void ConfiguratorWindow::automationAPVWrite()
  */
 void ConfiguratorWindow::automationAPVSignalStartWrite()
 {
-    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
-                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
-                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
-                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
-                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
-                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
-                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
-                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
-                                                            ui->cboxV96_2;
+//    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
+//                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
+//                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
+//                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
+//                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
+//                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
+//                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
+//                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
+//                                                            ui->cboxV96_2;
 
-    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+//    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
 
-    for(QComboBox* box: box_list)
-    {
-        QString key = (box->objectName().remove("cbox")).remove("_2");
+//    for(QComboBox* box: box_list)
+//    {
+//        QString key = (box->objectName().remove("cbox")).remove("_2");
 
-        if(key.isEmpty())
-            continue;
+//        if(key.isEmpty())
+//            continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < data.count())
-        {
-            int item_pos = box->currentIndex();
+//        if(val_pos < data.count())
+//        {
+//            int item_pos = box->currentIndex();
 
-            if(item_pos == 1)
-                data[val_pos] |= (1 << bit_pos);
-        }
-    }
+//            if(item_pos == 1)
+//                data[val_pos] |= (1 << bit_pos);
+//        }
+//    }
 
-    QVector<quint16> tdata;
+//    QVector<quint16> tdata;
 
-    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-    {
-        tdata << data[i + 1] << data[i];
-    }
+//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+//    {
+//        tdata << data[i + 1] << data[i];
+//    }
 
-    int addr = addressSettingKey("M86");
+//    int addr = addressSettingKey("M86");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
+//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
 
-    unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
+//    unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
-    m_modbus->sendData(unit);
+//    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::purposeLedsWrite
@@ -1859,14 +1859,14 @@ void ConfiguratorWindow::protectionControlGroupRead()
  */
 void ConfiguratorWindow::amplitudeReadOfCurrent()
 {
-    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
-        sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
-    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-        sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
-    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-        sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
-    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-        sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
+//    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
+//        sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
+//    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+//        sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
+//    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+//        sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
+//    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+//        sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchRead
@@ -2017,14 +2017,14 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     float Ic   = 0;
     float _3I0 = 0;
 
-    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-        Ia  = ui->widgetCalibrationOfCurrent->calibrationCurrentIa();
-    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-        Ib = ui->widgetCalibrationOfCurrent->calibrationCurrentIb();
-    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-        Ic  = ui->widgetCalibrationOfCurrent->calibrationCurrentIc();
-    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
-        _3I0 = ui->widgetCalibrationOfCurrent->calibrationCurrent3I0();
+//    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+//        Ia  = ui->widgetCalibrationOfCurrent->calibrationCurrentIa();
+//    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+//        Ib = ui->widgetCalibrationOfCurrent->calibrationCurrentIb();
+//    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+//        Ic  = ui->widgetCalibrationOfCurrent->calibrationCurrentIc();
+//    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
+//        _3I0 = ui->widgetCalibrationOfCurrent->calibrationCurrent3I0();
 
     if(Ia == 0 && Ib == 0 && Ic == 0 && _3I0 == 0)
         return;
@@ -2049,14 +2049,14 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
         return;
     }
 
-    if(Ia != 0)
-        ui->leKIA->setText(QLocale::system().toString(Ia, 'f', 6));
-    if(Ib != 0)
-        ui->leKIB->setText(QLocale::system().toString(Ib, 'f', 6));
-    if(Ic != 0)
-        ui->leKIC->setText(QLocale::system().toString(Ic, 'f', 6));
-    if(_3I0 != 0)
-        ui->leK3I0->setText(QLocale::system().toString(_3I0, 'f', 6));
+//    if(Ia != 0)
+//        ui->leKIA->setText(QLocale::system().toString(Ia, 'f', 6));
+//    if(Ib != 0)
+//        ui->leKIB->setText(QLocale::system().toString(Ib, 'f', 6));
+//    if(Ic != 0)
+//        ui->leKIC->setText(QLocale::system().toString(Ic, 'f', 6));
+//    if(_3I0 != 0)
+//        ui->leK3I0->setText(QLocale::system().toString(_3I0, 'f', 6));
 
     union
     {
@@ -2383,33 +2383,33 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         switch(type)
         {
             case CALIBRATION_CURRENT_IA:
-                ui->widgetCalibrationOfCurrent->addCalibrationIa(value.f);
-                emit ui->widgetCalibrationOfCurrent->dataIncrement();
+//                ui->widgetCalibrationOfCurrent->addCalibrationIa(value.f);
+//                emit ui->widgetCalibrationOfCurrent->dataIncrement();
             break;
 
             case CALIBRATION_CURRENT_IB:
-                ui->widgetCalibrationOfCurrent->addCalibrationIb(value.f);
-                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
+//                ui->widgetCalibrationOfCurrent->addCalibrationIb(value.f);
+//                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+//                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
             break;
 
             case CALIBRATION_CURRENT_IC:
-                ui->widgetCalibrationOfCurrent->addCalibrationIc(value.f);
-                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
-                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-                {
-                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
-                }
+//                ui->widgetCalibrationOfCurrent->addCalibrationIc(value.f);
+//                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
+//                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+//                {
+//                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
+//                }
             break;
 
             case CALIBRATION_CURRENT_3I0:
-                ui->widgetCalibrationOfCurrent->addCalibration3I0(value.f);
-                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
-                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked() &&
-                        !ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-                {
-                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
-                }
+//                ui->widgetCalibrationOfCurrent->addCalibration3I0(value.f);
+//                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
+//                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked() &&
+//                        !ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+//                {
+//                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
+//                }
             break;
 
             default: break;
@@ -2434,19 +2434,19 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         switch(type)
         {
             case AMPLITUDE_READ_CH2:
-                ui->widgetCalibrationOfCurrent->setDeviation3I0(value.f);
+//                ui->widgetCalibrationOfCurrent->setDeviation3I0(value.f);
             break;
 
             case AMPLITUDE_READ_CH3:
-                ui->widgetCalibrationOfCurrent->setDeviationIa(value.f);
+//                ui->widgetCalibrationOfCurrent->setDeviationIa(value.f);
             break;
 
             case AMPLITUDE_READ_CH4:
-                ui->widgetCalibrationOfCurrent->setDeviationIb(value.f);
+//                ui->widgetCalibrationOfCurrent->setDeviationIb(value.f);
             break;
 
             case AMPLITUDE_READ_CH5:
-                ui->widgetCalibrationOfCurrent->setDeviationIc(value.f);
+//                ui->widgetCalibrationOfCurrent->setDeviationIc(value.f);
             break;
 
             default: break;
@@ -3710,89 +3710,58 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]     = 10000;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]     = 10000;
 
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL] = 0;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB]   = 1;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 2;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]                   = 3;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]                = 4;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2]            = 3;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3]            = 4;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP] = 5;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP]  = 6;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV]   = 7;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV]  = 8;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK]  = 9;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV]  = 10;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV]  = 11;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4]            = 12;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1]           = 13;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2]           = 14;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1]           = 15;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2]           = 16;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1]             = 17;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2]             = 18;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1]             = 19;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2]             = 20;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin1
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin2
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_3U0]               = 21;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING]          = 22;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN]              = 23;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1]         = 24;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2]         = 25;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3]         = 26;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC]            = 27;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1]           = 28;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2]           = 29;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3]           = 30;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1]       = 31;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2]       = 32;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1]          = 33;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2]          = 34;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START]       = 35;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU]             = 36;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM]          = 37;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_SWITCH]               = 38;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK]         = 39;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_BLOCKS]               = 40;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS]    = 41;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE]   = 42;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH]  = 43;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN]              = 44;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_AVR]                  = 45;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV]                  = 46;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START]     = 47;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 48;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 49;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 50;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 51;
-    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 52;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 53;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 54;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 55;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 56;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 57;
-//    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS]  = 57;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 58;
-//    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 60;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG]         = 0;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 1;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]                   = 2;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]                = 3;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]               = 4;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]                = 5;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR]                   = 6;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE]             = 7;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]                 = 8;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]                 = 9;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]                 = 10;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 11;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 12;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 13;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 14;
+    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 15;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 16;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 17;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 18;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 19;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 20;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 21;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 23;
 
     QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел");
 
+    ui->tableWidgetSettingsAnalogGroupGeneral->setColumns(columns);
     ui->tableWidgetProtectionGroupMTZ->setColumns(columns);
     ui->tableWidgetProtectionGroupPower->setColumns(columns);
     ui->tableWidgetProtectionGroupDirect->setColumns(columns);
+    ui->tableWidgetProtectionGroupFrequency->setColumns(columns);
+    ui->tableWidgetProtectionGroupExternal->setColumns(columns);
+    ui->tableWidgetProtectionGroupMotor->setColumns(columns);
+    ui->tableWidgetProtectionGroupTemperature->setColumns(columns);
+    ui->tableWidgetProtectionGroupReserve->setColumns(columns);
+    ui->tableWidgetProtectionGroupControl->setColumns(columns);
+    ui->tableWidgetAutomationGroup->setColumns(columns);
 
     CDeviceMenuTableWidget::group_t group;
+
+    // группа аналоговые основные
+    group = loadMenuGroup(tr("Основные"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+    group = loadMenuGroup(tr("Калибровка"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+
     // группа по току
     group = loadMenuGroup(tr("МТЗ1"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ2"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ3"));
-    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
-    group = loadMenuGroup(tr("МТЗ4"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ4"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
@@ -3818,6 +3787,70 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupDirect->addGroup(group);
     group = loadMenuGroup(tr("НЗЗ2"));
     ui->tableWidgetProtectionGroupDirect->addGroup(group);
+
+    // группа по частоте
+    group = loadMenuGroup(tr("АЧР1"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+    group = loadMenuGroup(tr("АЧР2"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+    group = loadMenuGroup(tr("АЧР3"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+
+    // группа внешние
+    group = loadMenuGroup(tr("Дуговая"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя1"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя2"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя3"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+
+    // группа по двигателям
+    group = loadMenuGroup(tr("Пусковая"));
+    ui->tableWidgetProtectionGroupMotor->addGroup(group);
+    group = loadMenuGroup(tr("Imin"));
+    ui->tableWidgetProtectionGroupMotor->addGroup(group);
+
+    // группа по температуре
+    group = loadMenuGroup(tr("Температурная1"));
+    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
+    group = loadMenuGroup(tr("Температурная2"));
+    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
+
+    // группа резервные
+    group = loadMenuGroup(tr("Уров1"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+    group = loadMenuGroup(tr("Уров2"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+    group = loadMenuGroup(tr("Сигнал пуска"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+
+    // группа предварительного контроля
+    group = loadMenuGroup(tr("БРУ"));
+    ui->tableWidgetProtectionGroupControl->addGroup(group);
+    group = loadMenuGroup(tr("Вакуум"));
+    ui->tableWidgetProtectionGroupControl->addGroup(group);
+
+    // группа автоматики
+    group = loadMenuGroup(tr("Выключатель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Тележка выключателя"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Блокировки"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Шинный разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Линейный разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Заземляющий разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Контроль ТН"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("АВР"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("АПВ"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -4822,12 +4855,12 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
 
         box->setCurrentIndex(i);
 
-        if(indexName == "M65")
-            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(i);
-        else if(indexName == "M66")
-            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(i);
-        else if(indexName == "M77")
-            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(i);
+//        if(indexName == "M65")
+//            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(i);
+//        else if(indexName == "M66")
+//            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(i);
+//        else if(indexName == "M77")
+//            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(i);
     }
 }
 //------------------------------------------------------------------
@@ -5051,82 +5084,82 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         return;
     }
 
-    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
-                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
-                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
-                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
-                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
-                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
-                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
-                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
-                                                            ui->cboxV96;
+//    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
+//                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
+//                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
+//                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
+//                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
+//                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
+//                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
+//                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
+//                                                            ui->cboxV96;
 
-    QVector<quint16> tdata;
+//    QVector<quint16> tdata;
 
-    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-    {
-        tdata << data[i + 1] << data[i];
-    }
+//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+//    {
+//        tdata << data[i + 1] << data[i];
+//    }
 
-    for(QComboBox* box: box_list)
-    {
-        QString key = box->objectName().remove("cbox");
+//    for(QComboBox* box: box_list)
+//    {
+//        QString key = box->objectName().remove("cbox");
 
-        if(key.isEmpty())
-            continue;
+//        if(key.isEmpty())
+//            continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < tdata.count())
-        {
-            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+//        if(val_pos < tdata.count())
+//        {
+//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-            if(item_pos < box->count())
-                box->setCurrentIndex(item_pos);
-        }
-    }
+//            if(item_pos < box->count())
+//                box->setCurrentIndex(item_pos);
+//        }
+//    }
 }
 //------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>& data)
 {
-    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
-                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
-                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
-                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
-                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
-                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
-                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
-                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
-                                                            ui->cboxV96_2;
+//    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
+//                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
+//                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
+//                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
+//                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
+//                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
+//                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
+//                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
+//                                                            ui->cboxV96_2;
 
-    QVector<quint16> tdata;
+//    QVector<quint16> tdata;
 
-    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-    {
-        tdata << data[i + 1] << data[i];
-    }
+//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+//    {
+//        tdata << data[i + 1] << data[i];
+//    }
 
-    for(QComboBox* box: box_list)
-    {
-        QString key = (box->objectName().remove("cbox")).remove("_2");
+//    for(QComboBox* box: box_list)
+//    {
+//        QString key = (box->objectName().remove("cbox")).remove("_2");
 
-        if(key.isEmpty())
-            continue;
+//        if(key.isEmpty())
+//            continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < tdata.count())
-        {
-            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+//        if(val_pos < tdata.count())
+//        {
+//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-            if(item_pos < box->count())
-                box->setCurrentIndex(item_pos);
-        }
-    }
+//            if(item_pos < box->count())
+//                box->setCurrentIndex(item_pos);
+//        }
+//    }
 }
 //---------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint16>& data)
@@ -6683,30 +6716,30 @@ void ConfiguratorWindow::indexComboBoxChanged(int index)
 
     if(comboBox)
     {
-        if(comboBox == ui->cboxM77)
-        {
-            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxProtectionLeve2_Ctrl)
-        {
-            ui->cboxM77->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxM65)
-        {
-            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxM66)
-        {
-            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxProtectionTemp2_Sensor1)
-        {
-            ui->cboxM65->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxProtectionTemp2_Sensor2)
-        {
-            ui->cboxM66->setCurrentIndex(index);
-        }
+//        if(comboBox == ui->cboxM77)
+//        {
+//            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(index);
+//        }
+//        else if(comboBox == ui->cboxProtectionLeve2_Ctrl)
+//        {
+//            ui->cboxM77->setCurrentIndex(index);
+//        }
+//        else if(comboBox == ui->cboxM65)
+//        {
+//            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(index);
+//        }
+//        else if(comboBox == ui->cboxM66)
+//        {
+//            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(index);
+//        }
+//        else if(comboBox == ui->cboxProtectionTemp2_Sensor1)
+//        {
+//            ui->cboxM65->setCurrentIndex(index);
+//        }
+//        else if(comboBox == ui->cboxProtectionTemp2_Sensor2)
+//        {
+//            ui->cboxM66->setCurrentIndex(index);
+//        }
     }
 }
 //--------------------------------------
@@ -6809,10 +6842,10 @@ void ConfiguratorWindow::openProject()
     QJsonValue  valStandardFieldPhase = objStandardField.value("phase");
     QJsonValue  valStandardField3I0   = objStandardField.value("3I0");
 
-    if(valStandardFieldPhase.isString())
-        ui->widgetCalibrationOfCurrent->setCurrentStandardPhase(valStandardFieldPhase.toString().toFloat());
-    if(valStandardField3I0.isString())
-        ui->widgetCalibrationOfCurrent->setCurrentStandard3I0(valStandardField3I0.toString().toFloat());
+//    if(valStandardFieldPhase.isString())
+//        ui->widgetCalibrationOfCurrent->setCurrentStandardPhase(valStandardFieldPhase.toString().toFloat());
+//    if(valStandardField3I0.isString())
+//        ui->widgetCalibrationOfCurrent->setCurrentStandard3I0(valStandardField3I0.toString().toFloat());
 
     emit ui->widgetMenuBar->widgetMenu()->addDocument(fileName);
 }
@@ -6841,16 +6874,16 @@ void ConfiguratorWindow::saveProject()
         return;
     }
 
-    QString textStandardPhase = QString::number(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase(), 'f', 6);
-    QString textStandard3I0 = QString::number(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0(), 'f', 6);
-    QString textStandard = QString("\"standard\":\n\t\t\t{\n\t\t\t\t\"phase\": \"%1\","
-                                   "\n\t\t\t\t\"3I0\": \"%2\"\n\t\t\t}").arg(textStandardPhase).arg(textStandard3I0);
-    QString textCurrent     = QString("\"current\":\n\t\t{\n\t\t\t%1\n\t\t}").arg(textStandard);
-    QString textCalibration = QString("\"calibration\":\n\t{\n\t\t%1\n\t}").arg(textCurrent);
-    QString text            = QString("{\n\t%1\n}").arg(textCalibration);
+//    QString textStandardPhase = QString::number(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase(), 'f', 6);
+//    QString textStandard3I0 = QString::number(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0(), 'f', 6);
+//    QString textStandard = QString("\"standard\":\n\t\t\t{\n\t\t\t\t\"phase\": \"%1\","
+//                                   "\n\t\t\t\t\"3I0\": \"%2\"\n\t\t\t}").arg(textStandardPhase).arg(textStandard3I0);
+//    QString textCurrent     = QString("\"current\":\n\t\t{\n\t\t\t%1\n\t\t}").arg(textStandard);
+//    QString textCalibration = QString("\"calibration\":\n\t{\n\t\t%1\n\t}").arg(textCurrent);
+//    QString text            = QString("{\n\t%1\n}").arg(textCalibration);
 
-    file.write(text.toStdString().c_str());
-    file.close();
+//    file.write(text.toStdString().c_str());
+//    file.close();
 }
 //--------------------------------------
 void ConfiguratorWindow::saveAsProject()
@@ -6909,82 +6942,82 @@ void ConfiguratorWindow::exportToExcelProject()
 //    writeDataToExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
 //    writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
 //    writeDataToExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
 //    writeDataToExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
-    writeDataToExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
-    writeDataToExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
-    writeDataToExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
-    writeDataToExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
-    writeDataToExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
-    writeDataToExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
-    writeDataToExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
-    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-    writeDataToExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
-    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-    writeDataToExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
-    writeDataToExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
-    writeDataToExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
-    writeDataToExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
-    writeDataToExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
-    writeDataToExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
-    writeDataToExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
-    writeDataToExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
-    writeDataToExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
-    writeDataToExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
-    writeDataToExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
-    writeDataToExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
-    writeDataToExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
-    writeDataToExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
-    writeDataToExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
-    writeDataToExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
-    writeDataToExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
+//    writeDataToExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
+//    writeDataToExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
+//    writeDataToExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
+//    writeDataToExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
+//    writeDataToExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
+//    writeDataToExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
+//    writeDataToExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
+//    writeDataToExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
+//    writeDataToExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
+//    writeDataToExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
+//    writeDataToExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
+//    writeDataToExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
+//    writeDataToExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
+//    writeDataToExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
+//    writeDataToExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
+//    writeDataToExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
+//    writeDataToExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
+//    writeDataToExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
+//    writeDataToExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
+//    writeDataToExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
+//    writeDataToExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
+//    writeDataToExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
+//    writeDataToExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
+//    writeDataToExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
+//    writeDataToExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
 
-    xlsx.addSheet(tr("Автоматика"));
+//    xlsx.addSheet(tr("Автоматика"));
 
-    xlsx.write("A1", tr("Имя"));
-    xlsx.write("B1", tr("Параметр"));
-    xlsx.write("C1", tr("Значение"));
-    xlsx.write("D1", tr("Диапазон"));
-    xlsx.setColumnFormat("A1:D1", format_header);
-    xlsx.setColumnWidth("A1", 30);
-    xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 20);
-    xlsx.setColumnWidth("D1", 50);
+//    xlsx.write("A1", tr("Имя"));
+//    xlsx.write("B1", tr("Параметр"));
+//    xlsx.write("C1", tr("Значение"));
+//    xlsx.write("D1", tr("Диапазон"));
+//    xlsx.setColumnFormat("A1:D1", format_header);
+//    xlsx.setColumnWidth("A1", 30);
+//    xlsx.setColumnWidth("B1", 50);
+//    xlsx.setColumnWidth("C1", 20);
+//    xlsx.setColumnWidth("D1", 50);
 
-    writeDataToExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors, -1);
-    writeDataToExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
-    writeDataToExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
-    writeDataToExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
-    writeDataToExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
-    writeDataToExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
-    writeDataToExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
-    writeDataToExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
-    writeDataToExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
-    writeDataToExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
+//    writeDataToExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors, -1);
+//    writeDataToExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
+//    writeDataToExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
+//    writeDataToExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
+//    writeDataToExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
+//    writeDataToExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
+//    writeDataToExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
+//    writeDataToExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
+//    writeDataToExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
+//    writeDataToExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
 
-    xlsx.addSheet(tr("Аналоговые входы"));
+//    xlsx.addSheet(tr("Аналоговые входы"));
 
-    xlsx.write("A1", tr("Имя"));
-    xlsx.write("B1", tr("Параметр"));
-    xlsx.write("C1", tr("Значение"));
-    xlsx.write("D1", tr("Диапазон"));
-    xlsx.setColumnFormat("A1:D1", format_header);
-    xlsx.setColumnWidth("A1", 30);
-    xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 20);
-    xlsx.setColumnWidth("D1", 50);
+//    xlsx.write("A1", tr("Имя"));
+//    xlsx.write("B1", tr("Параметр"));
+//    xlsx.write("C1", tr("Значение"));
+//    xlsx.write("D1", tr("Диапазон"));
+//    xlsx.setColumnFormat("A1:D1", format_header);
+//    xlsx.setColumnWidth("A1", 30);
+//    xlsx.setColumnWidth("B1", 50);
+//    xlsx.setColumnWidth("C1", 20);
+//    xlsx.setColumnWidth("D1", 50);
 
-    writeDataToExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain, -1);
-    writeDataToExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
+//    writeDataToExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain, -1);
+//    writeDataToExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
 
-    xlsx.selectSheet(tr("Защиты"));
-    xlsx.saveAs(fileName);
+//    xlsx.selectSheet(tr("Защиты"));
+//    xlsx.saveAs(fileName);
 
     m_progressbar->progressStop();
 }
@@ -7019,67 +7052,67 @@ void ConfiguratorWindow::importFromExcelProject()
 //    readDataFromExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
 //    readDataFromExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
 //    readDataFromExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
 //    readDataFromExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
-    readDataFromExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
-    readDataFromExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
-    readDataFromExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
-    readDataFromExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
-    readDataFromExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
-    readDataFromExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
-    readDataFromExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
-    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-    readDataFromExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
-    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-    readDataFromExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
-    readDataFromExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
-    readDataFromExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
-    readDataFromExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
-    readDataFromExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
-    readDataFromExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
-    readDataFromExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
-    readDataFromExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
-    readDataFromExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
-    readDataFromExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
-    readDataFromExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
-    readDataFromExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
-    readDataFromExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
-    readDataFromExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
-    readDataFromExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
-    readDataFromExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
-    readDataFromExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
+//    readDataFromExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
+//    readDataFromExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
+//    readDataFromExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
+//    readDataFromExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
+//    readDataFromExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
+//    readDataFromExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
+//    readDataFromExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
+//    readDataFromExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
+//    readDataFromExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
+//    readDataFromExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
+//    readDataFromExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
+//    readDataFromExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
+//    readDataFromExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
+//    readDataFromExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
+//    readDataFromExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
+//    readDataFromExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
+//    readDataFromExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
+//    readDataFromExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
+//    readDataFromExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
+//    readDataFromExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
+//    readDataFromExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
+//    readDataFromExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
+//    readDataFromExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
+//    readDataFromExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
+//    readDataFromExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
 
-    if(!xlsx.selectSheet(tr("Автоматика")))
-    {
-        qWarning() << tr("Импорт данных из файла Excel: лист <Автоматика> не найден.");
-        return;
-    }
+//    if(!xlsx.selectSheet(tr("Автоматика")))
+//    {
+//        qWarning() << tr("Импорт данных из файла Excel: лист <Автоматика> не найден.");
+//        return;
+//    }
 
-    readDataFromExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors);
-    readDataFromExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
-    readDataFromExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
-    readDataFromExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
-    readDataFromExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
-    readDataFromExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
-    readDataFromExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
-    readDataFromExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
-    readDataFromExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
-    readDataFromExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
+//    readDataFromExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors);
+//    readDataFromExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
+//    readDataFromExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
+//    readDataFromExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
+//    readDataFromExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
+//    readDataFromExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
+//    readDataFromExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
+//    readDataFromExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
+//    readDataFromExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
+//    readDataFromExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
 
-    if(!xlsx.selectSheet(tr("Аналоговые входы")))
-    {
-        qWarning() << tr("Импорт данных из файла Excel: лист <Аналоговые входы> не найден.");
-        return;
-    }
+//    if(!xlsx.selectSheet(tr("Аналоговые входы")))
+//    {
+//        qWarning() << tr("Импорт данных из файла Excel: лист <Аналоговые входы> не найден.");
+//        return;
+//    }
 
-    readDataFromExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain);
-    readDataFromExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
+//    readDataFromExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain);
+//    readDataFromExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
 
     m_progressbar->progressStop();
 }
@@ -7111,45 +7144,45 @@ void ConfiguratorWindow::calibrationOfCurrent()
 {
     m_calib_of_current = { 0, 0, 0, QVector<CModBusDataUnit>(0), nullptr };
 
-    QCheckBox* checkBoxIa  = ui->widgetCalibrationOfCurrent->ctrlIa();
-    QCheckBox* checkBoxIb  = ui->widgetCalibrationOfCurrent->ctrlIb();
-    QCheckBox* checkBoxIc  = ui->widgetCalibrationOfCurrent->ctrlIc();
-    QCheckBox* checkBox3I0 = ui->widgetCalibrationOfCurrent->ctrl3I0();
+//    QCheckBox* checkBoxIa  = ui->widgetCalibrationOfCurrent->ctrlIa();
+//    QCheckBox* checkBoxIb  = ui->widgetCalibrationOfCurrent->ctrlIb();
+//    QCheckBox* checkBoxIc  = ui->widgetCalibrationOfCurrent->ctrlIc();
+//    QCheckBox* checkBox3I0 = ui->widgetCalibrationOfCurrent->ctrl3I0();
 
-    if(!checkBoxIa->isChecked() && !checkBoxIb->isChecked() && !checkBoxIc->isChecked() &&
-       !checkBox3I0->isChecked())
-    {
-        QMessageBox::warning(this, tr("Калибровка по току"), tr("Нет выбранных каналов для калибровки"));
-        return;
-    }
+//    if(!checkBoxIa->isChecked() && !checkBoxIb->isChecked() && !checkBoxIc->isChecked() &&
+//       !checkBox3I0->isChecked())
+//    {
+//        QMessageBox::warning(this, tr("Калибровка по току"), tr("Нет выбранных каналов для калибровки"));
+//        return;
+//    }
 
-    CModBusDataUnit unit_Ia(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 64, 2);
-    CModBusDataUnit unit_Ib(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 66, 2);
-    CModBusDataUnit unit_Ic(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 68, 2);
-    CModBusDataUnit unit_3I0(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 70, 2);
+//    CModBusDataUnit unit_Ia(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 64, 2);
+//    CModBusDataUnit unit_Ib(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 66, 2);
+//    CModBusDataUnit unit_Ic(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 68, 2);
+//    CModBusDataUnit unit_3I0(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 70, 2);
 
-    unit_Ia.setProperty("REQUEST", CALIBRATION_CURRENT_IA);
-    unit_Ib.setProperty("REQUEST", CALIBRATION_CURRENT_IB);
-    unit_Ic.setProperty("REQUEST", CALIBRATION_CURRENT_IC);
-    unit_3I0.setProperty("REQUEST", CALIBRATION_CURRENT_3I0);
+//    unit_Ia.setProperty("REQUEST", CALIBRATION_CURRENT_IA);
+//    unit_Ib.setProperty("REQUEST", CALIBRATION_CURRENT_IB);
+//    unit_Ic.setProperty("REQUEST", CALIBRATION_CURRENT_IC);
+//    unit_3I0.setProperty("REQUEST", CALIBRATION_CURRENT_3I0);
 
-    m_calib_of_current.request_all = ui->widgetCalibrationOfCurrent->dataSetCount();
-    m_calib_of_current.pause       = ui->widgetCalibrationOfCurrent->timePauseRequest();
-    m_calib_of_current.timer       = new QTimer;
+//    m_calib_of_current.request_all = ui->widgetCalibrationOfCurrent->dataSetCount();
+//    m_calib_of_current.pause       = ui->widgetCalibrationOfCurrent->timePauseRequest();
+//    m_calib_of_current.timer       = new QTimer;
 
-    connect(m_calib_of_current.timer, &QTimer::timeout, this, &ConfiguratorWindow::calibrationOfCurrentRequest);
+//    connect(m_calib_of_current.timer, &QTimer::timeout, this, &ConfiguratorWindow::calibrationOfCurrentRequest);
 
-    if(checkBoxIa->isChecked())
-        m_calib_of_current.units << unit_Ia;
-    if(checkBoxIb->isChecked())
-        m_calib_of_current.units << unit_Ib;
-    if(checkBoxIc->isChecked())
-        m_calib_of_current.units << unit_Ic;
-    if(checkBox3I0->isChecked())
-        m_calib_of_current.units << unit_3I0;
+//    if(checkBoxIa->isChecked())
+//        m_calib_of_current.units << unit_Ia;
+//    if(checkBoxIb->isChecked())
+//        m_calib_of_current.units << unit_Ib;
+//    if(checkBoxIc->isChecked())
+//        m_calib_of_current.units << unit_Ic;
+//    if(checkBox3I0->isChecked())
+//        m_calib_of_current.units << unit_3I0;
 
-    inputAnalogCalibrateRead();
-    calibrationOfCurrentRequest();
+//    inputAnalogCalibrateRead();
+//    calibrationOfCurrentRequest();
 }
 /*!
  * \brief ConfiguratorWindow::displayCalibrationOfCurrent
@@ -7158,91 +7191,91 @@ void ConfiguratorWindow::calibrationOfCurrent()
  */
 void ConfiguratorWindow::displayCalibrationOfCurrent()
 {
-    CCalibrationWidget::calibration_current_t calib = ui->widgetCalibrationOfCurrent->calibrationCurrent();
+//    CCalibrationWidget::calibration_current_t calib = ui->widgetCalibrationOfCurrent->calibrationCurrent();
 
-    qInfo() << tr("Калибровка по току:");
-    if(!calib.Ia.isEmpty())
-    {
-        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIA->text());
-        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ia);
-        QPointF deviation  = standardDeviation(calib.Ia);
+//    qInfo() << tr("Калибровка по току:");
+//    if(!calib.Ia.isEmpty())
+//    {
+//        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
+//        float   cur_factor = QLocale::system().toFloat(ui->leKIA->text());
+//        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ia);
+//        QPointF deviation  = standardDeviation(calib.Ia);
 
-        ui->widgetCalibrationOfCurrent->setFactorIa(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIa(deviation.x());
-        ui->widgetCalibrationOfCurrent->setDeviationIa(deviation.y());
-        qInfo() << tr("Калибровка тока фазы А");
-        for(float value: calib.Ia)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIA->text());
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
-    }
+//        ui->widgetCalibrationOfCurrent->setFactorIa(newFactor);
+//        ui->widgetCalibrationOfCurrent->setMeasureIa(deviation.x());
+//        ui->widgetCalibrationOfCurrent->setDeviationIa(deviation.y());
+//        qInfo() << tr("Калибровка тока фазы А");
+//        for(float value: calib.Ia)
+//            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+//        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+//                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+//                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+//        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIA->text());
+//        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+//    }
 
-    if(!calib.Ib.isEmpty())
-    {
-        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIB->text());
-        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ib);
-        QPointF deviation  = standardDeviation(calib.Ib);
+//    if(!calib.Ib.isEmpty())
+//    {
+//        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
+//        float   cur_factor = QLocale::system().toFloat(ui->leKIB->text());
+//        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ib);
+//        QPointF deviation  = standardDeviation(calib.Ib);
 
-        ui->widgetCalibrationOfCurrent->setFactorIb(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIb(deviation.x());
-        ui->widgetCalibrationOfCurrent->setDeviationIb(deviation.y());
-        qInfo() << tr("Калибровка тока фазы B");
-        for(float value: calib.Ib)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIB->text());
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
-    }
+//        ui->widgetCalibrationOfCurrent->setFactorIb(newFactor);
+//        ui->widgetCalibrationOfCurrent->setMeasureIb(deviation.x());
+//        ui->widgetCalibrationOfCurrent->setDeviationIb(deviation.y());
+//        qInfo() << tr("Калибровка тока фазы B");
+//        for(float value: calib.Ib)
+//            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+//        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+//                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+//                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+//        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIB->text());
+//        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+//    }
 
-    if(!calib.Ic.isEmpty())
-    {
-        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIC->text());
-        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ic);
-        QPointF deviation  = standardDeviation(calib.Ic);
+//    if(!calib.Ic.isEmpty())
+//    {
+//        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
+//        float   cur_factor = QLocale::system().toFloat(ui->leKIC->text());
+//        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ic);
+//        QPointF deviation  = standardDeviation(calib.Ic);
 
-        ui->widgetCalibrationOfCurrent->setFactorIc(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIc(deviation.x());
-        ui->widgetCalibrationOfCurrent->setDeviationIc(deviation.y());
-        qInfo() << tr("Калибровка тока фазы C");
-        for(float value: calib.Ic)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIC->text());
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
-    }
+//        ui->widgetCalibrationOfCurrent->setFactorIc(newFactor);
+//        ui->widgetCalibrationOfCurrent->setMeasureIc(deviation.x());
+//        ui->widgetCalibrationOfCurrent->setDeviationIc(deviation.y());
+//        qInfo() << tr("Калибровка тока фазы C");
+//        for(float value: calib.Ic)
+//            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+//        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+//                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+//                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+//        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIC->text());
+//        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+//    }
 
-    if(!calib._3I0.isEmpty())
-    {
-        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0();
-        float   cur_factor = QLocale::system().toFloat(ui->leK3I0->text());
-        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib._3I0);
-        QPointF deviation  = standardDeviation(calib._3I0);
+//    if(!calib._3I0.isEmpty())
+//    {
+//        float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0();
+//        float   cur_factor = QLocale::system().toFloat(ui->leK3I0->text());
+//        float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib._3I0);
+//        QPointF deviation  = standardDeviation(calib._3I0);
 
-        ui->widgetCalibrationOfCurrent->setFactor3I0(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasure3I0(deviation.x());
-        ui->widgetCalibrationOfCurrent->setDeviation3I0(deviation.y());
-        qInfo() << tr("Калибровка среднего тока 3I0");
-        for(float value: calib._3I0)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leK3I0->text());
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
-    }
+//        ui->widgetCalibrationOfCurrent->setFactor3I0(newFactor);
+//        ui->widgetCalibrationOfCurrent->setMeasure3I0(deviation.x());
+//        ui->widgetCalibrationOfCurrent->setDeviation3I0(deviation.y());
+//        qInfo() << tr("Калибровка среднего тока 3I0");
+//        for(float value: calib._3I0)
+//            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+//        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+//                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+//                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+//        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leK3I0->text());
+//        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+//    }
 
-    ui->widgetCalibrationOfCurrent->calibrationCurrentClear();
-    emit ui->widgetCalibrationOfCurrent->calibrationEnd(false);
+//    ui->widgetCalibrationOfCurrent->calibrationCurrentClear();
+//    emit ui->widgetCalibrationOfCurrent->calibrationEnd(false);
 }
 /*!
  * \brief ConfiguratorWindow::calibrationOfCurrentRequest
@@ -9828,14 +9861,14 @@ void ConfiguratorWindow::initConnect()
     connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
     connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this,
             &ConfiguratorWindow::updateSerialPortSettings);
-    connect(ui->cboxM77, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxProtectionLeve2_Ctrl, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxM65, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxM66, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxProtectionTemp2_Sensor1, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxProtectionTemp2_Sensor2, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(indexComboBoxChanged(int)));
+//    connect(ui->cboxM77, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+//    connect(ui->cboxProtectionLeve2_Ctrl, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+//    connect(ui->cboxM65, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+//    connect(ui->cboxM66, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
+//    connect(ui->cboxProtectionTemp2_Sensor1, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(indexComboBoxChanged(int)));
+//    connect(ui->cboxProtectionTemp2_Sensor2, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(indexComboBoxChanged(int)));
     connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::close);
     connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
@@ -9861,10 +9894,10 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
-    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
-            &ConfiguratorWindow::calibrationOfCurrent);
-    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
-    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
+//    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
+//            &ConfiguratorWindow::calibrationOfCurrent);
+//    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
+//    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
 
     CTerminal* terminal = qobject_cast<CTerminal*>(m_terminal_window->widget());
 

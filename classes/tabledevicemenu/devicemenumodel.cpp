@@ -109,7 +109,7 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
             else if(item.type.toUpper() == "FLOAT")
             {
                 le->setValidator(new QDoubleValidator(min, max, 6, le));
-                le->setText(QLocale::system().toString(min, 'f', 6));
+                le->setText(QLocale::system().toString(((min < 0.0f)?0:min), 'f', 6));
                 le->setValidatorType(CLineEdit::FLOAT);
             }
 
@@ -151,7 +151,7 @@ void CDeviceMenuTableWidget::showEvent(QShowEvent* event)
 
     for(int i = 0; i < columnCount(); i++)
     {
-        setColumnWidth(i, 250);
+        setColumnWidth(i, 300);
     }
 }
 //-------------------------------------------------------------

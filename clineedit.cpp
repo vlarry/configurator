@@ -37,7 +37,7 @@ bool CLineEdit::isValidateText(const QString& text) const
         }
     }
 
-    if(isNumber && (value >= bottom && value <= top))
+    if(isNumber && value + 0.000001 >= bottom && value - 0.000001 <= top) // 0.000001 из-за округления (0.1 представляется как 0.09)
     {
         return true;
     }
