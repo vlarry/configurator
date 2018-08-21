@@ -21,7 +21,9 @@ void CDeviceMenuTableWidget::setColumns(const QStringList& columns)
 void CDeviceMenuTableWidget::addGroup(group_t& group)
 {
     int row = rowCount();
+    m_group_rows[row] = group.items.count(); // количество строк в группе
     QFont f = font();
+    setRowCount(row + group.items.count() + 1);
     f.setBold(true);
 
     QTableWidgetItem* item = new QTableWidgetItem;
@@ -30,15 +32,12 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
     item->setTextAlignment(Qt::AlignCenter);
     item->setFont(f);
     item->setData(Qt::UserRole + 100, HEADER);
-    insertRow(row);
 
     QLinearGradient gradient(0, 0, 0, rowHeight(row));
     gradient.setColorAt(0, QColor(230, 230, 230));
     gradient.setColorAt(0.5, Qt::lightGray);
     gradient.setColorAt(1, QColor(230, 230, 230));
     item->setBackground(QBrush(gradient));
-
-    m_group_rows[row] = group.items.count(); // количество строк в группе
 
     for(int i = 0; i < columnCount(); i++)
         setItem(row, i, item);
@@ -50,8 +49,7 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
     for(int i = 0; i < group.items.count(); i++)
     {
         item_t item = group.items[i];
-        int row_index = row + i;
-        insertRow(row_index);
+        int row_index = row + item.row;
 
         QWidget*     label_name  = new QWidget;
         QHBoxLayout* layout_name = new QHBoxLayout(label_name);
@@ -73,7 +71,11 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
         if(item.type.toUpper() == "LIST") // Тип равен СПИСОК, значит это комбобокс
         {
             QComboBox* cb = new QComboBox(wgt);
-            cb->setObjectName(QString("comboBox%1").arg(item.key));
+
+            if(!item.key.contains("_1"))
+                cb->setObjectName(QString("comboBox%1").arg(item.key));
+            else
+                cb->setObjectName(QString("comboBox%1_1").arg(item.key));
 
             QStringList subitemlist;
 

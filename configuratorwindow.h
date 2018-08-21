@@ -319,6 +319,8 @@
                 float   limit_min;
                 float   limit_max;
                 QString unit_measure;
+                QString date_type;
+                int     row;
             };
             /*!
              * \brief The block_protection_purpose_t struct
@@ -444,6 +446,7 @@
             void automationAVRRead();
             void automationAPVSignalStartRead();
             void automationAPVRead();
+            void automationGroupRead();
             void calibrationOfCurrentWrite();
             void purposeLedsRead();
             void purposeInputRead();
@@ -634,7 +637,6 @@
             void initHalfhourJournal();
             void initDeviceCode();
             void initJournals();
-            void initLineEditValidator();
             void initProtectionList();
             void initMonitorPurpose();
             void initOutputAll();
@@ -702,6 +704,8 @@
             void readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid);
             int groupPositionInExcel(QXlsx::Document& doc, const QString& group);
             CDeviceMenuTableWidget::group_t loadMenuGroup(const QString& group_name);
+            CDeviceMenuTableWidget* groupMenuWidget(DeviceMenuItemType type) const;
+            QWidget* groupMenuCellWidget(CDeviceMenuTableWidget* table, int row, int col) const;
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

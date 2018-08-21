@@ -39,6 +39,7 @@
                 measure_t   unit;
                 QString     type;
                 QString     name;
+                int         row;
                 item_list_t subitems;
             };
             //------------

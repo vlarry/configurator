@@ -73,7 +73,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initEventJournal(); // инициализация параметров журнала событий
     initCrashJournal(); // инициализация параметров журнала аварий
     initHalfhourJournal(); // инициализация параметров журнала получасовок
-    initLineEditValidator();
     initProtectionList(); // инициализация списка защит
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
     initMonitorPurpose();
@@ -1352,7 +1351,7 @@ void ConfiguratorWindow::settingCommunicationsWrite()
 void ConfiguratorWindow::protectionMTZ1Read()
 {
     sendSettingControlReadRequest("M05");
-    sendSettingReadRequest(tr("M06"), tr("X01"), CModBusDataUnit::ReadHoldingRegisters, 8);
+    sendSettingReadRequest("M06", "X01", CModBusDataUnit::ReadHoldingRegisters, 8);
     sendProtectionWorkModeRequest("MTZ1");
 }
 /*!
@@ -2004,6 +2003,26 @@ void ConfiguratorWindow::automationAPVRead()
 {
     sendSettingControlReadRequest("M87");
     sendSettingReadRequest(tr("M88"), tr("M89"), CModBusDataUnit::ReadHoldingRegisters, 4);
+}
+/*!
+ * \brief ConfiguratorWindow::automationGroupRead
+ *
+ * Чтение группы автоматика
+ */
+void ConfiguratorWindow::automationGroupRead()
+{
+    automationSwitchRead(); // автоматики защиты Выключатель
+    automationSwitchTruckRead(); // автоматики защиты Тележка выключателя
+    automationBlockRead(); // чтение автоматики Блокировки
+    automationBusRead(); // чтение автоматики Шинный разъединитель
+    automationLineRead(); // чтение автоматики Линейный разъединитель
+    automationEarthRead(); // чтение автоматики Заземляющий разъединитель
+    automationDisconnectorsGroupRead(); // чтение группы автоматики Разъединители
+    automationCtrlTNRead(); // чтение автоматики Контроль ТН
+    automationAVRRead(); // чтение автоматики АВР
+    automationAPVRead(); // чтение автоматики АПВ
+    automationAPVSignalStartRead(); // чтение пусковых сигналов АПВ
+    automationAPVSignalStartRead(); // чтение автоматики АПВ сигналы пуска
 }
 /*!
  * \brief ConfiguratorWindow::calibrationOfCurrentWrite
@@ -3005,6 +3024,10 @@ void ConfiguratorWindow::readSetCurrent()
             automationAPVSignalStartRead();
         break;
 
+        case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
+            automationGroupRead();
+        break;
+
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // чтение настройки Светодиоды
             purposeLedsRead();
             purposeMemoryOutLedRead();
@@ -3438,187 +3461,187 @@ void ConfiguratorWindow::initMenuPanel()
                                                               protectItemFrequency << protectItemExternal << protectItemMotor <<
                                                               protectItemTemperature << protectItemReserve <<protectItemControl);
     // пункты защиты "по току"
-    QTreeWidgetItem* currentItemMTZ1 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ1"),
-                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1); // защита МТЗ1
-    QTreeWidgetItem* currentItemMTZ2 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ2"),
-                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2); // защита МТЗ2
-    QTreeWidgetItem* currentItemMTZ3 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ3"),
-                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3); // защита МТЗ3
+//    QTreeWidgetItem* currentItemMTZ1 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ1"),
+//                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1); // защита МТЗ1
+//    QTreeWidgetItem* currentItemMTZ2 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ2"),
+//                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2); // защита МТЗ2
+//    QTreeWidgetItem* currentItemMTZ3 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ3"),
+//                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3); // защита МТЗ3
 
-    QTreeWidgetItem* currentItemMTZ3_set_character = new QTreeWidgetItem(currentItemMTZ3,
-                                                                         QStringList() << tr("Настройка характеристик"),
-                                                                         DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR);
+//    QTreeWidgetItem* currentItemMTZ3_set_character = new QTreeWidgetItem(currentItemMTZ3,
+//                                                                         QStringList() << tr("Настройка характеристик"),
+//                                                                         DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR);
 
-    currentItemMTZ3->addChild(currentItemMTZ3_set_character);
+//    currentItemMTZ3->addChild(currentItemMTZ3_set_character);
 
-    QTreeWidgetItem* currentItemMTZ3_charact_steep   = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Крутая"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP);
-    QTreeWidgetItem* currentItemMTZ3_charact_sloping = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Пологая"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP);
-    QTreeWidgetItem* currentItemMTZ3_charact_inverse = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Инверсная"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV);
-    QTreeWidgetItem* currentItemMTZ3_charact_dur_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Длительно инверсная"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV);
-    QTreeWidgetItem* currentItemMTZ3_charact_back    = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Обратно зависимая"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK);
-    QTreeWidgetItem* currentItemMTZ3_charact_str_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Сильно инверсная"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV);
-    QTreeWidgetItem* currentItemMTZ3_charact_ext_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Экстремально инверсная"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV);
+//    QTreeWidgetItem* currentItemMTZ3_charact_steep   = new QTreeWidgetItem(currentItemMTZ3_set_character,
+//                                                                           QStringList() << tr("Крутая"),
+//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP);
+//    QTreeWidgetItem* currentItemMTZ3_charact_sloping = new QTreeWidgetItem(currentItemMTZ3_set_character,
+//                                                                           QStringList() << tr("Пологая"),
+//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP);
+//    QTreeWidgetItem* currentItemMTZ3_charact_inverse = new QTreeWidgetItem(currentItemMTZ3_set_character,
+//                                                                           QStringList() << tr("Инверсная"),
+//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV);
+//    QTreeWidgetItem* currentItemMTZ3_charact_dur_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
+//                                                                           QStringList() << tr("Длительно инверсная"),
+//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV);
+//    QTreeWidgetItem* currentItemMTZ3_charact_back    = new QTreeWidgetItem(currentItemMTZ3_set_character,
+//                                                                           QStringList() << tr("Обратно зависимая"),
+//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK);
+//    QTreeWidgetItem* currentItemMTZ3_charact_str_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
+//                                                                           QStringList() << tr("Сильно инверсная"),
+//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV);
+//    QTreeWidgetItem* currentItemMTZ3_charact_ext_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
+//                                                                           QStringList() << tr("Экстремально инверсная"),
+//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV);
 
-    currentItemMTZ3_set_character->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ3_charact_steep <<
-                                                                            currentItemMTZ3_charact_sloping <<
-                                                                            currentItemMTZ3_charact_inverse <<
-                                                                            currentItemMTZ3_charact_dur_inv <<
-                                                                            currentItemMTZ3_charact_back <<
-                                                                            currentItemMTZ3_charact_str_inv <<
-                                                                            currentItemMTZ3_charact_ext_inv);
+//    currentItemMTZ3_set_character->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ3_charact_steep <<
+//                                                                            currentItemMTZ3_charact_sloping <<
+//                                                                            currentItemMTZ3_charact_inverse <<
+//                                                                            currentItemMTZ3_charact_dur_inv <<
+//                                                                            currentItemMTZ3_charact_back <<
+//                                                                            currentItemMTZ3_charact_str_inv <<
+//                                                                            currentItemMTZ3_charact_ext_inv);
 
-    QTreeWidgetItem* currentItemMTZ4 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ4"),
-                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4); // защита МТЗ4
+//    QTreeWidgetItem* currentItemMTZ4 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ4"),
+//                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4); // защита МТЗ4
 
-    protectItemCurrent->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ1 << currentItemMTZ2 << currentItemMTZ3 <<
-                                                                 currentItemMTZ4);
+//    protectItemCurrent->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ1 << currentItemMTZ2 << currentItemMTZ3 <<
+//                                                                 currentItemMTZ4);
 
-    // пункты защиты "по напряжению"
-    QTreeWidgetItem* powerItemUmax1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax1"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1); // защита Umax1
-    QTreeWidgetItem* powerItemUmax2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax2"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2); // защита Umax2
-    QTreeWidgetItem* powerItemUmin1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin1"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1); // защита Umin1
-    QTreeWidgetItem* powerItemUmin2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin2"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2); // защита Umin2
-    QTreeWidgetItem* powerItem3U0   = new QTreeWidgetItem(protectItemPower, QStringList() << tr("3U0"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_3U0); // защита 3U0
+//    // пункты защиты "по напряжению"
+//    QTreeWidgetItem* powerItemUmax1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax1"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1); // защита Umax1
+//    QTreeWidgetItem* powerItemUmax2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax2"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2); // защита Umax2
+//    QTreeWidgetItem* powerItemUmin1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin1"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1); // защита Umin1
+//    QTreeWidgetItem* powerItemUmin2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin2"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2); // защита Umin2
+//    QTreeWidgetItem* powerItem3U0   = new QTreeWidgetItem(protectItemPower, QStringList() << tr("3U0"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_3U0); // защита 3U0
 
-    // подпункт защиты Umin1 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
-    QTreeWidgetItem* powerItemUmin1CorecKCU = new QTreeWidgetItem(powerItemUmin1, QStringList() << tr("Корр КЦУ"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU);
-    // подпункт защиты Umin2 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
-    QTreeWidgetItem* powerItemUmin2CorecKCU = new QTreeWidgetItem(powerItemUmin2, QStringList() << tr("Корр КЦУ"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU);
+//    // подпункт защиты Umin1 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
+//    QTreeWidgetItem* powerItemUmin1CorecKCU = new QTreeWidgetItem(powerItemUmin1, QStringList() << tr("Корр КЦУ"),
+//                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU);
+//    // подпункт защиты Umin2 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
+//    QTreeWidgetItem* powerItemUmin2CorecKCU = new QTreeWidgetItem(powerItemUmin2, QStringList() << tr("Корр КЦУ"),
+//                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU);
 
-    powerItemUmin1->addChild(powerItemUmin1CorecKCU);
-    powerItemUmin2->addChild(powerItemUmin2CorecKCU);
-    protectItemPower->addChildren(QList<QTreeWidgetItem*>() << powerItemUmax1 << powerItemUmax2 << powerItemUmin1 <<
-                                                               powerItemUmin2 << powerItem3U0);
+//    powerItemUmin1->addChild(powerItemUmin1CorecKCU);
+//    powerItemUmin2->addChild(powerItemUmin2CorecKCU);
+//    protectItemPower->addChildren(QList<QTreeWidgetItem*>() << powerItemUmax1 << powerItemUmax2 << powerItemUmin1 <<
+//                                                               powerItemUmin2 << powerItem3U0);
 
-    // пункты защиты "направленные"
-    QTreeWidgetItem* directItemOZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ1"),
-                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1); // защита ОЗЗ1
-    QTreeWidgetItem* directItemOZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ2"),
-                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2); // защита ОЗЗ2
-    QTreeWidgetItem* directItemNZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ1"),
-                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1); // защита НЗЗ1
-    QTreeWidgetItem* directItemNZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ2"),
-                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2); // защита НЗЗ2
+//    // пункты защиты "направленные"
+//    QTreeWidgetItem* directItemOZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ1"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1); // защита ОЗЗ1
+//    QTreeWidgetItem* directItemOZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ2"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2); // защита ОЗЗ2
+//    QTreeWidgetItem* directItemNZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ1"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1); // защита НЗЗ1
+//    QTreeWidgetItem* directItemNZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ2"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2); // защита НЗЗ2
 
-    protectItemDirected->addChildren(QList<QTreeWidgetItem*>() << directItemOZZ1 << directItemOZZ2 << directItemNZZ1 <<
-                                                                  directItemNZZ2);
+//    protectItemDirected->addChildren(QList<QTreeWidgetItem*>() << directItemOZZ1 << directItemOZZ2 << directItemNZZ1 <<
+//                                                                  directItemNZZ2);
 
-    // пункты защиты "по частоте"
-    QTreeWidgetItem* freqItemACHR1 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР1"),
-                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1); // защита АЧР1
-    QTreeWidgetItem* freqItemACHR2 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР2"),
-                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2); // защита АЧР2
-    QTreeWidgetItem* freqItemACHR3 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР3"),
-                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3); // защита АЧР3
+//    // пункты защиты "по частоте"
+//    QTreeWidgetItem* freqItemACHR1 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР1"),
+//                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1); // защита АЧР1
+//    QTreeWidgetItem* freqItemACHR2 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР2"),
+//                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2); // защита АЧР2
+//    QTreeWidgetItem* freqItemACHR3 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР3"),
+//                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3); // защита АЧР3
 
-    protectItemFrequency->addChildren(QList<QTreeWidgetItem*>() << freqItemACHR1 << freqItemACHR2 << freqItemACHR3);
+//    protectItemFrequency->addChildren(QList<QTreeWidgetItem*>() << freqItemACHR1 << freqItemACHR2 << freqItemACHR3);
 
-    // пункты защиты "внешние"
-    QTreeWidgetItem* extItemARC       = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Дуговая"),
-                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC); // защита Дуговая
-    QTreeWidgetItem* extItemExternal1 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя1"),
-                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1); // защита Внешняя1
-    QTreeWidgetItem* extItemExternal2 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя2"),
-                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2); // защита Внешняя2
-    QTreeWidgetItem* extItemExternal3 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя3"),
-                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3); // защита Внешняя3
+//    // пункты защиты "внешние"
+//    QTreeWidgetItem* extItemARC       = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Дуговая"),
+//                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC); // защита Дуговая
+//    QTreeWidgetItem* extItemExternal1 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя1"),
+//                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1); // защита Внешняя1
+//    QTreeWidgetItem* extItemExternal2 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя2"),
+//                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2); // защита Внешняя2
+//    QTreeWidgetItem* extItemExternal3 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя3"),
+//                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3); // защита Внешняя3
 
-    protectItemExternal->addChildren(QList<QTreeWidgetItem*>() << extItemARC << extItemExternal1 << extItemExternal2 <<
-                                                                  extItemExternal3);
+//    protectItemExternal->addChildren(QList<QTreeWidgetItem*>() << extItemARC << extItemExternal1 << extItemExternal2 <<
+//                                                                  extItemExternal3);
 
-    // пункты защиты "для двигателя"
-    QTreeWidgetItem* motorItemStarting = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Пусковая"),
-                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING); // защита Пусковая
-    QTreeWidgetItem* motorItemImin     = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Imin"),
-                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN); // защита Imin
+//    // пункты защиты "для двигателя"
+//    QTreeWidgetItem* motorItemStarting = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Пусковая"),
+//                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING); // защита Пусковая
+//    QTreeWidgetItem* motorItemImin     = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Imin"),
+//                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN); // защита Imin
 
-    protectItemMotor->addChildren(QList<QTreeWidgetItem*>() << motorItemStarting << motorItemImin);
+//    protectItemMotor->addChildren(QList<QTreeWidgetItem*>() << motorItemStarting << motorItemImin);
 
-    // пункты защиты "по температуре"
-    QTreeWidgetItem* tempItemTemperature1 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная1"),
-                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1); // защита Температурная1
-    QTreeWidgetItem* tempItemTemperature2 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная2"),
-                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2); // защита Температурная2
+//    // пункты защиты "по температуре"
+//    QTreeWidgetItem* tempItemTemperature1 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная1"),
+//                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1); // защита Температурная1
+//    QTreeWidgetItem* tempItemTemperature2 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная2"),
+//                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2); // защита Температурная2
 
-    protectItemTemperature->addChildren(QList<QTreeWidgetItem*>() << tempItemTemperature1 << tempItemTemperature2);
+//    protectItemTemperature->addChildren(QList<QTreeWidgetItem*>() << tempItemTemperature1 << tempItemTemperature2);
 
-    // пункты защиты "резервные"
-    QTreeWidgetItem* reserveItemLevel1      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров1"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1); // защита Уров1
-    QTreeWidgetItem* reserveItemLevel2      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров2"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2); // защита Уров2
-    QTreeWidgetItem* reserveItemSignalStart = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Сигнал пуска"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START); // защита Сигнал пуска
+//    // пункты защиты "резервные"
+//    QTreeWidgetItem* reserveItemLevel1      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров1"),
+//                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1); // защита Уров1
+//    QTreeWidgetItem* reserveItemLevel2      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров2"),
+//                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2); // защита Уров2
+//    QTreeWidgetItem* reserveItemSignalStart = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Сигнал пуска"),
+//                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START); // защита Сигнал пуска
 
-    protectItemReserve->addChildren(QList<QTreeWidgetItem*>() << reserveItemLevel1 << reserveItemLevel2 << reserveItemSignalStart);
+//    protectItemReserve->addChildren(QList<QTreeWidgetItem*>() << reserveItemLevel1 << reserveItemLevel2 << reserveItemSignalStart);
 
-    // пункты защиты "предварительного контроля"
-    QTreeWidgetItem* ctrlItemBRU    = new QTreeWidgetItem(protectItemControl, QStringList() << tr("БРУ"),
-                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU); // защита БРУ
-    QTreeWidgetItem* ctrlItemVacuum = new QTreeWidgetItem(protectItemControl, QStringList() << tr("Вакууум"),
-                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM); // защита Вакуум
+//    // пункты защиты "предварительного контроля"
+//    QTreeWidgetItem* ctrlItemBRU    = new QTreeWidgetItem(protectItemControl, QStringList() << tr("БРУ"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU); // защита БРУ
+//    QTreeWidgetItem* ctrlItemVacuum = new QTreeWidgetItem(protectItemControl, QStringList() << tr("Вакууум"),
+//                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM); // защита Вакуум
 
-    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << ctrlItemBRU << ctrlItemVacuum);
+//    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << ctrlItemBRU << ctrlItemVacuum);
 
-    // АВТОМАТИКА
-    QTreeWidgetItem* automationSwitch        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Выключатель"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH); // автоматика Выключатель
-    QTreeWidgetItem* automationSwitchTruck   = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Тележка выключателя"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK); // автоматика Выключатель
-    QTreeWidgetItem* automationBlocks        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Блокировки"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_BLOCKS); // автоматика Выключатель
-    QTreeWidgetItem* automationDisconnectors = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Разъединители"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS); // автоматика Выключатель
+//    // АВТОМАТИКА
+//    QTreeWidgetItem* automationSwitch        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Выключатель"),
+//                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH); // автоматика Выключатель
+//    QTreeWidgetItem* automationSwitchTruck   = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Тележка выключателя"),
+//                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK); // автоматика Выключатель
+//    QTreeWidgetItem* automationBlocks        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Блокировки"),
+//                                                                   DEVICE_MENU_ITEM_AUTOMATION_BLOCKS); // автоматика Выключатель
+//    QTreeWidgetItem* automationDisconnectors = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Разъединители"),
+//                                                                   DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS); // автоматика Выключатель
 
-    QTreeWidgetItem* automationDisconnectorsBus   = new QTreeWidgetItem(automationDisconnectors,
-                                                                        QStringList() << tr("Шинный разъединитель"),
-                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS);
-    QTreeWidgetItem* automationDisconnectorsLine  = new QTreeWidgetItem(automationDisconnectors,
-                                                                        QStringList() << tr("Линейный разъединитель"),
-                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE);
-    QTreeWidgetItem* automationDisconnectorsEarth = new QTreeWidgetItem(automationDisconnectors,
-                                                                        QStringList() << tr("Заземляющий разъединитель"),
-                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH);
+//    QTreeWidgetItem* automationDisconnectorsBus   = new QTreeWidgetItem(automationDisconnectors,
+//                                                                        QStringList() << tr("Шинный разъединитель"),
+//                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS);
+//    QTreeWidgetItem* automationDisconnectorsLine  = new QTreeWidgetItem(automationDisconnectors,
+//                                                                        QStringList() << tr("Линейный разъединитель"),
+//                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE);
+//    QTreeWidgetItem* automationDisconnectorsEarth = new QTreeWidgetItem(automationDisconnectors,
+//                                                                        QStringList() << tr("Заземляющий разъединитель"),
+//                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH);
 
-    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << automationDisconnectorsBus << automationDisconnectorsLine <<
-                                                                 automationDisconnectorsEarth);
+//    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << automationDisconnectorsBus << automationDisconnectorsLine <<
+//                                                                 automationDisconnectorsEarth);
 
-    QTreeWidgetItem* automationCtrlTN = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Контроль ТН"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN); // автоматика Выключатель
-    QTreeWidgetItem* automationAVR    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АВР"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_AVR); // автоматика Выключатель
-    QTreeWidgetItem* automationAPV    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АПВ"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_APV); // автоматика Выключатель
+//    QTreeWidgetItem* automationCtrlTN = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Контроль ТН"),
+//                                                                   DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN); // автоматика Выключатель
+//    QTreeWidgetItem* automationAVR    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АВР"),
+//                                                                   DEVICE_MENU_ITEM_AUTOMATION_AVR); // автоматика Выключатель
+//    QTreeWidgetItem* automationAPV    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АПВ"),
+//                                                                   DEVICE_MENU_ITEM_AUTOMATION_APV); // автоматика Выключатель
 
-    QTreeWidgetItem* automationAPVSignalStart = new QTreeWidgetItem(automationAPV, QStringList() << tr("АПВ сигналы пуска"),
-                                                                    DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START);
+//    QTreeWidgetItem* automationAPVSignalStart = new QTreeWidgetItem(automationAPV, QStringList() << tr("АПВ сигналы пуска"),
+//                                                                    DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START);
 
-    automationAPV->addChild(automationAPVSignalStart);
+//    automationAPV->addChild(automationAPVSignalStart);
 
-    itemAutomation->addChildren(QList<QTreeWidgetItem*>() << automationSwitch << automationSwitchTruck << automationBlocks <<
-                                                             automationDisconnectors << automationCtrlTN << automationAVR <<
-                                                             automationAPV);
+//    itemAutomation->addChildren(QList<QTreeWidgetItem*>() << automationSwitch << automationSwitchTruck << automationBlocks <<
+//                                                             automationDisconnectors << automationCtrlTN << automationAVR <<
+//                                                             automationAPV);
 
     // ЖУРНАЛЫ
     QTreeWidgetItem* journalCrash     = new QTreeWidgetItem(itemJournals, QStringList() << tr("Аварий"),
@@ -3862,15 +3885,17 @@ void ConfiguratorWindow::initCellBind()
 
     while(query.next())
     {
-        QString key          = query.value(tr("key")).toString();
-        QString name         = query.value(tr("widget")).toString();
-        int     addr         = query.value(tr("address")).toInt();
+        QString key          = query.value("key").toString();
+        QString name         = query.value("description").toString();
+        int     addr         = query.value("address").toInt();
         float   limit_min    = query.value("limit_min").toFloat();
         float   limit_max    = query.value("limit_max").toFloat();
         QString unit_meadure = query.value("unit_measure").toString();
+        QString date_type    = query.value("date_type").toString();
+        int     row          = query.value("row").toInt();
 
-        m_cell_list.append(qMakePair(key, cell_t({ addr, name, limit_min, limit_max, unit_meadure })));
-        m_limits[key] = cell_t({ addr, name, limit_min, limit_max, unit_meadure });
+        m_cell_list.append(qMakePair(key, cell_t({ addr, name, limit_min, limit_max, unit_meadure, date_type, row })));
+        m_limits[key] = cell_t({ addr, name, limit_min, limit_max, unit_meadure, date_type, row });
     }
 }
 //----------------------------------------
@@ -4280,52 +4305,6 @@ void ConfiguratorWindow::initJournals()
     m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
                                                 journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 }
-/*!
- * \brief ConfiguratorWindow::initLineEditValidator
- * Применение валидатора для полей ввода CLineEdit
- */
-void ConfiguratorWindow::initLineEditValidator()
-{
-    QObjectList root_obj_list = ui->stwgtMain->children();
-
-    for(QObject* obj: root_obj_list)
-    {
-        if(obj->isWidgetType() && obj->metaObject()->className() == QString("QWidget"))
-        {
-            QWidget* root_wgt = qobject_cast<QWidget*>(obj);
-
-            QObjectList root_wgt_list = root_wgt->children();
-
-            for(QObject* child_obj: root_wgt_list)
-            {
-                if(child_obj->isWidgetType())
-                {
-                    if(child_obj->metaObject()->className() == QString("CLineEdit"))
-                    {
-                        setLineEditValidator(child_obj);
-                    }
-                    else if(child_obj->metaObject()->className() == QString("QGroupBox"))
-                    {
-                        QGroupBox* root_groupbox = qobject_cast<QGroupBox*>(child_obj);
-
-                        QObjectList root_groupbox_list = root_groupbox->children();
-
-                        for(QObject* child_groupbox_obj: root_groupbox_list)
-                        {
-                            if(child_groupbox_obj->isWidgetType())
-                            {
-                                if(child_groupbox_obj->metaObject()->className() == QString("CLineEdit"))
-                                {
-                                    setLineEditValidator(child_groupbox_obj);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 //-------------------------------------------
 void ConfiguratorWindow::initProtectionList()
 {
@@ -4666,7 +4645,7 @@ void ConfiguratorWindow::displayDateTime(CModBusDataUnit& unit)
     ui->timeEdit->setTime(dt.time());
     ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
 }
-//------------------------------------------------------------------
+//--------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
 {
     if(!unit.isValid())
@@ -4675,12 +4654,16 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
         return;
     }
 
-    QString first = unit.property("FIRST").toString();
-    QString last  = unit.property("LAST").toString();
+    QString                 first    = unit.property("FIRST").toString();
+    QString                 last     = unit.property("LAST").toString();
+    DeviceMenuItemType      group    = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
+    QPoint                  indexKey = indexSettingKey(first, last);
+    CDeviceMenuTableWidget* table    = groupMenuWidget(group);
 
-    QPoint indexWgt = indexSettingKey(first, last);
+    if(!table)
+        return;
 
-    if(indexWgt.x() == -1 || indexWgt.y() == -1)
+    if(indexKey.x() == -1 || indexKey.y() == -1)
         return;
 
     int index = 0;
@@ -4692,58 +4675,49 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
         int     i;
     } value;
 
-    for(int i = indexWgt.x(); i <= indexWgt.y(); i++)
+    for(int i = indexKey.x(); i <= indexKey.y(); i++)
     {
         if(index >= unit.count())
             break;
 
-        QString nameWgt = m_cell_list[i].second.name;
+        QString    nameWgt  = QString("lineEdit%1").arg(m_cell_list[i].first);
+        CLineEdit* lineEdit = nullptr;
 
-        if(nameWgt.isEmpty())
+        for(int j = 0; j < table->rowCount(); j++)
+        {
+            QWidget* t_widget = groupMenuCellWidget(table, j, 1);
+
+            if(t_widget)
+            {
+                if(QString(t_widget->metaObject()->className()).toUpper() == "CLINEEDIT")
+                {
+                    if(t_widget->objectName().toUpper() == nameWgt.toUpper())
+                    {
+                        lineEdit = qobject_cast<CLineEdit*>(t_widget);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(!lineEdit)
         {
             index += 2;
             continue;
         }
 
-        QWidget* widget = findChild<QWidget*>(nameWgt);
+        quint16 val1 = unit.values().at(index + 1);
+        quint16 val2 = unit.values().at(index);
 
-        if(!widget)
-            continue;
+        value.w[0] = val1;
+        value.w[1] = val2;
 
-        QString classWgt = widget->metaObject()->className();
+        QString str = QLocale::system().toString(value.f, 'f', 6);
 
-        if(classWgt == tr("CLineEdit"))
-        {
-            CLineEdit* edit = qobject_cast<CLineEdit*>(widget);
+        if(!str.isEmpty())
+            lineEdit->setText(str);
 
-            if(edit)
-            {
-                quint16 val1 = unit.values().at(index + 1);
-                quint16 val2 = unit.values().at(index);
-
-                value.w[0] = val1;
-                value.w[1] = val2;
-
-                QString str = QLocale::system().toString(value.f, 'f', 6);
-
-                if(!str.isEmpty())
-                    edit->setText(str);
-
-                index += 2;
-            }
-        }
-        else if(classWgt == tr("QComboBox"))
-        {
-            QComboBox* box = qobject_cast<QComboBox*>(widget);
-
-            if(box)
-            {
-                quint16 i = unit.values().at(index++);
-
-                if(i != 0)
-                    box->setCurrentIndex(i - 1);
-            }
-        }
+        index += 2;
     }
 }
 /*!
@@ -4827,33 +4801,50 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
     if(requestFuncton == FUN_SAVE) // ответ на запись - выйти
         return;
 
-    QString indexName = unit.property("INDEX").toString();
-    QPoint  index     = indexSettingKey(indexName, indexName);
+    QString                 indexName = unit.property("INDEX").toString();
+    QPoint                  index     = indexSettingKey(indexName, indexName);
+    DeviceMenuItemType      group     = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
+    CDeviceMenuTableWidget* table     = groupMenuWidget(group);
+
+    if(!table)
+        return;
 
     if(index.x() == -1 || index.x() >= m_cell_list.count())
         return;
 
-    QString nameWgt = m_cell_list[index.x()].second.name;
+    QString nameWgt = QString("comboBox%1").arg(m_cell_list[index.x()].first);
 
     if(nameWgt.isEmpty())
         return;
 
-    QWidget* widget   = findChild<QWidget*>(nameWgt);
-    QString  classWgt = widget->metaObject()->className();
+    QComboBox* comboBox = nullptr;
 
-    if(classWgt != "QComboBox")
+    for(int j = 0; j < table->rowCount(); j++)
+    {
+        QWidget* t_widget = groupMenuCellWidget(table, j, 1);
+
+        if(t_widget)
+        {
+            if(QString(t_widget->metaObject()->className()).toUpper() == "QCOMBOBOX")
+            {
+                if(t_widget->objectName().toUpper() == nameWgt.toUpper())
+                {
+                    comboBox = qobject_cast<QComboBox*>(t_widget);
+                    break;
+                }
+            }
+        }
+    }
+
+    if(!comboBox)
         return;
 
-    QComboBox* box = qobject_cast<QComboBox*>(widget);
+    quint16 i = unit[0];
 
-    if(box)
-    {
-        quint16 i = unit[0];
+    if(indexName.toUpper() != "TZ")
+        i--;
 
-        if(indexName.toUpper() != "TZ")
-            i--;
-
-        box->setCurrentIndex(i);
+    comboBox->setCurrentIndex(i);
 
 //        if(indexName == "M65")
 //            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(i);
@@ -4861,7 +4852,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
 //            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(i);
 //        else if(indexName == "M77")
 //            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(i);
-    }
+//    }
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
@@ -5541,7 +5532,7 @@ int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& la
 
     for(quint8 i = 0; i < m_cell_list.count(); i++)
     {
-        QPair<QString, cell_t> pair = m_cell_list.at(i);
+        QPair<QString, cell_t> pair = m_cell_list[i];
 
         if(pair.first == first)
             iFirst = i;
@@ -5705,6 +5696,7 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
                                                             query.value("limit_max").toFloat(),
                                                             query.value("unit_measure").toString() });
         item.type     = query.value("data_type").toString();
+        item.row      = query.value("row").toInt();
         item.name     = query.value("description").toString();
 
         if(item.type.toUpper() == "LIST") // если тип - "СПИСОК", то читаем список подпунктов
@@ -5731,6 +5723,85 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
 
     return group;
 }
+/*!
+ * \brief ConfiguratorWindow::groupMenuWidget
+ * \param type - Тип группы меню
+ * \return Указатель на таблицу группы
+ *
+ * Метод для получения виджета меню группы
+ */
+CDeviceMenuTableWidget* ConfiguratorWindow::groupMenuWidget(DeviceMenuItemType type) const
+{
+    switch(type)
+    {
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT:
+            return ui->tableWidgetProtectionGroupMTZ;
+
+        case DEVICE_MENU_PROTECT_ITEM_POWER:
+            return ui->tableWidgetProtectionGroupPower;
+
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED:
+            return ui->tableWidgetProtectionGroupDirect;
+
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY:
+            return ui->tableWidgetProtectionGroupFrequency;
+
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL:
+            return ui->tableWidgetProtectionGroupExternal;
+
+        case DEVICE_MENU_PROTECT_ITEM_MOTOR:
+            return ui->tableWidgetProtectionGroupMotor;
+
+        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE:
+            return ui->tableWidgetProtectionGroupTemperature;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE:
+            return ui->tableWidgetProtectionGroupReserve;
+
+        case DEVICE_MENU_PROTECT_ITEM_CONTROL:
+            return ui->tableWidgetProtectionGroupControl;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
+            return ui->tableWidgetAutomationGroup;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG:
+            return ui->tableWidgetSettingsAnalogGroupGeneral;
+
+        default: return nullptr;
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::groupMenuCellWidget
+ * \param table - указатель на таблицу
+ * \param row - строка таблицы
+ * \param col - колонка таблицы
+ * \return Указатель на виджет из ячейки
+ *
+ * Извлечение виджета из ячейки таблицы меню
+ */
+QWidget* ConfiguratorWindow::groupMenuCellWidget(CDeviceMenuTableWidget* table, int row, int col) const
+{
+    if(!table)
+        return nullptr;
+
+    if(row > table->rowCount() || col > table->columnCount())
+        return nullptr;
+
+    QWidget* wgt = table->cellWidget(row, col);
+
+    if(!wgt)
+        return nullptr;
+
+    QObjectList obj_list = wgt->children();
+
+    for(QObject* obj: obj_list)
+    {
+        if(obj->isWidgetType())
+            return qobject_cast<QWidget*>(obj);
+    }
+
+    return nullptr;
+}
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
                                                 CModBusDataUnit::FunctionType type, int size)
@@ -5742,9 +5813,10 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
 
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), type, addr, QVector<quint16>() << size);
 
-    unit.setProperty(tr("REQUEST"), GENERAL_TYPE);
-    unit.setProperty(tr("FIRST"), first);
-    unit.setProperty(tr("LAST"), last);
+    unit.setProperty("REQUEST", GENERAL_TYPE);
+    unit.setProperty("FIRST", first);
+    unit.setProperty("LAST", last);
+    unit.setProperty("GROUP", menuIndex());
 
     m_modbus->sendData(unit);
 }
@@ -5758,6 +5830,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
     unit.setProperty("INDEX", index);
+    unit.setProperty("GROUP", menuIndex());
 
     m_modbus->sendData(unit);
 }
@@ -6095,7 +6168,7 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
     int firstAddr = addressSettingKey("K10");
 
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, firstAddr,
-                       QVector<quint16>() << 48);
+                         QVector<quint16>() << 48);
 
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
     unit.setProperty("PROTECTION", protection);
