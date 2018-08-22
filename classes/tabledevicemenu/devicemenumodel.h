@@ -37,7 +37,6 @@
             {
                 QString     key;
                 int         address;
-                QString     obj_name;
                 measure_t   unit;
                 QString     type;
                 QString     name;

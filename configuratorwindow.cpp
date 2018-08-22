@@ -460,8 +460,8 @@ void ConfiguratorWindow::inputAnalogGroupRead()
  */
 void ConfiguratorWindow::inputAnalogGeneralWrite()
 {
-    sendSettingWriteRequest("M01", "M03");
-    sendSettingControlWriteRequest("M04"); // запись состояния настройки
+    sendSettingWriteRequest("M01", "M03", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingControlWriteRequest("M04", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateWrite
@@ -470,7 +470,7 @@ void ConfiguratorWindow::inputAnalogGeneralWrite()
  */
 void ConfiguratorWindow::inputAnalogCalibrateWrite()
 {
-    sendSettingWriteRequest("KIA", "KU0X_");
+    sendSettingWriteRequest("KIA", "KU0X_", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGroupWrite
@@ -489,9 +489,9 @@ void ConfiguratorWindow::inputAnalogGroupWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Write()
 {
-    sendSettingControlWriteRequest("M05");
-    sendSettingWriteRequest("M06", "X01");
-    sendProtectionWorkModeRequest("MTZ1", FUN_SAVE);
+    sendSettingControlWriteRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("M06", "X01", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Write
@@ -500,9 +500,9 @@ void ConfiguratorWindow::protectionMTZ1Write()
  */
 void ConfiguratorWindow::protectionMTZ2Write()
 {
-    sendSettingControlWriteRequest("M09");
-    sendSettingWriteRequest("M10", "X03");
-    sendProtectionWorkModeRequest("MTZ2", FUN_SAVE);
+    sendSettingControlWriteRequest("M09", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("M10", "X03", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Write
@@ -511,12 +511,12 @@ void ConfiguratorWindow::protectionMTZ2Write()
  */
 void ConfiguratorWindow::protectionMTZ3Write()
 {
-    sendSettingControlWriteRequest("M13");
-    sendSettingControlWriteRequest("TZ");
-    sendProtectionWorkModeRequest("MTZ3", FUN_SAVE);
-    sendSettingWriteRequest("M14", "K22");
-    sendSettingWriteRequest("X04", "X04");
-    sendSettingWriteRequest("TZ1", "TZ7");
+    sendSettingControlWriteRequest("M13", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingControlWriteRequest("TZ", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("M14", "K22", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("X04", "X04", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("TZ1", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3SetCharWrite
@@ -525,7 +525,7 @@ void ConfiguratorWindow::protectionMTZ3Write()
  */
 void ConfiguratorWindow::protectionMTZ3SetCharWrite()
 {
-    sendSettingWriteRequest("TZ1", "TZ7");
+    sendSettingWriteRequest("TZ1", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySteepWrite
@@ -534,7 +534,7 @@ void ConfiguratorWindow::protectionMTZ3SetCharWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySteepWrite()
 {
-    sendSettingWriteRequest("TZ1", "TZ1");
+    sendSettingWriteRequest("TZ1", "TZ1", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySlopWrite
@@ -543,7 +543,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySteepWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySlopWrite()
 {
-    sendSettingWriteRequest("TZ2", "TZ2");
+    sendSettingWriteRequest("TZ2", "TZ2", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyInversionWrite
@@ -552,7 +552,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySlopWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyInversionWrite()
 {
-    sendSettingWriteRequest("TZ3", "TZ3");
+    sendSettingWriteRequest("TZ3", "TZ3", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyDInversionWrite
@@ -561,7 +561,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyDInversionWrite()
 {
-    sendSettingWriteRequest("TZ4", "TZ4");
+    sendSettingWriteRequest("TZ4", "TZ4", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyBackWrite
@@ -570,7 +570,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyDInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyBackWrite()
 {
-    sendSettingWriteRequest("TZ5", "TZ5");
+    sendSettingWriteRequest("TZ5", "TZ5", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyStrongInversionWrite
@@ -579,7 +579,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyBackWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionWrite()
 {
-    sendSettingWriteRequest("TZ6", "TZ6");
+    sendSettingWriteRequest("TZ6", "TZ6", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyExtremalInversionWrite
@@ -588,7 +588,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionWrite()
 {
-    sendSettingWriteRequest("TZ7", "TZ7");
+    sendSettingWriteRequest("TZ7", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ4Write
@@ -597,9 +597,9 @@ void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ4Write()
 {
-    sendSettingControlWriteRequest("M16");
-    sendSettingWriteRequest("M17", "X05a");
-    sendProtectionWorkModeRequest("MTZ4", FUN_SAVE);
+    sendSettingControlWriteRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("M17", "X05a", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ4", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupWrite
@@ -620,9 +620,9 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
  */
 void ConfiguratorWindow::protectionUmax1Write()
 {
-    sendSettingControlWriteRequest("M32");
-    sendSettingWriteRequest("M33", "X11");
-    sendProtectionWorkModeRequest("UMAX1", FUN_SAVE);
+    sendSettingControlWriteRequest("M32", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M33", "X11", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMAX1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax2Write
@@ -631,9 +631,9 @@ void ConfiguratorWindow::protectionUmax1Write()
  */
 void ConfiguratorWindow::protectionUmax2Write()
 {
-    sendSettingControlWriteRequest("M35");
-    sendSettingWriteRequest("M36", "X12");
-    sendProtectionWorkModeRequest("UMAX2", FUN_SAVE);
+    sendSettingControlWriteRequest("M35", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M36", "X12", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMAX2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin1Write
@@ -642,11 +642,11 @@ void ConfiguratorWindow::protectionUmax2Write()
  */
 void ConfiguratorWindow::protectionUmin1Write()
 {
-    sendSettingControlWriteRequest("M38");
-    sendSettingControlWriteRequest("M39");
-    sendSettingControlWriteRequest("M40");
-    sendSettingWriteRequest("M41", "X13");
-    sendProtectionWorkModeRequest("UMIN1", FUN_SAVE);
+    sendSettingControlWriteRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("M40", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M41", "X13", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMIN1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Write
@@ -655,11 +655,11 @@ void ConfiguratorWindow::protectionUmin1Write()
  */
 void ConfiguratorWindow::protectionUmin2Write()
 {
-    sendSettingControlWriteRequest("M43");
-    sendSettingControlWriteRequest("M44");
-    sendSettingControlWriteRequest("M45");
-    sendSettingWriteRequest("M46", "X14");
-    sendProtectionWorkModeRequest("UMIN2", FUN_SAVE);
+    sendSettingControlWriteRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("M45", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M46", "X14", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMIN2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Write
@@ -668,9 +668,9 @@ void ConfiguratorWindow::protectionUmin2Write()
  */
 void ConfiguratorWindow::protection3U0Write()
 {
-    sendSettingControlWriteRequest("M48");
-    sendSettingWriteRequest("M49", "X15");
-    sendProtectionWorkModeRequest("3U0", FUN_SAVE);
+    sendSettingControlWriteRequest("M48", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M49", "X15", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("3U0", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionPowerWrite
@@ -692,9 +692,9 @@ void ConfiguratorWindow::protectionPowerGroupWrite()
  */
 void ConfiguratorWindow::protectionOZZ1Write()
 {
-    sendSettingControlWriteRequest("M22");
-    sendSettingWriteRequest("M23", "X07");
-    sendProtectionWorkModeRequest("OZZ1", FUN_SAVE);
+    sendSettingControlWriteRequest("M22", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("M23", "X07", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("OZZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionOZZ2Write
@@ -703,9 +703,9 @@ void ConfiguratorWindow::protectionOZZ1Write()
  */
 void ConfiguratorWindow::protectionOZZ2Write()
 {
-    sendSettingControlWriteRequest("K23");
-    sendSettingWriteRequest("K24", "X07a");
-    sendProtectionWorkModeRequest("OZZ2", FUN_SAVE);
+    sendSettingControlWriteRequest("K23", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("K24", "X07a", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("OZZ2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionNZZ1Write
@@ -714,10 +714,10 @@ void ConfiguratorWindow::protectionOZZ2Write()
  */
 void ConfiguratorWindow::protectionNZZ1Write()
 {
-    sendSettingControlWriteRequest("M25");
-    sendSettingWriteRequest("M26", "X09");
-    sendSettingWriteRequest("M26C", "M28C");
-    sendProtectionWorkModeRequest("NZZ1", FUN_SAVE);
+    sendSettingControlWriteRequest("M25", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("M26", "X09", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("M26C", "M28C", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("NZZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionNZZ2Write
@@ -726,10 +726,10 @@ void ConfiguratorWindow::protectionNZZ1Write()
  */
 void ConfiguratorWindow::protectionNZZ2Write()
 {
-    sendSettingControlWriteRequest("K26");
-    sendSettingWriteRequest("K27", "X09a");
-    sendSettingWriteRequest("K27C", "K30C");
-    sendProtectionWorkModeRequest("NZZ2", FUN_SAVE);
+    sendSettingControlWriteRequest("K26", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("K27", "X09a", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("K27C", "K30C", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("NZZ2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupWrite
@@ -750,9 +750,9 @@ void ConfiguratorWindow::protectionDirectedGroupWrite()
  */
 void ConfiguratorWindow::protectionAchr1Write()
 {
-    sendSettingControlWriteRequest("M51");
-    sendSettingWriteRequest("M52", "X16");
-    sendProtectionWorkModeRequest("ACHR1", FUN_SAVE);
+    sendSettingControlWriteRequest("M51", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingWriteRequest("M52", "X16", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr2Write
@@ -761,9 +761,9 @@ void ConfiguratorWindow::protectionAchr1Write()
  */
 void ConfiguratorWindow::protectionAchr2Write()
 {
-    sendSettingControlWriteRequest("M55");
-    sendSettingWriteRequest("M56", "X17");
-    sendProtectionWorkModeRequest("ACHR2", FUN_SAVE);
+    sendSettingControlWriteRequest("M55", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingWriteRequest("M56", "X17", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr3Write
@@ -772,9 +772,9 @@ void ConfiguratorWindow::protectionAchr2Write()
  */
 void ConfiguratorWindow::protectionAchr3Write()
 {
-    sendSettingControlWriteRequest("M59");
-    sendSettingWriteRequest("M60", "X18");
-    sendProtectionWorkModeRequest("ACHR3", FUN_SAVE);
+    sendSettingControlWriteRequest("M59", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingWriteRequest("M60", "X18", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionFrequencyGroupWrite
@@ -794,9 +794,9 @@ void ConfiguratorWindow::protectionFrequencyGroupWrite()
  */
 void ConfiguratorWindow::protectionArcWrite()
 {
-    sendSettingControlWriteRequest("M63");
-    sendSettingWriteRequest("M64", "X19");
-    sendProtectionWorkModeRequest("ARC", FUN_SAVE);
+    sendSettingControlWriteRequest("M63", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M64", "X19", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("ARC", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt1Write
@@ -805,9 +805,9 @@ void ConfiguratorWindow::protectionArcWrite()
  */
 void ConfiguratorWindow::protectionExt1Write()
 {
-    sendSettingControlWriteRequest("M71");
-    sendSettingWriteRequest("M72", "M72");
-    sendProtectionWorkModeRequest("EXT1", FUN_SAVE);
+    sendSettingControlWriteRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M72", "M72", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2Write
@@ -816,9 +816,9 @@ void ConfiguratorWindow::protectionExt1Write()
  */
 void ConfiguratorWindow::protectionExt2Write()
 {
-    sendSettingControlWriteRequest("M73");
-    sendSettingWriteRequest("M74", "M74");
-    sendProtectionWorkModeRequest("EXT2", FUN_SAVE);
+    sendSettingControlWriteRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M74", "M74", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3Write
@@ -827,9 +827,9 @@ void ConfiguratorWindow::protectionExt2Write()
  */
 void ConfiguratorWindow::protectionExt3Write()
 {
-    sendSettingControlWriteRequest("M75");
-    sendSettingWriteRequest("M76", "M76");
-    sendProtectionWorkModeRequest("EXT3", FUN_SAVE);
+    sendSettingControlWriteRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M76", "M76", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternalGroupWrite
@@ -850,9 +850,9 @@ void ConfiguratorWindow::protectionExternalGroupWrite()
  */
 void ConfiguratorWindow::protectionStartingWrite()
 {
-    sendSettingControlWriteRequest("M19");
-    sendSettingWriteRequest("M20", "X06");
-    sendProtectionWorkModeRequest("STARTING", FUN_SAVE);
+    sendSettingControlWriteRequest("M19", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingWriteRequest("M20", "X06", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendProtectionWorkModeRequest("STARTING", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminWrite
@@ -861,9 +861,9 @@ void ConfiguratorWindow::protectionStartingWrite()
  */
 void ConfiguratorWindow::protectionIminWrite()
 {
-    sendSettingControlWriteRequest("M29");
-    sendSettingWriteRequest("M30", "X10");
-    sendProtectionWorkModeRequest("IMIN1", FUN_SAVE);
+    sendSettingControlWriteRequest("M29", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingWriteRequest("M30", "X10", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendProtectionWorkModeRequest("IMIN", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorGroupWrite
@@ -882,10 +882,10 @@ void ConfiguratorWindow::protectionMotorGroupWrite()
  */
 void ConfiguratorWindow::protectionTemp1Write()
 {
-    sendSettingControlWriteRequest("M65");
-    sendSettingControlWriteRequest("M66");
-    sendSettingWriteRequest("M67", "X20");
-    sendProtectionWorkModeRequest("TEMP1", FUN_SAVE);
+    sendSettingControlWriteRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingControlWriteRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("M67", "X20", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendProtectionWorkModeRequest("TEMP1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp2Write
@@ -894,10 +894,10 @@ void ConfiguratorWindow::protectionTemp1Write()
  */
 void ConfiguratorWindow::protectionTemp2Write()
 {
-    sendSettingControlWriteRequest("M65");
-    sendSettingControlWriteRequest("M66");
-    sendSettingWriteRequest("M68", "X21");
-    sendProtectionWorkModeRequest("TEMP2", FUN_SAVE);
+    sendSettingControlWriteRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingControlWriteRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("M68", "X21", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendProtectionWorkModeRequest("TEMP2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemperatureGroupWrite
@@ -916,9 +916,9 @@ void ConfiguratorWindow::protectionTemperatureGroupWrite()
  */
 void ConfiguratorWindow::protectionLevel1Write()
 {
-    sendSettingControlWriteRequest("M77");
-    sendSettingWriteRequest("M78", "M78");
-    sendProtectionWorkModeRequest("LEVEL1", FUN_SAVE);
+    sendSettingControlWriteRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingWriteRequest("M78", "M78", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendProtectionWorkModeRequest("LEVEL1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Write
@@ -927,9 +927,9 @@ void ConfiguratorWindow::protectionLevel1Write()
  */
 void ConfiguratorWindow::protectionLevel2Write()
 {
-    sendSettingControlWriteRequest("M77");
-    sendSettingWriteRequest("M79", "M79");
-    sendProtectionWorkModeRequest("LEVEL2", FUN_SAVE);
+    sendSettingControlWriteRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingWriteRequest("M79", "M79", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendProtectionWorkModeRequest("LEVEL2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartWrite
@@ -1003,10 +1003,10 @@ void ConfiguratorWindow::protectionReserveGroupWrite()
  */
 void ConfiguratorWindow::protectionBRUWrite()
 {
-    sendSettingControlWriteRequest("M93");
-    sendSettingControlWriteRequest("M95");
-    sendSettingWriteRequest("M96", "M99");
-    sendProtectionWorkModeRequest("BRU", FUN_SAVE);
+    sendSettingControlWriteRequest("M93", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingControlWriteRequest("M95", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingWriteRequest("M96", "M99", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("BRU", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumWrite
@@ -1015,9 +1015,9 @@ void ConfiguratorWindow::protectionBRUWrite()
  */
 void ConfiguratorWindow::protectionVacuumWrite()
 {
-    sendSettingControlWriteRequest("M90");
-    sendSettingWriteRequest("M91", "X23");
-    sendProtectionWorkModeRequest("VACUUM", FUN_SAVE);
+    sendSettingControlWriteRequest("M90", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingWriteRequest("M91", "X23", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("VACUUM", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlGroupWrite
@@ -1036,20 +1036,20 @@ void ConfiguratorWindow::protectionControlGroupWrite()
  */
 void ConfiguratorWindow::automationSwitchWrite()
 {
-    sendSettingControlWriteRequest("K32");
-    sendSettingControlWriteRequest("K01");
-    sendSettingControlWriteRequest("K03");
-    sendSettingControlWriteRequest("K06");
-    sendSettingControlWriteRequest("K17");
-    sendSettingControlWriteRequest("K07");
-    sendSettingWriteRequest("K02", "K02");
-    sendSettingWriteRequest("K50", "K50");
-    sendSettingWriteRequest("K04", "K04");
-    sendSettingWriteRequest("K51", "K51");
-    sendSettingWriteRequest("K05", "K05");
-    sendSettingWriteRequest("K08", "K08");
-    sendSettingWriteRequest("K09", "K09");
-    sendSettingWriteRequest("X22", "X22");
+    sendSettingControlWriteRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K17", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K07", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K02", "K02", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K50", "K50", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K04", "K04", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K51", "K51", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K05", "K05", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K08", "K08", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K09", "K09", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("X22", "X22", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckWrite
@@ -1058,10 +1058,10 @@ void ConfiguratorWindow::automationSwitchWrite()
  */
 void ConfiguratorWindow::automationSwitchTruckWrite()
 {
-    sendSettingControlWriteRequest("K37");
-    sendSettingControlWriteRequest("K41");
-    sendSettingWriteRequest("K45", "K49");
-    sendSettingWriteRequest("K58", "K59");
+    sendSettingControlWriteRequest("K37", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K41", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K45", "K49", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K58", "K59", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationBlockWrite
@@ -1070,9 +1070,9 @@ void ConfiguratorWindow::automationSwitchTruckWrite()
  */
 void ConfiguratorWindow::automationBlockWrite()
 {
-    sendSettingControlWriteRequest("K13");
-    sendSettingControlWriteRequest("K14");
-    sendSettingControlWriteRequest("K15");
+    sendSettingControlWriteRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationBusWrite
@@ -1081,10 +1081,10 @@ void ConfiguratorWindow::automationBlockWrite()
  */
 void ConfiguratorWindow::automationBusWrite()
 {
-    sendSettingControlWriteRequest("K34");
-    sendSettingControlWriteRequest("K38");
-    sendSettingWriteRequest("K42", "K46");
-    sendSettingWriteRequest("K52", "K53");
+    sendSettingControlWriteRequest("K34", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K38", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K42", "K46", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K52", "K53", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationLineWrite
@@ -1093,10 +1093,10 @@ void ConfiguratorWindow::automationBusWrite()
  */
 void ConfiguratorWindow::automationLineWrite()
 {
-    sendSettingControlWriteRequest("K35");
-    sendSettingControlWriteRequest("K39");
-    sendSettingWriteRequest("K43", "K47");
-    sendSettingWriteRequest("K54", "K55");
+    sendSettingControlWriteRequest("K35", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K39", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K43", "K47", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K54", "K55", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationEarthWrite
@@ -1105,10 +1105,10 @@ void ConfiguratorWindow::automationLineWrite()
  */
 void ConfiguratorWindow::automationEarthWrite()
 {
-    sendSettingControlWriteRequest("K36");
-    sendSettingControlWriteRequest("K40");
-    sendSettingWriteRequest("K44", "K48");
-    sendSettingWriteRequest("K56", "K57");
+    sendSettingControlWriteRequest("K36", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K40", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K44", "K48", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K56", "K57", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationDisconnectorsGroupWrite
@@ -1128,8 +1128,8 @@ void ConfiguratorWindow::automationDisconnectorsGroupWrite()
  */
 void ConfiguratorWindow::automationCtrlTNWrite()
 {
-    sendSettingControlWriteRequest("K18");
-    sendSettingWriteRequest("K19", "K19");
+    sendSettingControlWriteRequest("K18", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K19", "K19", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAVRWrite
@@ -1138,8 +1138,8 @@ void ConfiguratorWindow::automationCtrlTNWrite()
  */
 void ConfiguratorWindow::automationAVRWrite()
 {
-    sendSettingControlWriteRequest("M81");
-    sendSettingWriteRequest("M82", "M85");
+    sendSettingControlWriteRequest("M81", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("M82", "M85", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVWrite
@@ -1148,8 +1148,8 @@ void ConfiguratorWindow::automationAVRWrite()
  */
 void ConfiguratorWindow::automationAPVWrite()
 {
-    sendSettingControlWriteRequest("M87");
-    sendSettingWriteRequest("M88", "M89");
+    sendSettingControlWriteRequest("M87", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("M88", "M89", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVSignalStartWrite
@@ -1354,7 +1354,7 @@ void ConfiguratorWindow::protectionMTZ1Read()
 {
     sendSettingControlReadRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingReadRequest("M06", "X01", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ1");
+    sendProtectionWorkModeRequest("MTZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Read
@@ -1365,7 +1365,7 @@ void ConfiguratorWindow::protectionMTZ2Read()
 {
     sendSettingControlReadRequest("M09", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingReadRequest(tr("M10"), tr("X03"), CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ2");
+    sendProtectionWorkModeRequest("MTZ2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Read
@@ -1376,7 +1376,7 @@ void ConfiguratorWindow::protectionMTZ3Read()
 {
     sendSettingControlReadRequest("M13", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingControlReadRequest("TZ", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ3");
+    sendProtectionWorkModeRequest("MTZ3", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingReadRequest("M14", "K22", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingReadRequest("X04", "X04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingReadRequest("TZ1", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 14, DEVICE_MENU_PROTECT_ITEM_CURRENT);
@@ -1462,7 +1462,7 @@ void ConfiguratorWindow::protectionMTZ4Read()
 {
     sendSettingControlReadRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingReadRequest("M17", "X05a", CModBusDataUnit::ReadHoldingRegisters, 12, DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ4");
+    sendProtectionWorkModeRequest("MTZ4", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupRead
@@ -1485,7 +1485,7 @@ void ConfiguratorWindow::protectionUmax1Read()
 {
     sendSettingControlReadRequest("M32", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingReadRequest("M33", "X11", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("UMAX1");
+    sendProtectionWorkModeRequest("UMAX1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax2Read
@@ -1496,7 +1496,7 @@ void ConfiguratorWindow::protectionUmax2Read()
 {
     sendSettingControlReadRequest("M35", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingReadRequest("M36", "X12", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("UMAX2");
+    sendProtectionWorkModeRequest("UMAX2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin1Read
@@ -1509,7 +1509,7 @@ void ConfiguratorWindow::protectionUmin1Read()
     sendSettingControlReadRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M40", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingReadRequest("M41", "X13", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("UMIN1");
+    sendProtectionWorkModeRequest("UMIN1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Read
@@ -1522,7 +1522,7 @@ void ConfiguratorWindow::protectionUmin2Read()
     sendSettingControlReadRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M45", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingReadRequest("M46", "X14", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("UMIN2");
+    sendProtectionWorkModeRequest("UMIN2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Read
@@ -1533,7 +1533,7 @@ void ConfiguratorWindow::protection3U0Read()
 {
     sendSettingControlReadRequest("M48", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingReadRequest("M49", "X15", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("3U0");
+    sendProtectionWorkModeRequest("3U0", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionPowerGroupRead
@@ -1557,7 +1557,7 @@ void ConfiguratorWindow::protectionOZZ1Read()
 {
     sendSettingControlReadRequest("M22", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingReadRequest("M23", "X07", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("OZZ1");
+    sendProtectionWorkModeRequest("OZZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedOZZ2Read
@@ -1568,7 +1568,7 @@ void ConfiguratorWindow::protectionOZZ2Read()
 {
     sendSettingControlReadRequest("K23", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingReadRequest("K24", "X07a", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("OZZ2");
+    sendProtectionWorkModeRequest("OZZ2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ1Read
@@ -1580,7 +1580,7 @@ void ConfiguratorWindow::protectionNZZ1Read()
     sendSettingControlReadRequest("M25", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingReadRequest("M26", "X09", CModBusDataUnit::ReadHoldingRegisters, 12, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingReadRequest("M26C", "M28C", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("NZZ1");
+    sendProtectionWorkModeRequest("NZZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ2Read
@@ -1592,7 +1592,7 @@ void ConfiguratorWindow::protectionNZZ2Read()
     sendSettingControlReadRequest("K26", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingReadRequest("K27", "X09a", CModBusDataUnit::ReadHoldingRegisters, 12, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingReadRequest("K27C", "K30C", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("NZZ2");
+    sendProtectionWorkModeRequest("NZZ2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupRead
@@ -1615,7 +1615,7 @@ void ConfiguratorWindow::protectionAchr1Read()
 {
     sendSettingControlReadRequest("M51", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendSettingReadRequest("M52", "X16", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendProtectionWorkModeRequest("ACHR1");
+    sendProtectionWorkModeRequest("ACHR1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr2Read
@@ -1626,7 +1626,7 @@ void ConfiguratorWindow::protectionAchr2Read()
 {
     sendSettingControlReadRequest("M55", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendSettingReadRequest("M56", "X17", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendProtectionWorkModeRequest("ACHR2");
+    sendProtectionWorkModeRequest("ACHR2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr3Read
@@ -1637,7 +1637,7 @@ void ConfiguratorWindow::protectionAchr3Read()
 {
     sendSettingControlReadRequest("M59", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendSettingReadRequest("M60", "X18", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendProtectionWorkModeRequest("ACHR3");
+    sendProtectionWorkModeRequest("ACHR3", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionFrequencyGroupRead
@@ -1659,7 +1659,7 @@ void ConfiguratorWindow::protectionArcRead()
 {
     sendSettingControlReadRequest("M63", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M64", "X19", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendProtectionWorkModeRequest("ARC");
+    sendProtectionWorkModeRequest("ARC", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt1
@@ -1670,7 +1670,7 @@ void ConfiguratorWindow::protectionExt1Read()
 {
     sendSettingControlReadRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M72", "M72", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendProtectionWorkModeRequest("EXT1");
+    sendProtectionWorkModeRequest("EXT1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2
@@ -1681,7 +1681,7 @@ void ConfiguratorWindow::protectionExt2Read()
 {
     sendSettingControlReadRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M74", "M74", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendProtectionWorkModeRequest("EXT2");
+    sendProtectionWorkModeRequest("EXT2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3
@@ -1692,7 +1692,7 @@ void ConfiguratorWindow::protectionExt3Read()
 {
     sendSettingControlReadRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M76", "M76", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendProtectionWorkModeRequest("EXT3");
+    sendProtectionWorkModeRequest("EXT3", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternal
@@ -1715,7 +1715,7 @@ void ConfiguratorWindow::protectionStartingRead()
 {
     sendSettingControlReadRequest("M19", DEVICE_MENU_PROTECT_ITEM_MOTOR);
     sendSettingReadRequest("M20", "X06", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendProtectionWorkModeRequest("STARTING");
+    sendProtectionWorkModeRequest("STARTING", FUN_READ, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminRead
@@ -1726,7 +1726,7 @@ void ConfiguratorWindow::protectionIminRead()
 {
     sendSettingControlReadRequest("M29", DEVICE_MENU_PROTECT_ITEM_MOTOR);
     sendSettingReadRequest("M30", "X10", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendProtectionWorkModeRequest("IMIN");
+    sendProtectionWorkModeRequest("IMIN", FUN_READ, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorRead
@@ -1748,7 +1748,7 @@ void ConfiguratorWindow::protectionTemp1Read()
     sendSettingControlReadRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingControlReadRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingReadRequest("M67", "X20", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
-    sendProtectionWorkModeRequest("TEMP1");
+    sendProtectionWorkModeRequest("TEMP1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp2Read
@@ -1760,7 +1760,7 @@ void ConfiguratorWindow::protectionTemp2Read()
     sendSettingControlReadRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingControlReadRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingReadRequest("M68", "X21", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
-    sendProtectionWorkModeRequest("TEMP2");
+    sendProtectionWorkModeRequest("TEMP2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemperatureRead
@@ -1781,7 +1781,7 @@ void ConfiguratorWindow::protectionLevel1Read()
 {
     sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequest("M78", "M78", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendProtectionWorkModeRequest("LEVEL1");
+    sendProtectionWorkModeRequest("LEVEL1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Read
@@ -1792,7 +1792,7 @@ void ConfiguratorWindow::protectionLevel2Read()
 {
     sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequest("M79", "M79", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendProtectionWorkModeRequest("LEVEL2");
+    sendProtectionWorkModeRequest("LEVEL2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartRead
@@ -1831,7 +1831,7 @@ void ConfiguratorWindow::protectionBRURead()
     sendSettingControlReadRequest("M93", DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendSettingControlReadRequest("M95", DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendSettingReadRequest("M96", "M99", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CONTROL);
-    sendProtectionWorkModeRequest("BRU");
+    sendProtectionWorkModeRequest("BRU", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumRead
@@ -1842,7 +1842,7 @@ void ConfiguratorWindow::protectionVacuumRead()
 {
     sendSettingControlReadRequest("M90", DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendSettingReadRequest("M91", "X23", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_CONTROL);
-    sendProtectionWorkModeRequest("VACUUM");
+    sendProtectionWorkModeRequest("VACUUM", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlRead
@@ -4686,24 +4686,7 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
             break;
 
         QString    nameWgt  = QString("lineEdit%1").arg(m_cell_list[i].first);
-        CLineEdit* lineEdit = nullptr;
-
-        for(int j = 0; j < table->rowCount(); j++)
-        {
-            QWidget* t_widget = groupMenuCellWidget(table, j, 1);
-
-            if(t_widget)
-            {
-                if(QString(t_widget->metaObject()->className()).toUpper() == "CLINEEDIT")
-                {
-                    if(t_widget->objectName().toUpper() == nameWgt.toUpper())
-                    {
-                        lineEdit = qobject_cast<CLineEdit*>(t_widget);
-                        break;
-                    }
-                }
-            }
-        }
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(table, nameWgt, 1));
 
         if(!lineEdit)
         {
@@ -4822,24 +4805,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
     if(nameWgt.isEmpty())
         return;
 
-    QComboBox* comboBox = nullptr;
-
-    for(int j = 0; j < table->rowCount(); j++)
-    {
-        QWidget* t_widget = groupMenuCellWidget(table, j, 1);
-
-        if(t_widget)
-        {
-            if(QString(t_widget->metaObject()->className()).toUpper() == "QCOMBOBOX")
-            {
-                if(t_widget->objectName().toUpper() == nameWgt.toUpper())
-                {
-                    comboBox = qobject_cast<QComboBox*>(t_widget);
-                    break;
-                }
-            }
-        }
-    }
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidget(table, nameWgt, 1));
 
     if(!comboBox)
         return;
@@ -5184,7 +5150,7 @@ void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& dat
         ui->spinBoxCommunicationAddress->setValue(data[0]);
     }
 }
-//---------------------------------------------------------------------
+//-----------------------------------------------------------------------
 void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 {
     if(unit.count() != 48)
@@ -5195,20 +5161,16 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
     if(tprotect.isEmpty())
         return;
 
-    QString  wgtName = QString("comboBox%1").arg(tprotect);
-    QWidget* widget  = findChild<QWidget*>(wgtName);
+    DeviceMenuItemType      group = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
+    CDeviceMenuTableWidget* table = groupMenuWidget(group);
 
-    if(!widget)
+    if(!table)
         return;
 
-    QString className = widget->metaObject()->className();
+    QString    wgtName  = QString("comboBox%1").arg(tprotect);
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidget(table, wgtName, 1));
 
-    if(className != "QComboBox")
-        return;
-
-    QComboBox* cbox = qobject_cast<QComboBox*>(widget);
-
-    if(!cbox)
+    if(!comboBox)
         return;
 
     RequestFunction function = RequestFunction(unit.property("REQUEST_FUNCTION").toInt());
@@ -5243,12 +5205,12 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 
         int row = k10_state << 1 | k11_state;
 
-        if(row < cbox->count())
-            cbox->setCurrentIndex(row);
+        if(row < comboBox->count())
+            comboBox->setCurrentIndex(row);
     }
     else if(function == FUN_SAVE)
     {
-        int state = cbox->currentIndex();
+        int state = comboBox->currentIndex();
 
         switch(state)
         {
@@ -5286,7 +5248,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
             return;
 
         CModBusDataUnit new_unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
-                               addr, values);
+                                 addr, values);
 
         m_modbus->sendData(new_unit);
     }
@@ -5696,7 +5658,6 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
 
         item.key      = query.value("key").toString();
         item.address  = query.value("address").toInt();
-        item.obj_name = query.value("widget").toString();
         item.unit     = CDeviceMenuTableWidget::measure_t({ query.value("limit_min").toFloat(),
                                                             query.value("limit_max").toFloat(),
                                                             query.value("unit_measure").toString() });
@@ -5778,31 +5739,37 @@ CDeviceMenuTableWidget* ConfiguratorWindow::groupMenuWidget(DeviceMenuItemType t
 /*!
  * \brief ConfiguratorWindow::groupMenuCellWidget
  * \param table - указатель на таблицу
- * \param row - строка таблицы
+ * \param wgt_name - имя виджета
  * \param col - колонка таблицы
  * \return Указатель на виджет из ячейки
  *
- * Извлечение виджета из ячейки таблицы меню
+ * Поиск виджета в указанно таблице по имени и номеру ячейки
  */
-QWidget* ConfiguratorWindow::groupMenuCellWidget(CDeviceMenuTableWidget* table, int row, int col) const
+QWidget* ConfiguratorWindow::groupMenuCellWidget(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const
 {
     if(!table)
         return nullptr;
 
-    if(row > table->rowCount() || col > table->columnCount())
+    if(col > table->columnCount())
         return nullptr;
 
-    QWidget* wgt = table->cellWidget(row, col);
-
-    if(!wgt)
-        return nullptr;
-
-    QObjectList obj_list = wgt->children();
-
-    for(QObject* obj: obj_list)
+    for(int i = 0; i < table->rowCount(); i++)
     {
-        if(obj->isWidgetType())
-            return qobject_cast<QWidget*>(obj);
+        QWidget* wgt = table->cellWidget(i, col);
+
+        if(!wgt)
+            continue;
+
+        QObjectList obj_list = wgt->children();
+
+        for(QObject* obj: obj_list)
+        {
+            if(obj->isWidgetType())
+            {
+                if(obj->objectName().toUpper() == wgt_name.toUpper())
+                    return qobject_cast<QWidget*>(obj);
+            }
+        }
     }
 
     return nullptr;
@@ -5839,8 +5806,8 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index, Dev
 
     m_modbus->sendData(unit);
 }
-//---------------------------------------------------------------------------
-void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
+//-----------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, DeviceMenuItemType group_index)
 {
     if(index.isEmpty())
         return;
@@ -5850,42 +5817,41 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
     if(key.x() == -1 || key.x() >= m_cell_list.count())
         return;
 
-    QString nameWgt = m_cell_list[key.x()].second.name;
+    CDeviceMenuTableWidget* table = groupMenuWidget(group_index);
+
+    if(!table)
+        return;
+
+    QString nameWgt = QString("comboBox%1").arg(m_cell_list[key.x()].first);
 
     if(nameWgt.isEmpty())
         return;
 
-    QWidget* widget   = findChild<QWidget*>(nameWgt);
-    QString  classWgt = widget->metaObject()->className();
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidget(table, nameWgt, 1));
 
-    if(classWgt != "QComboBox")
+    if(!comboBox)
         return;
 
-    QComboBox* box = qobject_cast<QComboBox*>(widget);
+    int addr = addressSettingKey(index);
 
-    if(box)
-    {
-        int addr = addressSettingKey(index);
+    if(addr == -1)
+        return;
 
-        if(addr == -1)
-            return;
+    quint16 value = comboBox->currentIndex();
 
-        quint16 value = box->currentIndex();
+    if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
+        value++;
 
-        if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
-            value++;
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteSingleRegister, addr,
+                                                 QVector<quint16>() << value);
+    unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
+    unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
+    unit.setProperty("INDEX", index);
 
-        CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteSingleRegister, addr,
-                                                     QVector<quint16>() << value);
-        unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
-        unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
-        unit.setProperty("INDEX", index);
-
-        m_modbus->sendData(unit);
-    }
+    m_modbus->sendData(unit);
 }
-//-----------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QString& last)
+//-------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QString& last, DeviceMenuItemType group_index)
 {
     if(first.isEmpty() || last.isEmpty())
         return;
@@ -5904,9 +5870,11 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 
     QVector<quint16>  data;
 
+    CDeviceMenuTableWidget* table = groupMenuWidget(group_index);
+
     for(int i = index.x(); i <= index.y(); i++)
     {
-        QString nameWgt = m_cell_list[i].second.name;
+        QString nameWgt = QString("lineEdit%1").arg(m_cell_list[i].first);
 
         if(nameWgt.isEmpty())
         {
@@ -5916,34 +5884,15 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
             continue;
         }
 
-        QWidget* widget = findChild<QWidget*>(nameWgt);
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(table, nameWgt, 1));
 
-        if(!widget)
+        if(!lineEdit)
             continue;
 
-        QString classWgt = widget->metaObject()->className();
+        value.f = QLocale::system().toFloat(lineEdit->text());
 
-        if(classWgt == tr("CLineEdit"))
-        {
-            CLineEdit* edit = qobject_cast<CLineEdit*>(widget);
-
-            if(!edit)
-                continue;
-
-            value.f = QLocale::system().toFloat(edit->text());
-
-            data.append(value.w[1]);
-            data.append(value.w[0]);
-        }
-        else if(classWgt == tr("QComboBox"))
-        {
-            QComboBox* box = qobject_cast<QComboBox*>(widget);
-
-            if(!box)
-                continue;
-
-            data.append((quint16)box->currentIndex() + 1);
-        }
+        data.append(value.w[1]);
+        data.append(value.w[0]);
     }
 
     CModBusDataUnit::FunctionType funType = ((data.count() == 1)?CModBusDataUnit::WriteSingleRegister:
@@ -6168,7 +6117,8 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
     m_modbus->sendData(unit);
 }
 //---------------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function)
+void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function,
+                                                       DeviceMenuItemType group_index)
 {
     int firstAddr = addressSettingKey("K10");
 
@@ -6178,6 +6128,7 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
     unit.setProperty("PROTECTION", protection);
     unit.setProperty("REQUEST_FUNCTION", function);
+    unit.setProperty("GROUP", group_index);
 
     m_modbus->sendData(unit);
 }

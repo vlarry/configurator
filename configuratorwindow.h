@@ -552,15 +552,15 @@
             void sendSettingReadRequest(const QString& first, const QString& last,
                                         CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index);
             void sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index);
-            void sendSettingControlWriteRequest(const QString& index);
-            void sendSettingWriteRequest(const QString& first, const QString& last);
+            void sendSettingControlWriteRequest(const QString& index, DeviceMenuItemType group_index);
+            void sendSettingWriteRequest(const QString& first, const QString& last, DeviceMenuItemType group_index);
             void sendPurposeReadRequest(const QString& first, const QString& last);
             void sendPurposeWriteRequest(const QString& first, const QString& last);
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             void sendPurposeInverseDIWriteRequest(int first_addr, int last_addr);
-            void sendProtectionWorkModeRequest(const QString& protection,
-                                               RequestFunction function = FUN_READ);
+            void sendProtectionWorkModeRequest(const QString& protection, RequestFunction function,
+                                               DeviceMenuItemType group_index);
             void sendMonitorPurposeK10_K11Request();
             void sendRequestRead(int addr, int size, int request,
                                  CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
@@ -705,7 +705,7 @@
             int groupPositionInExcel(QXlsx::Document& doc, const QString& group);
             CDeviceMenuTableWidget::group_t loadMenuGroup(const QString& group_name);
             CDeviceMenuTableWidget* groupMenuWidget(DeviceMenuItemType type) const;
-            QWidget* groupMenuCellWidget(CDeviceMenuTableWidget* table, int row, int col) const;
+            QWidget* groupMenuCellWidget(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
