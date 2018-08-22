@@ -2725,6 +2725,7 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
     if(menu_item != -1)
     {
         ui->stwgtMain->setCurrentIndex(menu_item);
+        widgetStackIndexChanged(menu_item);
     }
 }
 //-------------------------------------
@@ -3683,12 +3684,12 @@ void ConfiguratorWindow::initMenuPanel()
                                                            settingKeyboard << settingLeds << settingIO);
 
     // пункты настройки "Аналоговые входы"
-    QTreeWidgetItem* inputAnalogGeneral     = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Основные"),
-                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL);
-    QTreeWidgetItem* inputAnalogCalibration = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Калибровка"),
-                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB);
+//    QTreeWidgetItem* inputAnalogGeneral     = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Основные"),
+//                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL);
+//    QTreeWidgetItem* inputAnalogCalibration = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Калибровка"),
+//                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB);
 
-    settingInputAnalog->addChildren(QList<QTreeWidgetItem*>() << inputAnalogGeneral << inputAnalogCalibration);
+//    settingInputAnalog->addChildren(QList<QTreeWidgetItem*>() << inputAnalogGeneral << inputAnalogCalibration);
 
     // пункты настройки "входы и выходы"
 //    QTreeWidgetItem* ioMDVV01 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-01"),
@@ -3759,6 +3760,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 20;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 21;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 23;
+    m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT]                 = 1; // при открытии меню Защиты открывается группа МТЗ
 
     QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел");
 
@@ -8367,8 +8369,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         readJournalCount();
     }
-    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL ||
-            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB ||
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION)
