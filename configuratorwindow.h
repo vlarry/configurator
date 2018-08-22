@@ -550,8 +550,8 @@
             void versionSowftware();
             void sendCalculateRead(CModBusDataUnit& unit);
             void sendSettingReadRequest(const QString& first, const QString& last,
-                                        CModBusDataUnit::FunctionType type, int size);
-            void sendSettingControlReadRequest(const QString& index);
+                                        CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index);
+            void sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index);
             void sendSettingControlWriteRequest(const QString& index);
             void sendSettingWriteRequest(const QString& first, const QString& last);
             void sendPurposeReadRequest(const QString& first, const QString& last);
