@@ -5190,7 +5190,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
     if(tprotect.isEmpty())
         return;
 
-    QString  wgtName = QString("cbox%1WorkMode").arg(tprotect);
+    QString  wgtName = QString("comboBox%1WorkMode").arg(tprotect);
     QWidget* widget  = findChild<QWidget*>(wgtName);
 
     if(!widget)

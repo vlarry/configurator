@@ -29,7 +29,9 @@
             };
             //------------
             struct item_t;
+            struct group_t;
             typedef QVector<item_t> item_list_t;
+            typedef QVector<group_t> group_list_t;
             //-----------
             struct item_t
             {
