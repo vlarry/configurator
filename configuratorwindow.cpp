@@ -3879,6 +3879,41 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetAutomationGroup->addGroup(group);
     group = loadMenuGroup(tr("АПВ"));
     ui->tableWidgetAutomationGroup->addGroup(group);
+
+    // формирование связей между отдельными ячейками
+    // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2
+    QComboBox* cboxTemp1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+                                                                        QString("comboBoxM65"), 1));
+    QComboBox* cboxTemp2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+                                                                        QString("comboBoxM66"), 1));
+    QComboBox* cboxTemp1_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+                                                                          QString("comboBoxM65_1"), 1));
+    QComboBox* cboxTemp2_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+                                                                          QString("comboBoxM66_1"), 1));
+
+    if(cboxTemp1 && cboxTemp1_1)
+    {
+        connect(cboxTemp1, SIGNAL(currentIndexChanged(int)), cboxTemp1_1, SLOT(setCurrentIndex(int)));
+        connect(cboxTemp1_1, SIGNAL(currentIndexChanged(int)), cboxTemp1, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxTemp2 && cboxTemp2_1)
+    {
+        connect(cboxTemp2, SIGNAL(currentIndexChanged(int)), cboxTemp2_1, SLOT(setCurrentIndex(int)));
+        connect(cboxTemp2_1, SIGNAL(currentIndexChanged(int)), cboxTemp2, SLOT(setCurrentIndex(int)));
+    }
+
+    // Объединение ячеек Управление Уроверь1 с Управлением Уровень2
+    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve,
+                                                                         QString("comboBoxM77"), 1));
+    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve,
+                                                                         QString("comboBoxM77_1"), 1));
+
+    if(cboxLevel1 && cboxLevel2)
+    {
+        connect(cboxLevel1, SIGNAL(currentIndexChanged(int)), cboxLevel2, SLOT(setCurrentIndex(int)));
+        connect(cboxLevel2, SIGNAL(currentIndexChanged(int)), cboxLevel1, SLOT(setCurrentIndex(int)));
+    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()

@@ -72,10 +72,7 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
         {
             QComboBox* cb = new QComboBox(wgt);
 
-            if(!item.key.contains("_1"))
-                cb->setObjectName(QString("comboBox%1").arg(item.key));
-            else
-                cb->setObjectName(QString("comboBox%1_1").arg(item.key));
+            cb->setObjectName(QString("comboBox%1").arg(item.key));
 
             QStringList subitemlist;
 
