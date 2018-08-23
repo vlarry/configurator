@@ -2071,14 +2071,33 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
         return;
     }
 
+    QString nameWgt;
+    float   t_value;
+
     if(Ia != 0)
-        ui->leKIA->setText(QLocale::system().toString(Ia, 'f', 6));
+    {
+        nameWgt = "lineEditKIA";
+        t_value = Ia;
+    }
     if(Ib != 0)
-        ui->leKIB->setText(QLocale::system().toString(Ib, 'f', 6));
+    {
+        nameWgt = "lineEditKIB";
+        t_value = Ib;
+    }
     if(Ic != 0)
-        ui->leKIC->setText(QLocale::system().toString(Ic, 'f', 6));
+    {
+        nameWgt = "lineEditKIC";
+        t_value = Ic;
+    }
     if(_3I0 != 0)
-        ui->leK3I0->setText(QLocale::system().toString(_3I0, 'f', 6));
+    {
+        nameWgt = "lineEdit3I0";
+        t_value = _3I0;
+    }
+
+    CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral, nameWgt, 1));
+    if(lineEdit)
+        lineEdit->setText(QLocale::system().toString(t_value, 'f', 6));
 
     union
     {
@@ -7215,8 +7234,11 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
     qInfo() << tr("Калибровка по току:");
     if(!calib.Ia.isEmpty())
     {
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral,
+                                                                           "lineEditKIA", 1));
+
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIA->text());
+        float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ia);
         QPointF deviation  = standardDeviation(calib.Ia);
 
@@ -7229,14 +7251,17 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIA->text());
+        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib.Ib.isEmpty())
     {
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral,
+                                                                           "lineEditKIB", 1));
+
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIB->text());
+        float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ib);
         QPointF deviation  = standardDeviation(calib.Ib);
 
@@ -7249,14 +7274,17 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIB->text());
+        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib.Ic.isEmpty())
     {
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral,
+                                                                           "lineEditKIC", 1));
+
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIC->text());
+        float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ic);
         QPointF deviation  = standardDeviation(calib.Ic);
 
@@ -7269,14 +7297,17 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIC->text());
+        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib._3I0.isEmpty())
     {
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral,
+                                                                           "lineEdit3I0", 1));
+
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0();
-        float   cur_factor = QLocale::system().toFloat(ui->leK3I0->text());
+        float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib._3I0);
         QPointF deviation  = standardDeviation(calib._3I0);
 
@@ -7289,7 +7320,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leK3I0->text());
+        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
