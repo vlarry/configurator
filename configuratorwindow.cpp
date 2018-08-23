@@ -1861,14 +1861,14 @@ void ConfiguratorWindow::protectionControlGroupRead()
  */
 void ConfiguratorWindow::amplitudeReadOfCurrent()
 {
-//    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
-//        sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
-//    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-//        sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
-//    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-//        sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
-//    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-//        sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
+    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
+        sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
+    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+        sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
+    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+        sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
+    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+        sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchRead
@@ -2039,14 +2039,14 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     float Ic   = 0;
     float _3I0 = 0;
 
-//    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-//        Ia  = ui->widgetCalibrationOfCurrent->calibrationCurrentIa();
-//    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-//        Ib = ui->widgetCalibrationOfCurrent->calibrationCurrentIb();
-//    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-//        Ic  = ui->widgetCalibrationOfCurrent->calibrationCurrentIc();
-//    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
-//        _3I0 = ui->widgetCalibrationOfCurrent->calibrationCurrent3I0();
+    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+        Ia  = ui->widgetCalibrationOfCurrent->calibrationCurrentIa();
+    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+        Ib = ui->widgetCalibrationOfCurrent->calibrationCurrentIb();
+    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+        Ic  = ui->widgetCalibrationOfCurrent->calibrationCurrentIc();
+    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
+        _3I0 = ui->widgetCalibrationOfCurrent->calibrationCurrent3I0();
 
     if(Ia == 0 && Ib == 0 && Ic == 0 && _3I0 == 0)
         return;
@@ -2071,14 +2071,14 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
         return;
     }
 
-//    if(Ia != 0)
-//        ui->leKIA->setText(QLocale::system().toString(Ia, 'f', 6));
-//    if(Ib != 0)
-//        ui->leKIB->setText(QLocale::system().toString(Ib, 'f', 6));
-//    if(Ic != 0)
-//        ui->leKIC->setText(QLocale::system().toString(Ic, 'f', 6));
-//    if(_3I0 != 0)
-//        ui->leK3I0->setText(QLocale::system().toString(_3I0, 'f', 6));
+    if(Ia != 0)
+        ui->leKIA->setText(QLocale::system().toString(Ia, 'f', 6));
+    if(Ib != 0)
+        ui->leKIB->setText(QLocale::system().toString(Ib, 'f', 6));
+    if(Ic != 0)
+        ui->leKIC->setText(QLocale::system().toString(Ic, 'f', 6));
+    if(_3I0 != 0)
+        ui->leK3I0->setText(QLocale::system().toString(_3I0, 'f', 6));
 
     union
     {
@@ -2405,33 +2405,33 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         switch(type)
         {
             case CALIBRATION_CURRENT_IA:
-//                ui->widgetCalibrationOfCurrent->addCalibrationIa(value.f);
-//                emit ui->widgetCalibrationOfCurrent->dataIncrement();
+                ui->widgetCalibrationOfCurrent->addCalibrationIa(value.f);
+                emit ui->widgetCalibrationOfCurrent->dataIncrement();
             break;
 
             case CALIBRATION_CURRENT_IB:
-//                ui->widgetCalibrationOfCurrent->addCalibrationIb(value.f);
-//                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-//                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
+                ui->widgetCalibrationOfCurrent->addCalibrationIb(value.f);
+                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
             break;
 
             case CALIBRATION_CURRENT_IC:
-//                ui->widgetCalibrationOfCurrent->addCalibrationIc(value.f);
-//                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
-//                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-//                {
-//                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
-//                }
+                ui->widgetCalibrationOfCurrent->addCalibrationIc(value.f);
+                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
+                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+                {
+                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
+                }
             break;
 
             case CALIBRATION_CURRENT_3I0:
-//                ui->widgetCalibrationOfCurrent->addCalibration3I0(value.f);
-//                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
-//                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked() &&
-//                        !ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-//                {
-//                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
-//                }
+                ui->widgetCalibrationOfCurrent->addCalibration3I0(value.f);
+                if(!ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked() &&
+                        !ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked() &&
+                        !ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+                {
+                    emit ui->widgetCalibrationOfCurrent->dataIncrement();
+                }
             break;
 
             default: break;
@@ -2456,19 +2456,19 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         switch(type)
         {
             case AMPLITUDE_READ_CH2:
-//                ui->widgetCalibrationOfCurrent->setDeviation3I0(value.f);
+                ui->widgetCalibrationOfCurrent->setDeviation3I0(value.f);
             break;
 
             case AMPLITUDE_READ_CH3:
-//                ui->widgetCalibrationOfCurrent->setDeviationIa(value.f);
+                ui->widgetCalibrationOfCurrent->setDeviationIa(value.f);
             break;
 
             case AMPLITUDE_READ_CH4:
-//                ui->widgetCalibrationOfCurrent->setDeviationIb(value.f);
+                ui->widgetCalibrationOfCurrent->setDeviationIb(value.f);
             break;
 
             case AMPLITUDE_READ_CH5:
-//                ui->widgetCalibrationOfCurrent->setDeviationIc(value.f);
+                ui->widgetCalibrationOfCurrent->setDeviationIc(value.f);
             break;
 
             default: break;
