@@ -78,10 +78,10 @@ void PopUp::show()
 
     QObject* obj_parent = parent();
 
-    int pos_x = QApplication::desktop()->availableGeometry().width()/2 - width()/2 +
-                QApplication::desktop() -> availableGeometry().x();
-    int pos_y = QApplication::desktop()->availableGeometry().height()/2 - height()/2 +
-                QApplication::desktop() -> availableGeometry().y();
+    int pos_x = QGuiApplication::primaryScreen()->geometry().width()/2 - width()/2 +
+                QGuiApplication::primaryScreen()->geometry().x();
+    int pos_y = QGuiApplication::primaryScreen()->geometry().height()/2 - height()/2 +
+                QGuiApplication::primaryScreen()->geometry().y();
 
     if(obj_parent)
     {

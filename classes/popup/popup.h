@@ -5,6 +5,7 @@
     #include <QLabel>
     #include <QGridLayout>
     #include <QPropertyAnimation>
+    #include <QScreen>
     #include <QTimer>
     //-------------------------
     class PopUp: public QWidget
