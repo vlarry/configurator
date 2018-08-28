@@ -703,6 +703,8 @@
             void readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid);
             int groupPositionInExcel(QXlsx::Document& doc, const QString& group);
             CDeviceMenuTableWidget::group_t loadMenuGroup(const QString& group_name);
+            CDeviceMenuTableWidget::group_t loadMenuSubgroup(const QString& group_name);
+            CDeviceMenuTableWidget::item_t loadIODeviceItem(const QString& k);
             CDeviceMenuTableWidget* groupMenuWidget(DeviceMenuItemType type) const;
             QWidget* groupMenuCellWidget(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
 

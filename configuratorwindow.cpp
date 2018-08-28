@@ -3950,7 +3950,7 @@ void ConfiguratorWindow::initCellBind()
         float   limit_min    = query.value("limit_min").toFloat();
         float   limit_max    = query.value("limit_max").toFloat();
         QString unit_meadure = query.value("unit_measure").toString();
-        QString date_type    = query.value("date_type").toString();
+        QString date_type    = query.value("data_type").toString();
         int     row          = query.value("row").toInt();
 
         m_cell_list.append(qMakePair(key, cell_t({ addr, name, limit_min, limit_max, unit_meadure, date_type, row })));
@@ -5729,11 +5729,75 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
                item.subitems = subitemlist;
             }
         }
+        else if(item.type.toUpper() == "SUBGROUP") // если тип - "ПОДГРУППА", то читаем список подпунктов
+        {
+            group.subgroup << loadMenuSubgroup(item.key);
+        }
 
         group.items << item;
     }
 
     return group;
+}
+/*!
+ * \brief ConfiguratorWindow::loadMenuSubgroup
+ * \param group_name Имя группы (родитель подгруппы - может быть имя другой подгруппы)
+ * \return список групп
+ */
+CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuSubgroup(const QString& group_name)
+{
+    QSqlQuery query(m_system_db);
+    CDeviceMenuTableWidget::group_t group;
+    QString query_str = QString("SELECT * FROM subgroup WHERE group_name=\"%1\";").arg(group_name);
+
+    if(query.exec(query_str))
+    {
+        CDeviceMenuTableWidget::item_list_t list_item;
+
+        while(query.next())
+        {
+            QString name = query.value("name").toString();
+
+            if(name.isEmpty()) // если поле Имя пустое - это данные подгруппы
+            {
+                QString key = query.value("key").toString();
+
+                CDeviceMenuTableWidget::item_t item = loadIODeviceItem(key);
+                list_item << item;
+            }
+        }
+
+        group.items = list_item;
+    }
+
+    return group;
+}
+/*!
+ * \brief ConfiguratorWindow::loadIODeviceItem
+ * \param k - ключ итема
+ * \return итем
+ */
+CDeviceMenuTableWidget::item_t ConfiguratorWindow::loadIODeviceItem(const QString& k)
+{
+    QSqlQuery query(m_system_db);
+    CDeviceMenuTableWidget::item_t item;
+
+    if(query.exec(QString("SELECT * FROM iodevice WHERE key=\"%1\";").arg(k)))
+    {
+        if(query.first())
+        {
+            item.key       = k;
+            item.address   = query.value("address").toInt();
+            item.unit.min  = query.value("limit_min").toFloat();
+            item.unit.max  = query.value("limit_max").toFloat();
+            item.unit.unit = query.value("unit_measure").toString();
+            item.type      = query.value("data_type").toString();
+            item.name      = query.value("description").toString();
+            item.row       = query.value("row").toInt();
+        }
+    }
+
+    return item;
 }
 /*!
  * \brief ConfiguratorWindow::groupMenuWidget

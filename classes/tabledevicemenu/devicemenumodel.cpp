@@ -22,6 +22,13 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
 {
     int row = rowCount();
     m_group_rows[row] = group.items.count(); // количество строк в группе
+
+    if(!group.subgroup.isEmpty())
+    {
+        for(CDeviceMenuTableWidget::group_t subgroup: group.subgroup)
+            m_group_rows[row] += subgroup.items.count();
+    }
+
     QFont f = font();
     setRowCount(row + group.items.count() + 1);
     f.setBold(true);
@@ -44,12 +51,27 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
 
     setSpan(row, 0, 1, columnCount());
 
-    row++;
+    addItems(group, row);
 
+    emit rowClicked(item);
+}
+//-------------------------------------------------------
+void CDeviceMenuTableWidget::showEvent(QShowEvent* event)
+{
+    QTableWidget::showEvent(event);
+
+    for(int i = 0; i < columnCount(); i++)
+    {
+        setColumnWidth(i, 300);
+    }
+}
+//------------------------------------------------------------------------------------------------
+void CDeviceMenuTableWidget::addItems(const CDeviceMenuTableWidget::group_t& group, int group_row)
+{
     for(int i = 0; i < group.items.count(); i++)
     {
         item_t item = group.items[i];
-        int row_index = row + item.row;
+        int row_index = group_row + 1 + item.row;
 
         QWidget*     label_name  = new QWidget;
         QHBoxLayout* layout_name = new QHBoxLayout(label_name);
@@ -84,7 +106,7 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
 
             widget = cb;
         }
-        else // иначе поле ввода
+        else if(item.type.toUpper() == "FLOAT" || item.type.toUpper() == "INT") // иначе поле ввода
         {
             CLineEdit* le = new CLineEdit(wgt);
             le->setObjectName(QString("lineEdit%1").arg(item.key));
@@ -114,7 +136,22 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
 
             widget = le;
         }
+        else if(item.type.toUpper() == "SUBGROUP") // если подгруппа
+        {
+            QPushButton* button = new QPushButton(wgt);
+            button->setText(item.name);
+            button->setIcon(QIcon(":/images/resource/images/branch_close.png"));
+            button->setProperty("STATE", false);
 
+            connect(button, &QPushButton::clicked, this, &CDeviceMenuTableWidget::subgroupClicked);
+
+            widget = button;
+
+            if(!group.subgroup.isEmpty())
+                addItems(group.subgroup[0], row_index);
+        }
+
+        widget->setMinimumWidth(100);
         widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
         wgt_layout->addWidget(widget);
         wgt_layout->setAlignment(Qt::AlignCenter);
@@ -140,18 +177,6 @@ void CDeviceMenuTableWidget::addGroup(group_t& group)
             setCellWidget(row_index, 2, lable_unit);
         }
     }
-
-    emit rowClicked(item);
-}
-//-------------------------------------------------------
-void CDeviceMenuTableWidget::showEvent(QShowEvent* event)
-{
-    QTableWidget::showEvent(event);
-
-    for(int i = 0; i < columnCount(); i++)
-    {
-        setColumnWidth(i, 300);
-    }
 }
 //-------------------------------------------------------------
 void CDeviceMenuTableWidget::rowClicked(QTableWidgetItem* item)
@@ -171,5 +196,26 @@ void CDeviceMenuTableWidget::rowClicked(QTableWidgetItem* item)
 
         for(int i = item->row() + 1; i <= (item->row() + row_count); i++)
             setRowHidden(i, state);
+    }
+}
+//--------------------------------------------
+void CDeviceMenuTableWidget::subgroupClicked()
+{
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+
+    if(button)
+    {
+        bool state = button->property("STATE").toBool();
+
+        if(state)
+        {
+            button->setIcon(QIcon(":/images/resource/images/branch_close.png"));
+        }
+        else
+        {
+            button->setIcon(QIcon(":/images/resource/images/branch_open.png"));
+        }
+
+        button->setProperty("STATE", !state);
     }
 }

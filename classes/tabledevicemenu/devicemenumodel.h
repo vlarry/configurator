@@ -10,6 +10,8 @@
     #include <QPainter>
     #include <QLabel>
     #include <QComboBox>
+    #include <QToolButton>
+    #include <QPushButton>
     #include "clineedit.h"
     //-----------------------------------------------
     class CDeviceMenuTableWidget: public QTableWidget
@@ -46,8 +48,9 @@
             //------------
             struct group_t
             {
-                QString     name;
-                item_list_t items;
+                QString      name;
+                item_list_t  items;
+                group_list_t subgroup;
             };
 
         public:
@@ -59,7 +62,9 @@
             void showEvent(QShowEvent* event);
 
         private slots:
+            void addItems(const group_t& group, int group_row);
             void rowClicked(QTableWidgetItem* item);
+            void subgroupClicked();
 
         private:
             QMap<int, int> m_group_rows;
