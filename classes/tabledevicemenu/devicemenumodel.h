@@ -12,6 +12,7 @@
     #include <QComboBox>
     #include <QToolButton>
     #include <QPushButton>
+    #include <QLinearGradient>
     #include "clineedit.h"
     //-----------------------------------------------
     class CDeviceMenuTableWidget: public QTableWidget
@@ -20,6 +21,7 @@
             enum RowType
             {
                 HEADER,
+                SUBHEADER,
                 ITEM
             };
             //--------------
@@ -56,15 +58,15 @@
         public:
             CDeviceMenuTableWidget(QWidget* parent = nullptr);
             void setColumns(const QStringList& columns);
-            void addGroup(group_t& group);
+            void addGroup(const group_t& group);
 
         protected:
             void showEvent(QShowEvent* event);
 
-        private slots:
-            void addItems(const group_t& group, int group_row);
-            void rowClicked(QTableWidgetItem* item);
-            void subgroupClicked();
+        private:
+            void insertHeader(int row, const QString& name);
+            void insertItem(int row, const item_t& item);
+            void insertSubgroup(int row, const group_list_t& list);
 
         private:
             QMap<int, int> m_group_rows;
