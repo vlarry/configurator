@@ -6085,6 +6085,10 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuSubgroup(const QStri
                 CDeviceMenuTableWidget::item_t item = loadIODeviceItem(key);
                 list_item << item;
             }
+            else // иначе еще одна вложенная группа
+            {
+                group.subgroup << loadMenuSubgroup(name);
+            }
         }
 
         group.items = list_item;
