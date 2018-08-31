@@ -3483,188 +3483,6 @@ void ConfiguratorWindow::initMenuPanel()
     itemProtections->addChildren(QList<QTreeWidgetItem*>() << protectItemCurrent << protectItemPower << protectItemDirected <<
                                                               protectItemFrequency << protectItemExternal << protectItemMotor <<
                                                               protectItemTemperature << protectItemReserve <<protectItemControl);
-    // пункты защиты "по току"
-//    QTreeWidgetItem* currentItemMTZ1 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ1"),
-//                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1); // защита МТЗ1
-//    QTreeWidgetItem* currentItemMTZ2 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ2"),
-//                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2); // защита МТЗ2
-//    QTreeWidgetItem* currentItemMTZ3 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ3"),
-//                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3); // защита МТЗ3
-
-//    QTreeWidgetItem* currentItemMTZ3_set_character = new QTreeWidgetItem(currentItemMTZ3,
-//                                                                         QStringList() << tr("Настройка характеристик"),
-//                                                                         DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR);
-
-//    currentItemMTZ3->addChild(currentItemMTZ3_set_character);
-
-//    QTreeWidgetItem* currentItemMTZ3_charact_steep   = new QTreeWidgetItem(currentItemMTZ3_set_character,
-//                                                                           QStringList() << tr("Крутая"),
-//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP);
-//    QTreeWidgetItem* currentItemMTZ3_charact_sloping = new QTreeWidgetItem(currentItemMTZ3_set_character,
-//                                                                           QStringList() << tr("Пологая"),
-//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP);
-//    QTreeWidgetItem* currentItemMTZ3_charact_inverse = new QTreeWidgetItem(currentItemMTZ3_set_character,
-//                                                                           QStringList() << tr("Инверсная"),
-//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV);
-//    QTreeWidgetItem* currentItemMTZ3_charact_dur_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-//                                                                           QStringList() << tr("Длительно инверсная"),
-//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV);
-//    QTreeWidgetItem* currentItemMTZ3_charact_back    = new QTreeWidgetItem(currentItemMTZ3_set_character,
-//                                                                           QStringList() << tr("Обратно зависимая"),
-//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK);
-//    QTreeWidgetItem* currentItemMTZ3_charact_str_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-//                                                                           QStringList() << tr("Сильно инверсная"),
-//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV);
-//    QTreeWidgetItem* currentItemMTZ3_charact_ext_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-//                                                                           QStringList() << tr("Экстремально инверсная"),
-//                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV);
-
-//    currentItemMTZ3_set_character->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ3_charact_steep <<
-//                                                                            currentItemMTZ3_charact_sloping <<
-//                                                                            currentItemMTZ3_charact_inverse <<
-//                                                                            currentItemMTZ3_charact_dur_inv <<
-//                                                                            currentItemMTZ3_charact_back <<
-//                                                                            currentItemMTZ3_charact_str_inv <<
-//                                                                            currentItemMTZ3_charact_ext_inv);
-
-//    QTreeWidgetItem* currentItemMTZ4 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ4"),
-//                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4); // защита МТЗ4
-
-//    protectItemCurrent->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ1 << currentItemMTZ2 << currentItemMTZ3 <<
-//                                                                 currentItemMTZ4);
-
-//    // пункты защиты "по напряжению"
-//    QTreeWidgetItem* powerItemUmax1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax1"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1); // защита Umax1
-//    QTreeWidgetItem* powerItemUmax2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax2"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2); // защита Umax2
-//    QTreeWidgetItem* powerItemUmin1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin1"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1); // защита Umin1
-//    QTreeWidgetItem* powerItemUmin2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin2"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2); // защита Umin2
-//    QTreeWidgetItem* powerItem3U0   = new QTreeWidgetItem(protectItemPower, QStringList() << tr("3U0"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_POWER_3U0); // защита 3U0
-
-//    // подпункт защиты Umin1 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
-//    QTreeWidgetItem* powerItemUmin1CorecKCU = new QTreeWidgetItem(powerItemUmin1, QStringList() << tr("Корр КЦУ"),
-//                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU);
-//    // подпункт защиты Umin2 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
-//    QTreeWidgetItem* powerItemUmin2CorecKCU = new QTreeWidgetItem(powerItemUmin2, QStringList() << tr("Корр КЦУ"),
-//                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU);
-
-//    powerItemUmin1->addChild(powerItemUmin1CorecKCU);
-//    powerItemUmin2->addChild(powerItemUmin2CorecKCU);
-//    protectItemPower->addChildren(QList<QTreeWidgetItem*>() << powerItemUmax1 << powerItemUmax2 << powerItemUmin1 <<
-//                                                               powerItemUmin2 << powerItem3U0);
-
-//    // пункты защиты "направленные"
-//    QTreeWidgetItem* directItemOZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ1"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1); // защита ОЗЗ1
-//    QTreeWidgetItem* directItemOZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ2"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2); // защита ОЗЗ2
-//    QTreeWidgetItem* directItemNZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ1"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1); // защита НЗЗ1
-//    QTreeWidgetItem* directItemNZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ2"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2); // защита НЗЗ2
-
-//    protectItemDirected->addChildren(QList<QTreeWidgetItem*>() << directItemOZZ1 << directItemOZZ2 << directItemNZZ1 <<
-//                                                                  directItemNZZ2);
-
-//    // пункты защиты "по частоте"
-//    QTreeWidgetItem* freqItemACHR1 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР1"),
-//                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1); // защита АЧР1
-//    QTreeWidgetItem* freqItemACHR2 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР2"),
-//                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2); // защита АЧР2
-//    QTreeWidgetItem* freqItemACHR3 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР3"),
-//                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3); // защита АЧР3
-
-//    protectItemFrequency->addChildren(QList<QTreeWidgetItem*>() << freqItemACHR1 << freqItemACHR2 << freqItemACHR3);
-
-//    // пункты защиты "внешние"
-//    QTreeWidgetItem* extItemARC       = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Дуговая"),
-//                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC); // защита Дуговая
-//    QTreeWidgetItem* extItemExternal1 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя1"),
-//                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1); // защита Внешняя1
-//    QTreeWidgetItem* extItemExternal2 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя2"),
-//                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2); // защита Внешняя2
-//    QTreeWidgetItem* extItemExternal3 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя3"),
-//                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3); // защита Внешняя3
-
-//    protectItemExternal->addChildren(QList<QTreeWidgetItem*>() << extItemARC << extItemExternal1 << extItemExternal2 <<
-//                                                                  extItemExternal3);
-
-//    // пункты защиты "для двигателя"
-//    QTreeWidgetItem* motorItemStarting = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Пусковая"),
-//                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING); // защита Пусковая
-//    QTreeWidgetItem* motorItemImin     = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Imin"),
-//                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN); // защита Imin
-
-//    protectItemMotor->addChildren(QList<QTreeWidgetItem*>() << motorItemStarting << motorItemImin);
-
-//    // пункты защиты "по температуре"
-//    QTreeWidgetItem* tempItemTemperature1 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная1"),
-//                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1); // защита Температурная1
-//    QTreeWidgetItem* tempItemTemperature2 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная2"),
-//                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2); // защита Температурная2
-
-//    protectItemTemperature->addChildren(QList<QTreeWidgetItem*>() << tempItemTemperature1 << tempItemTemperature2);
-
-//    // пункты защиты "резервные"
-//    QTreeWidgetItem* reserveItemLevel1      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров1"),
-//                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1); // защита Уров1
-//    QTreeWidgetItem* reserveItemLevel2      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров2"),
-//                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2); // защита Уров2
-//    QTreeWidgetItem* reserveItemSignalStart = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Сигнал пуска"),
-//                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START); // защита Сигнал пуска
-
-//    protectItemReserve->addChildren(QList<QTreeWidgetItem*>() << reserveItemLevel1 << reserveItemLevel2 << reserveItemSignalStart);
-
-//    // пункты защиты "предварительного контроля"
-//    QTreeWidgetItem* ctrlItemBRU    = new QTreeWidgetItem(protectItemControl, QStringList() << tr("БРУ"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU); // защита БРУ
-//    QTreeWidgetItem* ctrlItemVacuum = new QTreeWidgetItem(protectItemControl, QStringList() << tr("Вакууум"),
-//                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM); // защита Вакуум
-
-//    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << ctrlItemBRU << ctrlItemVacuum);
-
-//    // АВТОМАТИКА
-//    QTreeWidgetItem* automationSwitch        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Выключатель"),
-//                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH); // автоматика Выключатель
-//    QTreeWidgetItem* automationSwitchTruck   = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Тележка выключателя"),
-//                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK); // автоматика Выключатель
-//    QTreeWidgetItem* automationBlocks        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Блокировки"),
-//                                                                   DEVICE_MENU_ITEM_AUTOMATION_BLOCKS); // автоматика Выключатель
-//    QTreeWidgetItem* automationDisconnectors = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Разъединители"),
-//                                                                   DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS); // автоматика Выключатель
-
-//    QTreeWidgetItem* automationDisconnectorsBus   = new QTreeWidgetItem(automationDisconnectors,
-//                                                                        QStringList() << tr("Шинный разъединитель"),
-//                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS);
-//    QTreeWidgetItem* automationDisconnectorsLine  = new QTreeWidgetItem(automationDisconnectors,
-//                                                                        QStringList() << tr("Линейный разъединитель"),
-//                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE);
-//    QTreeWidgetItem* automationDisconnectorsEarth = new QTreeWidgetItem(automationDisconnectors,
-//                                                                        QStringList() << tr("Заземляющий разъединитель"),
-//                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH);
-
-//    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << automationDisconnectorsBus << automationDisconnectorsLine <<
-//                                                                 automationDisconnectorsEarth);
-
-//    QTreeWidgetItem* automationCtrlTN = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Контроль ТН"),
-//                                                                   DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN); // автоматика Выключатель
-//    QTreeWidgetItem* automationAVR    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АВР"),
-//                                                                   DEVICE_MENU_ITEM_AUTOMATION_AVR); // автоматика Выключатель
-//    QTreeWidgetItem* automationAPV    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АПВ"),
-//                                                                   DEVICE_MENU_ITEM_AUTOMATION_APV); // автоматика Выключатель
-
-//    QTreeWidgetItem* automationAPVSignalStart = new QTreeWidgetItem(automationAPV, QStringList() << tr("АПВ сигналы пуска"),
-//                                                                    DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START);
-
-//    automationAPV->addChild(automationAPVSignalStart);
-
-//    itemAutomation->addChildren(QList<QTreeWidgetItem*>() << automationSwitch << automationSwitchTruck << automationBlocks <<
-//                                                             automationDisconnectors << automationCtrlTN << automationAVR <<
-//                                                             automationAPV);
 
     // ЖУРНАЛЫ
     QTreeWidgetItem* journalCrash     = new QTreeWidgetItem(itemJournals, QStringList() << tr("Аварий"),
@@ -3702,22 +3520,6 @@ void ConfiguratorWindow::initMenuPanel()
     itemSettings->addChildren(QList<QTreeWidgetItem*>() << settingInputAnalog << settingCommunications << settingDateTime <<
                                                            settingKeyboard << settingLeds << settingIO);
 
-    // пункты настройки "Аналоговые входы"
-//    QTreeWidgetItem* inputAnalogGeneral     = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Основные"),
-//                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL);
-//    QTreeWidgetItem* inputAnalogCalibration = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Калибровка"),
-//                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB);
-
-//    settingInputAnalog->addChildren(QList<QTreeWidgetItem*>() << inputAnalogGeneral << inputAnalogCalibration);
-
-    // пункты настройки "входы и выходы"
-//    QTreeWidgetItem* ioMDVV01 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-01"),
-//                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01);
-//    QTreeWidgetItem* ioMDVV02 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-02"),
-//                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02);
-
-//    settingIO->addChildren(QList<QTreeWidgetItem*>() << ioMDVV01 << ioMDVV02);
-
     QTreeWidgetItem* ioRelayMDVV01    = new QTreeWidgetItem(settingIO, QStringList() << tr("Реле"),
                                                             DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
     QTreeWidgetItem* ioDSInputMDVV01  = new QTreeWidgetItem(settingIO, QStringList() << tr("Дискретные входы"),
@@ -3726,13 +3528,6 @@ void ConfiguratorWindow::initMenuPanel()
                                                             DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION);
 
     settingIO->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01 << ioProtectionCtrl);
-
-//    QTreeWidgetItem* ioRelayMDVV02   = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Реле"),
-//                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY);
-//    QTreeWidgetItem* ioDSInputMDVV02 = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Дискретные входы"),
-//                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS);
-
-//    ioMDVV02->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV02 << ioDSInputMDVV02);
 
     ui->treewgtDeviceMenu->addTopLevelItem(itemProtections);
     ui->treewgtDeviceMenu->addTopLevelItem(itemAutomation);
@@ -4159,6 +3954,304 @@ void ConfiguratorWindow::initMenuPanel()
     {
         connect(leK51, &CLineEdit::textChanged, leK51_2, &CLineEdit::setText);
         connect(leK51_2, &CLineEdit::textChanged, leK51, &CLineEdit::setText);
+    }
+
+    // Объединение ячеек Сигналы пуска (защита Резервные) с Автоматика->АПВ Сигналы пуска
+    QComboBox* cboxN50   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN50"), 1));
+    QComboBox* cboxN50_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN50_1"), 1));
+
+    QComboBox* cboxN52   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN52"), 1));
+    QComboBox* cboxN52_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN52_1"), 1));
+
+    QComboBox* cboxN53   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN53"), 1));
+    QComboBox* cboxN53_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN53_1"), 1));
+
+    QComboBox* cboxN54   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN54"), 1));
+    QComboBox* cboxN54_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN54_1"), 1));
+
+    QComboBox* cboxN55   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN55"), 1));
+    QComboBox* cboxN55_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN55_1"), 1));
+
+    QComboBox* cboxN56   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN56"), 1));
+    QComboBox* cboxN56_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN56_1"), 1));
+
+    QComboBox* cboxN57   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN57"), 1));
+    QComboBox* cboxN57_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN57_1"), 1));
+
+    QComboBox* cboxN58   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN58"), 1));
+    QComboBox* cboxN58_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN58_1"), 1));
+
+    QComboBox* cboxN59   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN59"), 1));
+    QComboBox* cboxN59_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN59_1"), 1));
+
+    QComboBox* cboxV04   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV04"), 1));
+    QComboBox* cboxV04_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV04_1"), 1));
+
+    QComboBox* cboxV07   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV07"), 1));
+    QComboBox* cboxV07_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV07_1"), 1));
+
+    QComboBox* cboxV10   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV10"), 1));
+    QComboBox* cboxV10_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV10_1"), 1));
+
+    QComboBox* cboxV13   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV13"), 1));
+    QComboBox* cboxV13_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV13_1"), 1));
+
+    QComboBox* cboxV16   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV16"), 1));
+    QComboBox* cboxV16_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV16_1"), 1));
+
+    QComboBox* cboxV19   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV19"), 1));
+    QComboBox* cboxV19_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV19_1"), 1));
+
+    QComboBox* cboxV22   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV22"), 1));
+    QComboBox* cboxV22_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV22_1"), 1));
+
+    QComboBox* cboxV25   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV25"), 1));
+    QComboBox* cboxV25_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV25_1"), 1));
+
+    QComboBox* cboxV28   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV28"), 1));
+    QComboBox* cboxV28_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV28_1"), 1));
+
+    QComboBox* cboxV31   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV31"), 1));
+    QComboBox* cboxV31_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV31_1"), 1));
+
+    QComboBox* cboxV36   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV36"), 1));
+    QComboBox* cboxV36_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV36_1"), 1));
+
+    QComboBox* cboxV39   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV39"), 1));
+    QComboBox* cboxV39_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV39_1"), 1));
+
+    QComboBox* cboxV44   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV44"), 1));
+    QComboBox* cboxV44_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV44_1"), 1));
+
+    QComboBox* cboxV50   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV50"), 1));
+    QComboBox* cboxV50_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV50_1"), 1));
+
+    QComboBox* cboxV62   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV62"), 1));
+    QComboBox* cboxV62_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV62_1"), 1));
+
+    QComboBox* cboxV65   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV65"), 1));
+    QComboBox* cboxV65_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV65_1"), 1));
+
+    QComboBox* cboxV68   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV68"), 1));
+    QComboBox* cboxV68_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV68_1"), 1));
+
+    QComboBox* cboxV76   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV76"), 1));
+    QComboBox* cboxV76_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV76_1"), 1));
+
+    QComboBox* cboxV77   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV77"), 1));
+    QComboBox* cboxV77_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV77_1"), 1));
+
+    QComboBox* cboxV81   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV81"), 1));
+    QComboBox* cboxV81_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV81_1"), 1));
+
+    QComboBox* cboxV86   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV86"), 1));
+    QComboBox* cboxV86_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV86_1"), 1));
+
+    QComboBox* cboxV90   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV90"), 1));
+    QComboBox* cboxV90_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV90_1"), 1));
+
+    QComboBox* cboxV95   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV95"), 1));
+    QComboBox* cboxV95_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV95_1"), 1));
+
+    QComboBox* cboxV96   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV96"), 1));
+    QComboBox* cboxV96_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV96_1"), 1));
+
+    if(cboxN50 && cboxN50_1)
+    {
+        connect(cboxN50, SIGNAL(currentIndexChanged(int)), cboxN50_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN50_1, SIGNAL(currentIndexChanged(int)), cboxN50, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxN52 && cboxN52_1)
+    {
+        connect(cboxN52, SIGNAL(currentIndexChanged(int)), cboxN52_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN52_1, SIGNAL(currentIndexChanged(int)), cboxN52, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxN53 && cboxN53_1)
+    {
+        connect(cboxN53, SIGNAL(currentIndexChanged(int)), cboxN53_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN53_1, SIGNAL(currentIndexChanged(int)), cboxN53, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxN54 && cboxN54_1)
+    {
+        connect(cboxN54, SIGNAL(currentIndexChanged(int)), cboxN54_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN54_1, SIGNAL(currentIndexChanged(int)), cboxN54, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxN55 && cboxN55_1)
+    {
+        connect(cboxN55, SIGNAL(currentIndexChanged(int)), cboxN55_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN55_1, SIGNAL(currentIndexChanged(int)), cboxN55, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxN56 && cboxN56_1)
+    {
+        connect(cboxN56, SIGNAL(currentIndexChanged(int)), cboxN56_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN56_1, SIGNAL(currentIndexChanged(int)), cboxN56, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxN57 && cboxN57_1)
+    {
+        connect(cboxN57, SIGNAL(currentIndexChanged(int)), cboxN57_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN57_1, SIGNAL(currentIndexChanged(int)), cboxN57, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxN58 && cboxN58_1)
+    {
+        connect(cboxN58, SIGNAL(currentIndexChanged(int)), cboxN58_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN58_1, SIGNAL(currentIndexChanged(int)), cboxN58, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxN59 && cboxN59_1)
+    {
+        connect(cboxN59, SIGNAL(currentIndexChanged(int)), cboxN59_1, SLOT(setCurrentIndex(int)));
+        connect(cboxN59_1, SIGNAL(currentIndexChanged(int)), cboxN59, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV04 && cboxV04_1)
+    {
+        connect(cboxV04, SIGNAL(currentIndexChanged(int)), cboxV04_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV04_1, SIGNAL(currentIndexChanged(int)), cboxV04, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV07 && cboxV07_1)
+    {
+        connect(cboxV07, SIGNAL(currentIndexChanged(int)), cboxV07_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV07_1, SIGNAL(currentIndexChanged(int)), cboxV07, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV10 && cboxV10_1)
+    {
+        connect(cboxV10, SIGNAL(currentIndexChanged(int)), cboxV10_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV10_1, SIGNAL(currentIndexChanged(int)), cboxV10, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV13 && cboxV13_1)
+    {
+        connect(cboxV13, SIGNAL(currentIndexChanged(int)), cboxV13_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV13_1, SIGNAL(currentIndexChanged(int)), cboxV13, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV16 && cboxV16_1)
+    {
+        connect(cboxV16, SIGNAL(currentIndexChanged(int)), cboxV16_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV16_1, SIGNAL(currentIndexChanged(int)), cboxV16, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV19 && cboxV19_1)
+    {
+        connect(cboxV19, SIGNAL(currentIndexChanged(int)), cboxV19_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV19_1, SIGNAL(currentIndexChanged(int)), cboxV19, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV22 && cboxV22_1)
+    {
+        connect(cboxV22, SIGNAL(currentIndexChanged(int)), cboxV22_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV22_1, SIGNAL(currentIndexChanged(int)), cboxV22, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV25 && cboxV25_1)
+    {
+        connect(cboxV25, SIGNAL(currentIndexChanged(int)), cboxV25_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV25_1, SIGNAL(currentIndexChanged(int)), cboxV25, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV28 && cboxV28_1)
+    {
+        connect(cboxV28, SIGNAL(currentIndexChanged(int)), cboxV28_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV28_1, SIGNAL(currentIndexChanged(int)), cboxV28, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV31 && cboxV31_1)
+    {
+        connect(cboxV31, SIGNAL(currentIndexChanged(int)), cboxV31_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV31_1, SIGNAL(currentIndexChanged(int)), cboxV31, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV36 && cboxV36_1)
+    {
+        connect(cboxV36, SIGNAL(currentIndexChanged(int)), cboxV36_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV36_1, SIGNAL(currentIndexChanged(int)), cboxV36, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV39 && cboxV39_1)
+    {
+        connect(cboxV39, SIGNAL(currentIndexChanged(int)), cboxV39_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV39_1, SIGNAL(currentIndexChanged(int)), cboxV39, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV44 && cboxV44_1)
+    {
+        connect(cboxV44, SIGNAL(currentIndexChanged(int)), cboxV44_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV44_1, SIGNAL(currentIndexChanged(int)), cboxV44, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV50 && cboxV50_1)
+    {
+        connect(cboxV50, SIGNAL(currentIndexChanged(int)), cboxV50_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV50_1, SIGNAL(currentIndexChanged(int)), cboxV50, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV62 && cboxV62_1)
+    {
+        connect(cboxV62, SIGNAL(currentIndexChanged(int)), cboxV62_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV62_1, SIGNAL(currentIndexChanged(int)), cboxV62, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV65 && cboxV65_1)
+    {
+        connect(cboxV65, SIGNAL(currentIndexChanged(int)), cboxV65_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV65_1, SIGNAL(currentIndexChanged(int)), cboxV65, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV68 && cboxV68_1)
+    {
+        connect(cboxV68, SIGNAL(currentIndexChanged(int)), cboxV68_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV68_1, SIGNAL(currentIndexChanged(int)), cboxV68, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV76 && cboxV76_1)
+    {
+        connect(cboxV76, SIGNAL(currentIndexChanged(int)), cboxV76_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV76_1, SIGNAL(currentIndexChanged(int)), cboxV76, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV77 && cboxV77_1)
+    {
+        connect(cboxV77, SIGNAL(currentIndexChanged(int)), cboxV77_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV77_1, SIGNAL(currentIndexChanged(int)), cboxV77, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV81 && cboxV81_1)
+    {
+        connect(cboxV81, SIGNAL(currentIndexChanged(int)), cboxV81_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV81_1, SIGNAL(currentIndexChanged(int)), cboxV81, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV86 && cboxV86_1)
+    {
+        connect(cboxV86, SIGNAL(currentIndexChanged(int)), cboxV86_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV86_1, SIGNAL(currentIndexChanged(int)), cboxV86, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV90 && cboxV90_1)
+    {
+        connect(cboxV90, SIGNAL(currentIndexChanged(int)), cboxV90_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV90_1, SIGNAL(currentIndexChanged(int)), cboxV90, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV95 && cboxV95_1)
+    {
+        connect(cboxV95, SIGNAL(currentIndexChanged(int)), cboxV95_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV95_1, SIGNAL(currentIndexChanged(int)), cboxV95, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxV96 && cboxV96_1)
+    {
+        connect(cboxV96, SIGNAL(currentIndexChanged(int)), cboxV96_1, SLOT(setCurrentIndex(int)));
+        connect(cboxV96_1, SIGNAL(currentIndexChanged(int)), cboxV96, SLOT(setCurrentIndex(int)));
     }
 }
 //-------------------------------------
@@ -6021,6 +6114,25 @@ CDeviceMenuTableWidget::item_t ConfiguratorWindow::loadIODeviceItem(const QStrin
             item.type      = query.value("data_type").toString();
             item.name      = query.value("description").toString();
             item.row       = query.value("row").toInt();
+
+            if(item.type.toUpper() == "LIST") // если тип - "СПИСОК", то читаем список подпунктов
+            {
+                QSqlQuery query_list(m_system_db);
+
+                if(query_list.exec(QString("SELECT name FROM menu_item_choice WHERE key=\"%1\";").arg(item.key)))
+                {
+                   CDeviceMenuTableWidget::item_list_t subitemlist;
+
+                   while(query_list.next())
+                   {
+                       CDeviceMenuTableWidget::item_t subitem;
+                       subitem.name = query_list.value("name").toString();
+                       subitemlist << subitem;
+                   }
+
+                   item.subitems = subitemlist;
+                }
+            }
         }
     }
 
