@@ -3798,141 +3798,368 @@ void ConfiguratorWindow::initMenuPanel()
     CDeviceMenuTableWidget::group_t group;
 
     // группа аналоговые основные
-//    group = loadMenuGroup(tr("Основные"));
-//    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
-//    group = loadMenuGroup(tr("Калибровка"));
-//    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+    group = loadMenuGroup(tr("Основные"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+    group = loadMenuGroup(tr("Калибровка"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
 
     // группа по току
-//    group = loadMenuGroup(tr("МТЗ1"));
-//    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
-//    group = loadMenuGroup(tr("МТЗ2"));
-//    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
-//    group = loadMenuGroup(tr("МТЗ3"));
-//    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
-//    group = loadMenuGroup(tr("МТЗ4"));
-//    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("МТЗ1"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("МТЗ2"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("МТЗ3"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("МТЗ4"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
 
-//    // группа по напряжению
-//    group = loadMenuGroup(tr("Umax1"));
-//    ui->tableWidgetProtectionGroupPower->addGroup(group);
-//    group = loadMenuGroup(tr("Umax2"));
-//    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    // группа по напряжению
+    group = loadMenuGroup(tr("Umax1"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("Umax2"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
     group = loadMenuGroup(tr("Umin1"));
     ui->tableWidgetProtectionGroupPower->addGroup(group);
-//    group = loadMenuGroup(tr("Umin2"));
-//    ui->tableWidgetProtectionGroupPower->addGroup(group);
-//    group = loadMenuGroup(tr("3U0"));
-//    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("Umin2"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("3U0"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
 
-//    // группа направленные
-//    group = loadMenuGroup(tr("ОЗЗ1"));
-//    ui->tableWidgetProtectionGroupDirect->addGroup(group);
-//    group = loadMenuGroup(tr("ОЗЗ2"));
-//    ui->tableWidgetProtectionGroupDirect->addGroup(group);
-//    group = loadMenuGroup(tr("НЗЗ1"));
-//    ui->tableWidgetProtectionGroupDirect->addGroup(group);
-//    group = loadMenuGroup(tr("НЗЗ2"));
-//    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    // группа направленные
+    group = loadMenuGroup(tr("ОЗЗ1"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("ОЗЗ2"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("НЗЗ1"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("НЗЗ2"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
 
-//    // группа по частоте
-//    group = loadMenuGroup(tr("АЧР1"));
-//    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
-//    group = loadMenuGroup(tr("АЧР2"));
-//    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
-//    group = loadMenuGroup(tr("АЧР3"));
-//    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+    // группа по частоте
+    group = loadMenuGroup(tr("АЧР1"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+    group = loadMenuGroup(tr("АЧР2"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+    group = loadMenuGroup(tr("АЧР3"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
 
-//    // группа внешние
-//    group = loadMenuGroup(tr("Дуговая"));
-//    ui->tableWidgetProtectionGroupExternal->addGroup(group);
-//    group = loadMenuGroup(tr("Внешняя1"));
-//    ui->tableWidgetProtectionGroupExternal->addGroup(group);
-//    group = loadMenuGroup(tr("Внешняя2"));
-//    ui->tableWidgetProtectionGroupExternal->addGroup(group);
-//    group = loadMenuGroup(tr("Внешняя3"));
-//    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    // группа внешние
+    group = loadMenuGroup(tr("Дуговая"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя1"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя2"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя3"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
 
-//    // группа по двигателям
-//    group = loadMenuGroup(tr("Пусковая"));
-//    ui->tableWidgetProtectionGroupMotor->addGroup(group);
-//    group = loadMenuGroup(tr("Imin"));
-//    ui->tableWidgetProtectionGroupMotor->addGroup(group);
+    // группа по двигателям
+    group = loadMenuGroup(tr("Пусковая"));
+    ui->tableWidgetProtectionGroupMotor->addGroup(group);
+    group = loadMenuGroup(tr("Imin"));
+    ui->tableWidgetProtectionGroupMotor->addGroup(group);
 
-//    // группа по температуре
-//    group = loadMenuGroup(tr("Температурная1"));
-//    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
-//    group = loadMenuGroup(tr("Температурная2"));
-//    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
+    // группа по температуре
+    group = loadMenuGroup(tr("Температурная1"));
+    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
+    group = loadMenuGroup(tr("Температурная2"));
+    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
 
-//    // группа резервные
-//    group = loadMenuGroup(tr("Уров1"));
-//    ui->tableWidgetProtectionGroupReserve->addGroup(group);
-//    group = loadMenuGroup(tr("Уров2"));
-//    ui->tableWidgetProtectionGroupReserve->addGroup(group);
-//    group = loadMenuGroup(tr("Сигнал пуска"));
-//    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+    // группа резервные
+    group = loadMenuGroup(tr("Уров1"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+    group = loadMenuGroup(tr("Уров2"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+    group = loadMenuGroup(tr("Сигнал пуска"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
 
-//    // группа предварительного контроля
-//    group = loadMenuGroup(tr("БРУ"));
-//    ui->tableWidgetProtectionGroupControl->addGroup(group);
-//    group = loadMenuGroup(tr("Вакуум"));
-//    ui->tableWidgetProtectionGroupControl->addGroup(group);
+    // группа предварительного контроля
+    group = loadMenuGroup(tr("БРУ"));
+    ui->tableWidgetProtectionGroupControl->addGroup(group);
+    group = loadMenuGroup(tr("Вакуум"));
+    ui->tableWidgetProtectionGroupControl->addGroup(group);
 
-//    // группа автоматики
-//    group = loadMenuGroup(tr("Выключатель"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
-//    group = loadMenuGroup(tr("Тележка выключателя"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
-//    group = loadMenuGroup(tr("Блокировки"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
-//    group = loadMenuGroup(tr("Шинный разъединитель"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
-//    group = loadMenuGroup(tr("Линейный разъединитель"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
-//    group = loadMenuGroup(tr("Заземляющий разъединитель"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
-//    group = loadMenuGroup(tr("Контроль ТН"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
-//    group = loadMenuGroup(tr("АВР"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
-//    group = loadMenuGroup(tr("АПВ"));
-//    ui->tableWidgetAutomationGroup->addGroup(group);
+    // группа автоматики
+    group = loadMenuGroup(tr("Выключатель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Тележка выключателя"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Блокировки"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Шинный разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Линейный разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Заземляющий разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Контроль ТН"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("АВР"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("АПВ"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
 
-//    // формирование связей между отдельными ячейками
-//    // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2
-//    QComboBox* cboxTemp1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
-//                                                                        QString("comboBoxM65"), 1));
-//    QComboBox* cboxTemp2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
-//                                                                        QString("comboBoxM66"), 1));
-//    QComboBox* cboxTemp1_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
-//                                                                          QString("comboBoxM65_1"), 1));
-//    QComboBox* cboxTemp2_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
-//                                                                          QString("comboBoxM66_1"), 1));
+    // формирование связей между отдельными ячейками
+    // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2
+    QComboBox* cboxTemp1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+                                                                        QString("comboBoxM65"), 1));
+    QComboBox* cboxTemp2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+                                                                        QString("comboBoxM66"), 1));
+    QComboBox* cboxTemp1_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+                                                                          QString("comboBoxM65_1"), 1));
+    QComboBox* cboxTemp2_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+                                                                          QString("comboBoxM66_1"), 1));
 
-//    if(cboxTemp1 && cboxTemp1_1)
-//    {
-//        connect(cboxTemp1, SIGNAL(currentIndexChanged(int)), cboxTemp1_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxTemp1_1, SIGNAL(currentIndexChanged(int)), cboxTemp1, SLOT(setCurrentIndex(int)));
-//    }
+    if(cboxTemp1 && cboxTemp1_1)
+    {
+        connect(cboxTemp1, SIGNAL(currentIndexChanged(int)), cboxTemp1_1, SLOT(setCurrentIndex(int)));
+        connect(cboxTemp1_1, SIGNAL(currentIndexChanged(int)), cboxTemp1, SLOT(setCurrentIndex(int)));
+    }
 
-//    if(cboxTemp2 && cboxTemp2_1)
-//    {
-//        connect(cboxTemp2, SIGNAL(currentIndexChanged(int)), cboxTemp2_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxTemp2_1, SIGNAL(currentIndexChanged(int)), cboxTemp2, SLOT(setCurrentIndex(int)));
-//    }
+    if(cboxTemp2 && cboxTemp2_1)
+    {
+        connect(cboxTemp2, SIGNAL(currentIndexChanged(int)), cboxTemp2_1, SLOT(setCurrentIndex(int)));
+        connect(cboxTemp2_1, SIGNAL(currentIndexChanged(int)), cboxTemp2, SLOT(setCurrentIndex(int)));
+    }
 
-//    // Объединение ячеек Управление Уроверь1 с Управлением Уровень2
-//    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve,
-//                                                                         QString("comboBoxM77"), 1));
-//    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve,
-//                                                                         QString("comboBoxM77_1"), 1));
+    // Объединение ячеек Управление Уроверь1 с Управлением Уровень2
+    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve,
+                                                                         QString("comboBoxM77"), 1));
+    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve,
+                                                                         QString("comboBoxM77_1"), 1));
 
-//    if(cboxLevel1 && cboxLevel2)
-//    {
-//        connect(cboxLevel1, SIGNAL(currentIndexChanged(int)), cboxLevel2, SLOT(setCurrentIndex(int)));
-//        connect(cboxLevel2, SIGNAL(currentIndexChanged(int)), cboxLevel1, SLOT(setCurrentIndex(int)));
-//    }
+    if(cboxLevel1 && cboxLevel2)
+    {
+        connect(cboxLevel1, SIGNAL(currentIndexChanged(int)), cboxLevel2, SLOT(setCurrentIndex(int)));
+        connect(cboxLevel2, SIGNAL(currentIndexChanged(int)), cboxLevel1, SLOT(setCurrentIndex(int)));
+    }
+
+    // Объединение ячеек Автоматика->Выключатель с Кор КЦУ (Umin1)
+    QComboBox* cboxK01   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK01"), 1));
+    QComboBox* cboxK01_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_1"), 1));
+
+    QComboBox* cboxK03   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK03"), 1));
+    QComboBox* cboxK03_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_1"), 1));
+
+    QComboBox* cboxK06   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK06"), 1));
+    QComboBox* cboxK06_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_1"), 1));
+
+    QComboBox* cboxK07   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK07"), 1));
+    QComboBox* cboxK07_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_1"), 1));
+
+    QComboBox* cboxK17   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK17"), 1));
+    QComboBox* cboxK17_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_1"), 1));
+
+    QComboBox* cboxK32   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK32"), 1));
+    QComboBox* cboxK32_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_1"), 1));
+
+    CLineEdit* leK02   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK02"), 1));
+    CLineEdit* leK02_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_1"), 1));
+
+    CLineEdit* leK04   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK04"), 1));
+    CLineEdit* leK04_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_1"), 1));
+
+    CLineEdit* leK05   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK05"), 1));
+    CLineEdit* leK05_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_1"), 1));
+
+    CLineEdit* leK09   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK09"), 1));
+    CLineEdit* leK09_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_1"), 1));
+
+    CLineEdit* leK08   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK08"), 1));
+    CLineEdit* leK08_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_1"), 1));
+
+    CLineEdit* leX22   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditX22"), 1));
+    CLineEdit* leX22_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_1"), 1));
+
+    CLineEdit* leK50   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK50"), 1));
+    CLineEdit* leK50_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_1"), 1));
+
+    CLineEdit* leK51   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK51"), 1));
+    CLineEdit* leK51_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_1"), 1));
+
+    if(cboxK01 && cboxK01_1)
+    {
+        connect(cboxK01, SIGNAL(currentIndexChanged(int)), cboxK01_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK01_1, SIGNAL(currentIndexChanged(int)), cboxK01, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK03 && cboxK03_1)
+    {
+        connect(cboxK03, SIGNAL(currentIndexChanged(int)), cboxK03_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK03_1, SIGNAL(currentIndexChanged(int)), cboxK03, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK06 && cboxK06_1)
+    {
+        connect(cboxK06, SIGNAL(currentIndexChanged(int)), cboxK06_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK06_1, SIGNAL(currentIndexChanged(int)), cboxK06, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK07 && cboxK07_1)
+    {
+        connect(cboxK07, SIGNAL(currentIndexChanged(int)), cboxK07_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK07_1, SIGNAL(currentIndexChanged(int)), cboxK07, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK17 && cboxK17_1)
+    {
+        connect(cboxK17, SIGNAL(currentIndexChanged(int)), cboxK17_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK17_1, SIGNAL(currentIndexChanged(int)), cboxK17, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK32 && cboxK32_1)
+    {
+        connect(cboxK32, SIGNAL(currentIndexChanged(int)), cboxK32_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK32_1, SIGNAL(currentIndexChanged(int)), cboxK32, SLOT(setCurrentIndex(int)));
+    }
+
+    if(leK02 && leK02_1)
+    {
+        connect(leK02, &CLineEdit::textChanged, leK02_1, &CLineEdit::setText);
+        connect(leK02_1, &CLineEdit::textChanged, leK02, &CLineEdit::setText);
+    }
+
+    if(leK04 && leK04_1)
+    {
+        connect(leK04, &CLineEdit::textChanged, leK04_1, &CLineEdit::setText);
+        connect(leK04_1, &CLineEdit::textChanged, leK04, &CLineEdit::setText);
+    }
+
+    if(leK05 && leK05_1)
+    {
+        connect(leK05, &CLineEdit::textChanged, leK05_1, &CLineEdit::setText);
+        connect(leK05_1, &CLineEdit::textChanged, leK05, &CLineEdit::setText);
+    }
+
+    if(leK09 && leK09_1)
+    {
+        connect(leK09, &CLineEdit::textChanged, leK09_1, &CLineEdit::setText);
+        connect(leK09_1, &CLineEdit::textChanged, leK09, &CLineEdit::setText);
+    }
+
+    if(leK08 && leK08_1)
+    {
+        connect(leK08, &CLineEdit::textChanged, leK08_1, &CLineEdit::setText);
+        connect(leK08_1, &CLineEdit::textChanged, leK08, &CLineEdit::setText);
+    }
+
+    if(leX22 && leX22_1)
+    {
+        connect(leX22, &CLineEdit::textChanged, leX22_1, &CLineEdit::setText);
+        connect(leX22_1, &CLineEdit::textChanged, leX22, &CLineEdit::setText);
+    }
+
+    if(leK50 && leK50_1)
+    {
+        connect(leK50, &CLineEdit::textChanged, leK50_1, &CLineEdit::setText);
+        connect(leK50_1, &CLineEdit::textChanged, leK50, &CLineEdit::setText);
+    }
+
+    if(leK51 && leK51_1)
+    {
+        connect(leK51, &CLineEdit::textChanged, leK51_1, &CLineEdit::setText);
+        connect(leK51_1, &CLineEdit::textChanged, leK51, &CLineEdit::setText);
+    }
+
+    // Объединение ячеек Автоматика->Выключатель с Кор КЦУ (Umin2)
+    QComboBox* cboxK01_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_2"), 1));
+    QComboBox* cboxK03_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_2"), 1));
+    QComboBox* cboxK06_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_2"), 1));
+    QComboBox* cboxK07_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_2"), 1));
+    QComboBox* cboxK17_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_2"), 1));
+    QComboBox* cboxK32_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_2"), 1));
+    CLineEdit* leK02_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_2"), 1));
+    CLineEdit* leK04_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_2"), 1));
+    CLineEdit* leK05_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_2"), 1));
+    CLineEdit* leK09_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_2"), 1));
+    CLineEdit* leK08_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_2"), 1));
+    CLineEdit* leX22_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_2"), 1));
+    CLineEdit* leK50_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_2"), 1));
+    CLineEdit* leK51_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_2"), 1));
+
+    if(cboxK01 && cboxK01_2)
+    {
+        connect(cboxK01, SIGNAL(currentIndexChanged(int)), cboxK01_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK01_2, SIGNAL(currentIndexChanged(int)), cboxK01, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK03 && cboxK03_2)
+    {
+        connect(cboxK03, SIGNAL(currentIndexChanged(int)), cboxK03_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK03_2, SIGNAL(currentIndexChanged(int)), cboxK03, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK06 && cboxK06_2)
+    {
+        connect(cboxK06, SIGNAL(currentIndexChanged(int)), cboxK06_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK06_2, SIGNAL(currentIndexChanged(int)), cboxK06, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK07 && cboxK07_2)
+    {
+        connect(cboxK07, SIGNAL(currentIndexChanged(int)), cboxK07_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK07_2, SIGNAL(currentIndexChanged(int)), cboxK07, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK17 && cboxK17_2)
+    {
+        connect(cboxK17, SIGNAL(currentIndexChanged(int)), cboxK17_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK17_2, SIGNAL(currentIndexChanged(int)), cboxK17, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK32 && cboxK32_2)
+    {
+        connect(cboxK32, SIGNAL(currentIndexChanged(int)), cboxK32_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK32_2, SIGNAL(currentIndexChanged(int)), cboxK32, SLOT(setCurrentIndex(int)));
+    }
+
+    if(leK02 && leK02_2)
+    {
+        connect(leK02, &CLineEdit::textChanged, leK02_2, &CLineEdit::setText);
+        connect(leK02_2, &CLineEdit::textChanged, leK02, &CLineEdit::setText);
+    }
+
+    if(leK04 && leK04_2)
+    {
+        connect(leK04, &CLineEdit::textChanged, leK04_2, &CLineEdit::setText);
+        connect(leK04_2, &CLineEdit::textChanged, leK04, &CLineEdit::setText);
+    }
+
+    if(leK05 && leK05_2)
+    {
+        connect(leK05, &CLineEdit::textChanged, leK05_2, &CLineEdit::setText);
+        connect(leK05_2, &CLineEdit::textChanged, leK05, &CLineEdit::setText);
+    }
+
+    if(leK09 && leK09_2)
+    {
+        connect(leK09, &CLineEdit::textChanged, leK09_2, &CLineEdit::setText);
+        connect(leK09_2, &CLineEdit::textChanged, leK09, &CLineEdit::setText);
+    }
+
+    if(leK08 && leK08_2)
+    {
+        connect(leK08, &CLineEdit::textChanged, leK08_2, &CLineEdit::setText);
+        connect(leK08_2, &CLineEdit::textChanged, leK08, &CLineEdit::setText);
+    }
+
+    if(leX22 && leX22_2)
+    {
+        connect(leX22, &CLineEdit::textChanged, leX22_2, &CLineEdit::setText);
+        connect(leX22_2, &CLineEdit::textChanged, leX22, &CLineEdit::setText);
+    }
+
+    if(leK50 && leK50_2)
+    {
+        connect(leK50, &CLineEdit::textChanged, leK50_2, &CLineEdit::setText);
+        connect(leK50_2, &CLineEdit::textChanged, leK50, &CLineEdit::setText);
+    }
+
+    if(leK51 && leK51_2)
+    {
+        connect(leK51, &CLineEdit::textChanged, leK51_2, &CLineEdit::setText);
+        connect(leK51_2, &CLineEdit::textChanged, leK51, &CLineEdit::setText);
+    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()

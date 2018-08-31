@@ -24,6 +24,12 @@
                 SUBHEADER,
                 ITEM
             };
+            //-------------
+            enum GroupState
+            {
+                CLOSE,
+                OPEN
+            };
             //--------------
             struct measure_t
             {
@@ -63,10 +69,14 @@
         protected:
             void showEvent(QShowEvent* event);
 
+        private slots:
+            void rowClicked(QTableWidgetItem* item_cur);
+
         private:
-            void insertHeader(int row, const QString& name);
-            void insertItem(int row, const item_t& item);
-            void insertSubgroup(int row, const group_list_t& list);
+            int  rowCountSubgroup(const group_list_t& list);
+            void insertHeader(int row, const QString& name, RowType type = HEADER);
+            void insertItem(int row, const item_t& item, int index = 0);
+            void insertSubgroup(int row, const group_list_t& list, int index);
 
         private:
             QMap<int, int> m_group_rows;
