@@ -2095,7 +2095,7 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
         t_value = _3I0;
     }
 
-    CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral, nameWgt, 1));
+    CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral, nameWgt, 1));
     if(lineEdit)
         lineEdit->setText(QLocale::system().toString(t_value, 'f', 6));
 
@@ -3696,13 +3696,13 @@ void ConfiguratorWindow::initMenuPanel()
 
     // формирование связей между отдельными ячейками
     // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2
-    QComboBox* cboxTemp1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+    QComboBox* cboxTemp1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
                                                                         QString("comboBoxM65"), 1));
-    QComboBox* cboxTemp2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+    QComboBox* cboxTemp2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
                                                                         QString("comboBoxM66"), 1));
-    QComboBox* cboxTemp1_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+    QComboBox* cboxTemp1_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
                                                                           QString("comboBoxM65_1"), 1));
-    QComboBox* cboxTemp2_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupTemperature,
+    QComboBox* cboxTemp2_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
                                                                           QString("comboBoxM66_1"), 1));
 
     if(cboxTemp1 && cboxTemp1_1)
@@ -3718,9 +3718,9 @@ void ConfiguratorWindow::initMenuPanel()
     }
 
     // Объединение ячеек Управление Уроверь1 с Управлением Уровень2
-    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve,
+    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
                                                                          QString("comboBoxM77"), 1));
-    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve,
+    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
                                                                          QString("comboBoxM77_1"), 1));
 
     if(cboxLevel1 && cboxLevel2)
@@ -3730,47 +3730,47 @@ void ConfiguratorWindow::initMenuPanel()
     }
 
     // Объединение ячеек Автоматика->Выключатель с Кор КЦУ (Umin1)
-    QComboBox* cboxK01   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK01"), 1));
-    QComboBox* cboxK01_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_1"), 1));
+    QComboBox* cboxK01   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK01"), 1));
+    QComboBox* cboxK01_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_1"), 1));
 
-    QComboBox* cboxK03   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK03"), 1));
-    QComboBox* cboxK03_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_1"), 1));
+    QComboBox* cboxK03   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK03"), 1));
+    QComboBox* cboxK03_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_1"), 1));
 
-    QComboBox* cboxK06   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK06"), 1));
-    QComboBox* cboxK06_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_1"), 1));
+    QComboBox* cboxK06   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK06"), 1));
+    QComboBox* cboxK06_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_1"), 1));
 
-    QComboBox* cboxK07   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK07"), 1));
-    QComboBox* cboxK07_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_1"), 1));
+    QComboBox* cboxK07   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK07"), 1));
+    QComboBox* cboxK07_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_1"), 1));
 
-    QComboBox* cboxK17   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK17"), 1));
-    QComboBox* cboxK17_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_1"), 1));
+    QComboBox* cboxK17   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK17"), 1));
+    QComboBox* cboxK17_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_1"), 1));
 
-    QComboBox* cboxK32   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxK32"), 1));
-    QComboBox* cboxK32_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_1"), 1));
+    QComboBox* cboxK32   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK32"), 1));
+    QComboBox* cboxK32_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_1"), 1));
 
-    CLineEdit* leK02   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK02"), 1));
-    CLineEdit* leK02_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_1"), 1));
+    CLineEdit* leK02   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK02"), 1));
+    CLineEdit* leK02_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_1"), 1));
 
-    CLineEdit* leK04   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK04"), 1));
-    CLineEdit* leK04_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_1"), 1));
+    CLineEdit* leK04   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK04"), 1));
+    CLineEdit* leK04_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_1"), 1));
 
-    CLineEdit* leK05   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK05"), 1));
-    CLineEdit* leK05_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_1"), 1));
+    CLineEdit* leK05   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK05"), 1));
+    CLineEdit* leK05_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_1"), 1));
 
-    CLineEdit* leK09   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK09"), 1));
-    CLineEdit* leK09_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_1"), 1));
+    CLineEdit* leK09   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK09"), 1));
+    CLineEdit* leK09_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_1"), 1));
 
-    CLineEdit* leK08   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK08"), 1));
-    CLineEdit* leK08_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_1"), 1));
+    CLineEdit* leK08   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK08"), 1));
+    CLineEdit* leK08_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_1"), 1));
 
-    CLineEdit* leX22   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditX22"), 1));
-    CLineEdit* leX22_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_1"), 1));
+    CLineEdit* leX22   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditX22"), 1));
+    CLineEdit* leX22_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_1"), 1));
 
-    CLineEdit* leK50   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK50"), 1));
-    CLineEdit* leK50_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_1"), 1));
+    CLineEdit* leK50   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK50"), 1));
+    CLineEdit* leK50_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_1"), 1));
 
-    CLineEdit* leK51   = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("lineEditK51"), 1));
-    CLineEdit* leK51_1 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_1"), 1));
+    CLineEdit* leK51   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK51"), 1));
+    CLineEdit* leK51_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_1"), 1));
 
     if(cboxK01 && cboxK01_1)
     {
@@ -3857,20 +3857,20 @@ void ConfiguratorWindow::initMenuPanel()
     }
 
     // Объединение ячеек Автоматика->Выключатель с Кор КЦУ (Umin2)
-    QComboBox* cboxK01_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_2"), 1));
-    QComboBox* cboxK03_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_2"), 1));
-    QComboBox* cboxK06_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_2"), 1));
-    QComboBox* cboxK07_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_2"), 1));
-    QComboBox* cboxK17_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_2"), 1));
-    QComboBox* cboxK32_2 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_2"), 1));
-    CLineEdit* leK02_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_2"), 1));
-    CLineEdit* leK04_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_2"), 1));
-    CLineEdit* leK05_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_2"), 1));
-    CLineEdit* leK09_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_2"), 1));
-    CLineEdit* leK08_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_2"), 1));
-    CLineEdit* leX22_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_2"), 1));
-    CLineEdit* leK50_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_2"), 1));
-    CLineEdit* leK51_2 = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_2"), 1));
+    QComboBox* cboxK01_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_2"), 1));
+    QComboBox* cboxK03_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_2"), 1));
+    QComboBox* cboxK06_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_2"), 1));
+    QComboBox* cboxK07_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_2"), 1));
+    QComboBox* cboxK17_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_2"), 1));
+    QComboBox* cboxK32_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_2"), 1));
+    CLineEdit* leK02_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_2"), 1));
+    CLineEdit* leK04_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_2"), 1));
+    CLineEdit* leK05_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_2"), 1));
+    CLineEdit* leK09_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_2"), 1));
+    CLineEdit* leK08_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_2"), 1));
+    CLineEdit* leX22_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_2"), 1));
+    CLineEdit* leK50_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_2"), 1));
+    CLineEdit* leK51_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_2"), 1));
 
     if(cboxK01 && cboxK01_2)
     {
@@ -3957,104 +3957,104 @@ void ConfiguratorWindow::initMenuPanel()
     }
 
     // Объединение ячеек Сигналы пуска (защита Резервные) с Автоматика->АПВ Сигналы пуска
-    QComboBox* cboxN50   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN50"), 1));
-    QComboBox* cboxN50_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN50_1"), 1));
+    QComboBox* cboxN50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN50"), 1));
+    QComboBox* cboxN50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN50_1"), 1));
 
-    QComboBox* cboxN52   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN52"), 1));
-    QComboBox* cboxN52_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN52_1"), 1));
+    QComboBox* cboxN52   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN52"), 1));
+    QComboBox* cboxN52_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN52_1"), 1));
 
-    QComboBox* cboxN53   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN53"), 1));
-    QComboBox* cboxN53_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN53_1"), 1));
+    QComboBox* cboxN53   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN53"), 1));
+    QComboBox* cboxN53_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN53_1"), 1));
 
-    QComboBox* cboxN54   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN54"), 1));
-    QComboBox* cboxN54_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN54_1"), 1));
+    QComboBox* cboxN54   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN54"), 1));
+    QComboBox* cboxN54_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN54_1"), 1));
 
-    QComboBox* cboxN55   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN55"), 1));
-    QComboBox* cboxN55_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN55_1"), 1));
+    QComboBox* cboxN55   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN55"), 1));
+    QComboBox* cboxN55_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN55_1"), 1));
 
-    QComboBox* cboxN56   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN56"), 1));
-    QComboBox* cboxN56_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN56_1"), 1));
+    QComboBox* cboxN56   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN56"), 1));
+    QComboBox* cboxN56_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN56_1"), 1));
 
-    QComboBox* cboxN57   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN57"), 1));
-    QComboBox* cboxN57_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN57_1"), 1));
+    QComboBox* cboxN57   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN57"), 1));
+    QComboBox* cboxN57_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN57_1"), 1));
 
-    QComboBox* cboxN58   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN58"), 1));
-    QComboBox* cboxN58_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN58_1"), 1));
+    QComboBox* cboxN58   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN58"), 1));
+    QComboBox* cboxN58_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN58_1"), 1));
 
-    QComboBox* cboxN59   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN59"), 1));
-    QComboBox* cboxN59_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxN59_1"), 1));
+    QComboBox* cboxN59   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN59"), 1));
+    QComboBox* cboxN59_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN59_1"), 1));
 
-    QComboBox* cboxV04   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV04"), 1));
-    QComboBox* cboxV04_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV04_1"), 1));
+    QComboBox* cboxV04   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV04"), 1));
+    QComboBox* cboxV04_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV04_1"), 1));
 
-    QComboBox* cboxV07   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV07"), 1));
-    QComboBox* cboxV07_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV07_1"), 1));
+    QComboBox* cboxV07   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV07"), 1));
+    QComboBox* cboxV07_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV07_1"), 1));
 
-    QComboBox* cboxV10   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV10"), 1));
-    QComboBox* cboxV10_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV10_1"), 1));
+    QComboBox* cboxV10   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV10"), 1));
+    QComboBox* cboxV10_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV10_1"), 1));
 
-    QComboBox* cboxV13   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV13"), 1));
-    QComboBox* cboxV13_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV13_1"), 1));
+    QComboBox* cboxV13   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV13"), 1));
+    QComboBox* cboxV13_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV13_1"), 1));
 
-    QComboBox* cboxV16   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV16"), 1));
-    QComboBox* cboxV16_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV16_1"), 1));
+    QComboBox* cboxV16   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV16"), 1));
+    QComboBox* cboxV16_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV16_1"), 1));
 
-    QComboBox* cboxV19   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV19"), 1));
-    QComboBox* cboxV19_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV19_1"), 1));
+    QComboBox* cboxV19   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV19"), 1));
+    QComboBox* cboxV19_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV19_1"), 1));
 
-    QComboBox* cboxV22   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV22"), 1));
-    QComboBox* cboxV22_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV22_1"), 1));
+    QComboBox* cboxV22   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV22"), 1));
+    QComboBox* cboxV22_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV22_1"), 1));
 
-    QComboBox* cboxV25   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV25"), 1));
-    QComboBox* cboxV25_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV25_1"), 1));
+    QComboBox* cboxV25   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV25"), 1));
+    QComboBox* cboxV25_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV25_1"), 1));
 
-    QComboBox* cboxV28   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV28"), 1));
-    QComboBox* cboxV28_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV28_1"), 1));
+    QComboBox* cboxV28   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV28"), 1));
+    QComboBox* cboxV28_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV28_1"), 1));
 
-    QComboBox* cboxV31   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV31"), 1));
-    QComboBox* cboxV31_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV31_1"), 1));
+    QComboBox* cboxV31   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV31"), 1));
+    QComboBox* cboxV31_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV31_1"), 1));
 
-    QComboBox* cboxV36   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV36"), 1));
-    QComboBox* cboxV36_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV36_1"), 1));
+    QComboBox* cboxV36   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV36"), 1));
+    QComboBox* cboxV36_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV36_1"), 1));
 
-    QComboBox* cboxV39   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV39"), 1));
-    QComboBox* cboxV39_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV39_1"), 1));
+    QComboBox* cboxV39   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV39"), 1));
+    QComboBox* cboxV39_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV39_1"), 1));
 
-    QComboBox* cboxV44   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV44"), 1));
-    QComboBox* cboxV44_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV44_1"), 1));
+    QComboBox* cboxV44   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV44"), 1));
+    QComboBox* cboxV44_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV44_1"), 1));
 
-    QComboBox* cboxV50   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV50"), 1));
-    QComboBox* cboxV50_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV50_1"), 1));
+    QComboBox* cboxV50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV50"), 1));
+    QComboBox* cboxV50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV50_1"), 1));
 
-    QComboBox* cboxV62   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV62"), 1));
-    QComboBox* cboxV62_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV62_1"), 1));
+    QComboBox* cboxV62   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV62"), 1));
+    QComboBox* cboxV62_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV62_1"), 1));
 
-    QComboBox* cboxV65   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV65"), 1));
-    QComboBox* cboxV65_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV65_1"), 1));
+    QComboBox* cboxV65   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV65"), 1));
+    QComboBox* cboxV65_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV65_1"), 1));
 
-    QComboBox* cboxV68   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV68"), 1));
-    QComboBox* cboxV68_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV68_1"), 1));
+    QComboBox* cboxV68   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV68"), 1));
+    QComboBox* cboxV68_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV68_1"), 1));
 
-    QComboBox* cboxV76   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV76"), 1));
-    QComboBox* cboxV76_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV76_1"), 1));
+    QComboBox* cboxV76   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV76"), 1));
+    QComboBox* cboxV76_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV76_1"), 1));
 
-    QComboBox* cboxV77   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV77"), 1));
-    QComboBox* cboxV77_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV77_1"), 1));
+    QComboBox* cboxV77   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV77"), 1));
+    QComboBox* cboxV77_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV77_1"), 1));
 
-    QComboBox* cboxV81   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV81"), 1));
-    QComboBox* cboxV81_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV81_1"), 1));
+    QComboBox* cboxV81   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV81"), 1));
+    QComboBox* cboxV81_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV81_1"), 1));
 
-    QComboBox* cboxV86   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV86"), 1));
-    QComboBox* cboxV86_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV86_1"), 1));
+    QComboBox* cboxV86   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV86"), 1));
+    QComboBox* cboxV86_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV86_1"), 1));
 
-    QComboBox* cboxV90   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV90"), 1));
-    QComboBox* cboxV90_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV90_1"), 1));
+    QComboBox* cboxV90   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV90"), 1));
+    QComboBox* cboxV90_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV90_1"), 1));
 
-    QComboBox* cboxV95   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV95"), 1));
-    QComboBox* cboxV95_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV95_1"), 1));
+    QComboBox* cboxV95   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV95"), 1));
+    QComboBox* cboxV95_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV95_1"), 1));
 
-    QComboBox* cboxV96   = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV96"), 1));
-    QComboBox* cboxV96_1 = qobject_cast<QComboBox*>(groupMenuCellWidget(ui->tableWidgetAutomationGroup, QString("comboBoxV96_1"), 1));
+    QComboBox* cboxV96   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV96"), 1));
+    QComboBox* cboxV96_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV96_1"), 1));
 
     if(cboxN50 && cboxN50_1)
     {
@@ -5060,7 +5060,7 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
             break;
 
         QString    nameWgt  = QString("lineEdit%1").arg(m_cell_list[i].first);
-        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(table, nameWgt, 1));
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
         if(!lineEdit)
         {
@@ -5179,7 +5179,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
     if(nameWgt.isEmpty())
         return;
 
-    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidget(table, nameWgt, 1));
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
     if(!comboBox)
         return;
@@ -5534,7 +5534,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         return;
 
     QString    wgtName  = QString("comboBox%1").arg(tprotect);
-    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidget(table, wgtName, 1));
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
 
     if(!comboBox)
         return;
@@ -5885,82 +5885,45 @@ int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& la
  * \param is_next_group Следующая запись начинается с новой группы, т.е. имеет отдельный заголовок
  * \param grid Указатель на грид в котором находятся поля с данными
  */
-void ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid)
+void ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const QString& group, const CDeviceMenuTableWidget* table)
 {
-    int beg_offset = 0;
+    if(!table || group.isEmpty())
+        return;
 
-    if(!group.isEmpty())
+    for(int row = 0; row < table->rowCount(); row++)
     {
-        beg_offset = groupPositionInExcel(doc, group);
+        QWidget* wgt = layout_item->widget();
 
-        if(beg_offset == -1)
+        if(wgt)
         {
-            qWarning() << tr("Чтение данных из файла Excel: группа <%1> не найдена.").arg(group);
-            return;
-        }
-    }
-
-    static int offset = 0;
-
-    if(!group.isEmpty())
-        offset = beg_offset;
-
-    int rows    = grid->rowCount();
-    int columns = grid->columnCount();
-    int count   = 0;
-
-    for(int col = 0; col < columns - 1; col += 2)
-    {
-        int col_index = col;
-        int row_index = col/2;
-
-        if(columns%2 && col != 0)
-            col_index++;
-
-        for(int row = 0; row < rows; row++)
-        {
-            int cell_index = row + rows*row_index + offset;
-
-            QLayoutItem* layout_item = grid->itemAtPosition(row, col_index + 1);
-
-            if(layout_item)
+            if(QString(wgt->metaObject()->className()).toUpper() == "QCOMBOBOX")
             {
-                QWidget* wgt = layout_item->widget();
+                QComboBox* cb = qobject_cast<QComboBox*>(wgt);
 
-                if(wgt)
+                if(cb)
                 {
-                    if(QString(wgt->metaObject()->className()).toUpper() == "QCOMBOBOX")
+                    int pos = doc.read(cell_index, 3).toInt();
+
+                    if(pos >= 1)
+                        cb->setCurrentIndex(pos - 1);
+                }
+            }
+            else if(QString(wgt->metaObject()->className()).toUpper() == "CLINEEDIT")
+            {
+                CLineEdit* le = qobject_cast<CLineEdit*>(wgt);
+
+                if(le)
+                {
+                    bool    is_ok    = false;
+                    QString cell_val = doc.read(cell_index, 3).toString();
+                    float   number   = QLocale::system().toFloat(cell_val, &is_ok);
+
+                    if(is_ok)
                     {
-                        QComboBox* cb = qobject_cast<QComboBox*>(wgt);
-
-                        if(cb)
-                        {
-                            int pos = doc.read(cell_index, 3).toInt();
-
-                            if(pos >= 1)
-                                cb->setCurrentIndex(pos - 1);
-                        }
+                        le->setText(QLocale::system().toString(number, 'f', 6));
                     }
-                    else if(QString(wgt->metaObject()->className()).toUpper() == "CLINEEDIT")
-                    {
-                        CLineEdit* le = qobject_cast<CLineEdit*>(wgt);
-
-                        if(le)
-                        {
-                            bool    is_ok    = false;
-                            QString cell_val = doc.read(cell_index, 3).toString();
-                            float   number   = QLocale::system().toFloat(cell_val, &is_ok);
-
-                            if(is_ok)
-                            {
-                                le->setText(QLocale::system().toString(number, 'f', 6));
-                            }
-                            else
-                                qWarning() << tr("Чтение данных из файла Excel: невозможно преобразование в число <%1>.").arg(group);
-                        }
-                    }
-
-                    count++;
+                    else
+                        qWarning() << tr("Чтение данных из файла Excel: невозможно преобразование в число <%1>.").arg(group);
                 }
             }
         }
@@ -6196,7 +6159,7 @@ CDeviceMenuTableWidget* ConfiguratorWindow::groupMenuWidget(DeviceMenuItemType t
     }
 }
 /*!
- * \brief ConfiguratorWindow::groupMenuCellWidget
+ * \brief ConfiguratorWindow::groupMenuCellWidgetByName
  * \param table - указатель на таблицу
  * \param wgt_name - имя виджета
  * \param col - колонка таблицы
@@ -6204,7 +6167,7 @@ CDeviceMenuTableWidget* ConfiguratorWindow::groupMenuWidget(DeviceMenuItemType t
  *
  * Поиск виджета в указанно таблице по имени и номеру ячейки
  */
-QWidget* ConfiguratorWindow::groupMenuCellWidget(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const
+QWidget* ConfiguratorWindow::groupMenuCellWidgetByName(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const
 {
     if(!table)
         return nullptr;
@@ -6228,6 +6191,40 @@ QWidget* ConfiguratorWindow::groupMenuCellWidget(CDeviceMenuTableWidget* table, 
                 if(obj->objectName().toUpper() == wgt_name.toUpper())
                     return qobject_cast<QWidget*>(obj);
             }
+        }
+    }
+
+    return nullptr;
+}
+/*!
+ * \brief ConfiguratorWindow::groupMenuCellWidget
+ * \param table - указатель на таблицу
+ * \param row - строка таблицы
+ * \param col - колонка таблицы
+ * \return Указатель на виджет из ячейки
+ *
+ * Поиск виджета в указанно таблице по имени и номеру ячейки
+ */
+QWidget* ConfiguratorWindow::groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col)
+{
+    if(!table)
+        return nullptr;
+
+    if(col > table->columnCount() || row > table->rowCount())
+        return nullptr;
+
+    QWidget* wgt = table->cellWidget(row, col);
+
+    if(!wgt)
+        return nullptr;
+
+    QObjectList obj_list = wgt->children();
+
+    for(QObject* obj: obj_list)
+    {
+        if(obj->isWidgetType())
+        {
+            return qobject_cast<QWidget*>(obj);
         }
     }
 
@@ -6286,7 +6283,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     if(nameWgt.isEmpty())
         return;
 
-    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidget(table, nameWgt, 1));
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
     if(!comboBox)
         return;
@@ -6343,7 +6340,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
             continue;
         }
 
-        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(table, nameWgt, 1));
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
         if(!lineEdit)
             continue;
@@ -7371,6 +7368,7 @@ void ConfiguratorWindow::exportToExcelProject()
 
     QXlsx::Document xlsx;
 
+    xlsx.currentWorksheet()->setGridLinesVisible(true);
     xlsx.addSheet(tr("Защиты"));
 
     xlsx.write("A1", tr("Имя"));
@@ -7378,97 +7376,60 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("C1", tr("Значение"));
     xlsx.write("D1", tr("Диапазон"));
 
-    QXlsx::Format format_header;
-    format_header.setFontBold(true);
-    format_header.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
-    format_header.setVerticalAlignment(QXlsx::Format::AlignBottom);
+    QXlsx::Format headerFormat;
+    headerFormat.setFontBold(true);
+    headerFormat.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
+    headerFormat.setVerticalAlignment(QXlsx::Format::AlignBottom);
 
-    xlsx.setColumnFormat("A1:D1", format_header);
+    xlsx.setColumnFormat("A1:D1", headerFormat);
 
     xlsx.setColumnWidth("A1", 30);
     xlsx.setColumnWidth("B1", 50);
     xlsx.setColumnWidth("C1", 20);
     xlsx.setColumnWidth("D1", 50);
 
-//    writeDataToExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
-//    writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
-//    writeDataToExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
-//    writeDataToExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
-//    writeDataToExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
-//    writeDataToExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
-//    writeDataToExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
-//    writeDataToExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
-//    writeDataToExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
-//    writeDataToExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
-//    writeDataToExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-//    writeDataToExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-//    writeDataToExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
-//    writeDataToExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
-//    writeDataToExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
-//    writeDataToExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
-//    writeDataToExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
-//    writeDataToExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
-//    writeDataToExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
-//    writeDataToExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
-//    writeDataToExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
-//    writeDataToExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
-//    writeDataToExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
-//    writeDataToExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
-//    writeDataToExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
-//    writeDataToExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
-//    writeDataToExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
-//    writeDataToExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
-//    writeDataToExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
+    int pos;
 
-//    xlsx.addSheet(tr("Автоматика"));
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupMTZ);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupPower, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupDirect, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupFrequency, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupExternal, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupMotor, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupReserve, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupControl, pos - 1);
 
-//    xlsx.write("A1", tr("Имя"));
-//    xlsx.write("B1", tr("Параметр"));
-//    xlsx.write("C1", tr("Значение"));
-//    xlsx.write("D1", tr("Диапазон"));
-//    xlsx.setColumnFormat("A1:D1", format_header);
-//    xlsx.setColumnWidth("A1", 30);
-//    xlsx.setColumnWidth("B1", 50);
-//    xlsx.setColumnWidth("C1", 20);
-//    xlsx.setColumnWidth("D1", 50);
+    xlsx.addSheet(tr("Автоматика"));
 
-//    writeDataToExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors, -1);
-//    writeDataToExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
-//    writeDataToExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
-//    writeDataToExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
-//    writeDataToExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
-//    writeDataToExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
-//    writeDataToExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
-//    writeDataToExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
-//    writeDataToExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
-//    writeDataToExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
+    xlsx.write("A1", tr("Имя"));
+    xlsx.write("B1", tr("Параметр"));
+    xlsx.write("C1", tr("Значение"));
+    xlsx.write("D1", tr("Диапазон"));
+    xlsx.setColumnFormat("A1:D1", headerFormat);
+    xlsx.setColumnWidth("A1", 30);
+    xlsx.setColumnWidth("B1", 50);
+    xlsx.setColumnWidth("C1", 20);
+    xlsx.setColumnWidth("D1", 50);
 
-//    xlsx.addSheet(tr("Аналоговые входы"));
+    writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
 
-//    xlsx.write("A1", tr("Имя"));
-//    xlsx.write("B1", tr("Параметр"));
-//    xlsx.write("C1", tr("Значение"));
-//    xlsx.write("D1", tr("Диапазон"));
-//    xlsx.setColumnFormat("A1:D1", format_header);
-//    xlsx.setColumnWidth("A1", 30);
-//    xlsx.setColumnWidth("B1", 50);
-//    xlsx.setColumnWidth("C1", 20);
-//    xlsx.setColumnWidth("D1", 50);
+    xlsx.addSheet(tr("Аналоговые входы"));
 
-//    writeDataToExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain, -1);
-//    writeDataToExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
+    xlsx.write("A1", tr("Имя"));
+    xlsx.write("B1", tr("Параметр"));
+    xlsx.write("C1", tr("Значение"));
+    xlsx.write("D1", tr("Диапазон"));
+    xlsx.setColumnFormat("A1:D1", headerFormat);
+    xlsx.setColumnWidth("A1", 30);
+    xlsx.setColumnWidth("B1", 50);
+    xlsx.setColumnWidth("C1", 20);
+    xlsx.setColumnWidth("D1", 50);
 
-//    xlsx.selectSheet(tr("Защиты"));
-//    xlsx.saveAs(fileName);
+    writeDataToExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral);
+
+    xlsx.selectSheet(tr("Защиты"));
+    xlsx.saveAs(fileName);
 
     m_progressbar->progressStop();
 }
@@ -7647,7 +7608,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
     qInfo() << tr("Калибровка по току:");
     if(!calib.Ia.isEmpty())
     {
-        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral,
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
                                                                            "lineEditKIA", 1));
 
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
@@ -7670,7 +7631,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
 
     if(!calib.Ib.isEmpty())
     {
-        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral,
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
                                                                            "lineEditKIB", 1));
 
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
@@ -7693,7 +7654,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
 
     if(!calib.Ic.isEmpty())
     {
-        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral,
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
                                                                            "lineEditKIC", 1));
 
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
@@ -7716,7 +7677,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
 
     if(!calib._3I0.isEmpty())
     {
-        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidget(ui->tableWidgetSettingsAnalogGroupGeneral,
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
                                                                            "lineEdit3I0", 1));
 
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0();
@@ -10138,105 +10099,104 @@ QPointF ConfiguratorWindow::standardDeviation(QVector<float>& list)
  * \brief ConfiguratorWindow::writeDataToExcel
  * \param doc Текущий документ Excel
  * \param name_group Имя группы (н-р, МТЗ1)
- * \param grid Указатель на грид в котором находятся поля с данными
+ * \param table Указатель на таблицу в которой находятся поля с данными
  * \return возвращает индекс последней строки
  *
- * Запись уставок из грида в excel
+ * Запись уставок из таблицы в excel
  */
-int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid, int offset)
+int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset)
 {
-    if(!grid)
+    if(!table)
         return -1;
 
-    static int row_offset = 2;
+    int row_count = 1 + offset; // счетчик вставленных строк в Excel (строки начинаются с индекса 1)
+    int pos_group = -1;
+    QXlsx::Format headerFormat;
 
-    if(offset == -1)
-        row_offset = 2;
-    else
-        row_offset += offset;
+    headerFormat.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
+    headerFormat.setPatternBackgroundColor(Qt::yellow);
+    headerFormat.setPatternForegroundColor(Qt::black);
+    headerFormat.setFontBold(true);
 
-    if(!group.isEmpty())
-        doc.write(QString("A%1").arg(row_offset++), group);
-
-    int pos_first  = row_offset; // позиция начала сворачивания группы строк
-    int rows       = grid->rowCount();
-    int columns    = grid->columnCount();
-    int row_count  = 0; // счетчик вставленных строк в Excel
-
-    for(int col = 0; col < columns - 1; col += 2)
+    for(int row = 0; row < table->rowCount(); row++)
     {
-        int col_pos = col;
+        QTableWidgetItem* item = table->item(row, 0);
 
-        if(columns%2 && col != 0)
-            col_pos++;
-
-        for(int row = 0; row < rows; row++)
+        if(item)
         {
-            QLayoutItem* layout_item_value = grid->itemAtPosition(row, col_pos + 1);
-            QLayoutItem* layout_item_param = grid->itemAtPosition(row, col_pos);
-
-            if(!layout_item_value || !layout_item_param)
-                continue;
-
-            QWidget* wgt_value = layout_item_value->widget();
-            QWidget* wgt_param = layout_item_param->widget();
-
-            if(!wgt_value || !wgt_param)
-                continue;
-
-            QString name_param  = qobject_cast<QLabel*>(wgt_param)->text();
-            QString str_value   = "";
-            QString value_range = "";
-
-            if(QString(wgt_value->metaObject()->className()).toUpper() == "QCOMBOBOX")
+            CDeviceMenuTableWidget::RowType rowType = static_cast<CDeviceMenuTableWidget::RowType>(item->data(Qt::UserRole + 100).toInt());
+            if(rowType == CDeviceMenuTableWidget::HEADER || rowType == CDeviceMenuTableWidget::SUBHEADER)
             {
-                QComboBox* cb = qobject_cast<QComboBox*>(wgt_value);
-
-                if(cb)
+                if(pos_group != -1)
                 {
-                    for(int i = 0; i < cb->count(); i++)
-                    {
-                        value_range += QString("%1 - %2").arg(i + 1).arg(cb->itemText(i));
-
-                        if(i != cb->count() - 1)
-                            value_range += "; ";
-                    }
-
-                    str_value = QString("%1").arg(cb->currentIndex() + 1);
+                    doc.groupRows(pos_group, row_count, true);
+                    pos_group = -1;
                 }
+
+                doc.write(QString("A%1").arg(++row_count), item->text(), headerFormat);
+                doc.mergeCells(QString("A%1:D%2").arg(row_count).arg(row_count));
+                pos_group = row_count + 1;
+                continue;
             }
-            else if(QString(wgt_value->metaObject()->className()).toUpper() == "CLINEEDIT")
-            {
-                CLineEdit* le = qobject_cast<CLineEdit*>(wgt_value);
-                str_value = le->text();
-                int pos = name_param.indexOf('(');
-
-                if(pos != -1)
-                {
-                    value_range = name_param.mid(pos, name_param.length() - 1);
-                    name_param  = name_param.mid(0, pos - 1);
-                }
-            }
-
-            int row_pos = row;
-
-            if(col != 0)
-                row_pos = row_count;
-
-            doc.write(QString("B%1").arg(row_pos + row_offset), name_param);
-            doc.write(QString("C%1").arg(row_pos + row_offset), str_value);
-            doc.write(QString("D%1").arg(row_pos + row_offset), value_range);
-
-            row_count++;
         }
+
+        QWidget* wgt_value = groupMenuCellWidget(table, row, 1);
+        QWidget* wgt_param = groupMenuCellWidget(table, row, 0);
+        QWidget* wgt_unit  = groupMenuCellWidget(table, row, 2);
+
+        if(!wgt_value || !wgt_param)
+            continue;
+
+        QString name_param  = qobject_cast<QLabel*>(wgt_param)->text();
+        QString str_value   = "";
+        QString value_range = "";
+
+        if(wgt_value->objectName().toUpper().contains("COMBOBOX"))
+        {
+            QComboBox* cb = qobject_cast<QComboBox*>(wgt_value);
+
+            if(cb)
+            {
+                for(int i = 0; i < cb->count(); i++)
+                {
+                    value_range += QString("%1 - %2").arg(i + 1).arg(cb->itemText(i));
+
+                    if(i != cb->count() - 1)
+                        value_range += "; ";
+                }
+
+                str_value = QString("%1").arg(cb->currentIndex() + 1);
+            }
+        }
+        else if(wgt_value->objectName().toUpper().contains("LINEEDIT"))
+        {
+            CLineEdit* le = qobject_cast<CLineEdit*>(wgt_value);
+            str_value = le->text();
+
+            if(wgt_unit)
+            {
+                QLabel* label_unit = qobject_cast<QLabel*>(wgt_unit);
+
+                if(label_unit)
+                    value_range = label_unit->text();
+            }
+        }
+
+        row_count++;
+
+        doc.write(QString("B%1").arg(row_count), name_param);
+        doc.write(QString("C%1").arg(row_count), str_value);
+        doc.write(QString("D%1").arg(row_count), value_range);
     }
 
-    row_offset += row_count;
-    doc.groupRows(pos_first, row_offset - 1, true);
+    if(pos_group != -1)
+    {
+        doc.groupRows(pos_group, row_count, true);
+    }
 
     emit m_progressbar->increment();
 
-    return row_offset;
+    return row_count;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()

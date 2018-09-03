@@ -699,14 +699,15 @@
             void endJournalReadProcess(const QString& text);
             float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
             QPointF standardDeviation(QVector<float>& list);
-            int writeDataToExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid, int offset = 0);
-            void readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid);
+            int writeDataToExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset = 0);
+            void readDataFromExcel(QXlsx::Document& doc, const QString& group, const CDeviceMenuTableWidget* table);
             int groupPositionInExcel(QXlsx::Document& doc, const QString& group);
             CDeviceMenuTableWidget::group_t loadMenuGroup(const QString& group_name);
             CDeviceMenuTableWidget::group_t loadMenuSubgroup(const QString& group_name);
             CDeviceMenuTableWidget::item_t loadIODeviceItem(const QString& k);
             CDeviceMenuTableWidget* groupMenuWidget(DeviceMenuItemType type) const;
-            QWidget* groupMenuCellWidget(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
+            QWidget* groupMenuCellWidgetByName(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
+            QWidget* groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
