@@ -233,20 +233,22 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         setCellWidget(row, 1, wgt);
     }
 
+    if(item.unit.min != item.unit.max)
+    {
+        QWidget*     wgt_unit    = new QWidget;
+        QHBoxLayout* layout_unit = new QHBoxLayout;
+        QLabel*      label_unit  = new QLabel(QString("%1...%2%3").arg(item.unit.min).arg(item.unit.max).arg(item.unit.unit), wgt_unit);
 
-    QWidget*     wgt_unit    = new QWidget;
-    QHBoxLayout* layout_unit = new QHBoxLayout;
-    QLabel*      label_unit  = new QLabel(QString("%1...%2%3").arg(item.unit.min).arg(item.unit.max).arg(item.unit.unit), wgt_unit);
+        label_unit->setObjectName(QString("label%1Unit%2").arg(item.key).arg(index_str));
 
-    label_unit->setObjectName(QString("label%1Unit%2").arg(item.key).arg(index_str));
+        layout_unit->setObjectName(QString("layoutLabelUnit%1%2").arg(item.key).arg(index_str));
+        layout_unit->addWidget(label_unit);
+        layout_unit->setAlignment(Qt::AlignCenter);
+        layout_unit->setContentsMargins(0, 0, 0, 0);
+        wgt_unit->setLayout(layout_unit);
 
-    layout_unit->setObjectName(QString("layoutLabelUnit%1%2").arg(item.key).arg(index_str));
-    layout_unit->addWidget(label_unit);
-    layout_unit->setAlignment(Qt::AlignCenter);
-    layout_unit->setContentsMargins(0, 0, 0, 0);
-    wgt_unit->setLayout(layout_unit);
-
-    setCellWidget(row, 2, wgt_unit);
+        setCellWidget(row, 2, wgt_unit);
+    }
 }
 //---------------------------------------------------------------------------------------------------------------
 void CDeviceMenuTableWidget::insertSubgroup(int row, const CDeviceMenuTableWidget::group_list_t& list, int index)
