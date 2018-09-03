@@ -6077,18 +6077,16 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuSubgroup(const QStri
         while(query.next())
         {
             QString name = query.value("name").toString();
+            QString key = query.value("key").toString();
+            CDeviceMenuTableWidget::item_t item = loadIODeviceItem(key);
 
-            if(name.isEmpty()) // если поле Имя пустое - это данные подгруппы
+            if(!name.isEmpty()) // еще одна вложенная группа
             {
-                QString key = query.value("key").toString();
+                QString bind_name = QString("%1, %2").arg(name).arg(item.name);
+                item.name = bind_name;
+            }
 
-                CDeviceMenuTableWidget::item_t item = loadIODeviceItem(key);
-                list_item << item;
-            }
-            else // иначе еще одна вложенная группа
-            {
-                group.subgroup << loadMenuSubgroup(name);
-            }
+            list_item << item;
         }
 
         group.items = list_item;
@@ -6108,16 +6106,24 @@ CDeviceMenuTableWidget::item_t ConfiguratorWindow::loadIODeviceItem(const QStrin
 
     if(query.exec(QString("SELECT * FROM iodevice WHERE key=\"%1\";").arg(k)))
     {
-        if(query.first())
+        if(query.next())
         {
+            int     address = query.value("address").toInt();
+            float   min     = query.value("limit_min").toFloat();
+            float   max     = query.value("limit_max").toFloat();
+            QString unit    = query.value("unit_measure").toString();
+            QString type    = query.value("data_type").toString();
+            QString name    = query.value("description").toString();
+            int     row     = query.value("row").toInt();
+
             item.key       = k;
-            item.address   = query.value("address").toInt();
-            item.unit.min  = query.value("limit_min").toFloat();
-            item.unit.max  = query.value("limit_max").toFloat();
-            item.unit.unit = query.value("unit_measure").toString();
-            item.type      = query.value("data_type").toString();
-            item.name      = query.value("description").toString();
-            item.row       = query.value("row").toInt();
+            item.address   = address;
+            item.unit.min  = min;
+            item.unit.max  = max;
+            item.unit.unit = unit;
+            item.type      = type;
+            item.name      = name;
+            item.row       = row;
 
             if(item.type.toUpper() == "LIST") // если тип - "СПИСОК", то читаем список подпунктов
             {

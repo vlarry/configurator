@@ -158,7 +158,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
     QHBoxLayout* layout_name = new QHBoxLayout;
     QLabel*      unit        = new QLabel(item.name, label_name);
     QString      index_str   = ((index != 0)?QString("_%1").arg(index):"");
-qDebug() << QString("wgt%1%2").arg(item.key).arg(index_str);
+
     layout_name->setObjectName(QString("layoutLabel%1%2").arg(item.key).arg(index_str));
     unit->setObjectName(QString("label%1%2").arg(item.key).arg(index_str));
 
@@ -233,23 +233,20 @@ qDebug() << QString("wgt%1%2").arg(item.key).arg(index_str);
         setCellWidget(row, 1, wgt);
     }
 
-    if(item.unit.max != 0 && item.unit.min != 0)
-    {
-        QWidget*     lable_unit   = new QWidget;
-        QHBoxLayout* layout_unit = new QHBoxLayout;
-        QLabel*      unit        = new QLabel(QString("%1...%2%3").arg(item.unit.min).arg(item.unit.max).arg(item.unit.unit),
-                                              lable_unit);
 
-        unit->setObjectName(QString("label%1Unit%2").arg(item.key).arg(index_str));
+    QWidget*     wgt_unit    = new QWidget;
+    QHBoxLayout* layout_unit = new QHBoxLayout;
+    QLabel*      label_unit  = new QLabel(QString("%1...%2%3").arg(item.unit.min).arg(item.unit.max).arg(item.unit.unit), wgt_unit);
 
-        layout_unit->setObjectName(QString("layoutLabelUnit%1%2").arg(item.key).arg(index_str));
-        layout_unit->addWidget(unit);
-        layout_unit->setAlignment(Qt::AlignCenter);
-        layout_unit->setContentsMargins(0, 0, 0, 0);
-        lable_unit->setLayout(layout_unit);
+    label_unit->setObjectName(QString("label%1Unit%2").arg(item.key).arg(index_str));
 
-        setCellWidget(row, 2, lable_unit);
-    }
+    layout_unit->setObjectName(QString("layoutLabelUnit%1%2").arg(item.key).arg(index_str));
+    layout_unit->addWidget(label_unit);
+    layout_unit->setAlignment(Qt::AlignCenter);
+    layout_unit->setContentsMargins(0, 0, 0, 0);
+    wgt_unit->setLayout(layout_unit);
+
+    setCellWidget(row, 2, wgt_unit);
 }
 //---------------------------------------------------------------------------------------------------------------
 void CDeviceMenuTableWidget::insertSubgroup(int row, const CDeviceMenuTableWidget::group_list_t& list, int index)
