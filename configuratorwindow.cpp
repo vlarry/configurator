@@ -5412,42 +5412,47 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         return;
     }
 
-//    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
-//                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
-//                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
-//                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
-//                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
-//                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
-//                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
-//                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
-//                                                            ui->cboxV96;
+    QVector<quint16> tdata;
 
-//    QVector<quint16> tdata;
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+    {
+        tdata << data[i + 1] << data[i];
+    }
 
-//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-//    {
-//        tdata << data[i + 1] << data[i];
-//    }
+    int pos = groupMenuPosition(tr("Сигнал пуска"), ui->tableWidgetProtectionGroupReserve);
 
-//    for(QComboBox* box: box_list)
-//    {
-//        QString key = box->objectName().remove("cbox");
+    for(int row = pos; row < ui->tableWidgetProtectionGroupReserve->rowCount(); row++)
+    {
+        QWidget* widget = groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, row, 1);
 
-//        if(key.isEmpty())
-//            continue;
+        if(!widget)
+            continue;
 
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
+        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+            continue;
 
-//        if(val_pos < tdata.count())
-//        {
-//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
 
-//            if(item_pos < box->count())
-//                box->setCurrentIndex(item_pos);
-//        }
-//    }
+        if(!combobox)
+            continue;
+
+        QString key = combobox->objectName().remove("comboBox");
+
+        if(key.isEmpty())
+            continue;
+
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
+
+        if(val_pos < tdata.count())
+        {
+            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+
+            if(item_pos < combobox->count())
+                combobox->setCurrentIndex(item_pos);
+        }
+    }
 }
 //------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>& data)
@@ -5460,7 +5465,7 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
     }
 
     int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
-    qDebug() << "rows: " << ui->tableWidgetAutomationGroup->rowCount() - pos << ", data: " << data.count();
+
     for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
     {
         QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
