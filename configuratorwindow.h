@@ -700,7 +700,7 @@
             float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
             QPointF standardDeviation(QVector<float>& list);
             int writeDataToExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset = 0);
-            void readDataFromExcel(QXlsx::Document& doc, const QString& group, const CDeviceMenuTableWidget* table);
+            int readDataFromExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset);
             int groupPositionInExcel(QXlsx::Document& doc, const QString& group);
             CDeviceMenuTableWidget::group_t loadMenuGroup(const QString& group_name);
             CDeviceMenuTableWidget::group_t loadMenuSubgroup(const QString& group_name);

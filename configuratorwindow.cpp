@@ -5885,53 +5885,63 @@ int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& la
  * \param is_next_group Следующая запись начинается с новой группы, т.е. имеет отдельный заголовок
  * \param grid Указатель на грид в котором находятся поля с данными
  */
-void ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const QString& group, const CDeviceMenuTableWidget* table)
+int ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset)
 {
-    if(!table || group.isEmpty())
-        return;
+    if(!table)
+        return -1;
 
     for(int row = 0; row < table->rowCount(); row++)
     {
-        QWidget* wgt = layout_item->widget();
+        QTableWidgetItem* item = table->item(row, 0);
 
-        if(wgt)
+        if(item)
         {
-            if(QString(wgt->metaObject()->className()).toUpper() == "QCOMBOBOX")
+//            CDeviceMenuTableWidget::RowType rowType = static_cast<CDeviceMenuTableWidget::RowType>(item->data(Qt::UserRole + 100).toInt());
+//            if(rowType == CDeviceMenuTableWidget::HEADER || rowType == CDeviceMenuTableWidget::SUBHEADER)
+//            {
+//                pos = groupPositionInExcel(doc, item->text());
+//                continue;
+//            }
+            continue;
+        }
+
+        QWidget* wgt = groupMenuCellWidget(table, row, 1);
+
+        if(!wgt)
+            continue;
+
+        QString wgt_name = wgt->metaObject()->className();
+
+        if(wgt_name.toUpper() == "QCOMBOBOX")
+        {
+            QComboBox* combobox = qobject_cast<QComboBox*>(wgt);
+
+            if(combobox)
             {
-                QComboBox* cb = qobject_cast<QComboBox*>(wgt);
+                bool isOk  = false;
+                int  index = doc.read(row + offset + 2, 2).toInt(&isOk);
 
-                if(cb)
-                {
-                    int pos = doc.read(cell_index, 3).toInt();
-
-                    if(pos >= 1)
-                        cb->setCurrentIndex(pos - 1);
-                }
+                if(isOk)
+                    combobox->setCurrentIndex(index - 1);
             }
-            else if(QString(wgt->metaObject()->className()).toUpper() == "CLINEEDIT")
+        }
+        else if(wgt_name.toUpper() == "CLINEEDIT")
+        {
+            CLineEdit* lineedit = qobject_cast<CLineEdit*>(wgt);
+
+            if(lineedit)
             {
-                CLineEdit* le = qobject_cast<CLineEdit*>(wgt);
+                QString text = doc.read(row + offset + 2, 2).toString();
 
-                if(le)
-                {
-                    bool    is_ok    = false;
-                    QString cell_val = doc.read(cell_index, 3).toString();
-                    float   number   = QLocale::system().toFloat(cell_val, &is_ok);
-
-                    if(is_ok)
-                    {
-                        le->setText(QLocale::system().toString(number, 'f', 6));
-                    }
-                    else
-                        qWarning() << tr("Чтение данных из файла Excel: невозможно преобразование в число <%1>.").arg(group);
-                }
+                if(!text.isEmpty())
+                    lineedit->setText(text);
             }
         }
     }
 
-    offset += count;
-
     m_progressbar->increment();
+
+    return table->rowCount();
 }
 /*!
  * \brief ConfiguratorWindow::groupPositionInExcel
@@ -7371,10 +7381,9 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.currentWorksheet()->setGridLinesVisible(true);
     xlsx.addSheet(tr("Защиты"));
 
-    xlsx.write("A1", tr("Имя"));
-    xlsx.write("B1", tr("Параметр"));
-    xlsx.write("C1", tr("Значение"));
-    xlsx.write("D1", tr("Диапазон"));
+    xlsx.write("A1", tr("Параметр"));
+    xlsx.write("B1", tr("Значение"));
+    xlsx.write("C1", tr("Диапазон"));
 
     QXlsx::Format headerFormat;
     headerFormat.setFontBold(true);
@@ -7383,10 +7392,9 @@ void ConfiguratorWindow::exportToExcelProject()
 
     xlsx.setColumnFormat("A1:D1", headerFormat);
 
-    xlsx.setColumnWidth("A1", 30);
-    xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 20);
-    xlsx.setColumnWidth("D1", 50);
+    xlsx.setColumnWidth("A1", 50);
+    xlsx.setColumnWidth("B1", 20);
+    xlsx.setColumnWidth("C1", 70);
 
     int pos;
 
@@ -7402,29 +7410,25 @@ void ConfiguratorWindow::exportToExcelProject()
 
     xlsx.addSheet(tr("Автоматика"));
 
-    xlsx.write("A1", tr("Имя"));
-    xlsx.write("B1", tr("Параметр"));
-    xlsx.write("C1", tr("Значение"));
-    xlsx.write("D1", tr("Диапазон"));
+    xlsx.write("A1", tr("Параметр"));
+    xlsx.write("B1", tr("Значение"));
+    xlsx.write("C1", tr("Диапазон"));
     xlsx.setColumnFormat("A1:D1", headerFormat);
-    xlsx.setColumnWidth("A1", 30);
-    xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 20);
-    xlsx.setColumnWidth("D1", 50);
+    xlsx.setColumnWidth("A1", 50);
+    xlsx.setColumnWidth("B1", 20);
+    xlsx.setColumnWidth("C1", 70);
 
     writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
 
     xlsx.addSheet(tr("Аналоговые входы"));
 
-    xlsx.write("A1", tr("Имя"));
-    xlsx.write("B1", tr("Параметр"));
-    xlsx.write("C1", tr("Значение"));
-    xlsx.write("D1", tr("Диапазон"));
-    xlsx.setColumnFormat("A1:D1", headerFormat);
-    xlsx.setColumnWidth("A1", 30);
-    xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 20);
-    xlsx.setColumnWidth("D1", 50);
+    xlsx.write("A1", tr("Параметр"));
+    xlsx.write("B1", tr("Значение"));
+    xlsx.write("C1", tr("Диапазон"));
+    xlsx.setColumnFormat("A1:C1", headerFormat);
+    xlsx.setColumnWidth("A1", 50);
+    xlsx.setColumnWidth("B1", 20);
+    xlsx.setColumnWidth("C1", 50);
 
     writeDataToExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral);
 
@@ -7461,70 +7465,33 @@ void ConfiguratorWindow::importFromExcelProject()
         return;
     }
 
-//    readDataFromExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
-//    readDataFromExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
-//    readDataFromExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
-//    readDataFromExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
-//    readDataFromExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
-//    readDataFromExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
-//    readDataFromExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
-//    readDataFromExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
-//    readDataFromExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
-//    readDataFromExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
-//    readDataFromExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-//    readDataFromExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-//    readDataFromExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
-//    readDataFromExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
-//    readDataFromExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
-//    readDataFromExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
-//    readDataFromExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
-//    readDataFromExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
-//    readDataFromExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
-//    readDataFromExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
-//    readDataFromExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
-//    readDataFromExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
-//    readDataFromExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
-//    readDataFromExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
-//    readDataFromExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
-//    readDataFromExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
-//    readDataFromExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
-//    readDataFromExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
-//    readDataFromExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
+    int offset = 0;
 
-//    if(!xlsx.selectSheet(tr("Автоматика")))
-//    {
-//        qWarning() << tr("Импорт данных из файла Excel: лист <Автоматика> не найден.");
-//        return;
-//    }
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupMTZ, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupPower, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupDirect, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupFrequency, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupExternal, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupMotor, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupReserve, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupControl, offset);
 
-//    readDataFromExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors);
-//    readDataFromExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
-//    readDataFromExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
-//    readDataFromExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
-//    readDataFromExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
-//    readDataFromExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
-//    readDataFromExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
-//    readDataFromExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
-//    readDataFromExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
-//    readDataFromExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
+    if(!xlsx.selectSheet(tr("Автоматика")))
+    {
+        qWarning() << tr("Импорт данных из файла Excel: лист <Автоматика> не найден.");
+        return;
+    }
 
-//    if(!xlsx.selectSheet(tr("Аналоговые входы")))
-//    {
-//        qWarning() << tr("Импорт данных из файла Excel: лист <Аналоговые входы> не найден.");
-//        return;
-//    }
+    readDataFromExcel(xlsx, ui->tableWidgetAutomationGroup, 0);
 
-//    readDataFromExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain);
-//    readDataFromExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
+    if(!xlsx.selectSheet(tr("Аналоговые входы")))
+    {
+        qWarning() << tr("Импорт данных из файла Excel: лист <Аналоговые входы> не найден.");
+        return;
+    }
+
+    readDataFromExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral, 0);
 
     m_progressbar->progressStop();
 }
@@ -10134,7 +10101,7 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenu
                 }
 
                 doc.write(QString("A%1").arg(++row_count), item->text(), headerFormat);
-                doc.mergeCells(QString("A%1:D%2").arg(row_count).arg(row_count));
+                doc.mergeCells(QString("A%1:C%2").arg(row_count).arg(row_count));
                 pos_group = row_count + 1;
                 continue;
             }
@@ -10184,9 +10151,9 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenu
 
         row_count++;
 
-        doc.write(QString("B%1").arg(row_count), name_param);
-        doc.write(QString("C%1").arg(row_count), str_value);
-        doc.write(QString("D%1").arg(row_count), value_range);
+        doc.write(QString("A%1").arg(row_count), name_param);
+        doc.write(QString("B%1").arg(row_count), str_value);
+        doc.write(QString("C%1").arg(row_count), value_range);
     }
 
     if(pos_group != -1)
