@@ -319,6 +319,8 @@
                 float   limit_min;
                 float   limit_max;
                 QString unit_measure;
+                QString date_type;
+                int     row;
             };
             /*!
              * \brief The block_protection_purpose_t struct
@@ -444,6 +446,8 @@
             void automationAVRRead();
             void automationAPVSignalStartRead();
             void automationAPVRead();
+            void automationGroupRead();
+            void automationGroupWrite();
             void calibrationOfCurrentWrite();
             void purposeLedsRead();
             void purposeInputRead();
@@ -547,17 +551,17 @@
             void versionSowftware();
             void sendCalculateRead(CModBusDataUnit& unit);
             void sendSettingReadRequest(const QString& first, const QString& last,
-                                        CModBusDataUnit::FunctionType type, int size);
-            void sendSettingControlReadRequest(const QString& index);
-            void sendSettingControlWriteRequest(const QString& index);
-            void sendSettingWriteRequest(const QString& first, const QString& last);
+                                        CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index);
+            void sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index);
+            void sendSettingControlWriteRequest(const QString& index, DeviceMenuItemType group_index);
+            void sendSettingWriteRequest(const QString& first, const QString& last, DeviceMenuItemType group_index);
             void sendPurposeReadRequest(const QString& first, const QString& last);
             void sendPurposeWriteRequest(const QString& first, const QString& last);
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             void sendPurposeInverseDIWriteRequest(int first_addr, int last_addr);
-            void sendProtectionWorkModeRequest(const QString& protection,
-                                               RequestFunction function = FUN_READ);
+            void sendProtectionWorkModeRequest(const QString& protection, RequestFunction function,
+                                               DeviceMenuItemType group_index);
             void sendMonitorPurposeK10_K11Request();
             void sendRequestRead(int addr, int size, int request,
                                  CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
@@ -598,7 +602,6 @@
             void testStyle(bool state);
             void readStatusInfo();
             void updateSerialPortSettings();
-            void indexComboBoxChanged(int index); // обработка комбобоксов с настройками, которые связаны с другими
             void setNewAddress(); // отправка команды на смену адреса предварительно установленного (срабатывает по таймеру);
             void expandedWindow(); // управление разворачиванием окна
             void mouseMove(QPoint pos);
@@ -634,7 +637,6 @@
             void initHalfhourJournal();
             void initDeviceCode();
             void initJournals();
-            void initLineEditValidator();
             void initProtectionList();
             void initMonitorPurpose();
             void initOutputAll();
@@ -698,10 +700,16 @@
             void endJournalReadProcess(const QString& text);
             float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
             QPointF standardDeviation(QVector<float>& list);
-            int writeDataToExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid, int offset = 0);
-            void readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid);
+            int writeDataToExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset = 0);
+            int readDataFromExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset);
             int groupPositionInExcel(QXlsx::Document& doc, const QString& group);
-            void loadMenuGroup(const QString& group);
+            CDeviceMenuTableWidget::group_t loadMenuGroup(const QString& group_name);
+            CDeviceMenuTableWidget::group_t loadMenuSubgroup(const QString& group_name);
+            CDeviceMenuTableWidget::item_t loadIODeviceItem(const QString& k);
+            CDeviceMenuTableWidget* groupMenuWidget(DeviceMenuItemType type) const;
+            QWidget* groupMenuCellWidgetByName(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
+            QWidget* groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col);
+            int groupMenuPosition(const QString& name, const CDeviceMenuTableWidget* table);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

@@ -73,7 +73,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initEventJournal(); // инициализация параметров журнала событий
     initCrashJournal(); // инициализация параметров журнала аварий
     initHalfhourJournal(); // инициализация параметров журнала получасовок
-    initLineEditValidator();
     initProtectionList(); // инициализация списка защит
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
     initMonitorPurpose();
@@ -431,8 +430,9 @@ void ConfiguratorWindow::journalRead(const QString& key)
  */
 void ConfiguratorWindow::inputAnalogGeneralRead()
 {
-    sendSettingReadRequest(tr("M01"), tr("M03"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendSettingControlReadRequest("M04"); // чтение состояния настройки
+    sendSettingReadRequest("M01", "M03", CModBusDataUnit::ReadHoldingRegisters, 6,
+                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingControlReadRequest("M04", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // чтение состояния настройки
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateRead
@@ -440,7 +440,8 @@ void ConfiguratorWindow::inputAnalogGeneralRead()
  */
 void ConfiguratorWindow::inputAnalogCalibrateRead()
 {
-    sendSettingReadRequest(tr("KIA"), tr("KU0X_"), CModBusDataUnit::ReadHoldingRegisters, 36);
+    sendSettingReadRequest("KIA", "KU0X_", CModBusDataUnit::ReadHoldingRegisters, 36,
+                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGroupRead
@@ -459,8 +460,8 @@ void ConfiguratorWindow::inputAnalogGroupRead()
  */
 void ConfiguratorWindow::inputAnalogGeneralWrite()
 {
-    sendSettingWriteRequest("M01", "M03");
-    sendSettingControlWriteRequest("M04"); // запись состояния настройки
+    sendSettingWriteRequest("M01", "M03", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingControlWriteRequest("M04", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateWrite
@@ -469,7 +470,7 @@ void ConfiguratorWindow::inputAnalogGeneralWrite()
  */
 void ConfiguratorWindow::inputAnalogCalibrateWrite()
 {
-    sendSettingWriteRequest("KIA", "KU0X_");
+    sendSettingWriteRequest("KIA", "KU0X_", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGroupWrite
@@ -488,9 +489,9 @@ void ConfiguratorWindow::inputAnalogGroupWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Write()
 {
-    sendSettingControlWriteRequest("M05");
-    sendSettingWriteRequest("M06", "X01");
-    sendProtectionWorkModeRequest("MTZ1", FUN_SAVE);
+    sendSettingControlWriteRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("M06", "X01", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Write
@@ -499,9 +500,9 @@ void ConfiguratorWindow::protectionMTZ1Write()
  */
 void ConfiguratorWindow::protectionMTZ2Write()
 {
-    sendSettingControlWriteRequest("M09");
-    sendSettingWriteRequest("M10", "X03");
-    sendProtectionWorkModeRequest("MTZ2", FUN_SAVE);
+    sendSettingControlWriteRequest("M09", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("M10", "X03", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Write
@@ -510,12 +511,12 @@ void ConfiguratorWindow::protectionMTZ2Write()
  */
 void ConfiguratorWindow::protectionMTZ3Write()
 {
-    sendSettingControlWriteRequest("M13");
-    sendSettingControlWriteRequest("TZ");
-    sendProtectionWorkModeRequest("MTZ3", FUN_SAVE);
-    sendSettingWriteRequest("M14", "K22");
-    sendSettingWriteRequest("X04", "X04");
-    sendSettingWriteRequest("TZ1", "TZ7");
+    sendSettingControlWriteRequest("M13", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingControlWriteRequest("TZ", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("M14", "K22", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("X04", "X04", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("TZ1", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3SetCharWrite
@@ -524,7 +525,7 @@ void ConfiguratorWindow::protectionMTZ3Write()
  */
 void ConfiguratorWindow::protectionMTZ3SetCharWrite()
 {
-    sendSettingWriteRequest("TZ1", "TZ7");
+    sendSettingWriteRequest("TZ1", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySteepWrite
@@ -533,7 +534,7 @@ void ConfiguratorWindow::protectionMTZ3SetCharWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySteepWrite()
 {
-    sendSettingWriteRequest("TZ1", "TZ1");
+    sendSettingWriteRequest("TZ1", "TZ1", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySlopWrite
@@ -542,7 +543,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySteepWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySlopWrite()
 {
-    sendSettingWriteRequest("TZ2", "TZ2");
+    sendSettingWriteRequest("TZ2", "TZ2", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyInversionWrite
@@ -551,7 +552,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySlopWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyInversionWrite()
 {
-    sendSettingWriteRequest("TZ3", "TZ3");
+    sendSettingWriteRequest("TZ3", "TZ3", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyDInversionWrite
@@ -560,7 +561,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyDInversionWrite()
 {
-    sendSettingWriteRequest("TZ4", "TZ4");
+    sendSettingWriteRequest("TZ4", "TZ4", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyBackWrite
@@ -569,7 +570,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyDInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyBackWrite()
 {
-    sendSettingWriteRequest("TZ5", "TZ5");
+    sendSettingWriteRequest("TZ5", "TZ5", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyStrongInversionWrite
@@ -578,7 +579,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyBackWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionWrite()
 {
-    sendSettingWriteRequest("TZ6", "TZ6");
+    sendSettingWriteRequest("TZ6", "TZ6", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyExtremalInversionWrite
@@ -587,7 +588,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionWrite()
 {
-    sendSettingWriteRequest("TZ7", "TZ7");
+    sendSettingWriteRequest("TZ7", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ4Write
@@ -596,9 +597,9 @@ void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ4Write()
 {
-    sendSettingControlWriteRequest("M16");
-    sendSettingWriteRequest("M17", "X05a");
-    sendProtectionWorkModeRequest("MTZ4", FUN_SAVE);
+    sendSettingControlWriteRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingWriteRequest("M17", "X05a", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ4", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupWrite
@@ -619,9 +620,9 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
  */
 void ConfiguratorWindow::protectionUmax1Write()
 {
-    sendSettingControlWriteRequest("M32");
-    sendSettingWriteRequest("M33", "X11");
-    sendProtectionWorkModeRequest("UMAX1", FUN_SAVE);
+    sendSettingControlWriteRequest("M32", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M33", "X11", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMAX1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax2Write
@@ -630,9 +631,9 @@ void ConfiguratorWindow::protectionUmax1Write()
  */
 void ConfiguratorWindow::protectionUmax2Write()
 {
-    sendSettingControlWriteRequest("M35");
-    sendSettingWriteRequest("M36", "X12");
-    sendProtectionWorkModeRequest("UMAX2", FUN_SAVE);
+    sendSettingControlWriteRequest("M35", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M36", "X12", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMAX2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin1Write
@@ -641,11 +642,11 @@ void ConfiguratorWindow::protectionUmax2Write()
  */
 void ConfiguratorWindow::protectionUmin1Write()
 {
-    sendSettingControlWriteRequest("M38");
-    sendSettingControlWriteRequest("M39");
-    sendSettingControlWriteRequest("M40");
-    sendSettingWriteRequest("M41", "X13");
-    sendProtectionWorkModeRequest("UMIN1", FUN_SAVE);
+    sendSettingControlWriteRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("M40", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M41", "X13", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMIN1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Write
@@ -654,11 +655,11 @@ void ConfiguratorWindow::protectionUmin1Write()
  */
 void ConfiguratorWindow::protectionUmin2Write()
 {
-    sendSettingControlWriteRequest("M43");
-    sendSettingControlWriteRequest("M44");
-    sendSettingControlWriteRequest("M45");
-    sendSettingWriteRequest("M46", "X14");
-    sendProtectionWorkModeRequest("UMIN2", FUN_SAVE);
+    sendSettingControlWriteRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("M45", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M46", "X14", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMIN2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Write
@@ -667,9 +668,9 @@ void ConfiguratorWindow::protectionUmin2Write()
  */
 void ConfiguratorWindow::protection3U0Write()
 {
-    sendSettingControlWriteRequest("M48");
-    sendSettingWriteRequest("M49", "X15");
-    sendProtectionWorkModeRequest("3U0", FUN_SAVE);
+    sendSettingControlWriteRequest("M48", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingWriteRequest("M49", "X15", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("3U0", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionPowerWrite
@@ -691,9 +692,9 @@ void ConfiguratorWindow::protectionPowerGroupWrite()
  */
 void ConfiguratorWindow::protectionOZZ1Write()
 {
-    sendSettingControlWriteRequest("M22");
-    sendSettingWriteRequest("M23", "X07");
-    sendProtectionWorkModeRequest("OZZ1", FUN_SAVE);
+    sendSettingControlWriteRequest("M22", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("M23", "X07", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("OZZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionOZZ2Write
@@ -702,9 +703,9 @@ void ConfiguratorWindow::protectionOZZ1Write()
  */
 void ConfiguratorWindow::protectionOZZ2Write()
 {
-    sendSettingControlWriteRequest("K23");
-    sendSettingWriteRequest("K24", "X07a");
-    sendProtectionWorkModeRequest("OZZ2", FUN_SAVE);
+    sendSettingControlWriteRequest("K23", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("K24", "X07a", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("OZZ2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionNZZ1Write
@@ -713,10 +714,10 @@ void ConfiguratorWindow::protectionOZZ2Write()
  */
 void ConfiguratorWindow::protectionNZZ1Write()
 {
-    sendSettingControlWriteRequest("M25");
-    sendSettingWriteRequest("M26", "X09");
-    sendSettingWriteRequest("M26C", "M28C");
-    sendProtectionWorkModeRequest("NZZ1", FUN_SAVE);
+    sendSettingControlWriteRequest("M25", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("M26", "X09", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("M26C", "M28C", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("NZZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionNZZ2Write
@@ -725,10 +726,10 @@ void ConfiguratorWindow::protectionNZZ1Write()
  */
 void ConfiguratorWindow::protectionNZZ2Write()
 {
-    sendSettingControlWriteRequest("K26");
-    sendSettingWriteRequest("K27", "X09a");
-    sendSettingWriteRequest("K27C", "K30C");
-    sendProtectionWorkModeRequest("NZZ2", FUN_SAVE);
+    sendSettingControlWriteRequest("K26", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("K27", "X09a", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingWriteRequest("K27C", "K30C", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("NZZ2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupWrite
@@ -749,9 +750,9 @@ void ConfiguratorWindow::protectionDirectedGroupWrite()
  */
 void ConfiguratorWindow::protectionAchr1Write()
 {
-    sendSettingControlWriteRequest("M51");
-    sendSettingWriteRequest("M52", "X16");
-    sendProtectionWorkModeRequest("ACHR1", FUN_SAVE);
+    sendSettingControlWriteRequest("M51", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingWriteRequest("M52", "X16", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr2Write
@@ -760,9 +761,9 @@ void ConfiguratorWindow::protectionAchr1Write()
  */
 void ConfiguratorWindow::protectionAchr2Write()
 {
-    sendSettingControlWriteRequest("M55");
-    sendSettingWriteRequest("M56", "X17");
-    sendProtectionWorkModeRequest("ACHR2", FUN_SAVE);
+    sendSettingControlWriteRequest("M55", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingWriteRequest("M56", "X17", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr3Write
@@ -771,9 +772,9 @@ void ConfiguratorWindow::protectionAchr2Write()
  */
 void ConfiguratorWindow::protectionAchr3Write()
 {
-    sendSettingControlWriteRequest("M59");
-    sendSettingWriteRequest("M60", "X18");
-    sendProtectionWorkModeRequest("ACHR3", FUN_SAVE);
+    sendSettingControlWriteRequest("M59", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingWriteRequest("M60", "X18", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionFrequencyGroupWrite
@@ -793,9 +794,9 @@ void ConfiguratorWindow::protectionFrequencyGroupWrite()
  */
 void ConfiguratorWindow::protectionArcWrite()
 {
-    sendSettingControlWriteRequest("M63");
-    sendSettingWriteRequest("M64", "X19");
-    sendProtectionWorkModeRequest("ARC", FUN_SAVE);
+    sendSettingControlWriteRequest("M63", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M64", "X19", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("ARC", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt1Write
@@ -804,9 +805,9 @@ void ConfiguratorWindow::protectionArcWrite()
  */
 void ConfiguratorWindow::protectionExt1Write()
 {
-    sendSettingControlWriteRequest("M71");
-    sendSettingWriteRequest("M72", "M72");
-    sendProtectionWorkModeRequest("EXT1", FUN_SAVE);
+    sendSettingControlWriteRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M72", "M72", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2Write
@@ -815,9 +816,9 @@ void ConfiguratorWindow::protectionExt1Write()
  */
 void ConfiguratorWindow::protectionExt2Write()
 {
-    sendSettingControlWriteRequest("M73");
-    sendSettingWriteRequest("M74", "M74");
-    sendProtectionWorkModeRequest("EXT2", FUN_SAVE);
+    sendSettingControlWriteRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M74", "M74", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3Write
@@ -826,9 +827,9 @@ void ConfiguratorWindow::protectionExt2Write()
  */
 void ConfiguratorWindow::protectionExt3Write()
 {
-    sendSettingControlWriteRequest("M75");
-    sendSettingWriteRequest("M76", "M76");
-    sendProtectionWorkModeRequest("EXT3", FUN_SAVE);
+    sendSettingControlWriteRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M76", "M76", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternalGroupWrite
@@ -849,9 +850,9 @@ void ConfiguratorWindow::protectionExternalGroupWrite()
  */
 void ConfiguratorWindow::protectionStartingWrite()
 {
-    sendSettingControlWriteRequest("M19");
-    sendSettingWriteRequest("M20", "X06");
-    sendProtectionWorkModeRequest("STARTING", FUN_SAVE);
+    sendSettingControlWriteRequest("M19", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingWriteRequest("M20", "X06", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendProtectionWorkModeRequest("STARTING", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminWrite
@@ -860,9 +861,9 @@ void ConfiguratorWindow::protectionStartingWrite()
  */
 void ConfiguratorWindow::protectionIminWrite()
 {
-    sendSettingControlWriteRequest("M29");
-    sendSettingWriteRequest("M30", "X10");
-    sendProtectionWorkModeRequest("IMIN1", FUN_SAVE);
+    sendSettingControlWriteRequest("M29", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingWriteRequest("M30", "X10", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendProtectionWorkModeRequest("IMIN", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorGroupWrite
@@ -881,10 +882,10 @@ void ConfiguratorWindow::protectionMotorGroupWrite()
  */
 void ConfiguratorWindow::protectionTemp1Write()
 {
-    sendSettingControlWriteRequest("M65");
-    sendSettingControlWriteRequest("M66");
-    sendSettingWriteRequest("M67", "X20");
-    sendProtectionWorkModeRequest("TEMP1", FUN_SAVE);
+    sendSettingControlWriteRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingControlWriteRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("M67", "X20", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendProtectionWorkModeRequest("TEMP1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp2Write
@@ -893,10 +894,10 @@ void ConfiguratorWindow::protectionTemp1Write()
  */
 void ConfiguratorWindow::protectionTemp2Write()
 {
-    sendSettingControlWriteRequest("M65");
-    sendSettingControlWriteRequest("M66");
-    sendSettingWriteRequest("M68", "X21");
-    sendProtectionWorkModeRequest("TEMP2", FUN_SAVE);
+    sendSettingControlWriteRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingControlWriteRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("M68", "X21", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendProtectionWorkModeRequest("TEMP2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemperatureGroupWrite
@@ -915,9 +916,9 @@ void ConfiguratorWindow::protectionTemperatureGroupWrite()
  */
 void ConfiguratorWindow::protectionLevel1Write()
 {
-    sendSettingControlWriteRequest("M77");
-    sendSettingWriteRequest("M78", "M78");
-    sendProtectionWorkModeRequest("LEVEL1", FUN_SAVE);
+    sendSettingControlWriteRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingWriteRequest("M78", "M78", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendProtectionWorkModeRequest("LEVEL1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Write
@@ -926,9 +927,9 @@ void ConfiguratorWindow::protectionLevel1Write()
  */
 void ConfiguratorWindow::protectionLevel2Write()
 {
-    sendSettingControlWriteRequest("M77");
-    sendSettingWriteRequest("M79", "M79");
-    sendProtectionWorkModeRequest("LEVEL2", FUN_SAVE);
+    sendSettingControlWriteRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingWriteRequest("M79", "M79", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendProtectionWorkModeRequest("LEVEL2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartWrite
@@ -936,22 +937,26 @@ void ConfiguratorWindow::protectionLevel2Write()
  * Запись защиты Сигнал Пуска
  */
 void ConfiguratorWindow::protectionSignalStartWrite()
-{
-    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
-                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
-                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
-                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
-                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
-                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
-                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
-                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
-                                                            ui->cboxV96;
-
+{           
     QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+    int pos = groupMenuPosition(tr("Сигнал пуска"), ui->tableWidgetProtectionGroupReserve);
 
-    for(QComboBox* box: box_list)
+    for(int row = pos; row < ui->tableWidgetProtectionGroupReserve->rowCount(); row++)
     {
-        QString key = box->objectName().remove("cbox");
+        QWidget* widget = groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, row, 1);
+
+        if(!widget)
+            continue;
+
+        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+            continue;
+
+        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+
+        if(!combobox)
+            continue;
+
+        QString key = combobox->objectName().remove("comboBox");
 
         if(key.isEmpty())
             continue;
@@ -962,7 +967,7 @@ void ConfiguratorWindow::protectionSignalStartWrite()
 
         if(val_pos < data.count())
         {
-            int item_pos = box->currentIndex();
+            int item_pos = combobox->currentIndex();
 
             if(item_pos == 1)
                 data[val_pos] |= (1 << bit_pos);
@@ -1002,10 +1007,10 @@ void ConfiguratorWindow::protectionReserveGroupWrite()
  */
 void ConfiguratorWindow::protectionBRUWrite()
 {
-    sendSettingControlWriteRequest("M93");
-    sendSettingControlWriteRequest("M95");
-    sendSettingWriteRequest("M96", "M99");
-    sendProtectionWorkModeRequest("BRU", FUN_SAVE);
+    sendSettingControlWriteRequest("M93", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingControlWriteRequest("M95", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingWriteRequest("M96", "M99", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("BRU", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumWrite
@@ -1014,9 +1019,9 @@ void ConfiguratorWindow::protectionBRUWrite()
  */
 void ConfiguratorWindow::protectionVacuumWrite()
 {
-    sendSettingControlWriteRequest("M90");
-    sendSettingWriteRequest("M91", "X23");
-    sendProtectionWorkModeRequest("VACUUM", FUN_SAVE);
+    sendSettingControlWriteRequest("M90", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingWriteRequest("M91", "X23", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("VACUUM", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlGroupWrite
@@ -1035,20 +1040,20 @@ void ConfiguratorWindow::protectionControlGroupWrite()
  */
 void ConfiguratorWindow::automationSwitchWrite()
 {
-    sendSettingControlWriteRequest("K32");
-    sendSettingControlWriteRequest("K01");
-    sendSettingControlWriteRequest("K03");
-    sendSettingControlWriteRequest("K06");
-    sendSettingControlWriteRequest("K17");
-    sendSettingControlWriteRequest("K07");
-    sendSettingWriteRequest("K02", "K02");
-    sendSettingWriteRequest("K50", "K50");
-    sendSettingWriteRequest("K04", "K04");
-    sendSettingWriteRequest("K51", "K51");
-    sendSettingWriteRequest("K05", "K05");
-    sendSettingWriteRequest("K08", "K08");
-    sendSettingWriteRequest("K09", "K09");
-    sendSettingWriteRequest("X22", "X22");
+    sendSettingControlWriteRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K17", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K07", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K02", "K02", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K50", "K50", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K04", "K04", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K51", "K51", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K05", "K05", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K08", "K08", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K09", "K09", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("X22", "X22", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckWrite
@@ -1057,10 +1062,10 @@ void ConfiguratorWindow::automationSwitchWrite()
  */
 void ConfiguratorWindow::automationSwitchTruckWrite()
 {
-    sendSettingControlWriteRequest("K37");
-    sendSettingControlWriteRequest("K41");
-    sendSettingWriteRequest("K45", "K49");
-    sendSettingWriteRequest("K58", "K59");
+    sendSettingControlWriteRequest("K37", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K41", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K45", "K49", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K58", "K59", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationBlockWrite
@@ -1069,9 +1074,9 @@ void ConfiguratorWindow::automationSwitchTruckWrite()
  */
 void ConfiguratorWindow::automationBlockWrite()
 {
-    sendSettingControlWriteRequest("K13");
-    sendSettingControlWriteRequest("K14");
-    sendSettingControlWriteRequest("K15");
+    sendSettingControlWriteRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationBusWrite
@@ -1080,10 +1085,10 @@ void ConfiguratorWindow::automationBlockWrite()
  */
 void ConfiguratorWindow::automationBusWrite()
 {
-    sendSettingControlWriteRequest("K34");
-    sendSettingControlWriteRequest("K38");
-    sendSettingWriteRequest("K42", "K46");
-    sendSettingWriteRequest("K52", "K53");
+    sendSettingControlWriteRequest("K34", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K38", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K42", "K46", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K52", "K53", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationLineWrite
@@ -1092,10 +1097,10 @@ void ConfiguratorWindow::automationBusWrite()
  */
 void ConfiguratorWindow::automationLineWrite()
 {
-    sendSettingControlWriteRequest("K35");
-    sendSettingControlWriteRequest("K39");
-    sendSettingWriteRequest("K43", "K47");
-    sendSettingWriteRequest("K54", "K55");
+    sendSettingControlWriteRequest("K35", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K39", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K43", "K47", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K54", "K55", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationEarthWrite
@@ -1104,10 +1109,10 @@ void ConfiguratorWindow::automationLineWrite()
  */
 void ConfiguratorWindow::automationEarthWrite()
 {
-    sendSettingControlWriteRequest("K36");
-    sendSettingControlWriteRequest("K40");
-    sendSettingWriteRequest("K44", "K48");
-    sendSettingWriteRequest("K56", "K57");
+    sendSettingControlWriteRequest("K36", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K40", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K44", "K48", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K56", "K57", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationDisconnectorsGroupWrite
@@ -1127,8 +1132,8 @@ void ConfiguratorWindow::automationDisconnectorsGroupWrite()
  */
 void ConfiguratorWindow::automationCtrlTNWrite()
 {
-    sendSettingControlWriteRequest("K18");
-    sendSettingWriteRequest("K19", "K19");
+    sendSettingControlWriteRequest("K18", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K19", "K19", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAVRWrite
@@ -1137,8 +1142,8 @@ void ConfiguratorWindow::automationCtrlTNWrite()
  */
 void ConfiguratorWindow::automationAVRWrite()
 {
-    sendSettingControlWriteRequest("M81");
-    sendSettingWriteRequest("M82", "M85");
+    sendSettingControlWriteRequest("M81", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("M82", "M85", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVWrite
@@ -1147,8 +1152,8 @@ void ConfiguratorWindow::automationAVRWrite()
  */
 void ConfiguratorWindow::automationAPVWrite()
 {
-    sendSettingControlWriteRequest("M87");
-    sendSettingWriteRequest("M88", "M89");
+    sendSettingControlWriteRequest("M87", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("M88", "M89", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVSignalStartWrite
@@ -1157,21 +1162,25 @@ void ConfiguratorWindow::automationAPVWrite()
  */
 void ConfiguratorWindow::automationAPVSignalStartWrite()
 {
-    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
-                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
-                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
-                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
-                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
-                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
-                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
-                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
-                                                            ui->cboxV96_2;
-
     QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
 
-    for(QComboBox* box: box_list)
+    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
     {
-        QString key = (box->objectName().remove("cbox")).remove("_2");
+        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
+
+        if(!widget)
+            continue;
+
+        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+            continue;
+
+        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+
+        if(!combobox)
+            continue;
+
+        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
 
         if(key.isEmpty())
             continue;
@@ -1182,7 +1191,7 @@ void ConfiguratorWindow::automationAPVSignalStartWrite()
 
         if(val_pos < data.count())
         {
-            int item_pos = box->currentIndex();
+            int item_pos = combobox->currentIndex();
 
             if(item_pos == 1)
                 data[val_pos] |= (1 << bit_pos);
@@ -1351,9 +1360,9 @@ void ConfiguratorWindow::settingCommunicationsWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Read()
 {
-    sendSettingControlReadRequest("M05");
-    sendSettingReadRequest(tr("M06"), tr("X01"), CModBusDataUnit::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRequest("MTZ1");
+    sendSettingControlReadRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingReadRequest("M06", "X01", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Read
@@ -1362,9 +1371,9 @@ void ConfiguratorWindow::protectionMTZ1Read()
  */
 void ConfiguratorWindow::protectionMTZ2Read()
 {
-    sendSettingControlReadRequest("M09");
-    sendSettingReadRequest(tr("M10"), tr("X03"), CModBusDataUnit::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRequest("MTZ2");
+    sendSettingControlReadRequest("M09", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingReadRequest(tr("M10"), tr("X03"), CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Read
@@ -1373,12 +1382,12 @@ void ConfiguratorWindow::protectionMTZ2Read()
  */
 void ConfiguratorWindow::protectionMTZ3Read()
 {
-    sendSettingControlReadRequest("M13");
-    sendSettingControlReadRequest("TZ");
-    sendProtectionWorkModeRequest("MTZ3");
-    sendSettingReadRequest(tr("M14"), tr("K22"), CModBusDataUnit::ReadHoldingRegisters, 4);
-    sendSettingReadRequest(tr("X04"), tr("X04"), CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendSettingReadRequest(tr("TZ1"), tr("TZ7"), CModBusDataUnit::ReadHoldingRegisters, 14);
+    sendSettingControlReadRequest("M13", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingControlReadRequest("TZ", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ3", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingReadRequest("M14", "K22", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingReadRequest("X04", "X04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingReadRequest("TZ1", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 14, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3SetCharRead
@@ -1387,7 +1396,7 @@ void ConfiguratorWindow::protectionMTZ3Read()
  */
 void ConfiguratorWindow::protectionMTZ3SetCharRead()
 {
-    sendSettingReadRequest(tr("TZ1"), tr("TZ7"), CModBusDataUnit::ReadHoldingRegisters, 14);
+    sendSettingReadRequest("TZ1", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 14, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySteepRead
@@ -1396,7 +1405,7 @@ void ConfiguratorWindow::protectionMTZ3SetCharRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySteepRead()
 {
-    sendSettingReadRequest(tr("TZ1"), tr("TZ1"), CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("TZ1", "TZ1", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySlopRead
@@ -1405,7 +1414,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySteepRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySlopRead()
 {
-    sendSettingReadRequest(tr("TZ2"), tr("TZ2"), CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("TZ2", "TZ2", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyInversionRead
@@ -1414,7 +1423,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySlopRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyInversionRead()
 {
-    sendSettingReadRequest(tr("TZ3"), tr("TZ3"), CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("TZ3", "TZ3", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyDInversionRead
@@ -1423,7 +1432,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyInversionRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyDInversionRead()
 {
-    sendSettingReadRequest(tr("TZ4"), tr("TZ4"), CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("TZ4", "TZ4", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyBackRead
@@ -1432,7 +1441,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyDInversionRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyBackRead()
 {
-    sendSettingReadRequest(tr("TZ5"), tr("TZ5"), CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("TZ5", "TZ5", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyStrongInversionRead
@@ -1441,7 +1450,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyBackRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionRead()
 {
-    sendSettingReadRequest(tr("TZ6"), tr("TZ6"), CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("TZ6", "TZ6", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyExtremalInversionRead
@@ -1450,7 +1459,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionRead()
 {
-    sendSettingReadRequest(tr("TZ7"), tr("TZ7"), CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingReadRequest("TZ7", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ4Read
@@ -1459,9 +1468,9 @@ void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionRead()
  */
 void ConfiguratorWindow::protectionMTZ4Read()
 {
-    sendSettingControlReadRequest("M16");
-    sendSettingReadRequest(tr("M17"), tr("X05a"), CModBusDataUnit::ReadHoldingRegisters, 12);
-    sendProtectionWorkModeRequest("MTZ4");
+    sendSettingControlReadRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingReadRequest("M17", "X05a", CModBusDataUnit::ReadHoldingRegisters, 12, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ4", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupRead
@@ -1482,9 +1491,9 @@ void ConfiguratorWindow::protectionMTZGroupRead()
  */
 void ConfiguratorWindow::protectionUmax1Read()
 {
-    sendSettingControlReadRequest("M32");
-    sendSettingReadRequest(tr("M33"), tr("X11"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("UMAX1");
+    sendSettingControlReadRequest("M32", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequest("M33", "X11", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMAX1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax2Read
@@ -1493,9 +1502,9 @@ void ConfiguratorWindow::protectionUmax1Read()
  */
 void ConfiguratorWindow::protectionUmax2Read()
 {
-    sendSettingControlReadRequest("M35");
-    sendSettingReadRequest(tr("M36"), tr("X12"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("UMAX2");
+    sendSettingControlReadRequest("M35", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequest("M36", "X12", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMAX2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin1Read
@@ -1504,11 +1513,11 @@ void ConfiguratorWindow::protectionUmax2Read()
  */
 void ConfiguratorWindow::protectionUmin1Read()
 {
-    sendSettingControlReadRequest("M38");
-    sendSettingControlReadRequest("M39");
-    sendSettingControlReadRequest("M40");
-    sendSettingReadRequest(tr("M41"), tr("X13"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("UMIN1");
+    sendSettingControlReadRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlReadRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlReadRequest("M40", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequest("M41", "X13", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMIN1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Read
@@ -1517,11 +1526,11 @@ void ConfiguratorWindow::protectionUmin1Read()
  */
 void ConfiguratorWindow::protectionUmin2Read()
 {
-    sendSettingControlReadRequest("M43");
-    sendSettingControlReadRequest("M44");
-    sendSettingControlReadRequest("M45");
-    sendSettingReadRequest(tr("M46"), tr("X14"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("UMIN2");
+    sendSettingControlReadRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlReadRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlReadRequest("M45", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequest("M46", "X14", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("UMIN2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Read
@@ -1530,9 +1539,9 @@ void ConfiguratorWindow::protectionUmin2Read()
  */
 void ConfiguratorWindow::protection3U0Read()
 {
-    sendSettingControlReadRequest("M48");
-    sendSettingReadRequest(tr("M49"), tr("X15"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("3U0");
+    sendSettingControlReadRequest("M48", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequest("M49", "X15", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendProtectionWorkModeRequest("3U0", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionPowerGroupRead
@@ -1554,9 +1563,9 @@ void ConfiguratorWindow::protectionPowerGroupRead()
  */
 void ConfiguratorWindow::protectionOZZ1Read()
 {
-    sendSettingControlReadRequest("M22");
-    sendSettingReadRequest(tr("M23"), tr("X07"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("OZZ1");
+    sendSettingControlReadRequest("M22", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingReadRequest("M23", "X07", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("OZZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedOZZ2Read
@@ -1565,9 +1574,9 @@ void ConfiguratorWindow::protectionOZZ1Read()
  */
 void ConfiguratorWindow::protectionOZZ2Read()
 {
-    sendSettingControlReadRequest("K23");
-    sendSettingReadRequest(tr("K24"), tr("X07a"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("OZZ2");
+    sendSettingControlReadRequest("K23", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingReadRequest("K24", "X07a", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("OZZ2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ1Read
@@ -1576,10 +1585,10 @@ void ConfiguratorWindow::protectionOZZ2Read()
  */
 void ConfiguratorWindow::protectionNZZ1Read()
 {
-    sendSettingControlReadRequest("M25");
-    sendSettingReadRequest(tr("M26"), tr("X09"), CModBusDataUnit::ReadHoldingRegisters, 12);
-    sendSettingReadRequest(tr("M26C"), tr("M28C"), CModBusDataUnit::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRequest("NZZ1");
+    sendSettingControlReadRequest("M25", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingReadRequest("M26", "X09", CModBusDataUnit::ReadHoldingRegisters, 12, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingReadRequest("M26C", "M28C", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("NZZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ2Read
@@ -1588,10 +1597,10 @@ void ConfiguratorWindow::protectionNZZ1Read()
  */
 void ConfiguratorWindow::protectionNZZ2Read()
 {
-    sendSettingControlReadRequest("K26");
-    sendSettingReadRequest("K27", "X09a", CModBusDataUnit::ReadHoldingRegisters, 12);
-    sendSettingReadRequest("K27C", "K30C", CModBusDataUnit::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRequest("NZZ2");
+    sendSettingControlReadRequest("K26", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingReadRequest("K27", "X09a", CModBusDataUnit::ReadHoldingRegisters, 12, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingReadRequest("K27C", "K30C", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("NZZ2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupRead
@@ -1612,9 +1621,9 @@ void ConfiguratorWindow::protectionDirectedGroupRead()
  */
 void ConfiguratorWindow::protectionAchr1Read()
 {
-    sendSettingControlReadRequest("M51");
-    sendSettingReadRequest(tr("M52"), tr("X16"), CModBusDataUnit::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRequest("ACHR1");
+    sendSettingControlReadRequest("M51", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingReadRequest("M52", "X16", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr2Read
@@ -1623,9 +1632,9 @@ void ConfiguratorWindow::protectionAchr1Read()
  */
 void ConfiguratorWindow::protectionAchr2Read()
 {
-    sendSettingControlReadRequest("M55");
-    sendSettingReadRequest(tr("M56"), tr("X17"), CModBusDataUnit::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRequest("ACHR2");
+    sendSettingControlReadRequest("M55", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingReadRequest("M56", "X17", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr3Read
@@ -1634,9 +1643,9 @@ void ConfiguratorWindow::protectionAchr2Read()
  */
 void ConfiguratorWindow::protectionAchr3Read()
 {
-    sendSettingControlReadRequest("M59");
-    sendSettingReadRequest(tr("M60"), tr("X18"), CModBusDataUnit::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRequest("ACHR3");
+    sendSettingControlReadRequest("M59", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendSettingReadRequest("M60", "X18", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+    sendProtectionWorkModeRequest("ACHR3", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionFrequencyGroupRead
@@ -1656,9 +1665,9 @@ void ConfiguratorWindow::protectionFrequencyGroupRead()
  */
 void ConfiguratorWindow::protectionArcRead()
 {
-    sendSettingControlReadRequest("M63");
-    sendSettingReadRequest(tr("M64"), tr("X19"), CModBusDataUnit::ReadHoldingRegisters, 4);
-    sendProtectionWorkModeRequest("ARC");
+    sendSettingControlReadRequest("M63", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingReadRequest("M64", "X19", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("ARC", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt1
@@ -1667,9 +1676,9 @@ void ConfiguratorWindow::protectionArcRead()
  */
 void ConfiguratorWindow::protectionExt1Read()
 {
-    sendSettingControlReadRequest("M71");
-    sendSettingReadRequest(tr("M72"), tr("M72"), CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRequest("EXT1");
+    sendSettingControlReadRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingReadRequest("M72", "M72", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2
@@ -1678,9 +1687,9 @@ void ConfiguratorWindow::protectionExt1Read()
  */
 void ConfiguratorWindow::protectionExt2Read()
 {
-    sendSettingControlReadRequest("M73");
-    sendSettingReadRequest(tr("M74"), tr("M74"), CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRequest("EXT2");
+    sendSettingControlReadRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingReadRequest("M74", "M74", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3
@@ -1689,9 +1698,9 @@ void ConfiguratorWindow::protectionExt2Read()
  */
 void ConfiguratorWindow::protectionExt3Read()
 {
-    sendSettingControlReadRequest("M75");
-    sendSettingReadRequest(tr("M76"), tr("M76"), CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRequest("EXT3");
+    sendSettingControlReadRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingReadRequest("M76", "M76", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendProtectionWorkModeRequest("EXT3", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternal
@@ -1712,9 +1721,9 @@ void ConfiguratorWindow::protectionExternalGroupRead()
  */
 void ConfiguratorWindow::protectionStartingRead()
 {
-    sendSettingControlReadRequest("M19");
-    sendSettingReadRequest(tr("M20"), tr("X06"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("STARTING");
+    sendSettingControlReadRequest("M19", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingReadRequest("M20", "X06", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendProtectionWorkModeRequest("STARTING", FUN_READ, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminRead
@@ -1723,9 +1732,9 @@ void ConfiguratorWindow::protectionStartingRead()
  */
 void ConfiguratorWindow::protectionIminRead()
 {
-    sendSettingControlReadRequest("M29");
-    sendSettingReadRequest(tr("M30"), tr("X10"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("IMIN");
+    sendSettingControlReadRequest("M29", DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingReadRequest("M30", "X10", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendProtectionWorkModeRequest("IMIN", FUN_READ, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorRead
@@ -1744,10 +1753,10 @@ void ConfiguratorWindow::protectionMotorGroupRead()
  */
 void ConfiguratorWindow::protectionTemp1Read()
 {
-    sendSettingControlReadRequest("M65");
-    sendSettingControlReadRequest("M66");
-    sendSettingReadRequest(tr("M67"), tr("X20"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("TEMP1");
+    sendSettingControlReadRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingControlReadRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingReadRequest("M67", "X20", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendProtectionWorkModeRequest("TEMP1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp2Read
@@ -1756,10 +1765,10 @@ void ConfiguratorWindow::protectionTemp1Read()
  */
 void ConfiguratorWindow::protectionTemp2Read()
 {
-    sendSettingControlReadRequest("M65");
-    sendSettingControlReadRequest("M66");
-    sendSettingReadRequest(tr("M68"), tr("X21"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("TEMP2");
+    sendSettingControlReadRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingControlReadRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingReadRequest("M68", "X21", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendProtectionWorkModeRequest("TEMP2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemperatureRead
@@ -1778,9 +1787,9 @@ void ConfiguratorWindow::protectionTemperatureGroupRead()
  */
 void ConfiguratorWindow::protectionLevel1Read()
 {
-    sendSettingControlReadRequest("M77");
-    sendSettingReadRequest(tr("M78"), tr("M78"), CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRequest("LEVEL1");
+    sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequest("M78", "M78", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendProtectionWorkModeRequest("LEVEL1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Read
@@ -1789,9 +1798,9 @@ void ConfiguratorWindow::protectionLevel1Read()
  */
 void ConfiguratorWindow::protectionLevel2Read()
 {
-    sendSettingControlReadRequest("M77");
-    sendSettingReadRequest(tr("M79"), tr("M79"), CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendProtectionWorkModeRequest("LEVEL2");
+    sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequest("M79", "M79", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendProtectionWorkModeRequest("LEVEL2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartRead
@@ -1802,7 +1811,8 @@ void ConfiguratorWindow::protectionSignalStartRead()
 {
     int addr = addressSettingKey("M80");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, addr, QVector<quint16>() << 24);
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, addr,
+                         QVector<quint16>() << 24);
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
@@ -1826,10 +1836,10 @@ void ConfiguratorWindow::protectionReserveGroupRead()
  */
 void ConfiguratorWindow::protectionBRURead()
 {
-    sendSettingControlReadRequest("M93");
-    sendSettingControlReadRequest("M95");
-    sendSettingReadRequest(tr("M96"), tr("M99"), CModBusDataUnit::ReadHoldingRegisters, 8);
-    sendProtectionWorkModeRequest("BRU");
+    sendSettingControlReadRequest("M93", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingControlReadRequest("M95", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingReadRequest("M96", "M99", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("BRU", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumRead
@@ -1838,9 +1848,9 @@ void ConfiguratorWindow::protectionBRURead()
  */
 void ConfiguratorWindow::protectionVacuumRead()
 {
-    sendSettingControlReadRequest("M90");
-    sendSettingReadRequest(tr("M91"), tr("X23"), CModBusDataUnit::ReadHoldingRegisters, 6);
-    sendProtectionWorkModeRequest("VACUUM");
+    sendSettingControlReadRequest("M90", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingReadRequest("M91", "X23", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("VACUUM", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlRead
@@ -1875,20 +1885,20 @@ void ConfiguratorWindow::amplitudeReadOfCurrent()
  */
 void ConfiguratorWindow::automationSwitchRead()
 {
-    sendSettingControlReadRequest("K32");
-    sendSettingControlReadRequest("K01");
-    sendSettingControlReadRequest("K03");
-    sendSettingControlReadRequest("K06");
-    sendSettingControlReadRequest("K17");
-    sendSettingControlReadRequest("K07");
-    sendSettingReadRequest("K02", "K02", CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendSettingReadRequest("K50", "K50", CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendSettingReadRequest("K04", "K04", CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendSettingReadRequest("K51", "K51", CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendSettingReadRequest("K05", "K05", CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendSettingReadRequest("K08", "K08", CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendSettingReadRequest("K09", "K09", CModBusDataUnit::ReadHoldingRegisters, 2);
-    sendSettingReadRequest("X22", "X22", CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingControlReadRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K17", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K07", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K02", "K02", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K50", "K50", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K04", "K04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K51", "K51", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K05", "K05", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K08", "K08", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K09", "K09", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("X22", "X22", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckRead
@@ -1897,10 +1907,10 @@ void ConfiguratorWindow::automationSwitchRead()
  */
 void ConfiguratorWindow::automationSwitchTruckRead()
 {
-    sendSettingControlReadRequest("K37");
-    sendSettingControlReadRequest("K41");
-    sendSettingReadRequest("K45", "K49", CModBusDataUnit::ReadHoldingRegisters, 4);
-    sendSettingReadRequest("K58", "K59", CModBusDataUnit::ReadHoldingRegisters, 4);
+    sendSettingControlReadRequest("K37", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K41", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K45", "K49", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K58", "K59", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationBlockRead
@@ -1909,9 +1919,9 @@ void ConfiguratorWindow::automationSwitchTruckRead()
  */
 void ConfiguratorWindow::automationBlockRead()
 {
-    sendSettingControlReadRequest("K13");
-    sendSettingControlReadRequest("K14");
-    sendSettingControlReadRequest("K15");
+    sendSettingControlReadRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationBusRead
@@ -1920,10 +1930,10 @@ void ConfiguratorWindow::automationBlockRead()
  */
 void ConfiguratorWindow::automationBusRead()
 {
-    sendSettingControlReadRequest("K34");
-    sendSettingControlReadRequest("K38");
-    sendSettingReadRequest("K42", "K46", CModBusDataUnit::ReadHoldingRegisters, 4);
-    sendSettingReadRequest("K52", "K53", CModBusDataUnit::ReadHoldingRegisters, 4);
+    sendSettingControlReadRequest("K34", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K38", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K42", "K46", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K52", "K53", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationLineRead
@@ -1932,10 +1942,10 @@ void ConfiguratorWindow::automationBusRead()
  */
 void ConfiguratorWindow::automationLineRead()
 {
-    sendSettingControlReadRequest("K35");
-    sendSettingControlReadRequest("K39");
-    sendSettingReadRequest("K43", "K47", CModBusDataUnit::ReadHoldingRegisters, 4);
-    sendSettingReadRequest("K54", "K55", CModBusDataUnit::ReadHoldingRegisters, 4);
+    sendSettingControlReadRequest("K35", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K39", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K43", "K47", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K54", "K55", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationEarthRead
@@ -1944,10 +1954,10 @@ void ConfiguratorWindow::automationLineRead()
  */
 void ConfiguratorWindow::automationEarthRead()
 {
-    sendSettingControlReadRequest("K36");
-    sendSettingControlReadRequest("K40");
-    sendSettingReadRequest("K44", "K48", CModBusDataUnit::ReadHoldingRegisters, 4);
-    sendSettingReadRequest("K56", "K57", CModBusDataUnit::ReadHoldingRegisters, 4);
+    sendSettingControlReadRequest("K36", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K40", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K44", "K48", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K56", "K57", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationDisconnectorsRead
@@ -1967,8 +1977,8 @@ void ConfiguratorWindow::automationDisconnectorsGroupRead()
  */
 void ConfiguratorWindow::automationCtrlTNRead()
 {
-    sendSettingControlReadRequest("K18");
-    sendSettingReadRequest(tr("K19"), tr("K19"), CModBusDataUnit::ReadHoldingRegisters, 2);
+    sendSettingControlReadRequest("K18", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K19", "K19", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAVRRead
@@ -1977,8 +1987,8 @@ void ConfiguratorWindow::automationCtrlTNRead()
  */
 void ConfiguratorWindow::automationAVRRead()
 {
-    sendSettingControlReadRequest("M81");
-    sendSettingReadRequest(tr("M82"), tr("M85"), CModBusDataUnit::ReadHoldingRegisters, 8);
+    sendSettingControlReadRequest("M81", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("M82", "M85", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVSignalStartRead
@@ -2002,8 +2012,46 @@ void ConfiguratorWindow::automationAPVSignalStartRead()
  */
 void ConfiguratorWindow::automationAPVRead()
 {
-    sendSettingControlReadRequest("M87");
-    sendSettingReadRequest(tr("M88"), tr("M89"), CModBusDataUnit::ReadHoldingRegisters, 4);
+    sendSettingControlReadRequest("M87", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("M88", "M89", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+}
+/*!
+ * \brief ConfiguratorWindow::automationGroupRead
+ *
+ * Чтение группы автоматика
+ */
+void ConfiguratorWindow::automationGroupRead()
+{
+    automationSwitchRead(); // автоматики защиты Выключатель
+    automationSwitchTruckRead(); // автоматики защиты Тележка выключателя
+    automationBlockRead(); // чтение автоматики Блокировки
+    automationBusRead(); // чтение автоматики Шинный разъединитель
+    automationLineRead(); // чтение автоматики Линейный разъединитель
+    automationEarthRead(); // чтение автоматики Заземляющий разъединитель
+    automationDisconnectorsGroupRead(); // чтение группы автоматики Разъединители
+    automationCtrlTNRead(); // чтение автоматики Контроль ТН
+    automationAVRRead(); // чтение автоматики АВР
+    automationAPVRead(); // чтение автоматики АПВ
+    automationAPVSignalStartRead(); // чтение пусковых сигналов АПВ
+}
+/*!
+ * \brief ConfiguratorWindow::automationGroupWrite
+ *
+ * Запись группы автоматика
+ */
+void ConfiguratorWindow::automationGroupWrite()
+{
+    automationSwitchWrite(); // запись автоматика Выключатель
+    automationSwitchTruckWrite(); // запись автоматика Тележка выключателя
+    automationBlockWrite(); // запись автоматика Блокировки
+    automationBusWrite(); // запись автоматика Шинный разъединитель
+    automationLineWrite(); // запись автоматика Линейный разъединитель
+    automationEarthWrite(); // запись автоматика Заземляющий разъединитель
+    automationDisconnectorsGroupWrite(); // запись автоматика Разъединители
+    automationCtrlTNWrite(); // запись автоматика Контроль ТН
+    automationAVRWrite(); // запись автоматика АВР
+    automationAPVWrite(); // запись автоматикаи АПВ
+    automationAPVSignalStartWrite(); // запись автоматика пусковые сигналы АПВ
 }
 /*!
  * \brief ConfiguratorWindow::calibrationOfCurrentWrite
@@ -2049,14 +2097,33 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
         return;
     }
 
+    QString nameWgt;
+    float   t_value;
+
     if(Ia != 0)
-        ui->leKIA->setText(QLocale::system().toString(Ia, 'f', 6));
+    {
+        nameWgt = "lineEditKIA";
+        t_value = Ia;
+    }
     if(Ib != 0)
-        ui->leKIB->setText(QLocale::system().toString(Ib, 'f', 6));
+    {
+        nameWgt = "lineEditKIB";
+        t_value = Ib;
+    }
     if(Ic != 0)
-        ui->leKIC->setText(QLocale::system().toString(Ic, 'f', 6));
+    {
+        nameWgt = "lineEditKIC";
+        t_value = Ic;
+    }
     if(_3I0 != 0)
-        ui->leK3I0->setText(QLocale::system().toString(_3I0, 'f', 6));
+    {
+        nameWgt = "lineEdit3I0";
+        t_value = _3I0;
+    }
+
+    CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral, nameWgt, 1));
+    if(lineEdit)
+        lineEdit->setText(QLocale::system().toString(t_value, 'f', 6));
 
     union
     {
@@ -2703,6 +2770,7 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
     if(menu_item != -1)
     {
         ui->stwgtMain->setCurrentIndex(menu_item);
+        widgetStackIndexChanged(menu_item);
     }
 }
 //-------------------------------------
@@ -2725,13 +2793,7 @@ void ConfiguratorWindow::readSettings()
     protectionTemperatureGroupRead();
     protectionReserveGroupRead();
     protectionControlGroupRead();
-    automationSwitchRead();
-    automationSwitchTruckRead();
-    automationBlockRead();
-    automationDisconnectorsGroupRead();
-    automationCtrlTNRead();
-    automationAVRRead();
-    automationAPVRead();
+    automationGroupRead();
     settingCommunicationsRead();
     dateTimeRead();
     purposeLedsRead();
@@ -3005,6 +3067,10 @@ void ConfiguratorWindow::readSetCurrent()
             automationAPVSignalStartRead();
         break;
 
+        case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
+            automationGroupRead();
+        break;
+
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // чтение настройки Светодиоды
             purposeLedsRead();
             purposeMemoryOutLedRead();
@@ -3061,13 +3127,7 @@ void ConfiguratorWindow::writeSettings()
     protectionTemperatureGroupWrite();
     protectionReserveGroupWrite();
     protectionControlGroupWrite();
-    automationSwitchWrite();
-    automationSwitchTruckWrite();
-    automationBlockWrite();
-    automationDisconnectorsGroupWrite();
-    automationCtrlTNWrite();
-    automationAVRWrite();
-    automationAPVWrite();
+    automationGroupWrite();
     dateTimeWrite();
     purposeLedsWrite();
     purposeMemoryOutLedWrite();
@@ -3337,6 +3397,10 @@ void ConfiguratorWindow::writeSetCurrent()
             automationAPVSignalStartWrite();
         break;
 
+        case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
+            automationGroupWrite();
+        break;
+
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // запись настройки Светодиоды
             purposeLedsWrite();
             purposeMemoryOutLedWrite();
@@ -3437,188 +3501,6 @@ void ConfiguratorWindow::initMenuPanel()
     itemProtections->addChildren(QList<QTreeWidgetItem*>() << protectItemCurrent << protectItemPower << protectItemDirected <<
                                                               protectItemFrequency << protectItemExternal << protectItemMotor <<
                                                               protectItemTemperature << protectItemReserve <<protectItemControl);
-    // пункты защиты "по току"
-    QTreeWidgetItem* currentItemMTZ1 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ1"),
-                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1); // защита МТЗ1
-    QTreeWidgetItem* currentItemMTZ2 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ2"),
-                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2); // защита МТЗ2
-    QTreeWidgetItem* currentItemMTZ3 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ3"),
-                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3); // защита МТЗ3
-
-    QTreeWidgetItem* currentItemMTZ3_set_character = new QTreeWidgetItem(currentItemMTZ3,
-                                                                         QStringList() << tr("Настройка характеристик"),
-                                                                         DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR);
-
-    currentItemMTZ3->addChild(currentItemMTZ3_set_character);
-
-    QTreeWidgetItem* currentItemMTZ3_charact_steep   = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Крутая"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP);
-    QTreeWidgetItem* currentItemMTZ3_charact_sloping = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Пологая"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP);
-    QTreeWidgetItem* currentItemMTZ3_charact_inverse = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Инверсная"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV);
-    QTreeWidgetItem* currentItemMTZ3_charact_dur_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Длительно инверсная"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV);
-    QTreeWidgetItem* currentItemMTZ3_charact_back    = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Обратно зависимая"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK);
-    QTreeWidgetItem* currentItemMTZ3_charact_str_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Сильно инверсная"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV);
-    QTreeWidgetItem* currentItemMTZ3_charact_ext_inv = new QTreeWidgetItem(currentItemMTZ3_set_character,
-                                                                           QStringList() << tr("Экстремально инверсная"),
-                                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV);
-
-    currentItemMTZ3_set_character->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ3_charact_steep <<
-                                                                            currentItemMTZ3_charact_sloping <<
-                                                                            currentItemMTZ3_charact_inverse <<
-                                                                            currentItemMTZ3_charact_dur_inv <<
-                                                                            currentItemMTZ3_charact_back <<
-                                                                            currentItemMTZ3_charact_str_inv <<
-                                                                            currentItemMTZ3_charact_ext_inv);
-
-    QTreeWidgetItem* currentItemMTZ4 = new QTreeWidgetItem(protectItemCurrent, QStringList() << tr("МТЗ4"),
-                                                           DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4); // защита МТЗ4
-
-    protectItemCurrent->addChildren(QList<QTreeWidgetItem*>() << currentItemMTZ1 << currentItemMTZ2 << currentItemMTZ3 <<
-                                                                 currentItemMTZ4);
-
-    // пункты защиты "по напряжению"
-    QTreeWidgetItem* powerItemUmax1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax1"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1); // защита Umax1
-    QTreeWidgetItem* powerItemUmax2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umax2"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2); // защита Umax2
-    QTreeWidgetItem* powerItemUmin1 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin1"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1); // защита Umin1
-    QTreeWidgetItem* powerItemUmin2 = new QTreeWidgetItem(protectItemPower, QStringList() << tr("Umin2"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2); // защита Umin2
-    QTreeWidgetItem* powerItem3U0   = new QTreeWidgetItem(protectItemPower, QStringList() << tr("3U0"),
-                                                          DEVICE_MENU_PROTECT_ITEM_POWER_3U0); // защита 3U0
-
-    // подпункт защиты Umin1 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
-    QTreeWidgetItem* powerItemUmin1CorecKCU = new QTreeWidgetItem(powerItemUmin1, QStringList() << tr("Корр КЦУ"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU);
-    // подпункт защиты Umin2 "Коррекция КЦУ" - переход на вкладку Автоматика/Выключатель
-    QTreeWidgetItem* powerItemUmin2CorecKCU = new QTreeWidgetItem(powerItemUmin2, QStringList() << tr("Корр КЦУ"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU);
-
-    powerItemUmin1->addChild(powerItemUmin1CorecKCU);
-    powerItemUmin2->addChild(powerItemUmin2CorecKCU);
-    protectItemPower->addChildren(QList<QTreeWidgetItem*>() << powerItemUmax1 << powerItemUmax2 << powerItemUmin1 <<
-                                                               powerItemUmin2 << powerItem3U0);
-
-    // пункты защиты "направленные"
-    QTreeWidgetItem* directItemOZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ1"),
-                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1); // защита ОЗЗ1
-    QTreeWidgetItem* directItemOZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("ОЗЗ2"),
-                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2); // защита ОЗЗ2
-    QTreeWidgetItem* directItemNZZ1 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ1"),
-                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1); // защита НЗЗ1
-    QTreeWidgetItem* directItemNZZ2 = new QTreeWidgetItem(protectItemDirected, QStringList() << tr("НЗЗ2"),
-                                                          DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2); // защита НЗЗ2
-
-    protectItemDirected->addChildren(QList<QTreeWidgetItem*>() << directItemOZZ1 << directItemOZZ2 << directItemNZZ1 <<
-                                                                  directItemNZZ2);
-
-    // пункты защиты "по частоте"
-    QTreeWidgetItem* freqItemACHR1 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР1"),
-                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1); // защита АЧР1
-    QTreeWidgetItem* freqItemACHR2 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР2"),
-                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2); // защита АЧР2
-    QTreeWidgetItem* freqItemACHR3 = new QTreeWidgetItem(protectItemFrequency, QStringList() << tr("АЧР3"),
-                                                         DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3); // защита АЧР3
-
-    protectItemFrequency->addChildren(QList<QTreeWidgetItem*>() << freqItemACHR1 << freqItemACHR2 << freqItemACHR3);
-
-    // пункты защиты "внешние"
-    QTreeWidgetItem* extItemARC       = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Дуговая"),
-                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC); // защита Дуговая
-    QTreeWidgetItem* extItemExternal1 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя1"),
-                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1); // защита Внешняя1
-    QTreeWidgetItem* extItemExternal2 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя2"),
-                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2); // защита Внешняя2
-    QTreeWidgetItem* extItemExternal3 = new QTreeWidgetItem(protectItemExternal, QStringList() << tr("Внешняя3"),
-                                                            DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3); // защита Внешняя3
-
-    protectItemExternal->addChildren(QList<QTreeWidgetItem*>() << extItemARC << extItemExternal1 << extItemExternal2 <<
-                                                                  extItemExternal3);
-
-    // пункты защиты "для двигателя"
-    QTreeWidgetItem* motorItemStarting = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Пусковая"),
-                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING); // защита Пусковая
-    QTreeWidgetItem* motorItemImin     = new QTreeWidgetItem(protectItemMotor, QStringList() << tr("Imin"),
-                                                             DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN); // защита Imin
-
-    protectItemMotor->addChildren(QList<QTreeWidgetItem*>() << motorItemStarting << motorItemImin);
-
-    // пункты защиты "по температуре"
-    QTreeWidgetItem* tempItemTemperature1 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная1"),
-                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1); // защита Температурная1
-    QTreeWidgetItem* tempItemTemperature2 = new QTreeWidgetItem(protectItemTemperature, QStringList() << tr("Температурная2"),
-                                                                DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2); // защита Температурная2
-
-    protectItemTemperature->addChildren(QList<QTreeWidgetItem*>() << tempItemTemperature1 << tempItemTemperature2);
-
-    // пункты защиты "резервные"
-    QTreeWidgetItem* reserveItemLevel1      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров1"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1); // защита Уров1
-    QTreeWidgetItem* reserveItemLevel2      = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Уров2"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2); // защита Уров2
-    QTreeWidgetItem* reserveItemSignalStart = new QTreeWidgetItem(protectItemReserve, QStringList() << tr("Сигнал пуска"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START); // защита Сигнал пуска
-
-    protectItemReserve->addChildren(QList<QTreeWidgetItem*>() << reserveItemLevel1 << reserveItemLevel2 << reserveItemSignalStart);
-
-    // пункты защиты "предварительного контроля"
-    QTreeWidgetItem* ctrlItemBRU    = new QTreeWidgetItem(protectItemControl, QStringList() << tr("БРУ"),
-                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU); // защита БРУ
-    QTreeWidgetItem* ctrlItemVacuum = new QTreeWidgetItem(protectItemControl, QStringList() << tr("Вакууум"),
-                                                          DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM); // защита Вакуум
-
-    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << ctrlItemBRU << ctrlItemVacuum);
-
-    // АВТОМАТИКА
-    QTreeWidgetItem* automationSwitch        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Выключатель"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH); // автоматика Выключатель
-    QTreeWidgetItem* automationSwitchTruck   = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Тележка выключателя"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK); // автоматика Выключатель
-    QTreeWidgetItem* automationBlocks        = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Блокировки"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_BLOCKS); // автоматика Выключатель
-    QTreeWidgetItem* automationDisconnectors = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Разъединители"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS); // автоматика Выключатель
-
-    QTreeWidgetItem* automationDisconnectorsBus   = new QTreeWidgetItem(automationDisconnectors,
-                                                                        QStringList() << tr("Шинный разъединитель"),
-                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS);
-    QTreeWidgetItem* automationDisconnectorsLine  = new QTreeWidgetItem(automationDisconnectors,
-                                                                        QStringList() << tr("Линейный разъединитель"),
-                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE);
-    QTreeWidgetItem* automationDisconnectorsEarth = new QTreeWidgetItem(automationDisconnectors,
-                                                                        QStringList() << tr("Заземляющий разъединитель"),
-                                                                        DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH);
-
-    protectItemControl->addChildren(QList<QTreeWidgetItem*>() << automationDisconnectorsBus << automationDisconnectorsLine <<
-                                                                 automationDisconnectorsEarth);
-
-    QTreeWidgetItem* automationCtrlTN = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Контроль ТН"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN); // автоматика Выключатель
-    QTreeWidgetItem* automationAVR    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АВР"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_AVR); // автоматика Выключатель
-    QTreeWidgetItem* automationAPV    = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АПВ"),
-                                                                   DEVICE_MENU_ITEM_AUTOMATION_APV); // автоматика Выключатель
-
-    QTreeWidgetItem* automationAPVSignalStart = new QTreeWidgetItem(automationAPV, QStringList() << tr("АПВ сигналы пуска"),
-                                                                    DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START);
-
-    automationAPV->addChild(automationAPVSignalStart);
-
-    itemAutomation->addChildren(QList<QTreeWidgetItem*>() << automationSwitch << automationSwitchTruck << automationBlocks <<
-                                                             automationDisconnectors << automationCtrlTN << automationAVR <<
-                                                             automationAPV);
 
     // ЖУРНАЛЫ
     QTreeWidgetItem* journalCrash     = new QTreeWidgetItem(itemJournals, QStringList() << tr("Аварий"),
@@ -3656,22 +3538,6 @@ void ConfiguratorWindow::initMenuPanel()
     itemSettings->addChildren(QList<QTreeWidgetItem*>() << settingInputAnalog << settingCommunications << settingDateTime <<
                                                            settingKeyboard << settingLeds << settingIO);
 
-    // пункты настройки "Аналоговые входы"
-    QTreeWidgetItem* inputAnalogGeneral     = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Основные"),
-                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL);
-    QTreeWidgetItem* inputAnalogCalibration = new QTreeWidgetItem(settingInputAnalog, QStringList() << tr("Калибровка"),
-                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB);
-
-    settingInputAnalog->addChildren(QList<QTreeWidgetItem*>() << inputAnalogGeneral << inputAnalogCalibration);
-
-    // пункты настройки "входы и выходы"
-//    QTreeWidgetItem* ioMDVV01 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-01"),
-//                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01);
-//    QTreeWidgetItem* ioMDVV02 = new QTreeWidgetItem(settingIO, QStringList() << tr("МДВВ-02"),
-//                                                    DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02);
-
-//    settingIO->addChildren(QList<QTreeWidgetItem*>() << ioMDVV01 << ioMDVV02);
-
     QTreeWidgetItem* ioRelayMDVV01    = new QTreeWidgetItem(settingIO, QStringList() << tr("Реле"),
                                                             DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
     QTreeWidgetItem* ioDSInputMDVV01  = new QTreeWidgetItem(settingIO, QStringList() << tr("Дискретные входы"),
@@ -3680,13 +3546,6 @@ void ConfiguratorWindow::initMenuPanel()
                                                             DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION);
 
     settingIO->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01 << ioProtectionCtrl);
-
-//    QTreeWidgetItem* ioRelayMDVV02   = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Реле"),
-//                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY);
-//    QTreeWidgetItem* ioDSInputMDVV02 = new QTreeWidgetItem(ioMDVV02, QStringList() << tr("Дискретные входы"),
-//                                                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS);
-
-//    ioMDVV02->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV02 << ioDSInputMDVV02);
 
     ui->treewgtDeviceMenu->addTopLevelItem(itemProtections);
     ui->treewgtDeviceMenu->addTopLevelItem(itemAutomation);
@@ -3701,7 +3560,6 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_MEASURES_ROOT]   = 10000;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ROOT]   = 10000;
 
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]     = 10000;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]       = 10000;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]    = 10000;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]   = 10000;
@@ -3711,174 +3569,708 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]     = 10000;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]     = 10000;
 
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL] = 0;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB]   = 1;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1]            = 2;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2]            = 3;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3]            = 4;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP] = 5;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP]  = 6;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV]   = 7;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV]  = 8;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK]  = 9;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV]  = 10;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV]  = 11;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4]            = 12;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1]           = 13;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2]           = 14;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1]           = 15;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2]           = 16;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1]             = 17;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2]             = 18;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1]             = 19;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2]             = 20;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin1
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU]   = 38; // ссылка на автоматика/выключатель для Umin2
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER_3U0]               = 21;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING]          = 22;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN]              = 23;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1]         = 24;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2]         = 25;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3]         = 26;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC]            = 27;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1]           = 28;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2]           = 29;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3]           = 30;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1]       = 31;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2]       = 32;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1]          = 33;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2]          = 34;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START]       = 35;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU]             = 36;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM]          = 37;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_SWITCH]               = 38;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK]         = 39;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_BLOCKS]               = 40;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS]    = 41;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE]   = 42;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH]  = 43;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN]              = 44;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_AVR]                  = 45;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV]                  = 46;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START]     = 47;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 48;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 49;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 50;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 51;
-    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 52;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 53;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 54;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 55;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 56;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 57;
-//    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS]  = 57;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 58;
-//    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY]   = 58;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 60;
-//    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 61;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG]         = 0;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 1;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]                   = 2;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]                = 3;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]               = 4;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]                = 5;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR]                   = 6;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE]             = 7;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]                 = 8;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]                 = 9;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]                 = 10;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 11;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 12;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 13;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 14;
+    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 15;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 16;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 17;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 18;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 19;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 20;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 21;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 23;
+    m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT]                 = 1; // при открытии меню Защиты открывается группа МТЗ
 
-//    ui->tableViewProtectionGroupMTZ->setColumns(QStringList() << tr("Имя") << tr("Параметр") << tr("Предел"));
+    QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел");
 
-//    CDeviceMenuTableWidget::column_list_t mtz1Row1 = CDeviceMenuTableWidget::column_list_t(
+    ui->tableWidgetSettingsAnalogGroupGeneral->setColumns(columns);
+    ui->tableWidgetProtectionGroupMTZ->setColumns(columns);
+    ui->tableWidgetProtectionGroupPower->setColumns(columns);
+    ui->tableWidgetProtectionGroupDirect->setColumns(columns);
+    ui->tableWidgetProtectionGroupFrequency->setColumns(columns);
+    ui->tableWidgetProtectionGroupExternal->setColumns(columns);
+    ui->tableWidgetProtectionGroupMotor->setColumns(columns);
+    ui->tableWidgetProtectionGroupTemperature->setColumns(columns);
+    ui->tableWidgetProtectionGroupReserve->setColumns(columns);
+    ui->tableWidgetProtectionGroupControl->setColumns(columns);
+    ui->tableWidgetAutomationGroup->setColumns(columns);
+
+    CDeviceMenuTableWidget::group_t group;
+
+    // группа аналоговые основные
+    group = loadMenuGroup(tr("Основные"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+    group = loadMenuGroup(tr("Калибровка"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+
+    // группа по току
+    group = loadMenuGroup(tr("МТЗ1"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("МТЗ2"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("МТЗ3"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("МТЗ4"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+
+    // группа по напряжению
+    group = loadMenuGroup(tr("Umax1"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("Umax2"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("Umin1"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("Umin2"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    group = loadMenuGroup(tr("3U0"));
+    ui->tableWidgetProtectionGroupPower->addGroup(group);
+
+    // группа направленные
+    group = loadMenuGroup(tr("ОЗЗ1"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("ОЗЗ2"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("НЗЗ1"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("НЗЗ2"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+
+    // группа по частоте
+    group = loadMenuGroup(tr("АЧР1"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+    group = loadMenuGroup(tr("АЧР2"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+    group = loadMenuGroup(tr("АЧР3"));
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+
+    // группа внешние
+    group = loadMenuGroup(tr("Дуговая"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя1"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя2"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    group = loadMenuGroup(tr("Внешняя3"));
+    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+
+    // группа по двигателям
+    group = loadMenuGroup(tr("Пусковая"));
+    ui->tableWidgetProtectionGroupMotor->addGroup(group);
+    group = loadMenuGroup(tr("Imin"));
+    ui->tableWidgetProtectionGroupMotor->addGroup(group);
+
+    // группа по температуре
+    group = loadMenuGroup(tr("Температурная1"));
+    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
+    group = loadMenuGroup(tr("Температурная2"));
+    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
+
+    // группа резервные
+    group = loadMenuGroup(tr("Уров1"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+    group = loadMenuGroup(tr("Уров2"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+    group = loadMenuGroup(tr("Сигнал пуска"));
+    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+
+    // группа предварительного контроля
+    group = loadMenuGroup(tr("БРУ"));
+    ui->tableWidgetProtectionGroupControl->addGroup(group);
+    group = loadMenuGroup(tr("Вакуум"));
+    ui->tableWidgetProtectionGroupControl->addGroup(group);
+
+    // группа автоматики
+    group = loadMenuGroup(tr("Выключатель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Тележка выключателя"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Блокировки"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Шинный разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Линейный разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Заземляющий разъединитель"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("Контроль ТН"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("АВР"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+    group = loadMenuGroup(tr("АПВ"));
+    ui->tableWidgetAutomationGroup->addGroup(group);
+
+    // формирование связей между отдельными ячейками
+    // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2
+    QComboBox* cboxTemp1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
+                                                                        QString("comboBoxM65"), 1));
+    QComboBox* cboxTemp2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
+                                                                        QString("comboBoxM66"), 1));
+    QComboBox* cboxTemp1_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
+                                                                          QString("comboBoxM65_1"), 1));
+    QComboBox* cboxTemp2_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
+                                                                          QString("comboBoxM66_1"), 1));
+
+    if(cboxTemp1 && cboxTemp1_1)
+    {
+        connect(cboxTemp1, SIGNAL(currentIndexChanged(int)), cboxTemp1_1, SLOT(setCurrentIndex(int)));
+        connect(cboxTemp1_1, SIGNAL(currentIndexChanged(int)), cboxTemp1, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxTemp2 && cboxTemp2_1)
+    {
+        connect(cboxTemp2, SIGNAL(currentIndexChanged(int)), cboxTemp2_1, SLOT(setCurrentIndex(int)));
+        connect(cboxTemp2_1, SIGNAL(currentIndexChanged(int)), cboxTemp2, SLOT(setCurrentIndex(int)));
+    }
+
+    // Объединение ячеек Управление Уроверь1 с Управлением Уровень2
+    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
+                                                                         QString("comboBoxM77"), 1));
+    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
+                                                                         QString("comboBoxM77_1"), 1));
+
+    if(cboxLevel1 && cboxLevel2)
+    {
+        connect(cboxLevel1, SIGNAL(currentIndexChanged(int)), cboxLevel2, SLOT(setCurrentIndex(int)));
+        connect(cboxLevel2, SIGNAL(currentIndexChanged(int)), cboxLevel1, SLOT(setCurrentIndex(int)));
+    }
+
+    // Объединение ячеек Автоматика->Выключатель с Кор КЦУ (Umin1)
+    QComboBox* cboxK01   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK01"), 1));
+    QComboBox* cboxK01_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_1"), 1));
+
+    QComboBox* cboxK03   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK03"), 1));
+    QComboBox* cboxK03_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_1"), 1));
+
+    QComboBox* cboxK06   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK06"), 1));
+    QComboBox* cboxK06_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_1"), 1));
+
+    QComboBox* cboxK07   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK07"), 1));
+    QComboBox* cboxK07_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_1"), 1));
+
+    QComboBox* cboxK17   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK17"), 1));
+    QComboBox* cboxK17_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_1"), 1));
+
+    QComboBox* cboxK32   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK32"), 1));
+    QComboBox* cboxK32_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_1"), 1));
+
+    CLineEdit* leK02   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK02"), 1));
+    CLineEdit* leK02_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_1"), 1));
+
+    CLineEdit* leK04   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK04"), 1));
+    CLineEdit* leK04_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_1"), 1));
+
+    CLineEdit* leK05   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK05"), 1));
+    CLineEdit* leK05_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_1"), 1));
+
+    CLineEdit* leK09   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK09"), 1));
+    CLineEdit* leK09_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_1"), 1));
+
+    CLineEdit* leK08   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK08"), 1));
+    CLineEdit* leK08_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_1"), 1));
+
+    CLineEdit* leX22   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditX22"), 1));
+    CLineEdit* leX22_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_1"), 1));
+
+    CLineEdit* leK50   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK50"), 1));
+    CLineEdit* leK50_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_1"), 1));
+
+    CLineEdit* leK51   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK51"), 1));
+    CLineEdit* leK51_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_1"), 1));
+
+    if(cboxK01 && cboxK01_1)
+    {
+        connect(cboxK01, SIGNAL(currentIndexChanged(int)), cboxK01_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK01_1, SIGNAL(currentIndexChanged(int)), cboxK01, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK03 && cboxK03_1)
+    {
+        connect(cboxK03, SIGNAL(currentIndexChanged(int)), cboxK03_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK03_1, SIGNAL(currentIndexChanged(int)), cboxK03, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK06 && cboxK06_1)
+    {
+        connect(cboxK06, SIGNAL(currentIndexChanged(int)), cboxK06_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK06_1, SIGNAL(currentIndexChanged(int)), cboxK06, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK07 && cboxK07_1)
+    {
+        connect(cboxK07, SIGNAL(currentIndexChanged(int)), cboxK07_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK07_1, SIGNAL(currentIndexChanged(int)), cboxK07, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK17 && cboxK17_1)
+    {
+        connect(cboxK17, SIGNAL(currentIndexChanged(int)), cboxK17_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK17_1, SIGNAL(currentIndexChanged(int)), cboxK17, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK32 && cboxK32_1)
+    {
+        connect(cboxK32, SIGNAL(currentIndexChanged(int)), cboxK32_1, SLOT(setCurrentIndex(int)));
+        connect(cboxK32_1, SIGNAL(currentIndexChanged(int)), cboxK32, SLOT(setCurrentIndex(int)));
+    }
+
+    if(leK02 && leK02_1)
+    {
+        connect(leK02, &CLineEdit::textChanged, leK02_1, &CLineEdit::setText);
+        connect(leK02_1, &CLineEdit::textChanged, leK02, &CLineEdit::setText);
+    }
+
+    if(leK04 && leK04_1)
+    {
+        connect(leK04, &CLineEdit::textChanged, leK04_1, &CLineEdit::setText);
+        connect(leK04_1, &CLineEdit::textChanged, leK04, &CLineEdit::setText);
+    }
+
+    if(leK05 && leK05_1)
+    {
+        connect(leK05, &CLineEdit::textChanged, leK05_1, &CLineEdit::setText);
+        connect(leK05_1, &CLineEdit::textChanged, leK05, &CLineEdit::setText);
+    }
+
+    if(leK09 && leK09_1)
+    {
+        connect(leK09, &CLineEdit::textChanged, leK09_1, &CLineEdit::setText);
+        connect(leK09_1, &CLineEdit::textChanged, leK09, &CLineEdit::setText);
+    }
+
+    if(leK08 && leK08_1)
+    {
+        connect(leK08, &CLineEdit::textChanged, leK08_1, &CLineEdit::setText);
+        connect(leK08_1, &CLineEdit::textChanged, leK08, &CLineEdit::setText);
+    }
+
+    if(leX22 && leX22_1)
+    {
+        connect(leX22, &CLineEdit::textChanged, leX22_1, &CLineEdit::setText);
+        connect(leX22_1, &CLineEdit::textChanged, leX22, &CLineEdit::setText);
+    }
+
+    if(leK50 && leK50_1)
+    {
+        connect(leK50, &CLineEdit::textChanged, leK50_1, &CLineEdit::setText);
+        connect(leK50_1, &CLineEdit::textChanged, leK50, &CLineEdit::setText);
+    }
+
+    if(leK51 && leK51_1)
+    {
+        connect(leK51, &CLineEdit::textChanged, leK51_1, &CLineEdit::setText);
+        connect(leK51_1, &CLineEdit::textChanged, leK51, &CLineEdit::setText);
+    }
+
+    // Объединение ячеек Автоматика->Выключатель с Кор КЦУ (Umin2)
+    QComboBox* cboxK01_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_2"), 1));
+    QComboBox* cboxK03_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_2"), 1));
+    QComboBox* cboxK06_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_2"), 1));
+    QComboBox* cboxK07_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_2"), 1));
+    QComboBox* cboxK17_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_2"), 1));
+    QComboBox* cboxK32_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_2"), 1));
+    CLineEdit* leK02_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_2"), 1));
+    CLineEdit* leK04_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_2"), 1));
+    CLineEdit* leK05_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_2"), 1));
+    CLineEdit* leK09_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_2"), 1));
+    CLineEdit* leK08_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_2"), 1));
+    CLineEdit* leX22_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_2"), 1));
+    CLineEdit* leK50_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_2"), 1));
+    CLineEdit* leK51_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_2"), 1));
+
+    if(cboxK01 && cboxK01_2)
+    {
+        connect(cboxK01, SIGNAL(currentIndexChanged(int)), cboxK01_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK01_2, SIGNAL(currentIndexChanged(int)), cboxK01, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK03 && cboxK03_2)
+    {
+        connect(cboxK03, SIGNAL(currentIndexChanged(int)), cboxK03_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK03_2, SIGNAL(currentIndexChanged(int)), cboxK03, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK06 && cboxK06_2)
+    {
+        connect(cboxK06, SIGNAL(currentIndexChanged(int)), cboxK06_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK06_2, SIGNAL(currentIndexChanged(int)), cboxK06, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK07 && cboxK07_2)
+    {
+        connect(cboxK07, SIGNAL(currentIndexChanged(int)), cboxK07_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK07_2, SIGNAL(currentIndexChanged(int)), cboxK07, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK17 && cboxK17_2)
+    {
+        connect(cboxK17, SIGNAL(currentIndexChanged(int)), cboxK17_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK17_2, SIGNAL(currentIndexChanged(int)), cboxK17, SLOT(setCurrentIndex(int)));
+    }
+
+    if(cboxK32 && cboxK32_2)
+    {
+        connect(cboxK32, SIGNAL(currentIndexChanged(int)), cboxK32_2, SLOT(setCurrentIndex(int)));
+        connect(cboxK32_2, SIGNAL(currentIndexChanged(int)), cboxK32, SLOT(setCurrentIndex(int)));
+    }
+
+    if(leK02 && leK02_2)
+    {
+        connect(leK02, &CLineEdit::textChanged, leK02_2, &CLineEdit::setText);
+        connect(leK02_2, &CLineEdit::textChanged, leK02, &CLineEdit::setText);
+    }
+
+    if(leK04 && leK04_2)
+    {
+        connect(leK04, &CLineEdit::textChanged, leK04_2, &CLineEdit::setText);
+        connect(leK04_2, &CLineEdit::textChanged, leK04, &CLineEdit::setText);
+    }
+
+    if(leK05 && leK05_2)
+    {
+        connect(leK05, &CLineEdit::textChanged, leK05_2, &CLineEdit::setText);
+        connect(leK05_2, &CLineEdit::textChanged, leK05, &CLineEdit::setText);
+    }
+
+    if(leK09 && leK09_2)
+    {
+        connect(leK09, &CLineEdit::textChanged, leK09_2, &CLineEdit::setText);
+        connect(leK09_2, &CLineEdit::textChanged, leK09, &CLineEdit::setText);
+    }
+
+    if(leK08 && leK08_2)
+    {
+        connect(leK08, &CLineEdit::textChanged, leK08_2, &CLineEdit::setText);
+        connect(leK08_2, &CLineEdit::textChanged, leK08, &CLineEdit::setText);
+    }
+
+    if(leX22 && leX22_2)
+    {
+        connect(leX22, &CLineEdit::textChanged, leX22_2, &CLineEdit::setText);
+        connect(leX22_2, &CLineEdit::textChanged, leX22, &CLineEdit::setText);
+    }
+
+    if(leK50 && leK50_2)
+    {
+        connect(leK50, &CLineEdit::textChanged, leK50_2, &CLineEdit::setText);
+        connect(leK50_2, &CLineEdit::textChanged, leK50, &CLineEdit::setText);
+    }
+
+    if(leK51 && leK51_2)
+    {
+        connect(leK51, &CLineEdit::textChanged, leK51_2, &CLineEdit::setText);
+        connect(leK51_2, &CLineEdit::textChanged, leK51, &CLineEdit::setText);
+    }
+
+    // Объединение ячеек Сигналы пуска (защита Резервные) с Автоматика->АПВ Сигналы пуска
+//    QComboBox* cboxN50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN50"), 1));
+//    QComboBox* cboxN50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN50_1"), 1));
+
+//    QComboBox* cboxN52   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN52"), 1));
+//    QComboBox* cboxN52_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN52_1"), 1));
+
+//    QComboBox* cboxN53   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN53"), 1));
+//    QComboBox* cboxN53_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN53_1"), 1));
+
+//    QComboBox* cboxN54   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN54"), 1));
+//    QComboBox* cboxN54_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN54_1"), 1));
+
+//    QComboBox* cboxN55   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN55"), 1));
+//    QComboBox* cboxN55_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN55_1"), 1));
+
+//    QComboBox* cboxN56   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN56"), 1));
+//    QComboBox* cboxN56_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN56_1"), 1));
+
+//    QComboBox* cboxN57   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN57"), 1));
+//    QComboBox* cboxN57_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN57_1"), 1));
+
+//    QComboBox* cboxN58   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN58"), 1));
+//    QComboBox* cboxN58_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN58_1"), 1));
+
+//    QComboBox* cboxN59   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN59"), 1));
+//    QComboBox* cboxN59_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN59_1"), 1));
+
+//    QComboBox* cboxV04   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV04"), 1));
+//    QComboBox* cboxV04_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV04_1"), 1));
+
+//    QComboBox* cboxV07   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV07"), 1));
+//    QComboBox* cboxV07_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV07_1"), 1));
+
+//    QComboBox* cboxV10   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV10"), 1));
+//    QComboBox* cboxV10_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV10_1"), 1));
+
+//    QComboBox* cboxV13   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV13"), 1));
+//    QComboBox* cboxV13_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV13_1"), 1));
+
+//    QComboBox* cboxV16   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV16"), 1));
+//    QComboBox* cboxV16_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV16_1"), 1));
+
+//    QComboBox* cboxV19   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV19"), 1));
+//    QComboBox* cboxV19_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV19_1"), 1));
+
+//    QComboBox* cboxV22   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV22"), 1));
+//    QComboBox* cboxV22_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV22_1"), 1));
+
+//    QComboBox* cboxV25   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV25"), 1));
+//    QComboBox* cboxV25_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV25_1"), 1));
+
+//    QComboBox* cboxV28   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV28"), 1));
+//    QComboBox* cboxV28_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV28_1"), 1));
+
+//    QComboBox* cboxV31   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV31"), 1));
+//    QComboBox* cboxV31_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV31_1"), 1));
+
+//    QComboBox* cboxV36   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV36"), 1));
+//    QComboBox* cboxV36_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV36_1"), 1));
+
+//    QComboBox* cboxV39   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV39"), 1));
+//    QComboBox* cboxV39_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV39_1"), 1));
+
+//    QComboBox* cboxV44   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV44"), 1));
+//    QComboBox* cboxV44_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV44_1"), 1));
+
+//    QComboBox* cboxV50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV50"), 1));
+//    QComboBox* cboxV50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV50_1"), 1));
+
+//    QComboBox* cboxV62   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV62"), 1));
+//    QComboBox* cboxV62_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV62_1"), 1));
+
+//    QComboBox* cboxV65   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV65"), 1));
+//    QComboBox* cboxV65_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV65_1"), 1));
+
+//    QComboBox* cboxV68   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV68"), 1));
+//    QComboBox* cboxV68_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV68_1"), 1));
+
+//    QComboBox* cboxV76   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV76"), 1));
+//    QComboBox* cboxV76_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV76_1"), 1));
+
+//    QComboBox* cboxV77   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV77"), 1));
+//    QComboBox* cboxV77_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV77_1"), 1));
+
+//    QComboBox* cboxV81   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV81"), 1));
+//    QComboBox* cboxV81_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV81_1"), 1));
+
+//    QComboBox* cboxV86   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV86"), 1));
+//    QComboBox* cboxV86_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV86_1"), 1));
+
+//    QComboBox* cboxV90   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV90"), 1));
+//    QComboBox* cboxV90_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV90_1"), 1));
+
+//    QComboBox* cboxV95   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV95"), 1));
+//    QComboBox* cboxV95_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV95_1"), 1));
+
+//    QComboBox* cboxV96   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV96"), 1));
+//    QComboBox* cboxV96_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV96_1"), 1));
+
+//    if(cboxN50 && cboxN50_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelM05 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->cboxM05 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxN50, SIGNAL(currentIndexChanged(int)), cboxN50_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN50_1, SIGNAL(currentIndexChanged(int)), cboxN50, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz1Row2 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxN52 && cboxN52_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelMTZ1WorkMode }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->cboxMTZ1WorkMode }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxN52, SIGNAL(currentIndexChanged(int)), cboxN52_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN52_1, SIGNAL(currentIndexChanged(int)), cboxN52, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz1Row3 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxN53 && cboxN53_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelM06 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->leM06 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxN53, SIGNAL(currentIndexChanged(int)), cboxN53_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN53_1, SIGNAL(currentIndexChanged(int)), cboxN53, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz1Row4 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxN54 && cboxN54_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelM08 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->leM08 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxN54, SIGNAL(currentIndexChanged(int)), cboxN54_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN54_1, SIGNAL(currentIndexChanged(int)), cboxN54, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz1Row5 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxN55 && cboxN55_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelK31 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->leK31 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxN55, SIGNAL(currentIndexChanged(int)), cboxN55_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN55_1, SIGNAL(currentIndexChanged(int)), cboxN55, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz1Row6 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxN56 && cboxN56_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelX01 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->leX01 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxN56, SIGNAL(currentIndexChanged(int)), cboxN56_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN56_1, SIGNAL(currentIndexChanged(int)), cboxN56, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::row_list_t rowGroupMTZ1 = CDeviceMenuTableWidget::row_list_t(
+//    if(cboxN57 && cboxN57_1)
 //    {
-//        mtz1Row1, mtz1Row2, mtz1Row3, mtz1Row4, mtz1Row5, mtz1Row6
-//    });
+//        connect(cboxN57, SIGNAL(currentIndexChanged(int)), cboxN57_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN57_1, SIGNAL(currentIndexChanged(int)), cboxN57, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::group_t groupMTZ1 = { tr("МТЗ1"), rowGroupMTZ1 };
-
-//    CDeviceMenuTableWidget::column_list_t mtz2Row1 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxN58 && cboxN58_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelM09 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->cboxM09 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxN58, SIGNAL(currentIndexChanged(int)), cboxN58_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN58_1, SIGNAL(currentIndexChanged(int)), cboxN58, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz2Row2 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxN59 && cboxN59_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelMTZ2WorkMode }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->cboxMTZ2WorkMode }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxN59, SIGNAL(currentIndexChanged(int)), cboxN59_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN59_1, SIGNAL(currentIndexChanged(int)), cboxN59, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz2Row3 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxV04 && cboxV04_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelM10 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->leM10 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxV04, SIGNAL(currentIndexChanged(int)), cboxV04_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV04_1, SIGNAL(currentIndexChanged(int)), cboxV04, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz2Row4 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxV07 && cboxV07_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelM11 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->leM11 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxV07, SIGNAL(currentIndexChanged(int)), cboxV07_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV07_1, SIGNAL(currentIndexChanged(int)), cboxV07, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz2Row5 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxV10 && cboxV10_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelM12 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->leM12 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxV10, SIGNAL(currentIndexChanged(int)), cboxV10_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV10_1, SIGNAL(currentIndexChanged(int)), cboxV10, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::column_list_t mtz2Row6 = CDeviceMenuTableWidget::column_list_t(
+//    if(cboxV13 && cboxV13_1)
 //    {
-//        CDeviceMenuTableWidget::item_t({ "", ui->labelX03 }),
-//        CDeviceMenuTableWidget::item_t({ "", ui->leX03 }),
-//        CDeviceMenuTableWidget::item_t({ "", nullptr })
-//    });
+//        connect(cboxV13, SIGNAL(currentIndexChanged(int)), cboxV13_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV13_1, SIGNAL(currentIndexChanged(int)), cboxV13, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::row_list_t rowGroupMTZ2 = CDeviceMenuTableWidget::row_list_t(
+//    if(cboxV16 && cboxV16_1)
 //    {
-//        mtz2Row1, mtz2Row2, mtz2Row3, mtz2Row4, mtz2Row5, mtz2Row6
-//    });
+//        connect(cboxV16, SIGNAL(currentIndexChanged(int)), cboxV16_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV16_1, SIGNAL(currentIndexChanged(int)), cboxV16, SLOT(setCurrentIndex(int)));
+//    }
 
-//    CDeviceMenuTableWidget::group_t groupMTZ2 = { tr("МТЗ2"), rowGroupMTZ2 };
+//    if(cboxV19 && cboxV19_1)
+//    {
+//        connect(cboxV19, SIGNAL(currentIndexChanged(int)), cboxV19_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV19_1, SIGNAL(currentIndexChanged(int)), cboxV19, SLOT(setCurrentIndex(int)));
+//    }
 
-//    ui->tableViewProtectionGroupMTZ->addGroup(groupMTZ1);
-//    ui->tableViewProtectionGroupMTZ->addGroup(groupMTZ2);
+//    if(cboxV22 && cboxV22_1)
+//    {
+//        connect(cboxV22, SIGNAL(currentIndexChanged(int)), cboxV22_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV22_1, SIGNAL(currentIndexChanged(int)), cboxV22, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV25 && cboxV25_1)
+//    {
+//        connect(cboxV25, SIGNAL(currentIndexChanged(int)), cboxV25_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV25_1, SIGNAL(currentIndexChanged(int)), cboxV25, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV28 && cboxV28_1)
+//    {
+//        connect(cboxV28, SIGNAL(currentIndexChanged(int)), cboxV28_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV28_1, SIGNAL(currentIndexChanged(int)), cboxV28, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV31 && cboxV31_1)
+//    {
+//        connect(cboxV31, SIGNAL(currentIndexChanged(int)), cboxV31_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV31_1, SIGNAL(currentIndexChanged(int)), cboxV31, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV36 && cboxV36_1)
+//    {
+//        connect(cboxV36, SIGNAL(currentIndexChanged(int)), cboxV36_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV36_1, SIGNAL(currentIndexChanged(int)), cboxV36, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV39 && cboxV39_1)
+//    {
+//        connect(cboxV39, SIGNAL(currentIndexChanged(int)), cboxV39_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV39_1, SIGNAL(currentIndexChanged(int)), cboxV39, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV44 && cboxV44_1)
+//    {
+//        connect(cboxV44, SIGNAL(currentIndexChanged(int)), cboxV44_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV44_1, SIGNAL(currentIndexChanged(int)), cboxV44, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV50 && cboxV50_1)
+//    {
+//        connect(cboxV50, SIGNAL(currentIndexChanged(int)), cboxV50_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV50_1, SIGNAL(currentIndexChanged(int)), cboxV50, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV62 && cboxV62_1)
+//    {
+//        connect(cboxV62, SIGNAL(currentIndexChanged(int)), cboxV62_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV62_1, SIGNAL(currentIndexChanged(int)), cboxV62, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV65 && cboxV65_1)
+//    {
+//        connect(cboxV65, SIGNAL(currentIndexChanged(int)), cboxV65_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV65_1, SIGNAL(currentIndexChanged(int)), cboxV65, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV68 && cboxV68_1)
+//    {
+//        connect(cboxV68, SIGNAL(currentIndexChanged(int)), cboxV68_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV68_1, SIGNAL(currentIndexChanged(int)), cboxV68, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV76 && cboxV76_1)
+//    {
+//        connect(cboxV76, SIGNAL(currentIndexChanged(int)), cboxV76_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV76_1, SIGNAL(currentIndexChanged(int)), cboxV76, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV77 && cboxV77_1)
+//    {
+//        connect(cboxV77, SIGNAL(currentIndexChanged(int)), cboxV77_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV77_1, SIGNAL(currentIndexChanged(int)), cboxV77, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV81 && cboxV81_1)
+//    {
+//        connect(cboxV81, SIGNAL(currentIndexChanged(int)), cboxV81_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV81_1, SIGNAL(currentIndexChanged(int)), cboxV81, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV86 && cboxV86_1)
+//    {
+//        connect(cboxV86, SIGNAL(currentIndexChanged(int)), cboxV86_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV86_1, SIGNAL(currentIndexChanged(int)), cboxV86, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV90 && cboxV90_1)
+//    {
+//        connect(cboxV90, SIGNAL(currentIndexChanged(int)), cboxV90_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV90_1, SIGNAL(currentIndexChanged(int)), cboxV90, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV95 && cboxV95_1)
+//    {
+//        connect(cboxV95, SIGNAL(currentIndexChanged(int)), cboxV95_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV95_1, SIGNAL(currentIndexChanged(int)), cboxV95, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV96 && cboxV96_1)
+//    {
+//        connect(cboxV96, SIGNAL(currentIndexChanged(int)), cboxV96_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV96_1, SIGNAL(currentIndexChanged(int)), cboxV96, SLOT(setCurrentIndex(int)));
+//    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -3890,15 +4282,17 @@ void ConfiguratorWindow::initCellBind()
 
     while(query.next())
     {
-        QString key          = query.value(tr("key")).toString();
-        QString name         = query.value(tr("widget")).toString();
-        int     addr         = query.value(tr("address")).toInt();
+        QString key          = query.value("key").toString();
+        QString name         = query.value("description").toString();
+        int     addr         = query.value("address").toInt();
         float   limit_min    = query.value("limit_min").toFloat();
         float   limit_max    = query.value("limit_max").toFloat();
         QString unit_meadure = query.value("unit_measure").toString();
+        QString date_type    = query.value("data_type").toString();
+        int     row          = query.value("row").toInt();
 
-        m_cell_list.append(qMakePair(key, cell_t({ addr, name, limit_min, limit_max, unit_meadure })));
-        m_limits[key] = cell_t({ addr, name, limit_min, limit_max, unit_meadure });
+        m_cell_list.append(qMakePair(key, cell_t({ addr, name, limit_min, limit_max, unit_meadure, date_type, row })));
+        m_limits[key] = cell_t({ addr, name, limit_min, limit_max, unit_meadure, date_type, row });
     }
 }
 //----------------------------------------
@@ -4308,52 +4702,6 @@ void ConfiguratorWindow::initJournals()
     m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
                                                 journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 }
-/*!
- * \brief ConfiguratorWindow::initLineEditValidator
- * Применение валидатора для полей ввода CLineEdit
- */
-void ConfiguratorWindow::initLineEditValidator()
-{
-    QObjectList root_obj_list = ui->stwgtMain->children();
-
-    for(QObject* obj: root_obj_list)
-    {
-        if(obj->isWidgetType() && obj->metaObject()->className() == QString("QWidget"))
-        {
-            QWidget* root_wgt = qobject_cast<QWidget*>(obj);
-
-            QObjectList root_wgt_list = root_wgt->children();
-
-            for(QObject* child_obj: root_wgt_list)
-            {
-                if(child_obj->isWidgetType())
-                {
-                    if(child_obj->metaObject()->className() == QString("CLineEdit"))
-                    {
-                        setLineEditValidator(child_obj);
-                    }
-                    else if(child_obj->metaObject()->className() == QString("QGroupBox"))
-                    {
-                        QGroupBox* root_groupbox = qobject_cast<QGroupBox*>(child_obj);
-
-                        QObjectList root_groupbox_list = root_groupbox->children();
-
-                        for(QObject* child_groupbox_obj: root_groupbox_list)
-                        {
-                            if(child_groupbox_obj->isWidgetType())
-                            {
-                                if(child_groupbox_obj->metaObject()->className() == QString("CLineEdit"))
-                                {
-                                    setLineEditValidator(child_groupbox_obj);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 //-------------------------------------------
 void ConfiguratorWindow::initProtectionList()
 {
@@ -4694,7 +5042,7 @@ void ConfiguratorWindow::displayDateTime(CModBusDataUnit& unit)
     ui->timeEdit->setTime(dt.time());
     ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
 }
-//------------------------------------------------------------------
+//--------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
 {
     if(!unit.isValid())
@@ -4703,12 +5051,16 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
         return;
     }
 
-    QString first = unit.property("FIRST").toString();
-    QString last  = unit.property("LAST").toString();
+    QString                 first    = unit.property("FIRST").toString();
+    QString                 last     = unit.property("LAST").toString();
+    DeviceMenuItemType      group    = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
+    QPoint                  indexKey = indexSettingKey(first, last);
+    CDeviceMenuTableWidget* table    = groupMenuWidget(group);
 
-    QPoint indexWgt = indexSettingKey(first, last);
+    if(!table)
+        return;
 
-    if(indexWgt.x() == -1 || indexWgt.y() == -1)
+    if(indexKey.x() == -1 || indexKey.y() == -1)
         return;
 
     int index = 0;
@@ -4720,58 +5072,32 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
         int     i;
     } value;
 
-    for(int i = indexWgt.x(); i <= indexWgt.y(); i++)
+    for(int i = indexKey.x(); i <= indexKey.y(); i++)
     {
         if(index >= unit.count())
             break;
 
-        QString nameWgt = m_cell_list[i].second.name;
+        QString    nameWgt  = QString("lineEdit%1").arg(m_cell_list[i].first);
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
-        if(nameWgt.isEmpty())
+        if(!lineEdit)
         {
             index += 2;
             continue;
         }
 
-        QWidget* widget = findChild<QWidget*>(nameWgt);
+        quint16 val1 = unit.values().at(index + 1);
+        quint16 val2 = unit.values().at(index);
 
-        if(!widget)
-            continue;
+        value.w[0] = val1;
+        value.w[1] = val2;
 
-        QString classWgt = widget->metaObject()->className();
+        QString str = QLocale::system().toString(value.f, 'f', 6);
 
-        if(classWgt == tr("CLineEdit"))
-        {
-            CLineEdit* edit = qobject_cast<CLineEdit*>(widget);
+        if(!str.isEmpty())
+            lineEdit->setText(str);
 
-            if(edit)
-            {
-                quint16 val1 = unit.values().at(index + 1);
-                quint16 val2 = unit.values().at(index);
-
-                value.w[0] = val1;
-                value.w[1] = val2;
-
-                QString str = QLocale::system().toString(value.f, 'f', 6);
-
-                if(!str.isEmpty())
-                    edit->setText(str);
-
-                index += 2;
-            }
-        }
-        else if(classWgt == tr("QComboBox"))
-        {
-            QComboBox* box = qobject_cast<QComboBox*>(widget);
-
-            if(box)
-            {
-                quint16 i = unit.values().at(index++);
-
-                if(i != 0)
-                    box->setCurrentIndex(i - 1);
-            }
-        }
+        index += 2;
     }
 }
 /*!
@@ -4855,41 +5181,33 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
     if(requestFuncton == FUN_SAVE) // ответ на запись - выйти
         return;
 
-    QString indexName = unit.property("INDEX").toString();
-    QPoint  index     = indexSettingKey(indexName, indexName);
+    QString                 indexName = unit.property("INDEX").toString();
+    QPoint                  index     = indexSettingKey(indexName, indexName);
+    DeviceMenuItemType      group     = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
+    CDeviceMenuTableWidget* table     = groupMenuWidget(group);
+
+    if(!table)
+        return;
 
     if(index.x() == -1 || index.x() >= m_cell_list.count())
         return;
 
-    QString nameWgt = m_cell_list[index.x()].second.name;
+    QString nameWgt = QString("comboBox%1").arg(m_cell_list[index.x()].first);
 
     if(nameWgt.isEmpty())
         return;
 
-    QWidget* widget   = findChild<QWidget*>(nameWgt);
-    QString  classWgt = widget->metaObject()->className();
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
-    if(classWgt != "QComboBox")
+    if(!comboBox)
         return;
 
-    QComboBox* box = qobject_cast<QComboBox*>(widget);
+    quint16 i = unit[0];
 
-    if(box)
-    {
-        quint16 i = unit[0];
+    if(indexName.toUpper() != "TZ")
+        i--;
 
-        if(indexName.toUpper() != "TZ")
-            i--;
-
-        box->setCurrentIndex(i);
-
-        if(indexName == "M65")
-            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(i);
-        else if(indexName == "M66")
-            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(i);
-        else if(indexName == "M77")
-            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(i);
-    }
+    comboBox->setCurrentIndex(i);
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
@@ -5112,16 +5430,6 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         return;
     }
 
-    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
-                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
-                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
-                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
-                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
-                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
-                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
-                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
-                                                            ui->cboxV96;
-
     QVector<quint16> tdata;
 
     for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
@@ -5129,9 +5437,24 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         tdata << data[i + 1] << data[i];
     }
 
-    for(QComboBox* box: box_list)
+    int pos = groupMenuPosition(tr("Сигнал пуска"), ui->tableWidgetProtectionGroupReserve);
+
+    for(int row = pos; row < ui->tableWidgetProtectionGroupReserve->rowCount(); row++)
     {
-        QString key = box->objectName().remove("cbox");
+        QWidget* widget = groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, row, 1);
+
+        if(!widget)
+            continue;
+
+        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+            continue;
+
+        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+
+        if(!combobox)
+            continue;
+
+        QString key = combobox->objectName().remove("comboBox");
 
         if(key.isEmpty())
             continue;
@@ -5144,24 +5467,14 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         {
             int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-            if(item_pos < box->count())
-                box->setCurrentIndex(item_pos);
+            if(item_pos < combobox->count())
+                combobox->setCurrentIndex(item_pos);
         }
     }
 }
 //------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>& data)
 {
-    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
-                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
-                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
-                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
-                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
-                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
-                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
-                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
-                                                            ui->cboxV96_2;
-
     QVector<quint16> tdata;
 
     for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
@@ -5169,9 +5482,24 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
         tdata << data[i + 1] << data[i];
     }
 
-    for(QComboBox* box: box_list)
+    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
+
+    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
     {
-        QString key = (box->objectName().remove("cbox")).remove("_2");
+        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
+
+        if(!widget)
+            continue;
+
+        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+            continue;
+
+        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+
+        if(!combobox)
+            continue;
+
+        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
 
         if(key.isEmpty())
             continue;
@@ -5184,8 +5512,8 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
         {
             int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-            if(item_pos < box->count())
-                box->setCurrentIndex(item_pos);
+            if(item_pos < combobox->count())
+                combobox->setCurrentIndex(item_pos);
         }
     }
 }
@@ -5216,7 +5544,7 @@ void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& dat
         ui->spinBoxCommunicationAddress->setValue(data[0]);
     }
 }
-//---------------------------------------------------------------------
+//-----------------------------------------------------------------------
 void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 {
     if(unit.count() != 48)
@@ -5227,20 +5555,16 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
     if(tprotect.isEmpty())
         return;
 
-    QString  wgtName = QString("cbox%1WorkMode").arg(tprotect);
-    QWidget* widget  = findChild<QWidget*>(wgtName);
+    DeviceMenuItemType      group = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
+    CDeviceMenuTableWidget* table = groupMenuWidget(group);
 
-    if(!widget)
+    if(!table)
         return;
 
-    QString className = widget->metaObject()->className();
+    QString    wgtName  = QString("comboBox%1").arg(tprotect);
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
 
-    if(className != "QComboBox")
-        return;
-
-    QComboBox* cbox = qobject_cast<QComboBox*>(widget);
-
-    if(!cbox)
+    if(!comboBox)
         return;
 
     RequestFunction function = RequestFunction(unit.property("REQUEST_FUNCTION").toInt());
@@ -5275,12 +5599,12 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 
         int row = k10_state << 1 | k11_state;
 
-        if(row < cbox->count())
-            cbox->setCurrentIndex(row);
+        if(row < comboBox->count())
+            comboBox->setCurrentIndex(row);
     }
     else if(function == FUN_SAVE)
     {
-        int state = cbox->currentIndex();
+        int state = comboBox->currentIndex();
 
         switch(state)
         {
@@ -5318,7 +5642,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
             return;
 
         CModBusDataUnit new_unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
-                               addr, values);
+                                 addr, values);
 
         m_modbus->sendData(new_unit);
     }
@@ -5569,7 +5893,7 @@ int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& la
 
     for(quint8 i = 0; i < m_cell_list.count(); i++)
     {
-        QPair<QString, cell_t> pair = m_cell_list.at(i);
+        QPair<QString, cell_t> pair = m_cell_list[i];
 
         if(pair.first == first)
             iFirst = i;
@@ -5589,90 +5913,63 @@ int ConfiguratorWindow::sizeBlockSetting(const QString& first, const QString& la
  * \param is_next_group Следующая запись начинается с новой группы, т.е. имеет отдельный заголовок
  * \param grid Указатель на грид в котором находятся поля с данными
  */
-void ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid)
+int ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset)
 {
-    int beg_offset = 0;
+    if(!table)
+        return -1;
 
-    if(!group.isEmpty())
+    for(int row = 0; row < table->rowCount(); row++)
     {
-        beg_offset = groupPositionInExcel(doc, group);
+        QTableWidgetItem* item = table->item(row, 0);
 
-        if(beg_offset == -1)
+        if(item)
         {
-            qWarning() << tr("Чтение данных из файла Excel: группа <%1> не найдена.").arg(group);
-            return;
+//            CDeviceMenuTableWidget::RowType rowType = static_cast<CDeviceMenuTableWidget::RowType>(item->data(Qt::UserRole + 100).toInt());
+//            if(rowType == CDeviceMenuTableWidget::HEADER || rowType == CDeviceMenuTableWidget::SUBHEADER)
+//            {
+//                pos = groupPositionInExcel(doc, item->text());
+//                continue;
+//            }
+            continue;
         }
-    }
 
-    static int offset = 0;
+        QWidget* wgt = groupMenuCellWidget(table, row, 1);
 
-    if(!group.isEmpty())
-        offset = beg_offset;
+        if(!wgt)
+            continue;
 
-    int rows    = grid->rowCount();
-    int columns = grid->columnCount();
-    int count   = 0;
+        QString wgt_name = wgt->metaObject()->className();
 
-    for(int col = 0; col < columns - 1; col += 2)
-    {
-        int col_index = col;
-        int row_index = col/2;
-
-        if(columns%2 && col != 0)
-            col_index++;
-
-        for(int row = 0; row < rows; row++)
+        if(wgt_name.toUpper() == "QCOMBOBOX")
         {
-            int cell_index = row + rows*row_index + offset;
+            QComboBox* combobox = qobject_cast<QComboBox*>(wgt);
 
-            QLayoutItem* layout_item = grid->itemAtPosition(row, col_index + 1);
-
-            if(layout_item)
+            if(combobox)
             {
-                QWidget* wgt = layout_item->widget();
+                bool isOk  = false;
+                int  index = doc.read(row + offset + 2, 2).toInt(&isOk);
 
-                if(wgt)
-                {
-                    if(QString(wgt->metaObject()->className()).toUpper() == "QCOMBOBOX")
-                    {
-                        QComboBox* cb = qobject_cast<QComboBox*>(wgt);
+                if(isOk)
+                    combobox->setCurrentIndex(index - 1);
+            }
+        }
+        else if(wgt_name.toUpper() == "CLINEEDIT")
+        {
+            CLineEdit* lineedit = qobject_cast<CLineEdit*>(wgt);
 
-                        if(cb)
-                        {
-                            int pos = doc.read(cell_index, 3).toInt();
+            if(lineedit)
+            {
+                QString text = doc.read(row + offset + 2, 2).toString();
 
-                            if(pos >= 1)
-                                cb->setCurrentIndex(pos - 1);
-                        }
-                    }
-                    else if(QString(wgt->metaObject()->className()).toUpper() == "CLINEEDIT")
-                    {
-                        CLineEdit* le = qobject_cast<CLineEdit*>(wgt);
-
-                        if(le)
-                        {
-                            bool    is_ok    = false;
-                            QString cell_val = doc.read(cell_index, 3).toString();
-                            float   number   = QLocale::system().toFloat(cell_val, &is_ok);
-
-                            if(is_ok)
-                            {
-                                le->setText(QLocale::system().toString(number, 'f', 6));
-                            }
-                            else
-                                qWarning() << tr("Чтение данных из файла Excel: невозможно преобразование в число <%1>.").arg(group);
-                        }
-                    }
-
-                    count++;
-                }
+                if(!text.isEmpty())
+                    lineedit->setText(text);
             }
         }
     }
 
-    offset += count;
-
     m_progressbar->increment();
+
+    return table->rowCount();
 }
 /*!
  * \brief ConfiguratorWindow::groupPositionInExcel
@@ -5700,9 +5997,306 @@ int ConfiguratorWindow::groupPositionInExcel(QXlsx::Document& doc, const QString
 
     return result;
 }
+//------------------------------------------------------------------------------------------
+CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString& group_name)
+{
+    QSqlQuery query(m_system_db);
+    CDeviceMenuTableWidget::group_t group;
+    int group_id = -1;
+
+    if(!query.exec(QString("SELECT id FROM menu_group WHERE name=\"%1\";").arg(group_name)))
+    {
+        qWarning() << tr("Не удалось прочитать ID группы \"%1\", (%2)").arg(group_name).arg(query.lastError().text());
+    }
+
+    if(query.first())
+        group_id = query.value("id").toInt();
+
+    group.name = group_name;
+
+    if(!query.exec(QString("SELECT * FROM iodevice WHERE sort_id=%1").arg(group_id)))
+    {
+        qWarning() << tr("Не удалось прочитать свойства группы с ID=%1 (%2)").arg(group_id).arg(query.lastError().text());
+    }
+
+    while(query.next())
+    {
+        CDeviceMenuTableWidget::item_t item;
+
+        item.key      = query.value("key").toString();
+        item.address  = query.value("address").toInt();
+        item.unit     = CDeviceMenuTableWidget::measure_t({ query.value("limit_min").toFloat(),
+                                                            query.value("limit_max").toFloat(),
+                                                            query.value("unit_measure").toString() });
+        item.type     = query.value("data_type").toString();
+        item.row      = query.value("row").toInt();
+        item.name     = query.value("description").toString();
+
+        if(item.type.toUpper() == "LIST") // если тип - "СПИСОК", то читаем список подпунктов
+        {
+            QSqlQuery query_list(m_system_db);
+
+            if(query_list.exec(QString("SELECT name FROM menu_item_choice WHERE key=\"%1\";").arg(item.key)))
+            {
+               CDeviceMenuTableWidget::item_list_t subitemlist;
+
+               while(query_list.next())
+               {
+                   CDeviceMenuTableWidget::item_t subitem;
+                   subitem.name = query_list.value("name").toString();
+                   subitemlist << subitem;
+               }
+
+               item.subitems = subitemlist;
+            }
+        }
+        else if(item.type.toUpper() == "SUBGROUP") // если тип - "ПОДГРУППА", то читаем список подпунктов
+        {
+            group.subgroup << loadMenuSubgroup(item.key);
+        }
+
+        group.items << item;
+    }
+
+    return group;
+}
+/*!
+ * \brief ConfiguratorWindow::loadMenuSubgroup
+ * \param group_name Имя группы (родитель подгруппы - может быть имя другой подгруппы)
+ * \return список групп
+ */
+CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuSubgroup(const QString& group_name)
+{
+    QSqlQuery query(m_system_db);
+    CDeviceMenuTableWidget::group_t group;
+    QString query_str = QString("SELECT * FROM subgroup WHERE group_name=\"%1\";").arg(group_name);
+
+    if(query.exec(query_str))
+    {
+        CDeviceMenuTableWidget::item_list_t list_item;
+
+        while(query.next())
+        {
+            QString name = query.value("name").toString();
+            QString key = query.value("key").toString();
+            CDeviceMenuTableWidget::item_t item = loadIODeviceItem(key);
+
+            if(!name.isEmpty()) // еще одна вложенная группа
+            {
+                QString bind_name = QString("%1, %2").arg(name).arg(item.name);
+                item.name = bind_name;
+            }
+
+            list_item << item;
+        }
+
+        group.items = list_item;
+    }
+
+    return group;
+}
+/*!
+ * \brief ConfiguratorWindow::loadIODeviceItem
+ * \param k - ключ итема
+ * \return итем
+ */
+CDeviceMenuTableWidget::item_t ConfiguratorWindow::loadIODeviceItem(const QString& k)
+{
+    QSqlQuery query(m_system_db);
+    CDeviceMenuTableWidget::item_t item;
+
+    if(query.exec(QString("SELECT * FROM iodevice WHERE key=\"%1\";").arg(k)))
+    {
+        if(query.next())
+        {
+            int     address = query.value("address").toInt();
+            float   min     = query.value("limit_min").toFloat();
+            float   max     = query.value("limit_max").toFloat();
+            QString unit    = query.value("unit_measure").toString();
+            QString type    = query.value("data_type").toString();
+            QString name    = query.value("description").toString();
+            int     row     = query.value("row").toInt();
+
+            item.key       = k;
+            item.address   = address;
+            item.unit.min  = min;
+            item.unit.max  = max;
+            item.unit.unit = unit;
+            item.type      = type;
+            item.name      = name;
+            item.row       = row;
+
+            if(item.type.toUpper() == "LIST") // если тип - "СПИСОК", то читаем список подпунктов
+            {
+                QSqlQuery query_list(m_system_db);
+
+                if(query_list.exec(QString("SELECT name FROM menu_item_choice WHERE key=\"%1\";").arg(item.key)))
+                {
+                   CDeviceMenuTableWidget::item_list_t subitemlist;
+
+                   while(query_list.next())
+                   {
+                       CDeviceMenuTableWidget::item_t subitem;
+                       subitem.name = query_list.value("name").toString();
+                       subitemlist << subitem;
+                   }
+
+                   item.subitems = subitemlist;
+                }
+            }
+        }
+    }
+
+    return item;
+}
+/*!
+ * \brief ConfiguratorWindow::groupMenuWidget
+ * \param type - Тип группы меню
+ * \return Указатель на таблицу группы
+ *
+ * Метод для получения виджета меню группы
+ */
+CDeviceMenuTableWidget* ConfiguratorWindow::groupMenuWidget(DeviceMenuItemType type) const
+{
+    switch(type)
+    {
+        case DEVICE_MENU_PROTECT_ITEM_CURRENT:
+            return ui->tableWidgetProtectionGroupMTZ;
+
+        case DEVICE_MENU_PROTECT_ITEM_POWER:
+            return ui->tableWidgetProtectionGroupPower;
+
+        case DEVICE_MENU_PROTECT_ITEM_DIRECTED:
+            return ui->tableWidgetProtectionGroupDirect;
+
+        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY:
+            return ui->tableWidgetProtectionGroupFrequency;
+
+        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL:
+            return ui->tableWidgetProtectionGroupExternal;
+
+        case DEVICE_MENU_PROTECT_ITEM_MOTOR:
+            return ui->tableWidgetProtectionGroupMotor;
+
+        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE:
+            return ui->tableWidgetProtectionGroupTemperature;
+
+        case DEVICE_MENU_PROTECT_ITEM_RESERVE:
+            return ui->tableWidgetProtectionGroupReserve;
+
+        case DEVICE_MENU_PROTECT_ITEM_CONTROL:
+            return ui->tableWidgetProtectionGroupControl;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
+            return ui->tableWidgetAutomationGroup;
+
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG:
+            return ui->tableWidgetSettingsAnalogGroupGeneral;
+
+        default: return nullptr;
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::groupMenuCellWidgetByName
+ * \param table - указатель на таблицу
+ * \param wgt_name - имя виджета
+ * \param col - колонка таблицы
+ * \return Указатель на виджет из ячейки
+ *
+ * Поиск виджета в указанно таблице по имени и номеру ячейки
+ */
+QWidget* ConfiguratorWindow::groupMenuCellWidgetByName(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const
+{
+    if(!table)
+        return nullptr;
+
+    if(col > table->columnCount())
+        return nullptr;
+
+    for(int i = 0; i < table->rowCount(); i++)
+    {
+        QWidget* wgt = table->cellWidget(i, col);
+
+        if(!wgt)
+            continue;
+
+        QObjectList obj_list = wgt->children();
+
+        for(QObject* obj: obj_list)
+        {
+            if(obj->isWidgetType())
+            {
+                if(obj->objectName().toUpper() == wgt_name.toUpper())
+                    return qobject_cast<QWidget*>(obj);
+            }
+        }
+    }
+
+    return nullptr;
+}
+/*!
+ * \brief ConfiguratorWindow::groupMenuCellWidget
+ * \param table - указатель на таблицу
+ * \param row - строка таблицы
+ * \param col - колонка таблицы
+ * \return Указатель на виджет из ячейки
+ *
+ * Поиск виджета в указанно таблице по имени и номеру ячейки
+ */
+QWidget* ConfiguratorWindow::groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col)
+{
+    if(!table)
+        return nullptr;
+
+    if(col > table->columnCount() || row > table->rowCount())
+        return nullptr;
+
+    QWidget* wgt = table->cellWidget(row, col);
+
+    if(!wgt)
+        return nullptr;
+
+    QObjectList obj_list = wgt->children();
+
+    for(QObject* obj: obj_list)
+    {
+        if(obj->isWidgetType())
+        {
+            return qobject_cast<QWidget*>(obj);
+        }
+    }
+
+    return nullptr;
+}
+/*!
+ * \brief ConfiguratorWindow::groupMenuPosition
+ * \param name Имя группы
+ * \param table Таблица с группами
+ * \return Начальную позицию первого виджета в группе name
+ */
+int ConfiguratorWindow::groupMenuPosition(const QString& name, const CDeviceMenuTableWidget* table)
+{
+    if(!table)
+        return -1;
+
+    for(int row = 0; row < table->rowCount(); row++)
+    {
+        QTableWidgetItem* item = table->item(row, 0);
+
+        if(!item)
+            continue;
+
+        if(name.toUpper() == item->text().toUpper())
+        {
+            return row + 1;
+        }
+    }
+
+    return -1;
+}
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
-                                                CModBusDataUnit::FunctionType type, int size)
+                                                CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index)
 {
     if(size <= 0)
         return;
@@ -5711,14 +6305,15 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
 
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), type, addr, QVector<quint16>() << size);
 
-    unit.setProperty(tr("REQUEST"), GENERAL_TYPE);
-    unit.setProperty(tr("FIRST"), first);
-    unit.setProperty(tr("LAST"), last);
+    unit.setProperty("REQUEST", GENERAL_TYPE);
+    unit.setProperty("FIRST", first);
+    unit.setProperty("LAST", last);
+    unit.setProperty("GROUP", index);
 
     m_modbus->sendData(unit);
 }
-//--------------------------------------------------------------------------
-void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
+//----------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index)
 {
     int addr = addressSettingKey(index);
 
@@ -5727,11 +6322,12 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index)
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
     unit.setProperty("INDEX", index);
+    unit.setProperty("GROUP", group_index);
 
     m_modbus->sendData(unit);
 }
-//---------------------------------------------------------------------------
-void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
+//-----------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, DeviceMenuItemType group_index)
 {
     if(index.isEmpty())
         return;
@@ -5741,42 +6337,41 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index)
     if(key.x() == -1 || key.x() >= m_cell_list.count())
         return;
 
-    QString nameWgt = m_cell_list[key.x()].second.name;
+    CDeviceMenuTableWidget* table = groupMenuWidget(group_index);
+
+    if(!table)
+        return;
+
+    QString nameWgt = QString("comboBox%1").arg(m_cell_list[key.x()].first);
 
     if(nameWgt.isEmpty())
         return;
 
-    QWidget* widget   = findChild<QWidget*>(nameWgt);
-    QString  classWgt = widget->metaObject()->className();
+    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
-    if(classWgt != "QComboBox")
+    if(!comboBox)
         return;
 
-    QComboBox* box = qobject_cast<QComboBox*>(widget);
+    int addr = addressSettingKey(index);
 
-    if(box)
-    {
-        int addr = addressSettingKey(index);
+    if(addr == -1)
+        return;
 
-        if(addr == -1)
-            return;
+    quint16 value = comboBox->currentIndex();
 
-        quint16 value = box->currentIndex();
+    if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
+        value++;
 
-        if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
-            value++;
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteSingleRegister, addr,
+                                                 QVector<quint16>() << value);
+    unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
+    unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
+    unit.setProperty("INDEX", index);
 
-        CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteSingleRegister, addr,
-                                                     QVector<quint16>() << value);
-        unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
-        unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
-        unit.setProperty("INDEX", index);
-
-        m_modbus->sendData(unit);
-    }
+    m_modbus->sendData(unit);
 }
-//-----------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QString& last)
+//-------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QString& last, DeviceMenuItemType group_index)
 {
     if(first.isEmpty() || last.isEmpty())
         return;
@@ -5795,9 +6390,11 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 
     QVector<quint16>  data;
 
+    CDeviceMenuTableWidget* table = groupMenuWidget(group_index);
+
     for(int i = index.x(); i <= index.y(); i++)
     {
-        QString nameWgt = m_cell_list[i].second.name;
+        QString nameWgt = QString("lineEdit%1").arg(m_cell_list[i].first);
 
         if(nameWgt.isEmpty())
         {
@@ -5807,34 +6404,15 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
             continue;
         }
 
-        QWidget* widget = findChild<QWidget*>(nameWgt);
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
-        if(!widget)
+        if(!lineEdit)
             continue;
 
-        QString classWgt = widget->metaObject()->className();
+        value.f = QLocale::system().toFloat(lineEdit->text());
 
-        if(classWgt == tr("CLineEdit"))
-        {
-            CLineEdit* edit = qobject_cast<CLineEdit*>(widget);
-
-            if(!edit)
-                continue;
-
-            value.f = QLocale::system().toFloat(edit->text());
-
-            data.append(value.w[1]);
-            data.append(value.w[0]);
-        }
-        else if(classWgt == tr("QComboBox"))
-        {
-            QComboBox* box = qobject_cast<QComboBox*>(widget);
-
-            if(!box)
-                continue;
-
-            data.append((quint16)box->currentIndex() + 1);
-        }
+        data.append(value.w[1]);
+        data.append(value.w[0]);
     }
 
     CModBusDataUnit::FunctionType funType = ((data.count() == 1)?CModBusDataUnit::WriteSingleRegister:
@@ -6059,16 +6637,18 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
     m_modbus->sendData(unit);
 }
 //---------------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function)
+void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function,
+                                                       DeviceMenuItemType group_index)
 {
     int firstAddr = addressSettingKey("K10");
 
     CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, firstAddr,
-                       QVector<quint16>() << 48);
+                         QVector<quint16>() << 48);
 
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
     unit.setProperty("PROTECTION", protection);
     unit.setProperty("REQUEST_FUNCTION", function);
+    unit.setProperty("GROUP", group_index);
 
     m_modbus->sendData(unit);
 }
@@ -6674,43 +7254,6 @@ void ConfiguratorWindow::updateSerialPortSettings()
     if(index != -1)
         ui->comboBoxCommunicationBaudrate->setCurrentIndex(index);
 }
-/*!
- * \brief ConfiguratorWindow::itemComboboxChanged
- *
- * Обработка выпадающих списков, которые завязаны друг на друга, н-р, Уровневая 1 и Уровневая 2 (управление связано)
- */
-void ConfiguratorWindow::indexComboBoxChanged(int index)
-{
-    QComboBox* comboBox = qobject_cast<QComboBox*>(sender());
-
-    if(comboBox)
-    {
-        if(comboBox == ui->cboxM77)
-        {
-            ui->cboxProtectionLeve2_Ctrl->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxProtectionLeve2_Ctrl)
-        {
-            ui->cboxM77->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxM65)
-        {
-            ui->cboxProtectionTemp2_Sensor1->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxM66)
-        {
-            ui->cboxProtectionTemp2_Sensor2->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxProtectionTemp2_Sensor1)
-        {
-            ui->cboxM65->setCurrentIndex(index);
-        }
-        else if(comboBox == ui->cboxProtectionTemp2_Sensor2)
-        {
-            ui->cboxM66->setCurrentIndex(index);
-        }
-    }
-}
 //--------------------------------------
 void ConfiguratorWindow::setNewAddress()
 {
@@ -6889,101 +7432,59 @@ void ConfiguratorWindow::exportToExcelProject()
 
     QXlsx::Document xlsx;
 
+    xlsx.currentWorksheet()->setGridLinesVisible(true);
     xlsx.addSheet(tr("Защиты"));
 
-    xlsx.write("A1", tr("Имя"));
-    xlsx.write("B1", tr("Параметр"));
-    xlsx.write("C1", tr("Значение"));
-    xlsx.write("D1", tr("Диапазон"));
+    xlsx.write("A1", tr("Параметр"));
+    xlsx.write("B1", tr("Значение"));
+    xlsx.write("C1", tr("Диапазон"));
 
-    QXlsx::Format format_header;
-    format_header.setFontBold(true);
-    format_header.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
-    format_header.setVerticalAlignment(QXlsx::Format::AlignBottom);
+    QXlsx::Format headerFormat;
+    headerFormat.setFontBold(true);
+    headerFormat.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
+    headerFormat.setVerticalAlignment(QXlsx::Format::AlignBottom);
 
-    xlsx.setColumnFormat("A1:D1", format_header);
+    xlsx.setColumnFormat("A1:D1", headerFormat);
 
-    xlsx.setColumnWidth("A1", 30);
-    xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 20);
-    xlsx.setColumnWidth("D1", 50);
+    xlsx.setColumnWidth("A1", 50);
+    xlsx.setColumnWidth("B1", 20);
+    xlsx.setColumnWidth("C1", 70);
 
-    writeDataToExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
-    writeDataToExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
-    writeDataToExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
-    writeDataToExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
-    writeDataToExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
-    writeDataToExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
-    writeDataToExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
-    writeDataToExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
-    writeDataToExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
-    writeDataToExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
-    writeDataToExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
-    writeDataToExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
-    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-    writeDataToExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
-    writeDataToExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-    writeDataToExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
-    writeDataToExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
-    writeDataToExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
-    writeDataToExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
-    writeDataToExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
-    writeDataToExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
-    writeDataToExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
-    writeDataToExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
-    writeDataToExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
-    writeDataToExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
-    writeDataToExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
-    writeDataToExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
-    writeDataToExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
-    writeDataToExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
-    writeDataToExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
-    writeDataToExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
-    writeDataToExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
+    int pos;
+
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupMTZ);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupPower, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupDirect, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupFrequency, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupExternal, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupMotor, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupReserve, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupControl, pos - 1);
 
     xlsx.addSheet(tr("Автоматика"));
 
-    xlsx.write("A1", tr("Имя"));
-    xlsx.write("B1", tr("Параметр"));
-    xlsx.write("C1", tr("Значение"));
-    xlsx.write("D1", tr("Диапазон"));
-    xlsx.setColumnFormat("A1:D1", format_header);
-    xlsx.setColumnWidth("A1", 30);
-    xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 20);
-    xlsx.setColumnWidth("D1", 50);
+    xlsx.write("A1", tr("Параметр"));
+    xlsx.write("B1", tr("Значение"));
+    xlsx.write("C1", tr("Диапазон"));
+    xlsx.setColumnFormat("A1:D1", headerFormat);
+    xlsx.setColumnWidth("A1", 50);
+    xlsx.setColumnWidth("B1", 20);
+    xlsx.setColumnWidth("C1", 70);
 
-    writeDataToExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors, -1);
-    writeDataToExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
-    writeDataToExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
-    writeDataToExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
-    writeDataToExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
-    writeDataToExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
-    writeDataToExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
-    writeDataToExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
-    writeDataToExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
-    writeDataToExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
+    writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
 
     xlsx.addSheet(tr("Аналоговые входы"));
 
-    xlsx.write("A1", tr("Имя"));
-    xlsx.write("B1", tr("Параметр"));
-    xlsx.write("C1", tr("Значение"));
-    xlsx.write("D1", tr("Диапазон"));
-    xlsx.setColumnFormat("A1:D1", format_header);
-    xlsx.setColumnWidth("A1", 30);
-    xlsx.setColumnWidth("B1", 50);
-    xlsx.setColumnWidth("C1", 20);
-    xlsx.setColumnWidth("D1", 50);
+    xlsx.write("A1", tr("Параметр"));
+    xlsx.write("B1", tr("Значение"));
+    xlsx.write("C1", tr("Диапазон"));
+    xlsx.setColumnFormat("A1:C1", headerFormat);
+    xlsx.setColumnWidth("A1", 50);
+    xlsx.setColumnWidth("B1", 20);
+    xlsx.setColumnWidth("C1", 50);
 
-    writeDataToExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain, -1);
-    writeDataToExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
+    writeDataToExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral);
 
     xlsx.selectSheet(tr("Защиты"));
     xlsx.saveAs(fileName);
@@ -7018,44 +7519,17 @@ void ConfiguratorWindow::importFromExcelProject()
         return;
     }
 
-    readDataFromExcel(xlsx, tr("МТЗ1"), ui->gridLayoutMTZ1);
-    readDataFromExcel(xlsx, tr("МТЗ2"), ui->gridLayoutMTZ2);
-    readDataFromExcel(xlsx, tr("МТЗ3"), ui->gridLayoutMTZ3);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Steep);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Sloping);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Inverse);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_DurInverse);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_Back);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_StrInverse);
-    readDataFromExcel(xlsx, "", ui->gridLayoutMTZ3_ExtInverse);
-    readDataFromExcel(xlsx, tr("МТЗ4"), ui->gridLayoutMTZ4);
-    readDataFromExcel(xlsx, tr("ОЗЗ1"), ui->gridLayoutOZZ1);
-    readDataFromExcel(xlsx, tr("ОЗЗ2"), ui->gridLayoutOZZ2);
-    readDataFromExcel(xlsx, tr("НЗЗ1"), ui->gridLayoutNZZ1);
-    readDataFromExcel(xlsx, tr("НЗЗ2"), ui->gridLayoutNZZ2);
-    readDataFromExcel(xlsx, tr("Umax1"), ui->gridLayoutUmax1);
-    readDataFromExcel(xlsx, tr("Umax2"), ui->gridLayoutUmax2);
-    readDataFromExcel(xlsx, tr("Umin1"), ui->gridLayoutUmin1);
-    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-    readDataFromExcel(xlsx, tr("Umin2"), ui->gridLayoutUmin2);
-    readDataFromExcel(xlsx, "", ui->gridLayoutDisconnectors); // корректировка КЦУ (читаются настройки Автоматика->Выключатель)
-    readDataFromExcel(xlsx, tr("3U0"), ui->gridLayout3U0);
-    readDataFromExcel(xlsx, tr("АЧР1"), ui->gridLayoutACHR1);
-    readDataFromExcel(xlsx, tr("АЧР2"), ui->gridLayoutACHR2);
-    readDataFromExcel(xlsx, tr("АЧР3"), ui->gridLayoutACHR3);
-    readDataFromExcel(xlsx, tr("Дуговая"), ui->gridLayoutArc);
-    readDataFromExcel(xlsx, tr("Внешняя1"), ui->gridLayoutExt1);
-    readDataFromExcel(xlsx, tr("Внешняя2"), ui->gridLayoutExt2);
-    readDataFromExcel(xlsx, tr("Внешняя3"), ui->gridLayoutExt3);
-    readDataFromExcel(xlsx, tr("Пусковая"), ui->gridLayoutMotorStarting);
-    readDataFromExcel(xlsx, tr("Imin"), ui->gridLayoutMotorImin);
-    readDataFromExcel(xlsx, tr("Температурная1"), ui->gridLayoutTemp1);
-    readDataFromExcel(xlsx, tr("Температурная2"), ui->gridLayoutTemp2);
-    readDataFromExcel(xlsx, tr("Уровневая1"), ui->gridLayoutLevel1);
-    readDataFromExcel(xlsx, tr("Уровневая2"), ui->gridLayoutLevel2);
-    readDataFromExcel(xlsx, tr("Сигнал пуска"), ui->gridLayoutSignalStart);
-    readDataFromExcel(xlsx, tr("БРУ"), ui->gridLayoutBRU);
-    readDataFromExcel(xlsx, tr("Вакуум"), ui->gridLayoutVacuum);
+    int offset = 0;
+
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupMTZ, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupPower, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupDirect, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupFrequency, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupExternal, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupMotor, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupReserve, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupControl, offset);
 
     if(!xlsx.selectSheet(tr("Автоматика")))
     {
@@ -7063,16 +7537,7 @@ void ConfiguratorWindow::importFromExcelProject()
         return;
     }
 
-    readDataFromExcel(xlsx, tr("Выключатель"), ui->gridLayoutDisconnectors);
-    readDataFromExcel(xlsx, tr("Тележка выключателя"), ui->gridLayoutDisconnectorTruck);
-    readDataFromExcel(xlsx, tr("Блокировки"), ui->gridLayoutBlock);
-    readDataFromExcel(xlsx, tr("Шинный разъединитель"), ui->gridLayoutDisconnectBus);
-    readDataFromExcel(xlsx, tr("Линейный разъединитель"), ui->gridLayoutDisconnectLine);
-    readDataFromExcel(xlsx, tr("Заземляющий разъединитель"), ui->gridLayoutDisconnectEarth);
-    readDataFromExcel(xlsx, tr("Контроль ТН"), ui->gridLayoutCtrlTN);
-    readDataFromExcel(xlsx, tr("АВР"), ui->gridLayoutAVR);
-    readDataFromExcel(xlsx, tr("АПВ"), ui->gridLayoutAPV);
-    readDataFromExcel(xlsx, "", ui->gridLayoutAPVSignalStart);
+    readDataFromExcel(xlsx, ui->tableWidgetAutomationGroup, 0);
 
     if(!xlsx.selectSheet(tr("Аналоговые входы")))
     {
@@ -7080,8 +7545,7 @@ void ConfiguratorWindow::importFromExcelProject()
         return;
     }
 
-    readDataFromExcel(xlsx, tr("Основные"), ui->gridLayoutInAnalogMain);
-    readDataFromExcel(xlsx, tr("Калибровки"), ui->gridLayoutInAnalogCalibration);
+    readDataFromExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral, 0);
 
     m_progressbar->progressStop();
 }
@@ -7165,8 +7629,11 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
     qInfo() << tr("Калибровка по току:");
     if(!calib.Ia.isEmpty())
     {
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
+                                                                           "lineEditKIA", 1));
+
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIA->text());
+        float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ia);
         QPointF deviation  = standardDeviation(calib.Ia);
 
@@ -7179,14 +7646,17 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIA->text());
+        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib.Ib.isEmpty())
     {
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
+                                                                           "lineEditKIB", 1));
+
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIB->text());
+        float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ib);
         QPointF deviation  = standardDeviation(calib.Ib);
 
@@ -7199,14 +7669,17 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIB->text());
+        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib.Ic.isEmpty())
     {
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
+                                                                           "lineEditKIC", 1));
+
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase();
-        float   cur_factor = QLocale::system().toFloat(ui->leKIC->text());
+        float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib.Ic);
         QPointF deviation  = standardDeviation(calib.Ic);
 
@@ -7219,14 +7692,17 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leKIC->text());
+        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib._3I0.isEmpty())
     {
+        CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
+                                                                           "lineEdit3I0", 1));
+
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0();
-        float   cur_factor = QLocale::system().toFloat(ui->leK3I0->text());
+        float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
         float   newFactor  = newCalibrationOfCurrentFactor(standard, cur_factor, calib._3I0);
         QPointF deviation  = standardDeviation(calib._3I0);
 
@@ -7239,7 +7715,7 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(ui->leK3I0->text());
+        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
@@ -8260,8 +8736,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         readJournalCount();
     }
-    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL ||
-            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB ||
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION)
@@ -9645,105 +10120,104 @@ QPointF ConfiguratorWindow::standardDeviation(QVector<float>& list)
  * \brief ConfiguratorWindow::writeDataToExcel
  * \param doc Текущий документ Excel
  * \param name_group Имя группы (н-р, МТЗ1)
- * \param grid Указатель на грид в котором находятся поля с данными
+ * \param table Указатель на таблицу в которой находятся поля с данными
  * \return возвращает индекс последней строки
  *
- * Запись уставок из грида в excel
+ * Запись уставок из таблицы в excel
  */
-int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const QString& group, const QGridLayout* grid, int offset)
+int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset)
 {
-    if(!grid)
+    if(!table)
         return -1;
 
-    static int row_offset = 2;
+    int row_count = 1 + offset; // счетчик вставленных строк в Excel (строки начинаются с индекса 1)
+    int pos_group = -1;
+    QXlsx::Format headerFormat;
 
-    if(offset == -1)
-        row_offset = 2;
-    else
-        row_offset += offset;
+    headerFormat.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
+    headerFormat.setPatternBackgroundColor(Qt::yellow);
+    headerFormat.setPatternForegroundColor(Qt::black);
+    headerFormat.setFontBold(true);
 
-    if(!group.isEmpty())
-        doc.write(QString("A%1").arg(row_offset++), group);
-
-    int pos_first  = row_offset; // позиция начала сворачивания группы строк
-    int rows       = grid->rowCount();
-    int columns    = grid->columnCount();
-    int row_count  = 0; // счетчик вставленных строк в Excel
-
-    for(int col = 0; col < columns - 1; col += 2)
+    for(int row = 0; row < table->rowCount(); row++)
     {
-        int col_pos = col;
+        QTableWidgetItem* item = table->item(row, 0);
 
-        if(columns%2 && col != 0)
-            col_pos++;
-
-        for(int row = 0; row < rows; row++)
+        if(item)
         {
-            QLayoutItem* layout_item_value = grid->itemAtPosition(row, col_pos + 1);
-            QLayoutItem* layout_item_param = grid->itemAtPosition(row, col_pos);
-
-            if(!layout_item_value || !layout_item_param)
-                continue;
-
-            QWidget* wgt_value = layout_item_value->widget();
-            QWidget* wgt_param = layout_item_param->widget();
-
-            if(!wgt_value || !wgt_param)
-                continue;
-
-            QString name_param  = qobject_cast<QLabel*>(wgt_param)->text();
-            QString str_value   = "";
-            QString value_range = "";
-
-            if(QString(wgt_value->metaObject()->className()).toUpper() == "QCOMBOBOX")
+            CDeviceMenuTableWidget::RowType rowType = static_cast<CDeviceMenuTableWidget::RowType>(item->data(Qt::UserRole + 100).toInt());
+            if(rowType == CDeviceMenuTableWidget::HEADER || rowType == CDeviceMenuTableWidget::SUBHEADER)
             {
-                QComboBox* cb = qobject_cast<QComboBox*>(wgt_value);
-
-                if(cb)
+                if(pos_group != -1)
                 {
-                    for(int i = 0; i < cb->count(); i++)
-                    {
-                        value_range += QString("%1 - %2").arg(i + 1).arg(cb->itemText(i));
-
-                        if(i != cb->count() - 1)
-                            value_range += "; ";
-                    }
-
-                    str_value = QString("%1").arg(cb->currentIndex() + 1);
+                    doc.groupRows(pos_group, row_count, true);
+                    pos_group = -1;
                 }
+
+                doc.write(QString("A%1").arg(++row_count), item->text(), headerFormat);
+                doc.mergeCells(QString("A%1:C%2").arg(row_count).arg(row_count));
+                pos_group = row_count + 1;
+                continue;
             }
-            else if(QString(wgt_value->metaObject()->className()).toUpper() == "CLINEEDIT")
-            {
-                CLineEdit* le = qobject_cast<CLineEdit*>(wgt_value);
-                str_value = le->text();
-                int pos = name_param.indexOf('(');
-
-                if(pos != -1)
-                {
-                    value_range = name_param.mid(pos, name_param.length() - 1);
-                    name_param  = name_param.mid(0, pos - 1);
-                }
-            }
-
-            int row_pos = row;
-
-            if(col != 0)
-                row_pos = row_count;
-
-            doc.write(QString("B%1").arg(row_pos + row_offset), name_param);
-            doc.write(QString("C%1").arg(row_pos + row_offset), str_value);
-            doc.write(QString("D%1").arg(row_pos + row_offset), value_range);
-
-            row_count++;
         }
+
+        QWidget* wgt_value = groupMenuCellWidget(table, row, 1);
+        QWidget* wgt_param = groupMenuCellWidget(table, row, 0);
+        QWidget* wgt_unit  = groupMenuCellWidget(table, row, 2);
+
+        if(!wgt_value || !wgt_param)
+            continue;
+
+        QString name_param  = qobject_cast<QLabel*>(wgt_param)->text();
+        QString str_value   = "";
+        QString value_range = "";
+
+        if(wgt_value->objectName().toUpper().contains("COMBOBOX"))
+        {
+            QComboBox* cb = qobject_cast<QComboBox*>(wgt_value);
+
+            if(cb)
+            {
+                for(int i = 0; i < cb->count(); i++)
+                {
+                    value_range += QString("%1 - %2").arg(i + 1).arg(cb->itemText(i));
+
+                    if(i != cb->count() - 1)
+                        value_range += "; ";
+                }
+
+                str_value = QString("%1").arg(cb->currentIndex() + 1);
+            }
+        }
+        else if(wgt_value->objectName().toUpper().contains("LINEEDIT"))
+        {
+            CLineEdit* le = qobject_cast<CLineEdit*>(wgt_value);
+            str_value = le->text();
+
+            if(wgt_unit)
+            {
+                QLabel* label_unit = qobject_cast<QLabel*>(wgt_unit);
+
+                if(label_unit)
+                    value_range = label_unit->text();
+            }
+        }
+
+        row_count++;
+
+        doc.write(QString("A%1").arg(row_count), name_param);
+        doc.write(QString("B%1").arg(row_count), str_value);
+        doc.write(QString("C%1").arg(row_count), value_range);
     }
 
-    row_offset += row_count;
-    doc.groupRows(pos_first, row_offset - 1, true);
+    if(pos_group != -1)
+    {
+        doc.groupRows(pos_group, row_count, true);
+    }
 
     emit m_progressbar->increment();
 
-    return row_offset;
+    return row_count;
 }
 //------------------------------------
 void ConfiguratorWindow::initConnect()
@@ -9830,14 +10304,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
     connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this,
             &ConfiguratorWindow::updateSerialPortSettings);
-    connect(ui->cboxM77, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxProtectionLeve2_Ctrl, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxM65, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxM66, SIGNAL(currentIndexChanged(int)), this, SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxProtectionTemp2_Sensor1, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(indexComboBoxChanged(int)));
-    connect(ui->cboxProtectionTemp2_Sensor2, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(indexComboBoxChanged(int)));
     connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::close);
     connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
