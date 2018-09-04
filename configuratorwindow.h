@@ -708,6 +708,7 @@
             CDeviceMenuTableWidget* groupMenuWidget(DeviceMenuItemType type) const;
             QWidget* groupMenuCellWidgetByName(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
             QWidget* groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col);
+            int groupMenuPosition(const QString& name, const CDeviceMenuTableWidget* table);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

@@ -3957,302 +3957,302 @@ void ConfiguratorWindow::initMenuPanel()
     }
 
     // Объединение ячеек Сигналы пуска (защита Резервные) с Автоматика->АПВ Сигналы пуска
-    QComboBox* cboxN50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN50"), 1));
-    QComboBox* cboxN50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN50_1"), 1));
+//    QComboBox* cboxN50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN50"), 1));
+//    QComboBox* cboxN50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN50_1"), 1));
 
-    QComboBox* cboxN52   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN52"), 1));
-    QComboBox* cboxN52_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN52_1"), 1));
+//    QComboBox* cboxN52   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN52"), 1));
+//    QComboBox* cboxN52_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN52_1"), 1));
 
-    QComboBox* cboxN53   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN53"), 1));
-    QComboBox* cboxN53_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN53_1"), 1));
+//    QComboBox* cboxN53   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN53"), 1));
+//    QComboBox* cboxN53_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN53_1"), 1));
 
-    QComboBox* cboxN54   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN54"), 1));
-    QComboBox* cboxN54_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN54_1"), 1));
+//    QComboBox* cboxN54   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN54"), 1));
+//    QComboBox* cboxN54_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN54_1"), 1));
 
-    QComboBox* cboxN55   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN55"), 1));
-    QComboBox* cboxN55_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN55_1"), 1));
+//    QComboBox* cboxN55   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN55"), 1));
+//    QComboBox* cboxN55_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN55_1"), 1));
 
-    QComboBox* cboxN56   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN56"), 1));
-    QComboBox* cboxN56_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN56_1"), 1));
+//    QComboBox* cboxN56   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN56"), 1));
+//    QComboBox* cboxN56_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN56_1"), 1));
 
-    QComboBox* cboxN57   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN57"), 1));
-    QComboBox* cboxN57_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN57_1"), 1));
+//    QComboBox* cboxN57   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN57"), 1));
+//    QComboBox* cboxN57_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN57_1"), 1));
 
-    QComboBox* cboxN58   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN58"), 1));
-    QComboBox* cboxN58_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN58_1"), 1));
+//    QComboBox* cboxN58   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN58"), 1));
+//    QComboBox* cboxN58_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN58_1"), 1));
 
-    QComboBox* cboxN59   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN59"), 1));
-    QComboBox* cboxN59_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN59_1"), 1));
+//    QComboBox* cboxN59   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN59"), 1));
+//    QComboBox* cboxN59_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN59_1"), 1));
 
-    QComboBox* cboxV04   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV04"), 1));
-    QComboBox* cboxV04_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV04_1"), 1));
+//    QComboBox* cboxV04   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV04"), 1));
+//    QComboBox* cboxV04_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV04_1"), 1));
 
-    QComboBox* cboxV07   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV07"), 1));
-    QComboBox* cboxV07_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV07_1"), 1));
+//    QComboBox* cboxV07   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV07"), 1));
+//    QComboBox* cboxV07_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV07_1"), 1));
 
-    QComboBox* cboxV10   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV10"), 1));
-    QComboBox* cboxV10_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV10_1"), 1));
+//    QComboBox* cboxV10   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV10"), 1));
+//    QComboBox* cboxV10_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV10_1"), 1));
 
-    QComboBox* cboxV13   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV13"), 1));
-    QComboBox* cboxV13_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV13_1"), 1));
+//    QComboBox* cboxV13   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV13"), 1));
+//    QComboBox* cboxV13_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV13_1"), 1));
 
-    QComboBox* cboxV16   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV16"), 1));
-    QComboBox* cboxV16_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV16_1"), 1));
+//    QComboBox* cboxV16   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV16"), 1));
+//    QComboBox* cboxV16_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV16_1"), 1));
 
-    QComboBox* cboxV19   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV19"), 1));
-    QComboBox* cboxV19_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV19_1"), 1));
+//    QComboBox* cboxV19   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV19"), 1));
+//    QComboBox* cboxV19_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV19_1"), 1));
 
-    QComboBox* cboxV22   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV22"), 1));
-    QComboBox* cboxV22_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV22_1"), 1));
+//    QComboBox* cboxV22   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV22"), 1));
+//    QComboBox* cboxV22_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV22_1"), 1));
 
-    QComboBox* cboxV25   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV25"), 1));
-    QComboBox* cboxV25_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV25_1"), 1));
+//    QComboBox* cboxV25   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV25"), 1));
+//    QComboBox* cboxV25_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV25_1"), 1));
 
-    QComboBox* cboxV28   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV28"), 1));
-    QComboBox* cboxV28_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV28_1"), 1));
+//    QComboBox* cboxV28   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV28"), 1));
+//    QComboBox* cboxV28_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV28_1"), 1));
 
-    QComboBox* cboxV31   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV31"), 1));
-    QComboBox* cboxV31_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV31_1"), 1));
+//    QComboBox* cboxV31   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV31"), 1));
+//    QComboBox* cboxV31_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV31_1"), 1));
 
-    QComboBox* cboxV36   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV36"), 1));
-    QComboBox* cboxV36_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV36_1"), 1));
+//    QComboBox* cboxV36   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV36"), 1));
+//    QComboBox* cboxV36_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV36_1"), 1));
 
-    QComboBox* cboxV39   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV39"), 1));
-    QComboBox* cboxV39_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV39_1"), 1));
+//    QComboBox* cboxV39   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV39"), 1));
+//    QComboBox* cboxV39_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV39_1"), 1));
 
-    QComboBox* cboxV44   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV44"), 1));
-    QComboBox* cboxV44_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV44_1"), 1));
+//    QComboBox* cboxV44   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV44"), 1));
+//    QComboBox* cboxV44_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV44_1"), 1));
 
-    QComboBox* cboxV50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV50"), 1));
-    QComboBox* cboxV50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV50_1"), 1));
+//    QComboBox* cboxV50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV50"), 1));
+//    QComboBox* cboxV50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV50_1"), 1));
 
-    QComboBox* cboxV62   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV62"), 1));
-    QComboBox* cboxV62_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV62_1"), 1));
+//    QComboBox* cboxV62   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV62"), 1));
+//    QComboBox* cboxV62_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV62_1"), 1));
 
-    QComboBox* cboxV65   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV65"), 1));
-    QComboBox* cboxV65_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV65_1"), 1));
+//    QComboBox* cboxV65   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV65"), 1));
+//    QComboBox* cboxV65_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV65_1"), 1));
 
-    QComboBox* cboxV68   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV68"), 1));
-    QComboBox* cboxV68_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV68_1"), 1));
+//    QComboBox* cboxV68   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV68"), 1));
+//    QComboBox* cboxV68_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV68_1"), 1));
 
-    QComboBox* cboxV76   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV76"), 1));
-    QComboBox* cboxV76_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV76_1"), 1));
+//    QComboBox* cboxV76   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV76"), 1));
+//    QComboBox* cboxV76_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV76_1"), 1));
 
-    QComboBox* cboxV77   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV77"), 1));
-    QComboBox* cboxV77_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV77_1"), 1));
+//    QComboBox* cboxV77   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV77"), 1));
+//    QComboBox* cboxV77_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV77_1"), 1));
 
-    QComboBox* cboxV81   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV81"), 1));
-    QComboBox* cboxV81_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV81_1"), 1));
+//    QComboBox* cboxV81   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV81"), 1));
+//    QComboBox* cboxV81_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV81_1"), 1));
 
-    QComboBox* cboxV86   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV86"), 1));
-    QComboBox* cboxV86_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV86_1"), 1));
+//    QComboBox* cboxV86   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV86"), 1));
+//    QComboBox* cboxV86_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV86_1"), 1));
 
-    QComboBox* cboxV90   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV90"), 1));
-    QComboBox* cboxV90_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV90_1"), 1));
+//    QComboBox* cboxV90   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV90"), 1));
+//    QComboBox* cboxV90_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV90_1"), 1));
 
-    QComboBox* cboxV95   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV95"), 1));
-    QComboBox* cboxV95_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV95_1"), 1));
+//    QComboBox* cboxV95   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV95"), 1));
+//    QComboBox* cboxV95_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV95_1"), 1));
 
-    QComboBox* cboxV96   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV96"), 1));
-    QComboBox* cboxV96_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV96_1"), 1));
-
-    if(cboxN50 && cboxN50_1)
-    {
-        connect(cboxN50, SIGNAL(currentIndexChanged(int)), cboxN50_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN50_1, SIGNAL(currentIndexChanged(int)), cboxN50, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxN52 && cboxN52_1)
-    {
-        connect(cboxN52, SIGNAL(currentIndexChanged(int)), cboxN52_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN52_1, SIGNAL(currentIndexChanged(int)), cboxN52, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxN53 && cboxN53_1)
-    {
-        connect(cboxN53, SIGNAL(currentIndexChanged(int)), cboxN53_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN53_1, SIGNAL(currentIndexChanged(int)), cboxN53, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxN54 && cboxN54_1)
-    {
-        connect(cboxN54, SIGNAL(currentIndexChanged(int)), cboxN54_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN54_1, SIGNAL(currentIndexChanged(int)), cboxN54, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxN55 && cboxN55_1)
-    {
-        connect(cboxN55, SIGNAL(currentIndexChanged(int)), cboxN55_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN55_1, SIGNAL(currentIndexChanged(int)), cboxN55, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxN56 && cboxN56_1)
-    {
-        connect(cboxN56, SIGNAL(currentIndexChanged(int)), cboxN56_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN56_1, SIGNAL(currentIndexChanged(int)), cboxN56, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxN57 && cboxN57_1)
-    {
-        connect(cboxN57, SIGNAL(currentIndexChanged(int)), cboxN57_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN57_1, SIGNAL(currentIndexChanged(int)), cboxN57, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxN58 && cboxN58_1)
-    {
-        connect(cboxN58, SIGNAL(currentIndexChanged(int)), cboxN58_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN58_1, SIGNAL(currentIndexChanged(int)), cboxN58, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxN59 && cboxN59_1)
-    {
-        connect(cboxN59, SIGNAL(currentIndexChanged(int)), cboxN59_1, SLOT(setCurrentIndex(int)));
-        connect(cboxN59_1, SIGNAL(currentIndexChanged(int)), cboxN59, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV04 && cboxV04_1)
-    {
-        connect(cboxV04, SIGNAL(currentIndexChanged(int)), cboxV04_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV04_1, SIGNAL(currentIndexChanged(int)), cboxV04, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV07 && cboxV07_1)
-    {
-        connect(cboxV07, SIGNAL(currentIndexChanged(int)), cboxV07_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV07_1, SIGNAL(currentIndexChanged(int)), cboxV07, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV10 && cboxV10_1)
-    {
-        connect(cboxV10, SIGNAL(currentIndexChanged(int)), cboxV10_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV10_1, SIGNAL(currentIndexChanged(int)), cboxV10, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV13 && cboxV13_1)
-    {
-        connect(cboxV13, SIGNAL(currentIndexChanged(int)), cboxV13_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV13_1, SIGNAL(currentIndexChanged(int)), cboxV13, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV16 && cboxV16_1)
-    {
-        connect(cboxV16, SIGNAL(currentIndexChanged(int)), cboxV16_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV16_1, SIGNAL(currentIndexChanged(int)), cboxV16, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV19 && cboxV19_1)
-    {
-        connect(cboxV19, SIGNAL(currentIndexChanged(int)), cboxV19_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV19_1, SIGNAL(currentIndexChanged(int)), cboxV19, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV22 && cboxV22_1)
-    {
-        connect(cboxV22, SIGNAL(currentIndexChanged(int)), cboxV22_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV22_1, SIGNAL(currentIndexChanged(int)), cboxV22, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV25 && cboxV25_1)
-    {
-        connect(cboxV25, SIGNAL(currentIndexChanged(int)), cboxV25_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV25_1, SIGNAL(currentIndexChanged(int)), cboxV25, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV28 && cboxV28_1)
-    {
-        connect(cboxV28, SIGNAL(currentIndexChanged(int)), cboxV28_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV28_1, SIGNAL(currentIndexChanged(int)), cboxV28, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV31 && cboxV31_1)
-    {
-        connect(cboxV31, SIGNAL(currentIndexChanged(int)), cboxV31_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV31_1, SIGNAL(currentIndexChanged(int)), cboxV31, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV36 && cboxV36_1)
-    {
-        connect(cboxV36, SIGNAL(currentIndexChanged(int)), cboxV36_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV36_1, SIGNAL(currentIndexChanged(int)), cboxV36, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV39 && cboxV39_1)
-    {
-        connect(cboxV39, SIGNAL(currentIndexChanged(int)), cboxV39_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV39_1, SIGNAL(currentIndexChanged(int)), cboxV39, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV44 && cboxV44_1)
-    {
-        connect(cboxV44, SIGNAL(currentIndexChanged(int)), cboxV44_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV44_1, SIGNAL(currentIndexChanged(int)), cboxV44, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV50 && cboxV50_1)
-    {
-        connect(cboxV50, SIGNAL(currentIndexChanged(int)), cboxV50_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV50_1, SIGNAL(currentIndexChanged(int)), cboxV50, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV62 && cboxV62_1)
-    {
-        connect(cboxV62, SIGNAL(currentIndexChanged(int)), cboxV62_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV62_1, SIGNAL(currentIndexChanged(int)), cboxV62, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV65 && cboxV65_1)
-    {
-        connect(cboxV65, SIGNAL(currentIndexChanged(int)), cboxV65_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV65_1, SIGNAL(currentIndexChanged(int)), cboxV65, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV68 && cboxV68_1)
-    {
-        connect(cboxV68, SIGNAL(currentIndexChanged(int)), cboxV68_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV68_1, SIGNAL(currentIndexChanged(int)), cboxV68, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV76 && cboxV76_1)
-    {
-        connect(cboxV76, SIGNAL(currentIndexChanged(int)), cboxV76_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV76_1, SIGNAL(currentIndexChanged(int)), cboxV76, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV77 && cboxV77_1)
-    {
-        connect(cboxV77, SIGNAL(currentIndexChanged(int)), cboxV77_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV77_1, SIGNAL(currentIndexChanged(int)), cboxV77, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV81 && cboxV81_1)
-    {
-        connect(cboxV81, SIGNAL(currentIndexChanged(int)), cboxV81_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV81_1, SIGNAL(currentIndexChanged(int)), cboxV81, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV86 && cboxV86_1)
-    {
-        connect(cboxV86, SIGNAL(currentIndexChanged(int)), cboxV86_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV86_1, SIGNAL(currentIndexChanged(int)), cboxV86, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV90 && cboxV90_1)
-    {
-        connect(cboxV90, SIGNAL(currentIndexChanged(int)), cboxV90_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV90_1, SIGNAL(currentIndexChanged(int)), cboxV90, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV95 && cboxV95_1)
-    {
-        connect(cboxV95, SIGNAL(currentIndexChanged(int)), cboxV95_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV95_1, SIGNAL(currentIndexChanged(int)), cboxV95, SLOT(setCurrentIndex(int)));
-    }
-
-    if(cboxV96 && cboxV96_1)
-    {
-        connect(cboxV96, SIGNAL(currentIndexChanged(int)), cboxV96_1, SLOT(setCurrentIndex(int)));
-        connect(cboxV96_1, SIGNAL(currentIndexChanged(int)), cboxV96, SLOT(setCurrentIndex(int)));
-    }
+//    QComboBox* cboxV96   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV96"), 1));
+//    QComboBox* cboxV96_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV96_1"), 1));
+
+//    if(cboxN50 && cboxN50_1)
+//    {
+//        connect(cboxN50, SIGNAL(currentIndexChanged(int)), cboxN50_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN50_1, SIGNAL(currentIndexChanged(int)), cboxN50, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxN52 && cboxN52_1)
+//    {
+//        connect(cboxN52, SIGNAL(currentIndexChanged(int)), cboxN52_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN52_1, SIGNAL(currentIndexChanged(int)), cboxN52, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxN53 && cboxN53_1)
+//    {
+//        connect(cboxN53, SIGNAL(currentIndexChanged(int)), cboxN53_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN53_1, SIGNAL(currentIndexChanged(int)), cboxN53, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxN54 && cboxN54_1)
+//    {
+//        connect(cboxN54, SIGNAL(currentIndexChanged(int)), cboxN54_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN54_1, SIGNAL(currentIndexChanged(int)), cboxN54, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxN55 && cboxN55_1)
+//    {
+//        connect(cboxN55, SIGNAL(currentIndexChanged(int)), cboxN55_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN55_1, SIGNAL(currentIndexChanged(int)), cboxN55, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxN56 && cboxN56_1)
+//    {
+//        connect(cboxN56, SIGNAL(currentIndexChanged(int)), cboxN56_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN56_1, SIGNAL(currentIndexChanged(int)), cboxN56, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxN57 && cboxN57_1)
+//    {
+//        connect(cboxN57, SIGNAL(currentIndexChanged(int)), cboxN57_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN57_1, SIGNAL(currentIndexChanged(int)), cboxN57, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxN58 && cboxN58_1)
+//    {
+//        connect(cboxN58, SIGNAL(currentIndexChanged(int)), cboxN58_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN58_1, SIGNAL(currentIndexChanged(int)), cboxN58, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxN59 && cboxN59_1)
+//    {
+//        connect(cboxN59, SIGNAL(currentIndexChanged(int)), cboxN59_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxN59_1, SIGNAL(currentIndexChanged(int)), cboxN59, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV04 && cboxV04_1)
+//    {
+//        connect(cboxV04, SIGNAL(currentIndexChanged(int)), cboxV04_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV04_1, SIGNAL(currentIndexChanged(int)), cboxV04, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV07 && cboxV07_1)
+//    {
+//        connect(cboxV07, SIGNAL(currentIndexChanged(int)), cboxV07_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV07_1, SIGNAL(currentIndexChanged(int)), cboxV07, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV10 && cboxV10_1)
+//    {
+//        connect(cboxV10, SIGNAL(currentIndexChanged(int)), cboxV10_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV10_1, SIGNAL(currentIndexChanged(int)), cboxV10, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV13 && cboxV13_1)
+//    {
+//        connect(cboxV13, SIGNAL(currentIndexChanged(int)), cboxV13_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV13_1, SIGNAL(currentIndexChanged(int)), cboxV13, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV16 && cboxV16_1)
+//    {
+//        connect(cboxV16, SIGNAL(currentIndexChanged(int)), cboxV16_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV16_1, SIGNAL(currentIndexChanged(int)), cboxV16, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV19 && cboxV19_1)
+//    {
+//        connect(cboxV19, SIGNAL(currentIndexChanged(int)), cboxV19_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV19_1, SIGNAL(currentIndexChanged(int)), cboxV19, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV22 && cboxV22_1)
+//    {
+//        connect(cboxV22, SIGNAL(currentIndexChanged(int)), cboxV22_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV22_1, SIGNAL(currentIndexChanged(int)), cboxV22, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV25 && cboxV25_1)
+//    {
+//        connect(cboxV25, SIGNAL(currentIndexChanged(int)), cboxV25_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV25_1, SIGNAL(currentIndexChanged(int)), cboxV25, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV28 && cboxV28_1)
+//    {
+//        connect(cboxV28, SIGNAL(currentIndexChanged(int)), cboxV28_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV28_1, SIGNAL(currentIndexChanged(int)), cboxV28, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV31 && cboxV31_1)
+//    {
+//        connect(cboxV31, SIGNAL(currentIndexChanged(int)), cboxV31_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV31_1, SIGNAL(currentIndexChanged(int)), cboxV31, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV36 && cboxV36_1)
+//    {
+//        connect(cboxV36, SIGNAL(currentIndexChanged(int)), cboxV36_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV36_1, SIGNAL(currentIndexChanged(int)), cboxV36, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV39 && cboxV39_1)
+//    {
+//        connect(cboxV39, SIGNAL(currentIndexChanged(int)), cboxV39_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV39_1, SIGNAL(currentIndexChanged(int)), cboxV39, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV44 && cboxV44_1)
+//    {
+//        connect(cboxV44, SIGNAL(currentIndexChanged(int)), cboxV44_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV44_1, SIGNAL(currentIndexChanged(int)), cboxV44, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV50 && cboxV50_1)
+//    {
+//        connect(cboxV50, SIGNAL(currentIndexChanged(int)), cboxV50_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV50_1, SIGNAL(currentIndexChanged(int)), cboxV50, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV62 && cboxV62_1)
+//    {
+//        connect(cboxV62, SIGNAL(currentIndexChanged(int)), cboxV62_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV62_1, SIGNAL(currentIndexChanged(int)), cboxV62, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV65 && cboxV65_1)
+//    {
+//        connect(cboxV65, SIGNAL(currentIndexChanged(int)), cboxV65_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV65_1, SIGNAL(currentIndexChanged(int)), cboxV65, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV68 && cboxV68_1)
+//    {
+//        connect(cboxV68, SIGNAL(currentIndexChanged(int)), cboxV68_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV68_1, SIGNAL(currentIndexChanged(int)), cboxV68, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV76 && cboxV76_1)
+//    {
+//        connect(cboxV76, SIGNAL(currentIndexChanged(int)), cboxV76_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV76_1, SIGNAL(currentIndexChanged(int)), cboxV76, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV77 && cboxV77_1)
+//    {
+//        connect(cboxV77, SIGNAL(currentIndexChanged(int)), cboxV77_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV77_1, SIGNAL(currentIndexChanged(int)), cboxV77, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV81 && cboxV81_1)
+//    {
+//        connect(cboxV81, SIGNAL(currentIndexChanged(int)), cboxV81_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV81_1, SIGNAL(currentIndexChanged(int)), cboxV81, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV86 && cboxV86_1)
+//    {
+//        connect(cboxV86, SIGNAL(currentIndexChanged(int)), cboxV86_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV86_1, SIGNAL(currentIndexChanged(int)), cboxV86, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV90 && cboxV90_1)
+//    {
+//        connect(cboxV90, SIGNAL(currentIndexChanged(int)), cboxV90_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV90_1, SIGNAL(currentIndexChanged(int)), cboxV90, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV95 && cboxV95_1)
+//    {
+//        connect(cboxV95, SIGNAL(currentIndexChanged(int)), cboxV95_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV95_1, SIGNAL(currentIndexChanged(int)), cboxV95, SLOT(setCurrentIndex(int)));
+//    }
+
+//    if(cboxV96 && cboxV96_1)
+//    {
+//        connect(cboxV96, SIGNAL(currentIndexChanged(int)), cboxV96_1, SLOT(setCurrentIndex(int)));
+//        connect(cboxV96_1, SIGNAL(currentIndexChanged(int)), cboxV96, SLOT(setCurrentIndex(int)));
+//    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -5452,42 +5452,47 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
 //------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>& data)
 {
-//    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
-//                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
-//                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
-//                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
-//                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
-//                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
-//                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
-//                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
-//                                                            ui->cboxV96_2;
+    QVector<quint16> tdata;
 
-//    QVector<quint16> tdata;
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+    {
+        tdata << data[i + 1] << data[i];
+    }
 
-//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-//    {
-//        tdata << data[i + 1] << data[i];
-//    }
+    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
+    qDebug() << "rows: " << ui->tableWidgetAutomationGroup->rowCount() - pos << ", data: " << data.count();
+    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
+    {
+        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
 
-//    for(QComboBox* box: box_list)
-//    {
-//        QString key = (box->objectName().remove("cbox")).remove("_2");
+        if(!widget)
+            continue;
 
-//        if(key.isEmpty())
-//            continue;
+        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+            continue;
 
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
+        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
 
-//        if(val_pos < tdata.count())
-//        {
-//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+        if(!combobox)
+            continue;
 
-//            if(item_pos < box->count())
-//                box->setCurrentIndex(item_pos);
-//        }
-//    }
+        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
+
+        if(key.isEmpty())
+            continue;
+
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
+
+        if(val_pos < tdata.count())
+        {
+            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+
+            if(item_pos < combobox->count())
+                combobox->setCurrentIndex(item_pos);
+        }
+    }
 }
 //---------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint16>& data)
@@ -6239,6 +6244,32 @@ QWidget* ConfiguratorWindow::groupMenuCellWidget(const CDeviceMenuTableWidget* t
     }
 
     return nullptr;
+}
+/*!
+ * \brief ConfiguratorWindow::groupMenuPosition
+ * \param name Имя группы
+ * \param table Таблица с группами
+ * \return Начальную позицию первого виджета в группе name
+ */
+int ConfiguratorWindow::groupMenuPosition(const QString& name, const CDeviceMenuTableWidget* table)
+{
+    if(!table)
+        return -1;
+
+    for(int row = 0; row < table->rowCount(); row++)
+    {
+        QTableWidgetItem* item = table->item(row, 0);
+
+        if(!item)
+            continue;
+
+        if(name.toUpper() == item->text().toUpper())
+        {
+            return row + 1;
+        }
+    }
+
+    return -1;
 }
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
