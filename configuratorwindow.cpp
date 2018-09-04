@@ -937,53 +937,57 @@ void ConfiguratorWindow::protectionLevel2Write()
  * Запись защиты Сигнал Пуска
  */
 void ConfiguratorWindow::protectionSignalStartWrite()
-{
-//    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50 << ui->cboxN52 << ui->cboxN53 << ui->cboxN54 <<
-//                                                            ui->cboxN55 << ui->cboxN56 << ui->cboxN57 << ui->cboxN58 <<
-//                                                            ui->cboxN59 << ui->cboxV04 << ui->cboxV07 << ui->cboxV10 <<
-//                                                            ui->cboxV13 << ui->cboxV16 << ui->cboxV19 << ui->cboxV22 <<
-//                                                            ui->cboxV25 << ui->cboxV28 << ui->cboxV31 << ui->cboxV36 <<
-//                                                            ui->cboxV39 << ui->cboxV44 << ui->cboxV50 << ui->cboxV62 <<
-//                                                            ui->cboxV65 << ui->cboxV68 << ui->cboxV76 << ui->cboxV77 <<
-//                                                            ui->cboxV81 << ui->cboxV86 << ui->cboxV90 << ui->cboxV95 <<
-//                                                            ui->cboxV96;
+{           
+    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+    int pos = groupMenuPosition(tr("Сигнал пуска"), ui->tableWidgetProtectionGroupReserve);
 
-//    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+    for(int row = pos; row < ui->tableWidgetProtectionGroupReserve->rowCount(); row++)
+    {
+        QWidget* widget = groupMenuCellWidget(ui->tableWidgetProtectionGroupReserve, row, 1);
 
-//    for(QComboBox* box: box_list)
-//    {
-//        QString key = box->objectName().remove("cbox");
+        if(!widget)
+            continue;
 
-//        if(key.isEmpty())
-//            continue;
+        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+            continue;
 
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
+        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
 
-//        if(val_pos < data.count())
-//        {
-//            int item_pos = box->currentIndex();
+        if(!combobox)
+            continue;
 
-//            if(item_pos == 1)
-//                data[val_pos] |= (1 << bit_pos);
-//        }
-//    }
+        QString key = combobox->objectName().remove("comboBox");
 
-//    QVector<quint16> tdata;
+        if(key.isEmpty())
+            continue;
 
-//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-//    {
-//        tdata << data[i + 1] << data[i];
-//    }
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
 
-//    int addr = addressSettingKey("M80");
+        if(val_pos < data.count())
+        {
+            int item_pos = combobox->currentIndex();
 
-//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
+            if(item_pos == 1)
+                data[val_pos] |= (1 << bit_pos);
+        }
+    }
 
-//    unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
+    QVector<quint16> tdata;
 
-//    m_modbus->sendData(unit);
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+    {
+        tdata << data[i + 1] << data[i];
+    }
+
+    int addr = addressSettingKey("M80");
+
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
+
+    unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
+
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveGroupWrite
@@ -1158,52 +1162,56 @@ void ConfiguratorWindow::automationAPVWrite()
  */
 void ConfiguratorWindow::automationAPVSignalStartWrite()
 {
-//    QVector<QComboBox*> box_list = QVector<QComboBox*>() << ui->cboxN50_2 << ui->cboxN52_2 << ui->cboxN53_2 << ui->cboxN54_2 <<
-//                                                            ui->cboxN55_2 << ui->cboxN56_2 << ui->cboxN57_2 << ui->cboxN58_2 <<
-//                                                            ui->cboxN59_2 << ui->cboxV04_2 << ui->cboxV07_2 << ui->cboxV10_2 <<
-//                                                            ui->cboxV13_2 << ui->cboxV16_2 << ui->cboxV19_2 << ui->cboxV22_2 <<
-//                                                            ui->cboxV25_2 << ui->cboxV28_2 << ui->cboxV31_2 << ui->cboxV36_2 <<
-//                                                            ui->cboxV39_2 << ui->cboxV44_2 << ui->cboxV50_2 << ui->cboxV62_2 <<
-//                                                            ui->cboxV65_2 << ui->cboxV68_2 << ui->cboxV76_2 << ui->cboxV77_2 <<
-//                                                            ui->cboxV81_2 << ui->cboxV86_2 << ui->cboxV90_2 << ui->cboxV95_2 <<
-//                                                            ui->cboxV96_2;
+    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
 
-//    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
+    {
+        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
 
-//    for(QComboBox* box: box_list)
-//    {
-//        QString key = (box->objectName().remove("cbox")).remove("_2");
+        if(!widget)
+            continue;
 
-//        if(key.isEmpty())
-//            continue;
+        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+            continue;
 
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
+        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
 
-//        if(val_pos < data.count())
-//        {
-//            int item_pos = box->currentIndex();
+        if(!combobox)
+            continue;
 
-//            if(item_pos == 1)
-//                data[val_pos] |= (1 << bit_pos);
-//        }
-//    }
+        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
 
-//    QVector<quint16> tdata;
+        if(key.isEmpty())
+            continue;
 
-//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-//    {
-//        tdata << data[i + 1] << data[i];
-//    }
+        int bit     = m_variable_bits[key];
+        int val_pos = bit/16;
+        int bit_pos = bit%16;
 
-//    int addr = addressSettingKey("M86");
+        if(val_pos < data.count())
+        {
+            int item_pos = combobox->currentIndex();
 
-//    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
+            if(item_pos == 1)
+                data[val_pos] |= (1 << bit_pos);
+        }
+    }
 
-//    unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
+    QVector<quint16> tdata;
 
-//    m_modbus->sendData(unit);
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+    {
+        tdata << data[i + 1] << data[i];
+    }
+
+    int addr = addressSettingKey("M86");
+
+    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
+
+    unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
+
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::purposeLedsWrite
@@ -2025,7 +2033,25 @@ void ConfiguratorWindow::automationGroupRead()
     automationAVRRead(); // чтение автоматики АВР
     automationAPVRead(); // чтение автоматики АПВ
     automationAPVSignalStartRead(); // чтение пусковых сигналов АПВ
-    automationAPVSignalStartRead(); // чтение автоматики АПВ сигналы пуска
+}
+/*!
+ * \brief ConfiguratorWindow::automationGroupWrite
+ *
+ * Запись группы автоматика
+ */
+void ConfiguratorWindow::automationGroupWrite()
+{
+    automationSwitchWrite(); // запись автоматика Выключатель
+    automationSwitchTruckWrite(); // запись автоматика Тележка выключателя
+    automationBlockWrite(); // запись автоматика Блокировки
+    automationBusWrite(); // запись автоматика Шинный разъединитель
+    automationLineWrite(); // запись автоматика Линейный разъединитель
+    automationEarthWrite(); // запись автоматика Заземляющий разъединитель
+    automationDisconnectorsGroupWrite(); // запись автоматика Разъединители
+    automationCtrlTNWrite(); // запись автоматика Контроль ТН
+    automationAVRWrite(); // запись автоматика АВР
+    automationAPVWrite(); // запись автоматикаи АПВ
+    automationAPVSignalStartWrite(); // запись автоматика пусковые сигналы АПВ
 }
 /*!
  * \brief ConfiguratorWindow::calibrationOfCurrentWrite
@@ -2767,13 +2793,7 @@ void ConfiguratorWindow::readSettings()
     protectionTemperatureGroupRead();
     protectionReserveGroupRead();
     protectionControlGroupRead();
-    automationSwitchRead();
-    automationSwitchTruckRead();
-    automationBlockRead();
-    automationDisconnectorsGroupRead();
-    automationCtrlTNRead();
-    automationAVRRead();
-    automationAPVRead();
+    automationGroupRead();
     settingCommunicationsRead();
     dateTimeRead();
     purposeLedsRead();
@@ -3107,13 +3127,7 @@ void ConfiguratorWindow::writeSettings()
     protectionTemperatureGroupWrite();
     protectionReserveGroupWrite();
     protectionControlGroupWrite();
-    automationSwitchWrite();
-    automationSwitchTruckWrite();
-    automationBlockWrite();
-    automationDisconnectorsGroupWrite();
-    automationCtrlTNWrite();
-    automationAVRWrite();
-    automationAPVWrite();
+    automationGroupWrite();
     dateTimeWrite();
     purposeLedsWrite();
     purposeMemoryOutLedWrite();
@@ -3381,6 +3395,10 @@ void ConfiguratorWindow::writeSetCurrent()
 
         case DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START: // чтение автоматики АПВ сигналы пуска
             automationAPVSignalStartWrite();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
+            automationGroupWrite();
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // запись настройки Светодиоды

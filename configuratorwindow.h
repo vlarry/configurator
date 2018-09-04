@@ -447,6 +447,7 @@
             void automationAPVSignalStartRead();
             void automationAPVRead();
             void automationGroupRead();
+            void automationGroupWrite();
             void calibrationOfCurrentWrite();
             void purposeLedsRead();
             void purposeInputRead();
