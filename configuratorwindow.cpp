@@ -278,15 +278,15 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
 //--------------------------------------
 void ConfiguratorWindow::calculateRead()
 {
-    CModBusDataUnit unit_part1(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters,
-                             CALCULATE_ADDRESS_PART1, QVector<quint16>() << 66);
+    CModBusDataUnit unit_part1(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
+                               CALCULATE_ADDRESS_PART1, QVector<quint16>() << 66);
     unit_part1.setProperty(tr("REQUEST"), CALCULATE_TYPE);
     unit_part1.setProperty("PART", CALCULATE_ADDRESS_PART1);
 
     sendCalculateRead(unit_part1);
 
-    CModBusDataUnit unit_part2(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters,
-                             CALCULATE_ADDRESS_PART2, QVector<quint16>() << 8);
+    CModBusDataUnit unit_part2(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
+                               CALCULATE_ADDRESS_PART2, QVector<quint16>() << 8);
     unit_part2.setProperty(tr("REQUEST"), CALCULATE_TYPE);
     unit_part2.setProperty("PART", CALCULATE_ADDRESS_PART2);
 
@@ -413,8 +413,8 @@ void ConfiguratorWindow::journalRead(const QString& key)
         address += set.msg_part;
     }
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, address,
-                       QVector<quint16>() << msg_size);
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
+                         static_cast<quint16>(address), QVector<quint16>() << static_cast<quint16>(msg_size));
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
     unit.setProperty(tr("JOURNAL"), key);
 
@@ -983,7 +983,8 @@ void ConfiguratorWindow::protectionSignalStartWrite()
 
     int addr = addressSettingKey("M80");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                         static_cast<quint16>(addr), tdata);
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
@@ -1207,7 +1208,8 @@ void ConfiguratorWindow::automationAPVSignalStartWrite()
 
     int addr = addressSettingKey("M86");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, addr, tdata);
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                         static_cast<quint16>(addr), tdata);
 
     unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
@@ -1318,7 +1320,7 @@ void ConfiguratorWindow::dateTimeWrite(const QDateTime& dateTime)
 
     QVector<quint16> data = QVector<quint16>() << year_month << date_wday << hour << min_second;
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, 0x2000, data);
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters, 0x2000, data);
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
@@ -1343,9 +1345,9 @@ void ConfiguratorWindow::settingCommunicationsWrite()
     if(answer == QMessageBox::No)
         return;
 
-    sendRequestWrite(0x26, QVector<quint16>() << (quint16)ui->spinBoxCommunicationRequestTimeout->value(), 255);
-    sendRequestWrite(0x27, QVector<quint16>() << (quint16)ui->spinBoxCommunicationTimeoutSpeed->value(), 255);
-    sendRequestWrite(0x25, QVector<quint16>() << (quint16)ui->spinBoxCommunicationAddress->value(), 255);
+    sendRequestWrite(0x26, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationRequestTimeout->value()), 255);
+    sendRequestWrite(0x27, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationTimeoutSpeed->value()), 255);
+    sendRequestWrite(0x25, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationAddress->value()), 255);
 
     qDebug() << tr("Сохранение таймаутов: %1, %2.").arg(ui->spinBoxCommunicationTimeoutSpeed->value()).
                                                     arg(ui->spinBoxCommunicationAddress->value());
@@ -1811,8 +1813,8 @@ void ConfiguratorWindow::protectionSignalStartRead()
 {
     int addr = addressSettingKey("M80");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, addr,
-                         QVector<quint16>() << 24);
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters,
+                         static_cast<quint16>(addr), QVector<quint16>() << 24);
 
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
@@ -1999,7 +2001,8 @@ void ConfiguratorWindow::automationAPVSignalStartRead()
 {
     int addr = addressSettingKey("M86");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, addr, QVector<quint16>() << 24);
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters,
+                         static_cast<quint16>(addr), QVector<quint16>() << 24);
 
     unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
@@ -2074,16 +2077,16 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
         _3I0 = ui->widgetCalibrationOfCurrent->calibrationCurrent3I0();
 
-    if(Ia == 0 && Ib == 0 && Ic == 0 && _3I0 == 0)
+    if(Ia == 0.0f && Ib == 0.0f && Ic == 0.0f && _3I0 == 0.0f)
         return;
 
     QString str;
     QString textValue;
 
-    textValue += ((Ia != 0)?QString("Ia = %1\n").arg(QLocale::system().toString(Ia, 'f', 6)):"");
-    textValue += ((Ib != 0)?QString("Ib = %1\n").arg(QLocale::system().toString(Ib, 'f', 6)):"");
-    textValue += ((Ic != 0)?QString("Ic = %1\n").arg(QLocale::system().toString(Ic, 'f', 6)):"");
-    textValue += ((_3I0 != 0)?QString("3I0 = %1\n").arg(QLocale::system().toString(_3I0, 'f', 6)):"");
+    textValue += ((Ia != 0.0f)?QString("Ia = %1\n").arg(QLocale::system().toString(Ia, 'f', 6)):"");
+    textValue += ((Ib != 0.0f)?QString("Ib = %1\n").arg(QLocale::system().toString(Ib, 'f', 6)):"");
+    textValue += ((Ic != 0.0f)?QString("Ic = %1\n").arg(QLocale::system().toString(Ic, 'f', 6)):"");
+    textValue += ((_3I0 != 0.0f)?QString("3I0 = %1\n").arg(QLocale::system().toString(_3I0, 'f', 6)):"");
 
     str = tr("Вы хотите сохранить новые калибровки?\n%1").arg(textValue);
 
@@ -2100,22 +2103,22 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     QString nameWgt;
     float   t_value;
 
-    if(Ia != 0)
+    if(Ia != 0.0f)
     {
         nameWgt = "lineEditKIA";
         t_value = Ia;
     }
-    if(Ib != 0)
+    if(Ib != 0.0f)
     {
         nameWgt = "lineEditKIB";
         t_value = Ib;
     }
-    if(Ic != 0)
+    if(Ic != 0.0f)
     {
         nameWgt = "lineEditKIC";
         t_value = Ic;
     }
-    if(_3I0 != 0)
+    if(_3I0 != 0.0f)
     {
         nameWgt = "lineEdit3I0";
         t_value = _3I0;
@@ -2132,28 +2135,28 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     } value;
 
     value.f = Ia;
-    CModBusDataUnit unit_Ia(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
-                            addressSettingKey("KIA"), QVector<quint16>() << value.i[1] << value.i[0]);
+    CModBusDataUnit unit_Ia(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                            static_cast<quint16>(addressSettingKey("KIA")), QVector<quint16>() << value.i[1] << value.i[0]);
 
     value.f = Ib;
-    CModBusDataUnit unit_Ib(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
-                            addressSettingKey("KIB"), QVector<quint16>() << value.i[1] << value.i[0]);
+    CModBusDataUnit unit_Ib(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                            static_cast<quint16>(addressSettingKey("KIB")), QVector<quint16>() << value.i[1] << value.i[0]);
 
     value.f = Ic;
-    CModBusDataUnit unit_Ic(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
-                            addressSettingKey("KIC"), QVector<quint16>() << value.i[1] << value.i[0]);
+    CModBusDataUnit unit_Ic(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                            static_cast<quint16>(addressSettingKey("KIC")), QVector<quint16>() << value.i[1] << value.i[0]);
 
     value.f = _3I0;
-    CModBusDataUnit unit_3I0(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
-                            addressSettingKey("K3I0"), QVector<quint16>() << value.i[1] << value.i[0]);
+    CModBusDataUnit unit_3I0(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                             static_cast<quint16>(addressSettingKey("K3I0")), QVector<quint16>() << value.i[1] << value.i[0]);
 
-    if(Ia != 0)
+    if(Ia != 0.0f)
         m_modbus->sendData(unit_Ia);
-    if(Ib != 0)
+    if(Ib != 0.0f)
         m_modbus->sendData(unit_Ib);
-    if(Ic != 0)
+    if(Ic != 0.0f)
         m_modbus->sendData(unit_Ic);
-    if(_3I0!= 0)
+    if(_3I0!= 0.0f)
         m_modbus->sendData(unit_3I0);
 
     qInfo() << tr("Запись новых калибровочных коэффициентов по току подтверждена");
@@ -2197,7 +2200,7 @@ void ConfiguratorWindow::purposeMemoryOutRelayRead()
 //-------------------------------------
 void ConfiguratorWindow::dateTimeRead()
 {
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, 0x2000,
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, 0x2000,
                          QVector<quint16>() << 4);
 
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
@@ -2285,7 +2288,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         return;
     }
 
-    RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
+    RequestType type = static_cast<RequestType>(unit.property(tr("REQUEST")).toInt());
 
     if(type == CALCULATE_TYPE)
     {
@@ -2651,7 +2654,7 @@ void ConfiguratorWindow::terminalVisiblity(int state)
     else if(state == Qt::Unchecked)
         m_terminal_window->hide();
     
-    ui->chboxTerminal->setCheckState((Qt::CheckState)state);
+    ui->chboxTerminal->setCheckState(static_cast<Qt::CheckState>(state));
 }
 /*!
  * \brief ConfiguratorWindow::indicatorVisiblity
@@ -3542,7 +3545,7 @@ void ConfiguratorWindow::initMenuPanel()
                                                             DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
     QTreeWidgetItem* ioDSInputMDVV01  = new QTreeWidgetItem(settingIO, QStringList() << tr("Дискретные входы"),
                                                             DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS);
-    QTreeWidgetItem* ioProtectionCtrl = new QTreeWidgetItem(settingIO, QStringList() << tr("Управление защитами"),
+    QTreeWidgetItem* ioProtectionCtrl = new QTreeWidgetItem(settingIO, QStringList() << tr("Блокировка защит"),
                                                             DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION);
 
     settingIO->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01 << ioProtectionCtrl);
@@ -4933,7 +4936,7 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
             continue;
 
         QFontMetrics fm_table = table->fontMetrics();
-        int text_width = fm_table.width(item.name)*1.2;
+        int text_width = static_cast<int>(fm_table.width(item.name)*1.2f);
 
         if((item.var_list.count()*fm_table.height()) < text_width)
         {
@@ -5107,14 +5110,14 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
  */
 void ConfiguratorWindow::displayStatusInfo(const CModBusDataUnit& unit)
 {
-    RequestType type = (RequestType)unit.property("REQUEST").toInt();
+    RequestType type = static_cast<RequestType>(unit.property("REQUEST").toInt());
 
     quint32 value = 0;
 
     switch (type)
     {
         case READ_STATUS_MCP_INFO:
-            value = unit[1] | (unit[0] << 16);
+            value = static_cast<quint32>(unit[1]) | static_cast<quint32>((unit[0] << 16));
 
             if(value == 0)
             {
@@ -5308,7 +5311,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
 
     for(int i = 0; i < (input_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
     {                                                    // каждые 32 бита хранят состояния входов для переменной
-        quint32 value = ((input_list[i] << 16) | input_list[i + 1]);
+        quint32 value = static_cast<quint32>(((input_list[i] << 16) | input_list[i + 1]));
         input_data << value;
     }
 
@@ -5316,7 +5319,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
 
     for(int i = 0; i < (input_inverse_list.count() - 1); i += 2) // переводим полуслова (16 бит) в слова (32 бита)
     {                                                            // каждые 32 бита хранят состояния инверсий входов для переменной
-        quint32 value = ((input_inverse_list[i] << 16) | input_inverse_list[i + 1]);
+        quint32 value = static_cast<quint32>(((input_inverse_list[i] << 16) | input_inverse_list[i + 1]));
         input_inverse_data << value;
     }
 
@@ -5389,9 +5392,9 @@ void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
         quint16 value2 = data[2];
         quint16 value3 = data[3];
 
-        quint8  device_code = quint8((value0 >> 8)&0xFF); // получаем код изделия РПА
-        quint8 index_number = ((quint8((value0&0xFF)) >> 4)&0x0F)*1000 + (quint8((value0&0xFF))&0x0F)*100 +
-                              (((quint8((value1 >> 8)&0xFF)) >> 4)&0x0F)*10 + ((quint8((value1 >> 8)&0xFF))&0x0F);
+        quint8 device_code  = quint8((value0 >> 8)&0xFF); // получаем код изделия РПА
+        quint8 index_number = static_cast<quint8>((((value0&0xFF) >> 4)&0x0F)*1000 + ((value0&0xFF)&0x0F)*100 +
+                              (((((value1 >> 8)&0xFF)) >> 4)&0x0F)*10 + ((((value1 >> 8)&0xFF))&0x0F));
         quint8 party_number = (quint8(value1&0xFF) >> 4)*10 + quint8(value1&0x0F);
         quint8 firmware_var = ((quint8(value2 >> 8)&0xFF) >> 4)*10 + (quint8(value2 >> 8)&0x0F);
         quint8 year         = (quint8(value2&0xFF) >> 4)*10 + quint8(value2&0x0F);
@@ -5641,8 +5644,8 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         if(addr == -1)
             return;
 
-        CModBusDataUnit new_unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters,
-                                 addr, values);
+        CModBusDataUnit new_unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                                 static_cast<quint16>(addr), values);
 
         m_modbus->sendData(new_unit);
     }
@@ -5676,7 +5679,7 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
             for(quint8 bit = 0; bit < sizeof(value)*8; bit++)
             {
                 bool state = (value&(1 << bit));
-                int  pos   = (sizeof(value)*8)*row + bit;
+                int  pos   = int((sizeof(value)*8)*quint8(row) + bit);
 
                 if(pos >= matrix.rowCount())
                     break;
@@ -5739,26 +5742,26 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
     CMatrix& matrix = model->matrix();
 
-    for(int i = 0; i < matrix.rowCount(); i++)
+    for(int col = 0; col < matrix.columnCount(); col++)
     {
-        QVector<quint16> row = data_buf[i];
-        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
+        QVector<quint16> col_data = data_buf[col];
+        QVector<block_protection_purpose_t> purpose_list = m_block_list[col].purpose;
 
-        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
+        for(int row = 0, pos = 0; row < matrix.rowCount(); row++, pos++)
         {
-            if(i == j)
+            if(col == row)
             {
                 pos--;
                 continue;
             }
 
             block_protection_purpose_t purpose = purpose_list[pos];
-            int col = purpose.bit/16;
+            int r = purpose.bit/16;
             int bit = purpose.bit%16;
 
-            bool state = (row[col]&(1 << bit));
+            bool state = (col_data[r]&(1 << bit));
 
-            matrix[i][j].data().state = ((state)?CHECKED:UNCHECKED);
+            matrix[col][row].data().state = ((state)?CHECKED:UNCHECKED);
         }
     }
 
@@ -6303,7 +6306,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
 
     int addr = addressSettingKey(first);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), type, addr, QVector<quint16>() << size);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), type, quint16(addr), QVector<quint16>() << quint16(size));
 
     unit.setProperty("REQUEST", GENERAL_TYPE);
     unit.setProperty("FIRST", first);
@@ -6317,7 +6320,8 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index, Dev
 {
     int addr = addressSettingKey(index);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, addr, QVector<quint16>() << 1);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters,
+                         quint16(addr), QVector<quint16>() << 1);
 
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
@@ -6357,13 +6361,13 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     if(addr == -1)
         return;
 
-    quint16 value = comboBox->currentIndex();
+    quint16 value = quint16(comboBox->currentIndex());
 
     if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
         value++;
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteSingleRegister, addr,
-                                                 QVector<quint16>() << value);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, quint16(addr),
+                         QVector<quint16>() << value);
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
     unit.setProperty("INDEX", index);
@@ -6418,7 +6422,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
     CModBusDataUnit::FunctionType funType = ((data.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, addressSettingKey(first), data);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(addressSettingKey(first)), data);
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
@@ -6436,8 +6440,8 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
 
     int size = laddr - faddr + 24; // получаем размер считываемого блока с учетом выравнивания в 48 байт (одна строка)
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, faddr,
-                                                                  QVector<quint16>() << size);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(faddr),
+                         QVector<quint16>() << quint16(size));
 
     unit.setProperty("REQUEST", PURPOSE_OUT_TYPE);
     unit.setProperty("FIRST", first);
@@ -6472,8 +6476,8 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
 
         for(int j = 1; j < matrix.rowCount(); j++)
         {
-            quint16 hword = matrix[j].data().position/16;
-            quint16 bit   = matrix[j].data().position%16;
+            quint16 hword = quint16(matrix[j].data().position/16);
+            quint16 bit   = quint16(matrix[j].data().position%16);
 
             StateType state = matrix[j][index].data().state;
 
@@ -6490,7 +6494,7 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                    CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, addressPurposeKey(first), values);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(addressPurposeKey(first)), values);
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
@@ -6502,8 +6506,8 @@ void ConfiguratorWindow::sendPurposeDIReadRequest(int first_addr, int last_addr)
 {
     int size = last_addr - first_addr + 2;
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, first_addr,
-                                                                  QVector<quint16>() << size);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(first_addr),
+                         QVector<quint16>() << quint16(size));
 
     unit.setProperty(tr("REQUEST"), ((first_addr < 768)?PURPOSE_INPUT_TYPE:PURPOSE_INPUT_INVERSE_TYPE));
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
@@ -6567,7 +6571,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                  CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(first_addr), values);
 
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
@@ -6629,7 +6633,7 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                    CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, first_addr, values);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(first_addr), values);
 
     unit.setProperty(tr("FIRST_ADDRESS"), first_addr);
     unit.setProperty(tr("LAST_ADDRESS"), last_addr);
@@ -6642,7 +6646,7 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
 {
     int firstAddr = addressSettingKey("K10");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, firstAddr,
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(firstAddr),
                          QVector<quint16>() << 48);
 
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
@@ -6657,8 +6661,8 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
 {
     int firstAddr = addressSettingKey("K10");
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, firstAddr,
-                       QVector<quint16>() << 48);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(firstAddr),
+                         QVector<quint16>() << 48);
 
     unit.setProperty("REQUEST", MONITONR_PURPOSE_K10_K11_TYPE);
 
@@ -6671,7 +6675,7 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
  */
 void ConfiguratorWindow::sendRequestRead(int addr, int size, int request, CModBusDataUnit::FunctionType functionType)
 {
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), functionType, addr, QVector<quint16>() << size);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), functionType, quint16(addr), QVector<quint16>() << quint16(size));
 
     unit.setProperty(tr("REQUEST"), request);
 
@@ -6687,7 +6691,7 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                  CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), funType, addr, values);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(addr), values);
 
     unit.setProperty("REQUST", request);
 
@@ -6700,7 +6704,8 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
  */
 void ConfiguratorWindow::sendDeviceCommand(int cmd)
 {
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteSingleRegister, 0x3000, QVector<quint16>() << cmd);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, 0x3000,
+                         QVector<quint16>() << quint16(cmd));
 
     unit.setProperty("CMD", cmd);
     m_modbus->sendData(unit);
@@ -6719,7 +6724,7 @@ void ConfiguratorWindow::sendOutputAllRequest()
     if(button)
         type = button->property("TYPE").toString();
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 196, QVector<quint16>() << 4);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 196, QVector<quint16>() << 4);
 
     unit.setProperty("REQUEST", READ_OUTPUT_ALL);
     unit.setProperty("BUTTON_TYPE", type);
@@ -6733,7 +6738,7 @@ void ConfiguratorWindow::sendOutputAllRequest()
  */
 void ConfiguratorWindow::sendInputStatesRequest()
 {
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 200, QVector<quint16>() << 2);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 200, QVector<quint16>() << 2);
 
     unit.setProperty("REQUEST", READ_INPUTS);
 
@@ -6742,8 +6747,8 @@ void ConfiguratorWindow::sendInputStatesRequest()
 //-----------------------------------------------------
 void ConfiguratorWindow::sendDebugInfoRead(int channel)
 {
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 202 + channel*15,
-                       QVector<quint16>() << 15);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 202 + quint16(channel)*15,
+                         QVector<quint16>() << 15);
 
     unit.setProperty("REQUEST", READ_DEBUG_INFO);
     unit.setProperty("CHANNEL", channel);
@@ -6865,7 +6870,7 @@ void ConfiguratorWindow::startExportToPDF()
 
     connect(m_watcher, &QFutureWatcher<void>::finished, m_progressbar, &CProgressBarWidget::progressStop);
 
-    QFuture<void> future = QtConcurrent::run(this, &exportToPDF, m_active_journal_current,
+    QFuture<void> future = QtConcurrent::run(this, &ConfiguratorWindow::exportToPDF, m_active_journal_current,
                                              QString(tr("Журнал %1")).arg(journal_name),
                                              sn_device, journal_path);
     m_watcher->setFuture(future);
@@ -7386,8 +7391,8 @@ void ConfiguratorWindow::saveProject()
         return;
     }
 
-    QString textStandardPhase = QString::number(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase(), 'f', 6);
-    QString textStandard3I0 = QString::number(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0(), 'f', 6);
+    QString textStandardPhase = QString::number(double(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase()), 'f', 6);
+    QString textStandard3I0 = QString::number(double(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0()), 'f', 6);
     QString textStandard = QString("\"standard\":\n\t\t\t{\n\t\t\t\t\"phase\": \"%1\","
                                    "\n\t\t\t\t\"3I0\": \"%2\"\n\t\t\t}").arg(textStandardPhase).arg(textStandard3I0);
     QString textCurrent     = QString("\"current\":\n\t\t{\n\t\t\t%1\n\t\t}").arg(textStandard);
@@ -7589,10 +7594,10 @@ void ConfiguratorWindow::calibrationOfCurrent()
         return;
     }
 
-    CModBusDataUnit unit_Ia(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 64, 2);
-    CModBusDataUnit unit_Ib(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 66, 2);
-    CModBusDataUnit unit_Ic(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 68, 2);
-    CModBusDataUnit unit_3I0(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 70, 2);
+    CModBusDataUnit unit_Ia(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 64, 2);
+    CModBusDataUnit unit_Ib(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 66, 2);
+    CModBusDataUnit unit_Ic(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 68, 2);
+    CModBusDataUnit unit_3I0(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 70, 2);
 
     unit_Ia.setProperty("REQUEST", CALIBRATION_CURRENT_IA);
     unit_Ib.setProperty("REQUEST", CALIBRATION_CURRENT_IB);
@@ -7638,15 +7643,15 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         QPointF deviation  = standardDeviation(calib.Ia);
 
         ui->widgetCalibrationOfCurrent->setFactorIa(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIa(deviation.x());
-        ui->widgetCalibrationOfCurrent->setDeviationIa(deviation.y());
+        ui->widgetCalibrationOfCurrent->setMeasureIa(float(deviation.x()));
+        ui->widgetCalibrationOfCurrent->setDeviationIa(float(deviation.y()));
         qInfo() << tr("Калибровка тока фазы А");
         for(float value: calib.Ia)
             qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(cur_factor));
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
@@ -7661,15 +7666,15 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         QPointF deviation  = standardDeviation(calib.Ib);
 
         ui->widgetCalibrationOfCurrent->setFactorIb(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIb(deviation.x());
-        ui->widgetCalibrationOfCurrent->setDeviationIb(deviation.y());
+        ui->widgetCalibrationOfCurrent->setMeasureIb(float(deviation.x()));
+        ui->widgetCalibrationOfCurrent->setDeviationIb(float(deviation.y()));
         qInfo() << tr("Калибровка тока фазы B");
         for(float value: calib.Ib)
             qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(cur_factor));
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
@@ -7684,22 +7689,22 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         QPointF deviation  = standardDeviation(calib.Ic);
 
         ui->widgetCalibrationOfCurrent->setFactorIc(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasureIc(deviation.x());
-        ui->widgetCalibrationOfCurrent->setDeviationIc(deviation.y());
+        ui->widgetCalibrationOfCurrent->setMeasureIc(float(deviation.x()));
+        ui->widgetCalibrationOfCurrent->setDeviationIc(float(deviation.y()));
         qInfo() << tr("Калибровка тока фазы C");
         for(float value: calib.Ic)
             qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(cur_factor));
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
     if(!calib._3I0.isEmpty())
     {
         CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
-                                                                           "lineEdit3I0", 1));
+                                                       "lineEdit3I0", 1));
 
         float   standard   = ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0();
         float   cur_factor = QLocale::system().toFloat(((lineEdit)?lineEdit->text():"0.0"));
@@ -7707,15 +7712,15 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         QPointF deviation  = standardDeviation(calib._3I0);
 
         ui->widgetCalibrationOfCurrent->setFactor3I0(newFactor);
-        ui->widgetCalibrationOfCurrent->setMeasure3I0(deviation.x());
-        ui->widgetCalibrationOfCurrent->setDeviation3I0(deviation.y());
+        ui->widgetCalibrationOfCurrent->setMeasure3I0(float(deviation.x()));
+        ui->widgetCalibrationOfCurrent->setDeviation3I0(float(deviation.y()));
         qInfo() << tr("Калибровка среднего тока 3I0");
         for(float value: calib._3I0)
             qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                    arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(cur_factor);
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(cur_factor));
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
@@ -7755,7 +7760,7 @@ void ConfiguratorWindow::resizeColumns()
 {
     DeviceMenuItemType index = menuIndex();
 
-    if(index == -1)
+    if(index == DEVICE_MENU_ITEM_NONE)
         return;
 
     QTableView* table = nullptr;
@@ -7789,7 +7794,7 @@ void ConfiguratorWindow::resizeColumns()
     {
         QString text = QString("%1 %2").arg(str).arg(header->model()->headerData(i, Qt::Horizontal).toString());
 
-        int w_text = fm_table.width(text)*1.2f;
+        int w_text = int(fm_table.width(text)*1.2f);
 
         header->resizeSection(i, ((w_header < w_text)?w_text:w_header));
     }
@@ -8565,7 +8570,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
 //----------------------------------------------------------------
 void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
 {
-    RequestType type = (RequestType)unit.property(tr("REQUEST")).toInt();
+    RequestType type = RequestType(unit.property(tr("REQUEST")).toInt());
 
     QString key = unit.property(tr("JOURNAL")).toString();
 
@@ -8771,9 +8776,10 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
 
     journal_set_t set = m_journal_set[key];
 
-    QVector<quint16> values = QVector<quint16>() << (quint16)((pos >> 16)&0xFFFF) << (quint16)(pos&0xFFFF);
+    QVector<quint16> values = QVector<quint16>() << quint16((pos >> 16)&0xFFFF) << quint16(pos&0xFFFF);
 
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::WriteMultipleRegisters, set.address.set_shift, values);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                         quint16(set.address.set_shift), values);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
     unit.setProperty(tr("JOURNAL"), key);
 
@@ -8782,7 +8788,7 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSynchronization()
 {
-    CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
 
     unit.setProperty("REQUEST", READ_SERIAL_NUMBER);
 
@@ -9472,12 +9478,12 @@ void ConfiguratorWindow::readShiftPrtEventJournal()
     if(m_journal_set.isEmpty())
         return;
 
-    for(const QString key: m_journal_set.keys())
+    for(const QString& key: m_journal_set.keys())
     {
         journal_set_t set = m_journal_set[key];
 
-        CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadHoldingRegisters, set.address.set_shift,
-                                                     QVector<quint16>() << 2);
+        CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters,
+                             quint16(set.address.set_shift), QVector<quint16>() << 2);
 
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
         unit.setProperty(tr("JOURNAL"), key);
@@ -9491,12 +9497,12 @@ void ConfiguratorWindow::readJournalCount()
     if(m_journal_set.isEmpty())
         return;
 
-    for(const QString key: m_journal_set.keys())
+    for(const QString& key: m_journal_set.keys())
     {
         journal_set_t set = m_journal_set[key];
 
-        CModBusDataUnit unit(m_serialPortSettings_window->deviceID(), CModBusDataUnit::ReadInputRegisters, set.address.msg_count,
-                                                     QVector<quint16>() << 2);
+        CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
+                             quint16(set.address.msg_count), QVector<quint16>() << 2);
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_COUNT);
         unit.setProperty(tr("JOURNAL"), key);
 
@@ -9527,13 +9533,13 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
     QString str = lineEdit->objectName().toUpper();
     QString key = str.remove("LE");
 
-    float limit_min = 0;
-    float limit_max = 0;
+    double limit_min = 0.0;
+    double limit_max = 0.0;
 
     if(m_limits.find(key) != m_limits.end())
     {
-        limit_min = m_limits[key].limit_min;
-        limit_max = m_limits[key].limit_max;
+        limit_min = double(m_limits[key].limit_min);
+        limit_max = double(m_limits[key].limit_max);
     }
 
     QWidget* widget = findChild<QWidget*>(QString("label%1").arg(key));
@@ -9542,7 +9548,7 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
     {
         QString classWgt = widget->metaObject()->className();
 
-        if(classWgt == tr("QLabel") && limit_max != 0)
+        if(classWgt == tr("QLabel") && limit_max != 0.0)
         {
             QLabel* label = qobject_cast<QLabel*>(widget);
 
@@ -9553,12 +9559,12 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
         }
     }
 
-    if(limit_min == -180 && limit_max == 180)
+    if(static_cast<int>(limit_min) == -180 && static_cast<int>(limit_max) == 180)
     {
-        lineEdit->setValidator(new QIntValidator(limit_min, limit_max));
+        lineEdit->setValidator(new QIntValidator(static_cast<int>(limit_min), static_cast<int>(limit_max)));
         lineEdit->setText("0");
     }
-    else if(limit_min == 0 && limit_max == 0)
+    else if(limit_min == 0.0 && limit_max == 0.0)
     {
         lineEdit->setValidator(new QDoubleValidator(0, 100, 6));
         lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
@@ -9885,12 +9891,12 @@ QDateTime ConfiguratorWindow::unpackDateTime(QVector<quint8>& data)
 
     year += ((year < 2000)?2000:0); // приводит дату к 'yyyy'
 
-    quint8 month = ((data[0]&0x03) << 2) | ((data[1]&0xC0) >> 6);
-    quint8 day   = ((data[1]&0x3E) >> 1);
+    quint8 month = quint8(((data[0]&0x03) << 2) | ((data[1]&0xC0) >> 6));
+    quint8 day   = quint8(((data[1]&0x3E) >> 1));
 
-    quint8  hour    = ((data[1]&0x01) << 4) | ((data[2]&0xF0) >> 4);
-    quint8  minute  = ((data[2]&0x0F) << 2) | ((data[3]&0xC0) >> 6);
-    quint8  second  = (data[3]&0x3F);
+    quint8  hour    = quint8(((data[1]&0x01) << 4) | ((data[2]&0xF0) >> 4));
+    quint8  minute  = quint8(((data[2]&0x0F) << 2) | ((data[3]&0xC0) >> 6));
+    quint8  second  = quint8(data[3]&0x3F);
     quint16 msecond = quint16(data[4]*3.90625f); // перевод 256 долей секунды в мс, т.е. 1000/256 = 3.90625
 
     QDateTime dt(QDate(year, month, day), QTime(hour, minute, second, msecond));
@@ -10074,7 +10080,7 @@ void ConfiguratorWindow::endJournalReadProcess(const QString& text)
 
     emit buttonReadJournalStateChanged(); // отключаем кнопку чтения журналов
 
-    disconnect(ui->pushButtonJournalRead, &QPushButton::clicked, this, stopProgressbar);
+    disconnect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::stopProgressbar);
     m_progressbar->progressStop();
 
     m_popup->setPopupText(text);
@@ -10112,9 +10118,9 @@ QPointF ConfiguratorWindow::standardDeviation(QVector<float>& list)
     for(float value: list)
         deviation += (value - average)*(value - average);
 
-    deviation = sqrt(deviation/(list.count() - 1));
+    deviation = float(sqrt(double(double(deviation)/double(list.count()) - 1.0)));
 
-    return QPointF(average, deviation);
+    return QPointF(double(average), double(deviation));
 }
 /*!
  * \brief ConfiguratorWindow::writeDataToExcel
