@@ -323,14 +323,6 @@ void ConfiguratorWindow::journalRead(const QString& key)
     {
         m_journal_read_current = m_active_journal_current; // сохраняем текущий виджет таблицы
 
-        if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
-        {
-            int result = QMessageBox::question(this, tr("Чтение журнала"), tr("Таблица журнала не пустая. Очистить?"));
-
-            if(result == QMessageBox::Yes)
-                clearJournal(); // очищаем таблицу
-        }
-
         m_journal_read_current->header()->setTextDeviceCountMessages(0, set.message.read_total);
 
         set.isStart = true;
@@ -341,7 +333,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
         set.message.read_start = 0;
         set.message.read_limit = set.message.read_total;
 
-        if(m_filter.find(key) != m_filter.end()) // если фильтр журнала существует
+        if(m_filter.find(key) != m_filter.end()) // если фильтр журнала существует и в таблице нет данных
         {
             CFilter filter = m_filter[key]; // получаем фильтр журнала
 
@@ -352,9 +344,38 @@ void ConfiguratorWindow::journalRead(const QString& key)
                     int pos_beg = filter.interval().begin;
                     int pos_end = filter.interval().end;
 
-                    set.message.read_start = pos_beg; // устанавливаем номер сообщения с которого будем читать
+                    set.message.read_start = set.message.read_current = ((pos_beg == 0)?0:pos_beg - 1); // устанавливаем номер сообщения с которого будем читать
                     set.message.read_limit = pos_end - pos_beg + 1; // устанавливаем сообщение до которого будем читать
                 }
+            }
+        }
+
+        if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
+        {
+            QMessageBox msgbox;
+            msgbox.setText(tr("Чтение журнала"));
+            msgbox.setInformativeText(tr("В таблице уже присутствуют данные!\nВыберите необходимое действие."));
+            msgbox.setIcon(QMessageBox::Question);
+
+            QPushButton* next   = msgbox.addButton(tr("Продолжить"), QMessageBox::ActionRole);
+            QPushButton* begin  = msgbox.addButton(tr("Сначала"), QMessageBox::ActionRole);
+            QPushButton* cancel = msgbox.addButton(tr("Отмена"), QMessageBox::ActionRole);
+
+            msgbox.setDefaultButton(next);
+            msgbox.exec();
+
+            if(msgbox.clickedButton() == next)
+            {
+                set.message.read_start = set.message.read_current = m_journal_read_current->table()->rowCount();
+            }
+            else if(msgbox.clickedButton() == begin)
+            {
+                clearJournal();
+            }
+            else if(msgbox.clickedButton() == cancel)
+            {
+                m_journal_read_current = nullptr;
+                return;
             }
         }
 
