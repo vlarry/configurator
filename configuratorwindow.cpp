@@ -239,14 +239,14 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
     if(matrix.rowCount() == 0)
         return;
 
-    for(int i = 0; i < matrix.rowCount(); i++)
+    for(int col = 0; col < matrix.columnCount(); col++)
     {
-        QVector<block_protection_purpose_t> purpose_list = m_block_list[i].purpose;
+        QVector<block_protection_purpose_t> purpose_list = m_block_list[col].purpose;
         QVector<quint16> values = QVector<quint16>(24, 0);
 
-        for(int j = 0, pos = 0; j < matrix.columnCount(); j++, pos++)
+        for(int row = 0, pos = 0; row < matrix.rowCount(); row++, pos++)
         {
-            if(i == j)
+            if(col == row)
             {
                 pos--;
                 continue;
@@ -254,17 +254,17 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
 
             block_protection_purpose_t purpose = purpose_list[pos];
 
-            int col = purpose.bit/16;
+            int r   = purpose.bit/16;
             int bit = purpose.bit%16;
 
-            bool state = matrix[i][j].data().state;
+            bool state = matrix[col][row].data().state;
 
-            quint16 value = values[col];
+            quint16 value = values[r];
 
             if(state)
                 value |= (1 << bit);
 
-            values[col] = value;
+            values[r] = value;
         }
 
         QVector<quint16> tvalues;
@@ -272,7 +272,7 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
         for(int k = 0; k < values.count() - 1; k += 2)
             tvalues << values[k + 1] << values[k];
 
-        sendRequestWrite(m_block_list[i].address, tvalues, -1);
+        sendRequestWrite(m_block_list[col].address, tvalues, -1);
     }
 }
 //--------------------------------------
