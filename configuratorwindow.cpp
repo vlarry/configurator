@@ -4957,7 +4957,7 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
             continue;
 
         QFontMetrics fm_table = table->fontMetrics();
-        int text_width = static_cast<int>(fm_table.width(item.name)*1.2f);
+        int text_width = int(fm_table.width(item.name)*1.2f);
 
         if((item.var_list.count()*fm_table.height()) < text_width)
         {
@@ -6051,6 +6051,7 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
         item.address  = query.value("address").toInt();
         item.unit     = CDeviceMenuTableWidget::measure_t({ query.value("limit_min").toFloat(),
                                                             query.value("limit_max").toFloat(),
+                                                            query.value("default_value").toFloat(),
                                                             query.value("unit_measure").toString() });
         item.type     = query.value("data_type").toString();
         item.row      = query.value("row").toInt();

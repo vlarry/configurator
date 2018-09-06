@@ -195,10 +195,11 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         le->setObjectName(QString("lineEdit%1%2").arg(item.key).arg(index_str));
         le->setAlignment(Qt::AlignCenter);
 
-        float min = item.unit.min;
-        float max = item.unit.max;
+        float min         = item.unit.min;
+        float max         = item.unit.max;
+        float val_default = item.unit.defalult;
 
-        if(min == 0 && max == 0)
+        if(min == 0.0f && max == 0.0f)
         {
             min = 0.0f;
             max = 1000.0f;
@@ -206,14 +207,14 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
 
         if(item.type.toUpper() == "INT")
         {
-            le->setValidator(new QIntValidator(min, max, le));
-            le->setText(QLocale::system().toString(((min < 0.0f)?0:int(min))));
+            le->setValidator(new QIntValidator(static_cast<int>(min), static_cast<int>(max), le));
+            le->setText(QLocale::system().toString(static_cast<int>(val_default)));
             le->setValidatorType(CLineEdit::INT);
         }
         else if(item.type.toUpper() == "FLOAT")
         {
-            le->setValidator(new QDoubleValidator(min, max, 6, le));
-            le->setText(QLocale::system().toString(((min < 0.0f)?0:min), 'f', 6));
+            le->setValidator(new QDoubleValidator(static_cast<int>(min), static_cast<int>(max), 6, le));
+            le->setText(QLocale::system().toString(val_default, 'f', 6));
             le->setValidatorType(CLineEdit::FLOAT);
         }
 
@@ -233,11 +234,12 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         setCellWidget(row, 1, wgt);
     }
 
-    if(item.unit.min != item.unit.max)
+    if(!item.unit.unit.isEmpty())
     {
         QWidget*     wgt_unit    = new QWidget;
         QHBoxLayout* layout_unit = new QHBoxLayout;
-        QLabel*      label_unit  = new QLabel(QString("%1...%2%3").arg(item.unit.min).arg(item.unit.max).arg(item.unit.unit), wgt_unit);
+        QLabel*      label_unit  = new QLabel(QString("%1...%2%3").arg(static_cast<double>(item.unit.min)).
+                                                                   arg(static_cast<double>(item.unit.max)).arg(item.unit.unit), wgt_unit);
 
         label_unit->setObjectName(QString("label%1Unit%2").arg(item.key).arg(index_str));
 
