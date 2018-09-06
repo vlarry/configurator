@@ -6134,22 +6134,24 @@ CDeviceMenuTableWidget::item_t ConfiguratorWindow::loadIODeviceItem(const QStrin
     {
         if(query.next())
         {
-            int     address = query.value("address").toInt();
-            float   min     = query.value("limit_min").toFloat();
-            float   max     = query.value("limit_max").toFloat();
-            QString unit    = query.value("unit_measure").toString();
-            QString type    = query.value("data_type").toString();
-            QString name    = query.value("description").toString();
-            int     row     = query.value("row").toInt();
+            int     address     = query.value("address").toInt();
+            float   min         = query.value("limit_min").toFloat();
+            float   max         = query.value("limit_max").toFloat();
+            float   val_default = query.value("default_value").toFloat();
+            QString unit        = query.value("unit_measure").toString();
+            QString type        = query.value("data_type").toString();
+            QString name        = query.value("description").toString();
+            int     row         = query.value("row").toInt();
 
-            item.key       = k;
-            item.address   = address;
-            item.unit.min  = min;
-            item.unit.max  = max;
-            item.unit.unit = unit;
-            item.type      = type;
-            item.name      = name;
-            item.row       = row;
+            item.key              = k;
+            item.address          = address;
+            item.unit.min         = min;
+            item.unit.max         = max;
+            item.unit.val_default = val_default;
+            item.unit.unit        = unit;
+            item.type             = type;
+            item.name             = name;
+            item.row              = row;
 
             if(item.type.toUpper() == "LIST") // если тип - "СПИСОК", то читаем список подпунктов
             {

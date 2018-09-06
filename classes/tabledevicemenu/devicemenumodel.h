@@ -35,7 +35,7 @@
             {
                 float   min;
                 float   max;
-                float   defalult;
+                float   val_default;
                 QString unit;
             };
             //------------

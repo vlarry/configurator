@@ -32,12 +32,12 @@ bool CLineEdit::isValidateText(const QString& text) const
 
         if(floatValidator)
         {
-            bottom = floatValidator->bottom();
-            top    = floatValidator->top();
+            bottom = static_cast<float>(floatValidator->bottom());
+            top    = static_cast<float>(floatValidator->top());
         }
     }
 
-    if(isNumber && value + 0.000001 >= bottom && value - 0.000001 <= top) // 0.000001 из-за округления (0.1 представляется как 0.09)
+    if(isNumber && (value + 0.000001) >= static_cast<double>(bottom) && (value - 0.000001) <= static_cast<double>(top)) // 0.000001 из-за округления (0.1 представляется как 0.09)
     {
         return true;
     }
