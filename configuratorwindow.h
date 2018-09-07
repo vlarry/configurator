@@ -618,6 +618,7 @@
             void calibrationOfCurrent();
             void calibrationOfCurrentRequest();
             void resizeColumns();
+            void processKCUUmin();
 
         protected:
             void keyPressEvent(QKeyEvent* event);
