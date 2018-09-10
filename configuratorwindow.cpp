@@ -1066,7 +1066,6 @@ void ConfiguratorWindow::automationSwitchWrite()
     sendSettingControlWriteRequest("K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlWriteRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlWriteRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K17", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlWriteRequest("K07", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingWriteRequest("K02", "K02", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingWriteRequest("K50", "K50", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
@@ -1912,7 +1911,6 @@ void ConfiguratorWindow::automationSwitchRead()
     sendSettingControlReadRequest("K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlReadRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlReadRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K17", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlReadRequest("K07", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingReadRequest("K02", "K02", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingReadRequest("K50", "K50", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
