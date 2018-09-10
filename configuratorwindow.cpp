@@ -7894,6 +7894,25 @@ void ConfiguratorWindow::processKCUUmin()
         }
     }
 }
+/*!
+ * \brief ConfiguratorWindow::menuTabClick
+ * \param index Индекс текущей вкладки
+ *
+ * Переключение меню при выборе вкладки "Отладка"
+ */
+void ConfiguratorWindow::menuTabClick(int index)
+{
+    if(index == TAB_DEBUG_INDEX)
+    {
+        ui->treewgtDeviceMenu->hide();
+        ui->treeWidgetDebugMenu->show();
+    }
+    else
+    {
+        ui->treewgtDeviceMenu->show();
+        ui->treeWidgetDebugMenu->hide();
+    }
+}
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 {
@@ -10443,6 +10462,7 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(ui->tabwgtMenu, &QTabWidget::currentChanged, this, &ConfiguratorWindow::menuTabClick);
 
     CTerminal* terminal = qobject_cast<CTerminal*>(m_terminal_window->widget());
 

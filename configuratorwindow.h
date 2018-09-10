@@ -243,6 +243,7 @@
                 TAB_SET_INDEX,
                 TAB_READ_WRITE_INDEX,
                 TAB_FILTER_INDEX,
+                TAB_DEBUG_INDEX,
                 TAB_HELP_INDEX
             };
             /*!
@@ -620,6 +621,7 @@
             void calibrationOfCurrentRequest();
             void resizeColumns();
             void processKCUUmin();
+            void menuTabClick(int index);
 
         protected:
             void keyPressEvent(QKeyEvent* event);

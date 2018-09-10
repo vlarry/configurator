@@ -84,7 +84,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>7</number>
       </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
@@ -1500,6 +1500,11 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tabDebugMenu">
+       <attribute name="title">
+        <string>Отладка</string>
+       </attribute>
+      </widget>
       <widget class="QWidget" name="tabHelp">
        <attribute name="title">
         <string>Помощь</string>
@@ -1741,6 +1746,16 @@
               <string notr="true">1</string>
              </property>
             </column>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTreeWidget" name="treeWidgetDebugMenu">
+            <property name="columnCount">
+             <number>0</number>
+            </property>
+            <attribute name="headerVisible">
+             <bool>false</bool>
+            </attribute>
            </widget>
           </item>
          </layout>
