@@ -10063,6 +10063,7 @@ group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
 
             if(!var_list.isEmpty())
             {
+                // сортировка переменных в пределах группы по полю sort_id
                 std::sort(var_list.begin(), var_list.end(), [](var_t& var1, var_t& var2) { return var1.sort_id < var2.sort_id; } );
                 group[id] = group_item_t({ group_name, group_description, var_list });
             }
