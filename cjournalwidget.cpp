@@ -186,11 +186,11 @@ QDateTime CJournalWidget::unpackDateTime(QVector<quint8>& data)
 
     year += ((year < 2000)?2000:0); // приводит дату к 'yyyy'
 
-    quint8 month = ((data[0]&0x03) << 2) | ((data[1]&0xC0) >> 6);
+    quint8 month = static_cast<quint8>((data[0]&0x03) << 2) | ((data[1]&0xC0) >> 6);
     quint8 day   = ((data[1]&0x3E) >> 1);
 
-    quint8  hour    = ((data[1]&0x01) << 4) | ((data[2]&0xF0) >> 4);
-    quint8  minute  = ((data[2]&0x0F) << 2) | ((data[3]&0xC0) >> 6);
+    quint8  hour    = static_cast<quint8>((data[1]&0x01) << 4) | ((data[2]&0xF0) >> 4);
+    quint8  minute  = static_cast<quint8>((data[2]&0x0F) << 2) | ((data[3]&0xC0) >> 6);
     quint8  second  = (data[3]&0x3F);
     quint16 msecond = quint16(data[4]*3.90625f); // перевод 256 долей секунды в мс, т.е. 1000/256 = 3.90625
 
@@ -230,7 +230,7 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
     if(data.count() != 256)
         return;
 
-    quint16 id = ((data[1] << 8) | data[0]);
+    quint16 id = static_cast<quint16>((data[1] << 8) | data[0]);
 
     QDateTime dt = unpackDateTime(QVector<quint8>() << data[2] << data[3] << data[4] << data[5] << data[6]);
 
@@ -299,7 +299,7 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
                 val.bytes[i] = data[pos];
             }
 
-            property_list << property_data_item_t({ item.name, QString::number(val._float, 'f', 6) });
+            property_list << property_data_item_t({ item.name, QString::number(static_cast<double>(val._float), 'f', 6) });
         }
     }
 
@@ -318,7 +318,7 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
                 val.bytes[i] = data[pos];
             }
 
-            property_list << property_data_item_t({ value.name, QString::number(val._float, 'f', 6) });
+            property_list << property_data_item_t({ value.name, QString::number(static_cast<double>(val._float), 'f', 6) });
         }
     }
 
@@ -424,13 +424,13 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
 {
     for(int i = 0; i < data.count(); i += 16)
     {
-        quint16 id = ((data[i + 1] << 8) | data[i]);
+        quint16 id = static_cast<quint16>((data[i + 1] << 8) | data[i]);
 
         QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
 
         quint8  type_event      = data[i + 7];
         quint8  category_event  = data[i + 8];
-        quint16 parameter_event = data[i + 9] | (data[i + 10] << 8);
+        quint16 parameter_event = static_cast<quint16>(data[i + 9] | (data[i + 10] << 8));
 
         QVector<QString> category_error_list = QVector<QString>() << tr("Ok") << tr("не ACK") << tr("Привязка") <<
                                                                      tr("Контрольная сумма") << tr("9 бит") <<
@@ -498,7 +498,7 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 
     for(int i = 0; i < data.count(); i += 64)
     {
-        quint16   id = ((data[i + 1] << 8) | data[i]);
+        quint16   id = static_cast<quint16>((data[i + 1] << 8) | data[i]);
         QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
         quint8    type = data[i + 7];
         int       row  = ui->tableWidgetJournal->rowCount();
@@ -520,7 +520,7 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 
             if(type == 0)
             {
-                quint32 secs = ((data[i + 11] << 24) | (data[i + 10] << 16) | (data[i + 9] << 8) | data[i + 8]);
+                quint32 secs = static_cast<quint32>((data[i + 11] << 24) | (data[i + 10] << 16) | (data[i + 9] << 8) | data[i + 8]);
 
                 if(ui->tableWidgetJournal->isColumnHidden(4))
                     ui->tableWidgetJournal->showColumn(4);

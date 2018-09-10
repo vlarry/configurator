@@ -35,6 +35,7 @@
     #include <QHBoxLayout>
     #include <QKeyEvent>
     #include <cmath>
+    #include <algorithm>
     #include "modbus.h"
     #include "menubar.h"
     #include "cterminal.h"
@@ -697,7 +698,7 @@
             QVector<QString>    loadVaribleByType(const QString& type);
             block_protection_list_t loadProtectionList();
             bool deleteLogFile();
-            void showErrorMessage(const QString& title, CModBusDataUnit& unit);
+            bool showErrorMessage(const QString& title, CModBusDataUnit& unit);
             void endJournalReadProcess(const QString& text);
             float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
             QPointF standardDeviation(QVector<float>& list);

@@ -2376,6 +2376,20 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == READ_JOURNAL || type == READ_JOURNAL_COUNT || type == READ_JOURNAL_SHIFT_PTR)
     {
+        if(showErrorMessage(tr("Чтение журнала"), unit) && type == READ_JOURNAL)
+        {
+            QString key = unit.property(tr("JOURNAL")).toString();
+
+            if(!key.isEmpty())
+            {
+                journal_set_t& set = m_journal_set[key];
+                set.message.read_count += 0;
+            }
+
+            ui->pushButtonJournalRead->setChecked(false);
+            emit ui->pushButtonJournalRead->clicked(false);
+            return;
+        }
         processReadJournal(unit);
     }
     else if(type == READ_SERIAL_NUMBER)
@@ -5420,8 +5434,6 @@ void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
         return;
     }
 
-    m_journal_read_current->print(data);
-
     QString key = m_journal_read_current->property("TYPE").toString();
 
     if(m_journal_set.find(key) != m_journal_set.end())
@@ -5431,6 +5443,9 @@ void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
 
         m_journal_read_current->header()->setTextDeviceCountMessages(read, total);
     }
+
+    if(data.count()*2 >= m_journal_set[key].message.size)
+        m_journal_read_current->print(data);
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
@@ -10016,6 +10031,7 @@ group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
                 {
                     QString key         = query_item.value("key").toString();
                     int     group_id    = query_item.value("group_id").toInt();
+                    int     sort_id     = query_item.value("sort_id").toInt();
                     int     bit         = query_item.value("bit").toInt();
                     QString name        = query_item.value("name").toString();
                     QString description = query_item.value("description").toString();
@@ -10041,12 +10057,15 @@ group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
                     if(!is_ok)
                         continue;
 
-                    var_list << var_t({ key, group_id, bit, name, description });
+                    var_list << var_t({ key, group_id, sort_id, bit, name, description });
                 }
             }
 
             if(!var_list.isEmpty())
+            {
+                std::sort(var_list.begin(), var_list.end(), [](var_t& var1, var_t& var2) { return var1.sort_id < var2.sort_id; } );
                 group[id] = group_item_t({ group_name, group_description, var_list });
+            }
         }
     }
 
@@ -10142,13 +10161,17 @@ bool ConfiguratorWindow::deleteLogFile()
     return false;
 }
 //------------------------------------------------------------------------------------
-void ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit& unit)
+bool ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit& unit)
 {
     if(unit.error() != CModBusDataUnit::ERROR_NO)
     {
         QMessageBox::warning(this, title, tr("Ошибка: %1.").
                              arg(CModBusDataUnit::errorDescription(unit.error())));
+
+        return true;
     }
+
+    return false;
 }
 //-----------------------------------------------------------------
 void ConfiguratorWindow::endJournalReadProcess(const QString& text)

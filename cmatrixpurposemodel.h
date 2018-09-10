@@ -18,6 +18,7 @@
     {
         QString key;
         int     group_id;
+        int     sort_id;
         int     bit;
         QString name;
         QString description;
