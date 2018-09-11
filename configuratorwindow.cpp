@@ -7513,6 +7513,7 @@ void ConfiguratorWindow::exportToExcelProject()
     headerFormat.setFontBold(true);
     headerFormat.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
     headerFormat.setVerticalAlignment(QXlsx::Format::AlignBottom);
+    headerFormat.setPatternBackgroundColor(Qt::yellow);
     headerFormat.setBorderStyle(QXlsx::Format::BorderThick);
 
     xlsx.setColumnWidth("A1", 50);
@@ -7522,6 +7523,8 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("A1", tr("Параметр"), headerFormat);
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
+
+    xlsx.currentWorksheet()->freezePane("A1", "C2");
 
     int pos;
 
@@ -7537,25 +7540,29 @@ void ConfiguratorWindow::exportToExcelProject()
 
     xlsx.addSheet(tr("Автоматика"));
 
-    xlsx.write("A1", tr("Параметр"));
-    xlsx.write("B1", tr("Значение"));
-    xlsx.write("C1", tr("Диапазон"));
-    xlsx.setColumnFormat("A1:D1", headerFormat);
     xlsx.setColumnWidth("A1", 50);
     xlsx.setColumnWidth("B1", 20);
     xlsx.setColumnWidth("C1", 70);
+
+    xlsx.write("A1", tr("Параметр"), headerFormat);
+    xlsx.write("B1", tr("Значение"), headerFormat);
+    xlsx.write("C1", tr("Диапазон"), headerFormat);
+
+    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3);
 
     writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
 
     xlsx.addSheet(tr("Аналоговые входы"));
 
-    xlsx.write("A1", tr("Параметр"));
-    xlsx.write("B1", tr("Значение"));
-    xlsx.write("C1", tr("Диапазон"));
-    xlsx.setColumnFormat("A1:C1", headerFormat);
     xlsx.setColumnWidth("A1", 50);
     xlsx.setColumnWidth("B1", 20);
     xlsx.setColumnWidth("C1", 50);
+
+    xlsx.write("A1", tr("Параметр"), headerFormat);
+    xlsx.write("B1", tr("Значение"), headerFormat);
+    xlsx.write("C1", tr("Диапазон"), headerFormat);
+
+    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3);
 
     writeDataToExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral);
 
