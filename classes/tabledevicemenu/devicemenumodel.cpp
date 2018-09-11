@@ -223,12 +223,12 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
 
     if(widget)
     {
-        widget->setMinimumWidth(100);
+        widget->setMinimumWidth(200);
         widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
         wgt_layout->setObjectName(QString("layoutWidget%1%2").arg(item.key).arg(index_str));
         wgt_layout->addWidget(widget);
         wgt_layout->setAlignment(Qt::AlignCenter);
-        wgt_layout->setContentsMargins(75, 0, 75, 0);
+        wgt_layout->setContentsMargins(50, 0, 50, 0);
         wgt->setLayout(wgt_layout);
 
         setCellWidget(row, 1, wgt);
