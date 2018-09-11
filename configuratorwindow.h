@@ -61,6 +61,8 @@
     #include "tabwidget.h"
     #include "dragwidget.h"
     #include "xlsx/xlsxdocument.h"
+    #include "xlsx/xlsxworksheet.h"
+    #include "xlsx/xlsxconditionalformatting.h"
     #include "devicemenumodel.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)

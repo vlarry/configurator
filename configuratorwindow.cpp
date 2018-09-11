@@ -41,8 +41,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_popup                     = new PopUp(this);
     m_watcher                   = new QFutureWatcher<void>(this);
     m_progressbar               = new CProgressBarWidget(this);
-    m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME,
-                                                "configurator", this);
+    m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator", this);
 
     m_tim_calculate                 = new QTimer(this);
     m_timer_new_address_set         = new QTimer(this);
@@ -7510,20 +7509,19 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.currentWorksheet()->setGridLinesVisible(true);
     xlsx.addSheet(tr("Защиты"));
 
-    xlsx.write("A1", tr("Параметр"));
-    xlsx.write("B1", tr("Значение"));
-    xlsx.write("C1", tr("Диапазон"));
-
     QXlsx::Format headerFormat;
     headerFormat.setFontBold(true);
     headerFormat.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
     headerFormat.setVerticalAlignment(QXlsx::Format::AlignBottom);
-
-    xlsx.setColumnFormat("A1:D1", headerFormat);
+    headerFormat.setBorderStyle(QXlsx::Format::BorderThick);
 
     xlsx.setColumnWidth("A1", 50);
     xlsx.setColumnWidth("B1", 20);
     xlsx.setColumnWidth("C1", 70);
+
+    xlsx.write("A1", tr("Параметр"), headerFormat);
+    xlsx.write("B1", tr("Значение"), headerFormat);
+    xlsx.write("C1", tr("Диапазон"), headerFormat);
 
     int pos;
 
@@ -10261,12 +10259,19 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenu
 
     int row_count = 1 + offset; // счетчик вставленных строк в Excel (строки начинаются с индекса 1)
     int pos_group = -1;
-    QXlsx::Format headerFormat;
 
+    QXlsx::Format headerFormat;
     headerFormat.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
-    headerFormat.setPatternBackgroundColor(Qt::yellow);
+    headerFormat.setPatternBackgroundColor(Qt::lightGray);
     headerFormat.setPatternForegroundColor(Qt::black);
+    headerFormat.setBorderColor(Qt::black);
+    headerFormat.setBorderStyle(QXlsx::Format::BorderThick);
     headerFormat.setFontBold(true);
+
+    QXlsx::Format dataFormat;
+    dataFormat.setHorizontalAlignment(QXlsx::Format::AlignHCenter);
+    dataFormat.setBorderColor(Qt::black);
+    dataFormat.setBorderStyle(QXlsx::Format::BorderMedium);
 
     for(int row = 0; row < table->rowCount(); row++)
     {
@@ -10283,8 +10288,8 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenu
                     pos_group = -1;
                 }
 
-                doc.write(QString("A%1").arg(++row_count), item->text(), headerFormat);
-                doc.mergeCells(QString("A%1:C%2").arg(row_count).arg(row_count));
+                doc.write(QString("A%1").arg(++row_count), item->text());
+                doc.mergeCells(QString("A%1:C%1").arg(row_count).arg(row_count), headerFormat);
                 pos_group = row_count + 1;
                 continue;
             }
@@ -10334,9 +10339,9 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenu
 
         row_count++;
 
-        doc.write(QString("A%1").arg(row_count), name_param);
-        doc.write(QString("B%1").arg(row_count), str_value);
-        doc.write(QString("C%1").arg(row_count), value_range);
+        doc.write(QString("A%1").arg(row_count), name_param, dataFormat);
+        doc.write(QString("B%1").arg(row_count), str_value, dataFormat);
+        doc.write(QString("C%1").arg(row_count), value_range, dataFormat);
     }
 
     if(pos_group != -1)
