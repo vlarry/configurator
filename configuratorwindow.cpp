@@ -42,12 +42,11 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_watcher                   = new QFutureWatcher<void>(this);
     m_progressbar               = new CProgressBarWidget(this);
     m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator", this);
-
-    m_tim_calculate                 = new QTimer(this);
-    m_timer_new_address_set         = new QTimer(this);
-    m_tim_debug_info                = new QTimer(this);
-    m_timer_synchronization         = new QTimer(this);
-    m_journal_timer                 = new QTimer(this);
+    m_tim_calculate             = new QTimer(this);
+    m_timer_new_address_set     = new QTimer(this);
+    m_tim_debug_info            = new QTimer(this);
+    m_timer_synchronization     = new QTimer(this);
+    m_journal_timer             = new QTimer(this);
 
     m_terminal_window->setWidget(new CTerminal(this));
 
