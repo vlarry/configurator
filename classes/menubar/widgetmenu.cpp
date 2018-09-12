@@ -53,6 +53,8 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonCloseProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonExportProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonImportProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(ui->toolButtonExportJournalToDataBase, &CToolButton::clicked, this, &CWidgetMenu::exportJournalToDataBase);
+    connect(ui->toolButtonImportJournalFromDataBase, &CToolButton::clicked, this, &CWidgetMenu::importJournalFromDataBase);
     connect(ui->toolButtonNewProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonOpenProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonSaveProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);

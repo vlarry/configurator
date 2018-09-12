@@ -4800,11 +4800,10 @@ void ConfiguratorWindow::initMonitorPurpose()
         {
             QString key  = query.value("key").toString();
             QString name = query.value("name").toString();
+            QString str  = QString("%1 (%2)").arg(key).arg(name);
 
             if(key.toUpper() == "K10" || key.toUpper() == "K11")
-                rows << QString("%1 (%2)").arg(key).arg(name);
-
-            QString str = QString("%1 (%2)").arg(key).arg(name);
+                rows << str;
 
             if(str.count() > 22)
             {
@@ -10415,6 +10414,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
     connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
     connect(ui->pushButtonImport, &QPushButton::clicked, this, &ConfiguratorWindow::processImport);
+    connect(ui->widgetMenuBar, &CMenuBar::exportToDataBaseAction, this, &ConfiguratorWindow::processExport);
+    connect(ui->widgetMenuBar, &CMenuBar::importFromDataBaseAction, this, &ConfiguratorWindow::processImport);
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(m_timer_synchronization, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSynchronization);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);

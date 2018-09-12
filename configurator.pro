@@ -157,8 +157,8 @@ INCLUDEPATH += "classes/modbus" \
 
 include(classes/excel/xlsx/qtxlsx.pri)
 
-#win32::RC_FILE = \
-#                 resource/icon.rc
+win32::RC_FILE = \
+                 resource/icon.rc
 
 RESOURCES += \
              resource.qrc

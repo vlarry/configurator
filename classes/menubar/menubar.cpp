@@ -31,6 +31,8 @@ CMenuBar::CMenuBar(QWidget* parent):
     connect(ui->toolButtonCloseWindow, &QToolButton::clicked, this, &CMenuBar::closeWindow);
     connect(ui->toolButtonExpandWindow, &QToolButton::clicked, this, &CMenuBar::expandedWindow);
     connect(ui->toolButtonMinimizeWindow, &QToolButton::clicked, this, &CMenuBar::minimizeWindow);
+    connect(m_widgetMenu, &CWidgetMenu::exportJournalToDataBase, this, &CMenuBar::exportToDataBaseAction);
+    connect(m_widgetMenu, &CWidgetMenu::importJournalFromDataBase, this, &CMenuBar::importFromDataBaseAction);
     connect(actionMinimizeTabMenu, &QAction::triggered, this, &CMenuBar::minimizeMenu);
 }
 //-------------------

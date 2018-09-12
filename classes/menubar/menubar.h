@@ -42,6 +42,8 @@
             void minimizeWindow();
             void menubarMouseUpdatePosition(QPoint);
             void minimizeMenu(bool);
+            void exportToDataBaseAction();
+            void importFromDataBaseAction();
 
         protected:
             void mousePressEvent(QMouseEvent* event);

@@ -48,7 +48,9 @@
             void saveAsProject();
             void exportToPDFProject();
             void exportToExcelProject();
+            void exportJournalToDataBase();
             void importFromExcelProject();
+            void importJournalFromDataBase();
             void closeProject();
             void addDocument(const QString&);
 
