@@ -4791,28 +4791,44 @@ void ConfiguratorWindow::initProtectionList()
 void ConfiguratorWindow::initMonitorPurpose()
 {
     QSqlQuery query(m_system_db);
-
     QStringList rows, columns;
 
     if(query.exec("SELECT * FROM variable;"))
     {
         while(query.next())
         {
-            QString key  = query.value("key").toString();
-            QString name = query.value("name").toString();
-            QString str  = QString("%1 (%2)").arg(key).arg(name);
+            QString type_function = query.value("type_function").toString();
+            int     type_sort     = query.value("type_sort").toInt();
 
-            if(key.toUpper() == "K10" || key.toUpper() == "K11")
-                rows << str;
-
-            if(str.count() > 22)
+            if(type_function.toUpper() == "OFF")
             {
-                str  = str.remove(22, str.count() - 22);
-                str += "...)";
-            }
+                unit_t unit;
 
-            columns << str;
+                unit.key         = query.value("key").toString();
+                unit.name        = query.value("name").toString();
+                unit.position    = query.value("bit").toInt();
+                unit.description = query.value("description").toString();
+
+                m_monitor_K10_K11_field[type_sort] = unit;
+            }
         }
+    }
+
+    for(int key: m_monitor_K10_K11_field.keys())
+    {
+        unit_t  unit = m_monitor_K10_K11_field[key];
+        QString str  = QString("%1 (%2)").arg(unit.key).arg(unit.name);
+
+        if(unit.key.toUpper() == "K10" || unit.key.toUpper() == "K11")
+            rows << str;
+
+        if(str.count() > 22)
+        {
+            str  = str.remove(22, str.count() - 22);
+            str += "...)";
+        }
+
+        columns << str;
     }
 
     m_monitor_purpose_window->setHeaders(rows, columns);
@@ -5714,7 +5730,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         m_modbus->sendData(new_unit);
     }
 }
-//-----------------------------------------------------------------
+//-------------------------------------------------------------------
 void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
 {
     if(unit.count() != 48)
@@ -5738,18 +5754,17 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
 
         for(int row = 0; row < matrix.rowCount(); row++)
         {
-            quint16 value = unit[row + offset];
+            if(m_monitor_K10_K11_field.find(row) == m_monitor_K10_K11_field.end())
+                continue;
 
-            for(quint8 bit = 0; bit < sizeof(value)*8; bit++)
-            {
-                bool state = (value&(1 << bit));
-                int  pos   = int((sizeof(value)*8)*quint8(row) + bit);
+            unit_t unit_row = m_monitor_K10_K11_field[row];
+            int    val      = unit_row.position/16;
+            int    bit      = unit_row.position%16;
+            int    index    = offset + val;
 
-                if(pos >= matrix.rowCount())
-                    break;
+            bool state = (unit.values()[index]&(1 << bit));
 
-                matrix[pos][col].data().state = ((state)?CHECKED:UNCHECKED);
-            }
+            matrix[row][col].data().state = ((state)?CHECKED:UNCHECKED);
         }
     }
 
@@ -5820,10 +5835,10 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
             }
 
             block_protection_purpose_t purpose = purpose_list[pos];
-            int r = purpose.bit/16;
-            int bit = purpose.bit%16;
+            int trow = purpose.bit/16;
+            int bit  = purpose.bit%16;
 
-            bool state = (col_data[r]&(1 << bit));
+            bool state = (col_data[trow]&(1 << bit));
 
             matrix[col][row].data().state = ((state)?CHECKED:UNCHECKED);
         }

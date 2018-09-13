@@ -31,7 +31,7 @@ void CMonitorPurpose::setHeaders(const QStringList& row_labels, const QStringLis
     HierarchicalHeaderView* vheader = new HierarchicalHeaderView(Qt::Vertical, ui->tableViewMonitor);
     CMatrixPurposeModel*    model   = new CMatrixPurposeModel(row_labels, column_labels);
 
-    hheader->setMaximumHeight(200);
+    hheader->setMaximumHeight(225);
 
     ui->tableViewMonitor->setItemDelegate(new CTableItemDelegate(CTableItemDelegate::PURPOSE_TYPE));
     ui->tableViewMonitor->setHorizontalHeader(hheader);

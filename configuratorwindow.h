@@ -759,6 +759,7 @@
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
             QTimer*                          m_journal_timer; // проверка на обрыв чтения журнала
             calibration_current_t            m_calib_of_current; // структура для калибровок по току
+            QMap<int, unit_t>                m_monitor_K10_K11_field; // ключ - номер строки, unit - описание полей (привязки для мониторинга К10 и К11
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)
