@@ -533,7 +533,6 @@
             void processImport();
             void readyReadData(CModBusDataUnit& unit);
             void exitFromApp();
-            void show();
             void resizeEvent(QResizeEvent* event);
             void chboxCalculateTimeoutStateChanged(bool state);
             void timeCalculateChanged(int newTime);
@@ -624,9 +623,11 @@
             void resizeColumns();
             void processKCUUmin();
             void menuTabClick(int index);
+            void initDebugVariables();
 
         protected:
             void keyPressEvent(QKeyEvent* event);
+            void showEvent(QShowEvent* event);
 
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);

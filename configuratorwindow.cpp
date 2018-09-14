@@ -2559,88 +2559,6 @@ void ConfiguratorWindow::exitFromApp()
 {
     close();
 }
-//-----------------------------
-void ConfiguratorWindow::show()
-{
-    QMainWindow::show();
-
-    setWindowState(Qt::WindowMaximized);
-    
-    m_terminal_window->hide();
-    ui->stwgtMain->setCurrentIndex(0);
-
-    m_version_window = new CVersionSoftware(this);
-    versionParser();
-
-    ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
-    m_status_bar->connectStateChanged(false);
-
-    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
-    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
-
-    ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
-    ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
-    ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
-
-    ui->comboBoxCommunicationParity->setCurrentIndex(1);
-
-    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel), false);
-    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel), false);
-    ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
-
-    ui->variableDockPanel->setMinimumWidth(ui->pushButtonVariableCtrl->minimumWidth());
-    ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
-    ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
-
-    loadSettings();
-
-    QDateTime dt(QDateTime::currentDateTime());
-
-    ui->dateEdit->setDate(dt.date());
-    ui->timeEdit->setTime(dt.time());
-    ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
-
-    // управление отображением панелей
-    panelVisibleCtrl(ui->centralWgt);
-    panelVisibleCtrl(ui->variableDockPanel);
-    panelVisibleCtrl(ui->framePanelMessage);
-
-    if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
-    {
-        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
-    }
-    else
-    {
-        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
-    }
-
-    if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
-    {
-        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
-    }
-    else
-    {
-        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
-    }
-
-    if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
-    {
-        ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
-    }
-    else
-    {
-        ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
-    }
-
-    if(ui->checkBoxPanelMessage->isChecked())
-        ui->framePanelMessage->show();
-    else
-        ui->framePanelMessage->hide();
-
-    ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
-    ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
-    ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
-}
 //-------------------------------------------------------
 void ConfiguratorWindow::resizeEvent(QResizeEvent* event)
 {
@@ -3814,530 +3732,6 @@ void ConfiguratorWindow::initMenuPanel()
         connect(buttonKCUUmin1, &QPushButton::clicked, this, &ConfiguratorWindow::processKCUUmin);
         connect(buttonKCUUmin2, &QPushButton::clicked, this, &ConfiguratorWindow::processKCUUmin);
     }
-    // Объединение ячеек Автоматика->Выключатель с Кор КЦУ (Umin1)
-//    QComboBox* cboxK01   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK01"), 1));
-//    QComboBox* cboxK01_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_1"), 1));
-
-//    QComboBox* cboxK03   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK03"), 1));
-//    QComboBox* cboxK03_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_1"), 1));
-
-//    QComboBox* cboxK06   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK06"), 1));
-//    QComboBox* cboxK06_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_1"), 1));
-
-//    QComboBox* cboxK07   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK07"), 1));
-//    QComboBox* cboxK07_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_1"), 1));
-
-//    QComboBox* cboxK17   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK17"), 1));
-//    QComboBox* cboxK17_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_1"), 1));
-
-//    QComboBox* cboxK32   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxK32"), 1));
-//    QComboBox* cboxK32_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_1"), 1));
-
-//    CLineEdit* leK02   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK02"), 1));
-//    CLineEdit* leK02_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_1"), 1));
-
-//    CLineEdit* leK04   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK04"), 1));
-//    CLineEdit* leK04_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_1"), 1));
-
-//    CLineEdit* leK05   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK05"), 1));
-//    CLineEdit* leK05_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_1"), 1));
-
-//    CLineEdit* leK09   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK09"), 1));
-//    CLineEdit* leK09_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_1"), 1));
-
-//    CLineEdit* leK08   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK08"), 1));
-//    CLineEdit* leK08_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_1"), 1));
-
-//    CLineEdit* leX22   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditX22"), 1));
-//    CLineEdit* leX22_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_1"), 1));
-
-//    CLineEdit* leK50   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK50"), 1));
-//    CLineEdit* leK50_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_1"), 1));
-
-//    CLineEdit* leK51   = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("lineEditK51"), 1));
-//    CLineEdit* leK51_1 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_1"), 1));
-
-//    if(cboxK01 && cboxK01_1)
-//    {
-//        connect(cboxK01, SIGNAL(currentIndexChanged(int)), cboxK01_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxK01_1, SIGNAL(currentIndexChanged(int)), cboxK01, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK03 && cboxK03_1)
-//    {
-//        connect(cboxK03, SIGNAL(currentIndexChanged(int)), cboxK03_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxK03_1, SIGNAL(currentIndexChanged(int)), cboxK03, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK06 && cboxK06_1)
-//    {
-//        connect(cboxK06, SIGNAL(currentIndexChanged(int)), cboxK06_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxK06_1, SIGNAL(currentIndexChanged(int)), cboxK06, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK07 && cboxK07_1)
-//    {
-//        connect(cboxK07, SIGNAL(currentIndexChanged(int)), cboxK07_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxK07_1, SIGNAL(currentIndexChanged(int)), cboxK07, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK17 && cboxK17_1)
-//    {
-//        connect(cboxK17, SIGNAL(currentIndexChanged(int)), cboxK17_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxK17_1, SIGNAL(currentIndexChanged(int)), cboxK17, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK32 && cboxK32_1)
-//    {
-//        connect(cboxK32, SIGNAL(currentIndexChanged(int)), cboxK32_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxK32_1, SIGNAL(currentIndexChanged(int)), cboxK32, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(leK02 && leK02_1)
-//    {
-//        connect(leK02, &CLineEdit::textChanged, leK02_1, &CLineEdit::setText);
-//        connect(leK02_1, &CLineEdit::textChanged, leK02, &CLineEdit::setText);
-//    }
-
-//    if(leK04 && leK04_1)
-//    {
-//        connect(leK04, &CLineEdit::textChanged, leK04_1, &CLineEdit::setText);
-//        connect(leK04_1, &CLineEdit::textChanged, leK04, &CLineEdit::setText);
-//    }
-
-//    if(leK05 && leK05_1)
-//    {
-//        connect(leK05, &CLineEdit::textChanged, leK05_1, &CLineEdit::setText);
-//        connect(leK05_1, &CLineEdit::textChanged, leK05, &CLineEdit::setText);
-//    }
-
-//    if(leK09 && leK09_1)
-//    {
-//        connect(leK09, &CLineEdit::textChanged, leK09_1, &CLineEdit::setText);
-//        connect(leK09_1, &CLineEdit::textChanged, leK09, &CLineEdit::setText);
-//    }
-
-//    if(leK08 && leK08_1)
-//    {
-//        connect(leK08, &CLineEdit::textChanged, leK08_1, &CLineEdit::setText);
-//        connect(leK08_1, &CLineEdit::textChanged, leK08, &CLineEdit::setText);
-//    }
-
-//    if(leX22 && leX22_1)
-//    {
-//        connect(leX22, &CLineEdit::textChanged, leX22_1, &CLineEdit::setText);
-//        connect(leX22_1, &CLineEdit::textChanged, leX22, &CLineEdit::setText);
-//    }
-
-//    if(leK50 && leK50_1)
-//    {
-//        connect(leK50, &CLineEdit::textChanged, leK50_1, &CLineEdit::setText);
-//        connect(leK50_1, &CLineEdit::textChanged, leK50, &CLineEdit::setText);
-//    }
-
-//    if(leK51 && leK51_1)
-//    {
-//        connect(leK51, &CLineEdit::textChanged, leK51_1, &CLineEdit::setText);
-//        connect(leK51_1, &CLineEdit::textChanged, leK51, &CLineEdit::setText);
-//    }
-
-//    // Объединение ячеек Автоматика->Выключатель с Кор КЦУ (Umin2)
-//    QComboBox* cboxK01_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK01_2"), 1));
-//    QComboBox* cboxK03_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK03_2"), 1));
-//    QComboBox* cboxK06_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK06_2"), 1));
-//    QComboBox* cboxK07_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK07_2"), 1));
-//    QComboBox* cboxK17_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK17_2"), 1));
-//    QComboBox* cboxK32_2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("comboBoxK32_2"), 1));
-//    CLineEdit* leK02_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK02_2"), 1));
-//    CLineEdit* leK04_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK04_2"), 1));
-//    CLineEdit* leK05_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK05_2"), 1));
-//    CLineEdit* leK09_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK09_2"), 1));
-//    CLineEdit* leK08_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK08_2"), 1));
-//    CLineEdit* leX22_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditX22_2"), 1));
-//    CLineEdit* leK50_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK50_2"), 1));
-//    CLineEdit* leK51_2 = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupPower, QString("lineEditK51_2"), 1));
-
-//    if(cboxK01 && cboxK01_2)
-//    {
-//        connect(cboxK01, SIGNAL(currentIndexChanged(int)), cboxK01_2, SLOT(setCurrentIndex(int)));
-//        connect(cboxK01_2, SIGNAL(currentIndexChanged(int)), cboxK01, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK03 && cboxK03_2)
-//    {
-//        connect(cboxK03, SIGNAL(currentIndexChanged(int)), cboxK03_2, SLOT(setCurrentIndex(int)));
-//        connect(cboxK03_2, SIGNAL(currentIndexChanged(int)), cboxK03, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK06 && cboxK06_2)
-//    {
-//        connect(cboxK06, SIGNAL(currentIndexChanged(int)), cboxK06_2, SLOT(setCurrentIndex(int)));
-//        connect(cboxK06_2, SIGNAL(currentIndexChanged(int)), cboxK06, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK07 && cboxK07_2)
-//    {
-//        connect(cboxK07, SIGNAL(currentIndexChanged(int)), cboxK07_2, SLOT(setCurrentIndex(int)));
-//        connect(cboxK07_2, SIGNAL(currentIndexChanged(int)), cboxK07, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK17 && cboxK17_2)
-//    {
-//        connect(cboxK17, SIGNAL(currentIndexChanged(int)), cboxK17_2, SLOT(setCurrentIndex(int)));
-//        connect(cboxK17_2, SIGNAL(currentIndexChanged(int)), cboxK17, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxK32 && cboxK32_2)
-//    {
-//        connect(cboxK32, SIGNAL(currentIndexChanged(int)), cboxK32_2, SLOT(setCurrentIndex(int)));
-//        connect(cboxK32_2, SIGNAL(currentIndexChanged(int)), cboxK32, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(leK02 && leK02_2)
-//    {
-//        connect(leK02, &CLineEdit::textChanged, leK02_2, &CLineEdit::setText);
-//        connect(leK02_2, &CLineEdit::textChanged, leK02, &CLineEdit::setText);
-//    }
-
-//    if(leK04 && leK04_2)
-//    {
-//        connect(leK04, &CLineEdit::textChanged, leK04_2, &CLineEdit::setText);
-//        connect(leK04_2, &CLineEdit::textChanged, leK04, &CLineEdit::setText);
-//    }
-
-//    if(leK05 && leK05_2)
-//    {
-//        connect(leK05, &CLineEdit::textChanged, leK05_2, &CLineEdit::setText);
-//        connect(leK05_2, &CLineEdit::textChanged, leK05, &CLineEdit::setText);
-//    }
-
-//    if(leK09 && leK09_2)
-//    {
-//        connect(leK09, &CLineEdit::textChanged, leK09_2, &CLineEdit::setText);
-//        connect(leK09_2, &CLineEdit::textChanged, leK09, &CLineEdit::setText);
-//    }
-
-//    if(leK08 && leK08_2)
-//    {
-//        connect(leK08, &CLineEdit::textChanged, leK08_2, &CLineEdit::setText);
-//        connect(leK08_2, &CLineEdit::textChanged, leK08, &CLineEdit::setText);
-//    }
-
-//    if(leX22 && leX22_2)
-//    {
-//        connect(leX22, &CLineEdit::textChanged, leX22_2, &CLineEdit::setText);
-//        connect(leX22_2, &CLineEdit::textChanged, leX22, &CLineEdit::setText);
-//    }
-
-//    if(leK50 && leK50_2)
-//    {
-//        connect(leK50, &CLineEdit::textChanged, leK50_2, &CLineEdit::setText);
-//        connect(leK50_2, &CLineEdit::textChanged, leK50, &CLineEdit::setText);
-//    }
-
-//    if(leK51 && leK51_2)
-//    {
-//        connect(leK51, &CLineEdit::textChanged, leK51_2, &CLineEdit::setText);
-//        connect(leK51_2, &CLineEdit::textChanged, leK51, &CLineEdit::setText);
-//    }
-
-    // Объединение ячеек Сигналы пуска (защита Резервные) с Автоматика->АПВ Сигналы пуска
-//    QComboBox* cboxN50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN50"), 1));
-//    QComboBox* cboxN50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN50_1"), 1));
-
-//    QComboBox* cboxN52   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN52"), 1));
-//    QComboBox* cboxN52_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN52_1"), 1));
-
-//    QComboBox* cboxN53   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN53"), 1));
-//    QComboBox* cboxN53_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN53_1"), 1));
-
-//    QComboBox* cboxN54   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN54"), 1));
-//    QComboBox* cboxN54_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN54_1"), 1));
-
-//    QComboBox* cboxN55   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN55"), 1));
-//    QComboBox* cboxN55_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN55_1"), 1));
-
-//    QComboBox* cboxN56   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN56"), 1));
-//    QComboBox* cboxN56_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN56_1"), 1));
-
-//    QComboBox* cboxN57   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN57"), 1));
-//    QComboBox* cboxN57_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN57_1"), 1));
-
-//    QComboBox* cboxN58   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN58"), 1));
-//    QComboBox* cboxN58_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN58_1"), 1));
-
-//    QComboBox* cboxN59   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxN59"), 1));
-//    QComboBox* cboxN59_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxN59_1"), 1));
-
-//    QComboBox* cboxV04   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV04"), 1));
-//    QComboBox* cboxV04_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV04_1"), 1));
-
-//    QComboBox* cboxV07   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV07"), 1));
-//    QComboBox* cboxV07_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV07_1"), 1));
-
-//    QComboBox* cboxV10   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV10"), 1));
-//    QComboBox* cboxV10_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV10_1"), 1));
-
-//    QComboBox* cboxV13   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV13"), 1));
-//    QComboBox* cboxV13_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV13_1"), 1));
-
-//    QComboBox* cboxV16   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV16"), 1));
-//    QComboBox* cboxV16_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV16_1"), 1));
-
-//    QComboBox* cboxV19   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV19"), 1));
-//    QComboBox* cboxV19_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV19_1"), 1));
-
-//    QComboBox* cboxV22   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV22"), 1));
-//    QComboBox* cboxV22_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV22_1"), 1));
-
-//    QComboBox* cboxV25   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV25"), 1));
-//    QComboBox* cboxV25_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV25_1"), 1));
-
-//    QComboBox* cboxV28   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV28"), 1));
-//    QComboBox* cboxV28_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV28_1"), 1));
-
-//    QComboBox* cboxV31   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV31"), 1));
-//    QComboBox* cboxV31_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV31_1"), 1));
-
-//    QComboBox* cboxV36   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV36"), 1));
-//    QComboBox* cboxV36_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV36_1"), 1));
-
-//    QComboBox* cboxV39   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV39"), 1));
-//    QComboBox* cboxV39_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV39_1"), 1));
-
-//    QComboBox* cboxV44   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV44"), 1));
-//    QComboBox* cboxV44_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV44_1"), 1));
-
-//    QComboBox* cboxV50   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV50"), 1));
-//    QComboBox* cboxV50_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV50_1"), 1));
-
-//    QComboBox* cboxV62   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV62"), 1));
-//    QComboBox* cboxV62_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV62_1"), 1));
-
-//    QComboBox* cboxV65   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV65"), 1));
-//    QComboBox* cboxV65_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV65_1"), 1));
-
-//    QComboBox* cboxV68   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV68"), 1));
-//    QComboBox* cboxV68_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV68_1"), 1));
-
-//    QComboBox* cboxV76   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV76"), 1));
-//    QComboBox* cboxV76_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV76_1"), 1));
-
-//    QComboBox* cboxV77   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV77"), 1));
-//    QComboBox* cboxV77_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV77_1"), 1));
-
-//    QComboBox* cboxV81   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV81"), 1));
-//    QComboBox* cboxV81_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV81_1"), 1));
-
-//    QComboBox* cboxV86   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV86"), 1));
-//    QComboBox* cboxV86_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV86_1"), 1));
-
-//    QComboBox* cboxV90   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV90"), 1));
-//    QComboBox* cboxV90_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV90_1"), 1));
-
-//    QComboBox* cboxV95   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV95"), 1));
-//    QComboBox* cboxV95_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV95_1"), 1));
-
-//    QComboBox* cboxV96   = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve, QString("comboBoxV96"), 1));
-//    QComboBox* cboxV96_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetAutomationGroup, QString("comboBoxV96_1"), 1));
-
-//    if(cboxN50 && cboxN50_1)
-//    {
-//        connect(cboxN50, SIGNAL(currentIndexChanged(int)), cboxN50_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN50_1, SIGNAL(currentIndexChanged(int)), cboxN50, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxN52 && cboxN52_1)
-//    {
-//        connect(cboxN52, SIGNAL(currentIndexChanged(int)), cboxN52_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN52_1, SIGNAL(currentIndexChanged(int)), cboxN52, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxN53 && cboxN53_1)
-//    {
-//        connect(cboxN53, SIGNAL(currentIndexChanged(int)), cboxN53_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN53_1, SIGNAL(currentIndexChanged(int)), cboxN53, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxN54 && cboxN54_1)
-//    {
-//        connect(cboxN54, SIGNAL(currentIndexChanged(int)), cboxN54_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN54_1, SIGNAL(currentIndexChanged(int)), cboxN54, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxN55 && cboxN55_1)
-//    {
-//        connect(cboxN55, SIGNAL(currentIndexChanged(int)), cboxN55_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN55_1, SIGNAL(currentIndexChanged(int)), cboxN55, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxN56 && cboxN56_1)
-//    {
-//        connect(cboxN56, SIGNAL(currentIndexChanged(int)), cboxN56_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN56_1, SIGNAL(currentIndexChanged(int)), cboxN56, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxN57 && cboxN57_1)
-//    {
-//        connect(cboxN57, SIGNAL(currentIndexChanged(int)), cboxN57_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN57_1, SIGNAL(currentIndexChanged(int)), cboxN57, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxN58 && cboxN58_1)
-//    {
-//        connect(cboxN58, SIGNAL(currentIndexChanged(int)), cboxN58_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN58_1, SIGNAL(currentIndexChanged(int)), cboxN58, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxN59 && cboxN59_1)
-//    {
-//        connect(cboxN59, SIGNAL(currentIndexChanged(int)), cboxN59_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxN59_1, SIGNAL(currentIndexChanged(int)), cboxN59, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV04 && cboxV04_1)
-//    {
-//        connect(cboxV04, SIGNAL(currentIndexChanged(int)), cboxV04_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV04_1, SIGNAL(currentIndexChanged(int)), cboxV04, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV07 && cboxV07_1)
-//    {
-//        connect(cboxV07, SIGNAL(currentIndexChanged(int)), cboxV07_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV07_1, SIGNAL(currentIndexChanged(int)), cboxV07, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV10 && cboxV10_1)
-//    {
-//        connect(cboxV10, SIGNAL(currentIndexChanged(int)), cboxV10_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV10_1, SIGNAL(currentIndexChanged(int)), cboxV10, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV13 && cboxV13_1)
-//    {
-//        connect(cboxV13, SIGNAL(currentIndexChanged(int)), cboxV13_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV13_1, SIGNAL(currentIndexChanged(int)), cboxV13, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV16 && cboxV16_1)
-//    {
-//        connect(cboxV16, SIGNAL(currentIndexChanged(int)), cboxV16_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV16_1, SIGNAL(currentIndexChanged(int)), cboxV16, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV19 && cboxV19_1)
-//    {
-//        connect(cboxV19, SIGNAL(currentIndexChanged(int)), cboxV19_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV19_1, SIGNAL(currentIndexChanged(int)), cboxV19, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV22 && cboxV22_1)
-//    {
-//        connect(cboxV22, SIGNAL(currentIndexChanged(int)), cboxV22_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV22_1, SIGNAL(currentIndexChanged(int)), cboxV22, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV25 && cboxV25_1)
-//    {
-//        connect(cboxV25, SIGNAL(currentIndexChanged(int)), cboxV25_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV25_1, SIGNAL(currentIndexChanged(int)), cboxV25, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV28 && cboxV28_1)
-//    {
-//        connect(cboxV28, SIGNAL(currentIndexChanged(int)), cboxV28_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV28_1, SIGNAL(currentIndexChanged(int)), cboxV28, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV31 && cboxV31_1)
-//    {
-//        connect(cboxV31, SIGNAL(currentIndexChanged(int)), cboxV31_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV31_1, SIGNAL(currentIndexChanged(int)), cboxV31, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV36 && cboxV36_1)
-//    {
-//        connect(cboxV36, SIGNAL(currentIndexChanged(int)), cboxV36_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV36_1, SIGNAL(currentIndexChanged(int)), cboxV36, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV39 && cboxV39_1)
-//    {
-//        connect(cboxV39, SIGNAL(currentIndexChanged(int)), cboxV39_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV39_1, SIGNAL(currentIndexChanged(int)), cboxV39, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV44 && cboxV44_1)
-//    {
-//        connect(cboxV44, SIGNAL(currentIndexChanged(int)), cboxV44_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV44_1, SIGNAL(currentIndexChanged(int)), cboxV44, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV50 && cboxV50_1)
-//    {
-//        connect(cboxV50, SIGNAL(currentIndexChanged(int)), cboxV50_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV50_1, SIGNAL(currentIndexChanged(int)), cboxV50, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV62 && cboxV62_1)
-//    {
-//        connect(cboxV62, SIGNAL(currentIndexChanged(int)), cboxV62_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV62_1, SIGNAL(currentIndexChanged(int)), cboxV62, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV65 && cboxV65_1)
-//    {
-//        connect(cboxV65, SIGNAL(currentIndexChanged(int)), cboxV65_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV65_1, SIGNAL(currentIndexChanged(int)), cboxV65, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV68 && cboxV68_1)
-//    {
-//        connect(cboxV68, SIGNAL(currentIndexChanged(int)), cboxV68_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV68_1, SIGNAL(currentIndexChanged(int)), cboxV68, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV76 && cboxV76_1)
-//    {
-//        connect(cboxV76, SIGNAL(currentIndexChanged(int)), cboxV76_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV76_1, SIGNAL(currentIndexChanged(int)), cboxV76, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV77 && cboxV77_1)
-//    {
-//        connect(cboxV77, SIGNAL(currentIndexChanged(int)), cboxV77_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV77_1, SIGNAL(currentIndexChanged(int)), cboxV77, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV81 && cboxV81_1)
-//    {
-//        connect(cboxV81, SIGNAL(currentIndexChanged(int)), cboxV81_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV81_1, SIGNAL(currentIndexChanged(int)), cboxV81, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV86 && cboxV86_1)
-//    {
-//        connect(cboxV86, SIGNAL(currentIndexChanged(int)), cboxV86_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV86_1, SIGNAL(currentIndexChanged(int)), cboxV86, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV90 && cboxV90_1)
-//    {
-//        connect(cboxV90, SIGNAL(currentIndexChanged(int)), cboxV90_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV90_1, SIGNAL(currentIndexChanged(int)), cboxV90, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV95 && cboxV95_1)
-//    {
-//        connect(cboxV95, SIGNAL(currentIndexChanged(int)), cboxV95_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV95_1, SIGNAL(currentIndexChanged(int)), cboxV95, SLOT(setCurrentIndex(int)));
-//    }
-
-//    if(cboxV96 && cboxV96_1)
-//    {
-//        connect(cboxV96, SIGNAL(currentIndexChanged(int)), cboxV96_1, SLOT(setCurrentIndex(int)));
-//        connect(cboxV96_1, SIGNAL(currentIndexChanged(int)), cboxV96, SLOT(setCurrentIndex(int)));
-//    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -4929,6 +4323,78 @@ void ConfiguratorWindow::initWordStatus()
     }
     else
         qWarning() << tr("Ошибка чтения базы данных \"Статус\": %1").arg(query.lastError().text());
+}
+/*!
+ * \brief ConfiguratorWindow::initDebugVariables
+ *
+ * Инициализация вывода отладочной информации о внутренних переменных
+ * (формирование чекбоксов для каждой переменной по группам)
+ */
+void ConfiguratorWindow::initDebugVariables()
+{
+    group_t group = createVariableGroup("");
+
+    if(group.isEmpty())
+        return;
+
+    const int MAX_BOX_SIZE = 45;
+
+    QHBoxLayout* hlayout  = new QHBoxLayout;
+    hlayout->setMargin(0);
+    hlayout->setSpacing(0);
+
+    for(const auto& group_item: group)
+    {
+        QGroupBox*   groupBox = new QGroupBox(group_item.name, this);
+        QVBoxLayout* vlayout  = new QVBoxLayout;
+
+        groupBox->setAlignment(Qt::AlignCenter);
+        groupBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        vlayout->setMargin(0);
+        vlayout->setSpacing(0);
+
+        int checkbox_count = 0;
+
+        for(const auto& var: group_item.var_list)
+        {
+            QCheckBox* checkBox = new QCheckBox(QString("%1 (%2)").arg(var.key).arg(var.name), this);
+            QFont tfont = checkBox->font();
+            tfont.setPointSize(8);
+            checkBox->setObjectName(QString("checkBox%1").arg(var.key));
+            checkBox->setToolTip(((var.description.isEmpty())?var.name:var.description));
+            checkBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+            checkBox->setFont(tfont);
+
+            vlayout->addWidget(checkBox);
+            checkbox_count++;
+
+            if(!(checkbox_count%MAX_BOX_SIZE)) // количество элементов кратно максимальному размеру элементов в группе
+            {
+                groupBox->setLayout(vlayout);
+
+                if(group_item.var_list.count() > MAX_BOX_SIZE)
+                {
+                    hlayout->addWidget(groupBox);
+                    groupBox = new QGroupBox(group_item.name, this);
+                    vlayout  = new QVBoxLayout;
+                    groupBox->setAlignment(Qt::AlignCenter);
+                    groupBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+                    vlayout->setMargin(0);
+                    vlayout->setSpacing(0);
+                }
+            }
+        }
+
+        groupBox->setLayout(vlayout);
+        hlayout->addWidget(groupBox);
+
+        QWidget* widget = ui->stwgtMain->widget(24);
+
+        if(widget)
+            widget->setLayout(hlayout);
+
+        break;
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -7945,6 +7411,95 @@ void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
         testStyle(true);
     }
 }
+//---------------------------------------------------
+void ConfiguratorWindow::showEvent(QShowEvent* event)
+{
+    Q_UNUSED(event);
+
+    QMainWindow::show();
+
+    setWindowState(Qt::WindowMaximized);
+
+    m_terminal_window->hide();
+    ui->stwgtMain->setCurrentIndex(0);
+
+    m_version_window = new CVersionSoftware(this);
+    versionParser();
+
+    ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
+    m_status_bar->connectStateChanged(false);
+
+    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+
+    ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
+    ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
+    ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
+
+    ui->comboBoxCommunicationParity->setCurrentIndex(1);
+
+    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel), false);
+    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel), false);
+    ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
+
+    ui->variableDockPanel->setMinimumWidth(ui->pushButtonVariableCtrl->minimumWidth());
+    ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
+    ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
+
+    loadSettings();
+
+    QDateTime dt(QDateTime::currentDateTime());
+
+    ui->dateEdit->setDate(dt.date());
+    ui->timeEdit->setTime(dt.time());
+    ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
+
+    // управление отображением панелей
+    panelVisibleCtrl(ui->centralWgt);
+    panelVisibleCtrl(ui->variableDockPanel);
+    panelVisibleCtrl(ui->framePanelMessage);
+
+    if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
+    {
+        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
+    }
+    else
+    {
+        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
+    }
+
+    if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
+    {
+        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
+    }
+    else
+    {
+        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
+    }
+
+    if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
+    {
+        ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
+    }
+    else
+    {
+        ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
+    }
+
+    if(ui->checkBoxPanelMessage->isChecked())
+        ui->framePanelMessage->show();
+    else
+        ui->framePanelMessage->hide();
+
+    ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
+    ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
+    ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
+
+    // инициализация вывода отладочной информации о состоянии внутренних переменных (задержка 100мс для полного открыия окна, чтобы размеры
+    // были истинными)
+    QTimer tim_visible_window;
+    tim_visible_window.singleShot(100, this, initDebugVariables);
+}
 /*!
  * \brief ConfiguratorWindow::createJournalTable
  * \return Возвращает true, если таблица успешно создана
@@ -10081,24 +9636,27 @@ group_t ConfiguratorWindow::createVariableGroup(const QString& io_key)
 
                     QSqlQuery query_purpose(m_system_db);
 
-                    bool is_ok = false;
-
-                    if(query_purpose.exec(QString("SELECT io_key FROM purpose WHERE var_key = \'%1\';").arg(key)))
+                    if(!io_key.isEmpty())
                     {
-                        while(query_purpose.next())
-                        {
-                            QString val = query_purpose.value("io_key").toString();
+                        bool is_ok = false;
 
-                            if(val.contains(io_key))
+                        if(query_purpose.exec(QString("SELECT io_key FROM purpose WHERE var_key = \'%1\';").arg(key)))
+                        {
+                            while(query_purpose.next())
                             {
-                                is_ok = true;
-                                break;
+                                QString val = query_purpose.value("io_key").toString();
+
+                                if(val.contains(io_key))
+                                {
+                                    is_ok = true;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if(!is_ok)
-                        continue;
+                        if(!is_ok)
+                            continue;
+                    }
 
                     var_list << var_t({ key, group_id, sort_id, bit, name, description });
                 }
