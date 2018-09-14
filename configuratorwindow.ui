@@ -1748,16 +1748,6 @@
             </column>
            </widget>
           </item>
-          <item>
-           <widget class="QTreeWidget" name="treeWidgetDebugMenu">
-            <property name="columnCount">
-             <number>0</number>
-            </property>
-            <attribute name="headerVisible">
-             <bool>false</bool>
-            </attribute>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
@@ -1853,7 +1843,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>24</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -2726,6 +2716,7 @@
              </item>
             </layout>
            </widget>
+           <widget class="QWidget" name="pageDebugVariable"/>
           </widget>
           <widget class="QFrame" name="framePanelMessage">
            <property name="sizePolicy">

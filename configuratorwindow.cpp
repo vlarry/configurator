@@ -2803,8 +2803,8 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
 
     if(menu_item != -1)
     {
-        ui->stwgtMain->setCurrentIndex(menu_item);
         widgetStackIndexChanged(menu_item);
+        ui->stwgtMain->setCurrentIndex(menu_item);
     }
 }
 //-------------------------------------
@@ -7922,13 +7922,19 @@ void ConfiguratorWindow::menuTabClick(int index)
 {
     if(index == TAB_DEBUG_INDEX)
     {
-        ui->treewgtDeviceMenu->hide();
-        ui->treeWidgetDebugMenu->show();
+        ui->menuDeviceDockPanel->hide();
+        ui->variableDockPanel->hide();
+        ui->stwgtMain->setCurrentIndex(24);
     }
     else
     {
-        ui->treewgtDeviceMenu->show();
-        ui->treeWidgetDebugMenu->hide();
+        if(ui->stwgtMain->currentIndex() == TAB_DEBUG_INDEX)
+        {
+            ui->stwgtMain->setCurrentIndex(0);
+        }
+
+        ui->menuDeviceDockPanel->show();
+        ui->variableDockPanel->show();
     }
 }
 //------------------------------------------------------
@@ -10489,7 +10495,7 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
-    connect(ui->tabwgtMenu, &QTabWidget::currentChanged, this, &ConfiguratorWindow::menuTabClick);
+    connect(ui->tabwgtMenu, &QTabWidget::tabBarClicked, this, &ConfiguratorWindow::menuTabClick);
 
     CTerminal* terminal = qobject_cast<CTerminal*>(m_terminal_window->widget());
 
