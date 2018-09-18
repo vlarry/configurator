@@ -4337,23 +4337,33 @@ void ConfiguratorWindow::initDebugVariables()
     if(group.isEmpty())
         return;
 
-    const int MAX_BOX_SIZE = 45;
+    const int MAX_CHECKBOX_COUNT = 35;
+    const int SPAISING = 3;
 
     QHBoxLayout* hlayout  = new QHBoxLayout;
+    QVBoxLayout* vlayout  = new QVBoxLayout;
     hlayout->setMargin(0);
-    hlayout->setSpacing(0);
+    hlayout->setSpacing(SPAISING*5);
+    vlayout->setMargin(0);
+    vlayout->setSpacing(SPAISING*3);
+
+    int var_group_count = 0;
+    int group_count = 0;
 
     for(const auto& group_item: group)
     {
-        QGroupBox*   groupBox = new QGroupBox(group_item.name, this);
-        QVBoxLayout* vlayout  = new QVBoxLayout;
-
+        QGroupBox*   groupBox        = new QGroupBox(group_item.name.toUpper(), this);
+        QVBoxLayout* vlayoutCheckbox = new QVBoxLayout;
+        groupBox->setStyleSheet("QGroupBox { font-weight: bold; }");
         groupBox->setAlignment(Qt::AlignCenter);
-        groupBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        vlayout->setMargin(0);
-        vlayout->setSpacing(0);
+        groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        vlayoutCheckbox->setMargin(0);
+        vlayoutCheckbox->setSpacing(SPAISING);
 
         int checkbox_count = 0;
+        bool isGroup = true;
+
+        group_count++;
 
         for(const auto& var: group_item.var_list)
         {
@@ -4362,38 +4372,59 @@ void ConfiguratorWindow::initDebugVariables()
             tfont.setPointSize(8);
             checkBox->setObjectName(QString("checkBox%1").arg(var.key));
             checkBox->setToolTip(((var.description.isEmpty())?var.name:var.description));
-            checkBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+            checkBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
             checkBox->setFont(tfont);
 
-            vlayout->addWidget(checkBox);
+            vlayoutCheckbox->addWidget(checkBox);
+            var_group_count++;
             checkbox_count++;
 
-            if(!(checkbox_count%MAX_BOX_SIZE)) // количество элементов кратно максимальному размеру элементов в группе
+            if(checkbox_count == MAX_CHECKBOX_COUNT || var_group_count == MAX_CHECKBOX_COUNT)
             {
-                groupBox->setLayout(vlayout);
+                groupBox->setLayout(vlayoutCheckbox);
+                vlayout->addWidget(groupBox);
+                hlayout->addLayout(vlayout);
 
-                if(group_item.var_list.count() > MAX_BOX_SIZE)
-                {
-                    hlayout->addWidget(groupBox);
-                    groupBox = new QGroupBox(group_item.name, this);
-                    vlayout  = new QVBoxLayout;
-                    groupBox->setAlignment(Qt::AlignCenter);
-                    groupBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-                    vlayout->setMargin(0);
-                    vlayout->setSpacing(0);
-                }
+                if(checkbox_count == group_item.var_list.count())
+                    isGroup = false;
+
+                groupBox = new QGroupBox(group_item.name.toUpper(), this);
+                groupBox->setStyleSheet("QGroupBox { font-weight: bold; }");
+                groupBox->setAlignment(Qt::AlignCenter);
+                groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+                vlayoutCheckbox = new QVBoxLayout;
+                vlayoutCheckbox->setMargin(0);
+                vlayoutCheckbox->setSpacing(SPAISING);
+
+                vlayout = new QVBoxLayout;
+                vlayout->setMargin(0);
+                vlayout->setSpacing(SPAISING*3);
+
+                checkbox_count = var_group_count = 0;
             }
         }
 
-        groupBox->setLayout(vlayout);
-        hlayout->addWidget(groupBox);
+        if(isGroup)
+        {
+            groupBox->setLayout(vlayoutCheckbox);
+            vlayout->addWidget(groupBox);
 
-        QWidget* widget = ui->stwgtMain->widget(24);
+            if(group_count == group.count())
+            {
+                vlayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+                vlayout->addSpacerItem(new QSpacerItem(1, 1000, QSizePolicy::Expanding, QSizePolicy::Expanding));
+            }
 
-        if(widget)
-            widget->setLayout(hlayout);
+            hlayout->addLayout(vlayout);
+        }
+    }
 
-        break;
+    QWidget* widget = ui->stwgtMain->widget(24);
+
+    if(widget)
+    {
+        widget->setLayout(hlayout);
     }
 }
 //----------------------------------------
