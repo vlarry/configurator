@@ -247,7 +247,7 @@
          </property>
          <property name="icon">
           <iconset resource="../../resource.qrc">
-           <normaloff>:/images/resource/images/import.png</normaloff>:/images/resource/images/import.png</iconset>
+           <normaloff>:/images/resource/images/settings.png</normaloff>:/images/resource/images/settings.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -589,7 +589,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
-            <widget class="CToolButton" name="toolButton">
+            <widget class="CToolButton" name="toolButtonSettingDebug">
              <property name="text">
               <string>Отладка</string>
              </property>

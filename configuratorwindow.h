@@ -624,6 +624,7 @@
             void processKCUUmin();
             void menuTabClick(int index);
             void initDebugVariables();
+            void debugVariable();
 
         protected:
             void keyPressEvent(QKeyEvent* event);

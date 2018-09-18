@@ -27,6 +27,8 @@
                 EXPORTTOEXCELPROJECT,
                 IMPORTPROJECT,
                 IMPORTFROMEXCELPROJECT,
+                SETTINGS,
+                SETTINGDEBUG,
                 CLOSEPROJECT,
                 EXITAPPLICATION
             };
@@ -52,6 +54,7 @@
             void importFromExcelProject();
             void importJournalFromDataBase();
             void closeProject();
+            void settings();
             void addDocument(const QString&);
 
         private:

@@ -18,6 +18,8 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonImportFromExcel->setID(IMPORTFROMEXCELPROJECT);
     ui->toolButtonCloseProject->setID(CLOSEPROJECT);
     ui->toolButtonExit->setID(EXITAPPLICATION);
+    ui->toolButtonSettings->setID(SETTINGS);
+    ui->toolButtonSettingDebug->setID(SETTINGDEBUG);
 
     ui->toolButtonNewProject->installEventFilter(this);
     ui->toolButtonOpenProject->installEventFilter(this);
@@ -26,6 +28,7 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonExportProject->installEventFilter(this);
     ui->toolButtonImportProject->installEventFilter(this);
     ui->toolButtonCloseProject->installEventFilter(this);
+    ui->toolButtonSettings->installEventFilter(this);
 
     ui->toolButtonNewProject->setShortcut(QKeySequence("CTRL+N"));
     ui->toolButtonOpenProject->setShortcut(QKeySequence("CTRL+O"));
@@ -39,8 +42,13 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonImportProject->setMenu(menu);
     ui->toolButtonImportProject->setCheckable(false);
 
+    ui->toolButtonSettings->setMenu(menu);
+    ui->toolButtonSettings->setCheckable(false);
+
     ui->listWidgetOpenDocument->setPalette(palette());
     ui->listWidgetOpenDocument->hide();
+
+    ui->stackedWidgetMenuFunction->setCurrentIndex(0);
 
     connect(ui->toolButtonExit, &CToolButton::clicked, this, &CWidgetMenu::closeWindow);
     connect(ui->toolButtonNewProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
@@ -53,6 +61,8 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonCloseProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonExportProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonImportProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(ui->toolButtonSettings, &CToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(ui->toolButtonSettingDebug, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonExportJournalToDataBase, &CToolButton::clicked, this, &CWidgetMenu::exportJournalToDataBase);
     connect(ui->toolButtonImportJournalFromDataBase, &CToolButton::clicked, this, &CWidgetMenu::importJournalFromDataBase);
     connect(ui->toolButtonNewProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
@@ -65,6 +75,7 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonCloseProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonExportProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonImportProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
+    connect(ui->toolButtonSettings, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(this, &CWidgetMenu::addDocument, this, &CWidgetMenu::addOpenDocument);
 }
 //-------------------------
@@ -134,6 +145,14 @@ void CWidgetMenu::clicked()
             emit closeProject();
         break;
 
+        case SETTINGS:
+            ui->stackedWidgetMenuFunction->setCurrentIndex(3);
+        break;
+
+        case SETTINGDEBUG:
+            emit settings();
+        break;
+
         default: qDebug() << QString("ID кнопки не определено: %1").arg(button_id); break;
     }
 }
@@ -143,10 +162,12 @@ void CWidgetMenu::hoverChanged(int id)
     ButtonIDType button_id = static_cast<ButtonIDType>(id);
 
     if(button_id != EXPORTPROJECT && button_id != IMPORTPROJECT && button_id != EXPORTTOEXCELPROJECT &&
-       button_id != IMPORTFROMEXCELPROJECT && button_id != EXPORTTOPDFPROJECT)
+       button_id != IMPORTFROMEXCELPROJECT && button_id != EXPORTTOPDFPROJECT && button_id != SETTINGS)
         ui->stackedWidgetMenuFunction->setCurrentIndex(0);
     else if(button_id == EXPORTPROJECT)
         ui->stackedWidgetMenuFunction->setCurrentIndex(1);
     else if(button_id == IMPORTPROJECT)
         ui->stackedWidgetMenuFunction->setCurrentIndex(2);
+    else if(button_id == SETTINGS)
+        ui->stackedWidgetMenuFunction->setCurrentIndex(3);
 }

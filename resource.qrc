@@ -69,6 +69,7 @@
         <file>resource/images/down_indicator.png</file>
         <file>resource/images/import_excel.png</file>
         <file>resource/images/configurator.png</file>
+        <file>resource/images/settings.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

@@ -4427,6 +4427,12 @@ void ConfiguratorWindow::initDebugVariables()
         widget->setLayout(hlayout);
     }
 }
+//--------------------------------------
+void ConfiguratorWindow::debugVariable()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -10079,6 +10085,7 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::importFromExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::debugVariable);
     connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
             &ConfiguratorWindow::calibrationOfCurrent);
