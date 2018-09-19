@@ -4349,6 +4349,7 @@ void ConfiguratorWindow::initDebugVariables()
     m_debug_var_window->setWindowFlag(Qt::Window);
     m_debug_var_window->setWindowState(Qt::WindowMaximized);
     m_debug_var_window->setMinimumSize(minimumSizeHint());
+    m_debug_var_window->installEventFilter(this);
 
     group_t group = createVariableGroup("");
 
@@ -4455,56 +4456,40 @@ void ConfiguratorWindow::authorization()
         return;
     }
 
-    QSqlQuery query(m_system_db);
+    QStringList logins = loadLoginList();
 
-    if(query.exec(QString("SELECT login FROM user;")))
+    if(logins.isEmpty())
+        return;
+
+    CUserDialog* userDialog = new CUserDialog(logins, this);
+
+    int answer = userDialog->exec();
+
+    if(answer == QDialog::Accepted)
     {
-        QStringList users;
+        CUserDialog::user_t usr = userDialog->user();
 
-        while(query.next())
+        if(!usr.password.isEmpty())
         {
-            users << query.value("login").toString();
-        }
+            QString pass = loadUserPassword(usr.login);
 
-        if(users.isEmpty())
-            return;
-
-        CUserDialog* userDialog = new CUserDialog(users, this);
-
-        int answer = userDialog->exec();
-
-        if(answer == QDialog::Accepted)
-        {
-            CUserDialog::user_t usr = userDialog->user();
-
-            if(!usr.password.isEmpty())
-            {
-                if(query.exec(QString("SELECT pass FROM user WHERE login=\"%1\";").arg(usr.login)))
-                {
-                    if(query.first())
-                    {
-                        QString pass = query.value("pass").toString();
-
-                        if(usr.password.toUpper() == pass.toUpper())
-                            initDebugVariables();
-                        else
-                        {
-                            m_popup->setPopupText(tr("Ошибка: пароль неправильный!"));
-                            m_popup->show();
-                        }
-                    }
-                }
-            }
+            if(usr.password.toUpper() == pass.toUpper())
+                initDebugVariables();
             else
             {
-                m_popup->setPopupText(tr("Ошибка: пароль не может быть пустым."));
+                m_popup->setPopupText(tr("Ошибка: пароль неправильный!"));
                 m_popup->show();
             }
         }
-
-        delete userDialog;
-        userDialog = nullptr;
+        else
+        {
+            m_popup->setPopupText(tr("Ошибка: пароль не может быть пустым."));
+            m_popup->show();
+        }
     }
+
+    delete userDialog;
+    userDialog = nullptr;
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -5954,6 +5939,38 @@ int ConfiguratorWindow::groupMenuPosition(const QString& name, const CDeviceMenu
     }
 
     return -1;
+}
+//---------------------------------------------------
+QStringList ConfiguratorWindow::loadLoginList() const
+{
+    QSqlQuery query(m_system_db);
+    QStringList logins;
+
+    if(query.exec(QString("SELECT login FROM user;")))
+    {
+        while(query.next())
+        {
+            logins << query.value("login").toString();
+        }
+    }
+
+    return logins;
+}
+//----------------------------------------------------------------
+QString ConfiguratorWindow::loadUserPassword(const QString& login)
+{
+    QSqlQuery query(m_system_db);
+    QString pass;
+
+    if(query.exec(QString("SELECT pass FROM user WHERE login=\"%1\";").arg(login)))
+    {
+        if(query.first())
+        {
+            pass = query.value("pass").toString();
+        }
+    }
+
+    return pass;
 }
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
@@ -7579,6 +7596,71 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
     ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
     ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
     ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
+}
+//------------------------------------------------------------------
+bool ConfiguratorWindow::eventFilter(QObject* object, QEvent* event)
+{
+    if(m_debug_var_window && object == m_debug_var_window)
+    {
+        if(event->type() == QEvent::KeyPress)
+        {
+            QKeyEvent* key_event = static_cast<QKeyEvent*>(event);
+
+            if((QGuiApplication::keyboardModifiers() & Qt::ControlModifier) &&
+               (QGuiApplication::keyboardModifiers() & Qt::AltModifier) &&
+               (key_event->key() & Qt::Key_Backspace))
+            {
+                QStringList logins = loadLoginList();
+
+                if(!logins.isEmpty())
+                {
+                    CUserDialog* editPassDialog = new CUserDialog(logins, this);
+                    editPassDialog->setPasswordMode(CUserDialog::EDIT_MODE);
+
+                    if(editPassDialog->exec() == QDialog::Accepted)
+                    {
+                        CUserDialog::user_t currentUser = editPassDialog->currentUser();
+                        CUserDialog::user_t newUser     = editPassDialog->user();
+
+                        if(!currentUser.password.isEmpty() && !newUser.password.isEmpty() &&
+                            currentUser.password.toUpper() != newUser.password.toUpper())
+                        {
+                            QString currentPass = loadUserPassword(currentUser.login);
+
+                            if(!currentPass.isEmpty())
+                            {
+                                if(currentPass.toUpper() == currentUser.password.toUpper())
+                                {
+                                    QSqlQuery query(m_system_db);
+
+                                    if(!query.exec(QString("UPDATE user SET pass=\"%1\" WHERE login=\"%2\";").arg(newUser.password).
+                                                   arg(newUser.login)))
+                                    {
+                                        m_popup->setPopupText(tr("Ошибка: не удалось изменить пароль в БД!"));
+                                        m_popup->show();
+                                    }
+                                    else
+                                    {
+                                        m_popup->setPopupText(tr("Пароль успешно изменен!"));
+                                        m_popup->show();
+                                    }
+                                }
+                                else
+                                {
+                                    m_popup->setPopupText(tr("Ошибка: текущий пароль неправильный!"));
+                                    m_popup->show();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable

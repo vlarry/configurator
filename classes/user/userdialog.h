@@ -13,6 +13,12 @@
         Q_OBJECT
 
         public:
+            enum mode_t
+            {
+                NORMAL_MODE,
+                EDIT_MODE
+            };
+
             struct user_t
             {
                 QString login;
@@ -24,7 +30,8 @@
             ~CUserDialog();
 
             user_t user() const;
-            void setMessage(const QString& text);
+            user_t currentUser() const;
+            void setPasswordMode(mode_t mode);
 
         private:
             Ui::CUserDialog* ui;

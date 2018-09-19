@@ -628,6 +628,7 @@
         protected:
             void keyPressEvent(QKeyEvent* event);
             void showEvent(QShowEvent* event);
+            bool eventFilter(QObject* object, QEvent* event);
 
         private:
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type);
@@ -717,6 +718,8 @@
             QWidget* groupMenuCellWidgetByName(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
             QWidget* groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col);
             int groupMenuPosition(const QString& name, const CDeviceMenuTableWidget* table);
+            QStringList loadLoginList() const;
+            QString     loadUserPassword(const QString& login);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
