@@ -12,6 +12,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_outputall_window(nullptr),
     m_inputs_window(nullptr),
     m_debuginfo_window(nullptr),
+    m_debug_var_window(nullptr),
     m_popup(nullptr),
     m_tim_calculate(nullptr),
     m_tim_debug_info(nullptr),
@@ -4428,10 +4429,66 @@ void ConfiguratorWindow::initDebugVariables()
     }
 }
 //--------------------------------------
-void ConfiguratorWindow::debugVariable()
+void ConfiguratorWindow::authorization()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
+    if(m_debug_var_window)
+    {
+        if(m_debug_var_window->isHidden())
+            debugVariableWindow();
+
+        return;
+    }
+
+    QSqlQuery query(m_system_db);
+
+    if(query.exec(QString("SELECT login FROM user;")))
+    {
+        QStringList users;
+
+        while(query.next())
+        {
+            users << query.value("login").toString();
+        }
+
+        if(users.isEmpty())
+            return;
+
+        CUserDialog* userDialog = new CUserDialog(users, this);
+
+        int answer = userDialog->exec();
+
+        if(answer == QDialog::Accepted)
+        {
+            CUserDialog::user_t usr = userDialog->user();
+
+            if(!usr.password.isEmpty())
+            {
+                if(query.exec(QString("SELECT pass FROM user WHERE login=\"%1\";").arg(usr.login)))
+                {
+                    if(query.first())
+                    {
+                        QString pass = query.value("pass").toString();
+
+                        if(usr.password.toUpper() == pass.toUpper())
+                            debugVariableWindow();
+                        else
+                        {
+                            m_popup->setPopupText(tr("Ошибка: пароль неправильный!"));
+                            m_popup->show();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                m_popup->setPopupText(tr("Ошибка: пароль не может быть пустым."));
+                m_popup->show();
+            }
+        }
+
+        delete userDialog;
+        userDialog = nullptr;
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -5881,6 +5938,12 @@ int ConfiguratorWindow::groupMenuPosition(const QString& name, const CDeviceMenu
     }
 
     return -1;
+}
+//--------------------------------------------
+void ConfiguratorWindow::debugVariableWindow()
+{
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
 }
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
@@ -10085,7 +10148,7 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::importFromExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::debugVariable);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::authorization);
     connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
             &ConfiguratorWindow::calibrationOfCurrent);

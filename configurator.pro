@@ -71,7 +71,8 @@ SOURCES += \
         classes/tableviews/purposetableview.cpp \
         classes/tabledevicemenu/devicemenumodel.cpp \
         classes/tabwidget/dragwidget.cpp \
-        classes/menubar/toolbutton.cpp
+        classes/menubar/toolbutton.cpp \
+        classes/user/userdialog.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -119,7 +120,8 @@ HEADERS += \
         classes/tableviews/purposetableview.h \
         classes/tabledevicemenu/devicemenumodel.h \
         classes/tabwidget/dragwidget.h \
-        classes/menubar/toolbutton.h
+        classes/menubar/toolbutton.h \
+        classes/user/userdialog.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -144,7 +146,8 @@ FORMS += \
         classes/menubar/menubar.ui \
         classes/menubar/widgetmenu.ui \
         classes/calibrationwidget/calibrationwidget.ui \
-        classes/tabwidget/dragwidget.ui
+        classes/tabwidget/dragwidget.ui \
+        classes/user/userdialog.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \
@@ -153,7 +156,8 @@ INCLUDEPATH += "classes/modbus" \
                "classes/calibrationwidget" \
                "classes/excel" \
                "classes/tableviews" \
-               "classes/tabledevicemenu"
+               "classes/tabledevicemenu" \
+               "classes/user"
 
 include(classes/excel/xlsx/qtxlsx.pri)
 

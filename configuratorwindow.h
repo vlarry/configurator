@@ -64,6 +64,7 @@
     #include "xlsx/xlsxworksheet.h"
     #include "xlsx/xlsxconditionalformatting.h"
     #include "devicemenumodel.h"
+    #include "userdialog.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
@@ -624,7 +625,7 @@
             void processKCUUmin();
             void menuTabClick(int index);
             void initDebugVariables();
-            void debugVariable();
+            void authorization();
 
         protected:
             void keyPressEvent(QKeyEvent* event);
@@ -718,6 +719,7 @@
             QWidget* groupMenuCellWidgetByName(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
             QWidget* groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col);
             int groupMenuPosition(const QString& name, const CDeviceMenuTableWidget* table);
+            void debugVariableWindow();
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
@@ -733,6 +735,7 @@
             COutputAll*                      m_inputs_window; // состояние входов
             CDebugInfo*                      m_debuginfo_window;
             CStatusInfo*                     m_status_window;
+            QWidget*                         m_debug_var_window; // отладочное окно внутренних переменных
             PopUp*                           m_popup;
             QTimer*                          m_tim_calculate;
             QTimer*                          m_tim_debug_info;
