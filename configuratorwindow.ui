@@ -1500,11 +1500,6 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabDebugMenu">
-       <attribute name="title">
-        <string>Отладка</string>
-       </attribute>
-      </widget>
       <widget class="QWidget" name="tabHelp">
        <attribute name="title">
         <string>Помощь</string>

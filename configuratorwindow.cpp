@@ -4333,19 +4333,36 @@ void ConfiguratorWindow::initWordStatus()
  */
 void ConfiguratorWindow::initDebugVariables()
 {
+    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    m_popup->show();
+
+    if(m_debug_var_window)
+    {
+        if(m_debug_var_window->isHidden())
+            m_debug_var_window->show();
+
+        return;
+    }
+
+    m_debug_var_window = new QWidget(this);
+    m_debug_var_window->setWindowTitle(tr("Состояния внутренних переменных"));
+    m_debug_var_window->setWindowFlag(Qt::Window);
+    m_debug_var_window->setWindowState(Qt::WindowMaximized);
+    m_debug_var_window->setMinimumSize(minimumSizeHint());
+
     group_t group = createVariableGroup("");
 
     if(group.isEmpty())
         return;
 
-    const int MAX_CHECKBOX_COUNT = 35;
+    const int MAX_CHECKBOX_COUNT = 40;
     const int SPAISING = 3;
 
     QHBoxLayout* hlayout  = new QHBoxLayout;
     QVBoxLayout* vlayout  = new QVBoxLayout;
     hlayout->setMargin(0);
-    hlayout->setSpacing(SPAISING*5);
-    vlayout->setMargin(0);
+    hlayout->setAlignment(Qt::AlignRight|Qt::AlignTop);
+    vlayout->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
     vlayout->setSpacing(SPAISING*3);
 
     int var_group_count = 0;
@@ -4357,7 +4374,7 @@ void ConfiguratorWindow::initDebugVariables()
         QVBoxLayout* vlayoutCheckbox = new QVBoxLayout;
         groupBox->setStyleSheet("QGroupBox { font-weight: bold; }");
         groupBox->setAlignment(Qt::AlignCenter);
-        groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         vlayoutCheckbox->setMargin(0);
         vlayoutCheckbox->setSpacing(SPAISING);
 
@@ -4373,7 +4390,7 @@ void ConfiguratorWindow::initDebugVariables()
             tfont.setPointSize(8);
             checkBox->setObjectName(QString("checkBox%1").arg(var.key));
             checkBox->setToolTip(((var.description.isEmpty())?var.name:var.description));
-            checkBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+            checkBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             checkBox->setFont(tfont);
 
             vlayoutCheckbox->addWidget(checkBox);
@@ -4392,14 +4409,13 @@ void ConfiguratorWindow::initDebugVariables()
                 groupBox = new QGroupBox(group_item.name.toUpper(), this);
                 groupBox->setStyleSheet("QGroupBox { font-weight: bold; }");
                 groupBox->setAlignment(Qt::AlignCenter);
-                groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+                groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
                 vlayoutCheckbox = new QVBoxLayout;
-                vlayoutCheckbox->setMargin(0);
                 vlayoutCheckbox->setSpacing(SPAISING);
 
                 vlayout = new QVBoxLayout;
-                vlayout->setMargin(0);
+                vlayout->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
                 vlayout->setSpacing(SPAISING*3);
 
                 checkbox_count = var_group_count = 0;
@@ -4410,23 +4426,18 @@ void ConfiguratorWindow::initDebugVariables()
         {
             groupBox->setLayout(vlayoutCheckbox);
             vlayout->addWidget(groupBox);
-
-            if(group_count == group.count())
-            {
-                vlayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-                vlayout->addSpacerItem(new QSpacerItem(1, 1000, QSizePolicy::Expanding, QSizePolicy::Expanding));
-            }
-
             hlayout->addLayout(vlayout);
         }
     }
 
-    QWidget* widget = ui->stwgtMain->widget(24);
-
-    if(widget)
-    {
-        widget->setLayout(hlayout);
-    }
+    QScrollArea* scrollArea = new QScrollArea;
+    QWidget* widgetContents = new QWidget(scrollArea);
+    widgetContents->setLayout(hlayout);
+    scrollArea->setWidget(widgetContents);
+    QVBoxLayout* scrollAreaLayout = new QVBoxLayout;
+    scrollAreaLayout->addWidget(scrollArea);
+    m_debug_var_window->setLayout(scrollAreaLayout);
+    m_debug_var_window->show();
 }
 //--------------------------------------
 void ConfiguratorWindow::authorization()
@@ -4434,7 +4445,7 @@ void ConfiguratorWindow::authorization()
     if(m_debug_var_window)
     {
         if(m_debug_var_window->isHidden())
-            debugVariableWindow();
+            initDebugVariables();
 
         return;
     }
@@ -4470,7 +4481,7 @@ void ConfiguratorWindow::authorization()
                         QString pass = query.value("pass").toString();
 
                         if(usr.password.toUpper() == pass.toUpper())
-                            debugVariableWindow();
+                            initDebugVariables();
                         else
                         {
                             m_popup->setPopupText(tr("Ошибка: пароль неправильный!"));
@@ -5938,12 +5949,6 @@ int ConfiguratorWindow::groupMenuPosition(const QString& name, const CDeviceMenu
     }
 
     return -1;
-}
-//--------------------------------------------
-void ConfiguratorWindow::debugVariableWindow()
-{
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
 }
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
@@ -7478,31 +7483,6 @@ void ConfiguratorWindow::processKCUUmin()
         }
     }
 }
-/*!
- * \brief ConfiguratorWindow::menuTabClick
- * \param index Индекс текущей вкладки
- *
- * Переключение меню при выборе вкладки "Отладка"
- */
-void ConfiguratorWindow::menuTabClick(int index)
-{
-    if(index == TAB_DEBUG_INDEX)
-    {
-        ui->menuDeviceDockPanel->hide();
-        ui->variableDockPanel->hide();
-        ui->stwgtMain->setCurrentIndex(24);
-    }
-    else
-    {
-        if(ui->stwgtMain->currentIndex() == TAB_DEBUG_INDEX)
-        {
-            ui->stwgtMain->setCurrentIndex(0);
-        }
-
-        ui->menuDeviceDockPanel->show();
-        ui->variableDockPanel->show();
-    }
-}
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 {
@@ -7594,11 +7574,6 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
     ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
     ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
     ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
-
-    // инициализация вывода отладочной информации о состоянии внутренних переменных (задержка 100мс для полного открыия окна, чтобы размеры
-    // были истинными)
-    QTimer tim_visible_window;
-    tim_visible_window.singleShot(100, this, initDebugVariables);
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
@@ -10154,7 +10129,6 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
-    connect(ui->tabwgtMenu, &QTabWidget::tabBarClicked, this, &ConfiguratorWindow::menuTabClick);
 
     CTerminal* terminal = qobject_cast<CTerminal*>(m_terminal_window->widget());
 

@@ -246,7 +246,6 @@
                 TAB_SET_INDEX,
                 TAB_READ_WRITE_INDEX,
                 TAB_FILTER_INDEX,
-                TAB_DEBUG_INDEX,
                 TAB_HELP_INDEX
             };
             /*!
@@ -623,7 +622,6 @@
             void calibrationOfCurrentRequest();
             void resizeColumns();
             void processKCUUmin();
-            void menuTabClick(int index);
             void initDebugVariables();
             void authorization();
 
@@ -719,7 +717,6 @@
             QWidget* groupMenuCellWidgetByName(CDeviceMenuTableWidget* table, const QString& wgt_name, int col) const;
             QWidget* groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col);
             int groupMenuPosition(const QString& name, const CDeviceMenuTableWidget* table);
-            void debugVariableWindow();
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
