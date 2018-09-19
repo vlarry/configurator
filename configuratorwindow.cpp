@@ -4360,7 +4360,6 @@ void ConfiguratorWindow::initDebugVariables()
 
     QHBoxLayout* hlayout  = new QHBoxLayout;
     QVBoxLayout* vlayout  = new QVBoxLayout;
-    hlayout->setMargin(0);
     hlayout->setAlignment(Qt::AlignRight|Qt::AlignTop);
     vlayout->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
     vlayout->setSpacing(SPAISING*3);
@@ -4375,7 +4374,6 @@ void ConfiguratorWindow::initDebugVariables()
         groupBox->setStyleSheet("QGroupBox { font-weight: bold; }");
         groupBox->setAlignment(Qt::AlignCenter);
         groupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        vlayoutCheckbox->setMargin(0);
         vlayoutCheckbox->setSpacing(SPAISING);
 
         int checkbox_count = 0;
@@ -4397,7 +4395,14 @@ void ConfiguratorWindow::initDebugVariables()
             var_group_count++;
             checkbox_count++;
 
-            if(checkbox_count == MAX_CHECKBOX_COUNT || var_group_count == MAX_CHECKBOX_COUNT)
+            int count = MAX_CHECKBOX_COUNT;
+
+            if(vlayout && vlayout->count() > 1)
+            {
+                count = MAX_CHECKBOX_COUNT - vlayout->count()*2;
+            }
+
+            if(checkbox_count >= count || var_group_count >= count)
             {
                 groupBox->setLayout(vlayoutCheckbox);
                 vlayout->addWidget(groupBox);
@@ -4430,7 +4435,7 @@ void ConfiguratorWindow::initDebugVariables()
         }
     }
 
-    QScrollArea* scrollArea = new QScrollArea;
+    QScrollArea* scrollArea = new QScrollArea(m_debug_var_window);
     QWidget* widgetContents = new QWidget(scrollArea);
     widgetContents->setLayout(hlayout);
     scrollArea->setWidget(widgetContents);

@@ -12,6 +12,9 @@ CUserDialog::CUserDialog(const QStringList& users, QWidget* parent):
     ui->comboBoxUserLogin->hide();
     ui->labelUserLogin->hide();
     ui->labelUserMessage->hide();
+
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowTitle(tr("Авторизация"));
 }
 //-------------------------
 CUserDialog::~CUserDialog()
