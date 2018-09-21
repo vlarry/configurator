@@ -72,7 +72,9 @@ SOURCES += \
         classes/tabledevicemenu/devicemenumodel.cpp \
         classes/tabwidget/dragwidget.cpp \
         classes/menubar/toolbutton.cpp \
-        classes/user/userdialog.cpp
+        classes/user/userdialog.cpp \
+        classes/interval/intervaldialog.cpp \
+        classes/widget/widget.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -121,7 +123,9 @@ HEADERS += \
         classes/tabledevicemenu/devicemenumodel.h \
         classes/tabwidget/dragwidget.h \
         classes/menubar/toolbutton.h \
-        classes/user/userdialog.h
+        classes/user/userdialog.h \
+        classes/interval/intervaldialog.h \
+        classes/widget/widget.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -147,7 +151,8 @@ FORMS += \
         classes/menubar/widgetmenu.ui \
         classes/calibrationwidget/calibrationwidget.ui \
         classes/tabwidget/dragwidget.ui \
-        classes/user/userdialog.ui
+        classes/user/userdialog.ui \
+        classes/interval/intervaldialog.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \
@@ -157,7 +162,9 @@ INCLUDEPATH += "classes/modbus" \
                "classes/excel" \
                "classes/tableviews" \
                "classes/tabledevicemenu" \
-               "classes/user"
+               "classes/user" \
+               "classes/interval" \
+               "classes/widget"
 
 include(classes/excel/xlsx/qtxlsx.pri)
 

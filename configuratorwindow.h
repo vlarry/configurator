@@ -65,6 +65,8 @@
     #include "xlsx/xlsxconditionalformatting.h"
     #include "devicemenumodel.h"
     #include "userdialog.h"
+    #include "intervaldialog.h"
+    #include "widget.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
@@ -130,6 +132,7 @@
                 AMPLITUDE_READ_CH3, // амплитуда канала №3
                 AMPLITUDE_READ_CH4, // амплитуда канала №4
                 AMPLITUDE_READ_CH5, // амплитуда канала №5
+                INTERNAL_VARIABLES_READ // чтение состояния внутренних переменныхs
             };
             //------------------
             enum RequestFunction
@@ -460,6 +463,7 @@
             void purposeMemoryOutRelayRead();
             void dateTimeRead();
             void settingCommunicationsRead();
+            void internalVariableRead();
             void inputAnalogGeneralWrite();
             void inputAnalogCalibrateWrite();
             void inputAnalogGroupWrite();
@@ -624,6 +628,9 @@
             void processKCUUmin();
             void initDebugVariables();
             void authorization();
+            void clearInternalVariableState();
+            void internalVariableSetInterval();
+            void internalVariablePressKey(bool isAlt, bool isCtrl, int key);
 
         protected:
             void keyPressEvent(QKeyEvent* event);
@@ -678,6 +685,7 @@
             void displayDebugInfo(const CModBusDataUnit& unit);
             void displayStatusInfo(const CModBusDataUnit& unit);
             void displayMemoryOut(const CModBusDataUnit::vlist_t& values);
+            void displayInternalVariables(const QVector<quint16>& data);
             void displayCalibrationOfCurrent();
             void versionParser();
             int  sizeBlockSetting(const QString& first, const QString& last);
@@ -735,7 +743,7 @@
             COutputAll*                      m_inputs_window; // состояние входов
             CDebugInfo*                      m_debuginfo_window;
             CStatusInfo*                     m_status_window;
-            QWidget*                         m_debug_var_window; // отладочное окно внутренних переменных
+            CWidget*                         m_debug_var_window; // отладочное окно внутренних переменных
             PopUp*                           m_popup;
             QTimer*                          m_tim_calculate;
             QTimer*                          m_tim_debug_info;
@@ -765,6 +773,7 @@
             QTimer*                          m_journal_timer; // проверка на обрыв чтения журнала
             calibration_current_t            m_calib_of_current; // структура для калибровок по току
             QMap<int, unit_t>                m_monitor_K10_K11_field; // ключ - номер строки, unit - описание полей (привязки для мониторинга К10 и К11
+            QMap<int, QCheckBox*>            m_internal_variable_list; // список переменных (ключ - бит переменной)
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

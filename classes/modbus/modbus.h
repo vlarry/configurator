@@ -35,6 +35,7 @@
             void rawData(QByteArray&, bool = true);
             void readyRead(CModBusDataUnit&);
             void stateChanged(bool = false);
+            void noConnection();
 
         public slots:
             void autochoicespeedProcess();

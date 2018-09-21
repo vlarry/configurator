@@ -198,6 +198,8 @@ void CModBus::request(CModBusDataUnit& unit)
 {
     if(!m_connect) // соединение неактивно
     {
+        emit noConnection();
+
         if(isBlock() || m_request.isValid()) // если передача заблокированна или запрос валидный, то на выход -
                                              // в очередь не ставим, т.к. нет смысла, пока не прошла синхронизация
             return;

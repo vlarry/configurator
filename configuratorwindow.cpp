@@ -2236,6 +2236,19 @@ void ConfiguratorWindow::settingCommunicationsRead()
     sendRequestRead(0x26, 1, COMMUNICATIONS_MODBUS_TIM_REQUEST);
     sendRequestRead(0x27, 1, COMMUNICATIONS_MODBUS_TIM_SPEED);
 }
+/*!
+ * \brief ConfiguratorWindow::internalVariableRead
+ *
+ * Чтение состояния внутренних переменных
+ */
+void ConfiguratorWindow::internalVariableRead()
+{
+    if(!m_modbus->isConnected())
+        return;
+
+    clearInternalVariableState();
+    sendRequestRead(0xac, 24, INTERNAL_VARIABLES_READ, CModBusDataUnit::ReadInputRegisters);
+}
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
 {
@@ -2553,6 +2566,11 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
             default: break;
         }
+    }
+    else if(type == INTERNAL_VARIABLES_READ)
+    {
+        showErrorMessage(tr("Чтение состояний внутренних переменных"), unit);
+        displayInternalVariables(unit.values());
     }
 }
 //------------------------------------
@@ -4333,23 +4351,25 @@ void ConfiguratorWindow::initWordStatus()
  */
 void ConfiguratorWindow::initDebugVariables()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
-
     if(m_debug_var_window)
     {
         if(m_debug_var_window->isHidden())
             m_debug_var_window->show();
 
+        internalVariableRead();
+
         return;
     }
 
-    m_debug_var_window = new QWidget(this);
+    m_debug_var_window = new CWidget(this);
     m_debug_var_window->setWindowTitle(tr("Состояния внутренних переменных"));
     m_debug_var_window->setWindowFlag(Qt::Window);
     m_debug_var_window->setWindowState(Qt::WindowMaximized);
     m_debug_var_window->setMinimumSize(minimumSizeHint());
-    m_debug_var_window->installEventFilter(this);
+
+    connect(m_debug_var_window, &CWidget::clear, this, &ConfiguratorWindow::clearInternalVariableState);
+    connect(m_debug_var_window, &CWidget::read, this, &ConfiguratorWindow::internalVariableRead);
+    connect(m_debug_var_window, &CWidget::pressKey, this, &ConfiguratorWindow::internalVariablePressKey);
 
     group_t group = createVariableGroup("");
 
@@ -4396,6 +4416,8 @@ void ConfiguratorWindow::initDebugVariables()
             var_group_count++;
             checkbox_count++;
 
+            m_internal_variable_list[var.bit] = checkBox;
+
             int count = MAX_CHECKBOX_COUNT;
 
             if(vlayout && vlayout->count() > 1)
@@ -4436,14 +4458,17 @@ void ConfiguratorWindow::initDebugVariables()
         }
     }
 
-    QScrollArea* scrollArea = new QScrollArea(m_debug_var_window);
-    QWidget* widgetContents = new QWidget(scrollArea);
+    QScrollArea* scrollArea       = new QScrollArea(m_debug_var_window);
+    QWidget*     widgetContents   = new QWidget(scrollArea);
+    QVBoxLayout* scrollAreaLayout = new QVBoxLayout;
+
     widgetContents->setLayout(hlayout);
     scrollArea->setWidget(widgetContents);
-    QVBoxLayout* scrollAreaLayout = new QVBoxLayout;
     scrollAreaLayout->addWidget(scrollArea);
     m_debug_var_window->setLayout(scrollAreaLayout);
     m_debug_var_window->show();
+
+    internalVariableRead();
 }
 //--------------------------------------
 void ConfiguratorWindow::authorization()
@@ -4490,6 +4515,94 @@ void ConfiguratorWindow::authorization()
 
     delete userDialog;
     userDialog = nullptr;
+}
+/*!
+ * \brief ConfiguratorWindow::clearInternalVariableState
+ *
+ * Очистка состояний внутренних переменных
+ */
+void ConfiguratorWindow::clearInternalVariableState()
+{
+    for(QCheckBox* checkBox: m_internal_variable_list)
+    {
+        if(checkBox)
+            checkBox->setChecked(false);
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::internalVariableSetInterval
+ *
+ * Настйройка интервала опроса состояний внутренних входов
+ */
+void ConfiguratorWindow::internalVariableSetInterval()
+{
+
+}
+/*!
+ * \brief ConfiguratorWindow::internalVariablePressKey
+ * \param isAlt Состояние модификатора Alt
+ * \param isCtrl Состояние модификатора Ctrl
+ * \param key Нажатая кнопка
+ *
+ * Обработчик нажатия клавиш в окне состояния внутренних переменных
+ */
+void ConfiguratorWindow::internalVariablePressKey(bool isAlt, bool isCtrl, int key)
+{
+    if(isAlt && isCtrl && (key & Qt::Key_Backspace))
+    {
+        QStringList logins = loadLoginList();
+
+        if(!logins.isEmpty())
+        {
+            CUserDialog* editPassDialog = new CUserDialog(logins, this);
+            editPassDialog->setPasswordMode(CUserDialog::EDIT_MODE);
+
+            if(editPassDialog->exec() == QDialog::Accepted)
+            {
+                CUserDialog::user_t currentUser = editPassDialog->currentUser();
+                CUserDialog::user_t newUser     = editPassDialog->user();
+
+                if(!currentUser.password.isEmpty() && !newUser.password.isEmpty() &&
+                    currentUser.password.toUpper() != newUser.password.toUpper())
+                {
+                    QString currentPass = loadUserPassword(currentUser.login);
+
+                    if(!currentPass.isEmpty())
+                    {
+                        if(currentPass.toUpper() == currentUser.password.toUpper())
+                        {
+                            QSqlQuery query(m_system_db);
+
+                            if(!query.exec(QString("UPDATE user SET pass=\"%1\" WHERE login=\"%2\";").arg(newUser.password).
+                                           arg(newUser.login)))
+                            {
+                                m_popup->setPopupText(tr("Ошибка: не удалось изменить пароль в БД!"));
+                                m_popup->show();
+                            }
+                            else
+                            {
+                                m_popup->setPopupText(tr("Пароль успешно изменен!"));
+                                m_popup->show();
+                            }
+                        }
+                        else
+                        {
+                            m_popup->setPopupText(tr("Ошибка: текущий пароль неправильный!"));
+                            m_popup->show();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if(isAlt && key == Qt::Key_U)
+    {
+        internalVariableRead();
+    }
+    else if(isAlt && key == Qt::Key_C)
+    {
+        clearInternalVariableState();
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -4809,6 +4922,41 @@ void ConfiguratorWindow::displayMemoryOut(const CModBusDataUnit::vlist_t& values
     }
 
     model->updateData();
+}
+/*!
+ * \brief ConfiguratorWindow::displayInternalVariables
+ * \param data Вектор состояний внутренних переменных
+ *
+ * Отображение состояний внутренних переменных
+ */
+void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
+{
+    if(data.count() < 24 || !m_debug_var_window || m_internal_variable_list.isEmpty())
+        return;
+
+    QVector<quint16> values;
+
+    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами младший со старшим
+    {
+        values << data[i + 1] << data[i];
+    }
+
+    for(int i = 0; i < m_internal_variable_list.count(); i++)
+    {
+        if(m_internal_variable_list.find(i) != m_internal_variable_list.end())
+        {
+            QCheckBox* checkBox = m_internal_variable_list[i];
+
+            if(checkBox)
+            {
+                int var = i/16;
+                int bit = i%16;
+                bool state = ((values[var]&(1 << bit))?true:false);
+
+                checkBox->setChecked(state);
+            }
+        }
+    }
 }
 //---------------------------------------------------------------------------------
 void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& unit)
@@ -7600,65 +7748,8 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
 //------------------------------------------------------------------
 bool ConfiguratorWindow::eventFilter(QObject* object, QEvent* event)
 {
-    if(m_debug_var_window && object == m_debug_var_window)
-    {
-        if(event->type() == QEvent::KeyPress)
-        {
-            QKeyEvent* key_event = static_cast<QKeyEvent*>(event);
-
-            if((QGuiApplication::keyboardModifiers() & Qt::ControlModifier) &&
-               (QGuiApplication::keyboardModifiers() & Qt::AltModifier) &&
-               (key_event->key() & Qt::Key_Backspace))
-            {
-                QStringList logins = loadLoginList();
-
-                if(!logins.isEmpty())
-                {
-                    CUserDialog* editPassDialog = new CUserDialog(logins, this);
-                    editPassDialog->setPasswordMode(CUserDialog::EDIT_MODE);
-
-                    if(editPassDialog->exec() == QDialog::Accepted)
-                    {
-                        CUserDialog::user_t currentUser = editPassDialog->currentUser();
-                        CUserDialog::user_t newUser     = editPassDialog->user();
-
-                        if(!currentUser.password.isEmpty() && !newUser.password.isEmpty() &&
-                            currentUser.password.toUpper() != newUser.password.toUpper())
-                        {
-                            QString currentPass = loadUserPassword(currentUser.login);
-
-                            if(!currentPass.isEmpty())
-                            {
-                                if(currentPass.toUpper() == currentUser.password.toUpper())
-                                {
-                                    QSqlQuery query(m_system_db);
-
-                                    if(!query.exec(QString("UPDATE user SET pass=\"%1\" WHERE login=\"%2\";").arg(newUser.password).
-                                                   arg(newUser.login)))
-                                    {
-                                        m_popup->setPopupText(tr("Ошибка: не удалось изменить пароль в БД!"));
-                                        m_popup->show();
-                                    }
-                                    else
-                                    {
-                                        m_popup->setPopupText(tr("Пароль успешно изменен!"));
-                                        m_popup->show();
-                                    }
-                                }
-                                else
-                                {
-                                    m_popup->setPopupText(tr("Ошибка: текущий пароль неправильный!"));
-                                    m_popup->show();
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return true;
-            }
-        }
-    }
+    Q_UNUSED(object);
+    Q_UNUSED(event);
 
     return false;
 }
@@ -10216,6 +10307,7 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(m_modbus, &CModBus::noConnection, this, &ConfiguratorWindow::noConnectMessage);
 
     CTerminal* terminal = qobject_cast<CTerminal*>(m_terminal_window->widget());
 
