@@ -25,7 +25,7 @@ CStatusInfo::CStatusInfo(QWidget *parent):
 
     m_timeout_update = new QTimer(this);
 
-    connect(ui->pushButtonStatusInfoUpdate, &QPushButton::clicked, this, buttonUpdate);
+    connect(ui->pushButtonStatusInfoUpdate, &QPushButton::clicked, this, &CStatusInfo::buttonUpdate);
     connect(ui->checkBoxUpdateData, &QCheckBox::clicked, this, &CStatusInfo::stateUpdateData);
     connect(ui->spinBoxUpdateData, SIGNAL(valueChanged(int)), this, SLOT(timeoutValueChanged(int)));
     connect(m_timeout_update, &QTimer::timeout, this, &CStatusInfo::timeoutUpdate);
