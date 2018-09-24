@@ -2244,7 +2244,10 @@ void ConfiguratorWindow::settingCommunicationsRead()
 void ConfiguratorWindow::internalVariableRead()
 {
     if(!m_modbus->isConnected())
+    {
+        noConnectMessage();
         return;
+    }
 
     clearInternalVariableState();
     sendRequestRead(0xac, 24, INTERNAL_VARIABLES_READ, CModBusDataUnit::ReadInputRegisters);
@@ -10307,7 +10310,6 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
-    connect(m_modbus, &CModBus::noConnection, this, &ConfiguratorWindow::noConnectMessage);
 
     CTerminal* terminal = qobject_cast<CTerminal*>(m_terminal_window->widget());
 
