@@ -1,3 +1,4 @@
+#include "configuratorwindow.h"
 #include "cvariablewidget.h"
 //------------------------------------------------
 CVariableWidget::CVariableWidget(QWidget* parent):
@@ -18,24 +19,33 @@ CVariableWidget::CVariableWidget(QWidget* parent):
 //---------------------------------------------------------
 void CVariableWidget::setData(const QVector<quint16>& data)
 {
-    if(data.isEmpty() || data.count() != 74)
+    if(data.isEmpty() || (data.count()/2 != m_variablelist->count()))
         return;
 
     union
     {
         quint16 buffer[2];
         float   value;
-    } cell_t;
+    } cell_val;
 
-    for(quint8 i = 0, j = 0; i < data.count() - 1; i += 2, j++)
+    for(int i = 0; i < m_variablelist->count(); i++)
     {
-        cell_t.buffer[1] = data.at(i);
-        cell_t.buffer[0] = data.at(i + 1);
+        QListWidgetItem* item = m_variablelist->item(i);
 
-        QListWidgetItem* item = m_variablelist->item(j);
-        QCell*           cell = static_cast<QCell*>(m_variablelist->itemWidget(item));
+        if(item)
+        {
+            QCell* cell = qobject_cast<QCell*>(m_variablelist->itemWidget(item));
 
-        cell->setCellValue(cell_t.value);
+            if(cell)
+            {
+                int index = cell->property("INDEX").toInt()*2;
+
+                cell_val.buffer[1] = data[index];
+                cell_val.buffer[0] = data[index + 1];
+
+                cell->setCellValue(cell_val.value);
+            }
+        }
     }
 }
 //------------------------------------------------------------------------
@@ -44,7 +54,10 @@ void CVariableWidget::setVariableNames(const calc_value_list_t& calc_list)
     if(calc_list.isEmpty())
         return;
 
-    for(const calc_value_t& value: calc_list)
+    calc_value_list_t list = calc_list;
+    std::sort(list.begin(), list.end(), [](const calc_value_t& val1, const calc_value_t& val2) { return val1.sort_id < val2.sort_id; });
+
+    for(const calc_value_t& value: list)
     {
         QString cell_str = value.name;
 
@@ -54,6 +67,7 @@ void CVariableWidget::setVariableNames(const calc_value_list_t& calc_list)
         m_variables << cell_str;
 
         QCell* cell = new QCell;
+        cell->setProperty("INDEX", value.id);
 
         cell->setCellName(cell_str);
 
@@ -74,4 +88,12 @@ void CVariableWidget::resizeSize()
 
         cell->setCellName(m_variables.at(i));
     }
+}
+//------------------------------------
+int CVariableWidget::cellCount() const
+{
+    if(m_variablelist)
+        return m_variablelist->count();
+
+    return -1;
 }

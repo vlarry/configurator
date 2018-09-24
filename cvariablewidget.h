@@ -18,6 +18,7 @@
             void setData(const QVector<quint16>& data);
             void setVariableNames(const calc_value_list_t& calc_list);
             void resizeSize();
+            int  cellCount() const;
 
         signals:
 

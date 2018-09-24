@@ -4065,7 +4065,7 @@ void ConfiguratorWindow::initCrashJournal()
     }
 
     // загружаем список расчетных величин из БД
-    if(!query.exec("SELECT name, first, description FROM calc_value;"))
+    if(!query.exec("SELECT * FROM calc_value;"))
     {
         QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список расчетных величин: %1").arg(query.lastError().text()));
         return;
@@ -4075,8 +4075,8 @@ void ConfiguratorWindow::initCrashJournal()
 
     while(query.next())
     {
-        calc_value_list << calc_value_t({ query.value("name").toString(), query.value("first").toInt(),
-                                          query.value("description").toString() });
+        calc_value_list << calc_value_t({ query.value("id").toInt(), query.value("name").toString(), query.value("sort_id").toInt(),
+                                          query.value("first").toInt(), query.value("description").toString() });
     }
 
     ui->variableWidget->setVariableNames(calc_value_list);
@@ -4772,7 +4772,7 @@ void ConfiguratorWindow::initIndicatorStates()
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
-    if(values.size() == 74)
+    if(values.count()/2 == ui->variableWidget->cellCount())
     {
         ui->variableWidget->setData(values);
     }
