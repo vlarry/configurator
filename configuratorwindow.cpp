@@ -4,6 +4,7 @@
 ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
     ui(new Ui::ConfiguratorWindow),
+    m_init(false),
     m_modbus(nullptr),
     m_serialPortSettings_window(nullptr),
     m_terminal_window(nullptr),
@@ -4079,7 +4080,7 @@ void ConfiguratorWindow::initCrashJournal()
                                           query.value("first").toInt(), query.value("description").toString() });
     }
 
-    ui->variableWidget->setVariableNames(calc_value_list);
+//    ui->variableWidget->setVariableNames(calc_value_list);
 
     protection_t protection = { list_item, list_set, variable_list, out_list, input_list, calc_value_list };
 
@@ -7667,86 +7668,94 @@ void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 //---------------------------------------------------
 void ConfiguratorWindow::showEvent(QShowEvent* event)
 {
-    Q_UNUSED(event);
+    QMainWindow::showEvent(event);
 
-    QMainWindow::show();
-
-    setWindowState(Qt::WindowMaximized);
-
-    m_terminal_window->hide();
-    ui->stwgtMain->setCurrentIndex(0);
-
-    m_version_window = new CVersionSoftware(this);
-    versionParser();
-
-    ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
-    m_status_bar->connectStateChanged(false);
-
-    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
-    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
-
-    ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
-    ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
-    ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
-
-    ui->comboBoxCommunicationParity->setCurrentIndex(1);
-
-    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel), false);
-    ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel), false);
-    ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
-
-    ui->variableDockPanel->setMinimumWidth(ui->pushButtonVariableCtrl->minimumWidth());
-    ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
-    ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
-
-    loadSettings();
-
-    QDateTime dt(QDateTime::currentDateTime());
-
-    ui->dateEdit->setDate(dt.date());
-    ui->timeEdit->setTime(dt.time());
-    ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
-
-    // управление отображением панелей
-    panelVisibleCtrl(ui->centralWgt);
-    panelVisibleCtrl(ui->variableDockPanel);
-    panelVisibleCtrl(ui->framePanelMessage);
-
-    if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
+    if(!m_init) // если окно выводится впервые - производим инициализацию
     {
-        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
-    }
-    else
-    {
-        ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
-    }
+        setWindowState(Qt::WindowMaximized);
 
-    if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
-    {
-        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
-    }
-    else
-    {
-        ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
-    }
+        m_terminal_window->hide();
+        ui->stwgtMain->setCurrentIndex(0);
 
-    if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
-    {
-        ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
-    }
-    else
-    {
-        ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
-    }
+        m_version_window = new CVersionSoftware(this);
+        versionParser();
 
-    if(ui->checkBoxPanelMessage->isChecked())
-        ui->framePanelMessage->show();
-    else
-        ui->framePanelMessage->hide();
+        ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
+        m_status_bar->connectStateChanged(false);
 
-    ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
-    ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
-    ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
+        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+
+        ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
+        ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
+        ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
+
+        ui->comboBoxCommunicationParity->setCurrentIndex(1);
+
+        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel), false);
+        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel), false);
+        ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
+
+        ui->variableDockPanel->setMinimumWidth(ui->pushButtonVariableCtrl->minimumWidth());
+        ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
+        ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
+
+        loadSettings();
+
+        QDateTime dt(QDateTime::currentDateTime());
+
+        ui->dateEdit->setDate(dt.date());
+        ui->timeEdit->setTime(dt.time());
+        ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
+
+        // управление отображением панелей
+        panelVisibleCtrl(ui->centralWgt);
+        panelVisibleCtrl(ui->variableDockPanel);
+        panelVisibleCtrl(ui->framePanelMessage);
+
+        // шрифт для панели меню
+        QFont treeFont = ui->treewgtDeviceMenu->font();
+        treeFont.setPointSize(12);
+        ui->treewgtDeviceMenu->setFont(treeFont);
+
+        if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
+        {
+            ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
+        }
+        else
+        {
+            ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
+        }
+
+        if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
+        {
+            ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
+        }
+        else
+        {
+            ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
+        }
+
+        if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
+        {
+            ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
+        }
+        else
+        {
+            ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
+        }
+
+        if(ui->checkBoxPanelMessage->isChecked())
+            ui->framePanelMessage->show();
+        else
+            ui->framePanelMessage->hide();
+
+        ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
+        ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
+        ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
+
+        m_init = true;
+    }
 }
 //------------------------------------------------------------------
 bool ConfiguratorWindow::eventFilter(QObject* object, QEvent* event)

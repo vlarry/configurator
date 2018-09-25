@@ -2,11 +2,12 @@
     #define CVARIBALELIST_H
     //----------------
     #include <QWidget>
-    #include <QListWidget>
+    #include <QTableWidget>
+    #include <QHeaderView>
     #include <QResizeEvent>
     #include <QDebug>
-    //-------------------------------------
-    class CVaribaleList: public QListWidget
+    //--------------------------------------
+    class CVaribaleList: public QTableWidget
     {
         Q_OBJECT
 

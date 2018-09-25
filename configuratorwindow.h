@@ -734,6 +734,7 @@
 
         private:
             Ui::ConfiguratorWindow*          ui;
+            bool                             m_init; // флаг инициализации окна
             CModBus*                         m_modbus;
             CSerialPortSetting*              m_serialPortSettings_window;
             CDragWidget*                     m_terminal_window;
