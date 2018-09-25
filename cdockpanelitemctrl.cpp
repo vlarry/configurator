@@ -67,9 +67,6 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
 {
     QPushButton::paintEvent(event);
 
-    if(m_text.isEmpty())
-        return;
-
     QPainter painter(this);
     QRect    but_rect(event->rect());
     QFont    f(painter.font());
@@ -78,7 +75,7 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
 
     painter.setFont(f);
 
-    if(m_dir == Left || m_dir == Right)
+    if((m_dir == Left || m_dir == Right) && !m_text.isEmpty())
     {
         painter.save();
 
@@ -87,12 +84,12 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
 
         QRect r(but_rect.height() - painter.fontMetrics().width(m_text) - 5,
                 but_rect.width()/2 - painter.fontMetrics().height()/2,
-                but_rect.height(), painter.fontMetrics().width(m_text)*1.2f);
+                but_rect.height(), static_cast<int>(painter.fontMetrics().width(m_text)*1.2f));
         painter.drawText(r, m_text);
 
         painter.restore();
     }
-    else
+    else if(m_text.isEmpty())
     {
         QRect r = but_rect;
         r.setX(r.x() + 5);

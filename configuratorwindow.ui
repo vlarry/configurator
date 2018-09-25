@@ -1662,6 +1662,11 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -2871,11 +2876,16 @@
               <height>24</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="text">
-             <string>Расчетные величины</string>
+             <string>Панель измерений</string>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
