@@ -81,6 +81,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initDebugInfo();
     initWordStatus();
 
+    ui->variableWidget->init(m_system_db); // инициализация списка расчетных величин
     ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
     ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
     ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
@@ -4078,8 +4079,6 @@ void ConfiguratorWindow::initCrashJournal()
         calc_value_list << calc_value_t({ query.value("id").toInt(), query.value("name").toString(), query.value("sort_id").toInt(),
                                           query.value("first").toInt(), query.value("description").toString() });
     }
-
-//    ui->variableWidget->setVariableNames(calc_value_list);
 
     protection_t protection = { list_item, list_set, variable_list, out_list, input_list, calc_value_list };
 

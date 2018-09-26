@@ -48,35 +48,69 @@ void CVariableWidget::setData(const QVector<quint16>& data)
 //        }
 //    }
 }
-//------------------------------------------------------------------------
-void CVariableWidget::setVariableNames(const calc_value_list_t& calc_list)
+//------------------------------------------------
+void CVariableWidget::init(QSqlDatabase& database)
 {
-    if(calc_list.isEmpty())
-        return;
-
-    calc_value_list_t list = calc_list;
-    std::sort(list.begin(), list.end(), [](const calc_value_t& val1, const calc_value_t& val2) { return val1.sort_id < val2.sort_id; });
-
-    for(const calc_value_t& value: list)
+    if(!loadGroups(database))
     {
-        QString cell_str = value.name;
+        qWarning() << tr("Инициализация списка расчетных величин завершилась неудачно.");
+        return;
+    }
 
-        if(!value.description.isEmpty())
-            cell_str += QString(" (%1)").arg(value.description);
+    int rowCount = 0;
 
-        m_variables << cell_str;
+    for(const var_group_t& group: m_groups)
+    {
+        rowCount += 2 + group.var_list.count();
+    }
 
-        QCell* cell = new QCell;
-        cell->setProperty("INDEX", value.id);
+    m_variablelist->setRowCount(rowCount);
 
-        cell->setCellName(cell_str);
+    int rows = 0;
 
-        cell->setToolTip(value.description);
+    for(const var_group_t& group: m_groups)
+    {
+        rows = insertGroupHeader(group.name, rows);
+        rows = insertColumnLabels(group.columns, rows);
+        rows = insertGroupRows(group.var_list, rows);
+    }
+
+    m_variablelist->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    m_variablelist->setShowGrid(false);
+    m_variablelist->resizeColumnsToContents();
+    m_variablelist->setMinimumWidth(500);
+    m_variablelist->setColumnWidth(0, 75);
+    m_variablelist->setColumnWidth(1, 100);
+    m_variablelist->setColumnWidth(2, 75);
+    m_variablelist->setColumnWidth(3, 15);
+    m_variablelist->setColumnWidth(4, 75);
+    m_variablelist->setColumnWidth(5, 75);
+//    if(calc_list.isEmpty())
+//        return;
+
+//    calc_value_list_t list = calc_list;
+//    std::sort(list.begin(), list.end(), [](const calc_value_t& val1, const calc_value_t& val2) { return val1.sort_id < val2.sort_id; });
+
+//    for(const calc_value_t& value: list)
+//    {
+//        QString cell_str = value.name;
+
+//        if(!value.description.isEmpty())
+//            cell_str += QString(" (%1)").arg(value.description);
+
+//        m_variables << cell_str;
+
+//        QCell* cell = new QCell;
+//        cell->setProperty("INDEX", value.id);
+
+//        cell->setCellName(cell_str);
+
+//        cell->setToolTip(value.description);
 
 //        QListWidgetItem* item = new QListWidgetItem(m_variablelist);
 //        item->setSizeHint(cell->sizeHint());
 //        m_variablelist->setItemWidget(item, cell);
-    }
+//    }
 }
 //--------------------------------
 void CVariableWidget::resizeSize()
@@ -96,4 +130,303 @@ int CVariableWidget::cellCount() const
 //        return m_variablelist->count();
 
     return -1;
+}
+//------------------------------------------------------
+bool CVariableWidget::loadGroups(QSqlDatabase& database)
+{
+    if(!database.isOpen())
+        return false;
+
+    QSqlQuery query(database);
+
+    if(query.exec(QString("SELECT * FROM calculate_group;")))
+    {
+        while(query.next())
+        {
+            int group_id = query.value("id").toInt();
+            QString name = query.value("name").toString();
+            QStringList header_list = loadColumns(database, group_id);
+            var_list_t var_list = loadRows(database, group_id);
+
+            m_groups[group_id] = var_group_t({ name, header_list, var_list });
+        }
+    }
+    else
+    {
+        qWarning() << tr("Не удалось прочитать список групп -> %1.").arg(query.lastError().text());
+        return false;
+    }
+
+    if(m_groups.isEmpty())
+        return false;
+
+    return true;
+}
+//----------------------------------------------------------------------------
+QStringList CVariableWidget::loadColumns(QSqlDatabase& database, int group_id)
+{
+    QStringList list;
+
+    if(!database.isOpen())
+        return list;
+
+    QSqlQuery query(database);
+    if(query.exec(QString("SELECT * FROM calculate_column WHERE group_id=%1;").arg(group_id)))
+    {
+        while(query.next())
+        {
+            list << query.value("header").toString();
+        }
+    }
+    else
+        qWarning() << tr("Не удалось прочитать заголовки колонок (group_id: %1) -> %2.").arg(group_id).
+                      arg(query.lastError().text());
+
+    return list;
+}
+//-----------------------------------------------------------------------------------------
+CVariableWidget::var_list_t CVariableWidget::loadRows(QSqlDatabase& database, int group_id)
+{
+    var_list_t list;
+
+    if(!database.isOpen())
+        return list;
+
+    QSqlQuery query(database);
+
+    if(query.exec(QString("SELECT * FROM calculate_row WHERE group_id=%1;").arg(group_id)))
+    {
+        while(query.next())
+        {
+            QString var_index1 = query.value("var_index1").toString();
+            QString var_index2 = query.value("var_index2").toString();
+
+            var_data_t var_data;
+
+            if(var_index1.contains('=')) // индекс переменной содержит знак равенства - это выражение
+            {
+                QStringList expr = var_index1.split('=');
+
+                if(expr.count() == 2)
+                {
+                    if(expr.at(0) == 's') // левая часть выражения равна 's' - это строка
+                    {
+                        var_data.var1.type = "STRING"; // тип строка
+                        var_data.var1.name = expr.at(1);
+                    }
+                }
+            }
+            else if(!var_index1.isEmpty())
+            {
+                var_data.var1 = loadData(database, var_index1);
+                var_data.var1.type = "VAR"; // тип переменная
+            }
+            else
+            {
+                var_data.var1.type = "EMPTY";
+            }
+
+            var_data.var2 = loadData(database, var_index2);
+            var_data.var2.type = "VAR";
+
+            list << var_data;
+        }
+    }
+    else
+        qWarning() << tr("Не удалось загрузить строки (group_id: %1) -> %2.").arg(group_id).
+                      arg(query.lastError().text());
+
+    return list;
+}
+//--------------------------------------------------------------------------------------------
+CVariableWidget::var_t CVariableWidget::loadData(QSqlDatabase& database, const QString& index)
+{
+    var_t var;
+
+    if(!database.isOpen())
+        return var;
+
+    QSqlQuery query(database);
+
+    if(query.exec(QString("SELECT * FROM calculate_variable WHERE var_index=\'%1\';").arg(index)))
+    {
+        if(query.first())
+        {
+            var.id          = query.value("id").toInt();
+            var.index       = index.toUpper();
+            var.name        = query.value("name").toString();
+            var.unit        = query.value("unit").toString();
+            var.description = query.value("description").toString();
+        }
+    }
+    else
+        qWarning() << tr("Не удалось загрузить переменную с индексом \'%1\' -> %2").arg(index).
+                      arg(query.lastError().text());
+
+    return var;
+}
+//-------------------------------------------------------------------
+int CVariableWidget::insertGroupHeader(const QString& text, int row)
+{
+    QTableWidgetItem* item = new QTableWidgetItem(text);
+
+    if(item)
+    {
+        QLinearGradient gradient(0, 0, 0, m_variablelist->rowHeight(row));
+        gradient.setColorAt(0, QColor(230, 230, 230));
+        gradient.setColorAt(0.5, Qt::lightGray);
+        gradient.setColorAt(1, QColor(230, 230, 230));
+
+        QFont font = item->font();
+        font.setBold(true);
+        item->setFont(font);
+        item->setTextAlignment(Qt::AlignCenter);
+        item->setBackground(QBrush(gradient));
+        item->setData(Qt::UserRole + 100, "HEADER");
+
+        m_variablelist->setItem(row, 0, item);
+        m_variablelist->setSpan(row, 0, 1, m_variablelist->columnCount());
+    }
+
+    return row + 1;
+}
+//-----------------------------------------------------------------------
+int CVariableWidget::insertColumnLabels(const QStringList& list, int row)
+{
+    for(int col = 0; col < m_variablelist->columnCount(); col++)
+    {
+        QTableWidgetItem* item = new QTableWidgetItem(list.at(col));
+        item->setTextAlignment(Qt::AlignCenter);
+        m_variablelist->setItem(row, col, item);
+    }
+
+    return row + 1;
+}
+//----------------------------------------------------------------------------------------
+int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list, int row)
+{
+    for(int row_index = 0; row_index < var_list.count(); row_index++)
+    {
+        var_data_t data = var_list[row_index];
+
+        if(data.var1.type == "VAR")
+        {
+            QLineEdit* lineEditVar1 = new QLineEdit("0.0000", m_variablelist);
+
+            if(lineEditVar1)
+            {
+                QWidget* widgetVar1 = new QWidget;
+                QHBoxLayout* layoutVar1 = new QHBoxLayout;
+                int height = static_cast<int>(lineEditVar1->fontMetrics().height()*1.2f);
+
+                lineEditVar1->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+                lineEditVar1->setObjectName(QString("lineEdit%1").arg(data.var1.index));
+                lineEditVar1->setAlignment(Qt::AlignCenter);
+                lineEditVar1->setReadOnly(true);
+                lineEditVar1->setMinimumHeight(height);
+                layoutVar1->setContentsMargins(10, 0, 10, 0);
+                layoutVar1->addWidget(lineEditVar1);
+                widgetVar1->setLayout(layoutVar1);
+                m_variablelist->setCellWidget(row + row_index, 2, widgetVar1);
+                m_line_var[data.var1.id] = lineEditVar1;
+            }
+
+            QTableWidgetItem* itemSeparator = new QTableWidgetItem("/");
+
+            if(itemSeparator)
+            {
+                itemSeparator->setTextAlignment(Qt::AlignCenter);
+                m_variablelist->setItem(row + row_index, 3, itemSeparator);
+            }
+        }
+        else if(data.var1.type == "STRING")
+        {
+            QTableWidgetItem* item = new QTableWidgetItem(data.var1.name);
+            item->setTextAlignment(Qt::AlignCenter);
+            m_variablelist->setItem(row + row_index, 2, item);
+        }
+
+        QLineEdit* lineEditVar2 = new QLineEdit("0.0000", m_variablelist);
+
+        if(lineEditVar2)
+        {
+            QWidget* widgetVar2 = new QWidget;
+            QHBoxLayout* layoutVar2 = new QHBoxLayout;
+            int height = static_cast<int>(lineEditVar2->fontMetrics().height()*1.2f);
+
+            lineEditVar2->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+            lineEditVar2->setObjectName(QString("lineEdit%1").arg(data.var1.index));
+            lineEditVar2->setAlignment(Qt::AlignCenter);
+            lineEditVar2->setReadOnly(true);
+            lineEditVar2->setMinimumHeight(height);
+            layoutVar2->setContentsMargins(10, 0, 10, 0);
+            layoutVar2->addWidget(lineEditVar2);
+            widgetVar2->setLayout(layoutVar2);
+            m_variablelist->setCellWidget(row + row_index, 4, widgetVar2);
+            m_line_var[data.var2.id] = lineEditVar2;
+        }
+
+        QString index_str = data.var2.index;
+        QString name_str  = data.var2.name;
+        QString unit_str  = data.var2.unit;
+
+        if(!data.var1.index.isEmpty())
+        {
+            index_str = QString("%1/%2").arg(data.var1.index).arg(data.var2.index);
+        }
+
+        if(!data.var1.unit.isEmpty())
+        {
+            if(data.var1.unit.toUpper() != data.var2.unit.toUpper())
+                unit_str = QString("%1/%2").arg(data.var1.unit).arg(data.var2.unit);
+        }
+
+        QTableWidgetItem* itemIndex = new QTableWidgetItem(index_str);
+        QTableWidgetItem* itemName  = new QTableWidgetItem(name_str);
+        QTableWidgetItem* itemUnit  = new QTableWidgetItem(unit_str);
+
+        itemIndex->setTextAlignment(Qt::AlignCenter);
+        itemName->setTextAlignment(Qt::AlignCenter);
+        itemUnit->setTextAlignment(Qt::AlignCenter);
+
+        m_variablelist->setItem(row + row_index, 0, itemIndex);
+        m_variablelist->setItem(row + row_index, 1, itemName);
+        m_variablelist->setItem(row + row_index, 5, itemUnit);
+    }
+
+    m_variablelist->resizeColumnsToContents();
+
+    return var_list.count() + row;
+}
+//------------------------------------------
+int CVariableWidget::columnMaxWidth(int col)
+{
+    int result = 0;
+
+    for(int row = 0; row < m_variablelist->rowCount(); row++)
+    {
+        QTableWidgetItem* item = m_variablelist->item(row, col);
+        int w = 0;
+
+        if(item)
+        {
+            if(item->data(Qt::UserRole + 100).toString().toUpper() != "HEADER")
+            {
+                QFontMetrics fm(item->font());
+                w = fm.width(item->text());
+            }
+        }
+        else
+        {
+            QWidget* widget = m_variablelist->cellWidget(row, col);
+
+            if(widget)
+                w = widget->width();
+        }
+
+        if(w > result)
+            result = w;
+    }
+
+    return result;
 }

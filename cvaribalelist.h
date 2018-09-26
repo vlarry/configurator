@@ -5,6 +5,7 @@
     #include <QTableWidget>
     #include <QHeaderView>
     #include <QResizeEvent>
+    #include <QShowEvent>
     #include <QDebug>
     //--------------------------------------
     class CVaribaleList: public QTableWidget
@@ -17,5 +18,8 @@
 
         signals:
             void resizeSize();
+
+        protected:
+            void showEvent(QShowEvent* event);
     };
 #endif // CVARIBALELIST_H
