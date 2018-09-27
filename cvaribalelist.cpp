@@ -10,15 +10,12 @@ CVaribaleList::CVaribaleList(QWidget* parent):
 void CVaribaleList::resizeEvent(QResizeEvent* event)
 {
     QTableWidget::resizeEvent(event);
-
-    emit resizeSize();
 }
 //----------------------------------------------
 void CVaribaleList::showEvent(QShowEvent* event)
 {
     QTableWidget::showEvent(event);
-//    horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-//    horizontalHeader()->setStretchLastSection(true);
+    horizontalHeader()->setStretchLastSection(true);
     horizontalHeader()->hide();
     verticalHeader()->hide();
 }

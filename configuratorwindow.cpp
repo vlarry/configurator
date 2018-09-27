@@ -2120,7 +2120,7 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     }
 
     QString nameWgt;
-    float   t_value;
+    float   t_value = 0.0f;
 
     if(Ia != 0.0f)
     {
@@ -7751,6 +7751,19 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
         ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
         ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
+
+        QLinearGradient gradient(0, 0, 0, ui->labelMenuDevice->height());
+        gradient.setColorAt(0, QColor(190, 190, 190));
+        gradient.setColorAt(0.5, Qt::gray);
+        gradient.setColorAt(1, QColor(190, 190, 190));
+
+        ui->labelMenuDevice->setAutoFillBackground(true);
+        ui->labelVariablePanel->setAutoFillBackground(true);
+
+        QPalette p(ui->labelMenuDevice->palette());
+        p.setBrush(QPalette::Window, QBrush(gradient));
+        ui->labelMenuDevice->setPalette(p);
+        ui->labelVariablePanel->setPalette(p);
 
         m_init = true;
     }

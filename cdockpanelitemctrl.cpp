@@ -75,6 +75,13 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
 
     painter.setFont(f);
 
+    QLinearGradient gradient(0, 0, but_rect.width(), 0);
+    gradient.setColorAt(0, QColor(190, 190, 190));
+    gradient.setColorAt(0.5, Qt::gray);
+    gradient.setColorAt(1, QColor(190, 190, 190));
+
+    painter.fillRect(but_rect, QBrush(gradient));
+
     if((m_dir == Left || m_dir == Right) && !m_text.isEmpty())
     {
         painter.save();
@@ -134,7 +141,7 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
         polygon = polygon_open;
     }
 
-    painter.setBrush(Qt::darkGreen);
+    painter.setBrush(Qt::green);
     painter.drawPolygon(polygon);
 }
 

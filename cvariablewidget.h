@@ -45,7 +45,6 @@
 
             void setData(const QVector<quint16>& data);
             void init(QSqlDatabase& database);
-            void resizeSize();
             int  cellCount() const;
 
         signals:
@@ -66,6 +65,7 @@
             CVaribaleList*         m_variablelist;
             QStringList            m_variables;
             QMap<int, var_group_t> m_groups;
-            QMap<int, QLineEdit*>  m_line_var;
+            QVector<QLineEdit*>    m_line_var;
+            static QColor          m_background_color;
     };
 #endif // CVARIABLEWIDGET_H
