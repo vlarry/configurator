@@ -87,7 +87,7 @@ void CModBus::readyReadData(QByteArray& bytes)
         // ID, FUNCTION_CODE, BYTE NUMBERS, ...VALUES..., CRC(2 bytes)
         case CModBusDataUnit::ReadHoldingRegisters:
         case CModBusDataUnit::ReadInputRegisters:
-            size   = quint8(m_request[0])*2 + 5;
+            size   = static_cast<quint8>(m_request[0])*2 + 5;
             offset = 3;
         break;
 
@@ -101,7 +101,7 @@ void CModBus::readyReadData(QByteArray& bytes)
 
         default:
             // ID, FUNCTION_CODE WITH BIT 0x80, CODE ERROR, CRC(2 bytes)
-            if(code_function & 0x80) // в ответе устройства обнаружена ошибка
+            if(static_cast<int>(code_function) & 0x80) // в ответе устройства обнаружена ошибка
             {
                 size = 5;
             }
@@ -134,11 +134,11 @@ void CModBus::readyReadData(QByteArray& bytes)
         qDebug() << tr("Данные приняты в полном объеме %1 байт за %2мс.").arg(m_buffer.count()).arg(m_time_process.elapsed());
 
         // расчет и проверка контрольной суммы
-        quint8 mbs = m_buffer[m_buffer.count() - 2];
-        quint8 lbs = m_buffer[m_buffer.count() - 1];
+        quint8 mbs = static_cast<quint8>(m_buffer[m_buffer.count() - 2]);
+        quint8 lbs = static_cast<quint8>(m_buffer[m_buffer.count() - 1]);
 
-        quint16 crc_receive = ((quint16)lbs << 8) | mbs;
-        quint16 crc_calculate = crc16(m_buffer, m_buffer.count() - 2);
+        quint16 crc_receive = (static_cast<quint16>(lbs << 8)) | mbs;
+        quint16 crc_calculate = crc16(m_buffer, static_cast<size_t>(m_buffer.count() - 2));
 
         if(crc_receive == crc_calculate)
         {
@@ -216,10 +216,10 @@ void CModBus::request(CModBusDataUnit& unit)
 
     QByteArray ba;
 
-    ba.append(unit.id());
-    ba.append(quint8(unit.function()));
-    ba.append(quint8((unit.address() >> 8)&0xFF)); // MSB address
-    ba.append(quint8(unit.address()&0xFF)); // LSB address
+    ba.append(static_cast<char>(unit.id()));
+    ba.append(static_cast<char>(unit.function()));
+    ba.append(static_cast<char>((unit.address() >> 8)&0xFF)); // MSB address
+    ba.append(static_cast<char>(unit.address()&0xFF)); // LSB address
 
     switch(unit.function())
     {
@@ -228,21 +228,21 @@ void CModBus::request(CModBusDataUnit& unit)
         case CModBusDataUnit::ReadInputRegisters:
         // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, VALUE, CRC(2 bytes)
         case CModBusDataUnit::WriteSingleRegister:
-            ba.append((unit[0] >> 8)&0xFF); // MSB register numbers
-            ba.append(unit[0]&0xFF); // LSB register numbers
+            ba.append(static_cast<char>((unit[0] >> 8)&0xFF)); // MSB register numbers
+            ba.append(static_cast<char>(unit[0]&0xFF)); // LSB register numbers
         break;
 
         // ID, FUNCTION_CODE, ADDRESS REGISTER FIRST, REGISTER NUMBERS, BYTE NUMBERS, ...VALUES..., CRC(2 bytes)
         case CModBusDataUnit::WriteMultipleRegisters:
-            ba.append((unit.count() >> 8)&0xFF); // MSB register numbers
-            ba.append(unit.count()&0xFF); // LSB register numbers
+            ba.append(static_cast<char>((unit.count() >> 8)&0xFF)); // MSB register numbers
+            ba.append(static_cast<char>(unit.count()&0xFF)); // LSB register numbers
 
-            ba.append(unit.count()*2); // byte numbers
+            ba.append(static_cast<char>(unit.count()*2)); // byte numbers
 
             for(int i = 0; i < unit.count(); i++)
             {
-                ba.append((unit[i] >> 8)&0xFF); // MSB data value
-                ba.append(unit[i]&0xFF); // LSB data value
+                ba.append(static_cast<char>((unit[i] >> 8)&0xFF)); // MSB data value
+                ba.append(static_cast<char>(unit[i]&0xFF)); // LSB data value
             }
         break;
 
@@ -252,10 +252,10 @@ void CModBus::request(CModBusDataUnit& unit)
         return;
     }
 
-    quint16 crc = crc16(ba, ba.count());
+    quint16 crc = crc16(ba, static_cast<size_t>(ba.count()));
 
-    ba.append(crc&0xFF); // LSB crc
-    ba.append((crc >> 8)&0xFF); // MSB crc
+    ba.append(static_cast<char>(crc&0xFF)); // LSB crc
+    ba.append(static_cast<char>((crc >> 8)&0xFF)); // MSB crc
 
     m_channel->write(ba);
     m_request = unit;
