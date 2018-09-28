@@ -3,7 +3,7 @@
 CVaribaleList::CVaribaleList(QWidget* parent):
     QTableWidget(parent)
 {
-    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
     setColumnCount(6);
 }
 //--------------------------------------------------
@@ -16,6 +16,4 @@ void CVaribaleList::showEvent(QShowEvent* event)
 {
     QTableWidget::showEvent(event);
     horizontalHeader()->setStretchLastSection(true);
-    horizontalHeader()->hide();
-    verticalHeader()->hide();
 }

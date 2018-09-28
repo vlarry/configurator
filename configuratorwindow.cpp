@@ -1031,7 +1031,9 @@ void ConfiguratorWindow::protectionBRUWrite()
 {
     sendSettingControlWriteRequest("M93", DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendSettingControlWriteRequest("M95", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingControlWriteRequest("M99a", DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendSettingWriteRequest("M96", "M99", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingWriteRequest("M99b", "M99i", DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendProtectionWorkModeRequest("BRU", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!
@@ -1860,7 +1862,9 @@ void ConfiguratorWindow::protectionBRURead()
 {
     sendSettingControlReadRequest("M93", DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendSettingControlReadRequest("M95", DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingControlReadRequest("M99a", DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendSettingReadRequest("M96", "M99", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingReadRequest("M99b", "M99i", CModBusDataUnit::ReadHoldingRegisters, 16, DEVICE_MENU_PROTECT_ITEM_CONTROL);
     sendProtectionWorkModeRequest("BRU", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CONTROL);
 }
 /*!

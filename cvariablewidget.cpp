@@ -77,6 +77,9 @@ void CVariableWidget::init(QSqlDatabase& database)
     m_variablelist->setShowGrid(false);
     m_variablelist->setColumnWidth(0, 75);
     m_variablelist->setColumnWidth(1, 100);
+    m_variablelist->setColumnWidth(2, 100);
+    m_variablelist->horizontalHeader()->hide();
+    m_variablelist->verticalHeader()->hide();
 }
 //------------------------------------
 int CVariableWidget::cellCount() const
@@ -386,7 +389,6 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
 
         QTableWidgetItem* itemSeparator = new QTableWidgetItem;
         itemSeparator->setBackground(QBrush(m_background_color));
-        m_variablelist->setItem(row + row_index, 3, itemSeparator);
 
         QWidget* widgetSeparator = new QWidget;
         QLabel* labelSeparator = new QLabel(separator_str, m_variablelist);
@@ -403,6 +405,8 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
         layoutSeparator->addWidget(labelSeparator);
         widgetSeparator->setLayout(layoutSeparator);
         widgetSeparator->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+        m_variablelist->setItem(row + row_index, 3, itemSeparator);
         m_variablelist->setCellWidget(row + row_index, 3, widgetSeparator);
     }
 
