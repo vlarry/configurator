@@ -283,16 +283,15 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
                 int height = static_cast<int>(lineEditVar1->fontMetrics().height()*1.2f);
                 int width = static_cast<int>(lineEditVar1->fontMetrics().width("0.000000")*1.5f);
 
-                lineEditVar1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                lineEditVar1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
                 lineEditVar1->setObjectName(QString("lineEdit%1").arg(data.var1.index));
                 lineEditVar1->setAlignment(Qt::AlignRight);
                 lineEditVar1->setReadOnly(true);
-                lineEditVar1->setMaximumHeight(height);
                 lineEditVar1->setToolTip(data.var1.description);
                 lineEditVar1->setMaximumWidth(width);
                 lineEditVar1->setMaxLength(8);
                 lineEditVar1->setProperty("INDEX", data.var1.id);
-                layoutVar1->setContentsMargins(0, 0, 0, 0);
+                layoutVar1->setContentsMargins(0, 3, 0, 3);
                 layoutVar1->addWidget(lineEditVar1);
                 widgetVar1->setLayout(layoutVar1);
                 widgetVar1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -328,16 +327,15 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
             QHBoxLayout* layoutVar2 = new QHBoxLayout;
             int height = static_cast<int>(lineEditVar2->fontMetrics().height()*1.2f);
             int width = static_cast<int>(lineEditVar2->fontMetrics().width("0.000000")*1.5f);
-            lineEditVar2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+            lineEditVar2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
             lineEditVar2->setObjectName(QString("lineEdit%1").arg(data.var1.index));
             lineEditVar2->setAlignment(Qt::AlignRight);
             lineEditVar2->setReadOnly(true);
-            lineEditVar2->setMaximumHeight(height);
             lineEditVar2->setToolTip(data.var2.description);
             lineEditVar2->setMaximumWidth(width);
             lineEditVar2->setMaxLength(8);
             lineEditVar2->setProperty("INDEX", data.var2.id);
-            layoutVar2->setContentsMargins(0, 0, 0, 0);
+            layoutVar2->setContentsMargins(0, 3, 0, 3);
             layoutVar2->addWidget(lineEditVar2);
             widgetVar2->setLayout(layoutVar2);
             widgetVar2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);

@@ -141,7 +141,7 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
         polygon = polygon_open;
     }
 
-    painter.setBrush(Qt::green);
+    painter.setBrush(Qt::lightGray);
     painter.drawPolygon(polygon);
 }
 

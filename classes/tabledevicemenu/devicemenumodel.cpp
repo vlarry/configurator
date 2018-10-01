@@ -66,7 +66,7 @@ void CDeviceMenuTableWidget::showEvent(QShowEvent* event)
 
     for(int i = 0; i < columnCount(); i++)
     {
-        setColumnWidth(i, 300);
+        setColumnWidth(i, ((i == 2 || i == 3)?100:(i == 0)?400:300));
     }
 }
 //-----------------------------------------------------------------
@@ -149,7 +149,7 @@ void CDeviceMenuTableWidget::insertHeader(int row, const QString& name, RowType 
     item->setBackground(QBrush(gradient));
 
     setItem(row, 0, item);
-    setSpan(row, 0, 1, 3);
+    setSpan(row, 0, 1, columnCount());
 }
 //-----------------------------------------------------------------------------------------------------
 void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::item_t& item, int index)
@@ -235,22 +235,39 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
     }
 
 
+    QWidget*     wgt_limit    = new QWidget;
+    QHBoxLayout* layout_limit = new QHBoxLayout;
+    QLabel*      label_limit  = new QLabel(QString("%1...%2").arg(static_cast<double>(item.unit.min)).
+                                                               arg(static_cast<double>(item.unit.max)), wgt_limit);
+
     QWidget*     wgt_unit    = new QWidget;
     QHBoxLayout* layout_unit = new QHBoxLayout;
-    QLabel*      label_unit  = new QLabel(QString("%1...%2%3").arg(static_cast<double>(item.unit.min)).
-                                                               arg(static_cast<double>(item.unit.max)).
-                                                               arg(((item.unit.unit.isEmpty())?"":item.unit.unit)), wgt_unit);
+    QLabel*      label_unit  = new QLabel(QString("%1").arg(((item.unit.unit.isEmpty())?"":item.unit.unit)), wgt_limit);
 
     if(item.type.toUpper() == "INT" || item.type.toUpper() == "FLOAT")
     {
+        label_limit->setObjectName(QString("label%1Limit%2").arg(item.key).arg(index_str));
+        label_limit->setAlignment(Qt::AlignCenter);
+        label_limit->setScaledContents(true);
+        label_limit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        layout_limit->setObjectName(QString("layoutLabelLimit%1%2").arg(item.key).arg(index_str));
+        layout_limit->addWidget(label_limit);
+        layout_limit->setAlignment(Qt::AlignCenter);
+        layout_limit->setContentsMargins(0, 0, 0, 0);
+        wgt_limit->setLayout(layout_limit);
+
         label_unit->setObjectName(QString("label%1Unit%2").arg(item.key).arg(index_str));
+        label_unit->setAlignment(Qt::AlignCenter);
+        label_unit->setScaledContents(true);
+        label_unit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         layout_unit->setObjectName(QString("layoutLabelUnit%1%2").arg(item.key).arg(index_str));
         layout_unit->addWidget(label_unit);
         layout_unit->setAlignment(Qt::AlignCenter);
         layout_unit->setContentsMargins(0, 0, 0, 0);
         wgt_unit->setLayout(layout_unit);
 
-        setCellWidget(row, 2, wgt_unit);
+        setCellWidget(row, 2, wgt_limit);
+        setCellWidget(row, 3, wgt_unit);
     }
 }
 //---------------------------------------------------------------------------------------------------------------

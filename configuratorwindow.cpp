@@ -3573,7 +3573,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 23;
     m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT]                 = 1; // при открытии меню Защиты открывается группа МТЗ
 
-    QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел");
+    QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел") << tr("Ед. изм.");
 
     ui->tableWidgetSettingsAnalogGroupGeneral->setColumns(columns);
     ui->tableWidgetProtectionGroupMTZ->setColumns(columns);
