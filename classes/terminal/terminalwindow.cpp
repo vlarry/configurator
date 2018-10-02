@@ -9,4 +9,5 @@ CTerminalWindow::CTerminalWindow(QWidget* parent):
     tpalette.setColor(QPalette::Text, QColor(Qt::green));
 
     setPalette(tpalette);
+    setReadOnly(true);
 }

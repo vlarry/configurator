@@ -207,14 +207,13 @@ void ConfiguratorWindow::refreshSerialPort()
     
     if(port_list.isEmpty())
     {
-        QMessageBox msgBox;
-
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgBox.setWindowTitle(tr("Com-порт"));
-        msgBox.setText(tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"));
-
-        msgBox.exec();
+        QMessageBox msgbox;
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setWindowTitle(tr("Com-порт"));
+        msgbox.setText(tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
     }
     
     m_serialPortSettings_window->setSerialPortList(port_list);
@@ -359,7 +358,8 @@ void ConfiguratorWindow::journalRead(const QString& key)
         if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
         {
             QMessageBox msgbox;
-            msgbox.setText(tr("Чтение журнала"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setWindowTitle(tr("Чтение журнала"));
             msgbox.setInformativeText(tr("В таблице уже присутствуют данные!\nВыберите необходимое действие."));
             msgbox.setIcon(QMessageBox::Question);
 
@@ -369,6 +369,8 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
             msgbox.setDefaultButton(next);
             msgbox.exec();
+
+            outApplicationEvent(msgbox.text());
 
             if(msgbox.clickedButton() == next)
             {
@@ -1366,12 +1368,19 @@ void ConfiguratorWindow::synchronizationDateTime()
  */
 void ConfiguratorWindow::settingCommunicationsWrite()
 {
-    int answer = QMessageBox::question(this, tr("Запись настроек связи"),
-                                             tr("Вы действительно хотите перезаписать настройки связи?"),
-                                             QMessageBox::Yes | QMessageBox::No);
+    QMessageBox msgbox;
+    msgbox.setWindowTitle(tr("Запись настроек связи"));
+    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(tr("Вы действительно хотите перезаписать настройки связи?"));
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+
+    int answer = msgbox.exec();
 
     if(answer == QMessageBox::No)
         return;
+
+    outApplicationEvent(msgbox.text());
 
     sendRequestWrite(0x26, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationRequestTimeout->value()), 255);
     sendRequestWrite(0x27, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationTimeoutSpeed->value()), 255);
@@ -2119,7 +2128,14 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
 
     str = tr("Вы хотите сохранить новые калибровки?\n%1").arg(textValue);
 
-    int res = QMessageBox::question(this, tr("Запись калибровок по току"), str);
+    QMessageBox msgbox;
+    msgbox.setWindowTitle(tr("Запись калибровок по току"));
+    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(str);
+    outApplicationEvent(msgbox.text());
+
+    int res = msgbox.exec();
 
     qInfo() << tr("Запись новых калибровочных коэффициентов по току:\n%1").arg(textValue);
 
@@ -2268,7 +2284,14 @@ void ConfiguratorWindow::processReadJournals(bool state)
 {
     if(!m_active_journal_current) // если активынй журнал не выбран, значит ошибка
     {
-        QMessageBox::critical(this, tr("Чтение журнала"), tr("Не выбран текущий активный журнал.\nПоробуйте еще раз."));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Чтение журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Question);
+        msgbox.setText("Не выбран текущий активный журнал.\nПоробуйте еще раз");
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -2306,7 +2329,15 @@ void ConfiguratorWindow::processExport()
         exportPurposeToJSON();
     }
     else
-        QMessageBox::warning(this, tr("Экспорт"), tr("Не выбран допустимый пункт меню"));
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Question);
+        msgbox.setText("Не выбран допустимый пункт меню");
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+    }
 }
 //--------------------------------------
 void ConfiguratorWindow::processImport()
@@ -2322,7 +2353,15 @@ void ConfiguratorWindow::processImport()
         importPurposeFromJSON();
     }
     else
-        QMessageBox::warning(this, tr("Импорт"), tr("Не выбран допустимый пункт меню"));
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Question);
+        msgbox.setText("Не выбран допустимый пункт меню");
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+    }
 }
 //-----------------------------------------------------------
 void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
@@ -2626,7 +2665,13 @@ void ConfiguratorWindow::errorDevice(const QString& error)
 //---------------------------------------------------------
 void ConfiguratorWindow::errorConnect(const QString& error)
 {
-    QMessageBox::warning(this, tr("Ошибка подлкючения"), error);
+    QMessageBox msgbox;
+    msgbox.setWindowTitle(tr("Ошибка подлкючения"));
+    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(error);
+    outApplicationEvent(msgbox.text());
+    msgbox.exec();
 }
 //---------------------------------------------------
 void ConfiguratorWindow::terminalVisiblity(int state)
@@ -3094,9 +3139,14 @@ void ConfiguratorWindow::writeSettings()
         return;
     }
 
-    int answer = QMessageBox::question(this, tr("Сохранение настроек утройства"),
-                                             tr("Вы действительно хотите перезаписать настройки?"),
-                                             QMessageBox::Yes | QMessageBox::No);
+    QMessageBox msgbox;
+    msgbox.setWindowTitle(tr("Сохранение настроек утройства"));
+    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText("Вы действительно хотите перезаписать настройки?");
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    outApplicationEvent(msgbox.text());
+    int answer = msgbox.exec();
 
     if(answer == QMessageBox::No)
         return;
@@ -3951,7 +4001,14 @@ void ConfiguratorWindow::initCrashJournal()
     // Загружаем список защит
     if(!query.exec(QString("SELECT code, name FROM protection;")))
     {
-        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список доступных защит: %1").arg(query.lastError().text()));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(title_msg);
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Question);
+        msgbox.setText(tr("Не удалось загрузить список доступных защит: %1").arg(query.lastError().text()));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -3968,7 +4025,14 @@ void ConfiguratorWindow::initCrashJournal()
         // Загружаем переменные списка защит по коду защиты
         if(!query_item.exec(QString("SELECT name, index_var, type, first FROM protection_items WHERE protect_id=%1").arg(code)))
         {
-            QMessageBox::warning(this, title_msg, tr("Не удалось загрузить переменные защит: %1").arg(query_item.lastError().text()));
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(title_msg);
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Question);
+            msgbox.setText(tr("Не удалось загрузить переменные защит: %1").arg(query_item.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
+
             return;
         }
 
@@ -3998,8 +4062,14 @@ void ConfiguratorWindow::initCrashJournal()
             {
                 if(!query.exec(QString("SELECT number FROM protection_set WHERE index_var=\"%1\";").arg(item.index)))
                 {
-                    QMessageBox::warning(this, title_msg, tr("Не удалось загрузить перечень списов вариантов переменных типа LIST: %1").
-                                         arg(query.lastError().text()));
+                    QMessageBox msgbox;
+                    msgbox.setWindowTitle(title_msg);
+                    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+                    msgbox.setIcon(QMessageBox::Question);
+                    msgbox.setText(tr("Не удалось загрузить перечень списов вариантов переменных типа LIST: %1").arg(query.lastError().text()));
+                    outApplicationEvent(msgbox.text());
+                    msgbox.exec();
+
                     break;
                 }
 
@@ -4013,8 +4083,14 @@ void ConfiguratorWindow::initCrashJournal()
 
                     if(!query_set.exec(QString("SELECT name FROM protection_set_list WHERE set_number=%1;").arg(number)))
                     {
-                        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить варианты переменных типа LIST: %1").
-                                                              arg(query_set.lastError().text()));
+                        QMessageBox msgbox;
+                        msgbox.setWindowTitle(title_msg);
+                        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+                        msgbox.setIcon(QMessageBox::Question);
+                        msgbox.setText(tr("Не удалось загрузить варианты переменных типа LIST: %1").arg(query_set.lastError().text()));
+                        outApplicationEvent(msgbox.text());
+                        msgbox.exec();
+
                         break;
                     }
 
@@ -4034,7 +4110,7 @@ void ConfiguratorWindow::initCrashJournal()
     // загружаем список внутренних переменных (358 шт)
     if(!query.exec("SELECT key, name, description FROM variable;"))
     {
-        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список внутренних переменных: %1").arg(query.lastError().text()));
+        outApplicationEvent(tr("Не удалось загрузить список внутренних переменных: %1").arg(query.lastError().text()));
         return;
     }
 
@@ -4049,8 +4125,7 @@ void ConfiguratorWindow::initCrashJournal()
     // загружаем выходы (светодиоды, реле и модифицируемые переменные)
     if(!query.exec("SELECT key, description FROM iodevice WHERE type=\"RELAY\" OR type=\"LED\" OR type=\"EMPTY\";"))
     {
-        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список выходов и модифицируемых переменных: %1").
-                                              arg(query.lastError().text()));
+        outApplicationEvent(tr("Не удалось загрузить список выходов и модифицируемых переменных: %1").arg(query.lastError().text()));
         return;
     }
 
@@ -4064,7 +4139,7 @@ void ConfiguratorWindow::initCrashJournal()
     // загружаем входы
     if(!query.exec("SELECT key, description FROM iodevice WHERE type=\"INPUT\";"))
     {
-        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список входов: %1").arg(query.lastError().text()));
+        outApplicationEvent(tr("Не удалось загрузить список входов: %1").arg(query.lastError().text()));
         return;
     }
 
@@ -4078,7 +4153,7 @@ void ConfiguratorWindow::initCrashJournal()
     // загружаем список расчетных величин из БД
     if(!query.exec("SELECT * FROM calc_value;"))
     {
-        QMessageBox::warning(this, title_msg, tr("Не удалось загрузить список расчетных величин: %1").arg(query.lastError().text()));
+        outApplicationEvent(tr("Не удалось загрузить список расчетных величин: %1").arg(query.lastError().text()));
         return;
     }
 
@@ -4624,8 +4699,14 @@ void ConfiguratorWindow::connectSystemDb()
 
     if(!m_system_db.open())
     {
-        QMessageBox::critical(this, tr("Системная база данных"), tr("Невозможно открыть системную базу данных: ") +
-                              m_system_db.lastError().text());
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Системная база данных"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Critical);
+        msgbox.setText(tr("Невозможно открыть системную базу данных: %1").arg(m_system_db.lastError().text()));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         exit(1);
     }
 }
@@ -4637,8 +4718,14 @@ bool ConfiguratorWindow::connectDb(QSqlDatabase*& db, const QString& path)
 
     if(!db->open())
     {
-        QMessageBox::critical(this, tr("База данных журнала событий"), tr("Невозможно открыть базу данных журнала событий: ") +
-                              db->lastError().text());
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("База данных журнала событий"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Critical);
+        msgbox.setText(tr("Невозможно открыть базу данных журнала событий: %1").arg(db->lastError().text()));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         disconnectDb(db);
 
         return false;
@@ -5571,9 +5658,6 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 //------------------------------------------------------------------
 void ConfiguratorWindow::displayDebugInfo(const CModBusDataUnit& unit)
 {
-//    if(unit.valueCount() != 15)
-//        return;
-
     int channel = unit.property("CHANNEL").toInt();
 
     m_debuginfo_window->setData(channel, unit.values());
@@ -6132,6 +6216,12 @@ QString ConfiguratorWindow::loadUserPassword(const QString& login)
 
     return pass;
 }
+//---------------------------------------------------------------
+void ConfiguratorWindow::outApplicationEvent(const QString& text)
+{
+    QString dateTimeText = QString("%1 - %2.").arg(QDateTime::currentDateTime().toString("[dd.mm.yyyy - HH:mm:ss.zzz]")).arg(text);
+    ui->terminalWindowEvent->appendPlainText(dateTimeText);
+}
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
                                                 CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index)
@@ -6675,7 +6765,14 @@ void ConfiguratorWindow::startExportToPDF()
 {
     if(!m_active_journal_current)
     {
-        QMessageBox::warning(this, tr("Эксорт в PDF"), tr("Выберите текущий журнал для экспорта"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Эксорт в PDF"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Выберите текущий журнал для экспорта"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -6715,7 +6812,14 @@ void ConfiguratorWindow::filterDialog()
 {
     if(!m_active_journal_current)
     {
-        QMessageBox::warning(this, tr("Фильтр"), tr("Выберите текущий журнал"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Фильтр"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Выберите текущий журнал"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -6767,12 +6871,16 @@ void ConfiguratorWindow::filterDialog()
 //----------------------------------------------
 void ConfiguratorWindow::deviceDefaultSettings()
 {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, tr("Отправка команды"),
-                                  tr("Вы действительно хотите сбросить настройки устройства по умолчанию?"),
-                                  QMessageBox::Yes | QMessageBox::No);
+    QMessageBox msgbox;
+    msgbox.setWindowTitle(tr("Отправка команды"));
+    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(tr("Вы действительно хотите сбросить настройки устройства по умолчанию?"));
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    outApplicationEvent(msgbox.text());
+    int answer = msgbox.exec();
 
-    if(reply == QMessageBox::Yes)
+    if(answer == QMessageBox::Yes)
     {
         sendDeviceCommand(0x0001); // отправка команды на сброс настроек по умолчанию
         readSetCurrent(); // читаем настройки после сброса
@@ -6781,7 +6889,13 @@ void ConfiguratorWindow::deviceDefaultSettings()
 //-----------------------------------------
 void ConfiguratorWindow::noConnectMessage()
 {
-    QMessageBox::warning(this, tr("Отправка данных"), tr("Невозможно отправить запрос. Нет соединения с устройством"));
+    QMessageBox msgbox;
+    msgbox.setWindowTitle(tr("Отправка данных"));
+    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+    msgbox.setIcon(QMessageBox::Warning);
+    msgbox.setText(tr("Невозможно отправить запрос. Нет соединения с устройством"));
+    outApplicationEvent(msgbox.text());
+    msgbox.exec();
 }
 /*!
  * \brief ConfiguratorWindow::setNewBaudrate
@@ -7043,7 +7157,13 @@ void ConfiguratorWindow::timeoutJournalRead()
         if(m_journal_read_current)
             nameJournal = m_journal_read_current->property("NAME").toString();
 
-        QMessageBox::warning(this, tr("Чтение журнала"), tr("Ошибка чтения журнала %1.").arg(nameJournal));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Чтение журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Ошибка чтения журнала %1.").arg(nameJournal));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
     }
 }
 //--------------------------------------------
@@ -7221,8 +7341,14 @@ void ConfiguratorWindow::saveProject()
 
     if(!file.open(QFile::WriteOnly))
     {
-        QMessageBox::warning(this, tr("Сохранение файла проекта"), tr("Невозможно создать файл для записи \"%1\"").
-                                                                   arg(fileName));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Сохранение файла проекта"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно создать файл для записи \"%1\"").arg(fileName));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -7431,7 +7557,14 @@ void ConfiguratorWindow::calibrationOfCurrent()
     if(!checkBoxIa->isChecked() && !checkBoxIb->isChecked() && !checkBoxIc->isChecked() &&
        !checkBox3I0->isChecked())
     {
-        QMessageBox::warning(this, tr("Калибровка по току"), tr("Нет выбранных каналов для калибровки"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Калибровка по току"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Нет выбранных каналов для калибровки"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -7801,8 +7934,14 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
     if(!query.exec(db_str))
     {
-        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать служебную таблицу журналов: ") +
-                                   query.lastError().text());
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно создать служебную таблицу журналов: ").arg(query.lastError().text()));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return false;
     }
 
@@ -7814,8 +7953,14 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
     if(!query.exec(db_str))
     {
-        QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу списка журналов: ") +
-                                   query.lastError().text());
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно создать таблицу списка журналов: ").arg(query.lastError().text()));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return false;
     }
 
@@ -7834,8 +7979,14 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журналов событий: ") +
-                                       query.lastError().text());
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Создание таблицы"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно создать таблицу журналов событий: ").arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
+
             return false;
         }
     }
@@ -7853,8 +8004,14 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журналов аварий: ") +
-                                       query.lastError().text());
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Создание таблицы"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно создать таблицу журналов аварий: ").arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
+
             return false;
         }
 
@@ -7867,8 +8024,14 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу свойств журналов аварий: ") +
-                                       query.lastError().text());
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Создание таблицы"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно создать таблицу свойств журналов аварий: ").arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
+
             return false;
         }
     }
@@ -7887,8 +8050,14 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу журналов получасовок: ") +
-                                       query.lastError().text());
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Создание таблицы"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно создать таблицу журналов получасовок: ").arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
+
             return false;
         }
 
@@ -7900,8 +8069,14 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox::warning(this, tr("Создание таблицы"), tr("Невозможно создать таблицу свойств журналов получасовок: ") +
-                                       query.lastError().text());
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Создание таблицы"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно создать таблицу свойств журналов получасовок: ").arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
+
             return false;
         }
     }
@@ -8413,8 +8588,13 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     if(!file.open(QFile::WriteOnly))
     {
-        QMessageBox::warning(this, tr("Сохранение профиля привязок"), tr("Невозможно создать файл для записи \"%1\"").
-                                                                      arg(fileName));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Сохранение профиля привязок"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно создать файл для записи \"%1\"").arg(fileName));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
 
         return;
     }
@@ -8480,8 +8660,13 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     if(!file.open(QFile::ReadOnly | QFile::Text))
     {
-        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Невозможно открыть файл профиля привязок: ") +
-                                   file.errorString());
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт профиля привязок"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно открыть файл профиля привязок: %1").arg(file.errorString()));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
 
         return;
     }
@@ -8492,7 +8677,14 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     if(!json.isObject())
     {
-        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Неизвестный формат файла привязок"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт профиля привязок"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Неизвестный формат файла привязок"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -8500,7 +8692,14 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     if(t.toUpper() != typeName.toUpper())
     {
-        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Ошибка типа файла привязок.\nВыберите другой файл."));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт профиля привязок"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Ошибка типа файла привязок.\nВыберите другой файл"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -8508,8 +8707,14 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     if(matrix.rowCount() != arrRows.count())
     {
-        QMessageBox::warning(this, tr("Импорт профиля привязок"), tr("Количество привязок в файле не соответствует\n"
-                                                                     "количеству привязок в таблице."));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт профиля привязок"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Количество привязок в файле не соответствует\nколичеству привязок в таблице"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -8564,15 +8769,20 @@ void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
         case READ_JOURNAL_SHIFT_PTR:
             if(unit.error() != CModBusDataUnit::ERROR_NO)
             {
-                QMessageBox::warning(this, tr("Чтение журнала"), tr("Ошибка перемещения указателя журнала:\n%1").
-                                     arg(CModBusDataUnit::errorDescription(unit.error())));
+                QMessageBox msgbox;
+                msgbox.setWindowTitle(tr("Чтение журнала"));
+                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+                msgbox.setIcon(QMessageBox::Warning);
+                msgbox.setText(tr("Ошибка перемещения указателя журнала:\n%1").arg(CModBusDataUnit::errorDescription(unit.error())));
+                outApplicationEvent(msgbox.text());
+                msgbox.exec();
             }
         break;
 
         case READ_JOURNAL_COUNT:
             if(unit.count() == 2)
             {
-                long count = long(long(unit[0] << 16) | long(unit[1]));
+                int count = static_cast<int>(static_cast<int>(unit[0] << 16) | static_cast<int>(unit[1]));
 
                 set.message.read_total = count;
 
@@ -8623,7 +8833,7 @@ void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
                 }
             }
 
-            long count = data.count()/(set.message.size/2);
+            int count = data.count()/(set.message.size/2);
 
             set.message.read_count   += count;
             set.message.read_current += count;
@@ -8812,7 +9022,14 @@ void ConfiguratorWindow::importJournalToTable()
 {
     if(!m_active_journal_current) // не выбран текущий журнал
     {
-        QMessageBox::warning(this, tr("Импорт журнала"), tr("Выберите пожалуйста журнал в который необходимо произвести импорт"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Выберите пожалуйста журнал в который необходимо произвести импорт"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -8833,7 +9050,14 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(journal_name.isEmpty() || journal_type.isEmpty())
     {
-        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Не удалось определить имя или тип журнала"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Не удалось определить имя или тип журнала"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -8853,8 +9077,15 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(!connectDb(db, journal_path)) // открываем базу данных
     {
-        QMessageBox::warning(this, tr("Импорт журнала"), tr("Невозможно открыть базу данных журналов \"%1\"").arg(journal_name));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно открыть базу данных журналов \"%1\"").arg(journal_name));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
         disconnectDb(db);
+
         return;
     }
 
@@ -8863,13 +9094,24 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(count == 0) // такой записи в служебной таблице нет - тип журнала не совпадает с текущим
     {
-        QMessageBox::warning(this, tr("Импорт журнала"), tr("Импортируемы журнал не является журналом %1.\n%2.").arg(journal_name).
-                                                         arg("Выберите другой журнал"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Импортируемы журнал не является журналом %1.\n%2.").arg(journal_name).
+                       arg("Выберите другой журнал"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
     }
     else if(count == -1) // открытая база не является базой журналов
     {
-        QMessageBox::warning(this, tr("Импорт журнала"), tr("Импортируемый журнал не является каким-либо журналом.\n"
-                                                            "Выберите другой файл."));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Импортируемый журнал не является каким-либо журналом.\nВыберите другой файл."));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
     }
 
     if(count <= 0) // выходим, если выбрана не та база
@@ -8884,9 +9126,16 @@ void ConfiguratorWindow::importJournalToTable()
     // получаем список журналов из базы
     if(!query.exec(query_str))
     {
-        QMessageBox::warning(this, tr("Импорт журнала"), tr("Невозможно получить список журналов из базы %1:\n%2").
-                                                         arg(journal_name).arg(query.lastError().text()));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно получить список журналов из базы %1:\n%2").
+                       arg(journal_name).arg(query.lastError().text()));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
         disconnectDb(db);
+
         return;
     }
 
@@ -8906,8 +9155,15 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(journal_list.isEmpty())
     {
-        QMessageBox::warning(this, tr("Импорт журнала"), tr("Список журналов %1 пуст.").arg(journal_name));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Список журналов %1 пуст.").arg(journal_name));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
         disconnectDb(db);
+
         return;
     }
 
@@ -8929,10 +9185,15 @@ void ConfiguratorWindow::importJournalToTable()
     {
         if(serialNumber != m_status_bar->serialNumberText()) // серийные номера не совпадают
         {
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, tr("Журнала журнала"),
-                                          tr("Этот журнал не от этого устройства.\nВсе равно загрузить?"),
-                                          QMessageBox::Yes | QMessageBox::No);
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Импорт журнала"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Этот журнал не от этого устройства.\nВсе равно загрузить?"));
+            msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            outApplicationEvent(msgbox.text());
+
+            int reply = msgbox.exec();
 
             if(reply == QMessageBox::No) // уходим, если нет
             {
@@ -8946,8 +9207,15 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(rows <= 0)
     {
-        QMessageBox::warning(this, tr("Импорт журнала"), tr("База журнала %1 пуста.").arg(journal_name));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("База журнала %1 пуста.").arg(journal_name));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
         disconnectDb(db);
+
         return;
     }
 
@@ -8977,8 +9245,13 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(!query.exec(str))
     {
-        QMessageBox::warning(this, tr("Импорт журнала"),
-                                   tr("Не возможно получить записи журнала %1: %2").arg(journal_name).arg(query.lastError().text()));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Импорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Не возможно получить записи журнала %1: %2").arg(journal_name).arg(query.lastError().text()));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
     }
 
     m_progressbar->setProgressTitle(QString("Импорт журнала %1").arg(journal_name));
@@ -9029,8 +9302,15 @@ void ConfiguratorWindow::importJournalToTable()
 
             if(!query_property.exec(QString("SELECT name, value FROM property WHERE id_journal=%1;").arg(id_journal)))
             {
-                QMessageBox::warning(this, tr("Импорт журнала"), tr("Не удалось прочитать свойства журнала аварий: %1").
-                                                                 arg(query_property.lastError().text()));
+                QMessageBox msgbox;
+                msgbox.setWindowTitle(tr("Импорт журнала"));
+                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+                msgbox.setIcon(QMessageBox::Warning);
+                msgbox.setText(tr("Не удалось прочитать свойства журнала аварий: %1").
+                               arg(query_property.lastError().text()));
+                outApplicationEvent(msgbox.text());
+                msgbox.exec();
+
                 continue;
             }
 
@@ -9115,7 +9395,14 @@ void ConfiguratorWindow::exportJournalToDb()
 {
     if(!m_active_journal_current) // не выбран текущий журнал
     {
-        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Выберите пожалуйста журнал из которого необходимо произвести экспорт"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Выберите пожалуйста журнал из которого необходимо произвести экспорт"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -9128,7 +9415,14 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(table->rowCount() == 0) // таблица пуста
     {
-        QMessageBox::information(this, tr("Экспорт журнала"), tr("Текущий журнал пуст"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Текущий журнал пуст"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -9137,7 +9431,14 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(journal_name.isEmpty() || journal_type.isEmpty())
     {
-        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Не удалось определить имя или тип журнала"));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Не удалось определить имя или тип журнала"));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+
         return;
     }
 
@@ -9166,10 +9467,14 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(fi.exists(journal_path)) // Файл уже существует
     {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, tr("Экспорт журнала"),
-                                      tr("Такая база уже существует. Перезаписать данные?"),
-                                      QMessageBox::Yes | QMessageBox::No);
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Question);
+        msgbox.setText(tr("Такая база уже существует. Перезаписать данные?"));
+        msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        outApplicationEvent(msgbox.text());
+        int reply = msgbox.exec();
 
         if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
         {
@@ -9177,8 +9482,14 @@ void ConfiguratorWindow::exportJournalToDb()
 
             if(!file.remove())
             {
-                QMessageBox::warning(this, tr("Удаление базы журналов"),
-                                     tr("Невозможно удалить базу %1!\nВозможно уже используется или у Вас нет прав.").arg(baseNameFile));
+                QMessageBox msgbox;
+                msgbox.setWindowTitle(tr("Удаление базы журналов"));
+                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+                msgbox.setIcon(QMessageBox::Warning);
+                msgbox.setText(tr("Невозможно удалить базу %1!\nВозможно уже используется или у Вас нет прав.").arg(baseNameFile));
+                outApplicationEvent(msgbox.text());
+                msgbox.exec();
+
                 return;
             }
         }
@@ -9190,8 +9501,15 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(!connectDb(db, journal_path))
     {
-        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно открыть/создать файл \"%1\".").arg(baseNameFile));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно открыть/создать файл \"%1\".").arg(baseNameFile));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
         disconnectDb(db);
+
         return;
     }
 
@@ -9206,9 +9524,15 @@ void ConfiguratorWindow::exportJournalToDb()
 
         if(!query.exec(query_str)) // читаем служебную информацию о типе журнала
         {
-            QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно открыть базу \"%1\" для дозаписи новых данных").
-                                       arg(baseNameFile));
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Экспорт журнала"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно открыть базу \"%1\" для дозаписи новых данных").arg(baseNameFile));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
             disconnectDb(db);
+
             return;
         }
 
@@ -9218,10 +9542,17 @@ void ConfiguratorWindow::exportJournalToDb()
 
             if(type.toUpper() != journal_type.toUpper()) // типы журналов не совпадают
             {
-                QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно выполнить запись журнала в эту базу.\n"
-                                                                     "Требуется тип журнала \"%1\", а текущий имеет тип \"%2\"").
-                                                                     arg(type.toLower()).arg(journal_type.toLower()));
+                QMessageBox msgbox;
+                msgbox.setWindowTitle(tr("Экспорт журнала"));
+                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+                msgbox.setIcon(QMessageBox::Warning);
+                msgbox.setText(tr("Невозможно выполнить запись журнала в эту базу.\n"
+                                  "Требуется тип журнала \"%1\", а текущий имеет тип \"%2\"").
+                                  arg(type.toLower()).arg(journal_type.toLower()));
+                outApplicationEvent(msgbox.text());
+                msgbox.exec();
                 disconnectDb(db);
+
                 return;
             }
         }
@@ -9244,9 +9575,16 @@ void ConfiguratorWindow::exportJournalToDb()
 
         if(!query.exec(query_str)) // вставляем служебную информацию о типе журнала
         {
-            QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно вставить служебную информацию в базу данных: %1").
-                                                              arg(query.lastError().text()));
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Экспорт журнала"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно вставить служебную информацию в базу данных: %1").
+                           arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
             disconnectDb(db);
+
             return;
         }
     }
@@ -9263,8 +9601,14 @@ void ConfiguratorWindow::exportJournalToDb()
 
         if(!query.exec(query_str))
         {
-            QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно записать новый журнал в базу данных: %1").
-                                       arg(query.lastError().text()));
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Экспорт журнала"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно записать новый журнал в базу данных: %1").
+                           arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
             disconnectDb(db);
             return;
         }
@@ -9275,7 +9619,13 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(!query.exec(query_str))
     {
-        QMessageBox::warning(this, tr("Экспорт журнала"), tr("Невозможно прочитать id записи \"%1\"").arg(query_str));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Невозможно прочитать id записи \"%1\"").arg(query_str));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
         disconnectDb(db);
         return;
     }
@@ -10053,8 +10403,13 @@ bool ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit&
 {
     if(unit.error() != CModBusDataUnit::ERROR_NO)
     {
-        QMessageBox::warning(this, title, tr("Ошибка: %1.").
-                             arg(CModBusDataUnit::errorDescription(unit.error())));
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(title);
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        msgbox.setText(tr("Ошибка: %1.").arg(CModBusDataUnit::errorDescription(unit.error())));
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
 
         return true;
     }

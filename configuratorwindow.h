@@ -729,7 +729,8 @@
             QWidget* groupMenuCellWidget(const CDeviceMenuTableWidget* table, int row, int col);
             int groupMenuPosition(const QString& name, const CDeviceMenuTableWidget* table);
             QStringList loadLoginList() const;
-            QString     loadUserPassword(const QString& login);
+            QString loadUserPassword(const QString& login);
+            void outApplicationEvent(const QString& text);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
