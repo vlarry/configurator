@@ -4583,12 +4583,14 @@ void ConfiguratorWindow::authorization()
             else
             {
                 m_popup->setPopupText(tr("Ошибка: пароль неправильный!"));
+                outApplicationEvent(tr("Ошибка: пароль неправильный!"));
                 m_popup->show();
             }
         }
         else
         {
             m_popup->setPopupText(tr("Ошибка: пароль не может быть пустым."));
+            outApplicationEvent(tr("Ошибка: пароль не может быть пустым."));
             m_popup->show();
         }
     }
@@ -4657,17 +4659,20 @@ void ConfiguratorWindow::internalVariablePressKey(bool isAlt, bool isCtrl, int k
                                            arg(newUser.login)))
                             {
                                 m_popup->setPopupText(tr("Ошибка: не удалось изменить пароль в БД!"));
+                                outApplicationEvent(tr("Ошибка: не удалось изменить пароль в БД!"));
                                 m_popup->show();
                             }
                             else
                             {
                                 m_popup->setPopupText(tr("Пароль успешно изменен!"));
+                                outApplicationEvent(tr("Пароль успешно изменен!"));
                                 m_popup->show();
                             }
                         }
                         else
                         {
                             m_popup->setPopupText(tr("Ошибка: текущий пароль неправильный!"));
+                            outApplicationEvent(tr("Ошибка: текущий пароль неправильный!"));
                             m_popup->show();
                         }
                     }
@@ -10423,6 +10428,7 @@ void ConfiguratorWindow::endJournalReadProcess(const QString& text)
     m_progressbar->progressStop();
 
     m_popup->setPopupText(text);
+    outApplicationEvent(text);
     m_popup->show();
 }
 //---------------------------------------------------------------------------------------------------------------------
