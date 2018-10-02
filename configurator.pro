@@ -74,7 +74,8 @@ SOURCES += \
         classes/menubar/toolbutton.cpp \
         classes/user/userdialog.cpp \
         classes/interval/intervaldialog.cpp \
-        classes/widget/widget.cpp
+        classes/widget/widget.cpp \
+        classes/terminal/terminalwindow.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -125,7 +126,8 @@ HEADERS += \
         classes/menubar/toolbutton.h \
         classes/user/userdialog.h \
         classes/interval/intervaldialog.h \
-        classes/widget/widget.h
+        classes/widget/widget.h \
+        classes/terminal/terminalwindow.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -164,7 +166,8 @@ INCLUDEPATH += "classes/modbus" \
                "classes/tabledevicemenu" \
                "classes/user" \
                "classes/interval" \
-               "classes/widget"
+               "classes/widget" \
+               "classes/terminal"
 
 include(classes/excel/xlsx/qtxlsx.pri)
 

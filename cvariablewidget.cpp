@@ -280,7 +280,6 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
             {
                 QWidget* widgetVar1 = new QWidget;
                 QHBoxLayout* layoutVar1 = new QHBoxLayout;
-                int height = static_cast<int>(lineEditVar1->fontMetrics().height()*1.2f);
                 int width = static_cast<int>(lineEditVar1->fontMetrics().width("0.000000")*1.5f);
 
                 lineEditVar1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
@@ -325,7 +324,6 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
         {
             QWidget* widgetVar2 = new QWidget;
             QHBoxLayout* layoutVar2 = new QHBoxLayout;
-            int height = static_cast<int>(lineEditVar2->fontMetrics().height()*1.2f);
             int width = static_cast<int>(lineEditVar2->fontMetrics().width("0.000000")*1.5f);
             lineEditVar2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
             lineEditVar2->setObjectName(QString("lineEdit%1").arg(data.var1.index));

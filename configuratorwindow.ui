@@ -2789,11 +2789,21 @@
                <bool>true</bool>
               </property>
               <property name="currentIndex">
-               <number>-1</number>
+               <number>0</number>
               </property>
               <property name="movable">
                <bool>true</bool>
               </property>
+              <widget class="QWidget" name="tabEvent">
+               <attribute name="title">
+                <string>События</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_4">
+                <item>
+                 <widget class="CTerminalWindow" name="terminalWindowEvent"/>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -2974,6 +2984,11 @@
    <class>CDeviceMenuTableWidget</class>
    <extends>QTableWidget</extends>
    <header>devicemenumodel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CTerminalWindow</class>
+   <extends>QPlainTextEdit</extends>
+   <header>terminalwindow.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

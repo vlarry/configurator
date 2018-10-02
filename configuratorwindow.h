@@ -28,6 +28,7 @@
     #include <QProgressBar>
     #include <QThread>
     #include <QtConcurrent/QtConcurrent>
+    #include <QMessageBox>
     #include <QFileDialog>
     #include <QShowEvent>
     #include <QSettings>
@@ -67,6 +68,7 @@
     #include "userdialog.h"
     #include "intervaldialog.h"
     #include "widget.h"
+    #include "terminalwindow.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
@@ -269,9 +271,9 @@
              */
             struct journal_address_t
             {
-                long msg_count;  // адрес чтения количества сообщений
-                long set_shift;  // адрес установки указателя свдига (установка текущего окна для чтения)
-                long start_page; // начальный адрес страницы
+                int msg_count;  // адрес чтения количества сообщений
+                int set_shift;  // адрес установки указателя свдига (установка текущего окна для чтения)
+                int start_page; // начальный адрес страницы
             };
             /*!
              * \brief The journal_message_t struct
@@ -280,13 +282,13 @@
              */
             struct journal_message_t
             {
-                long read_number;  // количество сообщений читаемых в одном запросе
-                long read_count;   // счетчик прочитанных сообщений
-                long read_limit;   // сообщение до которого читаем (по умолчанию последнее, но изменяется фильром)
-                long read_total;   // всего сообщений доступных для чтения
-                long read_current; // текущее читаемое сообщение
-                long read_start;   // сообщение с которого начинается чтение
-                long size;         // размер одного сообщения
+                int read_number;  // количество сообщений читаемых в одном запросе
+                int read_count;   // счетчик прочитанных сообщений
+                int read_limit;   // сообщение до которого читаем (по умолчанию последнее, но изменяется фильром)
+                int read_total;   // всего сообщений доступных для чтения
+                int read_current; // текущее читаемое сообщение
+                int read_start;   // сообщение с которого начинается чтение
+                int size;         // размер одного сообщения
             };
             /*!
              * \brief The journal_set struct
@@ -295,8 +297,8 @@
              */
             struct journal_set_t
             {
-                long              shift_ptr; // текущее положение указателя сдвига
-                long              msg_part;
+                int               shift_ptr; // текущее положение указателя сдвига
+                int               msg_part;
                 bool              isStart;   // чтение первого сообщения
                 bool              isStop;    // останвка чтения сообщений
                 journal_address_t address;

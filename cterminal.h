@@ -8,6 +8,7 @@
     #include <QDrag>
     #include <QIntValidator>
     #include <QDebug>
+    #include "terminalwindow.h"
     //----------
     namespace Ui
     {

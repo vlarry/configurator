@@ -21,7 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QPlainTextEdit" name="pteConsole">
+    <widget class="CTerminalWindow" name="pteConsole">
      <property name="readOnly">
       <bool>true</bool>
      </property>
@@ -47,6 +47,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CTerminalWindow</class>
+   <extends>QPlainTextEdit</extends>
+   <header>terminalwindow.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

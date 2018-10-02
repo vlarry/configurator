@@ -207,8 +207,14 @@ void ConfiguratorWindow::refreshSerialPort()
     
     if(port_list.isEmpty())
     {
-        QMessageBox::warning(nullptr, tr("Com-порт"), 
-                             tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"));
+        QMessageBox msgBox;
+
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgBox.setWindowTitle(tr("Com-порт"));
+        msgBox.setText(tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"));
+
+        msgBox.exec();
     }
     
     m_serialPortSettings_window->setSerialPortList(port_list);

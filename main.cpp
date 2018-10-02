@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
     styleFile.close();
 
     ConfiguratorWindow w;
+    w.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
     w.show();
     
     return a.exec();

@@ -11,8 +11,7 @@ CTerminal::CTerminal(QWidget* parent):
     
     p.setColor(QPalette::Base, QColor(Qt::black));
     p.setColor(QPalette::Text, QColor(Qt::green));
-    
-    ui->pteConsole->setPalette(p);
+
     ui->lineEditDeviceCommand->setPalette(p);
     
     setWindowTitle(tr("Терминал"));
