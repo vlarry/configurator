@@ -9,6 +9,9 @@ CVersionSoftware::CVersionSoftware(QWidget *parent):
     setWindowFlag(Qt::Window);
 
     ui->textEdit->clear();
+    QFont font = ui->textEdit->font();
+    font.setPointSize(14);
+    ui->textEdit->setFont(font);
 
     QPalette p = ui->textEdit->palette();
 
