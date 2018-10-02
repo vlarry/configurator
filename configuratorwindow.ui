@@ -2789,7 +2789,7 @@
                <bool>true</bool>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <property name="movable">
                <bool>true</bool>
@@ -2801,6 +2801,16 @@
                <layout class="QVBoxLayout" name="verticalLayout_4">
                 <item>
                  <widget class="CTerminalWindow" name="terminalWindowEvent"/>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="tabTerminal">
+               <attribute name="title">
+                <string>Терминал</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_5">
+                <item>
+                 <widget class="CTerminal" name="widgetTerminal" native="true"/>
                 </item>
                </layout>
               </widget>
@@ -2989,6 +2999,12 @@
    <class>CTerminalWindow</class>
    <extends>QPlainTextEdit</extends>
    <header>terminalwindow.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CTerminal</class>
+   <extends>QWidget</extends>
+   <header>cterminal.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

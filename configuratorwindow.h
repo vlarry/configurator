@@ -59,8 +59,6 @@
     #include "cdebuginfo.h"
     #include "cstatusinfo.h"
     #include "popup.h"
-    #include "tabwidget.h"
-    #include "dragwidget.h"
     #include "xlsx/xlsxdocument.h"
     #include "xlsx/xlsxworksheet.h"
     #include "xlsx/xlsxconditionalformatting.h"
@@ -740,7 +738,6 @@
             bool                             m_init; // флаг инициализации окна
             CModBus*                         m_modbus;
             CSerialPortSetting*              m_serialPortSettings_window;
-            CDragWidget*                     m_terminal_window;
             CIndicatorState*                 m_output_window;
             CMonitorPurpose*                 m_monitor_purpose_window;
             COutputAll*                      m_outputall_window;

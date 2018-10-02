@@ -7,7 +7,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_init(false),
     m_modbus(nullptr),
     m_serialPortSettings_window(nullptr),
-    m_terminal_window(nullptr),
     m_output_window(nullptr),
     m_monitor_purpose_window(nullptr),
     m_outputall_window(nullptr),
@@ -32,7 +31,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 
     m_modbus                    = new CModBus(this);
     m_serialPortSettings_window = new CSerialPortSetting;
-    m_terminal_window           = new CDragWidget(tr("Терминал"));
     m_output_window             = new CIndicatorState(this);
     m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
     m_outputall_window          = new COutputAll(tr("Все выходы"), this);
@@ -49,8 +47,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_debug_info            = new QTimer(this);
     m_timer_synchronization     = new QTimer(this);
     m_journal_timer             = new QTimer(this);
-
-    m_terminal_window->setWidget(new CTerminal(this));
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -117,9 +113,6 @@ ConfiguratorWindow::~ConfiguratorWindow()
     if(m_system_db.isOpen())
         m_system_db.close();
 
-    delete m_terminal_window;
-    m_terminal_window = nullptr;
-    
     delete m_modbus;
     m_modbus = nullptr;
     
@@ -2676,10 +2669,10 @@ void ConfiguratorWindow::errorConnect(const QString& error)
 //---------------------------------------------------
 void ConfiguratorWindow::terminalVisiblity(int state)
 {
-    if(state == Qt::Checked)
-        m_terminal_window->show();
-    else if(state == Qt::Unchecked)
-        m_terminal_window->hide();
+//    if(state == Qt::Checked)
+//        m_terminal_window->show();
+//    else if(state == Qt::Unchecked)
+//        m_terminal_window->hide();
     
     ui->chboxTerminal->setCheckState(static_cast<Qt::CheckState>(state));
 }
@@ -7815,7 +7808,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
     {
         setWindowState(Qt::WindowMaximized);
 
-        m_terminal_window->hide();
+        ui->tabWidgetMessage->setCurrentIndex(0);
         ui->stwgtMain->setCurrentIndex(0);
 
         m_version_window = new CVersionSoftware(this);
@@ -10695,13 +10688,7 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
-
-    CTerminal* terminal = qobject_cast<CTerminal*>(m_terminal_window->widget());
-
-    if(terminal)
-    {
-        connect(m_modbus, &CModBus::rawData, terminal, &CTerminal::appendData);
-        connect(terminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
-        connect(terminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
-    }
+    connect(m_modbus, &CModBus::rawData, ui->widgetTerminal, &CTerminal::appendData);
+    connect(ui->widgetTerminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(ui->widgetTerminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
 }
