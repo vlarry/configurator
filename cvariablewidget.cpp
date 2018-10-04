@@ -1,19 +1,48 @@
 #include "configuratorwindow.h"
 #include "cvariablewidget.h"
-//-----------------------------------------------------------------
-QColor CVariableWidget::m_background_color = QColor(250, 250, 250);
+//----------------------------------------------------------------------
+QColor CVariableWidget::m_background_item_color = QColor(250, 250, 250);
 //------------------------------------------------
 CVariableWidget::CVariableWidget(QWidget* parent):
     QWidget(parent),
-    m_variablelist(nullptr)
+    m_variablelist(nullptr),
+    m_header(nullptr),
+    m_header_title(""),
+    m_id(-1)
 {
+    initialize();
+}
+//----------------------------------------------------------------------
+CVariableWidget::CVariableWidget(const QString& title, QWidget* parent):
+    QWidget(parent),
+    m_variablelist(nullptr),
+    m_header(nullptr),
+    m_header_title(title),
+    m_id(-1)
+{
+    initialize();
+}
+//--------------------------------
+void CVariableWidget::initialize()
+{
+    QVBoxLayout* vlayout = new QVBoxLayout;
+    m_header = new QLabel(m_header_title);
+    QFont font = m_header->font();
+
+    font.setBold(true);
+    font.setPointSize(12);
+
     m_variablelist = new CVaribaleList(this);
 
-    QVBoxLayout* vlayout = new QVBoxLayout(this);
+    m_header->setAutoFillBackground(true);
+    m_header->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    m_header->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_header->setFont(font);
 
     vlayout->setMargin(0);
     vlayout->setStretch(0, 0);
     vlayout->setSpacing(0);
+    vlayout->addWidget(m_header);
     vlayout->addWidget(m_variablelist);
 
     setLayout(vlayout);
@@ -45,6 +74,24 @@ void CVariableWidget::setData(const QVector<quint16>& data)
 
         lineEdit->setText(QLocale().system().toString(cell_val.value, 'g', 6));
     }
+}
+//--------------------------------------------------
+void CVariableWidget::setTitle(const QString& title)
+{
+    m_header_title = title;
+    m_header->setText(title);
+}
+//---------------------------------
+void CVariableWidget::setID(int id)
+{
+    m_id = id;
+}
+//------------------------------------------------------------------------
+void CVariableWidget::setHeaderBackground(const QLinearGradient& gradient)
+{
+    QPalette tpalette = m_header->palette();
+    tpalette.setBrush(QPalette::Window, QBrush(gradient));
+    m_header->setPalette(tpalette);
 }
 //------------------------------------------------
 void CVariableWidget::init(QSqlDatabase& database)
@@ -88,6 +135,11 @@ int CVariableWidget::cellCount() const
         return m_line_var.count();
 
     return -1;
+}
+//-----------------------------
+int CVariableWidget::id() const
+{
+    return m_id;
 }
 //------------------------------------------------------
 bool CVariableWidget::loadGroups(QSqlDatabase& database)
@@ -257,7 +309,7 @@ int CVariableWidget::insertColumnLabels(const QStringList& list, int row)
         QFont font = item->font();
         font.setBold(true);
         item->setTextAlignment(Qt::AlignCenter);
-        item->setBackground(QBrush(m_background_color));
+        item->setBackground(QBrush(m_background_item_color));
         item->setFont(font);
         m_variablelist->setItem(row, col, item);
     }
@@ -295,7 +347,7 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
                 widgetVar1->setLayout(layoutVar1);
                 widgetVar1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
                 QTableWidgetItem* itemWidgetVar1 = new QTableWidgetItem;
-                itemWidgetVar1->setBackground(QBrush(m_background_color));
+                itemWidgetVar1->setBackground(QBrush(m_background_item_color));
                 m_variablelist->setItem(row + row_index, 2, itemWidgetVar1);
                 m_variablelist->setCellWidget(row + row_index, 2, widgetVar1);
 
@@ -307,14 +359,14 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
         {
             QTableWidgetItem* item = new QTableWidgetItem(data.var1.name);
             item->setTextAlignment(Qt::AlignCenter);
-            item->setBackground(QBrush(m_background_color));
+            item->setBackground(QBrush(m_background_item_color));
             m_variablelist->setItem(row + row_index, 2, item);
         }
         else
         {
             QTableWidgetItem* item = new QTableWidgetItem;
             item->setTextAlignment(Qt::AlignCenter);
-            item->setBackground(QBrush(m_background_color));
+            item->setBackground(QBrush(m_background_item_color));
             m_variablelist->setItem(row + row_index, 2, item);
         }
 
@@ -338,7 +390,7 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
             widgetVar2->setLayout(layoutVar2);
             widgetVar2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
             QTableWidgetItem* itemWidgetVar2 = new QTableWidgetItem;
-            itemWidgetVar2->setBackground(QBrush(m_background_color));
+            itemWidgetVar2->setBackground(QBrush(m_background_item_color));
             m_variablelist->setItem(row + row_index, 4, itemWidgetVar2);
             m_variablelist->setCellWidget(row + row_index, 4, widgetVar2);
 
@@ -375,16 +427,16 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
         itemIndex->setTextAlignment(Qt::AlignCenter);
         itemName->setTextAlignment(Qt::AlignCenter);
         itemUnit->setTextAlignment(Qt::AlignCenter);
-        itemIndex->setBackground(QBrush(m_background_color));
-        itemName->setBackground(QBrush(m_background_color));
-        itemUnit->setBackground(QBrush(m_background_color));
+        itemIndex->setBackground(QBrush(m_background_item_color));
+        itemName->setBackground(QBrush(m_background_item_color));
+        itemUnit->setBackground(QBrush(m_background_item_color));
 
         m_variablelist->setItem(row + row_index, 0, itemIndex);
         m_variablelist->setItem(row + row_index, 1, itemName);
         m_variablelist->setItem(row + row_index, 5, itemUnit);
 
         QTableWidgetItem* itemSeparator = new QTableWidgetItem;
-        itemSeparator->setBackground(QBrush(m_background_color));
+        itemSeparator->setBackground(QBrush(m_background_item_color));
 
         QWidget* widgetSeparator = new QWidget;
         QLabel* labelSeparator = new QLabel(separator_str, m_variablelist);

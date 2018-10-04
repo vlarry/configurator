@@ -77,7 +77,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initDebugInfo();
     initWordStatus();
 
-    ui->variableWidget->init(m_system_db); // инициализация списка расчетных величин
+    // инициализация списка расчетных величин
+    ui->variableWidget->setTitle(tr("Панель измерений"));
+    ui->variableWidget->init(m_system_db);
     ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
     ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
     ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
@@ -7899,12 +7901,13 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         gradient.setColorAt(1, QColor(190, 190, 190));
 
         ui->labelMenuDevice->setAutoFillBackground(true);
-        ui->labelVariablePanel->setAutoFillBackground(true);
+
+        ui->variableWidget->setHeaderBackground(gradient);
 
         QPalette p(ui->labelMenuDevice->palette());
         p.setBrush(QPalette::Window, QBrush(gradient));
         ui->labelMenuDevice->setPalette(p);
-        ui->labelVariablePanel->setPalette(p);
+//        ui->labelVariablePanel->setPalette(p);
 
         m_init = true;
     }
@@ -9912,7 +9915,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
             if(!ui->variableWidget->isHidden())
             {
                 ui->variableWidget->hide();
-                ui->labelVariablePanel->hide();
+//                ui->labelVariablePanel->hide();
                 ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
             }
         }
@@ -9921,7 +9924,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
             if(ui->variableWidget->isHidden())
             {
                 ui->variableWidget->show();
-                ui->labelVariablePanel->show();
+//                ui->labelVariablePanel->show();
                 ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
             }
         }

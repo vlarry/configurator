@@ -42,16 +42,22 @@
 
         public:
             explicit CVariableWidget(QWidget* parent = nullptr);
+            explicit CVariableWidget(const QString& title, QWidget* parent = nullptr);
 
             void setData(const QVector<quint16>& data);
+            void setTitle(const QString& title);
+            void setID(int id);
+            void setHeaderBackground(const QLinearGradient& gradient);
             void init(QSqlDatabase& database);
             int  cellCount() const;
+            int  id() const;
 
         signals:
 
         public slots:
 
         private:
+            void initialize();
             bool loadGroups(QSqlDatabase& database);
             QStringList loadColumns(QSqlDatabase& database, int group_id);
             var_list_t loadRows(QSqlDatabase& database, int group_id);
@@ -63,9 +69,13 @@
 
         private:
             CVaribaleList*         m_variablelist;
+            QLabel*                m_header;
             QStringList            m_variables;
             QMap<int, var_group_t> m_groups;
             QVector<QLineEdit*>    m_line_var;
-            static QColor          m_background_color;
+            static QColor          m_background_item_color;
+            static QColor          m_background_header_color;
+            QString                m_header_title;
+            int                    m_id;
     };
 #endif // CVARIABLEWIDGET_H
