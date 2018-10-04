@@ -77,15 +77,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initDebugInfo();
     initWordStatus();
 
-    // инициализация списка расчетных величин
-    ui->variableWidget->setTitle(tr("Панель измерений"));
-    ui->variableWidget->init(m_system_db);
-    ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
-    ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
-    ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
-    ui->pushButtonVariableCtrl->setDir(CDockPanelItemCtrl::Right);
-    ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::Bottom);
-
     refreshSerialPort();
 
     setWindowFlag(Qt::FramelessWindowHint);
@@ -2675,18 +2666,6 @@ void ConfiguratorWindow::terminalVisiblity(int state)
 //        m_terminal_window->show();
 //    else if(state == Qt::Unchecked)
 //        m_terminal_window->hide();
-
-    CVariableWidget* varWidget = qobject_cast<CVariableWidget*>(ui->dockWidgetVariable->widget("VAR"));
-
-    if(varWidget)
-    {
-        QWidget* wgt = new QWidget;
-        QVBoxLayout* l = new QVBoxLayout;
-
-        l->addWidget(varWidget);
-        wgt->setLayout(l);
-        wgt->show();
-    }
     
     ui->chboxTerminal->setCheckState(static_cast<Qt::CheckState>(state));
 }
@@ -4880,14 +4859,16 @@ void ConfiguratorWindow::initIndicatorStates()
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
-    if(values.count()/2 == ui->variableWidget->cellCount())
+    CVariableWidget* varWidget = qobject_cast<CVariableWidget*>(ui->dockWidgetVariable->widget("VARIABLE"));
+
+    if(varWidget)
     {
-        ui->variableWidget->setData(values);
+        varWidget->setData(values);
     }
 
     m_calculate_buffer.clear();
 }
-//-----------------------------------------------------------
+//-------------------------------------------------------------
 void ConfiguratorWindow::displayDateTime(CModBusDataUnit& unit)
 {
     if(unit.count() != 4)
@@ -6767,10 +6748,10 @@ void ConfiguratorWindow::menuPanelCtrl()
 //------------------------------------------
 void ConfiguratorWindow::variablePanelCtrl()
 {
-    if(ui->variableDockPanel->isHidden())
-        ui->variableDockPanel->show();
-    else
-        ui->variableDockPanel->hide();
+//    if(ui->variableDockPanel->isHidden())
+//        ui->variableDockPanel->show();
+//    else
+//        ui->variableDockPanel->hide();
 }
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
@@ -7014,28 +6995,28 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
             }
         }
-        else if(button == ui->pushButtonVariableCtrl)
+        else if(button == ui->dockWidgetVariable->control())
         {
-            if(ui->variableDockPanel->width() > ui->pushButtonVariableCtrl->minimumWidth())
+            if(ui->dockWidgetVariable->width() > ui->dockWidgetVariable->control()->minimumWidth())
             {
                 int w = sizes[2];
 
-                ui->variableDockPanel->setProperty("WIDTH", w);
+                ui->dockWidgetVariable->setProperty("WIDTH", w);
 
-                sizes[2] = ui->pushButtonVariableCtrl->minimumWidth();
+                sizes[2] = ui->dockWidgetVariable->control()->minimumWidth();
                 sizes[1] = sizes[1] + (w - sizes[2]);
 
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
             }
-            else if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
+            else if(ui->dockWidgetVariable->width() == ui->dockWidgetVariable->control()->minimumWidth())
             {
                 int w        = sizes[2];
-                int newWidth = ui->variableDockPanel->property("WIDTH").toInt();
+                int newWidth = ui->dockWidgetVariable->property("WIDTH").toInt();
 
                 if(newWidth <= 0)
-                    newWidth = ui->variableDockPanel->sizeHint().width();
+                    newWidth = ui->dockWidgetVariable->sizeHint().width();
 
                 sizes[2] = newWidth;
                 sizes[1] = sizes[1] - (newWidth - w);
@@ -7845,25 +7826,29 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
 
         ui->comboBoxCommunicationParity->setCurrentIndex(1);
 
-        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel), false);
-        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->variableDockPanel), false);
-        ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
-
-        ui->variableDockPanel->setMinimumWidth(ui->pushButtonVariableCtrl->minimumWidth());
-        ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
-        ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
-
-        loadSettings();
-
         QDateTime dt(QDateTime::currentDateTime());
 
         ui->dateEdit->setDate(dt.date());
         ui->timeEdit->setTime(dt.time());
         ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
 
+        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel), false);
+        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->dockWidgetVariable), false);
+        ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
+
+        ui->dockWidgetVariable->setMinimumWidth(ui->dockWidgetVariable->control()->minimumWidth());
+        ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
+        ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
+
+        ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
+        ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
+        ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
+        ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::Bottom);
+        ui->dockWidgetVariable->control()->setDir(CDockPanelItemCtrl::Right);
+
         // управление отображением панелей
         panelVisibleCtrl(ui->centralWgt);
-        panelVisibleCtrl(ui->variableDockPanel);
+        panelVisibleCtrl(ui->dockWidgetVariable);
         panelVisibleCtrl(ui->framePanelMessage);
 
         // шрифт для панели меню
@@ -7880,13 +7865,14 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
             ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
         }
 
-        if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
+        if(ui->dockWidgetVariable->control() &&
+           ui->dockWidgetVariable->width() == ui->dockWidgetVariable->control()->minimumWidth())
         {
-            ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
+            ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Close);
         }
         else
         {
-            ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
+            ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Open);
         }
 
         if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
@@ -7914,18 +7900,20 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
 
         ui->labelMenuDevice->setAutoFillBackground(true);
 
-        ui->variableWidget->setHeaderBackground(gradient);
-
         QPalette p(ui->labelMenuDevice->palette());
         p.setBrush(QPalette::Window, QBrush(gradient));
         ui->labelMenuDevice->setPalette(p);
 
         // инициализация панели расчетных величин
-        CVariableWidget* varWidget = new CVariableWidget(tr("Расчетные величины"), ui->dockWidgetVariable);
+        CVariableWidget* varWidget = new CVariableWidget(tr("Панель измерений"), ui->dockWidgetVariable);
         varWidget->init(m_system_db);
         varWidget->setHeaderBackground(gradient);
-        varWidget->setProperty("TYPE", "VAR");
+        varWidget->setProperty("TYPE", "VARIABLE");
         ui->dockWidgetVariable->addWidget(varWidget);
+
+//        ui->dockWidgetVariable->setVisible(true);
+
+        loadSettings();
 
         m_init = true;
     }
@@ -8168,10 +8156,16 @@ void ConfiguratorWindow::loadSettings()
         m_settings->beginGroup("settings");
             ui->checkBoxPanelMessage->setChecked(m_settings->value("downpanel_state").toBool());
             ui->menuDeviceDockPanel->setProperty("WIDTH", m_settings->value("panel_menu_width", 100).toInt());
-            ui->variableDockPanel->setProperty("WIDTH", m_settings->value("panel_variable_width", 100).toInt());
+            m_settings->beginGroup("variable_widget");
+                ui->dockWidgetVariable->setProperty("WIDTH", m_settings->value("width", 100).toInt());
+                ui->dockWidgetVariable->setVisibleContent(m_settings->value("visible").toBool());
+            m_settings->endGroup();
             ui->framePanelMessage->setProperty("HEIGHT", m_settings->value("panel_message_height", 100).toInt());
         m_settings->endGroup();
     }
+
+    ui->dockWidgetVariable->control()->setState((ui->dockWidgetVariable->isContentHidden()?CDockPanelItemCtrl::Close:
+                                                                                           CDockPanelItemCtrl::Open));
 
     if(baudrate != -1)
     {
@@ -8219,7 +8213,10 @@ void ConfiguratorWindow::saveSettings()
         m_settings->beginGroup("settings");
             m_settings->setValue("downpanel_state", ui->checkBoxPanelMessage->isChecked());
             m_settings->setValue("panel_menu_width", ui->menuDeviceDockPanel->property("WIDTH").toInt());
-            m_settings->setValue("panel_variable_width", ui->variableDockPanel->property("WIDTH").toInt());
+                m_settings->beginGroup("variable_widget");
+                    m_settings->setValue("width", ui->dockWidgetVariable->property("WIDTH").toInt());
+                    m_settings->setValue("visible", !ui->dockWidgetVariable->isContentHidden());
+                m_settings->endGroup();
             m_settings->setValue("panel_message_height", ui->framePanelMessage->property("HEIGHT").toInt());
         m_settings->endGroup();
     }
@@ -9926,24 +9923,23 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
 //--------------------------------------------------------
 void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
 {
-    if(widget == ui->variableDockPanel)
+    if(widget == ui->dockWidgetVariable)
     {
-        if(ui->variableDockPanel->width() == ui->pushButtonVariableCtrl->minimumWidth())
+        if(ui->dockWidgetVariable->control() &&
+           ui->dockWidgetVariable->width() == ui->dockWidgetVariable->control()->minimumWidth())
         {
-            if(!ui->variableWidget->isHidden())
+            if(!ui->dockWidgetVariable->isContentHidden())
             {
-                ui->variableWidget->hide();
-//                ui->labelVariablePanel->hide();
-                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Close);
+                ui->dockWidgetVariable->hideContent();
+                ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Close);
             }
         }
         else
         {
-            if(ui->variableWidget->isHidden())
+            if(ui->dockWidgetVariable->isContentHidden())
             {
-                ui->variableWidget->show();
-//                ui->labelVariablePanel->show();
-                ui->pushButtonVariableCtrl->setState(CDockPanelItemCtrl::Open);
+                ui->dockWidgetVariable->showContent();
+                ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Open);
             }
         }
     }
@@ -10669,7 +10665,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->splitterPanelMessage, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     connect(ui->pushButtonMenuDeviceCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(ui->pushButtonPanelMessage, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
-    connect(ui->pushButtonVariableCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
+    connect(ui->dockWidgetVariable->control(), &CDockPanelItemCtrl::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(m_monitor_purpose_window, &CMonitorPurpose::buttonUpdate, this,
             &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
     connect(m_outputall_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
