@@ -74,7 +74,8 @@ SOURCES += \
         classes/user/userdialog.cpp \
         classes/interval/intervaldialog.cpp \
         classes/widget/widget.cpp \
-        classes/terminal/terminalwindow.cpp
+        classes/terminal/terminalwindow.cpp \
+    classes/widget/dockwidget.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -125,7 +126,8 @@ HEADERS += \
         classes/user/userdialog.h \
         classes/interval/intervaldialog.h \
         classes/widget/widget.h \
-        classes/terminal/terminalwindow.h
+        classes/terminal/terminalwindow.h \
+    classes/widget/dockwidget.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -151,7 +153,8 @@ FORMS += \
         classes/menubar/widgetmenu.ui \
         classes/calibrationwidget/calibrationwidget.ui \
         classes/user/userdialog.ui \
-        classes/interval/intervaldialog.ui
+        classes/interval/intervaldialog.ui \
+    classes/widget/dockwidget.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \

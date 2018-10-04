@@ -1780,6 +1780,16 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="CDockWidget" name="dockWidgetVariable" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="centralWgt" native="true">
@@ -2969,6 +2979,12 @@
    <class>CTerminal</class>
    <extends>QWidget</extends>
    <header>cterminal.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CDockWidget</class>
+   <extends>QWidget</extends>
+   <header>dockwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

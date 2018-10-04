@@ -2675,6 +2675,18 @@ void ConfiguratorWindow::terminalVisiblity(int state)
 //        m_terminal_window->show();
 //    else if(state == Qt::Unchecked)
 //        m_terminal_window->hide();
+
+    CVariableWidget* varWidget = qobject_cast<CVariableWidget*>(ui->dockWidgetVariable->widget("VAR"));
+
+    if(varWidget)
+    {
+        QWidget* wgt = new QWidget;
+        QVBoxLayout* l = new QVBoxLayout;
+
+        l->addWidget(varWidget);
+        wgt->setLayout(l);
+        wgt->show();
+    }
     
     ui->chboxTerminal->setCheckState(static_cast<Qt::CheckState>(state));
 }
@@ -7907,7 +7919,13 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         QPalette p(ui->labelMenuDevice->palette());
         p.setBrush(QPalette::Window, QBrush(gradient));
         ui->labelMenuDevice->setPalette(p);
-//        ui->labelVariablePanel->setPalette(p);
+
+        // инициализация панели расчетных величин
+        CVariableWidget* varWidget = new CVariableWidget(tr("Расчетные величины"), ui->dockWidgetVariable);
+        varWidget->init(m_system_db);
+        varWidget->setHeaderBackground(gradient);
+        varWidget->setProperty("TYPE", "VAR");
+        ui->dockWidgetVariable->addWidget(varWidget);
 
         m_init = true;
     }
