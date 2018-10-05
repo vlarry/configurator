@@ -42,7 +42,6 @@
 
         public:
             explicit CVariableWidget(QWidget* parent = nullptr);
-            explicit CVariableWidget(const QString& title, QWidget* parent = nullptr);
 
             void setData(const QVector<quint16>& data);
             void setTitle(const QString& title);
@@ -69,13 +68,10 @@
 
         private:
             CVaribaleList*         m_variablelist;
-            QLabel*                m_header;
             QStringList            m_variables;
             QMap<int, var_group_t> m_groups;
             QVector<QLineEdit*>    m_line_var;
-            static QColor          m_background_item_color;
-            static QColor          m_background_header_color;
-            QString                m_header_title;
             int                    m_id;
+            static QColor          m_background_item_color;
     };
 #endif // CVARIABLEWIDGET_H

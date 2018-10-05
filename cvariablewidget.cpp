@@ -6,18 +6,6 @@ QColor CVariableWidget::m_background_item_color = QColor(250, 250, 250);
 CVariableWidget::CVariableWidget(QWidget* parent):
     QWidget(parent),
     m_variablelist(nullptr),
-    m_header(nullptr),
-    m_header_title(""),
-    m_id(-1)
-{
-    initialize();
-}
-//----------------------------------------------------------------------
-CVariableWidget::CVariableWidget(const QString& title, QWidget* parent):
-    QWidget(parent),
-    m_variablelist(nullptr),
-    m_header(nullptr),
-    m_header_title(title),
     m_id(-1)
 {
     initialize();
@@ -26,23 +14,12 @@ CVariableWidget::CVariableWidget(const QString& title, QWidget* parent):
 void CVariableWidget::initialize()
 {
     QVBoxLayout* vlayout = new QVBoxLayout;
-    m_header = new QLabel(m_header_title);
-    QFont font = m_header->font();
-
-    font.setBold(true);
-    font.setPointSize(12);
 
     m_variablelist = new CVaribaleList(this);
-
-    m_header->setAutoFillBackground(true);
-    m_header->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    m_header->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    m_header->setFont(font);
 
     vlayout->setMargin(0);
     vlayout->setStretch(0, 0);
     vlayout->setSpacing(0);
-    vlayout->addWidget(m_header);
     vlayout->addWidget(m_variablelist);
 
     setLayout(vlayout);
@@ -75,23 +52,10 @@ void CVariableWidget::setData(const QVector<quint16>& data)
         lineEdit->setText(QLocale().system().toString(cell_val.value, 'g', 6));
     }
 }
-//--------------------------------------------------
-void CVariableWidget::setTitle(const QString& title)
-{
-    m_header_title = title;
-    m_header->setText(title);
-}
 //---------------------------------
 void CVariableWidget::setID(int id)
 {
     m_id = id;
-}
-//------------------------------------------------------------------------
-void CVariableWidget::setHeaderBackground(const QLinearGradient& gradient)
-{
-    QPalette tpalette = m_header->palette();
-    tpalette.setBrush(QPalette::Window, QBrush(gradient));
-    m_header->setPalette(tpalette);
 }
 //------------------------------------------------
 void CVariableWidget::init(QSqlDatabase& database)

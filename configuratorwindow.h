@@ -67,6 +67,7 @@
     #include "intervaldialog.h"
     #include "widget.h"
     #include "terminalwindow.h"
+    #include "containerwidget.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов

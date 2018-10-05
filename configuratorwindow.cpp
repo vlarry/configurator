@@ -7905,13 +7905,14 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         ui->labelMenuDevice->setPalette(p);
 
         // инициализация панели расчетных величин
-        CVariableWidget* varWidget = new CVariableWidget(tr("Панель измерений"), ui->dockWidgetVariable);
+        CVariableWidget* varWidget = new CVariableWidget(ui->dockWidgetVariable);
         varWidget->init(m_system_db);
-        varWidget->setHeaderBackground(gradient);
         varWidget->setProperty("TYPE", "VARIABLE");
-        ui->dockWidgetVariable->addWidget(varWidget);
-
-//        ui->dockWidgetVariable->setVisible(true);
+        CContainerWidget* containerWidget = new CContainerWidget(tr("Панель измерений"), varWidget,
+                                                                 CContainerWidget::AnchorType::AnchorVariable,
+                                                                 ui->dockWidgetVariable);
+        containerWidget->setHeaderBackground(QColor(190, 190, 190));
+        ui->dockWidgetVariable->addWidget(containerWidget);
 
         loadSettings();
 
