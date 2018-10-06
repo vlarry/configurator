@@ -4859,12 +4859,12 @@ void ConfiguratorWindow::initIndicatorStates()
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
-    CVariableWidget* varWidget = qobject_cast<CVariableWidget*>(ui->dockWidgetVariable->widget("VARIABLE"));
+//    CVariableWidget* varWidget = qobject_cast<CVariableWidget*>(ui->dockWidgetVariable->widget("VARIABLE"));
 
-    if(varWidget)
-    {
-        varWidget->setData(values);
-    }
+//    if(varWidget)
+//    {
+//        varWidget->setData(values);
+//    }
 
     m_calculate_buffer.clear();
 }
@@ -7912,7 +7912,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
                                                                  CContainerWidget::AnchorType::AnchorVariable,
                                                                  ui->dockWidgetVariable);
         containerWidget->setHeaderBackground(QColor(190, 190, 190));
-        ui->dockWidgetVariable->addWidget(containerWidget);
+        ui->dockWidgetVariable->addContainer(containerWidget);
 
         loadSettings();
 
