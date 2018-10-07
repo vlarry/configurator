@@ -6,6 +6,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui(new Ui::ConfiguratorWindow),
     m_init(false),
     m_modbus(nullptr),
+    m_treeWidgetDeviceMenu(nullptr),
     m_serialPortSettings_window(nullptr),
     m_output_window(nullptr),
     m_monitor_purpose_window(nullptr),
@@ -7844,6 +7845,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
         ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
         ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::Bottom);
+        ui->dockWidgetDeviceMenu->control()->setDir(CDockPanelItemCtrl::Left);
         ui->dockWidgetVariable->control()->setDir(CDockPanelItemCtrl::Right);
 
         // управление отображением панелей
@@ -7913,6 +7915,15 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
                                                                  ui->dockWidgetVariable);
         containerWidget->setHeaderBackground(QColor(190, 190, 190));
         ui->dockWidgetVariable->addContainer(containerWidget);
+
+        // инициализация панели меню
+        m_treeWidgetDeviceMenu = new QTreeWidget(this);
+        m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
+        CContainerWidget* containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
+                                                                           CContainerWidget::AnchorType::AnchorDeviceMenu,
+                                                                           ui->dockWidgetDeviceMenu);
+        containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
+        ui->dockWidgetDeviceMenu->addContainer(containerWidgetDeviceMenu);
 
         loadSettings();
 

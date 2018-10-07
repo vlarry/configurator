@@ -118,7 +118,11 @@ void CDockWidget::moveItem(QMouseEvent* event, int id)
 
             if(tcontainer)
             {
-                addContainer(tcontainer);
+                QWidget* wgt = static_cast<QWidget*>(parent()->parent()->parent());
+                QPoint pos = wgt->mapFromParent(QCursor::pos());
+                tcontainer->setParent(wgt);
+                tcontainer->show();
+                tcontainer->move(pos);
             }
         }
     }

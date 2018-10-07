@@ -20,6 +20,7 @@
             enum class AnchorType
             {
                 AnchorFree,
+                AnchorDeviceMenu,
                 AnchorVariable
             };
 

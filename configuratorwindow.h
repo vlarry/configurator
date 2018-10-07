@@ -738,6 +738,7 @@
             Ui::ConfiguratorWindow*          ui;
             bool                             m_init; // флаг инициализации окна
             CModBus*                         m_modbus;
+            QTreeWidget*                     m_treeWidgetDeviceMenu;
             CSerialPortSetting*              m_serialPortSettings_window;
             CIndicatorState*                 m_output_window;
             CMonitorPurpose*                 m_monitor_purpose_window;
