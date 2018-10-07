@@ -92,6 +92,7 @@ void CDockWidget::dropEvent(QDropEvent* event)
     if(container)
     {
         event->accept();
+        container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
         addContainer(container);
     }
 }

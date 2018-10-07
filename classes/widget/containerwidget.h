@@ -20,8 +20,7 @@
             enum class AnchorType
             {
                 AnchorFree,
-                AnchorDeviceMenu,
-                AnchorVariable
+                AnchorDockWidget
             };
 
         public:
@@ -30,8 +29,8 @@
             ~CContainerWidget();
             AnchorType anchor() const;
             QWidget* widget();
-            void buttonHide();
-            void buttonShow();
+            void functionButtonHide();
+            void functionButtonShow();
             QColor backgroundColorHeader() const;
             QString headerTitle() const;
             int  id() const;

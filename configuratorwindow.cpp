@@ -7911,7 +7911,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         varWidget->init(m_system_db);
         varWidget->setProperty("TYPE", "VARIABLE");
         CContainerWidget* containerWidget = new CContainerWidget(tr("Панель измерений"), varWidget,
-                                                                 CContainerWidget::AnchorType::AnchorVariable,
+                                                                 CContainerWidget::AnchorType::AnchorDockWidget,
                                                                  ui->dockWidgetVariable);
         containerWidget->setSuperParent(this);
         containerWidget->setHeaderBackground(QColor(190, 190, 190));
@@ -7921,7 +7921,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         m_treeWidgetDeviceMenu = new QTreeWidget(this);
         m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
         CContainerWidget* containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
-                                                                           CContainerWidget::AnchorType::AnchorDeviceMenu,
+                                                                           CContainerWidget::AnchorType::AnchorDockWidget,
                                                                            ui->dockWidgetDeviceMenu);
         containerWidgetDeviceMenu->setSuperParent(this);
         containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));

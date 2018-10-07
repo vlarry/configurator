@@ -18,12 +18,6 @@
         Q_OBJECT
 
         public:
-            enum class WidgetType
-            {
-                WidgetVariable
-            };
-
-        public:
             explicit CDockWidget(QWidget* parent = nullptr);
             ~CDockWidget();
             CDockPanelItemCtrl* control();

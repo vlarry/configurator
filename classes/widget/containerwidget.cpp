@@ -11,7 +11,10 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     m_background_color(QColor())
 {
     ui->setupUi(this);
-    ui->toolButtonHeader->hide();
+    ui->toolButtonHeaderFunction->hide();
+    ui->toolButtonHeaderMinimize->hide();
+    ui->toolButtonHeaderExpand->hide();
+    ui->toolButtonHeaderClose->hide();
     ui->labelHeader->setText(title);
     ui->labelHeader->setAlignment(Qt::AlignCenter);
     ui->labelHeader->setAutoFillBackground(true);
@@ -24,6 +27,8 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
 
     setWidget(contentWidget);
     setAttribute(Qt:: WA_DeleteOnClose);
+
+    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::hide);
 }
 //-----------------------------------
 CContainerWidget::~CContainerWidget()
@@ -40,15 +45,15 @@ QWidget* CContainerWidget::widget()
 {
     return m_contentWidget;
 }
-//---------------------------------
-void CContainerWidget::buttonHide()
+//-----------------------------------------
+void CContainerWidget::functionButtonHide()
 {
-    ui->toolButtonHeader->hide();
+    ui->toolButtonHeaderFunction->hide();
 }
-//---------------------------------
-void CContainerWidget::buttonShow()
+//-----------------------------------------
+void CContainerWidget::functionButtonShow()
 {
-    ui->toolButtonHeader->show();
+    ui->toolButtonHeaderFunction->show();
 }
 //----------------------------------------------------
 QColor CContainerWidget::backgroundColorHeader() const
@@ -100,6 +105,19 @@ void CContainerWidget::setHeaderBackground(const QColor& backgroundColor)
 void CContainerWidget::setAnchor(CContainerWidget::AnchorType anchor)
 {
     m_anchor = anchor;
+
+    if(m_anchor == AnchorType::AnchorFree)
+    {
+        ui->toolButtonHeaderMinimize->show();
+        ui->toolButtonHeaderExpand->show();
+        ui->toolButtonHeaderClose->show();
+    }
+    else
+    {
+        ui->toolButtonHeaderMinimize->hide();
+        ui->toolButtonHeaderExpand->hide();
+        ui->toolButtonHeaderClose->hide();
+    }
 }
 //----------------------------------
 void CContainerWidget::setID(int id)
@@ -165,6 +183,7 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
                         {
                             QPoint pos = m_superParent->mapFromParent(QCursor::pos());
                             tcontainer->setParent(m_superParent);
+                            tcontainer->setAnchor(AnchorType::AnchorFree);
                             tcontainer->show();
                             tcontainer->move(pos);
                         }
