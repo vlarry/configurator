@@ -26,7 +26,6 @@
         public:
             explicit CDockWidget(QWidget* parent = nullptr);
             ~CDockWidget();
-            void addContainer(CContainerWidget* wgt);
             CDockPanelItemCtrl* control();
             CContainerWidget *container(int id);
             void hideContent();
@@ -35,8 +34,8 @@
             void setVisibleContent(bool state);
 
         public slots:
-            void pressItem(QMouseEvent* event);
-            void moveItem(QMouseEvent* event, int id);
+            void addContainer(CContainerWidget* wgt);
+            void removeItem(int id);
 
         protected:
             void dragEnterEvent(QDragEnterEvent* event);
@@ -44,6 +43,5 @@
 
         private:
             Ui::CDockWidget* ui;
-            QPoint           m_pos;
     };
 #endif // DOCKWIDGET_H

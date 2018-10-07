@@ -3,8 +3,7 @@
 //----------------------------------------
 CDockWidget::CDockWidget(QWidget* parent):
     QWidget(parent),
-    ui(new Ui::CDockWidget),
-    m_pos(-1, -1)
+    ui(new Ui::CDockWidget)
 {
     ui->setupUi(this);
     ui->gridLayoutContainer->setColumnStretch(0, 1);
@@ -28,8 +27,7 @@ void CDockWidget::addContainer(CContainerWidget* container)
         container->setVisible(true);
         ui->gridLayoutContainer->addWidget(container, row, 0);
 
-        connect(container, &CContainerWidget::containerClicked, this, &CDockWidget::pressItem);
-        connect(container, &CContainerWidget::containerMoved, this, &CDockWidget::moveItem);
+        connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
     }
 }
 //----------------------------------------
@@ -73,59 +71,10 @@ void CDockWidget::setVisibleContent(bool state)
     else
         hideContent();
 }
-//---------------------------------------------
-void CDockWidget::pressItem(QMouseEvent* event)
+//----------------------------------
+void CDockWidget::removeItem(int id)
 {
-    if(event->button() == Qt::LeftButton)
-    {
-        m_pos = event->pos();
-    }
-}
-//----------------------------------------------------
-void CDockWidget::moveItem(QMouseEvent* event, int id)
-{
-    if((event->buttons() & Qt::LeftButton) && (QApplication::startDragDistance() <= (event->pos() - m_pos).manhattanLength()))
-    {
-        CContainerWidget* currentContainer = container(id);
-
-        if(!currentContainer)
-            return;
-
-        CContainerWidget* copyContainer = new CContainerWidget(currentContainer->headerTitle(), currentContainer->widget(),
-                                                               currentContainer->anchor(), this);
-        copyContainer->setHeaderBackground(currentContainer->backgroundColorHeader());
-        copyContainer->setGeometry(copyContainer->x(), copyContainer->y(), currentContainer->width(), currentContainer->height());
-
-        QDrag* drag = new QDrag(this);
-        QMimeData* mimedata = new QMimeData;
-
-        mimedata->setProperty("CONTAINER", QVariant::fromValue(copyContainer));
-        mimedata->setData("application/widget_container", QByteArray());
-        drag->setMimeData(mimedata);
-
-        QPixmap pixmap(copyContainer->size());
-        copyContainer->render(&pixmap);
-        drag->setPixmap(pixmap);
-
-        currentContainer->close();
-        ui->gridLayoutContainer->removeItem(ui->gridLayoutContainer->takeAt(id));
-
-        Qt::DropAction result = drag->exec(Qt::MoveAction);
-
-        if(result == Qt::IgnoreAction)
-        {
-            CContainerWidget* tcontainer = mimedata->property("CONTAINER").value<CContainerWidget*>();
-
-            if(tcontainer)
-            {
-                QWidget* wgt = static_cast<QWidget*>(parent()->parent()->parent());
-                QPoint pos = wgt->mapFromParent(QCursor::pos());
-                tcontainer->setParent(wgt);
-                tcontainer->show();
-                tcontainer->move(pos);
-            }
-        }
-    }
+    ui->gridLayoutContainer->removeItem(ui->gridLayoutContainer->takeAt(id));
 }
 //------------------------------------------------------
 void CDockWidget::dragEnterEvent(QDragEnterEvent* event)

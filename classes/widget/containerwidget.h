@@ -35,10 +35,12 @@
             QColor backgroundColorHeader() const;
             QString headerTitle() const;
             int  id() const;
+            QWidget* superParent() const;
             void setWidget(QWidget* wgt);
             void setHeaderBackground(const QColor& backgroundColor);
             void setAnchor(AnchorType anchor);
             void setID(int id);
+            void setSuperParent(QWidget *parent);
 
         signals:
             void removeContainer(int);
@@ -50,6 +52,7 @@
 
         private:
             Ui::CContainerWidget* ui;
+            QWidget*              m_superParent;
             QWidget*              m_contentWidget;
             AnchorType            m_anchor;
             QPoint                m_pos;

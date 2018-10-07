@@ -7913,6 +7913,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         CContainerWidget* containerWidget = new CContainerWidget(tr("Панель измерений"), varWidget,
                                                                  CContainerWidget::AnchorType::AnchorVariable,
                                                                  ui->dockWidgetVariable);
+        containerWidget->setSuperParent(this);
         containerWidget->setHeaderBackground(QColor(190, 190, 190));
         ui->dockWidgetVariable->addContainer(containerWidget);
 
@@ -7922,6 +7923,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         CContainerWidget* containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
                                                                            CContainerWidget::AnchorType::AnchorDeviceMenu,
                                                                            ui->dockWidgetDeviceMenu);
+        containerWidgetDeviceMenu->setSuperParent(this);
         containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
         ui->dockWidgetDeviceMenu->addContainer(containerWidgetDeviceMenu);
 

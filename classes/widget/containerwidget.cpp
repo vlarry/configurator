@@ -4,6 +4,7 @@
 CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget, AnchorType anchor, QWidget* parent):
     QWidget(parent),
     ui(new Ui::CContainerWidget),
+    m_superParent(nullptr),
     m_anchor(anchor),
     m_pos(QPoint(-1, -1)),
     m_id(-1),
@@ -65,6 +66,11 @@ int CContainerWidget::id() const
     return m_id;
 }
 //--------------------------------------------
+QWidget *CContainerWidget::superParent() const
+{
+    return m_superParent;
+}
+//--------------------------------------------
 void CContainerWidget::setWidget(QWidget* wgt)
 {
     m_contentWidget = wgt;
@@ -100,6 +106,11 @@ void CContainerWidget::setID(int id)
 {
     m_id = id;
 }
+//----------------------------------------------------
+void CContainerWidget::setSuperParent(QWidget* parent)
+{
+    m_superParent = parent;
+}
 //----------------------------------------------------------------
 bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
 {
@@ -108,12 +119,58 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
         if(event->type() == QEvent::MouseButtonPress)
         {
             QMouseEvent* me = static_cast<QMouseEvent*>(event);
-            emit containerClicked(me);
+
+            if(me->button() == Qt::LeftButton)
+                m_pos = me->pos();
         }
         else if(event->type() == QEvent::MouseMove)
         {
             QMouseEvent* me = static_cast<QMouseEvent*>(event);
-            emit containerMoved(me, m_id);
+
+            if(me->buttons() & Qt::LeftButton)
+            {
+                if(QApplication::startDragDistance() <= (me->pos() - m_pos).manhattanLength())
+                {
+                    QWidget* parentWgt = static_cast<QWidget*>(parent());
+
+                    if(!parentWgt)
+                        return false;
+
+                    CContainerWidget* copyContainer = new CContainerWidget(headerTitle(), widget(), anchor(), parentWgt);\
+                    copyContainer->setSuperParent(superParent());
+                    copyContainer->setHeaderBackground(backgroundColorHeader());
+                    copyContainer->setGeometry(copyContainer->x(), copyContainer->y(), width(), height());
+
+                    QDrag* drag = new QDrag(this);
+                    QMimeData* mimedata = new QMimeData;
+
+                    mimedata->setProperty("CONTAINER", QVariant::fromValue(copyContainer));
+                    mimedata->setData("application/widget_container", QByteArray());
+                    drag->setMimeData(mimedata);
+
+                    QPixmap pixmap(copyContainer->size());
+                    copyContainer->render(&pixmap);
+                    drag->setPixmap(pixmap);
+
+                    close();
+                    emit removeContainer(m_id);
+
+                    Qt::DropAction result = drag->exec(Qt::MoveAction);
+
+                    if(result == Qt::IgnoreAction)
+                    {
+                        CContainerWidget* tcontainer = mimedata->property("CONTAINER").value<CContainerWidget*>();
+
+                        if(tcontainer)
+                        {
+                            QPoint pos = m_superParent->mapFromParent(QCursor::pos());
+                            tcontainer->setParent(m_superParent);
+                            tcontainer->show();
+                            tcontainer->move(pos);
+                        }
+                    }
+                }
+            }
         }
         else if(event->type() == QEvent::MouseButtonRelease)
             m_pos = QPoint(-1, -1);
