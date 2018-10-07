@@ -94,6 +94,7 @@ void CDockWidget::moveItem(QMouseEvent* event, int id)
         CContainerWidget* copyContainer = new CContainerWidget(currentContainer->headerTitle(), currentContainer->widget(),
                                                                currentContainer->anchor(), this);
         copyContainer->setHeaderBackground(currentContainer->backgroundColorHeader());
+        copyContainer->setGeometry(copyContainer->x(), copyContainer->y(), currentContainer->width(), currentContainer->height());
 
         QDrag* drag = new QDrag(this);
         QMimeData* mimedata = new QMimeData;
@@ -102,8 +103,8 @@ void CDockWidget::moveItem(QMouseEvent* event, int id)
         mimedata->setData("application/widget_container", QByteArray());
         drag->setMimeData(mimedata);
 
-        QPixmap pixmap(currentContainer->size());
-        currentContainer->render(&pixmap);
+        QPixmap pixmap(copyContainer->size());
+        copyContainer->render(&pixmap);
         drag->setPixmap(pixmap);
 
         currentContainer->close();
@@ -111,7 +112,7 @@ void CDockWidget::moveItem(QMouseEvent* event, int id)
 
         Qt::DropAction result = drag->exec(Qt::MoveAction);
 
-        if(result != Qt::MoveAction)
+        if(result == Qt::IgnoreAction)
         {
             CContainerWidget* tcontainer = mimedata->property("CONTAINER").value<CContainerWidget*>();
 
@@ -137,6 +138,7 @@ void CDockWidget::dropEvent(QDropEvent* event)
 
     if(container)
     {
+        event->accept();
         addContainer(container);
     }
 }
