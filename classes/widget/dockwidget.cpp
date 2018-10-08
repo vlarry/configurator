@@ -1,5 +1,7 @@
 #include "dockwidget.h"
 #include "ui_dockwidget.h"
+//-----------------------------
+int CDockWidget::m_idCount = 0;
 //----------------------------------------
 CDockWidget::CDockWidget(QWidget* parent):
     QWidget(parent),
@@ -7,7 +9,7 @@ CDockWidget::CDockWidget(QWidget* parent):
     m_controlItem(nullptr)
 {
     ui->setupUi(this);
-    ui->gridLayoutContainer->setColumnStretch(0, 1);
+//    ui->gridLayoutContainer->setColumnStretch(0, 1);
 
     ui->pushButtonItemCtrlBottom->hide();
     ui->pushButtonItemCtrlLeft->hide();
@@ -26,11 +28,11 @@ void CDockWidget::addContainer(CContainerWidget* container)
 {
     if(container)
     {
-        int row = ui->gridLayoutContainer->count();
-        container->setID(row);
+        container->setID(m_idCount++);
+        container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
         container->show();
         container->setVisible(true);
-        ui->gridLayoutContainer->addWidget(container, row, 0);
+        ui->verticalLayoutContainer->addWidget(container);
 
         connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
     }
@@ -43,15 +45,16 @@ CDockPanelItemCtrl *CDockWidget::control()
 //----------------------------------------------
 CContainerWidget* CDockWidget::container(int id)
 {
-    CContainerWidget* tcontainer = nullptr;
-    QLayoutItem* lItem = ui->gridLayoutContainer->itemAt(id);
-
-    if(lItem)
+    for(int i = 0; i < ui->verticalLayoutContainer->count(); i++)
     {
-        tcontainer = static_cast<CContainerWidget*>(lItem->widget());
+        QLayoutItem* item = ui->verticalLayoutContainer->itemAt(i);
+        CContainerWidget* tcontainer = static_cast<CContainerWidget*>(item->widget());
+
+        if(tcontainer->id() == id)
+            return tcontainer;
     }
 
-    return tcontainer;
+    return nullptr;
 }
 //-----------------------------
 void CDockWidget::hideContent()
@@ -122,7 +125,18 @@ void CDockWidget::setControlItemDir(CDockPanelItemCtrl::DirType dir)
 //----------------------------------
 void CDockWidget::removeItem(int id)
 {
-    ui->gridLayoutContainer->removeItem(ui->gridLayoutContainer->takeAt(id));
+    for(int i = 0; i < ui->verticalLayoutContainer->count(); i++)
+    {
+        QLayoutItem* item = ui->verticalLayoutContainer->itemAt(i);
+
+        if(item)
+        {
+            CContainerWidget* tcontainer = static_cast<CContainerWidget*>(item->widget());
+
+            if(tcontainer->id() == id)
+                ui->verticalLayout->removeWidget(tcontainer);
+        }
+    }
 }
 //------------------------------------------------------
 void CDockWidget::dragEnterEvent(QDragEnterEvent* event)

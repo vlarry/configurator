@@ -115,7 +115,11 @@
          <number>0</number>
         </property>
         <item>
-         <layout class="QGridLayout" name="gridLayoutContainer"/>
+         <layout class="QVBoxLayout" name="verticalLayoutContainer">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+         </layout>
         </item>
        </layout>
       </widget>

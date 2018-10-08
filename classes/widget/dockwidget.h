@@ -40,5 +40,6 @@
         private:
             Ui::CDockWidget*    ui;
             CDockPanelItemCtrl* m_controlItem;
+            static int          m_idCount;
     };
 #endif // DOCKWIDGET_H
