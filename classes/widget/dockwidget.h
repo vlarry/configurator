@@ -4,6 +4,7 @@
     #include <QWidget>
     #include <QDragEnterEvent>
     #include <QDropEvent>
+    #include <QToolButton>
     #include <QDebug>
     #include "cdockpanelitemctrl.h"
     #include "containerwidget.h"
@@ -31,9 +32,6 @@
         public slots:
             void addContainer(CContainerWidget* wgt);
             void removeItem(int id);
-
-        signals:
-            void controlItemClicked(bool = false);
 
         protected:
             void dragEnterEvent(QDragEnterEvent* event);

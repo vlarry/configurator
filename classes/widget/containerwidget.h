@@ -5,6 +5,7 @@
     #include <QMouseEvent>
     #include <QDrag>
     #include <QMimeData>
+    #include <QToolButton>
     #include <QDebug>
     //----------
     namespace Ui
@@ -35,6 +36,7 @@
             QString headerTitle() const;
             int  id() const;
             bool buttonFunctionState() const;
+            QToolButton* buttonFunction() const;
             QWidget* superParent() const;
             void setWidget(QWidget* wgt);
             void setHeaderBackground(const QColor& backgroundColor);
@@ -50,7 +52,6 @@
             void removeContainer(int);
             void containerClicked(QMouseEvent*);
             void containerMoved(QMouseEvent*, int);
-            void buttonFunctionClicked(bool = false);
 
         protected:
             bool eventFilter(QObject* object, QEvent* event) override;

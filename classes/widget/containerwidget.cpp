@@ -77,6 +77,11 @@ bool CContainerWidget::buttonFunctionState() const
 {
     return !ui->toolButtonHeaderFunction->isHidden();
 }
+//---------------------------------------------------
+QToolButton* CContainerWidget::buttonFunction() const
+{
+    return ui->toolButtonHeaderFunction;
+}
 //--------------------------------------------
 QWidget *CContainerWidget::superParent() const
 {
@@ -143,7 +148,6 @@ void CContainerWidget::setButtonFunctionState(bool state)
     {
         buttonFunctionStateChanged(false);
         ui->toolButtonHeaderFunction->show();
-        connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionClicked);
         connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionStateChanged);
     }
     else
@@ -185,29 +189,18 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
             {
                 if(QApplication::startDragDistance() <= (me->pos() - m_pos).manhattanLength())
                 {
-                    QWidget* parentWgt = static_cast<QWidget*>(parent());
-
-                    if(!parentWgt)
-                        return false;
-
-                    CContainerWidget* copyContainer = new CContainerWidget(headerTitle(), widget(), anchor(), parentWgt);\
-                    copyContainer->setSuperParent(superParent());
-                    copyContainer->setButtonFunctionState(buttonFunctionState());
-                    copyContainer->setHeaderBackground(backgroundColorHeader());
-                    copyContainer->setGeometry(copyContainer->x(), copyContainer->y(), width(), height());
-
                     QDrag* drag = new QDrag(this);
                     QMimeData* mimedata = new QMimeData;
 
-                    mimedata->setProperty("CONTAINER", QVariant::fromValue(copyContainer));
+                    mimedata->setProperty("CONTAINER", QVariant::fromValue(this));
                     mimedata->setData("application/widget_container", QByteArray());
                     drag->setMimeData(mimedata);
 
-                    QPixmap pixmap(copyContainer->size());
-                    copyContainer->render(&pixmap);
+                    QPixmap pixmap(size());
+                    render(&pixmap);
                     drag->setPixmap(pixmap);
 
-                    close();
+                    hide();
                     emit removeContainer(m_id);
 
                     Qt::DropAction result = drag->exec(Qt::MoveAction);

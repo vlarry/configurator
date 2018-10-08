@@ -739,6 +739,8 @@
             bool                             m_init; // флаг инициализации окна
             CModBus*                         m_modbus;
             QTreeWidget*                     m_treeWidgetDeviceMenu;
+            CContainerWidget*                m_containerWidgetVariable;
+            CContainerWidget*                m_containerWidgetDeviceMenu;
             CSerialPortSetting*              m_serialPortSettings_window;
             CIndicatorState*                 m_output_window;
             CMonitorPurpose*                 m_monitor_purpose_window;

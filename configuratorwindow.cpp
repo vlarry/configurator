@@ -7894,25 +7894,26 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
 
         // инициализация панели расчетных величин
-        CVariableWidget* varWidget = new CVariableWidget(ui->dockWidgetVariable);
-        varWidget->init(m_system_db);
-        varWidget->setProperty("TYPE", "VARIABLE");
-        CContainerWidget* containerWidget = new CContainerWidget(tr("Панель измерений"), varWidget,
-                                                                 CContainerWidget::AnchorType::AnchorDockWidget,
-                                                                 ui->dockWidgetVariable);
-        containerWidget->setSuperParent(this);
-        containerWidget->setHeaderBackground(QColor(190, 190, 190));
-        ui->dockWidgetVariable->addContainer(containerWidget);
+        CVariableWidget* tableWidgetVariable = new CVariableWidget(ui->dockWidgetVariable);
+        tableWidgetVariable->init(m_system_db);
+        tableWidgetVariable->setProperty("TYPE", "VARIABLE");
+        m_containerWidgetVariable = new CContainerWidget(tr("Панель измерений"), tableWidgetVariable,
+                                                         CContainerWidget::AnchorType::AnchorDockWidget,
+                                                         ui->dockWidgetVariable);
+        m_containerWidgetVariable->setSuperParent(this);
+        m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
+        ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
 
         // инициализация панели меню
         m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
-        CContainerWidget* containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
-                                                                           CContainerWidget::AnchorType::AnchorDockWidget,
-                                                                           ui->dockWidgetMenuDevice);
-        containerWidgetDeviceMenu->setSuperParent(this);
-        containerWidgetDeviceMenu->setButtonFunctionState(true);
-        containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
-        ui->dockWidgetMenuDevice->addContainer(containerWidgetDeviceMenu);
+        m_containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
+                                                           CContainerWidget::AnchorType::AnchorDockWidget,
+                                                           ui->dockWidgetMenuDevice);
+        connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
+        m_containerWidgetDeviceMenu->setSuperParent(this);
+        m_containerWidgetDeviceMenu->setButtonFunctionState(true);
+        m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
+        ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
 
         loadSettings();
         initConnect();
@@ -10641,7 +10642,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnWriteAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);
     connect(ui->pbtnReadCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSetCurrent);
     connect(ui->pbtnWriteCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetCurrent);
-    connect(ui->dockWidgetMenuDevice, &CDockWidget::controlItemClicked, this, &ConfiguratorWindow::expandItemTree);
     connect(ui->pbtnVersionSoftware, &QPushButton::clicked, this, &ConfiguratorWindow::versionSowftware);
     connect(ui->toolButtonConnectSettings, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortSettings);
     connect(ui->pbtnClearLedOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);

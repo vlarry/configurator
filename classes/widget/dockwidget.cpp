@@ -33,7 +33,6 @@ void CDockWidget::addContainer(CContainerWidget* container)
         ui->gridLayoutContainer->addWidget(container, row, 0);
 
         connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
-        connect(container, &CContainerWidget::buttonFunctionClicked, this, &CDockWidget::controlItemClicked);
     }
 }
 //----------------------------------------
