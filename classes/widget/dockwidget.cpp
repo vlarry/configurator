@@ -3,12 +3,17 @@
 //----------------------------------------
 CDockWidget::CDockWidget(QWidget* parent):
     QWidget(parent),
-    ui(new Ui::CDockWidget)
+    ui(new Ui::CDockWidget),
+    m_controlItem(nullptr)
 {
     ui->setupUi(this);
     ui->gridLayoutContainer->setColumnStretch(0, 1);
-    ui->pushButtonItemCtrl->setMinimumWidth(16);
-    ui->pushButtonItemCtrl->resize(16, ui->pushButtonItemCtrl->height());
+
+    ui->pushButtonItemCtrlBottom->hide();
+    ui->pushButtonItemCtrlLeft->hide();
+    ui->pushButtonItemCtrlRight->hide();
+    ui->pushButtonItemCtrlTop->hide();
+
     setAcceptDrops(true);
 }
 //-------------------------
@@ -28,12 +33,13 @@ void CDockWidget::addContainer(CContainerWidget* container)
         ui->gridLayoutContainer->addWidget(container, row, 0);
 
         connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
+        connect(container, &CContainerWidget::buttonFunctionClicked, this, &CDockWidget::controlItemClicked);
     }
 }
 //----------------------------------------
 CDockPanelItemCtrl *CDockWidget::control()
 {
-    return ui->pushButtonItemCtrl;
+    return m_controlItem;
 }
 //----------------------------------------------
 CContainerWidget* CDockWidget::container(int id)
@@ -70,6 +76,49 @@ void CDockWidget::setVisibleContent(bool state)
         showContent();
     else
         hideContent();
+}
+//------------------------------------------------------------------
+void CDockWidget::setControlItemDir(CDockPanelItemCtrl::DirType dir)
+{
+    m_controlItem = nullptr;
+
+    ui->pushButtonItemCtrlBottom->hide();
+    ui->pushButtonItemCtrlLeft->hide();
+    ui->pushButtonItemCtrlRight->hide();
+    ui->pushButtonItemCtrlTop->hide();
+
+    switch(dir)
+    {
+        case CDockPanelItemCtrl::DirNone:
+            m_controlItem = nullptr;
+        break;
+
+        case CDockPanelItemCtrl::DirLeft:
+            m_controlItem = ui->pushButtonItemCtrlLeft;
+        break;
+
+        case CDockPanelItemCtrl::DirRight:
+            m_controlItem = ui->pushButtonItemCtrlRight;
+        break;
+
+        case CDockPanelItemCtrl::DirTop:
+            m_controlItem = ui->pushButtonItemCtrlTop;
+        break;
+
+        case CDockPanelItemCtrl::DirBottom:
+            m_controlItem = ui->pushButtonItemCtrlBottom;
+        break;
+
+        default:
+            m_controlItem = nullptr;
+        break;
+    }
+
+    if(m_controlItem)
+    {
+        m_controlItem->setDir(dir);
+        m_controlItem->show();
+    }
 }
 //----------------------------------
 void CDockWidget::removeItem(int id)

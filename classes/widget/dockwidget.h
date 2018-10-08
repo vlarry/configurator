@@ -26,16 +26,21 @@
             void showContent();
             bool isContentHidden() const;
             void setVisibleContent(bool state);
+            void setControlItemDir(CDockPanelItemCtrl::DirType dir);
 
         public slots:
             void addContainer(CContainerWidget* wgt);
             void removeItem(int id);
+
+        signals:
+            void controlItemClicked(bool = false);
 
         protected:
             void dragEnterEvent(QDragEnterEvent* event);
             void dropEvent(QDropEvent* event);
 
         private:
-            Ui::CDockWidget* ui;
+            Ui::CDockWidget*    ui;
+            CDockPanelItemCtrl* m_controlItem;
     };
 #endif // DOCKWIDGET_H

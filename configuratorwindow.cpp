@@ -31,6 +31,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     ui->setupUi(this);
 
     m_modbus                    = new CModBus(this);
+    m_treeWidgetDeviceMenu      = new QTreeWidget(this);
     m_serialPortSettings_window = new CSerialPortSetting;
     m_output_window             = new CIndicatorState(this);
     m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
@@ -62,7 +63,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     connectSystemDb();
     initJournals();
     initMenuPanel();
-    initConnect();
     initCellBind(); // инициализация привязки настроек к адресам
     initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
     initModelTables();
@@ -3463,17 +3463,9 @@ void ConfiguratorWindow::writeSetCurrent()
 void ConfiguratorWindow::expandItemTree(bool state)
 {
     if(state)
-    {
-        ui->treewgtDeviceMenu->expandAll();
-        ui->tbntExpandItems->setIcon(QIcon(":/images/resource/images/branch_open.png"));
-        ui->tbntExpandItems->setToolTip(tr("Свернуть меню"));
-    }
+        m_treeWidgetDeviceMenu->expandAll();
     else
-    {
-        ui->treewgtDeviceMenu->collapseAll();
-        ui->tbntExpandItems->setIcon(QIcon(":/images/resource/images/branch_close.png"));
-        ui->tbntExpandItems->setToolTip(tr("Развернуть меню"));
-    }
+        m_treeWidgetDeviceMenu->collapseAll();
 }
 //-----------------------------------------
 void ConfiguratorWindow::versionSowftware()
@@ -3488,11 +3480,16 @@ void ConfiguratorWindow::sendCalculateRead(CModBusDataUnit& unit)
 //--------------------------------------
 void ConfiguratorWindow::initMenuPanel()
 {
-    QTreeWidgetItem* itemProtections = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_PROTECTION_ROOT); // Защиты
-    QTreeWidgetItem* itemAutomation  = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_AUTOMATION_ROOT); // Автоматика
-    QTreeWidgetItem* itemJournals    = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_JOURNALS_ROOT); // Журналы
-    QTreeWidgetItem* itemMeasures    = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_MEASURES_ROOT); // Измерения
-    QTreeWidgetItem* itemSettings    = new QTreeWidgetItem(ui->treewgtDeviceMenu, DEVICE_MENU_ITEM_SETTINGS_ROOT); // Настройки
+    QFont itemFont(m_treeWidgetDeviceMenu->font());
+    itemFont.setPointSize(12);
+    m_treeWidgetDeviceMenu->setFont(itemFont);
+    m_treeWidgetDeviceMenu->header()->hide();
+
+    QTreeWidgetItem* itemProtections = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_PROTECTION_ROOT); // Защиты
+    QTreeWidgetItem* itemAutomation  = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_AUTOMATION_ROOT); // Автоматика
+    QTreeWidgetItem* itemJournals    = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_JOURNALS_ROOT); // Журналы
+    QTreeWidgetItem* itemMeasures    = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_MEASURES_ROOT); // Измерения
+    QTreeWidgetItem* itemSettings    = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_SETTINGS_ROOT); // Настройки
 
     itemProtections->setText(0, tr("Защиты"));
     itemAutomation->setText(0, tr("Автоматика"));
@@ -3569,11 +3566,11 @@ void ConfiguratorWindow::initMenuPanel()
 
     settingIO->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01 << ioProtectionCtrl);
 
-    ui->treewgtDeviceMenu->addTopLevelItem(itemProtections);
-    ui->treewgtDeviceMenu->addTopLevelItem(itemAutomation);
-    ui->treewgtDeviceMenu->addTopLevelItem(itemJournals);
-    ui->treewgtDeviceMenu->addTopLevelItem(itemMeasures);
-    ui->treewgtDeviceMenu->addTopLevelItem(itemSettings);
+    m_treeWidgetDeviceMenu->addTopLevelItem(itemProtections);
+    m_treeWidgetDeviceMenu->addTopLevelItem(itemAutomation);
+    m_treeWidgetDeviceMenu->addTopLevelItem(itemJournals);
+    m_treeWidgetDeviceMenu->addTopLevelItem(itemMeasures);
+    m_treeWidgetDeviceMenu->addTopLevelItem(itemSettings);
 
     // заполнение карты меню устройства для доступа к настройкам при клике по пункту
     m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT] = 10000;
@@ -6741,10 +6738,10 @@ void ConfiguratorWindow::clearJournal()
 //--------------------------------------
 void ConfiguratorWindow::menuPanelCtrl()
 {
-    if(ui->menuDeviceDockPanel->isHidden())
-        ui->menuDeviceDockPanel->show();
+    if(ui->dockWidgetMenuDevice->isHidden())
+        ui->dockWidgetMenuDevice->show();
     else
-        ui->menuDeviceDockPanel->hide();
+        ui->dockWidgetMenuDevice->hide();
 }
 //------------------------------------------
 void ConfiguratorWindow::variablePanelCtrl()
@@ -6965,28 +6962,28 @@ void ConfiguratorWindow::panelButtonCtrlPress()
 
     if(sizes.count() == 3)
     {
-        if(button == ui->pushButtonMenuDeviceCtrl)
+        if(button == ui->dockWidgetMenuDevice->control())
         {
-            if(ui->menuDeviceDockPanel->width() > ui->pushButtonMenuDeviceCtrl->minimumWidth())
+            if(ui->dockWidgetMenuDevice->width() > ui->dockWidgetMenuDevice->control()->minimumWidth())
             {
                 int w = sizes[0];
 
-                ui->menuDeviceDockPanel->setProperty("WIDTH", w);
+                ui->dockWidgetMenuDevice->setProperty("WIDTH", w);
 
-                sizes[0] = ui->pushButtonMenuDeviceCtrl->minimumWidth();
+                sizes[0] = ui->dockWidgetMenuDevice->control()->minimumWidth();
                 sizes[1] = sizes[1] + (w - sizes[0]);
 
                 ui->splitterCentralWidget->setSizes(sizes);
 
                 emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
             }
-            else if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
+            else if(ui->dockWidgetMenuDevice->width() == ui->dockWidgetMenuDevice->control()->minimumWidth())
             {
                 int w        = sizes[0];
-                int newWidth = ui->menuDeviceDockPanel->property("WIDTH").toInt();
+                int newWidth = ui->dockWidgetMenuDevice->property("WIDTH").toInt();
 
                 if(newWidth <= 0)
-                    newWidth = ui->menuDeviceDockPanel->sizeHint().width();
+                    newWidth = ui->dockWidgetMenuDevice->sizeHint().width();
 
                 sizes[0] = newWidth;
                 sizes[1] = sizes[1] - (newWidth - w);
@@ -7833,20 +7830,20 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         ui->timeEdit->setTime(dt.time());
         ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
 
-        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->menuDeviceDockPanel), false);
+        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->dockWidgetMenuDevice), false);
         ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->dockWidgetVariable), false);
         ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
 
-        ui->dockWidgetVariable->setMinimumWidth(ui->dockWidgetVariable->control()->minimumWidth());
-        ui->menuDeviceDockPanel->setMinimumWidth(ui->pushButtonMenuDeviceCtrl->minimumWidth());
-        ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
-
-        ui->pushButtonMenuDeviceCtrl->setText(tr("Панель меню"));
         ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
-        ui->pushButtonMenuDeviceCtrl->setDir(CDockPanelItemCtrl::Left);
-        ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::Bottom);
-        ui->dockWidgetDeviceMenu->control()->setDir(CDockPanelItemCtrl::Left);
-        ui->dockWidgetVariable->control()->setDir(CDockPanelItemCtrl::Right);
+        ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::DirBottom);
+        ui->dockWidgetMenuDevice->setControlItemDir(CDockPanelItemCtrl::DirLeft);
+        ui->dockWidgetVariable->setControlItemDir(CDockPanelItemCtrl::DirRight);
+
+        if(ui->dockWidgetVariable->control())
+            ui->dockWidgetVariable->setMinimumWidth(ui->dockWidgetVariable->control()->minimumWidth());
+        if(ui->dockWidgetMenuDevice->control())
+            ui->dockWidgetMenuDevice->setMinimumWidth(ui->dockWidgetMenuDevice->control()->minimumWidth());
+        ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
 
         // управление отображением панелей
         panelVisibleCtrl(ui->centralWgt);
@@ -7854,17 +7851,18 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         panelVisibleCtrl(ui->framePanelMessage);
 
         // шрифт для панели меню
-        QFont treeFont = ui->treewgtDeviceMenu->font();
+        QFont treeFont = m_treeWidgetDeviceMenu->font();
         treeFont.setPointSize(12);
-        ui->treewgtDeviceMenu->setFont(treeFont);
+        m_treeWidgetDeviceMenu->setFont(treeFont);
 
-        if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
+        if(ui->dockWidgetMenuDevice->control() &&
+           ui->dockWidgetMenuDevice->width() == ui->dockWidgetMenuDevice->control()->minimumWidth())
         {
-            ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
+            ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Close);
         }
         else
         {
-            ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
+            ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Open);
         }
 
         if(ui->dockWidgetVariable->control() &&
@@ -7895,17 +7893,6 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
         ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
 
-        QLinearGradient gradient(0, 0, 0, ui->labelMenuDevice->height());
-        gradient.setColorAt(0, QColor(190, 190, 190));
-        gradient.setColorAt(0.5, Qt::gray);
-        gradient.setColorAt(1, QColor(190, 190, 190));
-
-        ui->labelMenuDevice->setAutoFillBackground(true);
-
-        QPalette p(ui->labelMenuDevice->palette());
-        p.setBrush(QPalette::Window, QBrush(gradient));
-        ui->labelMenuDevice->setPalette(p);
-
         // инициализация панели расчетных величин
         CVariableWidget* varWidget = new CVariableWidget(ui->dockWidgetVariable);
         varWidget->init(m_system_db);
@@ -7918,16 +7905,17 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         ui->dockWidgetVariable->addContainer(containerWidget);
 
         // инициализация панели меню
-        m_treeWidgetDeviceMenu = new QTreeWidget(this);
         m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
         CContainerWidget* containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
                                                                            CContainerWidget::AnchorType::AnchorDockWidget,
-                                                                           ui->dockWidgetDeviceMenu);
+                                                                           ui->dockWidgetMenuDevice);
         containerWidgetDeviceMenu->setSuperParent(this);
+        containerWidgetDeviceMenu->setButtonFunctionState(true);
         containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
-        ui->dockWidgetDeviceMenu->addContainer(containerWidgetDeviceMenu);
+        ui->dockWidgetMenuDevice->addContainer(containerWidgetDeviceMenu);
 
         loadSettings();
+        initConnect();
 
         m_init = true;
     }
@@ -8169,17 +8157,22 @@ void ConfiguratorWindow::loadSettings()
 
         m_settings->beginGroup("settings");
             ui->checkBoxPanelMessage->setChecked(m_settings->value("downpanel_state").toBool());
-            ui->menuDeviceDockPanel->setProperty("WIDTH", m_settings->value("panel_menu_width", 100).toInt());
-            m_settings->beginGroup("variable_widget");
-                ui->dockWidgetVariable->setProperty("WIDTH", m_settings->value("width", 100).toInt());
-                ui->dockWidgetVariable->setVisibleContent(m_settings->value("visible").toBool());
-            m_settings->endGroup();
+                m_settings->beginGroup("menu_device_widget");
+                    ui->dockWidgetMenuDevice->setProperty("WIDTH", m_settings->value("width", 100).toInt());
+                    ui->dockWidgetMenuDevice->setVisibleContent(m_settings->value("visible").toBool());
+                m_settings->endGroup();
+                m_settings->beginGroup("variable_widget");
+                    ui->dockWidgetVariable->setProperty("WIDTH", m_settings->value("width", 100).toInt());
+                    ui->dockWidgetVariable->setVisibleContent(m_settings->value("visible").toBool());
+                m_settings->endGroup();
             ui->framePanelMessage->setProperty("HEIGHT", m_settings->value("panel_message_height", 100).toInt());
         m_settings->endGroup();
     }
 
     ui->dockWidgetVariable->control()->setState((ui->dockWidgetVariable->isContentHidden()?CDockPanelItemCtrl::Close:
                                                                                            CDockPanelItemCtrl::Open));
+    ui->dockWidgetMenuDevice->control()->setState((ui->dockWidgetMenuDevice->isContentHidden()?CDockPanelItemCtrl::Close:
+                                                                                               CDockPanelItemCtrl::Open));
 
     if(baudrate != -1)
     {
@@ -8226,7 +8219,10 @@ void ConfiguratorWindow::saveSettings()
 
         m_settings->beginGroup("settings");
             m_settings->setValue("downpanel_state", ui->checkBoxPanelMessage->isChecked());
-            m_settings->setValue("panel_menu_width", ui->menuDeviceDockPanel->property("WIDTH").toInt());
+                m_settings->beginGroup("menu_device_widget");
+                    m_settings->setValue("width", ui->dockWidgetMenuDevice->property("WIDTH").toInt());
+                    m_settings->setValue("visible", !ui->dockWidgetMenuDevice->isContentHidden());
+                m_settings->endGroup();
                 m_settings->beginGroup("variable_widget");
                     m_settings->setValue("width", ui->dockWidgetVariable->property("WIDTH").toInt());
                     m_settings->setValue("visible", !ui->dockWidgetVariable->isContentHidden());
@@ -9950,7 +9946,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
         }
         else
         {
-            if(ui->dockWidgetVariable->isContentHidden())
+            if(ui->dockWidgetVariable->control() && ui->dockWidgetVariable->isContentHidden())
             {
                 ui->dockWidgetVariable->showContent();
                 ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Open);
@@ -9960,24 +9956,21 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
 
     if(widget == ui->centralWgt)
     {
-        if(ui->menuDeviceDockPanel->width() == ui->pushButtonMenuDeviceCtrl->minimumWidth())
+        if(ui->dockWidgetMenuDevice->control() &&
+           ui->dockWidgetMenuDevice->width() == ui->dockWidgetMenuDevice->control()->minimumWidth())
         {
-            if(!ui->treewgtDeviceMenu->isHidden())
+            if(ui->dockWidgetMenuDevice->isContentHidden())
             {
-                ui->treewgtDeviceMenu->hide();
-                ui->labelMenuDevice->hide();
-                ui->tbntExpandItems->hide();
-                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Close);
+                ui->dockWidgetMenuDevice->hideContent();
+                ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Close);
             }
         }
         else
         {
-            if(ui->treewgtDeviceMenu->isHidden())
+            if(ui->dockWidgetMenuDevice->control() && ui->dockWidgetMenuDevice->isContentHidden())
             {
-                ui->treewgtDeviceMenu->show();
-                ui->labelMenuDevice->show();
-                ui->tbntExpandItems->show();
-                ui->pushButtonMenuDeviceCtrl->setState(CDockPanelItemCtrl::Open);
+                ui->dockWidgetMenuDevice->showContent();
+                ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Open);
             }
         }
     }
@@ -10224,7 +10217,7 @@ QTableView* ConfiguratorWindow::tableMatrixFromKeys(const QString& first, const 
 //--------------------------------------------------------------------
 ConfiguratorWindow::DeviceMenuItemType ConfiguratorWindow::menuIndex()
 {
-    QTreeWidgetItem* item = ui->treewgtDeviceMenu->currentItem();
+    QTreeWidgetItem* item = m_treeWidgetDeviceMenu->currentItem();
 
     if(!item)
     {
@@ -10643,12 +10636,12 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonStatusInfo, &QPushButton::clicked, this, &ConfiguratorWindow::statusInfoVisiblity);
     connect(m_status_window, &CStatusInfo::closeWindow, ui->pushButtonStatusInfo, &QPushButton::setChecked);
     connect(m_status_window, &CStatusInfo::buttonUpdate, this, &ConfiguratorWindow::readStatusInfo);
-    connect(ui->treewgtDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
+    connect(m_treeWidgetDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
     connect(ui->pbtnWriteAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);
     connect(ui->pbtnReadCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSetCurrent);
     connect(ui->pbtnWriteCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetCurrent);
-    connect(ui->tbntExpandItems, &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
+    connect(ui->dockWidgetMenuDevice, &CDockWidget::controlItemClicked, this, &ConfiguratorWindow::expandItemTree);
     connect(ui->pbtnVersionSoftware, &QPushButton::clicked, this, &ConfiguratorWindow::versionSowftware);
     connect(ui->toolButtonConnectSettings, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortSettings);
     connect(ui->pbtnClearLedOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
@@ -10674,12 +10667,13 @@ void ConfiguratorWindow::initConnect()
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
     connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this,
             &ConfiguratorWindow::autospeedStateChanged);
-
     connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     connect(ui->splitterPanelMessage, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
-    connect(ui->pushButtonMenuDeviceCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
+    if(ui->dockWidgetMenuDevice->control())
+        connect(ui->dockWidgetMenuDevice->control(), &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
+    if(ui->dockWidgetVariable->control())
+        connect(ui->dockWidgetVariable->control(), &CDockPanelItemCtrl::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(ui->pushButtonPanelMessage, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
-    connect(ui->dockWidgetVariable->control(), &CDockPanelItemCtrl::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(m_monitor_purpose_window, &CMonitorPurpose::buttonUpdate, this,
             &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
     connect(m_outputall_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);

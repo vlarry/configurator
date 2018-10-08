@@ -11,6 +11,8 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     m_background_color(QColor())
 {
     ui->setupUi(this);
+
+    ui->toolButtonHeaderFunction->setFixedHeight(ui->labelHeader->height());
     ui->toolButtonHeaderFunction->hide();
     ui->toolButtonHeaderMinimize->hide();
     ui->toolButtonHeaderExpand->hide();
@@ -69,6 +71,11 @@ QString CContainerWidget::headerTitle() const
 int CContainerWidget::id() const
 {
     return m_id;
+}
+//------------------------------------------------
+bool CContainerWidget::buttonFunctionState() const
+{
+    return !ui->toolButtonHeaderFunction->isHidden();
 }
 //--------------------------------------------
 QWidget *CContainerWidget::superParent() const
@@ -129,6 +136,35 @@ void CContainerWidget::setSuperParent(QWidget* parent)
 {
     m_superParent = parent;
 }
+//-------------------------------------------------------
+void CContainerWidget::setButtonFunctionState(bool state)
+{
+    if(state)
+    {
+        buttonFunctionStateChanged(false);
+        ui->toolButtonHeaderFunction->show();
+        connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionClicked);
+        connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionStateChanged);
+    }
+    else
+    {
+        ui->toolButtonHeaderFunction->hide();
+    }
+}
+//-----------------------------------------------------------
+void CContainerWidget::buttonFunctionStateChanged(bool state)
+{
+    if(state)
+    {
+        ui->toolButtonHeaderFunction->setIcon(QIcon(":/images/resource/images/branch_open.png"));
+        ui->toolButtonHeaderFunction->setToolTip(tr("Свернуть меню"));
+    }
+    else
+    {
+        ui->toolButtonHeaderFunction->setIcon(QIcon(":/images/resource/images/branch_close.png"));
+        ui->toolButtonHeaderFunction->setToolTip(tr("Развернуть меню"));
+    }
+}
 //----------------------------------------------------------------
 bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
 {
@@ -156,6 +192,7 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
 
                     CContainerWidget* copyContainer = new CContainerWidget(headerTitle(), widget(), anchor(), parentWgt);\
                     copyContainer->setSuperParent(superParent());
+                    copyContainer->setButtonFunctionState(buttonFunctionState());
                     copyContainer->setHeaderBackground(backgroundColorHeader());
                     copyContainer->setGeometry(copyContainer->x(), copyContainer->y(), width(), height());
 

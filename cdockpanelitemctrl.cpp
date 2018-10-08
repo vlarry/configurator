@@ -3,7 +3,7 @@
 CDockPanelItemCtrl::CDockPanelItemCtrl(QWidget* parent):
     QPushButton(parent),
     m_text(""),
-    m_dir(Left),
+    m_dir(DirNone),
     m_state(Open)
 {
 
@@ -12,7 +12,7 @@ CDockPanelItemCtrl::CDockPanelItemCtrl(QWidget* parent):
 CDockPanelItemCtrl::CDockPanelItemCtrl(const QString& text, QWidget* parent):
     QPushButton(parent),
     m_text(text),
-    m_dir(Left),
+    m_dir(DirLeft),
     m_state(Open)
 {
 
@@ -82,7 +82,7 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
 
     painter.fillRect(but_rect, QBrush(gradient));
 
-    if((m_dir == Left || m_dir == Right) && !m_text.isEmpty())
+    if((m_dir == DirLeft || m_dir == DirRight) && !m_text.isEmpty())
     {
         painter.save();
 
@@ -111,22 +111,25 @@ void CDockPanelItemCtrl::paintEvent(QPaintEvent* event)
 
     switch(m_dir)
     {
-        case Left:
+        case DirNone:
+        break;
+
+        case DirLeft:
             polygon_open << QPoint(cx - 4, cy) << QPoint(cx + 4, cy - 6) << QPoint(cx + 4, cy + 6);
             polygon_close << QPoint(cx - 4, cy - 6) << QPoint(cx + 4, cy) << QPoint(cx - 4, cy + 6);
         break;
 
-        case Right:
+        case DirRight:
             polygon_close << QPoint(cx - 4, cy) << QPoint(cx + 4, cy - 6) << QPoint(cx + 4, cy + 6);
             polygon_open << QPoint(cx - 4, cy - 6) << QPoint(cx + 4, cy) << QPoint(cx - 4, cy + 6);
         break;
 
-        case Top:
+        case DirTop:
             polygon_open << QPoint(cx - 6, cy + 4) << QPoint(cx + 6, cy + 4) << QPoint(cx, cy - 4);
             polygon_close << QPoint(cx - 6, cy - 4) << QPoint(cx + 6, cy - 4) << QPoint(cx, cy + 4);
         break;
 
-        case Bottom:
+        case DirBottom:
             polygon_close << QPoint(cx - 6, cy + 4) << QPoint(cx + 6, cy + 4) << QPoint(cx, cy - 4);
             polygon_open << QPoint(cx - 6, cy - 4) << QPoint(cx + 6, cy - 4) << QPoint(cx, cy + 4);
         break;

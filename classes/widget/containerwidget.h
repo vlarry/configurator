@@ -34,17 +34,23 @@
             QColor backgroundColorHeader() const;
             QString headerTitle() const;
             int  id() const;
+            bool buttonFunctionState() const;
             QWidget* superParent() const;
             void setWidget(QWidget* wgt);
             void setHeaderBackground(const QColor& backgroundColor);
             void setAnchor(AnchorType anchor);
             void setID(int id);
             void setSuperParent(QWidget *parent);
+            void setButtonFunctionState(bool state);
+
+        public slots:
+            void buttonFunctionStateChanged(bool state = false);
 
         signals:
             void removeContainer(int);
             void containerClicked(QMouseEvent*);
             void containerMoved(QMouseEvent*, int);
+            void buttonFunctionClicked(bool = false);
 
         protected:
             bool eventFilter(QObject* object, QEvent* event) override;

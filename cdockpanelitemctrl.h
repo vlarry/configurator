@@ -14,10 +14,11 @@
         public:
             enum DirType
             {
-                Left,
-                Right,
-                Top,
-                Bottom
+                DirNone,
+                DirLeft,
+                DirRight,
+                DirTop,
+                DirBottom
             };
 
             enum StateType

@@ -1,27 +1,27 @@
-QFrame#menuDeviceDockPanel QTreeView::branch:has-siblings:!adjoins-item 
+QTreeWidget::branch:has-siblings:!adjoins-item 
 {
     border-image: url(:/images/resource/images/stylesheet-vline.png) 0;
 }
 
-QFrame#menuDeviceDockPanel QTreeView::branch:has-siblings:adjoins-item 
+QTreeWidget::branch:has-siblings:adjoins-item 
 {
     border-image: url(:/images/resource/images/stylesheet-branch-more.png) 0;
 }
 
-QFrame#menuDeviceDockPanel QTreeView::branch:!has-children:!has-siblings:adjoins-item 
+QTreeWidget::branch:!has-children:!has-siblings:adjoins-item 
 {
     border-image: url(:/images/resource/images/stylesheet-branch-end.png) 0;
 }
 
-QFrame#menuDeviceDockPanel QTreeView::branch:has-children:!has-siblings:closed,
-QFrame#menuDeviceDockPanel QTreeView::branch:closed:has-children:has-siblings 
+QTreeWidget::branch:has-children:!has-siblings:closed,
+QTreeWidget::branch:closed:has-children:has-siblings 
 {
         border-image: none;
         image: url(:/images/resource/images/branch_close.png);
 }
 
-QFrame#menuDeviceDockPanel QTreeView::branch:open:has-children:!has-siblings,
-QFrame#menuDeviceDockPanel QTreeView::branch:open:has-children:has-siblings  
+QTreeWidget::branch:open:has-children:!has-siblings,
+QTreeWidget::branch:open:has-children:has-siblings  
 {
         border-image: none;
         image: url(:/images/resource/images/branch_open.png);
