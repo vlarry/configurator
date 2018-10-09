@@ -3481,7 +3481,7 @@ void ConfiguratorWindow::sendCalculateRead(CModBusDataUnit& unit)
 void ConfiguratorWindow::initMenuPanel()
 {
     QFont itemFont(m_treeWidgetDeviceMenu->font());
-    itemFont.setPointSize(12);
+    itemFont.setPointSize(10);
     m_treeWidgetDeviceMenu->setFont(itemFont);
     m_treeWidgetDeviceMenu->header()->hide();
 
@@ -7883,11 +7883,6 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         {
             ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
         }
-
-        if(ui->checkBoxPanelMessage->isChecked())
-            ui->framePanelMessage->show();
-        else
-            ui->framePanelMessage->hide();
 
         ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
         ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));

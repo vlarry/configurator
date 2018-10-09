@@ -28,10 +28,21 @@ void CTabWidget::tabDoubleClicked(int index)
 //-----------------------------------------------------
 void CTabWidget::dragEnterEvent(QDragEnterEvent* event)
 {
-    Q_UNUSED(event);
+    if(event->mimeData()->hasFormat("application/widget_container"))
+        event->acceptProposedAction();
+    else
+        event->ignore();
 }
 //-------------------------------------------
 void CTabWidget::dropEvent(QDropEvent* event)
 {
-    Q_UNUSED(event);
+    CContainerWidget* container = event->mimeData()->property("CONTAINER").value<CContainerWidget*>();
+
+    if(container)
+    {
+        event->accept();
+        container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
+
+        addTab(container->widget(), container->headerTitle());
+    }
 }

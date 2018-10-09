@@ -23,7 +23,7 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     ui->labelHeader->installEventFilter(this);
 
     QFont f(ui->labelHeader->font());
-    f.setPointSize(12);
+    f.setPointSize(10);
     f.setBold(true);
     ui->labelHeader->setFont(f);
 

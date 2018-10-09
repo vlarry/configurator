@@ -9,6 +9,7 @@
     #include <QDragEnterEvent>
     #include <QDragMoveEvent>
     #include <QDebug>
+    #include "containerwidget.h"
     //---------------------------------
     class CTabWidget: public QTabWidget
     {
