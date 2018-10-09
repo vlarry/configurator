@@ -12,7 +12,8 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
 {
     ui->setupUi(this);
 
-    ui->toolButtonHeaderFunction->setFixedHeight(ui->labelHeader->height());
+    setAutoFillBackground(true);
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     ui->toolButtonHeaderFunction->hide();
     ui->toolButtonHeaderMinimize->hide();
     ui->toolButtonHeaderExpand->hide();
@@ -27,9 +28,8 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     f.setBold(true);
     ui->labelHeader->setFont(f);
 
+    setAnchor(m_anchor);
     setWidget(contentWidget);
-    setAttribute(Qt:: WA_DeleteOnClose);
-
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::hide);
 }
 //-----------------------------------
@@ -112,6 +112,15 @@ void CContainerWidget::setHeaderBackground(const QColor& backgroundColor)
     QPalette pal(ui->labelHeader->palette());
     pal.setBrush(QPalette::Window, QBrush(gradient));
     ui->labelHeader->setPalette(pal);
+
+    QLinearGradient gradientButton(0, 0, 0, ui->toolButtonHeaderFunction->height());
+    gradient.setColorAt(0, backgroundColor);
+    gradient.setColorAt(0.5, Qt::gray);
+    gradient.setColorAt(1, backgroundColor);
+
+    QPalette palBut(ui->toolButtonHeaderFunction->palette());
+    palBut.setBrush(QPalette::Button, QBrush(gradientButton));
+    ui->toolButtonHeaderFunction->setPalette(palBut);
 }
 //-------------------------------------------------------------------
 void CContainerWidget::setAnchor(CContainerWidget::AnchorType anchor)
@@ -214,6 +223,7 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
                         if(tcontainer)
                         {
                             QPoint pos = m_superParent->mapFromParent(QCursor::pos());
+                            tcontainer->setWindowFlag(Qt::CustomizeWindowHint);
                             tcontainer->setParent(m_superParent);
                             tcontainer->setAnchor(AnchorType::AnchorFree);
                             tcontainer->show();

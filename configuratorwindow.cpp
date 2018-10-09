@@ -7,6 +7,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_init(false),
     m_modbus(nullptr),
     m_treeWidgetDeviceMenu(nullptr),
+    m_containerWidgetVariable(nullptr),
+    m_containerWidgetDeviceMenu(nullptr),
+    m_containerIndicatorState(nullptr),
     m_serialPortSettings_window(nullptr),
     m_output_window(nullptr),
     m_monitor_purpose_window(nullptr),
@@ -49,6 +52,11 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_debug_info            = new QTimer(this);
     m_timer_synchronization     = new QTimer(this);
     m_journal_timer             = new QTimer(this);
+
+    m_containerIndicatorState = new CContainerWidget(tr("Состояние выходов"), m_output_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerIndicatorState->setSuperParent(this);
+    m_containerIndicatorState->setHeaderBackground(QColor(190, 190, 190));
+    m_containerIndicatorState->hide();
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -2681,36 +2689,36 @@ void ConfiguratorWindow::indicatorVisiblity(bool state)
     if(state)
     {
         sendOutputAllRequest();
-        m_output_window->show();
+        m_containerIndicatorState->show();
     }
     else
     {
-        m_output_window->hide();
+        m_containerIndicatorState->hide();
 
-        QStringList ledList   = m_output_window->ledList();
-        QStringList relayList = m_output_window->relayList();
+//        QStringList ledList   = m_output_window->ledList();
+//        QStringList relayList = m_output_window->relayList();
 
-        QSqlQuery query(m_system_db);
+//        QSqlQuery query(m_system_db);
 
-        m_system_db.transaction();
+//        m_system_db.transaction();
 
-        for(int i = 0; i < ledList.count(); i++)
-        {
-            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
-                       arg(ledList.at(i)).
-                       arg(i + 1).
-                       arg("LED"));
-        }
+//        for(int i = 0; i < ledList.count(); i++)
+//        {
+//            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
+//                       arg(ledList.at(i)).
+//                       arg(i + 1).
+//                       arg("LED"));
+//        }
 
-        for(int i = 0; i < relayList.count(); i++)
-        {
-            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
-                       arg(relayList.at(i)).
-                       arg(i + 1).
-                       arg("RELAY"));
-        }
+//        for(int i = 0; i < relayList.count(); i++)
+//        {
+//            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
+//                       arg(relayList.at(i)).
+//                       arg(i + 1).
+//                       arg("RELAY"));
+//        }
 
-        m_system_db.commit();
+//        m_system_db.commit();
     }
 }
 //---------------------------------------------------------
@@ -4852,7 +4860,7 @@ void ConfiguratorWindow::initIndicatorStates()
         }
     }
 
-    m_output_window->setLists(led_list, relay_list);
+    //m_output_window->setLists(led_list, relay_list);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
@@ -5578,7 +5586,7 @@ void ConfiguratorWindow::displayOutputAllRead(CModBusDataUnit& unit)
     QVector<quint16> data = QVector<quint16>() << unit[1] << unit[0] << unit[3] << unit[2];
 
     m_outputall_window->setOutputStates(data);
-    m_output_window->setOutputStates(data);
+//    m_output_window->setOutputStates(data);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayInputsRead(const QVector<quint16>& data)
@@ -10618,9 +10626,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
 
-    connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates,
-            &QPushButton::setChecked);
-    connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
+//    connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates,
+//            &QPushButton::setChecked);
+//    connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this,
             &ConfiguratorWindow::monitorK10K11Visiblity);
     connect(m_monitor_purpose_window, &CMonitorPurpose::closeWindow, ui->pushButtonMonitorK10_K11,
@@ -10674,7 +10682,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_outputall_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_inputs_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendInputStatesRequest);
     connect(ui->pushButtonSyncDateTime, &QPushButton::clicked, this, &ConfiguratorWindow::synchronizationDateTime);
-    connect(m_output_window, &CIndicatorState::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
+//    connect(m_output_window, &CIndicatorState::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_debuginfo_window, &CDebugInfo::readInfo, this, &ConfiguratorWindow::debugInfoCtrl);
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoRead);
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);

@@ -36,72 +36,85 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="spacing">
       <number>1</number>
      </property>
      <item>
-      <widget class="QLabel" name="labelHeader">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>0</number>
        </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>16</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="toolButtonHeaderFunction">
-       <property name="minimumSize">
-        <size>
-         <width>16</width>
-         <height>16</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16</width>
-         <height>16</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
+       <item>
+        <widget class="QLabel" name="labelHeader">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButtonHeaderFunction">
+         <property name="minimumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QToolButton" name="toolButtonHeaderMinimize">
        <property name="minimumSize">
         <size>
-         <width>16</width>
-         <height>16</height>
+         <width>24</width>
+         <height>24</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>16</width>
-         <height>16</height>
+         <width>24</width>
+         <height>24</height>
         </size>
        </property>
        <property name="text">
@@ -111,20 +124,26 @@
         <iconset resource="../../resource.qrc">
          <normaloff>:/images/resource/images/minimize.png</normaloff>:/images/resource/images/minimize.png</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="toolButtonHeaderExpand">
        <property name="minimumSize">
         <size>
-         <width>16</width>
-         <height>16</height>
+         <width>24</width>
+         <height>24</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>16</width>
-         <height>16</height>
+         <width>24</width>
+         <height>24</height>
         </size>
        </property>
        <property name="text">
@@ -134,20 +153,26 @@
         <iconset resource="../../resource.qrc">
          <normaloff>:/images/resource/images/expanded.png</normaloff>:/images/resource/images/expanded.png</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="toolButtonHeaderClose">
        <property name="minimumSize">
         <size>
-         <width>16</width>
-         <height>16</height>
+         <width>24</width>
+         <height>24</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>16</width>
-         <height>16</height>
+         <width>24</width>
+         <height>24</height>
         </size>
        </property>
        <property name="text">
@@ -156,6 +181,12 @@
        <property name="icon">
         <iconset resource="../../resource.qrc">
          <normaloff>:/images/resource/images/close.png</normaloff>:/images/resource/images/close.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>

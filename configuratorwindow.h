@@ -741,6 +741,7 @@
             QTreeWidget*                     m_treeWidgetDeviceMenu;
             CContainerWidget*                m_containerWidgetVariable;
             CContainerWidget*                m_containerWidgetDeviceMenu;
+            CContainerWidget*                m_containerIndicatorState;
             CSerialPortSetting*              m_serialPortSettings_window;
             CIndicatorState*                 m_output_window;
             CMonitorPurpose*                 m_monitor_purpose_window;

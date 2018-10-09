@@ -15,10 +15,10 @@ void CTabWidget::tabDoubleClicked(int index)
 {
     QWidget* tabWidget = widget(index);
     QString  tabTitle  = tabText(index);
-    QLayout* l         = tabWidget->layout();
+    QLayout* tlayout   = tabWidget->layout();
     QWidget* newWidget = new QWidget(this);
 
-    newWidget->setLayout(l);
+    newWidget->setLayout(tlayout);
     newWidget->setWindowTitle(tabTitle);
     newWidget->setWindowFlag(Qt::Window);
     newWidget->show();
