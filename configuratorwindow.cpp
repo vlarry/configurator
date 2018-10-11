@@ -10,6 +10,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_containerWidgetVariable(nullptr),
     m_containerWidgetDeviceMenu(nullptr),
     m_containerIndicatorState(nullptr),
+    m_containerMonitorK10K11(nullptr),
     m_serialPortSettings_window(nullptr),
     m_output_window(nullptr),
     m_monitor_purpose_window(nullptr),
@@ -36,12 +37,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_modbus                    = new CModBus(this);
     m_treeWidgetDeviceMenu      = new QTreeWidget(this);
     m_serialPortSettings_window = new CSerialPortSetting;
-    m_output_window             = new CIndicatorState(this);
-    m_monitor_purpose_window    = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
-    m_outputall_window          = new COutputAll(tr("Все выходы"), this);
-    m_inputs_window             = new COutputAll(tr("Входы"), this);
-    m_debuginfo_window          = new CDebugInfo(tr("Отладочная информация"), this);
-    m_status_window             = new CStatusInfo;
     m_status_bar                = new CStatusBar(statusBar());
     m_popup                     = new PopUp(this);
     m_watcher                   = new QFutureWatcher<void>(this);
@@ -52,11 +47,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_debug_info            = new QTimer(this);
     m_timer_synchronization     = new QTimer(this);
     m_journal_timer             = new QTimer(this);
-
-    m_containerIndicatorState = new CContainerWidget(tr("Состояние выходов"), m_output_window, CContainerWidget::AnchorType::AnchorFree, this);
-    m_containerIndicatorState->setSuperParent(this);
-    m_containerIndicatorState->setHeaderBackground(QColor(190, 190, 190));
-    m_containerIndicatorState->hide();
 
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
@@ -79,6 +69,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initCrashJournal(); // инициализация параметров журнала аварий
     initHalfhourJournal(); // инициализация параметров журнала получасовок
     initProtectionList(); // инициализация списка защит
+    initSubWindow(); // инициализация дополнительных окон
     initIndicatorStates(); // инициализация окна отображения состояний индикаторов
     initMonitorPurpose();
     initOutputAll();
@@ -2267,7 +2258,6 @@ void ConfiguratorWindow::internalVariableRead()
 {
     if(!m_modbus->isConnected())
     {
-        noConnectMessage();
         return;
     }
 
@@ -2695,30 +2685,30 @@ void ConfiguratorWindow::indicatorVisiblity(bool state)
     {
         m_containerIndicatorState->hide();
 
-//        QStringList ledList   = m_output_window->ledList();
-//        QStringList relayList = m_output_window->relayList();
+        QStringList ledList   = m_output_window->ledList();
+        QStringList relayList = m_output_window->relayList();
 
-//        QSqlQuery query(m_system_db);
+        QSqlQuery query(m_system_db);
 
-//        m_system_db.transaction();
+        m_system_db.transaction();
 
-//        for(int i = 0; i < ledList.count(); i++)
-//        {
-//            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
-//                       arg(ledList.at(i)).
-//                       arg(i + 1).
-//                       arg("LED"));
-//        }
+        for(int i = 0; i < ledList.count(); i++)
+        {
+            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
+                       arg(ledList.at(i)).
+                       arg(i + 1).
+                       arg("LED"));
+        }
 
-//        for(int i = 0; i < relayList.count(); i++)
-//        {
-//            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
-//                       arg(relayList.at(i)).
-//                       arg(i + 1).
-//                       arg("RELAY"));
-//        }
+        for(int i = 0; i < relayList.count(); i++)
+        {
+            query.exec(QString("UPDATE indicator SET name = \'%1\' WHERE row = %2 AND type = \'%3\';").
+                       arg(relayList.at(i)).
+                       arg(i + 1).
+                       arg("RELAY"));
+        }
 
-//        m_system_db.commit();
+        m_system_db.commit();
     }
 }
 //---------------------------------------------------------
@@ -2727,10 +2717,10 @@ void ConfiguratorWindow::monitorK10K11Visiblity(bool state)
     if(state)
     {
         sendMonitorPurposeK10_K11Request();
-        m_monitor_purpose_window->show();
+        m_containerMonitorK10K11->show();
     }
     else
-        m_monitor_purpose_window->hide();
+        m_containerMonitorK10K11->hide();
 
     ui->pushButtonMonitorK10_K11->setChecked(state);
 }
@@ -2740,10 +2730,10 @@ void ConfiguratorWindow::outputAllVisiblity(bool state)
     if(state)
     {
         sendOutputAllRequest();
-        m_outputall_window->show();
+        m_containerOutputAll->show();
     }
     else
-        m_outputall_window->hide();
+        m_containerOutputAll->hide();
 }
 //-------------------------------------------------
 void ConfiguratorWindow::inputVisiblity(bool state)
@@ -2751,10 +2741,10 @@ void ConfiguratorWindow::inputVisiblity(bool state)
     if(state)
     {
         sendInputStatesRequest();
-        m_inputs_window->show();
+        m_containerInputs->show();
     }
     else
-        m_inputs_window->hide();
+        m_containerInputs->hide();
 }
 //-----------------------------------------------------
 void ConfiguratorWindow::debugInfoVisiblity(bool state)
@@ -2762,11 +2752,11 @@ void ConfiguratorWindow::debugInfoVisiblity(bool state)
     if(state)
     {
         debugInfoRead();
-        m_debuginfo_window->show();
+        m_containerDebugInfo->show();
     }
     else
     {
-        m_debuginfo_window->hide();
+        m_containerDebugInfo->hide();
     }
 }
 //------------------------------------------------------
@@ -2775,11 +2765,11 @@ void ConfiguratorWindow::statusInfoVisiblity(bool state)
     if(state)
     {
         readStatusInfo();
-        m_status_window->show();
+        m_containerStatusInfo->show();
     }
     else
     {
-        m_status_window->hide();
+        m_containerStatusInfo->hide();
     }
 }
 //--------------------------------------------------------------
@@ -4862,6 +4852,48 @@ void ConfiguratorWindow::initIndicatorStates()
 
     //m_output_window->setLists(led_list, relay_list);
 }
+//--------------------------------------
+void ConfiguratorWindow::initSubWindow()
+{
+    m_output_window          = new CIndicatorState(this);
+    m_monitor_purpose_window = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
+    m_outputall_window       = new COutputAll(tr("Все выходы"), this);
+    m_inputs_window          = new COutputAll(tr("Входы"), this);
+    m_debuginfo_window       = new CDebugInfo(tr("Отладочная информация"), this);
+    m_status_window          = new CStatusInfo(this);
+
+    m_containerIndicatorState = new CContainerWidget(tr("Состояние выходов"), m_output_window, CContainerWidget::AnchorType::AnchorFree,
+                                                     this);
+    m_containerIndicatorState->setSuperParent(this);
+    m_containerIndicatorState->setHeaderBackground(QColor(190, 190, 190));
+    m_containerIndicatorState->hide();
+
+    m_containerMonitorK10K11 = new CContainerWidget(tr("Монитор привязок по К10/К11"), m_monitor_purpose_window,
+                                                    CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerMonitorK10K11->setSuperParent(this);
+    m_containerMonitorK10K11->setHeaderBackground(QColor(190, 190, 190));
+    m_containerMonitorK10K11->hide();
+
+    m_containerOutputAll = new CContainerWidget(tr("Все выходы"), m_outputall_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerOutputAll->setSuperParent(this);
+    m_containerOutputAll->setHeaderBackground(QColor(190, 190, 190));
+    m_containerOutputAll->hide();
+
+    m_containerInputs = new CContainerWidget(tr("Входы"), m_inputs_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerInputs->setSuperParent(this);
+    m_containerInputs->setHeaderBackground(QColor(190, 190, 190));
+    m_containerInputs->hide();
+
+    m_containerDebugInfo = new CContainerWidget(tr("Отладочная информация"), m_debuginfo_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerDebugInfo->setSuperParent(this);
+    m_containerDebugInfo->setHeaderBackground(QColor(190, 190, 190));
+    m_containerDebugInfo->hide();
+
+    m_containerStatusInfo = new CContainerWidget(tr("Информация о статусах"), m_status_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerStatusInfo->setSuperParent(this);
+    m_containerStatusInfo->setHeaderBackground(QColor(190, 190, 190));
+    m_containerStatusInfo->hide();
+}
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
@@ -5586,7 +5618,7 @@ void ConfiguratorWindow::displayOutputAllRead(CModBusDataUnit& unit)
     QVector<quint16> data = QVector<quint16>() << unit[1] << unit[0] << unit[3] << unit[2];
 
     m_outputall_window->setOutputStates(data);
-//    m_output_window->setOutputStates(data);
+    m_output_window->setOutputStates(data);
 }
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayInputsRead(const QVector<quint16>& data)
@@ -10626,9 +10658,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
 
-//    connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates,
-//            &QPushButton::setChecked);
-//    connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
+    connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates,
+            &QPushButton::setChecked);
+    connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this,
             &ConfiguratorWindow::monitorK10K11Visiblity);
     connect(m_monitor_purpose_window, &CMonitorPurpose::closeWindow, ui->pushButtonMonitorK10_K11,
@@ -10682,7 +10714,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_outputall_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_inputs_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendInputStatesRequest);
     connect(ui->pushButtonSyncDateTime, &QPushButton::clicked, this, &ConfiguratorWindow::synchronizationDateTime);
-//    connect(m_output_window, &CIndicatorState::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
+    connect(m_output_window, &CIndicatorState::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_debuginfo_window, &CDebugInfo::readInfo, this, &ConfiguratorWindow::debugInfoCtrl);
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoRead);
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);

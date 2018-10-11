@@ -5,23 +5,26 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     QWidget(parent),
     ui(new Ui::CContainerWidget),
     m_superParent(nullptr),
+    m_contentWidget(nullptr),
     m_anchor(anchor),
     m_pos(QPoint(-1, -1)),
+    m_size_pos(QPoint(-1, -1)),
     m_id(-1),
     m_background_color(QColor())
 {
     ui->setupUi(this);
 
+    setMouseTracking(true);
     setAutoFillBackground(true);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     ui->toolButtonHeaderFunction->hide();
-    ui->toolButtonHeaderMinimize->hide();
-    ui->toolButtonHeaderExpand->hide();
     ui->toolButtonHeaderClose->hide();
     ui->labelHeader->setText(title);
     ui->labelHeader->setAlignment(Qt::AlignCenter);
     ui->labelHeader->setAutoFillBackground(true);
     ui->labelHeader->installEventFilter(this);
+    ui->toolButtonGrip->installEventFilter(this);
+    ui->toolButtonGrip->hide();
 
     QFont f(ui->labelHeader->font());
     f.setPointSize(10);
@@ -30,7 +33,7 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
 
     setAnchor(m_anchor);
     setWidget(contentWidget);
-    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::hide);
+    resize(800, 600);
 }
 //-----------------------------------
 CContainerWidget::~CContainerWidget()
@@ -91,6 +94,7 @@ QWidget *CContainerWidget::superParent() const
 void CContainerWidget::setWidget(QWidget* wgt)
 {
     m_contentWidget = wgt;
+    m_contentWidget->setMouseTracking(true);
 
     QVBoxLayout* vlayout = new QVBoxLayout(ui->widgetContainer);
     vlayout->setContentsMargins(0, 0, 0, 0);
@@ -129,15 +133,15 @@ void CContainerWidget::setAnchor(CContainerWidget::AnchorType anchor)
 
     if(m_anchor == AnchorType::AnchorFree)
     {
-        ui->toolButtonHeaderMinimize->show();
-        ui->toolButtonHeaderExpand->show();
         ui->toolButtonHeaderClose->show();
+        ui->toolButtonGrip->show();
+        connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
     }
     else
     {
-        ui->toolButtonHeaderMinimize->hide();
-        ui->toolButtonHeaderExpand->hide();
+        disconnect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
         ui->toolButtonHeaderClose->hide();
+        ui->toolButtonGrip->hide();
     }
 }
 //----------------------------------
@@ -178,6 +182,16 @@ void CContainerWidget::buttonFunctionStateChanged(bool state)
         ui->toolButtonHeaderFunction->setToolTip(tr("Развернуть меню"));
     }
 }
+//----------------------------------------
+void CContainerWidget::expandedContainer()
+{
+    Qt::WindowStates states = windowState();
+
+    if(!(states & Qt::WindowMaximized))
+        showMaximized();
+    else
+        showNormal();
+}
 //----------------------------------------------------------------
 bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
 {
@@ -209,7 +223,7 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
                     render(&pixmap);
                     drag->setPixmap(pixmap);
 
-                    hide();
+                    close();
 
                     if(m_anchor == AnchorType::AnchorDockWidget)
                         emit removeContainer(m_id);
@@ -223,11 +237,10 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
                         if(tcontainer)
                         {
                             QPoint pos = m_superParent->mapFromParent(QCursor::pos());
-                            tcontainer->setWindowFlag(Qt::CustomizeWindowHint);
                             tcontainer->setParent(m_superParent);
-                            tcontainer->setAnchor(AnchorType::AnchorFree);
                             tcontainer->show();
                             tcontainer->move(pos);
+                            tcontainer->setAnchor(AnchorType::AnchorFree);
                         }
                     }
                 }
@@ -235,6 +248,40 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
         }
         else if(event->type() == QEvent::MouseButtonRelease)
             m_pos = QPoint(-1, -1);
+    }
+    else if(object == ui->toolButtonGrip)
+    {
+        if(event->type() == QEvent::MouseButtonPress)
+        {
+            QMouseEvent* me = static_cast<QMouseEvent*>(event);
+
+            if(me->button() == Qt::LeftButton)
+            {
+                qDebug() << "press";
+                m_size_pos = me->pos();
+            }
+        }
+        else if(event->type() == QEvent::MouseMove)
+        {
+            QMouseEvent* me = static_cast<QMouseEvent*>(event);
+
+            if(me->buttons() & Qt::LeftButton)
+            {
+                QPoint offset = me->pos() - m_size_pos;
+                qDebug() << "move";
+                resize(geometry().width() + offset.x(), geometry().height() + offset.y());
+            }
+        }
+        else if(event->type() == QEvent::MouseButtonRelease)
+        {
+            QMouseEvent* me = static_cast<QMouseEvent*>(event);
+
+            if(me->buttons() & Qt::LeftButton)
+            {
+                qDebug() << "release";
+                m_size_pos = QPoint(-1, -1);
+            }
+        }
     }
 
     return false;

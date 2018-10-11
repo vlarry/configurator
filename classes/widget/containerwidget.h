@@ -7,6 +7,7 @@
     #include <QMimeData>
     #include <QToolButton>
     #include <QDebug>
+    #include <QSizeGrip>
     //----------
     namespace Ui
     {
@@ -47,6 +48,7 @@
 
         public slots:
             void buttonFunctionStateChanged(bool state = false);
+            void expandedContainer();
 
         signals:
             void removeContainer(int);
@@ -62,6 +64,7 @@
             QWidget*              m_contentWidget;
             AnchorType            m_anchor;
             QPoint                m_pos;
+            QPoint                m_size_pos;
             int                   m_id;
             QColor                m_background_color;
 };

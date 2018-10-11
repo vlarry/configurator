@@ -665,6 +665,7 @@
             void initTable(QTableView* table, QVector<QPair<QString, QString> >& column_labels, group_t& group_rows);
             void initTableProtection(QTableView* table, block_protection_list_t& labels);
             void initIndicatorStates();
+            void initSubWindow();
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CModBusDataUnit& unit);
             void displaySettingResponse(CModBusDataUnit& unit);
@@ -742,6 +743,11 @@
             CContainerWidget*                m_containerWidgetVariable;
             CContainerWidget*                m_containerWidgetDeviceMenu;
             CContainerWidget*                m_containerIndicatorState;
+            CContainerWidget*                m_containerMonitorK10K11;
+            CContainerWidget*                m_containerOutputAll;
+            CContainerWidget*                m_containerInputs;
+            CContainerWidget*                m_containerDebugInfo;
+            CContainerWidget*                m_containerStatusInfo;
             CSerialPortSetting*              m_serialPortSettings_window;
             CIndicatorState*                 m_output_window;
             CMonitorPurpose*                 m_monitor_purpose_window;

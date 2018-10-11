@@ -31,7 +31,6 @@ void CDockWidget::addContainer(CContainerWidget* container)
         container->setID(m_idCount++);
         container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
         container->show();
-        container->setVisible(true);
         ui->verticalLayoutContainer->addWidget(container);
 
         connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
