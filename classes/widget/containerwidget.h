@@ -1,20 +1,21 @@
 #ifndef CONTAINERWIDGET_H
     #define CONTAINERWIDGET_H
     //----------------
-    #include <QWidget>
+    #include <QFrame>
     #include <QMouseEvent>
     #include <QDrag>
     #include <QMimeData>
     #include <QToolButton>
     #include <QDebug>
     #include <QSizeGrip>
+    #include <QPainter>
     //----------
     namespace Ui
     {
         class CContainerWidget;
     }
-    //------------------------------------
-    class CContainerWidget: public QWidget
+    //-----------------------------------
+    class CContainerWidget: public QFrame
     {
         Q_OBJECT
 
@@ -26,9 +27,9 @@
             };
 
         public:
-            explicit CContainerWidget();
             explicit CContainerWidget(const QString& title, QWidget* contentWidget, AnchorType anchor, QWidget* parent = nullptr);
             ~CContainerWidget();
+
             AnchorType anchor() const;
             QWidget* widget();
             void functionButtonHide();
@@ -67,6 +68,5 @@
             QPoint                m_size_pos;
             int                   m_id;
             QColor                m_background_color;
-};
-
+    };
 #endif // CONTAINERWIDGET_H
