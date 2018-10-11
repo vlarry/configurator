@@ -7933,8 +7933,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         tableWidgetVariable->init(m_system_db);
         tableWidgetVariable->setProperty("TYPE", "VARIABLE");
         m_containerWidgetVariable = new CContainerWidget(tr("Панель измерений"), tableWidgetVariable,
-                                                         CContainerWidget::AnchorType::AnchorDockWidget,
-                                                         ui->dockWidgetVariable);
+                                                         CContainerWidget::AnchorType::AnchorDockWidget, this);
         m_containerWidgetVariable->setSuperParent(this);
         m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
         ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
@@ -7942,13 +7941,12 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         // инициализация панели меню
         m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
         m_containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
-                                                           CContainerWidget::AnchorType::AnchorDockWidget,
-                                                           ui->dockWidgetMenuDevice);
-        connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
+                                                           CContainerWidget::AnchorType::AnchorDockWidget, this);
         m_containerWidgetDeviceMenu->setSuperParent(this);
         m_containerWidgetDeviceMenu->setButtonFunctionState(true);
         m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
         ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
+        connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
 
         loadSettings();
         initConnect();

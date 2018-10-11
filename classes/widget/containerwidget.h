@@ -65,7 +65,7 @@
             QWidget*              m_contentWidget;
             AnchorType            m_anchor;
             QPoint                m_pos;
-            QPoint                m_size_pos;
+            QPoint                m_pos_grip;
             int                   m_id;
             QColor                m_background_color;
     };

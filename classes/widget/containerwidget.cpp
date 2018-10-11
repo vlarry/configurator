@@ -8,7 +8,7 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     m_contentWidget(nullptr),
     m_anchor(anchor),
     m_pos(QPoint(-1, -1)),
-    m_size_pos(QPoint(-1, -1)),
+    m_pos_grip(QPoint(-1, -1)),
     m_id(-1),
     m_background_color(QColor())
 {
@@ -18,6 +18,7 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setContentsMargins(3, 3, 3, 3);
     ui->toolButtonHeaderFunction->hide();
+    ui->toolButtonHeaderFunction->setCheckable(true);
     ui->labelHeader->setText(title);
     ui->labelHeader->setAlignment(Qt::AlignCenter);
     ui->labelHeader->setAutoFillBackground(true);
@@ -35,6 +36,7 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     resize(800, 600);
 
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
+    connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionStateChanged);
 }
 //-----------------------------------
 CContainerWidget::~CContainerWidget()
@@ -160,7 +162,6 @@ void CContainerWidget::setButtonFunctionState(bool state)
     {
         buttonFunctionStateChanged(false);
         ui->toolButtonHeaderFunction->show();
-        connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionStateChanged);
     }
     else
     {
@@ -256,7 +257,7 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
 
             if(me->button() == Qt::LeftButton)
             {
-                m_size_pos = me->pos();
+                m_pos_grip = me->pos();
             }
         }
         else if(event->type() == QEvent::MouseMove)
@@ -265,7 +266,7 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
 
             if(me->buttons() & Qt::LeftButton)
             {
-                QPoint offset = me->pos() - m_size_pos;
+                QPoint offset = me->pos() - m_pos_grip;
                 resize(geometry().width() + offset.x(), geometry().height() + offset.y());
             }
         }
@@ -275,7 +276,7 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
 
             if(me->buttons() & Qt::LeftButton)
             {
-                m_size_pos = QPoint(-1, -1);
+                m_pos_grip = QPoint(-1, -1);
             }
         }
     }
