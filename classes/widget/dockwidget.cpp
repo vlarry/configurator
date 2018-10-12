@@ -9,8 +9,6 @@ CDockWidget::CDockWidget(QWidget* parent):
     m_controlItem(nullptr)
 {
     ui->setupUi(this);
-//    ui->gridLayoutContainer->setColumnStretch(0, 1);
-
     ui->pushButtonItemCtrlBottom->hide();
     ui->pushButtonItemCtrlLeft->hide();
     ui->pushButtonItemCtrlRight->hide();
@@ -30,6 +28,7 @@ void CDockWidget::addContainer(CContainerWidget* container)
     {
         container->setID(m_idCount++);
         container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
+        container->setHeaderBackground(QColor(190, 190, 190));
         container->show();
         ui->verticalLayoutContainer->addWidget(container);
 
@@ -154,6 +153,7 @@ void CDockWidget::dropEvent(QDropEvent* event)
     {
         event->accept();
         container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
+        container->setHeaderBackground(QColor(190, 190, 190));
         addContainer(container);
     }
 }

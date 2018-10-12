@@ -39,6 +39,8 @@
             int  id() const;
             bool buttonFunctionState() const;
             QToolButton* buttonFunction() const;
+            void headerShow() const;
+            void headerHide() const;
             QWidget* superParent() const;
             void setWidget(QWidget* wgt);
             void setHeaderBackground(const QColor& backgroundColor);

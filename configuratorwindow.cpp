@@ -11,6 +11,11 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_containerWidgetDeviceMenu(nullptr),
     m_containerIndicatorState(nullptr),
     m_containerMonitorK10K11(nullptr),
+    m_containerOutputAll(nullptr),
+    m_containerInputs(nullptr),
+    m_containerDebugInfo(nullptr),
+    m_containerStatusInfo(nullptr),
+    m_containerTerminalEvent(nullptr),
     m_serialPortSettings_window(nullptr),
     m_output_window(nullptr),
     m_monitor_purpose_window(nullptr),
@@ -18,6 +23,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_inputs_window(nullptr),
     m_debuginfo_window(nullptr),
     m_debug_var_window(nullptr),
+    m_event_window(nullptr),
     m_popup(nullptr),
     m_tim_calculate(nullptr),
     m_tim_debug_info(nullptr),
@@ -76,8 +82,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initInputs();
     initDebugInfo();
     initWordStatus();
-
-    refreshSerialPort();
 
     setWindowFlag(Qt::FramelessWindowHint);
 }
@@ -6254,7 +6258,7 @@ QString ConfiguratorWindow::loadUserPassword(const QString& login)
 void ConfiguratorWindow::outApplicationEvent(const QString& text)
 {
     QString dateTimeText = QString("%1 - %2.").arg(QDateTime::currentDateTime().toString("[dd.mm.yyyy - HH:mm:ss.zzz]")).arg(text);
-    ui->terminalWindowEvent->appendPlainText(dateTimeText);
+    m_event_window->appendPlainText(dateTimeText);
 }
 //----------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
@@ -7946,6 +7950,22 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
         connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
 
+        // инициализация панели сообщений
+        m_event_window = new CTerminalWindow(this);
+        m_event_window->setObjectName("terminalWindowEvent");
+        m_containerTerminalEvent = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
+        m_containerTerminalEvent->headerHide();
+        m_containerTerminalEvent->setSuperParent(this);
+        ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
+
+        // инициализация терминала MODBUS
+        m_terminal_modbus = new CTerminal(this);
+        m_terminal_modbus->setObjectName("terminalModbus");
+        m_containerTerminalModbus = new CContainerWidget(tr("Терминал"), m_terminal_modbus, CContainerWidget::AnchorType::AnchorDockWidget, this);
+        m_containerTerminalModbus->headerHide();
+        m_containerTerminalModbus->setSuperParent(this);
+        ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
+
         loadSettings();
         initConnect();
 
@@ -7953,6 +7973,10 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         panelVisibleCtrl(ui->centralWgt);
         panelVisibleCtrl(ui->dockWidgetVariable);
         panelVisibleCtrl(ui->framePanelMessage);
+
+        ui->tabWidgetMessage->setSuperParent(this);
+
+        refreshSerialPort();
 
         m_init = true;
     }
@@ -10755,7 +10779,7 @@ void ConfiguratorWindow::initConnect()
             &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
-    connect(m_modbus, &CModBus::rawData, ui->widgetTerminal, &CTerminal::appendData);
-    connect(ui->widgetTerminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
-    connect(ui->widgetTerminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
+//    connect(m_modbus, &CModBus::rawData, ui->widgetTerminal, &CTerminal::appendData);
+//    connect(ui->widgetTerminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
+//    connect(ui->widgetTerminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
 }

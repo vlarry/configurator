@@ -10,6 +10,7 @@
     #include <QDragMoveEvent>
     #include <QDebug>
     #include "containerwidget.h"
+    #include "terminalwindow.h"
     //---------------------------------
     class CTabWidget: public QTabWidget
     {
@@ -17,6 +18,7 @@
 
         public:
             CTabWidget(QWidget* parent = nullptr);
+            void setSuperParent(QWidget* parent);
 
         private slots:
             void tabDoubleClicked(int index);
@@ -26,6 +28,6 @@
             void dropEvent(QDropEvent* event);
 
         private:
-
+            QWidget* m_superParent;
     };
 #endif // TABWIDGET_H

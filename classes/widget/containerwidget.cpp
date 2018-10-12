@@ -92,6 +92,16 @@ QToolButton* CContainerWidget::buttonFunction() const
 {
     return ui->toolButtonHeaderFunction;
 }
+//---------------------------------------
+void CContainerWidget::headerShow() const
+{
+    ui->frameHeader->show();
+}
+//---------------------------------------
+void CContainerWidget::headerHide() const
+{
+    ui->frameHeader->hide();
+}
 //--------------------------------------------
 QWidget *CContainerWidget::superParent() const
 {
@@ -242,6 +252,7 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
                         {
                             QPoint pos = m_superParent->mapFromParent(QCursor::pos());
                             tcontainer->setParent(m_superParent);
+                            tcontainer->setHeaderBackground(QColor(190, 190, 190));
                             tcontainer->show();
                             tcontainer->move(pos);
                             tcontainer->setAnchor(AnchorType::AnchorFree);

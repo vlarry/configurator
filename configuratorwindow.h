@@ -748,6 +748,8 @@
             CContainerWidget*                m_containerInputs;
             CContainerWidget*                m_containerDebugInfo;
             CContainerWidget*                m_containerStatusInfo;
+            CContainerWidget*                m_containerTerminalEvent;
+            CContainerWidget*                m_containerTerminalModbus;
             CSerialPortSetting*              m_serialPortSettings_window;
             CIndicatorState*                 m_output_window;
             CMonitorPurpose*                 m_monitor_purpose_window;
@@ -756,6 +758,8 @@
             CDebugInfo*                      m_debuginfo_window;
             CStatusInfo*                     m_status_window;
             CWidget*                         m_debug_var_window; // отладочное окно внутренних переменных
+            CTerminalWindow*                 m_event_window; // панель событий
+            CTerminal*                       m_terminal_modbus; // терминал для вывода сообщений от модбас
             PopUp*                           m_popup;
             QTimer*                          m_tim_calculate;
             QTimer*                          m_tim_debug_info;
