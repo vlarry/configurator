@@ -24,12 +24,16 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     ui->labelHeader->setAutoFillBackground(true);
     ui->labelHeader->installEventFilter(this);
     ui->toolButtonGrip->installEventFilter(this);
+    ui->toolButtonGrip->setCursor(QCursor(Qt::SizeFDiagCursor));
     setFrameShape(QFrame::NoFrame);
 
     QFont f(ui->labelHeader->font());
-    f.setPointSize(10);
+    f.setPointSize(14);
     f.setBold(true);
     ui->labelHeader->setFont(f);
+
+    ui->toolButtonHeaderClose->setFixedSize(ui->labelHeader->height(), ui->labelHeader->height());
+    ui->toolButtonHeaderFunction->setFixedSize(ui->labelHeader->height(), ui->labelHeader->height());
 
     setAnchor(m_anchor);
     setWidget(contentWidget);

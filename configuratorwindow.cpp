@@ -3479,7 +3479,7 @@ void ConfiguratorWindow::sendCalculateRead(CModBusDataUnit& unit)
 void ConfiguratorWindow::initMenuPanel()
 {
     QFont itemFont(m_treeWidgetDeviceMenu->font());
-    itemFont.setPointSize(10);
+    itemFont.setPointSize(12);
     m_treeWidgetDeviceMenu->setFont(itemFont);
     m_treeWidgetDeviceMenu->header()->hide();
 
@@ -4897,12 +4897,15 @@ void ConfiguratorWindow::initSubWindow()
 //----------------------------------------------------------------------
 void ConfiguratorWindow::displayCalculateValues(QVector<quint16> values)
 {
-//    CVariableWidget* varWidget = qobject_cast<CVariableWidget*>(ui->dockWidgetVariable->widget("VARIABLE"));
+    if(!m_containerWidgetVariable)
+        return;
 
-//    if(varWidget)
-//    {
-//        varWidget->setData(values);
-//    }
+    CVariableWidget* varWidget = qobject_cast<CVariableWidget*>(m_containerWidgetVariable->widget());
+
+    if(varWidget)
+    {
+        varWidget->setData(values);
+    }
 
     m_calculate_buffer.clear();
 }
@@ -7885,11 +7888,6 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
             ui->dockWidgetMenuDevice->setMinimumWidth(ui->dockWidgetMenuDevice->control()->minimumWidth());
         ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
 
-        // управление отображением панелей
-        panelVisibleCtrl(ui->centralWgt);
-        panelVisibleCtrl(ui->dockWidgetVariable);
-        panelVisibleCtrl(ui->framePanelMessage);
-
         // шрифт для панели меню
         QFont treeFont = m_treeWidgetDeviceMenu->font();
         treeFont.setPointSize(12);
@@ -7950,6 +7948,11 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
 
         loadSettings();
         initConnect();
+
+        // управление отображением панелей
+        panelVisibleCtrl(ui->centralWgt);
+        panelVisibleCtrl(ui->dockWidgetVariable);
+        panelVisibleCtrl(ui->framePanelMessage);
 
         m_init = true;
     }
