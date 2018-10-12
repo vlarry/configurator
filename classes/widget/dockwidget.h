@@ -33,6 +33,9 @@
             void addContainer(CContainerWidget* wgt);
             void removeItem(int id);
 
+        signals:
+            void isContainerEmpty(bool = false);
+
         protected:
             void dragEnterEvent(QDragEnterEvent* event);
             void dropEvent(QDropEvent* event);

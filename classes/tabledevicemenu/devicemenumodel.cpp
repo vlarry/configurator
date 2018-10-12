@@ -3,7 +3,6 @@
 CDeviceMenuTableWidget::CDeviceMenuTableWidget(QWidget* parent):
     QTableWidget(parent)
 {
-//    setShowGrid(false);
     horizontalHeader()->setHighlightSections(false);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::NoSelection);
@@ -165,6 +164,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
     layout_name->addWidget(unit);
     layout_name->setAlignment(Qt::AlignCenter);
     layout_name->setContentsMargins(0, 0, 0, 0);
+    layout_name->setSpacing(0);
     label_name->setLayout(layout_name);
 
     setCellWidget(row, 0, label_name);
@@ -229,6 +229,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         wgt_layout->addWidget(widget);
         wgt_layout->setAlignment(Qt::AlignCenter);
         wgt_layout->setContentsMargins(50, 0, 50, 0);
+        wgt_layout->setSpacing(0);
         wgt->setLayout(wgt_layout);
 
         setCellWidget(row, 1, wgt);
@@ -254,6 +255,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         layout_limit->addWidget(label_limit);
         layout_limit->setAlignment(Qt::AlignCenter);
         layout_limit->setContentsMargins(0, 0, 0, 0);
+        layout_limit->setSpacing(0);
         wgt_limit->setLayout(layout_limit);
 
         label_unit->setObjectName(QString("label%1Unit%2").arg(item.key).arg(index_str));
@@ -264,6 +266,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         layout_unit->addWidget(label_unit);
         layout_unit->setAlignment(Qt::AlignCenter);
         layout_unit->setContentsMargins(0, 0, 0, 0);
+        layout_unit->setSpacing(0);
         wgt_unit->setLayout(layout_unit);
 
         setCellWidget(row, 2, wgt_limit);

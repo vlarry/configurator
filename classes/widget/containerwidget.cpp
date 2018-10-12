@@ -40,6 +40,8 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     resize(800, 600);
 
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
+    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::containerClose);
+    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::processClose);
     connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionStateChanged);
 }
 //-----------------------------------
@@ -205,6 +207,11 @@ void CContainerWidget::expandedContainer()
         showMaximized();
     else
         showNormal();
+}
+//-----------------------------------
+void CContainerWidget::processClose()
+{
+    emit removeContainer(m_id);
 }
 //----------------------------------------------------------------
 bool CContainerWidget::eventFilter(QObject* object, QEvent* event)

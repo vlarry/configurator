@@ -8,7 +8,6 @@ CTabWidget::CTabWidget(QWidget* parent):
     setAcceptDrops(true);
 
     this->tabBar()->setAcceptDrops(true);
-
     connect(this, &CTabWidget::tabBarDoubleClicked, this, &CTabWidget::tabDoubleClicked);
 }
 //----------------------------------------------

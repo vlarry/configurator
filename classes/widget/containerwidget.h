@@ -52,11 +52,13 @@
         public slots:
             void buttonFunctionStateChanged(bool state = false);
             void expandedContainer();
+            void processClose();
 
         signals:
             void removeContainer(int);
             void containerClicked(QMouseEvent*);
             void containerMoved(QMouseEvent*, int);
+            void containerClose(bool = false);
 
         protected:
             bool eventFilter(QObject* object, QEvent* event) override;

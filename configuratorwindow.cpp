@@ -2662,16 +2662,6 @@ void ConfiguratorWindow::errorConnect(const QString& error)
     outApplicationEvent(msgbox.text());
     msgbox.exec();
 }
-//---------------------------------------------------
-void ConfiguratorWindow::terminalVisiblity(int state)
-{
-//    if(state == Qt::Checked)
-//        m_terminal_window->show();
-//    else if(state == Qt::Unchecked)
-//        m_terminal_window->hide();
-    
-    ui->chboxTerminal->setCheckState(static_cast<Qt::CheckState>(state));
-}
 /*!
  * \brief ConfiguratorWindow::indicatorVisiblity
  * \param state Состояние окна индикаторов
@@ -4166,7 +4156,6 @@ void ConfiguratorWindow::initHalfhourJournal()
     {
         while(query_halfhour.next())
         {
-//            int     id   = query_halfhour.value("id").toInt();
             QString name = query_halfhour.value("name").toString();
             QString meas = query_halfhour.value("measure").toString();
 
@@ -4854,7 +4843,7 @@ void ConfiguratorWindow::initIndicatorStates()
         }
     }
 
-    //m_output_window->setLists(led_list, relay_list);
+    m_output_window->setLists(led_list, relay_list);
 }
 //--------------------------------------
 void ConfiguratorWindow::initSubWindow()
@@ -5693,7 +5682,7 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
     data_buf.clear();
     model->updateData();
 }
-//------------------------------------------------------------------
+//--------------------------------------------------------------------
 void ConfiguratorWindow::displayDebugInfo(const CModBusDataUnit& unit)
 {
     int channel = unit.property("CHANNEL").toInt();
@@ -5849,12 +5838,6 @@ int ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const CDeviceMen
 
         if(item)
         {
-//            CDeviceMenuTableWidget::RowType rowType = static_cast<CDeviceMenuTableWidget::RowType>(item->data(Qt::UserRole + 100).toInt());
-//            if(rowType == CDeviceMenuTableWidget::HEADER || rowType == CDeviceMenuTableWidget::SUBHEADER)
-//            {
-//                pos = groupPositionInExcel(doc, item->text());
-//                continue;
-//            }
             continue;
         }
 
@@ -6782,22 +6765,6 @@ void ConfiguratorWindow::clearJournal()
 
     m_status_bar->setStatusMessage(tr("Очистка таблицы журнала %1").arg(journal_name), 2000);
 }
-//--------------------------------------
-void ConfiguratorWindow::menuPanelCtrl()
-{
-    if(ui->dockWidgetMenuDevice->isHidden())
-        ui->dockWidgetMenuDevice->show();
-    else
-        ui->dockWidgetMenuDevice->hide();
-}
-//------------------------------------------
-void ConfiguratorWindow::variablePanelCtrl()
-{
-//    if(ui->variableDockPanel->isHidden())
-//        ui->variableDockPanel->show();
-//    else
-//        ui->variableDockPanel->hide();
-}
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
 {
@@ -6986,7 +6953,7 @@ void ConfiguratorWindow::panelMoved(int pos, int index)
     panelVisibleCtrl(widget);
 
     // Изменение ширины колонок при ресайзе (медленно работает перемещение панелей из-за перерасчета ширины колонок
-//    resizeColumns();
+    resizeColumns();
 }
 /*!
  * \brief ConfiguratorWindow::panelButtonCtrlPress
@@ -7021,7 +6988,7 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 sizes[1] = sizes[1] + (w - sizes[0]);
 
                 ui->splitterCentralWidget->setSizes(sizes);
-
+                ui->dockWidgetMenuDevice->showContent();
                 emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
             }
             else if(ui->dockWidgetMenuDevice->width() == ui->dockWidgetMenuDevice->control()->minimumWidth())
@@ -7036,7 +7003,7 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 sizes[1] = sizes[1] - (newWidth - w);
 
                 ui->splitterCentralWidget->setSizes(sizes);
-
+                ui->dockWidgetMenuDevice->hideContent();
                 emit ui->splitterCentralWidget->splitterMoved(sizes[1], 1);
             }
         }
@@ -7052,7 +7019,7 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 sizes[1] = sizes[1] + (w - sizes[2]);
 
                 ui->splitterCentralWidget->setSizes(sizes);
-
+                ui->dockWidgetVariable->showContent();
                 emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
             }
             else if(ui->dockWidgetVariable->width() == ui->dockWidgetVariable->control()->minimumWidth())
@@ -7067,7 +7034,7 @@ void ConfiguratorWindow::panelButtonCtrlPress()
                 sizes[1] = sizes[1] - (newWidth - w);
 
                 ui->splitterCentralWidget->setSizes(sizes);
-
+                ui->dockWidgetVariable->hideContent();
                 emit ui->splitterCentralWidget->splitterMoved(sizes[2], 2);
             }
         }
@@ -7570,14 +7537,6 @@ void ConfiguratorWindow::minimizeTabMenu(bool state)
 {
     Q_UNUSED(state);
 }
-//--------------------------------------------------------
-void ConfiguratorWindow::panelMessageVisiblity(bool state)
-{
-    if(state)
-        ui->framePanelMessage->show();
-    else
-        ui->framePanelMessage->hide();
-}
 /*!
  * \brief ConfiguratorWindow::calibrationOfCurrent
  *
@@ -7954,6 +7913,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         m_event_window = new CTerminalWindow(this);
         m_event_window->setObjectName("terminalWindowEvent");
         m_containerTerminalEvent = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
+        m_containerTerminalEvent->setHeaderBackground(QColor(190, 190, 190));
         m_containerTerminalEvent->headerHide();
         m_containerTerminalEvent->setSuperParent(this);
         ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
@@ -7962,6 +7922,7 @@ void ConfiguratorWindow::showEvent(QShowEvent* event)
         m_terminal_modbus = new CTerminal(this);
         m_terminal_modbus->setObjectName("terminalModbus");
         m_containerTerminalModbus = new CContainerWidget(tr("Терминал"), m_terminal_modbus, CContainerWidget::AnchorType::AnchorDockWidget, this);
+        m_containerTerminalModbus->setHeaderBackground(QColor(190, 190, 190));
         m_containerTerminalModbus->headerHide();
         m_containerTerminalModbus->setSuperParent(this);
         ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
@@ -8277,7 +8238,6 @@ void ConfiguratorWindow::saveSettings()
             m_settings->setValue("panel", ui->splitterCentralWidget->saveState());
             m_settings->setValue("downpanel", ui->splitterPanelMessage->saveState());
         m_settings->endGroup();
-
         m_settings->beginGroup("settings");
             m_settings->setValue("downpanel_state", ui->checkBoxPanelMessage->isChecked());
                 m_settings->beginGroup("menu_device_widget");
@@ -10020,7 +9980,7 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
         if(ui->dockWidgetMenuDevice->control() &&
            ui->dockWidgetMenuDevice->width() == ui->dockWidgetMenuDevice->control()->minimumWidth())
         {
-            if(ui->dockWidgetMenuDevice->isContentHidden())
+            if(!ui->dockWidgetMenuDevice->isContentHidden())
             {
                 ui->dockWidgetMenuDevice->hideContent();
                 ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Close);
@@ -10669,33 +10629,26 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbus, &CModBus::stateChanged, this, &ConfiguratorWindow::stateChanged);
     connect(m_modbus, &CModBus::stateChanged, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::readyRead, this, &ConfiguratorWindow::readyReadData);
-
     connect(m_modbus, &CModBus::errorDevice, this, &ConfiguratorWindow::errorDevice);
     connect(m_modbus, &CModBus::stateChanged, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
     connect(m_modbus, &CModBus::errorChannel, this, &ConfiguratorWindow::errorConnect);
     connect(ui->toolButtonConnect, &QPushButton::clicked, m_modbus, &CModBus::userStateCtrl);
-    connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this,
-            &ConfiguratorWindow::refreshSerialPort);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::refreshSerialPort, this, &ConfiguratorWindow::refreshSerialPort);
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
-    connect(ui->chboxTerminal, &QCheckBox::stateChanged, this, &ConfiguratorWindow::terminalVisiblity);
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
-
-    connect(m_output_window, &CIndicatorState::closeWindow, ui->pushButtonIndicatorStates,
-            &QPushButton::setChecked);
-    connect(m_output_window, &CIndicatorState::closeWindow, this, &ConfiguratorWindow::indicatorVisiblity);
-    connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this,
-            &ConfiguratorWindow::monitorK10K11Visiblity);
-    connect(m_monitor_purpose_window, &CMonitorPurpose::closeWindow, ui->pushButtonMonitorK10_K11,
-            &QPushButton::setChecked);
+    connect(m_containerIndicatorState, &CContainerWidget::containerClose, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
+    connect(m_containerIndicatorState, &CContainerWidget::containerClose, this, &ConfiguratorWindow::indicatorVisiblity);
+    connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this, &ConfiguratorWindow::monitorK10K11Visiblity);
+    connect(m_containerMonitorK10K11, &CContainerWidget::containerClose, ui->pushButtonMonitorK10_K11, &QPushButton::setChecked);
     connect(ui->pushButtonOutputAll, &QPushButton::clicked, this, &ConfiguratorWindow::outputAllVisiblity);
-    connect(m_outputall_window, &COutputAll::closeWindow, ui->pushButtonOutputAll, &QPushButton::setChecked);
+    connect(m_containerOutputAll, &CContainerWidget::containerClose, ui->pushButtonOutputAll, &QPushButton::setChecked);
     connect(ui->pushButtonInputs, &QPushButton::clicked, this, &ConfiguratorWindow::inputVisiblity);
-    connect(m_inputs_window, &COutputAll::closeWindow, ui->pushButtonInputs, &QPushButton::setChecked);
+    connect(m_containerInputs, &CContainerWidget::containerClose, ui->pushButtonInputs, &QPushButton::setChecked);
     connect(ui->pushButtonStatusInfo, &QPushButton::clicked, this, &ConfiguratorWindow::statusInfoVisiblity);
-    connect(m_status_window, &CStatusInfo::closeWindow, ui->pushButtonStatusInfo, &QPushButton::setChecked);
+    connect(m_containerStatusInfo, &CContainerWidget::containerClose, ui->pushButtonStatusInfo, &QPushButton::setChecked);
     connect(m_status_window, &CStatusInfo::buttonUpdate, this, &ConfiguratorWindow::readStatusInfo);
     connect(m_treeWidgetDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
@@ -10711,8 +10664,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearKeyboardProtectionCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
     connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
-    connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead,
-            &QPushButton::setChecked);
+    connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
     connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
@@ -10722,11 +10674,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(m_timer_synchronization, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSynchronization);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
-    connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this,
-            &ConfiguratorWindow::deviceDefaultSettings);
+    connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
-    connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this,
-            &ConfiguratorWindow::autospeedStateChanged);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
     connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     connect(ui->splitterPanelMessage, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
     if(ui->dockWidgetMenuDevice->control())
@@ -10734,8 +10684,7 @@ void ConfiguratorWindow::initConnect()
     if(ui->dockWidgetVariable->control())
         connect(ui->dockWidgetVariable->control(), &CDockPanelItemCtrl::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(ui->pushButtonPanelMessage, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
-    connect(m_monitor_purpose_window, &CMonitorPurpose::buttonUpdate, this,
-            &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
+    connect(m_monitor_purpose_window, &CMonitorPurpose::buttonUpdate, this, &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
     connect(m_outputall_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_inputs_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendInputStatesRequest);
     connect(ui->pushButtonSyncDateTime, &QPushButton::clicked, this, &ConfiguratorWindow::synchronizationDateTime);
@@ -10743,43 +10692,33 @@ void ConfiguratorWindow::initConnect()
     connect(m_debuginfo_window, &CDebugInfo::readInfo, this, &ConfiguratorWindow::debugInfoCtrl);
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoRead);
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);
-    connect(m_debuginfo_window, &CDebugInfo::closeWindow, ui->pushButtonDebugInfo, &QPushButton::setChecked);
+    connect(m_containerDebugInfo, &CContainerWidget::containerClose, ui->pushButtonDebugInfo, &QPushButton::setChecked);
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
     connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
     connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
-    connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this,
-            &ConfiguratorWindow::updateSerialPortSettings);
+    connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this, &ConfiguratorWindow::updateSerialPortSettings);
     connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::close);
     connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
     connect(ui->widgetMenuBar, &CMenuBar::menubarMouseUpdatePosition, this, &ConfiguratorWindow::mouseMove);
-
     connect(ui->pbtnMenuNewProject, &QPushButton::clicked, this, &ConfiguratorWindow::newProject);
     connect(ui->pbtnMenuOpenProject, &QPushButton::clicked, this, &ConfiguratorWindow::openProject);
     connect(ui->pbtnMenuSaveProject, &QPushButton::clicked, this, &ConfiguratorWindow::saveProject);
     connect(ui->pbtnMenuSaveAsProject, &QPushButton::clicked, this, &ConfiguratorWindow::saveAsProject);
-
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeWindow, this, &ConfiguratorWindow::close);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::newProject, this, &ConfiguratorWindow::newProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openProject, this, &ConfiguratorWindow::openProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveProject, this, &ConfiguratorWindow::saveProject);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveAsProject, this,
-            &ConfiguratorWindow::saveAsProject);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this,
-            &ConfiguratorWindow::exportToPDFProject);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this,
-            &ConfiguratorWindow::exportToExcelProject);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importFromExcelProject, this,
-            &ConfiguratorWindow::importFromExcelProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveAsProject, this, &ConfiguratorWindow::saveAsProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this, &ConfiguratorWindow::exportToPDFProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this, &ConfiguratorWindow::exportToExcelProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importFromExcelProject, this, &ConfiguratorWindow::importFromExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::authorization);
-    connect(ui->checkBoxPanelMessage, &QCheckBox::clicked, this, &ConfiguratorWindow::panelMessageVisiblity);
-    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this,
-            &ConfiguratorWindow::calibrationOfCurrent);
+    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this, &ConfiguratorWindow::calibrationOfCurrent);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
-//    connect(m_modbus, &CModBus::rawData, ui->widgetTerminal, &CTerminal::appendData);
-//    connect(ui->widgetTerminal, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
-//    connect(ui->widgetTerminal, &CTerminal::closeTerminal, this, &ConfiguratorWindow::terminalVisiblity);
+    connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
+    connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
 }

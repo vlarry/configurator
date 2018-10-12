@@ -543,7 +543,6 @@
             void timeCalculateChanged(int newTime);
             void errorDevice(const QString& errorConnect);
             void errorConnect(const QString& errorConnect);
-            void terminalVisiblity(int state);
             void indicatorVisiblity(bool state);
             void monitorK10K11Visiblity(bool state);
             void outputAllVisiblity(bool state);
@@ -580,8 +579,6 @@
             void sendDebugInfoRead(int channel);
             void clearIOTable();
             void clearJournal();
-            void menuPanelCtrl();
-            void variablePanelCtrl();
             void exportToPDF(const CJournalWidget* widget, const QString& reportName, const QString& sn_device,
                                                                                       const QString& filename);
             void exportPurposeToJSON();
@@ -622,7 +619,6 @@
             void importFromExcelProject();
             void closeProject();
             void minimizeTabMenu(bool state);
-            void panelMessageVisiblity(bool state = false);
             void calibrationOfCurrent();
             void calibrationOfCurrentRequest();
             void resizeColumns();

@@ -132,7 +132,11 @@ void CDockWidget::removeItem(int id)
             CContainerWidget* tcontainer = static_cast<CContainerWidget*>(item->widget());
 
             if(tcontainer->id() == id)
+            {
                 ui->verticalLayout->removeWidget(tcontainer);
+                if(ui->verticalLayoutContainer->isEmpty()) // контейнер пуст
+                    emit m_controlItem->clicked();
+            }
         }
     }
 }
