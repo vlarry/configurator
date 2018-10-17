@@ -44,7 +44,6 @@
             void activateMenuButtons();
 
         signals:
-            void activateMenu();
             void closeWindow();
             void newProject();
             void openProject();

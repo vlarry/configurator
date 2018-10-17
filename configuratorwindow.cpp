@@ -156,9 +156,11 @@ void ConfiguratorWindow::stateChanged(bool state)
 {
     ui->toolButtonConnect->setChecked(state);
 
-    m_status_bar->setStatusMessage(((state)?tr("Соединение с устройством установлено на скорости: %1 бод").
-                                            arg(m_modbus->channel()->settings().baudrate):
-                                            tr("Соединение с устройством разорвано")), 5000);
+    QString text = ((state)?tr("Соединение с устройством установлено на скорости: %1 бод").
+                   arg(m_modbus->channel()->settings().baudrate):
+                   tr("Соединение с устройством разорвано"));
+    m_status_bar->setStatusMessage(text, 5000);
+    outApplicationEvent(text);
     
     if(ui->checkboxCalibTimeout->isChecked() && state)
         chboxCalculateTimeoutStateChanged(true);
@@ -2651,6 +2653,7 @@ void ConfiguratorWindow::timeCalculateChanged(int newTime)
 void ConfiguratorWindow::errorDevice(const QString& error)
 {
     m_status_bar->setStatusMessage(error, 2000);
+    outApplicationEvent(error);
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::errorConnect(const QString& error)
@@ -5697,7 +5700,9 @@ void ConfiguratorWindow::versionParser()
 
     if(!file.open(QFile::ReadOnly))
     {
-        m_status_bar->setStatusMessage(tr("Нет файла версии или он поврежден..."), 2000);
+        QString text = tr("Нет файла версии или он поврежден...");
+        m_status_bar->setStatusMessage(text, 2000);
+        outApplicationEvent(text);
         file.close();
 
         return;
@@ -6764,7 +6769,9 @@ void ConfiguratorWindow::clearJournal()
     m_active_journal_current->journalClear();
     m_active_journal_current->headerClear();
 
-    m_status_bar->setStatusMessage(tr("Очистка таблицы журнала %1").arg(journal_name), 2000);
+    QString text = tr("Очистка таблицы журнала %1").arg(journal_name);
+    m_status_bar->setStatusMessage(text, 2000);
+    outApplicationEvent(text);
 }
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
@@ -7257,6 +7264,20 @@ void ConfiguratorWindow::newProject()
 {
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
+
+    m_isProject = true;
+
+    ui->splitterCentralWidget->setEnabled(true);
+    ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
+    ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
+    ui->pbtnMenuSaveProject->setEnabled(true);
+    ui->pbtnMenuSaveAsProject->setEnabled(true);
+    emit ui->widgetMenuBar->activateButtons();
 }
 //------------------------------------
 void ConfiguratorWindow::openProject()
@@ -9525,6 +9546,7 @@ void ConfiguratorWindow::exportJournalToDb()
                                                              arg(journal_full_name).arg("db"),
                                                              tr("Базы данных (*.db);;Все файлы (*.*)"), &selectedFilter,
                                                              QFileDialog::DontConfirmOverwrite);
+    outApplicationEvent(tr("Экспорт журнала в БД: %1").arg(journal_full_name));
 
     if(journal_path.isEmpty())
         return;

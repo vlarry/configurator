@@ -44,6 +44,7 @@
             void minimizeMenu(bool);
             void exportToDataBaseAction();
             void importFromDataBaseAction();
+            void activateButtons();
 
         protected:
             void mousePressEvent(QMouseEvent* event);

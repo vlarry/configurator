@@ -77,7 +77,6 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonImportProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonSettings, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(this, &CWidgetMenu::addDocument, this, &CWidgetMenu::addOpenDocument);
-    connect(this, &CWidgetMenu::activateMenu, this, &CWidgetMenu::activateMenuButtons);
 
     ui->toolButtonSaveProject->setDisabled(true);
     ui->toolButtonSaveAsProject->setDisabled(true);

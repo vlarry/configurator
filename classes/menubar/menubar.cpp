@@ -34,6 +34,7 @@ CMenuBar::CMenuBar(QWidget* parent):
     connect(m_widgetMenu, &CWidgetMenu::exportJournalToDataBase, this, &CMenuBar::exportToDataBaseAction);
     connect(m_widgetMenu, &CWidgetMenu::importJournalFromDataBase, this, &CMenuBar::importFromDataBaseAction);
     connect(actionMinimizeTabMenu, &QAction::triggered, this, &CMenuBar::minimizeMenu);
+    connect(this, &CMenuBar::activateButtons, m_widgetMenu, &CWidgetMenu::activateMenuButtons);
 }
 //-------------------
 CMenuBar::~CMenuBar()
