@@ -728,6 +728,7 @@
             QStringList loadLoginList() const;
             QString loadUserPassword(const QString& login);
             void outApplicationEvent(const QString& text);
+            bool createProjectTablePurpose(const QString& tableType);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
@@ -763,7 +764,7 @@
             QTimer*                          m_tim_debug_info;
             CVersionSoftware*                m_version_window;
             QSqlDatabase                     m_system_db;
-            QSqlDatabase                     m_project_db;
+            QSqlDatabase*                    m_project_db;
             cell_list_t                      m_cell_list;
             purpose_t                        m_purpose_list;
             QTime                            m_time_process;

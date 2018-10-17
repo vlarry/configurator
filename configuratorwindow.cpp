@@ -29,6 +29,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_calculate(nullptr),
     m_tim_debug_info(nullptr),
     m_version_window(nullptr),
+    m_project_db(nullptr),
     m_timer_synchronization(nullptr),
     m_timer_new_address_set(nullptr),
     m_status_bar(nullptr),
@@ -110,6 +111,15 @@ ConfiguratorWindow::~ConfiguratorWindow()
 
     if(m_system_db.isOpen())
         m_system_db.close();
+
+    if(m_project_db)
+    {
+        if(m_project_db->isOpen())
+            m_project_db->close();
+
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+    }
 
     delete m_modbus;
     m_modbus = nullptr;
@@ -6249,9 +6259,41 @@ void ConfiguratorWindow::outApplicationEvent(const QString& text)
     QString dateTimeText = QString("%1 - %2.").arg(QDateTime::currentDateTime().toString("[dd.mm.yyyy - HH:mm:ss.zzz]")).arg(text);
     m_event_window->appendPlainText(dateTimeText);
 }
-//----------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last,
-                                                CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index)
+//--------------------------------------------------------------------------
+bool ConfiguratorWindow::createProjectTablePurpose(const QString& tableType)
+{
+    if((m_project_db && !m_project_db->isOpen()) || tableType.isEmpty())
+        return false;
+
+    QVector<QPair<QString, QString> > labels = loadLabelColumns(tableType);
+
+    if(labels.isEmpty())
+        return false;
+
+    QString str_db = QString("CREATE TABLE purpose%1 ("
+                     "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ").arg(tableType);
+    for(int col = 0; col < labels.count(); col++)
+    {
+        str_db += QString("col%1 INTEGER UNIQUE").arg(col);
+        if(col != labels.count() - 1)
+            str_db += ", ";
+    }
+
+    str_db += ");";
+
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(str_db))
+    {
+        qWarning() << tr("Таблица привязок <%1> (%2): %3").arg(tableType).arg(query.lastError().text()).arg(str_db);
+        return false;
+    }
+
+    return true;
+}
+//--------------------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
+                                                DeviceMenuItemType index)
 {
     if(size <= 0)
         return;
@@ -7268,8 +7310,8 @@ void ConfiguratorWindow::newProject()
     // Создание файла БД нового проекта
     QDir dir;
 
-    if(!dir.exists("outputs/project"))
-        dir.mkdir("outputs/project");
+    if(!dir.exists("outputs/projects"))
+        dir.mkdir("outputs/projects");
 
     QString selectedFilter  = tr("Файлы проектов (*.project)");
     QString projectPathName = QFileDialog::getSaveFileName(this, tr("Создание файла проекта"), QString(dir.absolutePath() + "/%1/%2").
@@ -7301,6 +7343,13 @@ void ConfiguratorWindow::newProject()
         {
             QFile file(projectPathName);
 
+            if(m_project_db && m_project_db->isOpen())
+            {
+                m_project_db->close();
+                delete m_project_db;
+                QSqlDatabase::removeDatabase("PROJECT");
+            }
+
             if(!file.remove())
             {
                 QMessageBox msgbox;
@@ -7318,40 +7367,99 @@ void ConfiguratorWindow::newProject()
         }
         else
         {
-            m_project_db.close();
             return;
         }
     }
 
-    m_project_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_project_db.setDatabaseName(projectPathName);
+    m_project_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "PROJECT"));
+    m_project_db->setDatabaseName(projectPathName);
 
-    if(!m_project_db.open())
+    if(m_project_db && !m_project_db->open())
     {
-        QString text = tr("Не удалось создать файл нового проекта (%1).\nПопробуйтей еще раз.").arg(m_project_db.lastError().text());
+        QString text = tr("Не удалось создать файл нового проекта (%1).\nПопробуйтей еще раз.").arg(m_project_db->lastError().text());
         qWarning() << text;
         outApplicationEvent(text);
-        m_project_db.close();
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
 
     // Создание таблиц для хранения настроек пользователя и хранения данных
     // Создание таблиц журналов
-    if(!createJournalTable(&m_project_db, "EVENT", false)) // журнал событий
+    if(!createJournalTable(m_project_db, "EVENT", false)) // журнал событий
     {
-        m_project_db.close();
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
 
-    if(!createJournalTable(&m_project_db, "CRASH", false)) // журнал аварий
+    if(!createJournalTable(m_project_db, "CRASH", false)) // журнал аварий
     {
-        m_project_db.close();
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
 
-    if(!createJournalTable(&m_project_db, "HALFHOUR", false)) // журнал получасовок
+    if(!createJournalTable(m_project_db, "HALFHOUR", false)) // журнал получасовок
     {
-        m_project_db.close();
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблиц для хранения состояний выходов
+    if(!createProjectTablePurpose("LED")) // светодиоды
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы привязок светодиодов"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу привязок светодиодов в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    if(!createProjectTablePurpose("RELAY")) // реле
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы привязок реле"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу привязок реле в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    if(!createProjectTablePurpose("INPUT")) // дискретные входы
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы привязок дискретных входов"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу привязок дискретных входов в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
 
@@ -10504,9 +10612,13 @@ QVector<QPair<QString, QString> > ConfiguratorWindow::loadLabelColumns(const QSt
 {
     QVector<QPair<QString, QString> > labels;
 
-    QSqlQuery query(QString("SELECT key, description FROM iodevice WHERE type = \'%1\';").arg(type));
+    if(!m_system_db.isOpen())
+        return labels;
 
-    if(query.exec())
+    QSqlQuery query(m_system_db);
+    QString str_db = QString("SELECT key, description FROM iodevice WHERE type = \'%1\';").arg(type);
+
+    if(query.exec(str_db))
     {
         while(query.next())
         {
