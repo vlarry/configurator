@@ -639,6 +639,7 @@
             bool currentJournal(const CJournalWidget*& widget);
             void loadSettings();
             void saveSettings();
+            void initApplication();
             void initConnect();
             void initMenuPanel();
             void initCellBind();
@@ -733,7 +734,8 @@
 
         private:
             Ui::ConfiguratorWindow*          ui;
-            bool                             m_init; // флаг инициализации окна
+            bool                             m_isInitWindow; // флаг инициализации окна
+            bool                             m_isProject; // флаг создания/загрузки проекта
             CModBus*                         m_modbus;
             QTreeWidget*                     m_treeWidgetDeviceMenu;
             CContainerWidget*                m_containerWidgetVariable;

@@ -4,7 +4,8 @@
 ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     QMainWindow(parent),
     ui(new Ui::ConfiguratorWindow),
-    m_init(false),
+    m_isInitWindow(false),
+    m_isProject(false),
     m_modbus(nullptr),
     m_treeWidgetDeviceMenu(nullptr),
     m_containerWidgetVariable(nullptr),
@@ -7807,140 +7808,7 @@ void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
 void ConfiguratorWindow::showEvent(QShowEvent* event)
 {
     QMainWindow::showEvent(event);
-
-    if(!m_init) // если окно выводится впервые - производим инициализацию
-    {
-        setWindowState(Qt::WindowMaximized);
-
-        ui->tabWidgetMessage->setCurrentIndex(0);
-        ui->stwgtMain->setCurrentIndex(0);
-
-        m_version_window = new CVersionSoftware(this);
-        versionParser();
-
-        ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
-        m_status_bar->connectStateChanged(false);
-
-        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
-        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
-
-        ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
-        ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
-        ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
-
-        ui->comboBoxCommunicationParity->setCurrentIndex(1);
-
-        QDateTime dt(QDateTime::currentDateTime());
-
-        ui->dateEdit->setDate(dt.date());
-        ui->timeEdit->setTime(dt.time());
-        ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
-
-        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->dockWidgetMenuDevice), false);
-        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->dockWidgetVariable), false);
-        ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
-
-        ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
-        ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::DirBottom);
-        ui->dockWidgetMenuDevice->setControlItemDir(CDockPanelItemCtrl::DirLeft);
-        ui->dockWidgetVariable->setControlItemDir(CDockPanelItemCtrl::DirRight);
-
-        if(ui->dockWidgetVariable->control())
-            ui->dockWidgetVariable->setMinimumWidth(ui->dockWidgetVariable->control()->minimumWidth());
-        if(ui->dockWidgetMenuDevice->control())
-            ui->dockWidgetMenuDevice->setMinimumWidth(ui->dockWidgetMenuDevice->control()->minimumWidth());
-        ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
-
-        // шрифт для панели меню
-        QFont treeFont = m_treeWidgetDeviceMenu->font();
-        treeFont.setPointSize(12);
-        m_treeWidgetDeviceMenu->setFont(treeFont);
-
-        if(ui->dockWidgetMenuDevice->control() &&
-           ui->dockWidgetMenuDevice->width() == ui->dockWidgetMenuDevice->control()->minimumWidth())
-        {
-            ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Close);
-        }
-        else
-        {
-            ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Open);
-        }
-
-        if(ui->dockWidgetVariable->control() &&
-           ui->dockWidgetVariable->width() == ui->dockWidgetVariable->control()->minimumWidth())
-        {
-            ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Close);
-        }
-        else
-        {
-            ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Open);
-        }
-
-        if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
-        {
-            ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
-        }
-        else
-        {
-            ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
-        }
-
-        ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
-        ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
-        ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
-
-        // инициализация панели расчетных величин
-        CVariableWidget* tableWidgetVariable = new CVariableWidget(ui->dockWidgetVariable);
-        tableWidgetVariable->init(m_system_db);
-        tableWidgetVariable->setProperty("TYPE", "VARIABLE");
-        m_containerWidgetVariable = new CContainerWidget(tr("Панель измерений"), tableWidgetVariable,
-                                                         CContainerWidget::AnchorType::AnchorDockWidget, this);
-        m_containerWidgetVariable->setSuperParent(this);
-        m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
-        ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
-
-        // инициализация панели меню
-        m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
-        m_containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
-                                                           CContainerWidget::AnchorType::AnchorDockWidget, this);
-        m_containerWidgetDeviceMenu->setSuperParent(this);
-        m_containerWidgetDeviceMenu->setButtonFunctionState(true);
-        m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
-        ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
-        connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
-
-        // инициализация панели сообщений
-        m_event_window = new CTerminalWindow(this);
-        m_event_window->setObjectName("terminalWindowEvent");
-        m_containerTerminalEvent = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
-        m_containerTerminalEvent->setHeaderBackground(QColor(190, 190, 190));
-        m_containerTerminalEvent->headerHide();
-        m_containerTerminalEvent->setSuperParent(this);
-        ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
-
-        // инициализация терминала MODBUS
-        m_terminal_modbus = new CTerminal(this);
-        m_terminal_modbus->setObjectName("terminalModbus");
-        m_containerTerminalModbus = new CContainerWidget(tr("Терминал"), m_terminal_modbus, CContainerWidget::AnchorType::AnchorDockWidget, this);
-        m_containerTerminalModbus->setHeaderBackground(QColor(190, 190, 190));
-        m_containerTerminalModbus->headerHide();
-        m_containerTerminalModbus->setSuperParent(this);
-        ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
-
-        loadSettings();
-        initConnect();
-
-        // управление отображением панелей
-        panelVisibleCtrl(ui->centralWgt);
-        panelVisibleCtrl(ui->dockWidgetVariable);
-        panelVisibleCtrl(ui->framePanelMessage);
-
-        ui->tabWidgetMessage->setSuperParent(this);
-
-        refreshSerialPort();
-
-        m_init = true;
-    }
+    initApplication();
 }
 //------------------------------------------------------------------
 bool ConfiguratorWindow::eventFilter(QObject* object, QEvent* event)
@@ -8250,6 +8118,161 @@ void ConfiguratorWindow::saveSettings()
                 m_settings->endGroup();
             m_settings->setValue("panel_message_height", ui->framePanelMessage->property("HEIGHT").toInt());
         m_settings->endGroup();
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::initApplication
+ *
+ * Инициализация интерфейса программы
+ */
+void ConfiguratorWindow::initApplication()
+{
+    if(!m_isInitWindow) // если окно выводится впервые - производим инициализацию
+    {
+        setWindowState(Qt::WindowMaximized);
+
+        ui->tabWidgetMessage->setCurrentIndex(0);
+        ui->stwgtMain->setCurrentIndex(0);
+
+        m_version_window = new CVersionSoftware(this);
+        versionParser();
+
+        ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
+        m_status_bar->connectStateChanged(false);
+
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
+        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+
+        ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
+        ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
+        ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
+
+        ui->comboBoxCommunicationParity->setCurrentIndex(1);
+
+        QDateTime dt(QDateTime::currentDateTime());
+
+        ui->dateEdit->setDate(dt.date());
+        ui->timeEdit->setTime(dt.time());
+        ui->lineEditWeekDay->setText(dt.date().toString("dddd"));
+
+        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->dockWidgetMenuDevice), false);
+        ui->splitterCentralWidget->setCollapsible(ui->splitterCentralWidget->indexOf(ui->dockWidgetVariable), false);
+        ui->splitterPanelMessage->setCollapsible(ui->splitterPanelMessage->indexOf(ui->framePanelMessage), false);
+
+        ui->pushButtonPanelMessage->setText(tr("Панель сообщений"));
+        ui->pushButtonPanelMessage->setDir(CDockPanelItemCtrl::DirBottom);
+        ui->dockWidgetMenuDevice->setControlItemDir(CDockPanelItemCtrl::DirLeft);
+        ui->dockWidgetVariable->setControlItemDir(CDockPanelItemCtrl::DirRight);
+
+        if(ui->dockWidgetVariable->control())
+            ui->dockWidgetVariable->setMinimumWidth(ui->dockWidgetVariable->control()->minimumWidth());
+        if(ui->dockWidgetMenuDevice->control())
+            ui->dockWidgetMenuDevice->setMinimumWidth(ui->dockWidgetMenuDevice->control()->minimumWidth());
+        ui->framePanelMessage->setMinimumHeight(ui->pushButtonPanelMessage->minimumHeight());
+
+        // шрифт для панели меню
+        QFont treeFont = m_treeWidgetDeviceMenu->font();
+        treeFont.setPointSize(12);
+        m_treeWidgetDeviceMenu->setFont(treeFont);
+
+        if(ui->dockWidgetMenuDevice->control() &&
+           ui->dockWidgetMenuDevice->width() == ui->dockWidgetMenuDevice->control()->minimumWidth())
+        {
+            ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Close);
+        }
+        else
+        {
+            ui->dockWidgetMenuDevice->control()->setState(CDockPanelItemCtrl::Open);
+        }
+
+        if(ui->dockWidgetVariable->control() &&
+           ui->dockWidgetVariable->width() == ui->dockWidgetVariable->control()->minimumWidth())
+        {
+            ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Close);
+        }
+        else
+        {
+            ui->dockWidgetVariable->control()->setState(CDockPanelItemCtrl::Open);
+        }
+
+        if(ui->framePanelMessage->height() == ui->pushButtonPanelMessage->minimumHeight())
+        {
+            ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Close);
+        }
+        else
+        {
+            ui->pushButtonPanelMessage->setState(CDockPanelItemCtrl::Open);
+        }
+
+        ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
+        ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
+        ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
+
+        // инициализация панели расчетных величин
+        CVariableWidget* tableWidgetVariable = new CVariableWidget(ui->dockWidgetVariable);
+        tableWidgetVariable->init(m_system_db);
+        tableWidgetVariable->setProperty("TYPE", "VARIABLE");
+        m_containerWidgetVariable = new CContainerWidget(tr("Панель измерений"), tableWidgetVariable,
+                                                         CContainerWidget::AnchorType::AnchorDockWidget, this);
+        m_containerWidgetVariable->setSuperParent(this);
+        m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
+        ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
+
+        // инициализация панели меню
+        m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
+        m_containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
+                                                           CContainerWidget::AnchorType::AnchorDockWidget, this);
+        m_containerWidgetDeviceMenu->setSuperParent(this);
+        m_containerWidgetDeviceMenu->setButtonFunctionState(true);
+        m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
+        ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
+        connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
+
+        // инициализация панели сообщений
+        m_event_window = new CTerminalWindow(this);
+        m_event_window->setObjectName("terminalWindowEvent");
+        m_containerTerminalEvent = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
+        m_containerTerminalEvent->setHeaderBackground(QColor(190, 190, 190));
+        m_containerTerminalEvent->headerHide();
+        m_containerTerminalEvent->setSuperParent(this);
+        ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
+
+        // инициализация терминала MODBUS
+        m_terminal_modbus = new CTerminal(this);
+        m_terminal_modbus->setObjectName("terminalModbus");
+        m_containerTerminalModbus = new CContainerWidget(tr("Терминал"), m_terminal_modbus, CContainerWidget::AnchorType::AnchorDockWidget, this);
+        m_containerTerminalModbus->setHeaderBackground(QColor(190, 190, 190));
+        m_containerTerminalModbus->headerHide();
+        m_containerTerminalModbus->setSuperParent(this);
+        ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
+
+        loadSettings();
+        initConnect();
+
+        // управление отображением панелей
+        panelVisibleCtrl(ui->centralWgt);
+        panelVisibleCtrl(ui->dockWidgetVariable);
+        panelVisibleCtrl(ui->framePanelMessage);
+
+        ui->tabWidgetMessage->setSuperParent(this);
+
+        refreshSerialPort();
+
+        m_isInitWindow = true;
+    }
+
+    if(!m_isProject)
+    {
+        ui->splitterCentralWidget->setDisabled(true);
+        ui->tabwgtMenu->setCurrentIndex(TAB_FILE_INDEX);
+        ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, false);
+        ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, false);
+        ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, false);
+        ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, false);
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
+        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+        ui->pbtnMenuSaveProject->setDisabled(true);
+        ui->pbtnMenuSaveAsProject->setDisabled(true);
     }
 }
 //-------------------------------------------------------------------------------------------

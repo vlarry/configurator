@@ -77,6 +77,13 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonImportProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonSettings, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(this, &CWidgetMenu::addDocument, this, &CWidgetMenu::addOpenDocument);
+    connect(this, &CWidgetMenu::activateMenu, this, &CWidgetMenu::activateMenuButtons);
+
+    ui->toolButtonSaveProject->setDisabled(true);
+    ui->toolButtonSaveAsProject->setDisabled(true);
+    ui->toolButtonExportProject->setDisabled(true);
+    ui->toolButtonImportProject->setDisabled(true);
+    ui->toolButtonSettings->setDisabled(true);
 }
 //-------------------------
 CWidgetMenu::~CWidgetMenu()
@@ -90,6 +97,15 @@ void CWidgetMenu::addOpenDocument(const QString& doc)
         ui->listWidgetOpenDocument->show();
 
     ui->listWidgetOpenDocument->addItem(doc);
+}
+//-------------------------------------
+void CWidgetMenu::activateMenuButtons()
+{
+    ui->toolButtonSaveProject->setEnabled(true);
+    ui->toolButtonSaveAsProject->setEnabled(true);
+    ui->toolButtonExportProject->setEnabled(true);
+    ui->toolButtonImportProject->setEnabled(true);
+    ui->toolButtonSettings->setEnabled(true);
 }
 //-------------------------
 void CWidgetMenu::clicked()
