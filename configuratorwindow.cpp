@@ -7265,6 +7265,97 @@ void ConfiguratorWindow::newProject()
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
 
+    // Создание файла БД нового проекта
+    QDir dir;
+
+    if(!dir.exists("outputs/project"))
+        dir.mkdir("outputs/project");
+
+    QString selectedFilter  = tr("Файлы проектов (*.project)");
+    QString projectPathName = QFileDialog::getSaveFileName(this, tr("Создание файла проекта"), QString(dir.absolutePath() + "/%1/%2").
+                                                           arg("outputs/projects").arg("newProject.project"),
+                                                           tr("Файлы проектов (*.project);;Все файлы (*.*)"), &selectedFilter,
+                                                           QFileDialog::DontConfirmOverwrite);
+
+    if(projectPathName.isEmpty())
+    {
+        outApplicationEvent(tr("Отказ пользователя от создания файла проекта"));
+        return;
+    }
+
+    QFileInfo fi;
+    QString   baseNameFile = QFileInfo(projectPathName).baseName();
+
+    if(fi.exists(projectPathName)) // Файл уже существует
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Экспорт журнала"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Question);
+        msgbox.setText(tr("Файл проекта с таким именем уже существует.\nПерезаписать его?"));
+        msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        outApplicationEvent(tr("Перезапись существующего файла проекта: %1").arg(baseNameFile));
+        int reply = msgbox.exec();
+
+        if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
+        {
+            QFile file(projectPathName);
+
+            if(!file.remove())
+            {
+                QMessageBox msgbox;
+                msgbox.setWindowTitle(tr("Удаление файла проекта"));
+                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+                msgbox.setIcon(QMessageBox::Warning);
+                QString text = tr("Невозможно удалить файл проекта %1!\nВозможно уже используется или у Вас нет прав.").arg(baseNameFile);
+                msgbox.setText(text);
+                outApplicationEvent(msgbox.text());
+                msgbox.exec();
+                qWarning() << text;
+
+                return;
+            }
+        }
+        else
+        {
+            m_project_db.close();
+            return;
+        }
+    }
+
+    m_project_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_project_db.setDatabaseName(projectPathName);
+
+    if(!m_project_db.open())
+    {
+        QString text = tr("Не удалось создать файл нового проекта (%1).\nПопробуйтей еще раз.").arg(m_project_db.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        m_project_db.close();
+        return;
+    }
+
+    // Создание таблиц для хранения настроек пользователя и хранения данных
+    // Создание таблиц журналов
+    if(!createJournalTable(&m_project_db, "EVENT", false)) // журнал событий
+    {
+        m_project_db.close();
+        return;
+    }
+
+    if(!createJournalTable(&m_project_db, "CRASH", false)) // журнал аварий
+    {
+        m_project_db.close();
+        return;
+    }
+
+    if(!createJournalTable(&m_project_db, "HALFHOUR", false)) // журнал получасовок
+    {
+        m_project_db.close();
+        return;
+    }
+
+    // Разблокировка элементов интерфейса после создания файла проекта
     m_isProject = true;
 
     ui->splitterCentralWidget->setEnabled(true);
@@ -7278,6 +7369,8 @@ void ConfiguratorWindow::newProject()
     ui->pbtnMenuSaveProject->setEnabled(true);
     ui->pbtnMenuSaveAsProject->setEnabled(true);
     emit ui->widgetMenuBar->activateButtons();
+
+    outApplicationEvent(tr("Создание нового файла проекта: %1").arg(projectPathName));
 }
 //------------------------------------
 void ConfiguratorWindow::openProject()
@@ -7841,53 +7934,62 @@ bool ConfiguratorWindow::eventFilter(QObject* object, QEvent* event)
 }
 /*!
  * \brief ConfiguratorWindow::createJournalTable
+ * \param isFull Создание полной карты таблиц (служебная информация - необходима только для экспорта/импорта в отдельный файл)
  * \return Возвращает true, если таблица успешно создана
  */
-bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& journal_type)
+bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& journal_type, bool isFull)
 {
     QSqlQuery query(*db);
 
-    // создание cлужебной таблицы для хранения скрытых от пользователя данных
-    QString db_str = "CREATE TABLE table_info ("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                     "journal_type STRING(255) NOT NULL);";
+    QString db_str;
+    QString tableName = QString("journal_%1").arg(journal_type);
 
-    if(!query.exec(db_str))
+    if(isFull)
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно создать служебную таблицу журналов: ").arg(query.lastError().text()));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        // создание cлужебной таблицы для хранения скрытых от пользователя данных
+        db_str = "CREATE TABLE table_info ("
+                 "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                 "journal_type STRING(255) NOT NULL);";
 
-        return false;
-    }
+        if(!query.exec(db_str))
+        {
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Создание таблицы"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно создать служебную таблицу журналов: ").arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
 
-    // создание таблицы для хранения имен списка журналов
-    db_str = "CREATE TABLE journal_list ("
-             "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-             "name STRING(255), "
-             "sn_device STRING(255));";
+            return false;
+        }
 
-    if(!query.exec(db_str))
-    {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно создать таблицу списка журналов: ").arg(query.lastError().text()));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        // создание таблицы для хранения имен списка журналов
+        db_str = "CREATE TABLE journal_list ("
+                 "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                 "name STRING(255), "
+                 "sn_device STRING(255));";
 
-        return false;
+        if(!query.exec(db_str))
+        {
+            QMessageBox msgbox;
+            msgbox.setWindowTitle(tr("Создание таблицы"));
+            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+            msgbox.setIcon(QMessageBox::Warning);
+            msgbox.setText(tr("Невозможно создать таблицу списка журналов: ").arg(query.lastError().text()));
+            outApplicationEvent(msgbox.text());
+            msgbox.exec();
+
+            return false;
+        }
+
+        tableName = "journals";
     }
 
     if(journal_type == "EVENT")
     {
         // создание таблицы для хранения журналов событий
-        db_str = "CREATE TABLE journals ("
+        db_str = QString("CREATE TABLE %1 ("
                  "id_msg INTEGER NOT NULL, "
                  "date STRING(25) NOT NULL, "
                  "time STRING(25), "
@@ -7895,7 +7997,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
                  "category STRING(255), "
                  "parameter STRING(255), "
                  "sn_device INTEGER NOT NULL, "
-                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
+                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));").arg(tableName);
 
         if(!query.exec(db_str))
         {
@@ -7913,14 +8015,14 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
     else if(journal_type == "CRASH")
     {
         // создание таблицы для хранения журналов аварий
-        db_str = "CREATE TABLE journals ("
+        db_str = QString("CREATE TABLE %1 ("
                  "id_msg INTEGER NOT NULL, "
                  "date STRING(25) NOT NULL, "
                  "time STRING(25), "
                  "protection STRING(255), "
                  "id_journal INTEGER NOT NULL, " // идентификатор для привязки записей из таблицы свойств
                  "sn_device INTEGER NOT NULL, "
-                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
+                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));").arg(tableName);
 
         if(!query.exec(db_str))
         {
@@ -7936,11 +8038,11 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
         }
 
         // создание таблицы для хранения свойств журналов аварий
-        db_str = "CREATE TABLE property ("
+        db_str = QString("CREATE TABLE property_%1 ("
                  "name STRING(255) NOT NULL, "
                  "value STRING(255) NOT NULL, "
                  "id_journal INTEGER NOT NULL, "
-                 "CONSTRAINT new_pk PRIMARY KEY (name, value, id_journal));";
+                 "CONSTRAINT new_pk PRIMARY KEY (name, value, id_journal));").arg(journal_type);
 
         if(!query.exec(db_str))
         {
@@ -7958,7 +8060,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
     else if(journal_type == "HALFHOUR")
     {
         // создание таблицы для хранения журналов аварий
-        db_str = "CREATE TABLE journals ("
+        db_str = QString("CREATE TABLE %1 ("
                  "id_msg INTEGER NOT NULL, "
                  "date STRING NOT NULL, "
                  "time STRING, "
@@ -7966,7 +8068,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
                  "time_reset STRING, "
                  "id_journal INTEGER NOT NULL, " // идентификатор для привязки записей из таблицы свойств
                  "sn_device INTEGER NOT NULL, "
-                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));";
+                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));").arg(tableName);
 
         if(!query.exec(db_str))
         {
@@ -7982,10 +8084,10 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
         }
 
         // создание таблицы для хранения свойств журналов аварий
-        db_str = "CREATE TABLE property ("
+        db_str = QString("CREATE TABLE property_%1 ("
                  "value DOUBLE, "
                  "id_journal INTEGER);"
-                 /*"CONSTRAINT new_pk PRIMARY KEY (time, value, id_journal));"*/;
+                 /*"CONSTRAINT new_pk PRIMARY KEY (time, value, id_journal));"*/).arg(journal_type);
 
         if(!query.exec(db_str))
         {
