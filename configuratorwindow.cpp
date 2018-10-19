@@ -1286,7 +1286,7 @@ void ConfiguratorWindow::purposeRelayWrite()
     sendPurposeWriteRequest("DO10", "DO11");
     sendPurposeWriteRequest("DO12", "DO13");
 }
-//----------------------------------------------
+//-------------------------------------------------
 void ConfiguratorWindow::purposeMemoryOutLedWrite()
 {
     CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(ui->tablewgtLedPurpose->model());
@@ -6280,7 +6280,7 @@ bool ConfiguratorWindow::createProjectTablePurpose(const QString& tableType)
                      "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ").arg(tableType);
     for(int col = 0; col < labels.count(); col++)
     {
-        str_db += QString("col%1 INTEGER UNIQUE").arg(col);
+        str_db += QString("col%1 INTEGER").arg(col);
         if(col != labels.count() - 1)
             str_db += ", ";
     }
@@ -6309,7 +6309,7 @@ bool ConfiguratorWindow::createProjectTableProtection(int columns)
                              "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ");
     for(int col = 0; col < columns; col++)
     {
-        str_db += QString("col%1 INTEGER UNIQUE").arg(col);
+        str_db += QString("col%1 INTEGER").arg(col);
         if(col != columns - 1)
             str_db += ", ";
     }
@@ -6326,6 +6326,70 @@ bool ConfiguratorWindow::createProjectTableProtection(int columns)
     }
 
     return true;
+}
+/*!
+ * \brief ConfiguratorWindow::saveDIToProject
+ * \param matrix Матрица привязок дискретных входов
+ *
+ * Вставка привязок дискретных входов в таблицу проектного файла
+ */
+void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix)
+{
+    if((m_project_db && !m_project_db->isOpen()) || matrix.rowCount() == 0)
+    {
+        QString text = tr("Запись привязок дискретных входов: Файл проекта не создан, либо закрыт");
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    QSqlQuery query(*m_project_db);
+    // очистка таблицы привязок дискретных входов
+    if(!query.exec("DELETE FROM purposeINPUT;"))
+    {
+        QString text = tr("Запись привязок дискретных входов: не удалось очисть таблицу привязок (%1)").arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    // вставка данных в таблицу
+    QString colListBind;
+    QString colList;
+    for(int col = 0; col < matrix.columnCount(); col++)
+    {
+        QString colName = QString("col%1").arg(col);
+        colList += colName;
+        colListBind += QString(":%1").arg(colName);
+
+        if(col != matrix.columnCount() - 1)
+        {
+            colList += ", ";
+            colListBind += ", ";
+        }
+    }
+
+    m_project_db->transaction();
+    query.prepare(QString("INSERT INTO purposeINPUT (%1) VALUES(%2)").arg(colList).arg(colListBind));
+    for(int row = 0; row < matrix.rowCount(); row++)
+    {
+        CRow::ColumnArray columns = matrix[row].columns();
+        for(int col = 0; col < columns.count(); col++)
+        {
+            CColumn column = columns[col];
+            int state = static_cast<int>(column.data().state);
+
+            query.bindValue(QString(":col%1").arg(col), state);
+        }
+
+        if(!query.exec())
+        {
+            QString text = tr("Запись привязок дискретных входов: не удалось вставить строку %1 в таблицу привязок (%2)").arg(row).arg(query.lastError().text());
+            qWarning() << text;
+            outApplicationEvent(text);
+        }
+    }
+    m_project_db->commit();
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
