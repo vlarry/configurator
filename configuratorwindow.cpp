@@ -1267,10 +1267,10 @@ void ConfiguratorWindow::purposeLedsWrite()
  */
 void ConfiguratorWindow::purposeInputWrite()
 {
-    sendPurposeDIWriteRequest(512, 590);
-    sendPurposeDIWriteRequest(592, 670);
-    sendPurposeInverseDIWriteRequest(768, 846);
-    sendPurposeInverseDIWriteRequest(848, 926);
+    sendPurposeDIWriteRequest(512, 592);
+    sendPurposeDIWriteRequest(594, 676);
+    sendPurposeInverseDIWriteRequest(768, 848);
+    sendPurposeInverseDIWriteRequest(850, 932);
 }
 /*!
  * \brief ConfiguratorWindow::purposeRelayWrite
@@ -2140,11 +2140,15 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
 
     int res = msgbox.exec();
 
-    qInfo() << tr("Запись новых калибровочных коэффициентов по току:\n%1").arg(textValue);
+    QString text = tr("Запись новых калибровочных коэффициентов по току:\n%1").arg(textValue);
+    qInfo() << text;
+    outApplicationEvent(text);
 
     if(res == QMessageBox::No)
     {
-        qInfo() << tr("Отказ пользователя от записи калибровочных коэффициетов по току");
+        text = tr("Отказ пользователя от записи калибровочных коэффициетов по току");
+        qInfo() << text;
+        outApplicationEvent(text);
         return;
     }
 
@@ -2207,7 +2211,9 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     if(_3I0!= 0.0f)
         m_modbus->sendData(unit_3I0);
 
-    qInfo() << tr("Запись новых калибровочных коэффициентов по току подтверждена");
+    text = tr("Запись новых калибровочных коэффициентов по току подтверждена");
+    qInfo() << text;
+    outApplicationEvent(text);
 }
 //----------------------------------------
 void ConfiguratorWindow::purposeLedsRead()
@@ -2220,10 +2226,10 @@ void ConfiguratorWindow::purposeLedsRead()
 //-----------------------------------------
 void ConfiguratorWindow::purposeInputRead()
 {
-    sendPurposeDIReadRequest(512, 590);
-    sendPurposeDIReadRequest(592, 670);
-    sendPurposeDIReadRequest(768, 846);
-    sendPurposeDIReadRequest(848, 926);
+    sendPurposeDIReadRequest(512, 592);
+    sendPurposeDIReadRequest(594, 676);
+    sendPurposeDIReadRequest(768, 848);
+    sendPurposeDIReadRequest(850, 932);
 }
 //-----------------------------------------
 void ConfiguratorWindow::purposeRelayRead()
@@ -6285,8 +6291,38 @@ bool ConfiguratorWindow::createProjectTablePurpose(const QString& tableType)
 
     if(!query.exec(str_db))
     {
-        qWarning() << tr("Таблица привязок <%1> (%2): %3").arg(tableType).arg(query.lastError().text()).arg(str_db);
+        QString text = tr("Ошибка создания таблицы привязок <%1> (%2): %3").arg(tableType).arg(query.lastError().text()).arg(str_db);
+        qWarning() << text;
+        outApplicationEvent(text);
         return false;
+    }
+
+    return true;
+}
+//----------------------------------------------------------------
+bool ConfiguratorWindow::createProjectTableProtection(int columns)
+{
+    if((m_project_db && !m_project_db->isOpen()) || columns == 0)
+        return false;
+
+    QString str_db = QString("CREATE TABLE purposeProtection ("
+                             "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ");
+    for(int col = 0; col < columns; col++)
+    {
+        str_db += QString("col%1 INTEGER UNIQUE").arg(col);
+        if(col != columns - 1)
+            str_db += ", ";
+    }
+
+    str_db += ");";
+
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(str_db))
+    {
+        QString text = tr("Ошибка создания таблицы привязок защит (%1): %2").arg(query.lastError().text()).arg(str_db);
+        qWarning() << text;
+        outApplicationEvent(text);
     }
 
     return true;
@@ -7462,6 +7498,26 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    // Создание таблицы привязок блокировок защит
+    if(!createProjectTableProtection(loadProtectionList().count()))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы привязок защит"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу привязок защит в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+
 
     // Разблокировка элементов интерфейса после создания файла проекта
     m_isProject = true;

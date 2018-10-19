@@ -729,6 +729,7 @@
             QString loadUserPassword(const QString& login);
             void outApplicationEvent(const QString& text);
             bool createProjectTablePurpose(const QString& tableType);
+            bool createProjectTableProtection(int columns);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
