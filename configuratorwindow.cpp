@@ -6625,7 +6625,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
     QVector<QString> var_list = loadVaribleByType("DI");
 
     int bIndex = (first_addr - 512)/2;
-    int eIndex = (670 - last_addr)/2;
+    int eIndex = (676 - last_addr)/2;
 
     QVector<quint16> values;
 
@@ -6688,7 +6688,7 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
     QVector<QString> var_list = loadVaribleByType("DI");
 
     int bIndex = (first_addr - 768)/2;
-    int eIndex = (926 - last_addr)/2;
+    int eIndex = (932 - last_addr)/2;
 
     QVector<quint16> values;
 
