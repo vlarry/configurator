@@ -731,6 +731,7 @@
             bool createProjectTablePurpose(const QString& tableType);
             bool createProjectTableProtection(int columns);
             void savePurposeToProject(const CMatrix& matrix, const QString& type);
+            void saveJournalToProject(const CJournalTable* journal, const QString& type);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

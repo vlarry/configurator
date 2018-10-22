@@ -20,6 +20,23 @@ QVariant CJournalTable::rowData(int row) const
     return QVariant();
 }
 /*!
+ * \brief CJournalTable::rowData
+ * \param row Номер строки
+ * \param col Номер колонки
+ * \return Значение ячейки
+ *
+ * Метод возвращает значение ячейки таблицы по индекса строки и колонки
+ */
+QVariant CJournalTable::rowColumnData(int row, int col) const
+{
+    QTableWidgetItem* i = item(row, col);
+
+    if(i)
+        return i->data(Qt::DisplayRole);
+
+    return QVariant();
+}
+/*!
  * \brief CJournalTable::setRowData
  * \param row - номер строки, которая является ключом
  * \param value - данные журнала (структура данных зависит от журнала)

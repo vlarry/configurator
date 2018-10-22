@@ -185,7 +185,7 @@
             CHeaderJournal* header() const;
             void            headerClear() const;
             CJournalTable*  table() const;
-            QListWidget*    propertyJournal() const;
+            QWidget*        propertyJournal() const;
             void            print(const QVector<quint16>& data) const;
 
             void setTableHeaders(PropertyType property_type, const QStringList& headers);

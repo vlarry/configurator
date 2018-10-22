@@ -2860,6 +2860,13 @@ void ConfiguratorWindow::readSetCurrent()
         table = ui->tablewgtProtectionCtrl;
     }
 
+    CJournalTable* journal = ui->widgetJournalEvent->table();
+
+    if(journal && journal->rowCount() > 0)
+    {
+        saveJournalToProject(journal, ui->widgetJournalEvent->property("TYPE").toString());
+    }
+
     if(table)
     {
         CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
@@ -6428,6 +6435,108 @@ void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix, const QStri
     }
     m_project_db->commit();
 }
+//----------------------------------------------------------------------------------------------
+void ConfiguratorWindow::saveJournalToProject(const CJournalTable* journal, const QString& type)
+{
+    if(!journal || type.isEmpty() || !m_project_db)
+        return;
+
+    QSqlQuery query (*m_project_db);
+
+    if(!query.exec(QString("DELETE FROM journalEVENT")))
+    {
+        QString text = tr("Сохранение журнала <%1>: ошибка удаления данных журнала (%2)").arg(type).arg(m_project_db->lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    query.clear();
+
+    // вставка данных в таблицу журналов
+    QString colStrBind;
+    QString colStrList;
+    QStringList colListBind;
+
+    if(type.toUpper() == "CRASH")
+    {
+        colStrList = "id_msg, date, time, protection, id_journal, sn_device";
+        colStrBind = ":id_msg, :date, :time, :protection, :id_journal, sn_device";
+        colListBind << ":id_msg" << ":date" << ":time" << ":protection" << ":id_journal";
+    }
+    else if(type.toUpper() == "EVENT")
+    {
+        colStrList = "id_msg, date, time, type, category, parameter, sn_device";
+        colStrBind = ":id_msg, :date, :time, :type, :category, :parameter, sn_device";
+        colListBind << ":id_msg" << ":date" << ":time" << ":type" << ":category" << ":parameter";
+    }
+    else if(type.toUpper() == "HALFHOUR")
+    {
+        colStrList = "id_msg, date, time, type, time_reset, id_journal, sn_device";
+        colStrBind = ":id_msg, :date, :time, :type, :time_reset, :id_journal, sn_device";
+        colListBind << ":id_msg" << ":date" << ":time" << ":type" << ":time_reset" << ":id_journal";
+    }
+
+    m_project_db->transaction();
+    bool isError = false;
+
+    for(int row = 0; row < journal->rowCount(); row++)
+    {
+        QString bindValue;
+
+        for(int col = 0; col < journal->columnCount(); col++)
+        {
+            QString value = journal->rowColumnData(row, col).toString();
+            QString field = colListBind.at(col);
+
+            if(field.toUpper() == ":ID_MSG" || field.toUpper() == ":ID_JOURNAL")
+                bindValue += value;
+            else
+                bindValue += QString("\'%1\'").arg(value);
+
+            if(col < journal->columnCount() - 1)
+                bindValue += ", ";
+        }
+
+        bindValue += QString(", %1").arg(0);
+
+        QString query_str = QString("INSERT INTO journalEVENT (id_msg, date, time, type, category, parameter, sn_device) VALUES(%1);").arg(bindValue);
+
+        if(!query.exec(query_str))
+        {
+            isError = true;
+        }
+    }
+
+    m_project_db->commit();
+
+    if(isError)
+    {
+        QString text = tr("Сохранение журнала <%1>: возникли ошибки в процессе записи журнала").arg(type);
+        qWarning() << text;
+        outApplicationEvent(text);
+    }
+
+    // вставка свойств журналов Аварий и Получасовок
+    if(type.toUpper() == "CRASH")
+    {
+        QListView* listView = static_cast<QListView*>(ui->widgetJournalCrash->propertyJournal());
+
+        if(!listView || (listView && listView->model() && listView->model()->rowCount() == 0))
+            return;
+    }
+    else if(type.toUpper() == "HALFHOUR")
+    {
+        QTableWidget* tableWidget = static_cast<QTableWidget*>(ui->widgetJournalHalfHour->propertyJournal());
+
+        if(!tableWidget || (tableWidget && tableWidget->rowCount() == 0))
+            return;
+    }
+
+    m_project_db->transaction();
+
+    m_project_db->commit();
+}
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
                                                 DeviceMenuItemType index)
@@ -8207,7 +8316,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
     QSqlQuery query(*db);
 
     QString db_str;
-    QString tableName = QString("journal_%1").arg(journal_type);
+    QString tableName = QString("journal%1").arg(journal_type);
 
     if(isFull)
     {
@@ -8303,7 +8412,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
         }
 
         // создание таблицы для хранения свойств журналов аварий
-        db_str = QString("CREATE TABLE property_%1 ("
+        db_str = QString("CREATE TABLE propertyJournal%1 ("
                  "name STRING(255) NOT NULL, "
                  "value STRING(255) NOT NULL, "
                  "id_journal INTEGER NOT NULL, "
@@ -8349,7 +8458,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
         }
 
         // создание таблицы для хранения свойств журналов аварий
-        db_str = QString("CREATE TABLE property_%1 ("
+        db_str = QString("CREATE TABLE propertyJournal%1 ("
                  "value DOUBLE, "
                  "id_journal INTEGER);"
                  /*"CONSTRAINT new_pk PRIMARY KEY (time, value, id_journal));"*/).arg(journal_type);

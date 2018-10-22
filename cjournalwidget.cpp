@@ -40,15 +40,20 @@ void CJournalWidget::headerClear() const
 {
     ui->widgetJournalHeader->clear();
 }
-//-----------------------------------------
+//------------------------------------------
 CJournalTable* CJournalWidget::table() const
 {
     return ui->tableWidgetJournal;
 }
-//------------------------------------------------
-QListWidget* CJournalWidget::propertyJournal() const
+//----------------------------------------------
+QWidget* CJournalWidget::propertyJournal() const
 {
-    return /*ui->listWidgetPropertyJournal*/nullptr;
+    if(m_property_type == CRASH_PROPERTY)
+        return ui->listViewPropertyCrashJournal;
+    else if(m_property_type == HALFHOUR_PROPERTY)
+        return ui->tableWidgetPropertyHalfhourJournal;
+
+    return nullptr;
 }
 /*!
  * \brief CJournalWidget::print

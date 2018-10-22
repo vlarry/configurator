@@ -32,6 +32,7 @@
             CJournalTable(QWidget* parent = nullptr);
 
             QVariant rowData(int row) const;
+            QVariant rowColumnData(int row, int col) const;
             void     setRowData(int row, QVariant value);
 
         protected:
