@@ -2835,6 +2835,42 @@ void ConfiguratorWindow::readSettings()
 //---------------------------------------
 void ConfiguratorWindow::readSetCurrent()
 {
+    DeviceMenuItemType tindex = menuIndex();
+    CPurposeTableView* table = nullptr;
+    QString type;
+
+    if(tindex == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
+    {
+        type = "LED";
+        table = ui->tablewgtLedPurpose;
+    }
+    else if(tindex == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
+    {
+        type = "RELAY";
+        table = ui->tablewgtRelayPurpose;
+    }
+    else if(tindex == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
+    {
+        type = "INPUT";
+        table = ui->tablewgtDiscreteInputPurpose;
+    }
+    else if(tindex == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION)
+    {
+        type = "PROTECTION";
+        table = ui->tablewgtProtectionCtrl;
+    }
+
+    if(table)
+    {
+        CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+        if(model)
+        {
+            CMatrix matrix = model->matrix();
+            savePurposeToProject(matrix, type);
+        }
+    }
+
     if(!m_modbus->channel()->isOpen())
     {
         noConnectMessage();
@@ -6333,11 +6369,11 @@ bool ConfiguratorWindow::createProjectTableProtection(int columns)
  *
  * Вставка привязок дискретных входов в таблицу проектного файла
  */
-void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix)
+void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix, const QString& type)
 {
     if((m_project_db && !m_project_db->isOpen()) || matrix.rowCount() == 0)
     {
-        QString text = tr("Запись привязок дискретных входов: Файл проекта не создан, либо закрыт");
+        QString text = tr("Запись привязок <%1>: Файл проекта не создан, либо закрыт").arg(type);
         qWarning() << text;
         outApplicationEvent(text);
         return;
@@ -6345,9 +6381,9 @@ void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix)
 
     QSqlQuery query(*m_project_db);
     // очистка таблицы привязок дискретных входов
-    if(!query.exec("DELETE FROM purposeINPUT;"))
+    if(!query.exec(QString("DELETE FROM purpose%1;").arg(type)))
     {
-        QString text = tr("Запись привязок дискретных входов: не удалось очисть таблицу привязок (%1)").arg(query.lastError().text());
+        QString text = tr("Запись привязок <%1>: не удалось очисть таблицу привязок (%2)").arg(type).arg(query.lastError().text());
         qWarning() << text;
         outApplicationEvent(text);
         return;
@@ -6370,7 +6406,7 @@ void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix)
     }
 
     m_project_db->transaction();
-    query.prepare(QString("INSERT INTO purposeINPUT (%1) VALUES(%2)").arg(colList).arg(colListBind));
+    query.prepare(QString("INSERT INTO purpose%1 (%2) VALUES(%3)").arg(type).arg(colList).arg(colListBind));
     for(int row = 0; row < matrix.rowCount(); row++)
     {
         CRow::ColumnArray columns = matrix[row].columns();
@@ -6384,7 +6420,8 @@ void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix)
 
         if(!query.exec())
         {
-            QString text = tr("Запись привязок дискретных входов: не удалось вставить строку %1 в таблицу привязок (%2)").arg(row).arg(query.lastError().text());
+            QString text = tr("Запись привязок <%1>: не удалось вставить строку %2 в таблицу привязок (%3)").arg(type).arg(row).
+                                                                                                             arg(query.lastError().text());
             qWarning() << text;
             outApplicationEvent(text);
         }
