@@ -68,6 +68,7 @@
     #include "widget.h"
     #include "terminalwindow.h"
     #include "containerwidget.h"
+    #include "purposetableview.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
@@ -731,8 +732,8 @@
             bool createProjectTablePurpose(const QString& tableType);
             bool createProjectTableProtection(int columns);
             bool createProjectTableSet(const QString& tableName);
-            void savePurposeToProject(const CMatrix& matrix, const QString& type);
-            void saveJournalToProject(const CJournalTable* journal, const QString& type);
+            void savePurposeToProject(CPurposeTableView* table, const QString& type);
+            void saveJournalToProject(const CJournalWidget *widgetJournal);
             void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
 
         signals:

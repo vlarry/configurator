@@ -2835,48 +2835,11 @@ void ConfiguratorWindow::readSettings()
 //---------------------------------------
 void ConfiguratorWindow::readSetCurrent()
 {
-    DeviceMenuItemType tindex = menuIndex();
-    CPurposeTableView* table = nullptr;
-    QString type;
-
-    if(tindex == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS)
-    {
-        type = "LED";
-        table = ui->tablewgtLedPurpose;
-    }
-    else if(tindex == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
-    {
-        type = "RELAY";
-        table = ui->tablewgtRelayPurpose;
-    }
-    else if(tindex == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
-    {
-        type = "INPUT";
-        table = ui->tablewgtDiscreteInputPurpose;
-    }
-    else if(tindex == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION)
-    {
-        type = "PROTECTION";
-        table = ui->tablewgtProtectionCtrl;
-    }
-
-    CJournalTable* journal = ui->widgetJournalEvent->table();
-
-    if(journal && journal->rowCount() > 0)
-    {
-        saveJournalToProject(journal, ui->widgetJournalEvent->property("TYPE").toString());
-    }
-
-    if(table)
-    {
-        CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
-
-        if(model)
-        {
-            CMatrix matrix = model->matrix();
-            savePurposeToProject(matrix, type);
-        }
-    }
+    saveJournalToProject(ui->widgetJournalEvent);
+    savePurposeToProject(ui->tablewgtLedPurpose, "LED");
+    savePurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
+    savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
+    savePurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
 
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
@@ -6212,11 +6175,31 @@ bool ConfiguratorWindow::createProjectTableSet(const QString& tableName)
  *
  * Вставка привязок дискретных входов в таблицу проектного файла
  */
-void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix, const QString& type)
+void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QString& type)
 {
-    if((m_project_db && !m_project_db->isOpen()) || matrix.rowCount() == 0)
+    if(!table || (m_project_db && !m_project_db->isOpen()) || type.isEmpty())
     {
-        QString text = tr("Запись привязок <%1>: Файл проекта не создан, либо закрыт").arg(type);
+        QString text = tr("Запись привязок: Файл проекта не создан, либо закрыт");
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+    if(!model)
+    {
+        QString text = tr("Запись привязок: Невозможно обратиться к модели представления");
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    CMatrix matrix = model->matrix();
+
+    if(matrix.rowCount() == 0)
+    {
+        QString text = tr("Запись привязок: Нет данных в матрице").arg(type);
         qWarning() << text;
         outApplicationEvent(text);
         return;
@@ -6271,12 +6254,18 @@ void ConfiguratorWindow::savePurposeToProject(const CMatrix& matrix, const QStri
     }
     m_project_db->commit();
 }
-//----------------------------------------------------------------------------------------------
-void ConfiguratorWindow::saveJournalToProject(const CJournalTable* journal, const QString& type)
+//--------------------------------------------------------------------------------
+void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJournal)
 {
-    if(!journal || type.isEmpty() || !m_project_db)
+    if(!widgetJournal || !m_project_db)
         return;
 
+    CJournalTable* journal = widgetJournal->table();
+
+    if(!journal)
+        return;
+
+    QString type = widgetJournal->property("TYPE").toString();
     QSqlQuery query (*m_project_db);
 
     if(!query.exec(QString("DELETE FROM journalEVENT")))
