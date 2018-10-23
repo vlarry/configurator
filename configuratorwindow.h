@@ -732,9 +732,13 @@
             bool createProjectTablePurpose(const QString& tableType);
             bool createProjectTableProtection(int columns);
             bool createProjectTableSet(const QString& tableName);
+            bool createProjectTableCommunication();
+            bool createProjectTableCalibrationCurrent();
             void savePurposeToProject(CPurposeTableView* table, const QString& type);
             void saveJournalToProject(const CJournalWidget *widgetJournal);
             void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
+            void saveDeviceCommunication();
+            void saveDeviceCalibrationCurrent();
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

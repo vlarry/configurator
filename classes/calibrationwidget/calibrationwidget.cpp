@@ -130,6 +130,36 @@ void CCalibrationWidget::calibrationCurrentClear()
     m_calibration_current_data = calibration_current_t({ calibration_data_t(0), calibration_data_t(0), calibration_data_t(0),
                                                          calibration_data_t(0) });
 }
+//--------------------------------------------------------
+bool CCalibrationWidget::calibrationCurrentIaState() const
+{
+    return ui->checkBoxIa->isChecked();
+}
+//--------------------------------------------------------
+bool CCalibrationWidget::calibrationCurrentIbState() const
+{
+    return ui->checkBoxIb->isChecked();
+}
+//--------------------------------------------------------
+bool CCalibrationWidget::calibrationCurrentIcState() const
+{
+    return ui->checkBoxIc->isChecked();
+}
+//---------------------------------------------------------
+bool CCalibrationWidget::calibrationCurrent3I0State() const
+{
+    return ui->checkBox3I0->isChecked();
+}
+//---------------------------------------------------------
+int CCalibrationWidget::calibrationCurrentDataCount() const
+{
+    return ui->spinBoxSetDataCount->value();
+}
+//------------------------------------------------------------
+int CCalibrationWidget::calibrationCurrentPauseRequest() const
+{
+    return ui->spinBoxPauseRequest->value();
+}
 //-----------------------------------------------------------
 void CCalibrationWidget::setCurrentStandardPhase(float value)
 {

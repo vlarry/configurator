@@ -53,6 +53,12 @@
             float                        calibrationCurrentIc() const;
             float                        calibrationCurrent3I0() const;
             void                         calibrationCurrentClear();
+            bool                         calibrationCurrentIaState() const;
+            bool                         calibrationCurrentIbState() const;
+            bool                         calibrationCurrentIcState() const;
+            bool                         calibrationCurrent3I0State() const;
+            int                          calibrationCurrentDataCount() const;
+            int                          calibrationCurrentPauseRequest() const;
 
             void setCurrentStandardPhase(float value);
             void setCurrentStandard3I0(float value);

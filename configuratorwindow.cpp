@@ -2841,6 +2841,7 @@ void ConfiguratorWindow::readSetCurrent()
     savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
     savePurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
 
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG");
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
@@ -2851,6 +2852,8 @@ void ConfiguratorWindow::readSetCurrent()
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
     saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
+    saveDeviceCommunication();
+    saveDeviceCalibrationCurrent();
 
     if(!m_modbus->channel()->isOpen())
     {
@@ -2862,14 +2865,6 @@ void ConfiguratorWindow::readSetCurrent()
 
     switch(index)
     {
-        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL:
-            inputAnalogGeneralRead(); // чтение настроек "Основные"
-        break;
-
-        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB:
-            inputAnalogCalibrateRead(); // чтение настроек "Калибровки"
-        break;
-
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG:
             inputAnalogGroupRead(); // чтение группы настроек "Аналоговые"
         break;
@@ -6170,6 +6165,69 @@ bool ConfiguratorWindow::createProjectTableSet(const QString& tableName)
     return true;
 }
 /*!
+ * \brief ConfiguratorWindow::createProjectTableCommunication
+ * \return Истина если таблица создана успешно
+ *
+ * Создание таблицы в проектном файле для хранения настроек связи
+ */
+bool ConfiguratorWindow::createProjectTableCommunication()
+{
+    if((m_project_db && !m_project_db->isOpen()))
+        return false;
+
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(QString("CREATE TABLE deviceCommunication ("
+                           "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
+                           "address INTEGER, "
+                           "speed INTEGER, "
+                           "parity INTEGER, "
+                           "Trequest INTEGER, "
+                           "Tspeed INTEGER);")))
+    {
+        QString text = tr("Ошибка создания таблицы настроек связи устройства: %1").arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+
+        return false;
+    }
+
+    return true;
+}
+/*!
+ * \brief ConfiguratorWindow::createProjectTableCalibration
+ * \return Истина, если таблица успешно создана
+ *
+ * Сохранение данных калибровок (по умолчанию)
+ */
+bool ConfiguratorWindow::createProjectTableCalibrationCurrent()
+{
+    if((m_project_db && !m_project_db->isOpen()))
+        return false;
+
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(QString("CREATE TABLE deviceCalibrationCurrent ("
+                           "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
+                           "standardPhase STRING, "
+                           "standard3I0 STRING, "
+                           "stateIa INTEGER, "
+                           "stateIb INTEGER, "
+                           "stateIc INTEGER,"
+                           "state3I0 INTEGER, "
+                           "dataCount INTEGER, "
+                           "pauseRequest INTEGER);")))
+    {
+        QString text = tr("Ошибка создания таблицы калибровок по току: %1").arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+
+        return false;
+    }
+
+    return true;
+}
+/*!
  * \brief ConfiguratorWindow::saveDIToProject
  * \param matrix Матрица привязок дискретных входов
  *
@@ -6268,7 +6326,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
     QString type = widgetJournal->property("TYPE").toString();
     QSqlQuery query (*m_project_db);
 
-    if(!query.exec(QString("DELETE FROM journalEVENT")))
+    if(!query.exec(QString("DELETE FROM journalEVENT;")))
     {
         QString text = tr("Сохранение журнала <%1>: ошибка удаления данных журнала (%2)").arg(type).arg(m_project_db->lastError().text());
         qWarning() << text;
@@ -6370,7 +6428,7 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
     QSqlQuery query (*m_project_db);
 
-    if(!query.exec(QString("DELETE FROM deviceSet%1").arg(tableName)))
+    if(!query.exec(QString("DELETE FROM deviceSet%1;").arg(tableName)))
     {
         QString text = tr("Сохранение уставок устройства для группы <%1>: ошибка удаления данных из таблицы уставок (%2)").
                        arg(tableName).arg(m_project_db->lastError().text());
@@ -6425,7 +6483,7 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
             if(!query.exec(QString("INSERT INTO deviceSet%1 (val, type) VALUES(\'%2\', \'%3\');").arg(tableName).arg(value).arg(type)))
             {
-                QString text = tr("Ошибка загрузки уставок группы %1: %2").arg(tableName).arg(m_project_db->lastError().text());
+                QString text = tr("Ошибка сохранения уставок группы %1: %2").arg(tableName).arg(m_project_db->lastError().text());
                 qWarning() << text;
                 outApplicationEvent(text);
             }
@@ -6433,6 +6491,75 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
     }
 
     m_project_db->commit();
+}
+/*!
+ * \brief ConfiguratorWindow::saveDeviceCommunication
+ *
+ * Сохранение настроек связи устройства в таблицу проекта
+ */
+void ConfiguratorWindow::saveDeviceCommunication()
+{
+    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+        return;
+
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(QString("DELETE FROM deviceCommunication;")))
+    {
+        QString text = tr("Сохранение настроек связи устройства: ошибка удаления данных из таблицы (%1)").arg(m_project_db->lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    query.clear();
+
+    if(!query.exec(QString("INSERT INTO deviceCommunication (address, speed, parity, Trequest, Tspeed) VALUES("
+                           "%1, %2, %3, %4, %5);").arg(ui->spinBoxCommunicationAddress->value()).arg(ui->comboBoxCommunicationBaudrate->currentIndex()).
+                                                   arg(ui->comboBoxCommunicationParity->currentIndex()).arg(ui->spinBoxCommunicationRequestTimeout->value()).
+                                                   arg(ui->spinBoxCommunicationTimeoutSpeed->value())))
+    {
+        QString text = tr("Ошибка сохранения настроек связи устройства: %1").arg(m_project_db->lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::saveDeviceCalibrationCurrent
+ *
+ * Сохранение калибровок по току (эталонных значений) в проектном файле
+ */
+void ConfiguratorWindow::saveDeviceCalibrationCurrent()
+{
+    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+        return;
+
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(QString("DELETE FROM deviceCalibrationCurrent;")))
+    {
+        QString text = tr("Сохранение эталонных значений калибровок по току: ошибка удаления данных из таблицы (%1)").arg(m_project_db->lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    query.clear();
+
+    if(!query.exec(QString("INSERT INTO deviceCalibrationCurrent (standardPhase, standard3I0, stateIa, stateIb, stateIc, state3I0, dataCount, pauseRequest)"
+                           " VALUES(%1, %2, %3, %4, %5, %6, %7, %8);").arg(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIaState()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIbState()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIcState()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrent3I0State()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentDataCount()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentPauseRequest())))
+    {
+        QString text = tr("Ошибка сохранения эталонных значений калибровок по току устройства: %1").arg(m_project_db->lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+    }
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
@@ -7624,6 +7751,24 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    // Создание таблицы уставок Аналоговые входы
+    if(!createProjectTableSet("ANALOG"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Аналоговые входы"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Аналоговые входы в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
     // Создание таблицы уставок группы "Защиты по току"
     if(!createProjectTableSet("MTZ"))
     {
@@ -7794,6 +7939,42 @@ void ConfiguratorWindow::newProject()
         msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
         msgbox.setIcon(QMessageBox::Warning);
         QString text = tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы настроек связи
+    if(!createProjectTableCommunication())
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы настроек связи"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу настроек связи в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы настроек связи
+    if(!createProjectTableCalibrationCurrent())
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы калибровок по току"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу калибровок по току в файле проекта.");
         msgbox.setText(text);
         outApplicationEvent(msgbox.text());
         msgbox.exec();
