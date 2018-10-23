@@ -10123,7 +10123,7 @@ void ConfiguratorWindow::importJournalToTable()
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*db);
 
-            if(!query_property.exec(QString("SELECT name, value FROM property WHERE id_journal=%1;").arg(id_journal)))
+            if(!query_property.exec(QString("SELECT name, value FROM propertyJournalCRASH WHERE id_journal=%1;").arg(id_journal)))
             {
                 QMessageBox msgbox;
                 msgbox.setWindowTitle(tr("Импорт журнала"));
@@ -10160,7 +10160,7 @@ void ConfiguratorWindow::importJournalToTable()
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*db);
 
-            if(!query_property.exec(QString("SELECT value FROM property WHERE id_journal=%1;").arg(id_journal)))
+            if(!query_property.exec(QString("SELECT value FROM propertyJournalHALFHOUR WHERE id_journal=%1;").arg(id_journal)))
             {
                 qWarning() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
                 continue;
@@ -10508,7 +10508,12 @@ void ConfiguratorWindow::exportJournalToDb()
             query.bindValue(":parameter", parameter);
             query.bindValue(":sn_device", id);
 
-            query.exec();
+            if(!query.exec())
+            {
+                QString text = tr("Ошибка вставки данных журнала событий в БД: %1").arg(query.lastError().text());
+                qWarning() << text;
+                outApplicationEvent(text);
+            }
         }
         else if(journal_type == "CRASH")
         {
@@ -10523,7 +10528,12 @@ void ConfiguratorWindow::exportJournalToDb()
             query.bindValue(":id_journal", id_journal);
             query.bindValue(":sn_device", id);
 
-            query.exec();
+            if(!query.exec())
+            {
+                QString text = tr("Ошибка вставки данных журнала аварий в БД: %1").arg(query.lastError().text());
+                qWarning() << text;
+                outApplicationEvent(text);
+            }
 
             property_list_t property_list = qvariant_cast<property_list_t>(table->rowData(i));
 
@@ -10533,13 +10543,18 @@ void ConfiguratorWindow::exportJournalToDb()
                 {
                     QSqlQuery query_property(*db);
 
-                    query_property.prepare("INSERT OR REPLACE INTO property (name, value, id_journal)"
-                                           "VALUES(:name, :value, :id_journal)");
+                    query_property.prepare("INSERT OR REPLACE INTO propertyJournalCRASH (name, value, id_journal) "
+                                           "VALUES(:name, :value, :id_journal);");
                     query_property.bindValue(":name", item.name);
                     query_property.bindValue(":value", item.value);
                     query_property.bindValue(":id_journal", id_journal);
 
-                    query_property.exec();
+                    if(!query_property.exec())
+                    {
+                        QString text = tr("Ошибка вставки свойств данных журнала аварий в БД: %1").arg(query_property.lastError().text());
+                        qWarning() << text;
+                        outApplicationEvent(text);
+                    }
                 }
 
                 id_journal++;
@@ -10568,7 +10583,11 @@ void ConfiguratorWindow::exportJournalToDb()
             query.bindValue(":sn_device", id);
 
             if(!query.exec())
-                qWarning() << tr("Ошбика экспорта журнала получасовок в базу данных: %1").arg(query.lastError().text());
+            {
+                QString text = tr("Ошибка вставки данных журнала получасовок в БД: %1").arg(query.lastError().text());
+                qWarning() << text;
+                outApplicationEvent(text);
+            }
 
             halfhour_t halfhour = qvariant_cast<halfhour_t>(table->rowData(i));
 
@@ -10578,13 +10597,17 @@ void ConfiguratorWindow::exportJournalToDb()
                 {
                     QSqlQuery query_property(*db);
 
-                    query_property.prepare("INSERT INTO property (value, id_journal)"
+                    query_property.prepare("INSERT INTO propertyJournalHALFHOUR (value, id_journal)"
                                            "VALUES(:value, :id_journal)");
                     query_property.bindValue(":value", value);
                     query_property.bindValue(":id_journal", id_journal);
 
                     if(!query_property.exec())
-                        qWarning() << tr("journal halfhour property error: %1").arg(query_property.lastError().text());
+                    {
+                        QString text = tr("Ошибка вставки свойств данных журнала получасовок в БД: %1").arg(query_property.lastError().text());
+                        qWarning() << text;
+                        outApplicationEvent(text);
+                    }
                 }
 
                 id_journal++;
