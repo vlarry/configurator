@@ -2878,6 +2878,17 @@ void ConfiguratorWindow::readSetCurrent()
         }
     }
 
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
+
     if(!m_modbus->channel()->isOpen())
     {
         noConnectMessage();
@@ -2900,243 +2911,40 @@ void ConfiguratorWindow::readSetCurrent()
             inputAnalogGroupRead(); // чтение группы настроек "Аналоговые"
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1: // чтение защиты МТЗ1
-            protectionMTZ1Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2: // чтение защиты МТЗ2
-            protectionMTZ2Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3: // чтение защиты МТЗ3
-            protectionMTZ3Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR: // чтение токовых характеристик защиты МТЗ3
-            protectionMTZ3SetCharRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP:
-            protectionMTZ3PropertySteepRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP:
-            protectionMTZ3PropertySlopRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV:
-            protectionMTZ3PropertyInversionRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV:
-            protectionMTZ3PropertyDInversionRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK:
-            protectionMTZ3PropertyBackRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV:
-            protectionMTZ3PropertyStrongInversionRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV:
-            protectionMTZ3PropertyExtremalInversionRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4: // чтение защиты По току
-            protectionMTZ4Read();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_CURRENT: // чтение группы защит МТЗ
             protectionMTZGroupRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1: // чтение защиты Umax1
-            protectionUmax1Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2: // чтение защиты Umax2
-            protectionUmax2Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1: // чтение защиты Umin1
-            protectionUmin1Read();
-            automationSwitchRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2: // чтение защиты Umin2
-            protectionUmin2Read();
-            automationSwitchRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU: // чтение подпункта защиты Umin1 Коррекция КЦУ
-            automationSwitchRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU: // чтение подпункта защиты Umin2 Коррекция КЦУ
-            automationSwitchRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_3U0: // чтение защиты 3U0
-            protection3U0Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_POWER: // чтение группы защит По напряжению
             protectionPowerGroupRead();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1: // чтение защиты ОЗЗ1
-            protectionOZZ1Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2: // чтение защиты ОЗЗ2
-            protectionOZZ2Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1: // чтение защиты НЗЗ1
-            protectionNZZ1Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2: // чтение защиты НЗЗ2
-            protectionNZZ2Read();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_DIRECTED: // чтение направленных защит
             protectionDirectedGroupRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1: // чтение защиты АЧР1
-            protectionAchr1Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2: // чтение защиты АЧР2
-            protectionAchr2Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3: // чтение защиты АЧР3
-            protectionAchr3Read();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_FREQUENCY: // чтение защит по частоте
             protectionFrequencyGroupRead();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC: // чтение защиты Дуговая
-            protectionArcRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1: // чтение защиты Внешняя1
-            protectionExt1Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2: // чтение защиты Внешняя2
-            protectionExt2Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3: // чтение защиты Внешняя3
-            protectionExt3Read();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_EXTERNAL: // чтение Внешних защит
             protectionExternalGroupRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING: // чтение защиты Пусковая
-            protectionStartingRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN: // чтение защиты Imin
-            protectionIminRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_MOTOR: // чтение защит для двигателя
             protectionMotorGroupRead();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1: // чтение защиты Температурная1
-            protectionTemp1Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2: // чтение защиты Температурная2
-            protectionTemp2Read();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE: // чтение защит по Температуре
             protectionTemperatureGroupRead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1: // чтение защиты Уровневая1
-            protectionLevel1Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2: // чтение защиты Уровневая2
-            protectionLevel2Read();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START: // чтение защиты Сигнал пуска
-            protectionSignalStartRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_RESERVE: // чтение резервных защит
             protectionReserveGroupRead();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU: // чтение защиты БРУ
-            protectionBRURead();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM: // чтение пзащиты Вакуум
-            protectionVacuumRead();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_CONTROL: // чтение группы защит Предварительного контроля
             protectionControlGroupRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH: // автоматики защиты Выключатель
-            automationSwitchRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK: // автоматики защиты Тележка выключателя
-            automationSwitchTruckRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_BLOCKS: // чтение автоматики Блокировки
-            automationBlockRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS: // чтение автоматики Шинный разъединитель
-            automationBusRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE: // чтение автоматики Линейный разъединитель
-            automationLineRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH: // чтение автоматики Заземляющий разъединитель
-            automationEarthRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS: // чтение группы автоматики Разъединители
-            automationDisconnectorsGroupRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN: // чтение автоматики Контроль ТН
-            automationCtrlTNRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_AVR: // чтение автоматики АВР
-            automationAVRRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_APV: // чтение автоматики АПВ
-            automationAPVRead();
-            automationAPVSignalStartRead();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START: // чтение автоматики АПВ сигналы пуска
-            automationAPVSignalStartRead();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
@@ -6366,6 +6174,34 @@ bool ConfiguratorWindow::createProjectTableProtection(int columns)
         QString text = tr("Ошибка создания таблицы привязок защит (%1): %2").arg(query.lastError().text()).arg(str_db);
         qWarning() << text;
         outApplicationEvent(text);
+
+        return false;
+    }
+
+    return true;
+}
+/*!
+ * \brief ConfiguratorWindow::createProjectTableSet
+ * \param tableName Имя таблицы
+ * \return Истина в случае успешного создания таблицы
+ */
+bool ConfiguratorWindow::createProjectTableSet(const QString& tableName)
+{
+    if((m_project_db && !m_project_db->isOpen()) || tableName.isEmpty())
+        return false;
+
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(QString("CREATE TABLE deviceSet%1 ("
+                           "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
+                           "val STRING, "
+                           "type STRING);").arg(tableName)))
+    {
+        QString text = tr("Ошибка создания таблицы уставок устройства (%1): %2").arg(tableName).arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+
+        return false;
     }
 
     return true;
@@ -6534,6 +6370,78 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalTable* journal, cons
     }
 
     m_project_db->transaction();
+
+    m_project_db->commit();
+}
+//---------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName)
+{
+    if(!m_project_db || (m_project_db && !m_project_db->isOpen()) || index == DEVICE_MENU_ITEM_NONE || tableName.isEmpty())
+        return;
+
+    QSqlQuery query (*m_project_db);
+
+    if(!query.exec(QString("DELETE FROM deviceSet%1").arg(tableName)))
+    {
+        QString text = tr("Сохранение уставок устройства для группы <%1>: ошибка удаления данных из таблицы уставок (%2)").
+                       arg(tableName).arg(m_project_db->lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    query.clear();
+
+    CDeviceMenuTableWidget* table = groupMenuWidget(index);
+
+    if(!table)
+        return;
+
+    m_project_db->transaction();
+
+    for(int row = 0; row < table->rowCount(); row++)
+    {
+        QWidget* widget = groupMenuCellWidget(table, row, 1);
+
+        if(!widget)
+            continue;
+
+        QString value;
+        QString type;
+
+        if(QString(widget->metaObject()->className()).toUpper() == "QCOMBOBOX")
+        {
+            QComboBox* comboBox = static_cast<QComboBox*>(widget);
+
+            if(comboBox)
+            {
+                value = QString::number(comboBox->currentIndex());
+                type  = "COMBOBOX";
+            }
+        }
+        else if(QString(widget->metaObject()->className()).toUpper() == "CLINEEDIT")
+        {
+            CLineEdit* lineEdit = static_cast<CLineEdit*>(widget);
+
+            if(lineEdit)
+            {
+                value = lineEdit->text();
+                type  = "LINEEDIT";
+            }
+        }
+
+        if(!value.isEmpty() && !type.isEmpty())
+        {
+            QSqlQuery query(*m_project_db);
+
+            if(!query.exec(QString("INSERT INTO deviceSet%1 (val, type) VALUES(\'%2\', \'%3\');").arg(tableName).arg(value).arg(type)))
+            {
+                QString text = tr("Ошибка загрузки уставок группы %1: %2").arg(tableName).arg(m_project_db->lastError().text());
+                qWarning() << text;
+                outApplicationEvent(text);
+            }
+        }
+    }
 
     m_project_db->commit();
 }
@@ -7727,7 +7635,185 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    // Создание таблицы уставок группы "Защиты по току"
+    if(!createProjectTableSet("MTZ"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы МТЗ"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы МТЗ в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
 
+    // Создание таблицы уставок группы "Защиты по напряжению"
+    if(!createProjectTableSet("PWR"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Защиты по напряжению"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Защиты по напряжнию в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы уставок группы "Направленные"
+    if(!createProjectTableSet("DIR"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Направленные"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Направленные в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы уставок группы "Защиты по частоте"
+    if(!createProjectTableSet("FREQ"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Защиты по частоте"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Защиты по частоте в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы уставок группы "Внешние защиты"
+    if(!createProjectTableSet("EXT"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Внешние защиты"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Внешние защиты в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы уставок группы "Для двигателя"
+    if(!createProjectTableSet("MOTOR"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Защиты для двигателя"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Защиты для двигателя в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы уставок группы "Защиты по температуре"
+    if(!createProjectTableSet("TEMP"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Защиты по температуре"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Защиты по температуре в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы уставок группы "Резервные защиты"
+    if(!createProjectTableSet("RESERVE"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Резервные защиты"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Резервные защиты в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы уставок группы "Предварительного контроля"
+    if(!createProjectTableSet("CTRL"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Предварительного контроля"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Предварительного контроля в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
+    // Создание таблицы уставок группы "Автоматика"
+    if(!createProjectTableSet("AUTO"))
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Автоматика"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
 
     // Разблокировка элементов интерфейса после создания файла проекта
     m_isProject = true;

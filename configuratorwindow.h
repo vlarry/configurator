@@ -730,8 +730,10 @@
             void outApplicationEvent(const QString& text);
             bool createProjectTablePurpose(const QString& tableType);
             bool createProjectTableProtection(int columns);
+            bool createProjectTableSet(const QString& tableName);
             void savePurposeToProject(const CMatrix& matrix, const QString& type);
             void saveJournalToProject(const CJournalTable* journal, const QString& type);
+            void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
