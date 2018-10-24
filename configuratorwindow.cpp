@@ -6344,6 +6344,19 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
     query.clear();
 
+    if(type.toUpper() == "CRASH" || type.toUpper() == "HALFHOUR")
+    {
+        if(!query.exec(QString("DELETE FROM propertyJournal%1;").arg(type)))
+        {
+            QString text = tr("Сохранение журнала <%1>: возникли ошибки в процессе стирания свойств журнала (%2)").arg(type).
+                           arg(query.lastError().text());
+            qWarning() << text;
+            outApplicationEvent(text);
+        }
+
+        query.clear();
+    }
+
     // вставка данных в таблицу журналов
     QString colStrList;
     QStringList colListBind;
@@ -6377,7 +6390,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
             QString value = journal->rowColumnData(row, col).toString();
             QString field = colListBind.at(col);
 
-            if(field.toUpper() == ":ID_MSG" || field.toUpper() == ":ID_JOURNAL")
+            if(field.toUpper() == ":ID_MSG")
                 bindValue += value;
             else
                 bindValue += QString("\'%1\'").arg(value);
@@ -6387,8 +6400,8 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         }
 
         if(type.toUpper() == "CRASH" || type.toUpper() == "HALFHOUR") // для журнлов аварий и получасовок добавляется id_journal
-            bindValue += QString(", %1").arg(0);
-        bindValue += QString(", %1").arg(0);
+            bindValue += QString(", %1").arg(row);
+        bindValue += QString(", %1").arg(0); // sn_device
 
         QString query_str = QString("INSERT INTO journal%1 (%2) VALUES(%3);").arg(type).arg(colStrList).arg(bindValue);
 
@@ -6402,9 +6415,31 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         if(type.toUpper() == "CRASH")
         {
             property_list_t propertyList;
-            QVariant var = QVariant::fromValue(propertyList);
+            QVariant val = journal->rowData(row);
 
-//            qDebug() << "property: " << (var.value<property_list_t>()).count();
+            if(val.canConvert<property_list_t>())
+                propertyList = val.value<property_list_t>();
+
+           if(!propertyList.isEmpty())
+           {
+               QSqlQuery query_property(*m_project_db);
+               query_property.prepare("INSERT INTO propertyJournalCRASH (name, value, id_journal) VALUES(:name, :value, :id_journal);");
+
+               for(const property_data_item_t& item: propertyList)
+               {
+                    query_property.bindValue(":name", item.name);
+                    query_property.bindValue(":value", item.value);
+                    query_property.bindValue(":id_journal", row);
+
+                    if(!query_property.exec())
+                    {
+                        QString text = tr("Сохранение журнала <%1>: возникли ошибки в процессе сохранения свойств журнала (%2)").arg(type).
+                                       arg(query_property.lastError().text());
+                        qWarning() << text;
+                        outApplicationEvent(text);
+                    }
+               }
+           }
         }
         else if(type.toUpper() == "HALFHOUR")
         {
@@ -6578,14 +6613,14 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
     if(!journal)
         return false;
 
-    QString type = widgetJournal->property("TYPE").toString();
+    QString journal_type = widgetJournal->property("TYPE").toString();
 
-    if(type.isEmpty())
+    if(journal_type.isEmpty())
         return false;
 
     widgetJournal->journalClear();
 
-    QString query_str = QString("SELECT * FROM journal%1;").arg(type);
+    QString query_str = QString("SELECT * FROM journal%1;").arg(journal_type);
     QSqlQuery query(*m_project_db);
 
     if(!query.exec(query_str))
@@ -6594,7 +6629,6 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
     while(query.next())
     {
         int row = journal->rowCount();
-
         journal->insertRow(row);
 
         QString id_msg = query.value("id_msg").toString();
@@ -6609,7 +6643,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
         journal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
         journal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
 
-        if(type == "EVENT")
+        if(journal_type == "EVENT")
         {
             QString type      = query.value("type").toString();
             QString category  = query.value("category").toString();
@@ -6619,16 +6653,17 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
             journal->setItem(row, 4, new QTableWidgetItem(category));
             journal->setItem(row, 5, new QTableWidgetItem(parameter));
         }
-        else if(type == "CRASH")
+        else if(journal_type == "CRASH")
         {
             QString protection = query.value("protection").toString();
+            int     id_journal = query.value("id_journal").toInt();
 
             journal->setItem(row, 3, new QTableWidgetItem(protection));
 
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*m_project_db);
 
-            if(!query_property.exec(QString("SELECT name, value FROM propertyJournalCRASH;")))
+            if(!query_property.exec(QString("SELECT name, value FROM propertyJournalCRASH WHERE id_journal=%1;").arg(id_journal)))
             {
                 QMessageBox msgbox;
                 msgbox.setWindowTitle(tr("Импорт журнала"));
@@ -6646,16 +6681,17 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
 
             while(query_property.next())
             {
-                property_list << property_data_item_t({ query_property.value("name").toString(),
-                                                        query_property.value("value").toString() });
+                property_data_item_t property_data_item = { query_property.value("name").toString(), query_property.value("value").toString() };
+                property_list << property_data_item;
             }
 
             if(!property_list.isEmpty())
                 journal->setRowData(row, QVariant::fromValue(property_list));
         }
-        else if(type == "HALFHOUR")
+        else if(journal_type == "HALFHOUR")
         {
             QString type       = query.value("type").toString();
+            int     id_journal = query.value("id_journal").toInt();
             QString time_reset = query.value("time_reset").toString();
 
             journal->setItem(row, 3, new QTableWidgetItem(type));
@@ -6664,7 +6700,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*m_project_db);
 
-            if(!query_property.exec(QString("SELECT value FROM propertyJournalHALFHOUR;")))
+            if(!query_property.exec(QString("SELECT value FROM propertyJournalHALFHOUR WHERE id_journal=%1;").arg(id_journal)))
             {
                 qWarning() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
                 continue;
@@ -8754,8 +8790,8 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
                  "time STRING(25), "
                  "protection STRING(255), "
                  "id_journal INTEGER NOT NULL, " // идентификатор для привязки записей из таблицы свойств
-                 "sn_device INTEGER NOT NULL, "
-                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));").arg(tableName);
+                 "sn_device INTEGER NOT NULL);"
+                 /*"CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));"*/).arg(tableName);
 
         if(!query.exec(db_str))
         {
@@ -8774,8 +8810,8 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
         db_str = QString("CREATE TABLE propertyJournal%1 ("
                  "name STRING(255) NOT NULL, "
                  "value STRING(255) NOT NULL, "
-                 "id_journal INTEGER NOT NULL, "
-                 "CONSTRAINT new_pk PRIMARY KEY (name, value, id_journal));").arg(journal_type);
+                 "id_journal INTEGER NOT NULL);"
+                 /*"CONSTRAINT new_pk PRIMARY KEY (name, value, id_journal));"*/).arg(journal_type);
 
         if(!query.exec(db_str))
         {
@@ -8792,7 +8828,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
     }
     else if(journal_type == "HALFHOUR")
     {
-        // создание таблицы для хранения журналов аварий
+        // создание таблицы для хранения журналов получасовок
         db_str = QString("CREATE TABLE %1 ("
                  "id_msg INTEGER NOT NULL, "
                  "date STRING NOT NULL, "
@@ -8816,7 +8852,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
             return false;
         }
 
-        // создание таблицы для хранения свойств журналов аварий
+        // создание таблицы для хранения свойств журналов получасовок
         db_str = QString("CREATE TABLE propertyJournal%1 ("
                  "value DOUBLE, "
                  "id_journal INTEGER);"
