@@ -6384,11 +6384,15 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
     for(int row = 0; row < journal->rowCount(); row++)
     {
         QString bindValue;
+        QString type_data;
 
         for(int col = 0; col < journal->columnCount(); col++)
         {
             QString value = journal->rowColumnData(row, col).toString();
             QString field = colListBind.at(col);
+
+            if(field.toUpper() == ":TYPE")
+                type_data = value;
 
             if(field.toUpper() == ":ID_MSG")
                 bindValue += value;
@@ -6443,7 +6447,31 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         }
         else if(type.toUpper() == "HALFHOUR")
         {
+            halfhour_t halfhour;
+            QVariant val = journal->rowData(row);
 
+            if(val.canConvert<halfhour_t>())
+                halfhour = val.value<halfhour_t>();
+
+            if(!halfhour.values.isEmpty() && type_data.toUpper() == tr("ДАННЫЕ"))
+            {
+                QSqlQuery query_property(*m_project_db);
+
+                for(const float& value: halfhour.values)
+                {
+                    query_property.prepare("INSERT INTO propertyJournalHALFHOUR (value, id_journal)"
+                                           "VALUES(:value, :id_journal)");
+                    query_property.bindValue(":value", value);
+                    query_property.bindValue(":id_journal", row);
+
+                    if(!query_property.exec())
+                    {
+                        QString text = tr("Ошибка сохранения свойств данных журнала получасовок в БД: %1").arg(query_property.lastError().text());
+                        qWarning() << text;
+                        outApplicationEvent(text);
+                    }
+                }
+            }
         }
     }
 
@@ -6717,6 +6745,9 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
                 journal->setRowData(row, QVariant::fromValue(halfhour));
         }
     }
+
+    journal->resizeColumnsToContents();
+    journal->horizontalHeader()->setStretchLastSection(true);
 
     return true;
 }
