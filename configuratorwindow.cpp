@@ -2966,6 +2966,8 @@ void ConfiguratorWindow::writeSettings()
 void ConfiguratorWindow::writeSetCurrent()
 {
     saveJournalToProject(ui->widgetJournalEvent);
+    saveJournalToProject(ui->widgetJournalCrash);
+    saveJournalToProject(ui->widgetJournalHalfHour);
     savePurposeToProject(ui->tablewgtLedPurpose, "LED");
     savePurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
     savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
@@ -6326,13 +6328,13 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
     CJournalTable* journal = widgetJournal->table();
 
-    if(!journal)
+    if(!journal || (journal && journal->rowCount() == 0))
         return;
 
     QString type = widgetJournal->property("TYPE").toString();
     QSqlQuery query (*m_project_db);
 
-    if(!query.exec(QString("DELETE FROM journalEVENT;")))
+    if(!query.exec(QString("DELETE FROM journal%1;").arg(type)))
     {
         QString text = tr("Сохранение журнала <%1>: ошибка удаления данных журнала (%2)").arg(type).arg(m_project_db->lastError().text());
         qWarning() << text;
@@ -6343,31 +6345,28 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
     query.clear();
 
     // вставка данных в таблицу журналов
-    QString colStrBind;
     QString colStrList;
     QStringList colListBind;
 
     if(type.toUpper() == "CRASH")
     {
         colStrList = "id_msg, date, time, protection, id_journal, sn_device";
-        colStrBind = ":id_msg, :date, :time, :protection, :id_journal, sn_device";
-        colListBind << ":id_msg" << ":date" << ":time" << ":protection" << ":id_journal";
+        colListBind << ":id_msg" << ":date" << ":time" << ":protection";
     }
     else if(type.toUpper() == "EVENT")
     {
         colStrList = "id_msg, date, time, type, category, parameter, sn_device";
-        colStrBind = ":id_msg, :date, :time, :type, :category, :parameter, sn_device";
         colListBind << ":id_msg" << ":date" << ":time" << ":type" << ":category" << ":parameter";
     }
     else if(type.toUpper() == "HALFHOUR")
     {
         colStrList = "id_msg, date, time, type, time_reset, id_journal, sn_device";
-        colStrBind = ":id_msg, :date, :time, :type, :time_reset, :id_journal, sn_device";
-        colListBind << ":id_msg" << ":date" << ":time" << ":type" << ":time_reset" << ":id_journal";
+        colListBind << ":id_msg" << ":date" << ":time" << ":type" << ":time_reset";
     }
 
     m_project_db->transaction();
     bool isError = false;
+    QString lastError;
 
     for(int row = 0; row < journal->rowCount(); row++)
     {
@@ -6387,13 +6386,29 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
                 bindValue += ", ";
         }
 
+        if(type.toUpper() == "CRASH" || type.toUpper() == "HALFHOUR") // для журнлов аварий и получасовок добавляется id_journal
+            bindValue += QString(", %1").arg(0);
         bindValue += QString(", %1").arg(0);
 
-        QString query_str = QString("INSERT INTO journalEVENT (id_msg, date, time, type, category, parameter, sn_device) VALUES(%1);").arg(bindValue);
+        QString query_str = QString("INSERT INTO journal%1 (%2) VALUES(%3);").arg(type).arg(colStrList).arg(bindValue);
 
         if(!query.exec(query_str))
         {
+            lastError = query.lastError().text();
             isError = true;
+        }
+
+        // вставка свойств журналов Аварий и Получасовок
+        if(type.toUpper() == "CRASH")
+        {
+            property_list_t propertyList;
+            QVariant var = QVariant::fromValue(propertyList);
+
+//            qDebug() << "property: " << (var.value<property_list_t>()).count();
+        }
+        else if(type.toUpper() == "HALFHOUR")
+        {
+
         }
     }
 
@@ -6401,25 +6416,9 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
     if(isError)
     {
-        QString text = tr("Сохранение журнала <%1>: возникли ошибки в процессе записи журнала").arg(type);
+        QString text = tr("Сохранение журнала <%1>: возникли ошибки в процессе записи журнала (%2)").arg(type).arg(lastError);
         qWarning() << text;
         outApplicationEvent(text);
-    }
-
-    // вставка свойств журналов Аварий и Получасовок
-    if(type.toUpper() == "CRASH")
-    {
-        QListView* listView = static_cast<QListView*>(ui->widgetJournalCrash->propertyJournal());
-
-        if(!listView || (listView && listView->model() && listView->model()->rowCount() == 0))
-            return;
-    }
-    else if(type.toUpper() == "HALFHOUR")
-    {
-        QTableWidget* tableWidget = static_cast<QTableWidget*>(ui->widgetJournalHalfHour->propertyJournal());
-
-        if(!tableWidget || (tableWidget && tableWidget->rowCount() == 0))
-            return;
     }
 }
 //---------------------------------------------------------------------------------------------------------------------
@@ -8165,9 +8164,15 @@ void ConfiguratorWindow::openProject()
     }
 
     loadJournalFromProject(ui->widgetJournalEvent); // Загрузка журнала событий
+    loadJournalFromProject(ui->widgetJournalCrash); // Загрузка журнала аварий
+    loadJournalFromProject(ui->widgetJournalHalfHour); // Загрузка журнала получасовок
 
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
+
+    QString text = tr("Файл проекта успешно загружен: %1").arg(projectPathName);
+    qWarning() << text;
+    outApplicationEvent(text);
 }
 //------------------------------------
 void ConfiguratorWindow::saveProject()
