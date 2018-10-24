@@ -740,6 +740,7 @@
             void saveDeviceCommunication();
             void saveDeviceCalibrationCurrent();
             bool loadJournalFromProject(const CJournalWidget* widgetJournal);
+            void loadPurposeToProject(CPurposeTableView* table, const QString& type);
             void unblockInterface();
 
         signals:

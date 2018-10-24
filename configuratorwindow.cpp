@@ -2965,28 +2965,6 @@ void ConfiguratorWindow::writeSettings()
 //----------------------------------------
 void ConfiguratorWindow::writeSetCurrent()
 {
-    saveJournalToProject(ui->widgetJournalEvent);
-    saveJournalToProject(ui->widgetJournalCrash);
-    saveJournalToProject(ui->widgetJournalHalfHour);
-    savePurposeToProject(ui->tablewgtLedPurpose, "LED");
-    savePurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
-    savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
-    savePurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
-
-    saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
-    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
-    saveDeviceCommunication();
-    saveDeviceCalibrationCurrent();
-
     if(!m_modbus->channel()->isOpen())
     {
         noConnectMessage();
@@ -6752,6 +6730,59 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
     return true;
 }
 /*!
+ * \brief ConfiguratorWindow::loadPurposeToProject
+ * \param table Таблица привязок
+ * \param type Тип таблицы привязок
+ */
+void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QString& type)
+{
+    if(!table || !m_project_db || (m_project_db && !m_project_db->isOpen()) || type.isEmpty())
+    {
+        QString text = tr("Загрузка привязок: Файл проекта не создан, либо закрыт");
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+    if(!model)
+    {
+        QString text = tr("Загрузка привязок: Невозможно обратиться к модели представления");
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    CMatrix& matrix = model->matrix();
+    QSqlQuery query(*m_project_db);
+    QString query_str = QString("SELECT * FROM purpose%1;").arg(type);
+
+    if(!query.exec(query_str))
+    {
+        QString text = tr("Загрузка привязок: не удалось прочитать привязки и БД: %1").arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+    }
+
+    int row = 0;
+
+    while(query.next())
+    {
+        for(int col = 0; col < matrix.columnCount(); col++)
+        {
+            QString colName = QString("col%1").arg(col);
+            StateType state = static_cast<StateType>(query.value(colName).toInt());
+
+            matrix[row][col].data().state = state;
+        }
+
+        row++;
+    }
+
+    model->updateData();
+}
+/*!
  * \brief ConfiguratorWindow::unblockInterface
  *
  * Разблокировка интерфеса программы
@@ -8233,6 +8264,10 @@ void ConfiguratorWindow::openProject()
     loadJournalFromProject(ui->widgetJournalEvent); // Загрузка журнала событий
     loadJournalFromProject(ui->widgetJournalCrash); // Загрузка журнала аварий
     loadJournalFromProject(ui->widgetJournalHalfHour); // Загрузка журнала получасовок
+    loadPurposeToProject(ui->tablewgtLedPurpose, "LED");
+    loadPurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
+    loadPurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
+    loadPurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
 
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
@@ -8244,44 +8279,34 @@ void ConfiguratorWindow::openProject()
 //------------------------------------
 void ConfiguratorWindow::saveProject()
 {
-    QDir dir;
-
-    if(!dir.exists("outputs/projects"))
-        dir.mkdir("outputs/projects");
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Запись файла проекта"),
-                                                    QString(dir.absolutePath() + "/%1/%2").
-                                                    arg("outputs/projects").arg("project.prj"),
-                                                    tr("Файлы проектов (*.prj)"));
-
-    if(fileName.isEmpty())
+    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
         return;
 
-    QFile file(fileName);
+    saveJournalToProject(ui->widgetJournalEvent);
+    saveJournalToProject(ui->widgetJournalCrash);
+    saveJournalToProject(ui->widgetJournalHalfHour);
+    savePurposeToProject(ui->tablewgtLedPurpose, "LED");
+    savePurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
+    savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
+    savePurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
 
-    if(!file.open(QFile::WriteOnly))
-    {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Сохранение файла проекта"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно создать файл для записи \"%1\"").arg(fileName));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
+    saveDeviceCommunication();
+    saveDeviceCalibrationCurrent();
 
-        return;
-    }
-
-    QString textStandardPhase = QString::number(double(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase()), 'f', 6);
-    QString textStandard3I0 = QString::number(double(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0()), 'f', 6);
-    QString textStandard = QString("\"standard\":\n\t\t\t{\n\t\t\t\t\"phase\": \"%1\","
-                                   "\n\t\t\t\t\"3I0\": \"%2\"\n\t\t\t}").arg(textStandardPhase).arg(textStandard3I0);
-    QString textCurrent     = QString("\"current\":\n\t\t{\n\t\t\t%1\n\t\t}").arg(textStandard);
-    QString textCalibration = QString("\"calibration\":\n\t{\n\t\t%1\n\t}").arg(textCurrent);
-    QString text            = QString("{\n\t%1\n}").arg(textCalibration);
-
-    file.write(text.toStdString().c_str());
-    file.close();
+    QString text = tr("Данные проекта успешно сохранены");
+    qInfo() << text;
+    outApplicationEvent(text);
 }
 //--------------------------------------
 void ConfiguratorWindow::saveAsProject()
