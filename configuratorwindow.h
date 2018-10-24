@@ -739,6 +739,8 @@
             void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
             void saveDeviceCommunication();
             void saveDeviceCalibrationCurrent();
+            bool loadJournalFromProject(const CJournalWidget* widgetJournal);
+            void unblockInterface();
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

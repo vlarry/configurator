@@ -2835,26 +2835,6 @@ void ConfiguratorWindow::readSettings()
 //---------------------------------------
 void ConfiguratorWindow::readSetCurrent()
 {
-    saveJournalToProject(ui->widgetJournalEvent);
-    savePurposeToProject(ui->tablewgtLedPurpose, "LED");
-    savePurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
-    savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
-    savePurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
-
-    saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
-    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
-    saveDeviceCommunication();
-    saveDeviceCalibrationCurrent();
-
     if(!m_modbus->channel()->isOpen())
     {
         noConnectMessage();
@@ -2985,6 +2965,32 @@ void ConfiguratorWindow::writeSettings()
 //----------------------------------------
 void ConfiguratorWindow::writeSetCurrent()
 {
+    saveJournalToProject(ui->widgetJournalEvent);
+    savePurposeToProject(ui->tablewgtLedPurpose, "LED");
+    savePurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
+    savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
+    savePurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
+
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
+    saveDeviceCommunication();
+    saveDeviceCalibrationCurrent();
+
+    if(!m_modbus->channel()->isOpen())
+    {
+        noConnectMessage();
+        return;
+    }
+
     DeviceMenuItemType index = menuIndex();
 
     switch(index)
@@ -6415,10 +6421,6 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         if(!tableWidget || (tableWidget && tableWidget->rowCount() == 0))
             return;
     }
-
-    m_project_db->transaction();
-
-    m_project_db->commit();
 }
 //---------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName)
@@ -6560,6 +6562,149 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
         qWarning() << text;
         outApplicationEvent(text);
     }
+}
+/*!
+ * \brief ConfiguratorWindow::loadJournalFromProject
+ * \param widgetJournal Виджет журнала
+ *
+ * Загружает журнал из проектного файла
+ */
+bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJournal)
+{
+    if(!widgetJournal || !m_project_db || (m_project_db && !m_project_db->isOpen()))
+        return false;
+
+    CJournalTable* journal = widgetJournal->table();
+
+    if(!journal)
+        return false;
+
+    QString type = widgetJournal->property("TYPE").toString();
+
+    if(type.isEmpty())
+        return false;
+
+    widgetJournal->journalClear();
+
+    QString query_str = QString("SELECT * FROM journal%1;").arg(type);
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(query_str))
+        return false;
+
+    while(query.next())
+    {
+        int row = journal->rowCount();
+
+        journal->insertRow(row);
+
+        QString id_msg = query.value("id_msg").toString();
+        QString date   = query.value("date").toString();
+        QString time   = query.value("time").toString();
+
+        journal->setItem(row, 0, new QTableWidgetItem(id_msg));
+        journal->setItem(row, 1, new CTableWidgetItem(date));
+        journal->setItem(row, 2, new QTableWidgetItem(time));
+
+        journal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+        journal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+        journal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+
+        if(type == "EVENT")
+        {
+            QString type      = query.value("type").toString();
+            QString category  = query.value("category").toString();
+            QString parameter = query.value("parameter").toString();
+
+            journal->setItem(row, 3, new QTableWidgetItem(type));
+            journal->setItem(row, 4, new QTableWidgetItem(category));
+            journal->setItem(row, 5, new QTableWidgetItem(parameter));
+        }
+        else if(type == "CRASH")
+        {
+            QString protection = query.value("protection").toString();
+
+            journal->setItem(row, 3, new QTableWidgetItem(protection));
+
+            // формирование запроса для получения свойств записи
+            QSqlQuery query_property(*m_project_db);
+
+            if(!query_property.exec(QString("SELECT name, value FROM propertyJournalCRASH;")))
+            {
+                QMessageBox msgbox;
+                msgbox.setWindowTitle(tr("Импорт журнала"));
+                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+                msgbox.setIcon(QMessageBox::Warning);
+                msgbox.setText(tr("Не удалось прочитать свойства журнала аварий: %1").
+                               arg(query_property.lastError().text()));
+                outApplicationEvent(msgbox.text());
+                msgbox.exec();
+
+                continue;
+            }
+
+            property_list_t property_list;
+
+            while(query_property.next())
+            {
+                property_list << property_data_item_t({ query_property.value("name").toString(),
+                                                        query_property.value("value").toString() });
+            }
+
+            if(!property_list.isEmpty())
+                journal->setRowData(row, QVariant::fromValue(property_list));
+        }
+        else if(type == "HALFHOUR")
+        {
+            QString type       = query.value("type").toString();
+            QString time_reset = query.value("time_reset").toString();
+
+            journal->setItem(row, 3, new QTableWidgetItem(type));
+            journal->setItem(row, 4, new QTableWidgetItem(time_reset));
+
+            // формирование запроса для получения свойств записи
+            QSqlQuery query_property(*m_project_db);
+
+            if(!query_property.exec(QString("SELECT value FROM propertyJournalHALFHOUR;")))
+            {
+                qWarning() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
+                continue;
+            }
+
+            halfhour_t halfhour;
+
+            while(query_property.next())
+            {
+                halfhour.values << query_property.value("value").toFloat();
+            }
+
+            if(!halfhour.values.isEmpty() && (!type.isEmpty() && type.toUpper() == tr("ДАННЫЕ")))
+                journal->setRowData(row, QVariant::fromValue(halfhour));
+        }
+    }
+
+    return true;
+}
+/*!
+ * \brief ConfiguratorWindow::unblockInterface
+ *
+ * Разблокировка интерфеса программы
+ */
+void ConfiguratorWindow::unblockInterface()
+{
+    m_isProject = true;
+
+    ui->splitterCentralWidget->setEnabled(true);
+    ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
+    ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
+    ui->pbtnMenuSaveProject->setEnabled(true);
+    ui->pbtnMenuSaveAsProject->setEnabled(true);
+    emit ui->widgetMenuBar->activateButtons();
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
@@ -7574,9 +7719,6 @@ void ConfiguratorWindow::mouseMove(QPoint pos)
 //-----------------------------------
 void ConfiguratorWindow::newProject()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
-
     // Создание файла БД нового проекта
     QDir dir;
 
@@ -7985,91 +8127,47 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
-    // Разблокировка элементов интерфейса после создания файла проекта
-    m_isProject = true;
-
-    ui->splitterCentralWidget->setEnabled(true);
-    ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, true);
-    ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, true);
-    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, true);
-    ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, true);
-    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
-    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
-    ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
-    ui->pbtnMenuSaveProject->setEnabled(true);
-    ui->pbtnMenuSaveAsProject->setEnabled(true);
-    emit ui->widgetMenuBar->activateButtons();
-
+    unblockInterface();
     outApplicationEvent(tr("Создание нового файла проекта: %1").arg(projectPathName));
 }
 //------------------------------------
 void ConfiguratorWindow::openProject()
 {
     QDir dir;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
-                                                    QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
-                                                    arg("project"), tr("Проекты (*.prj)"));
+    QString projectPathName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
+                                                           QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
+                                                           arg("project"), tr("Проекты (*.project)"));
 
-    if(fileName.isEmpty())
+    if(projectPathName.isEmpty())
         return;
 
-    QFile file(fileName);
-
-    if(!file.open(QFile::ReadOnly | QFile::Text))
+    if(m_project_db)
     {
-        QMessageBox::warning(this, tr("Открытие файла проекта"), tr("Невозможно открыть файл проекта: ").
-                                                                 arg(file.errorString()));
+        if(m_project_db->isOpen())
+            m_project_db->close();
 
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+    }
+
+    m_project_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "PROJECT"));
+    m_project_db->setDatabaseName(projectPathName);
+
+    if(m_project_db && !m_project_db->open())
+    {
+        QString text = tr("Не удалось загрузить файл проекта (%1).\nПопробуйтей еще раз.").arg(m_project_db->lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
 
-    QJsonDocument jsonDocument = QJsonDocument::fromJson(file.readAll());
+    loadJournalFromProject(ui->widgetJournalEvent); // Загрузка журнала событий
 
-    file.close();
-
-    if(!jsonDocument.isObject())
-    {
-        qWarning() << tr("Неопознаный формат файла проекта.");
-        return;
-    }
-
-    QJsonObject objCalibration = jsonDocument.object();
-    QJsonValue  valCalibration = objCalibration.value("calibration");
-
-    if(!valCalibration.isObject())
-    {
-        qWarning() << tr("Не найден объект <calibration> в файле проекта.");
-        return;
-    }
-
-    QJsonObject objCurrent = valCalibration.toObject();
-    QJsonValue  valCurrent = objCurrent.value("current");
-
-    if(!valCalibration.isObject())
-    {
-        qWarning() << tr("Не найден объект <current> в файле проекта.");
-        return;
-    }
-
-    QJsonObject objStandard = valCurrent.toObject();
-    QJsonValue  valStandard = objStandard.value("standard");
-
-    if(!valStandard.isObject())
-    {
-        qWarning() << tr("Не найден объект <standard> в файле проекта.");
-        return;
-    }
-
-    QJsonObject objStandardField      = valStandard.toObject();
-    QJsonValue  valStandardFieldPhase = objStandardField.value("phase");
-    QJsonValue  valStandardField3I0   = objStandardField.value("3I0");
-
-    if(valStandardFieldPhase.isString())
-        ui->widgetCalibrationOfCurrent->setCurrentStandardPhase(valStandardFieldPhase.toString().toFloat());
-    if(valStandardField3I0.isString())
-        ui->widgetCalibrationOfCurrent->setCurrentStandard3I0(valStandardField3I0.toString().toFloat());
-
-    emit ui->widgetMenuBar->widgetMenu()->addDocument(fileName);
+    unblockInterface();
+    emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
 }
 //------------------------------------
 void ConfiguratorWindow::saveProject()
