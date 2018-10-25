@@ -743,6 +743,7 @@
             void loadPurposeToProject(CPurposeTableView* table, const QString& type);
             void loadDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
             void loadDeviceCommunication();
+            void loadDeviceCalibrationCurrent();
             void unblockInterface();
 
         signals:

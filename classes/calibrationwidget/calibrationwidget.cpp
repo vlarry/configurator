@@ -170,6 +170,36 @@ void CCalibrationWidget::setCurrentStandard3I0(float value)
 {
     ui->lineEditCurrentStandard3I0->setText(QLocale::system().toString(value, 'f', 6));
 }
+//----------------------------------------------------
+void CCalibrationWidget::setCurrentIaState(bool state)
+{
+    ui->checkBoxIa->setChecked(state);
+}
+//----------------------------------------------------
+void CCalibrationWidget::setCurrentIbState(bool state)
+{
+    ui->checkBoxIb->setChecked(state);
+}
+//----------------------------------------------------
+void CCalibrationWidget::setCurrentIcState(bool state)
+{
+    ui->checkBoxIc->setChecked(state);
+}
+//----------------------------------------------------
+void CCalibrationWidget::setCurrent3I0State(bool state)
+{
+    ui->checkBox3I0->setChecked(state);
+}
+//-----------------------------------------------------
+void CCalibrationWidget::setCurrentDataCount(int count)
+{
+    ui->spinBoxSetDataCount->setValue(count);
+}
+//--------------------------------------------------------
+void CCalibrationWidget::setCurrentPauseRequest(int pause)
+{
+    ui->spinBoxPauseRequest->setValue(pause);
+}
 //-----------------------------------------------
 void CCalibrationWidget::setFactorIa(float value)
 {

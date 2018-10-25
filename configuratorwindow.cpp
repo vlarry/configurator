@@ -6882,6 +6882,47 @@ void ConfiguratorWindow::loadDeviceCommunication()
     ui->spinBoxCommunicationTimeoutSpeed->setValue(Tspeed);
 }
 /*!
+ * \brief ConfiguratorWindow::loadDeviceCalibrationCurrent
+ *
+ * Загрузка настроек калибровки из файла проекта
+ */
+void ConfiguratorWindow::loadDeviceCalibrationCurrent()
+{
+    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+        return;
+
+    QSqlQuery query(*m_project_db);
+    QString query_str = QString("SELECT * FROM deviceCalibrationCurrent;");
+
+    if(!query.exec(query_str))
+    {
+        QString text = tr("Загрузка настроек калиброки по току: не удалось загрузить из БД (%1)").arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    query.next();
+
+    QString standardPhase = query.value("standardPhase").toString();
+    QString standard3I0 = query.value("standard3I0").toString();
+    bool stateIa = query.value("stateIa").toBool();
+    bool stateIb = query.value("stateIb").toBool();
+    bool stateIc = query.value("stateIc").toBool();
+    bool state3I0 = query.value("state3I0").toBool();
+    int dataCount = query.value("dataCount").toInt();
+    int pauseRequest = query.value("pauseRequest").toInt();
+
+    ui->widgetCalibrationOfCurrent->setCurrentStandardPhase(QLocale::system().toFloat(standardPhase));
+    ui->widgetCalibrationOfCurrent->setCurrentStandard3I0(QLocale::system().toFloat(standard3I0));
+    ui->widgetCalibrationOfCurrent->setCurrentIaState(stateIa);
+    ui->widgetCalibrationOfCurrent->setCurrentIbState(stateIb);
+    ui->widgetCalibrationOfCurrent->setCurrentIcState(stateIc);
+    ui->widgetCalibrationOfCurrent->setCurrent3I0State(state3I0);
+    ui->widgetCalibrationOfCurrent->setCurrentDataCount(dataCount);
+    ui->widgetCalibrationOfCurrent->setCurrentPauseRequest(pauseRequest);
+}
+/*!
  * \brief ConfiguratorWindow::unblockInterface
  *
  * Разблокировка интерфеса программы
@@ -8379,6 +8420,7 @@ void ConfiguratorWindow::openProject()
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
     loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
     loadDeviceCommunication();
+    loadDeviceCalibrationCurrent();
 
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);

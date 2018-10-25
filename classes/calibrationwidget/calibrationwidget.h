@@ -63,6 +63,14 @@
             void setCurrentStandardPhase(float value);
             void setCurrentStandard3I0(float value);
 
+            void setCurrentIaState(bool state);
+            void setCurrentIbState(bool state);
+            void setCurrentIcState(bool state);
+            void setCurrent3I0State(bool state);
+
+            void setCurrentDataCount(int count);
+            void setCurrentPauseRequest(int pause);
+
             void setFactorIa(float value);
             void setFactorIb(float value);
             void setFactorIc(float value);
