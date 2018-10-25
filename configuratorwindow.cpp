@@ -6783,6 +6783,70 @@ void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QS
     model->updateData();
 }
 /*!
+ * \brief ConfiguratorWindow::loadDeviceSetToProject
+ * \param index Индекс пункта меню устройства
+ * \param tableName Имя таблицы в БД
+ *
+ * Загрузка уставок из БД
+ */
+void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName)
+{
+    if(!m_project_db || (m_project_db && !m_project_db->isOpen()) || index == DEVICE_MENU_ITEM_NONE || tableName.isEmpty())
+        return;
+
+    CDeviceMenuTableWidget* table = groupMenuWidget(index);
+
+    if(!table)
+        return;
+
+    QSqlQuery query (*m_project_db);
+    QString query_str = QString("SELECT * FROM deviceSet%1;").arg(tableName);
+
+    if(!query.exec(query_str))
+    {
+        QString text = tr("Загрузка уставок: не удалось загрузить уставки из файла проекта для таблицы %1: %2").arg(tableName).arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    for(int row = 0; row < table->rowCount(); row++)
+    {
+        QWidget* widget = groupMenuCellWidget(table, row, 1);
+
+        if(!widget)
+            continue;
+
+        query.next();
+
+        QString val = query.value("val").toString();
+        QString type = query.value("type").toString();
+
+        if(val.isEmpty() || type.isEmpty())
+            continue;
+
+        if(type.toUpper() == "COMBOBOX")
+        {
+            QComboBox* comboBox = static_cast<QComboBox*>(widget);
+
+            if(comboBox)
+            {
+                int i = val.toInt();
+
+                if(i < comboBox->count())
+                    comboBox->setCurrentIndex(i);
+            }
+        }
+        else if(type.toUpper() == "LINEEDIT")
+        {
+            CLineEdit* lineEdit = static_cast<CLineEdit*>(widget);
+
+            if(lineEdit)
+                lineEdit->setText(val);
+        }
+    }
+}
+/*!
  * \brief ConfiguratorWindow::unblockInterface
  *
  * Разблокировка интерфеса программы
@@ -8268,6 +8332,17 @@ void ConfiguratorWindow::openProject()
     loadPurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
     loadPurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
     loadPurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
 
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
