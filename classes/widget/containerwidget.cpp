@@ -12,7 +12,8 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     m_pos_grip(QPoint(-1, -1)),
     m_id(-1),
     m_background_color(QColor()),
-    m_position(-1)
+    m_position(-1),
+    m_name("")
 {
     ui->setupUi(this);
     setMouseTracking(true);
@@ -121,6 +122,11 @@ int CContainerWidget::position() const
 {
     return m_position;
 }
+//------------------------------------
+QString CContainerWidget::name() const
+{
+    return m_name;
+}
 //--------------------------------------------
 void CContainerWidget::setWidget(QWidget* wgt)
 {
@@ -205,6 +211,11 @@ void CContainerWidget::setSide(CDockPanelItemCtrl::DirType dir)
 void CContainerWidget::setPosition(int pos)
 {
     m_position = pos;
+}
+//-------------------------------------------------
+void CContainerWidget::setName(const QString& name)
+{
+    m_name = name;
 }
 //-----------------------------------------------------------
 void CContainerWidget::buttonFunctionStateChanged(bool state)

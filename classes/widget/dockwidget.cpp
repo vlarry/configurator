@@ -136,6 +136,7 @@ void CDockWidget::removeItem(int id)
             if(tcontainer->id() == id)
             {
                 tcontainer->setPosition(-1);
+                tcontainer->setSide(CDockPanelItemCtrl::DirNone);
                 ui->verticalLayout->removeWidget(tcontainer);
                 if(ui->verticalLayoutContainer->isEmpty()) // контейнер пуст
                     emit m_controlItem->clicked();

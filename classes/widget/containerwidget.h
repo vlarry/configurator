@@ -45,6 +45,7 @@
             QWidget* superParent() const;
             CDockPanelItemCtrl::DirType side() const;
             int position() const;
+            QString name() const;
             void setWidget(QWidget* wgt);
             void setHeaderBackground(const QColor& backgroundColor);
             void setAnchor(AnchorType anchor);
@@ -53,6 +54,7 @@
             void setButtonFunctionState(bool state);
             void setSide(CDockPanelItemCtrl::DirType dir);
             void setPosition(int pos);
+            void setName(const QString& name);
 
         public slots:
             void buttonFunctionStateChanged(bool state = false);
@@ -79,5 +81,6 @@
             int                         m_id;
             QColor                      m_background_color;
             int                         m_position;
+            QString                     m_name;
     };
 #endif // CONTAINERWIDGET_H

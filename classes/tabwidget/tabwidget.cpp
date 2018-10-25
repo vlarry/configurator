@@ -24,6 +24,7 @@ void CTabWidget::tabDoubleClicked(int index)
         return;
 
     container->setAnchor(CContainerWidget::AnchorType::AnchorFree);
+    container->setSide(CDockPanelItemCtrl::DirNone);
     container->setSuperParent(m_superParent);
     container->setParent(m_superParent);
     container->setHeaderBackground(QColor(190, 190, 190));
@@ -61,6 +62,7 @@ void CTabWidget::dropEvent(QDropEvent* event)
     {
         event->accept();
         container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
+        container->setSide(CDockPanelItemCtrl::DirBottom);
         container->headerHide();
         addTab(container, container->headerTitle());
     }

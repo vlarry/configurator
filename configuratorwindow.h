@@ -744,12 +744,15 @@
             void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
             void saveDeviceCommunication();
             void saveDeviceCalibrationCurrent();
+            void saveContainerSettings(const CContainerWidget* container);
             bool loadJournalFromProject(const CJournalWidget* widgetJournal);
             void loadPurposeToProject(CPurposeTableView* table, const QString& type);
             void loadDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
             void loadDeviceCommunication();
             void loadDeviceCalibrationCurrent();
+            void loadContainerSettings(CContainerWidget *container);
             void unblockInterface();
+            bool clearTableDB(const QSqlDatabase* db, const QString& tableName);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

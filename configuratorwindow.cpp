@@ -6226,11 +6226,12 @@ bool ConfiguratorWindow::createProjectTableContainer()
 
     QSqlQuery query(*m_project_db);
 
-    if(!query.exec(QString("CREATE TABLE containerSetting ("
+    if(!query.exec(QString("CREATE TABLE containerSettings ("
                            "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
                            "containerName STRING, "
                            "containerSide STRING, "
                            "containerVisible INTEGER, "
+                           "containerPosition INTEGER, "
                            "containerWidth INTEGER, "
                            "containerHeight INTEGER);")))
     {
@@ -6642,6 +6643,39 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
     m_progressbar->increment(5);
 }
 /*!
+ * \brief ConfiguratorWindow::saveContainerSettings
+ * \param Указатель на контейнер
+ *
+ * Сохранение настроек контейнеров
+ */
+void ConfiguratorWindow::saveContainerSettings(const CContainerWidget* container)
+{
+    if(!container || !m_project_db || (m_project_db && !m_project_db->isOpen()))
+        return;
+
+    QSqlQuery query(*m_project_db);
+    QString name = QString("%1").arg(container->name());
+    QString size = QString("%1").arg((container->side() == CDockPanelItemCtrl::DirLeft)?"LEFT":
+                                     (container->side() == CDockPanelItemCtrl::DirRight)?"RIGHT":
+                                     (container->side() == CDockPanelItemCtrl::DirBottom)?"BOTTOM":
+                                     (container->side() == CDockPanelItemCtrl::DirTop)?"TOP":"NONE");
+    int visible = !container->isHidden();
+    int position = container->position();
+    int w = container->sizeHint().width();
+    int h = container->sizeHint().height();
+
+    QString query_str = QString("INSERT INTO containerSettings (containerName, containerSide, containerVisible, containerPosition, containerWidth, containerHeight) "
+                                "VALUES (\'%1\', \'%2\', %3, %4, %5, %6);").arg(name).arg(size).arg(visible).arg(position).arg(w).arg(h);
+    if(!query.exec(query_str))
+    {
+        QString text = tr("Загрузка настроек контейнера: не удалось сохранить настройки контейнера <%1> в файле проекта (%2)").arg(name).
+                       arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+}
+/*!
  * \brief ConfiguratorWindow::loadJournalFromProject
  * \param widgetJournal Виджет журнала
  *
@@ -6969,6 +7003,48 @@ void ConfiguratorWindow::loadDeviceCalibrationCurrent()
     m_progressbar->increment(5);
 }
 /*!
+ * \brief ConfiguratorWindow::loadContainerSettings
+ * \param Указатель на контейнер
+ * Загрузка настроек контейнеров
+ */
+void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container)
+{
+    if(!container || !m_project_db || (m_project_db && !m_project_db->isOpen()))
+        return;
+
+    QSqlQuery query(*m_project_db);
+    QString query_str = QString("SELECT * FROM containerSettings WHERE containerName=\'%1\';").arg(container->name());
+
+    if(!query.exec(query_str))
+    {
+        QString text = tr("Загрузка настроек контейнера: не удалось загрузить настройки из БД (%1)").arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    query.next();
+
+    QString side = query.value("containerSide").toString();
+    bool visible = query.value("containerVisible").toBool();
+    int position = query.value("containerPosition").toInt();
+    int w = query.value("containerWidth").toInt();
+    int h = query.value("containerHeight").toInt();
+
+    container->setVisible(visible);
+    container->setPosition(position);
+    container->setGeometry(container->geometry().x(), container->geometry().y(), w, h);
+
+    if(side.toUpper() == "LEFT")
+        ui->dockWidgetMenuDevice->addContainer(container);
+    else if(side.toUpper() == "RIGHT")
+        ui->dockWidgetVariable->addContainer(container);
+    else if(side.toUpper() == "BOTTOM")
+    {
+        ui->tabWidgetMessage->addTab(container, container->windowTitle());
+    }
+}
+/*!
  * \brief ConfiguratorWindow::unblockInterface
  *
  * Разблокировка интерфеса программы
@@ -6988,6 +7064,26 @@ void ConfiguratorWindow::unblockInterface()
     ui->pbtnMenuSaveProject->setEnabled(true);
     ui->pbtnMenuSaveAsProject->setEnabled(true);
     emit ui->widgetMenuBar->activateButtons();
+}
+/*!
+ * \brief ConfiguratorWindow::clearTableDB
+ * \param db Указатель на базу данных
+ * \param tableName Название таблицы
+ * \return Истина, если таблица успешно очищена
+ *
+ * Очистка таблицы в базе данных
+ */
+bool ConfiguratorWindow::clearTableDB(const QSqlDatabase* db, const QString& tableName)
+{
+    if(!db || (db && !db->isOpen()) || tableName.isEmpty())
+        return false;
+
+    QSqlQuery query(*db);
+
+    if(!query.exec(QString("DELETE FROM %1;").arg(tableName)))
+        return false;
+
+    return true;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
@@ -8432,6 +8528,12 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    // Расположение контейнеров по умолчанию
+    ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
+    ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
+    ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
+    ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
+
     unblockInterface();
     outApplicationEvent(tr("Создание нового файла проекта: %1").arg(projectPathName));
     m_progressbar->progressStop();
@@ -8494,6 +8596,16 @@ void ConfiguratorWindow::openProject()
     loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
     loadDeviceCommunication();
     loadDeviceCalibrationCurrent();
+    loadContainerSettings(m_containerWidgetVariable);
+    loadContainerSettings(m_containerWidgetDeviceMenu);
+    loadContainerSettings(m_containerIndicatorState);
+    loadContainerSettings(m_containerMonitorK10K11);
+    loadContainerSettings(m_containerOutputAll);
+    loadContainerSettings(m_containerInputs);
+    loadContainerSettings(m_containerDebugInfo);
+    loadContainerSettings(m_containerStatusInfo);
+    loadContainerSettings(m_containerTerminalEvent);
+    loadContainerSettings(m_containerTerminalModbus);
 
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
@@ -8535,6 +8647,25 @@ void ConfiguratorWindow::saveProject()
     saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
     saveDeviceCommunication();
     saveDeviceCalibrationCurrent();
+
+    if(!clearTableDB(m_project_db, "containerSettings"))
+    {
+        QString text = tr("Загрузка настроек контейнера: не удалось удалить старые данные из таблицы");
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    saveContainerSettings(m_containerWidgetVariable);
+    saveContainerSettings(m_containerWidgetDeviceMenu);
+    saveContainerSettings(m_containerIndicatorState);
+    saveContainerSettings(m_containerMonitorK10K11);
+    saveContainerSettings(m_containerOutputAll);
+    saveContainerSettings(m_containerInputs);
+    saveContainerSettings(m_containerDebugInfo);
+    saveContainerSettings(m_containerStatusInfo);
+    saveContainerSettings(m_containerTerminalEvent);
+    saveContainerSettings(m_containerTerminalModbus);
 
     QString text = tr("Данные проекта успешно сохранены");
     qInfo() << text;
@@ -9399,7 +9530,7 @@ void ConfiguratorWindow::initApplication()
         m_containerWidgetVariable->setSuperParent(this);
         m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
         m_containerWidgetVariable->setSide(CDockPanelItemCtrl::DirRight);
-        ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
+        m_containerWidgetVariable->setName("VARIABLE");
 
         // инициализация панели меню
         m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
@@ -9409,7 +9540,7 @@ void ConfiguratorWindow::initApplication()
         m_containerWidgetDeviceMenu->setButtonFunctionState(true);
         m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
         m_containerWidgetDeviceMenu->setSide(CDockPanelItemCtrl::DirLeft);
-        ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
+        m_containerWidgetDeviceMenu->setName("DEVICE_MENU");
         connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
 
         // инициализация панели сообщений
@@ -9417,20 +9548,25 @@ void ConfiguratorWindow::initApplication()
         m_event_window->setObjectName("terminalWindowEvent");
         m_containerTerminalEvent = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
         m_containerTerminalEvent->setHeaderBackground(QColor(190, 190, 190));
-        m_containerTerminalEvent->headerHide();
         m_containerTerminalEvent->setSuperParent(this);
         m_containerTerminalEvent->setSide(CDockPanelItemCtrl::DirBottom);
-        ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
+        m_containerTerminalEvent->setName("EVENT_MESSAGE");
 
         // инициализация терминала MODBUS
         m_terminal_modbus = new CTerminal(this);
         m_terminal_modbus->setObjectName("terminalModbus");
         m_containerTerminalModbus = new CContainerWidget(tr("Терминал"), m_terminal_modbus, CContainerWidget::AnchorType::AnchorDockWidget, this);
         m_containerTerminalModbus->setHeaderBackground(QColor(190, 190, 190));
-        m_containerTerminalModbus->headerHide();
         m_containerTerminalModbus->setSuperParent(this);
         m_containerTerminalModbus->setSide(CDockPanelItemCtrl::DirBottom);
-        ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
+        m_containerTerminalModbus->setName("TERMINAL");
+
+        m_containerIndicatorState->setName("INDICATOR_STATE");
+        m_containerMonitorK10K11->setName("MONITOR_K10_K11");
+        m_containerOutputAll->setName("OUTPUT_ALL");
+        m_containerInputs->setName("INPUTS");
+        m_containerDebugInfo->setName("DEBUG_INFO");
+        m_containerStatusInfo->setName("STATUS_INFO");
 
         loadSettings();
         initConnect();
