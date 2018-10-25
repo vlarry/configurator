@@ -28,6 +28,8 @@ void CDockWidget::addContainer(CContainerWidget* container)
     {
         container->setID(m_idCount++);
         container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
+        container->setSide(m_controlItem->dir());
+        container->setPosition(ui->verticalLayoutContainer->count());
         container->setHeaderBackground(QColor(190, 190, 190));
         container->show();
         ui->verticalLayoutContainer->addWidget(container);
@@ -133,6 +135,7 @@ void CDockWidget::removeItem(int id)
 
             if(tcontainer->id() == id)
             {
+                tcontainer->setPosition(-1);
                 ui->verticalLayout->removeWidget(tcontainer);
                 if(ui->verticalLayoutContainer->isEmpty()) // контейнер пуст
                     emit m_controlItem->clicked();
@@ -156,8 +159,6 @@ void CDockWidget::dropEvent(QDropEvent* event)
     if(container)
     {
         event->accept();
-        container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
-        container->setHeaderBackground(QColor(190, 190, 190));
         addContainer(container);
     }
 }

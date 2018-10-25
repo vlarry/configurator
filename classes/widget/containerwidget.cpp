@@ -7,10 +7,12 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     m_superParent(nullptr),
     m_contentWidget(nullptr),
     m_anchor(anchor),
+    m_dock_side(CDockPanelItemCtrl::DirNone),
     m_pos(QPoint(-1, -1)),
     m_pos_grip(QPoint(-1, -1)),
     m_id(-1),
-    m_background_color(QColor())
+    m_background_color(QColor()),
+    m_position(-1)
 {
     ui->setupUi(this);
     setMouseTracking(true);
@@ -109,6 +111,16 @@ QWidget *CContainerWidget::superParent() const
 {
     return m_superParent;
 }
+//--------------------------------------------------------
+CDockPanelItemCtrl::DirType CContainerWidget::side() const
+{
+    return m_dock_side;
+}
+//------------------------------------
+int CContainerWidget::position() const
+{
+    return m_position;
+}
 //--------------------------------------------
 void CContainerWidget::setWidget(QWidget* wgt)
 {
@@ -183,6 +195,16 @@ void CContainerWidget::setButtonFunctionState(bool state)
     {
         ui->toolButtonHeaderFunction->hide();
     }
+}
+//-------------------------------------------------------------
+void CContainerWidget::setSide(CDockPanelItemCtrl::DirType dir)
+{
+    m_dock_side = dir;
+}
+//-----------------------------------------
+void CContainerWidget::setPosition(int pos)
+{
+    m_position = pos;
 }
 //-----------------------------------------------------------
 void CContainerWidget::buttonFunctionStateChanged(bool state)

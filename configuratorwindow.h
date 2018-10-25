@@ -738,6 +738,7 @@
             bool createProjectTableSet(const QString& tableName);
             bool createProjectTableCommunication();
             bool createProjectTableCalibrationCurrent();
+            bool createProjectTableContainer();
             void savePurposeToProject(CPurposeTableView* table, const QString& type);
             void saveJournalToProject(const CJournalWidget *widgetJournal);
             void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);

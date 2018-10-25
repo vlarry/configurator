@@ -6214,6 +6214,36 @@ bool ConfiguratorWindow::createProjectTableCalibrationCurrent()
     return true;
 }
 /*!
+ * \brief ConfiguratorWindow::createProjectTableContainer
+ * \return Истина, в случае успешного создания таблицы
+ *
+ * Создание таблицы настроек положения контейнеров панелей
+ */
+bool ConfiguratorWindow::createProjectTableContainer()
+{
+    if((m_project_db && !m_project_db->isOpen()))
+        return false;
+
+    QSqlQuery query(*m_project_db);
+
+    if(!query.exec(QString("CREATE TABLE containerSetting ("
+                           "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
+                           "containerName STRING, "
+                           "containerSide STRING, "
+                           "containerVisible INTEGER, "
+                           "containerWidth INTEGER, "
+                           "containerHeight INTEGER);")))
+    {
+        QString text = tr("Ошибка создания таблицы настроек положения контейнеров: %1").arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+
+        return false;
+    }
+
+    return true;
+}
+/*!
  * \brief ConfiguratorWindow::saveDIToProject
  * \param matrix Матрица привязок дискретных входов
  *
@@ -8384,6 +8414,24 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    // Создание таблицы настроек контейнеров
+    if(!createProjectTableContainer())
+    {
+        QMessageBox msgbox;
+        msgbox.setWindowTitle(tr("Создание таблицы настройки положения контейнеров"));
+        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+        msgbox.setIcon(QMessageBox::Warning);
+        QString text = tr("Невозможно создать таблицу настроек положения контейнеров в файле проекта.");
+        msgbox.setText(text);
+        outApplicationEvent(msgbox.text());
+        msgbox.exec();
+        qWarning() << text;
+        m_project_db->close();
+        delete m_project_db;
+        QSqlDatabase::removeDatabase("PROJECT");
+        return;
+    }
+
     unblockInterface();
     outApplicationEvent(tr("Создание нового файла проекта: %1").arg(projectPathName));
     m_progressbar->progressStop();
@@ -9350,6 +9398,7 @@ void ConfiguratorWindow::initApplication()
                                                          CContainerWidget::AnchorType::AnchorDockWidget, this);
         m_containerWidgetVariable->setSuperParent(this);
         m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
+        m_containerWidgetVariable->setSide(CDockPanelItemCtrl::DirRight);
         ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
 
         // инициализация панели меню
@@ -9359,6 +9408,7 @@ void ConfiguratorWindow::initApplication()
         m_containerWidgetDeviceMenu->setSuperParent(this);
         m_containerWidgetDeviceMenu->setButtonFunctionState(true);
         m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
+        m_containerWidgetDeviceMenu->setSide(CDockPanelItemCtrl::DirLeft);
         ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
         connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
 
@@ -9369,6 +9419,7 @@ void ConfiguratorWindow::initApplication()
         m_containerTerminalEvent->setHeaderBackground(QColor(190, 190, 190));
         m_containerTerminalEvent->headerHide();
         m_containerTerminalEvent->setSuperParent(this);
+        m_containerTerminalEvent->setSide(CDockPanelItemCtrl::DirBottom);
         ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
 
         // инициализация терминала MODBUS
@@ -9378,6 +9429,7 @@ void ConfiguratorWindow::initApplication()
         m_containerTerminalModbus->setHeaderBackground(QColor(190, 190, 190));
         m_containerTerminalModbus->headerHide();
         m_containerTerminalModbus->setSuperParent(this);
+        m_containerTerminalModbus->setSide(CDockPanelItemCtrl::DirBottom);
         ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
 
         loadSettings();
