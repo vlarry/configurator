@@ -696,6 +696,10 @@
             void synchronization(bool state = false);
             void setLineEditValidator(QObject* object);
             void panelVisibleCtrl(QWidget* widget);
+            void panelVisibleTerminal();
+            void panelVisibleMessage();
+            void panelVisibleCalculateVariable();
+            void panelVisibleDeviceMenu();
             int  recordCountDb(QSqlDatabase* db, const QString& table_name, const QString& parameter, const QString& value,
                                                  const QString& subparamter = "", const QStringList& range = QStringList());
             QString             recordLastDb(QSqlDatabase* db, const QString& table_name, const QString& parameter);

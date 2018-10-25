@@ -71,6 +71,10 @@
         <file>resource/images/configurator.png</file>
         <file>resource/images/settings.png</file>
         <file>resource/images/arrow-grip.png</file>
+        <file>resource/images/calculate_variable.png</file>
+        <file>resource/images/device_menu.png</file>
+        <file>resource/images/message.png</file>
+        <file>resource/images/terminal.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

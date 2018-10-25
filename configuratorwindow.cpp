@@ -6297,6 +6297,7 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
         }
     }
     m_project_db->commit();
+    m_progressbar->increment(5);
 }
 //--------------------------------------------------------------------------------
 void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJournal)
@@ -6461,6 +6462,8 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         qWarning() << text;
         outApplicationEvent(text);
     }
+
+    m_progressbar->increment(5);
 }
 //---------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName)
@@ -6533,6 +6536,7 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
     }
 
     m_project_db->commit();
+    m_progressbar->increment(5);
 }
 /*!
  * \brief ConfiguratorWindow::saveDeviceCommunication
@@ -6565,6 +6569,8 @@ void ConfiguratorWindow::saveDeviceCommunication()
         qWarning() << text;
         outApplicationEvent(text);
     }
+
+    m_progressbar->increment(5);
 }
 /*!
  * \brief ConfiguratorWindow::saveDeviceCalibrationCurrent
@@ -6602,6 +6608,8 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
         qWarning() << text;
         outApplicationEvent(text);
     }
+
+    m_progressbar->increment(5);
 }
 /*!
  * \brief ConfiguratorWindow::loadJournalFromProject
@@ -6726,6 +6734,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
 
     journal->resizeColumnsToContents();
     journal->horizontalHeader()->setStretchLastSection(true);
+    m_progressbar->increment(5);
 
     return true;
 }
@@ -6781,6 +6790,7 @@ void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QS
     }
 
     model->updateData();
+    m_progressbar->increment(5);
 }
 /*!
  * \brief ConfiguratorWindow::loadDeviceSetToProject
@@ -6845,6 +6855,8 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
                 lineEdit->setText(val);
         }
     }
+
+    m_progressbar->increment(5);
 }
 /*!
  * \brief ConfiguratorWindow::loadDeviceCommunication
@@ -6880,6 +6892,8 @@ void ConfiguratorWindow::loadDeviceCommunication()
     ui->comboBoxCommunicationParity->setCurrentIndex(parity);
     ui->spinBoxCommunicationRequestTimeout->setValue(Trequest);
     ui->spinBoxCommunicationTimeoutSpeed->setValue(Tspeed);
+
+    m_progressbar->increment(5);
 }
 /*!
  * \brief ConfiguratorWindow::loadDeviceCalibrationCurrent
@@ -6921,6 +6935,8 @@ void ConfiguratorWindow::loadDeviceCalibrationCurrent()
     ui->widgetCalibrationOfCurrent->setCurrent3I0State(state3I0);
     ui->widgetCalibrationOfCurrent->setCurrentDataCount(dataCount);
     ui->widgetCalibrationOfCurrent->setCurrentPauseRequest(pauseRequest);
+
+    m_progressbar->increment(5);
 }
 /*!
  * \brief ConfiguratorWindow::unblockInterface
@@ -8020,6 +8036,10 @@ void ConfiguratorWindow::newProject()
         }
     }
 
+    m_progressbar->setProgressTitle(tr("Создание нового проекта"));
+    m_progressbar->setSettings(0, 100, "%");
+    m_progressbar->progressStart();
+
     m_project_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "PROJECT"));
     m_project_db->setDatabaseName(projectPathName);
 
@@ -8366,6 +8386,7 @@ void ConfiguratorWindow::newProject()
 
     unblockInterface();
     outApplicationEvent(tr("Создание нового файла проекта: %1").arg(projectPathName));
+    m_progressbar->progressStop();
 }
 //------------------------------------
 void ConfiguratorWindow::openProject()
@@ -8401,6 +8422,10 @@ void ConfiguratorWindow::openProject()
         return;
     }
 
+    m_progressbar->setProgressTitle(tr("Открытие проекта"));
+    m_progressbar->setSettings(0, 100, "%");
+    m_progressbar->progressStart();
+
     loadJournalFromProject(ui->widgetJournalEvent); // Загрузка журнала событий
     loadJournalFromProject(ui->widgetJournalCrash); // Загрузка журнала аварий
     loadJournalFromProject(ui->widgetJournalHalfHour); // Загрузка журнала получасовок
@@ -8428,12 +8453,18 @@ void ConfiguratorWindow::openProject()
     QString text = tr("Файл проекта успешно загружен: %1").arg(projectPathName);
     qWarning() << text;
     outApplicationEvent(text);
+
+    m_progressbar->progressStop();
 }
 //------------------------------------
 void ConfiguratorWindow::saveProject()
 {
     if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
         return;
+
+    m_progressbar->setProgressTitle(tr("Сохранение проекта"));
+    m_progressbar->setSettings(0, 100, "%");
+    m_progressbar->progressStart();
 
     saveJournalToProject(ui->widgetJournalEvent);
     saveJournalToProject(ui->widgetJournalCrash);
@@ -8460,6 +8491,8 @@ void ConfiguratorWindow::saveProject()
     QString text = tr("Данные проекта успешно сохранены");
     qInfo() << text;
     outApplicationEvent(text);
+
+    m_progressbar->progressStop();
 }
 //--------------------------------------
 void ConfiguratorWindow::saveAsProject()
@@ -11164,6 +11197,38 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
         }
     }
 }
+//---------------------------------------------
+void ConfiguratorWindow::panelVisibleTerminal()
+{
+    if(m_containerTerminalModbus->isHidden())
+        m_containerTerminalModbus->show();
+    else
+        m_containerTerminalModbus->hide();
+}
+//--------------------------------------------
+void ConfiguratorWindow::panelVisibleMessage()
+{
+    if(m_containerTerminalEvent->isHidden())
+        m_containerTerminalEvent->show();
+    else
+        m_containerTerminalEvent->hide();
+}
+//------------------------------------------------------
+void ConfiguratorWindow::panelVisibleCalculateVariable()
+{
+    if(m_containerWidgetVariable->isHidden())
+        m_containerWidgetVariable->show();
+    else
+        m_containerWidgetVariable->hide();
+}
+//-----------------------------------------------
+void ConfiguratorWindow::panelVisibleDeviceMenu()
+{
+    if(m_containerWidgetDeviceMenu->isHidden())
+        m_containerWidgetDeviceMenu->show();
+    else
+        m_containerWidgetDeviceMenu->hide();
+}
 /*!
  * \brief ConfiguratorWindow::recordCountDb
  * \param db           Указатель на базу данных
@@ -11873,4 +11938,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(ui->pushButtonCalculateVarible, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleCalculateVariable);
+    connect(ui->pushButtonMessageEvent, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleMessage);
+    connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
+    connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
 }
