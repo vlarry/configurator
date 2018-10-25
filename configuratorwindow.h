@@ -742,6 +742,7 @@
             bool loadJournalFromProject(const CJournalWidget* widgetJournal);
             void loadPurposeToProject(CPurposeTableView* table, const QString& type);
             void loadDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
+            void loadDeviceCommunication();
             void unblockInterface();
 
         signals:

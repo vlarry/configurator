@@ -6847,6 +6847,41 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
     }
 }
 /*!
+ * \brief ConfiguratorWindow::loadDeviceCommunication
+ *
+ * Загрузка настроек связи из файла проекта
+ */
+void ConfiguratorWindow::loadDeviceCommunication()
+{
+    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+        return;
+
+    QSqlQuery query(*m_project_db);
+    QString query_str = QString("SELECT * FROM deviceCommunication;");
+
+    if(!query.exec(query_str))
+    {
+        QString text = tr("Загрузка настроек связи: не удалось загрузить из БД (%1)").arg(query.lastError().text());
+        qWarning() << text;
+        outApplicationEvent(text);
+        return;
+    }
+
+    query.next();
+
+    int address = query.value("address").toInt();
+    int speed = query.value("speed").toInt();
+    int parity = query.value("parity").toInt();
+    int Trequest = query.value("Trequest").toInt();
+    int Tspeed = query.value("Tspeed").toInt();
+
+    ui->spinBoxCommunicationAddress->setValue(address);
+    ui->comboBoxCommunicationBaudrate->setCurrentIndex(speed);
+    ui->comboBoxCommunicationParity->setCurrentIndex(parity);
+    ui->spinBoxCommunicationRequestTimeout->setValue(Trequest);
+    ui->spinBoxCommunicationTimeoutSpeed->setValue(Tspeed);
+}
+/*!
  * \brief ConfiguratorWindow::unblockInterface
  *
  * Разблокировка интерфеса программы
@@ -8343,6 +8378,7 @@ void ConfiguratorWindow::openProject()
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
     loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
+    loadDeviceCommunication();
 
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
