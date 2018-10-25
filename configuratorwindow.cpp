@@ -6228,12 +6228,11 @@ bool ConfiguratorWindow::createProjectTableContainer()
 
     if(!query.exec(QString("CREATE TABLE containerSettings ("
                            "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
-                           "containerName STRING, "
-                           "containerSide STRING, "
-                           "containerVisible INTEGER, "
-                           "containerPosition INTEGER, "
-                           "containerWidth INTEGER, "
-                           "containerHeight INTEGER);")))
+                           "name STRING, "
+                           "side STRING, "
+                           "visible INTEGER, "
+                           "pos INTEGER, "
+                           "geometry BLOB);")))
     {
         QString text = tr("Ошибка создания таблицы настроек положения контейнеров: %1").arg(query.lastError().text());
         qWarning() << text;
@@ -6654,21 +6653,22 @@ void ConfiguratorWindow::saveContainerSettings(const CContainerWidget* container
         return;
 
     QSqlQuery query(*m_project_db);
-    QString name = QString("%1").arg(container->name());
-    QString size = QString("%1").arg((container->side() == CDockPanelItemCtrl::DirLeft)?"LEFT":
+    QString side = QString("%1").arg((container->side() == CDockPanelItemCtrl::DirLeft)?"LEFT":
                                      (container->side() == CDockPanelItemCtrl::DirRight)?"RIGHT":
                                      (container->side() == CDockPanelItemCtrl::DirBottom)?"BOTTOM":
                                      (container->side() == CDockPanelItemCtrl::DirTop)?"TOP":"NONE");
-    int visible = !container->isHidden();
-    int position = container->position();
-    int w = container->sizeHint().width();
-    int h = container->sizeHint().height();
+    QString query_str = QString("INSERT INTO containerSettings (name, side, visible, pos, geometry) VALUES (:name, :side, :visible, :pos, :geometry);");
 
-    QString query_str = QString("INSERT INTO containerSettings (containerName, containerSide, containerVisible, containerPosition, containerWidth, containerHeight) "
-                                "VALUES (\'%1\', \'%2\', %3, %4, %5, %6);").arg(name).arg(size).arg(visible).arg(position).arg(w).arg(h);
-    if(!query.exec(query_str))
+    query.prepare(query_str);
+    query.bindValue(":name", container->name());
+    query.bindValue(":side", side);
+    query.bindValue(":visible", !container->isHidden());
+    query.bindValue(":pos", container->position());
+    query.bindValue(":geometry", container->saveGeometry());
+
+    if(!query.exec())
     {
-        QString text = tr("Загрузка настроек контейнера: не удалось сохранить настройки контейнера <%1> в файле проекта (%2)").arg(name).
+        QString text = tr("Загрузка настроек контейнера: не удалось сохранить настройки контейнера <%1> в файле проекта (%2)").arg(container->name()).
                        arg(query.lastError().text());
         qWarning() << text;
         outApplicationEvent(text);
@@ -7013,7 +7013,7 @@ void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container)
         return;
 
     QSqlQuery query(*m_project_db);
-    QString query_str = QString("SELECT * FROM containerSettings WHERE containerName=\'%1\';").arg(container->name());
+    QString query_str = QString("SELECT * FROM containerSettings WHERE name=\'%1\';").arg(container->name());
 
     if(!query.exec(query_str))
     {
@@ -7025,15 +7025,14 @@ void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container)
 
     query.next();
 
-    QString side = query.value("containerSide").toString();
-    bool visible = query.value("containerVisible").toBool();
-    int position = query.value("containerPosition").toInt();
-    int w = query.value("containerWidth").toInt();
-    int h = query.value("containerHeight").toInt();
+    QString side = query.value("side").toString();
+    bool visible = query.value("visible").toBool();
+    int position = query.value("pos").toInt();
+    QByteArray ba = query.value("geometry").toByteArray();
 
     container->setVisible(visible);
     container->setPosition(position);
-    container->setGeometry(container->geometry().x(), container->geometry().y(), w, h);
+    container->restoreGeometry(ba);
 
     if(side.toUpper() == "LEFT")
         ui->dockWidgetMenuDevice->addContainer(container);
@@ -7041,7 +7040,7 @@ void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container)
         ui->dockWidgetVariable->addContainer(container);
     else if(side.toUpper() == "BOTTOM")
     {
-        ui->tabWidgetMessage->addTab(container, container->windowTitle());
+        ui->tabWidgetMessage->addContainer(container);
     }
 }
 /*!
@@ -9359,7 +9358,6 @@ void ConfiguratorWindow::loadSettings()
         m_settings->endGroup();
 
         m_settings->beginGroup("settings");
-            ui->checkBoxPanelMessage->setChecked(m_settings->value("downpanel_state").toBool());
                 m_settings->beginGroup("menu_device_widget");
                     ui->dockWidgetMenuDevice->setProperty("WIDTH", m_settings->value("width", 100).toInt());
                     ui->dockWidgetMenuDevice->setVisibleContent(m_settings->value("visible").toBool());
@@ -9420,7 +9418,6 @@ void ConfiguratorWindow::saveSettings()
             m_settings->setValue("downpanel", ui->splitterPanelMessage->saveState());
         m_settings->endGroup();
         m_settings->beginGroup("settings");
-            m_settings->setValue("downpanel_state", ui->checkBoxPanelMessage->isChecked());
                 m_settings->beginGroup("menu_device_widget");
                     m_settings->setValue("width", ui->dockWidgetMenuDevice->property("WIDTH").toInt());
                     m_settings->setValue("visible", !ui->dockWidgetMenuDevice->isContentHidden());

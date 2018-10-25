@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
@@ -995,13 +995,6 @@
          <widget class="QCheckBox" name="checkBoxTestStyle">
           <property name="text">
            <string>тестовый стиль</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="checkBoxPanelMessage">
-          <property name="text">
-           <string>Панель сообщений</string>
           </property>
          </widget>
         </item>

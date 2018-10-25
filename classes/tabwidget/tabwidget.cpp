@@ -10,6 +10,14 @@ CTabWidget::CTabWidget(QWidget* parent):
     this->tabBar()->setAcceptDrops(true);
     connect(this, &CTabWidget::tabBarDoubleClicked, this, &CTabWidget::tabDoubleClicked);
 }
+//--------------------------------------------------------
+void CTabWidget::addContainer(CContainerWidget* container)
+{
+    container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
+    container->setSide(CDockPanelItemCtrl::DirBottom);
+//    container->headerHide();
+    addTab(container, container->headerTitle());
+}
 //----------------------------------------------
 void CTabWidget::setSuperParent(QWidget* parent)
 {
@@ -61,9 +69,6 @@ void CTabWidget::dropEvent(QDropEvent* event)
     if(container)
     {
         event->accept();
-        container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
-        container->setSide(CDockPanelItemCtrl::DirBottom);
-        container->headerHide();
-        addTab(container, container->headerTitle());
+        addContainer(container);
     }
 }

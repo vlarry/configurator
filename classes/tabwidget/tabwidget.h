@@ -18,6 +18,7 @@
 
         public:
             CTabWidget(QWidget* parent = nullptr);
+            void addContainer(CContainerWidget* container);
             void setSuperParent(QWidget* parent);
 
         private slots:
