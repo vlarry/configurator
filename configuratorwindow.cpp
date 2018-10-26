@@ -459,7 +459,9 @@ void ConfiguratorWindow::inputAnalogGeneralRead()
  */
 void ConfiguratorWindow::inputAnalogCalibrateRead()
 {
-    sendSettingReadRequest("KIA", "KU0X_", CModBusDataUnit::ReadHoldingRegisters, 36,
+    sendSettingReadRequest("KIA", "KUC", CModBusDataUnit::ReadHoldingRegisters, 14,
+                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingReadRequest("KUAB", "KY03T", CModBusDataUnit::ReadHoldingRegisters, 58,
                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
@@ -489,7 +491,8 @@ void ConfiguratorWindow::inputAnalogGeneralWrite()
  */
 void ConfiguratorWindow::inputAnalogCalibrateWrite()
 {
-    sendSettingWriteRequest("KIA", "KU0X_", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingWriteRequest("KIA", "KUC", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingWriteRequest("KUAB", "KY03T", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGroupWrite
@@ -2342,19 +2345,16 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     else if(type == GENERAL_TYPE)
     {
         showErrorMessage(tr("Чтение уставок"), unit);
-
         displaySettingResponse(unit);
     }
     else if(type == GENERAL_CONTROL_TYPE)
     {
         showErrorMessage(tr("Чтение уставок"), unit);
-
         displaySettingControlResponce(unit);
     }
     else if(type == PURPOSE_OUT_TYPE)
     {
         showErrorMessage(tr("Матрица привязок выходов"), unit);
-
         displayPurposeOutput(unit);
     }
     else if(type == PURPOSE_INPUT_TYPE || type == PURPOSE_INPUT_INVERSE_TYPE)
@@ -2409,13 +2409,11 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     else if(type == READ_SERIAL_NUMBER)
     {
         showErrorMessage(tr("Чтение серийного номера"), unit);
-
         displayDeviceSerialNumber(unit.values());
     }
     else if(type == DATETIME_TYPE)
     {
         showErrorMessage(tr("Чтение настроек Дата/Время"), unit);
-
         displayDateTime(unit);
     }
     else if(type == PORTECT_RESERVE_SIGNAL_START)
@@ -2902,255 +2900,44 @@ void ConfiguratorWindow::writeSetCurrent()
 
     switch(index)
     {
-        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL:
-            inputAnalogGeneralWrite(); // запись настроек "Основные"
-        break;
-
-        case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB:
-            inputAnalogCalibrateWrite(); // запись настроек "Калибровки"
-        break;
-
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG:
             inputAnalogGroupWrite(); // запись группы настроек "Аналоговые"
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ1: // запись защиты МТЗ1
-            protectionMTZ1Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ2: // запись защиты МТЗ2
-            protectionMTZ2Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3: // запись защиты МТЗ3
-            protectionMTZ3Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_SET_CHAR: // чтение токовых характеристик защиты МТЗ3
-            protectionMTZ3SetCharWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_STEEP:
-            protectionMTZ3PropertySteepWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SLOP:
-            protectionMTZ3PropertySlopWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_INV:
-            protectionMTZ3PropertyInversionWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_DINV:
-            protectionMTZ3PropertyDInversionWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_BACK:
-            protectionMTZ3PropertyBackWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_SINV:
-            protectionMTZ3PropertyStrongInversionWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ3_PROP_EINV:
-            protectionMTZ3PropertyExtremalInversionWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CURRENT_MTZ4: // запись защиты По току
-            protectionMTZ4Write();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_CURRENT: // запись группы защит МТЗ
             protectionMTZGroupWrite();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX1: // запись защиты Umax1
-            protectionUmax1Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMAX2: // запись защиты Umax2
-            protectionUmax2Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1: // запись защиты Umin1
-            protectionUmin1Write();
-            automationSwitchWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2: // запись защиты Umin2
-            protectionUmin2Write();
-            automationSwitchWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN1_COREC_KCU: // запись подпункта защиты Umin1 Коррекция КЦУ
-            automationSwitchWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU: // запись подпункта защиты Umin2 Коррекция КЦУ
-            automationSwitchWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_POWER_3U0: // запись защиты 3U0
-            protection3U0Write();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_POWER: // запись группы защит По напряжению
             protectionPowerGroupWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1: // запись защиты ОЗЗ1
-            protectionOZZ1Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2: // запись защиты ОЗЗ2
-            protectionOZZ2Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1: // запись защиты НЗЗ1
-            protectionNZZ1Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2: // запись защиты НЗЗ2
-            protectionNZZ2Write();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_DIRECTED: // запись направленных защит
             protectionDirectedGroupWrite();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1: // запись защиты АЧР1
-            protectionAchr1Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2: // запись защиты АЧР2
-            protectionAchr2Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3: // запись защиты АЧР3
-            protectionAchr3Write();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_FREQUENCY: // запись защит по частоте
             protectionFrequencyGroupWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_ARC: // запись защиты Дуговая
-            protectionArcWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT1: // запись защиты Внешняя1
-            protectionExt1Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT2: // запись защиты Внешняя2
-            protectionExt2Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_EXTERNAL_EXT3: // запись защиты Внешняя3
-            protectionExt3Write();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_EXTERNAL: // запись Внешних защит
             protectionExternalGroupWrite();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_MOTOR_STARTING: // запись защиты Пусковая
-            protectionStartingWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_MOTOR_IMIN: // запись защиты Imin
-            protectionIminWrite();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_MOTOR: // запись защит для двигателя
             protectionMotorGroupWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP1: // запись защиты Температурная1
-            protectionTemp1Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE_TEMP2: // запись защиты Температурная2
-            protectionTemp2Write();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE: // запись защит по Температуре
             protectionTemperatureGroupWrite();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL1: // запись защиты Уровневая1
-            protectionLevel1Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_RESERVE_LEVEL2: // запись защиты Уровневая2
-            protectionLevel2Write();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_RESERVE_SIG_START: // запись защиты Сигнал пуска
-            protectionSignalStartWrite();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_RESERVE: // запись резервных защит
             protectionReserveGroupWrite();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_CONTROL_BRU: // запись защиты БРУ
-            protectionBRUWrite();
-        break;
-
-        case DEVICE_MENU_PROTECT_ITEM_CONTROL_VACUUM: // запись пзащиты Вакуум
-            protectionVacuumWrite();
-        break;
-
         case DEVICE_MENU_PROTECT_ITEM_CONTROL: // запись группы защит Предварительного контроля
             protectionControlGroupWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH: // запись автоматики Выключатель
-            automationSwitchWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH_TRUCK: // запись автоматики Тележка выключателя
-            automationSwitchTruckWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_BLOCKS: // запись автоматики Блокировки
-            automationBlockWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_BUS: // запись автоматики Шинный разъединитель
-            automationBusWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_LINE: // запись автоматики Линейный разъединитель
-            automationLineWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS_EARTH: // запись автоматики Заземляющий разъединитель
-            automationEarthWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_DISCONNECTORS: // запись группы автоматики Разъединители
-            automationDisconnectorsGroupWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_CTRL_TN: // запись автоматики Контроль ТН
-            automationCtrlTNWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_AVR: // запись автоматики АВР
-            automationAVRWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_APV: // запись автоматики АПВ
-            automationAPVWrite();
-            automationAPVSignalStartWrite();
-        break;
-
-        case DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START: // чтение автоматики АПВ сигналы пуска
-            automationAPVSignalStartWrite();
         break;
 
         case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
