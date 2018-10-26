@@ -753,6 +753,8 @@
             void loadContainerSettings(CContainerWidget *container);
             void unblockInterface();
             bool clearTableDB(const QSqlDatabase* db, const QString& tableName);
+            int showMessageBox(const QString& title, const QString& text, const QMessageBox::Icon type);
+            void outLogMessage(const QString& message);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

@@ -59,13 +59,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
-    bool is_remove = deleteLogFile();
-
-    qInfo() << tr("Запуск программы...");
-
-    if(is_remove)
-        qInfo() << tr("Файл логирования <log.txt> удален.");
-
     connectSystemDb();
     initJournals();
     initMenuPanel();
@@ -107,7 +100,7 @@ ConfiguratorWindow::~ConfiguratorWindow()
             emit m_modbus->close();
     }
 
-    qInfo() << tr("Завершение работы программы.");
+    outLogMessage(tr("Завершение работы программы."));
 
     if(m_system_db.isOpen())
         m_system_db.close();
@@ -167,10 +160,10 @@ void ConfiguratorWindow::stateChanged(bool state)
     ui->toolButtonConnect->setChecked(state);
 
     QString text = ((state)?tr("Соединение с устройством установлено на скорости: %1 бод").
-                   arg(m_modbus->channel()->settings().baudrate):
-                   tr("Соединение с устройством разорвано"));
+                    arg(m_modbus->channel()->settings().baudrate):
+                    tr("Соединение с устройством разорвано"));
     m_status_bar->setStatusMessage(text, 5000);
-    outApplicationEvent(text);
+    outLogMessage(text);
     
     if(ui->checkboxCalibTimeout->isChecked() && state)
         chboxCalculateTimeoutStateChanged(true);
@@ -179,7 +172,7 @@ void ConfiguratorWindow::stateChanged(bool state)
 
     if(state)
     {
-        qInfo() << tr("Порт <%1> открыт.").arg(m_modbus->channel()->settings().name);
+        outLogMessage(tr("Порт <%1> открыт.").arg(m_modbus->channel()->settings().name));
         ui->toolButtonConnect->setText(tr("Отключиться"));
         ui->toolButtonConnect->setIconSize(QSize(24, 24));
         ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/disconnect_serial.png"));
@@ -189,7 +182,7 @@ void ConfiguratorWindow::stateChanged(bool state)
     }
     else
     {
-        qInfo() << tr("Порт <%1> закрыт.").arg(m_modbus->channel()->settings().name);
+        outLogMessage(tr("Порт <%1> закрыт.").arg(m_modbus->channel()->settings().name));
         ui->toolButtonConnect->setText(tr("Подключиться"));
         ui->toolButtonConnect->setIconSize(QSize(24, 24));
         ui->toolButtonConnect->setIcon(QIcon(":/images/resource/images/flag.png"));
@@ -210,13 +203,7 @@ void ConfiguratorWindow::refreshSerialPort()
     
     if(port_list.isEmpty())
     {
-        QMessageBox msgbox;
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setWindowTitle(tr("Com-порт"));
-        msgbox.setText(tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Com-порт"), tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"), QMessageBox::Warning);
     }
     
     m_serialPortSettings_window->setSerialPortList(port_list);
@@ -1371,27 +1358,14 @@ void ConfiguratorWindow::synchronizationDateTime()
  */
 void ConfiguratorWindow::settingCommunicationsWrite()
 {
-    QMessageBox msgbox;
-    msgbox.setWindowTitle(tr("Запись настроек связи"));
-    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-    msgbox.setIcon(QMessageBox::Question);
-    msgbox.setText(tr("Вы действительно хотите перезаписать настройки связи?"));
-    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 
-    int answer = msgbox.exec();
-
+    int answer = showMessageBox(tr("Запись настроек связи"), tr("Вы действительно хотите перезаписать настройки связи?"), QMessageBox::Question);
     if(answer == QMessageBox::No)
         return;
-
-    outApplicationEvent(msgbox.text());
 
     sendRequestWrite(0x26, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationRequestTimeout->value()), 255);
     sendRequestWrite(0x27, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationTimeoutSpeed->value()), 255);
     sendRequestWrite(0x25, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationAddress->value()), 255);
-
-    qDebug() << tr("Сохранение таймаутов: %1, %2.").arg(ui->spinBoxCommunicationTimeoutSpeed->value()).
-                                                    arg(ui->spinBoxCommunicationAddress->value());
-
     connect(m_timer_new_address_set, &QTimer::timeout, this, &ConfiguratorWindow::setNewAddress);
     m_timer_new_address_set->start(500);
 }
@@ -2130,25 +2104,13 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     textValue += ((_3I0 != 0.0f)?QString("3I0 = %1\n").arg(QLocale::system().toString(_3I0, 'f', 6)):"");
 
     str = tr("Вы хотите сохранить новые калибровки?\n%1").arg(textValue);
+    int res = showMessageBox(tr("Запись калибровок по току"), str, QMessageBox::Question);
 
-    QMessageBox msgbox;
-    msgbox.setWindowTitle(tr("Запись калибровок по току"));
-    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-    msgbox.setIcon(QMessageBox::Question);
-    msgbox.setText(str);
-    outApplicationEvent(msgbox.text());
-
-    int res = msgbox.exec();
-
-    QString text = tr("Запись новых калибровочных коэффициентов по току:\n%1").arg(textValue);
-    qInfo() << text;
-    outApplicationEvent(text);
+    outLogMessage(tr("Запись новых калибровочных коэффициентов по току:\n%1").arg(textValue));
 
     if(res == QMessageBox::No)
     {
-        text = tr("Отказ пользователя от записи калибровочных коэффициетов по току");
-        qInfo() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Отказ пользователя от записи калибровочных коэффициетов по току"));
         return;
     }
 
@@ -2211,9 +2173,7 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
     if(_3I0!= 0.0f)
         m_modbus->sendData(unit_3I0);
 
-    text = tr("Запись новых калибровочных коэффициентов по току подтверждена");
-    qInfo() << text;
-    outApplicationEvent(text);
+    outLogMessage(tr("Запись новых калибровочных коэффициентов по току подтверждена"));
 }
 //----------------------------------------
 void ConfiguratorWindow::purposeLedsRead()
@@ -2292,14 +2252,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
 {
     if(!m_active_journal_current) // если активынй журнал не выбран, значит ошибка
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Чтение журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Question);
-        msgbox.setText("Не выбран текущий активный журнал.\nПоробуйте еще раз");
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Чтение журнала"), tr("Не выбран текущий активный журнал. Поробуйте еще раз"), QMessageBox::Warning);
         return;
     }
 
@@ -2338,13 +2291,7 @@ void ConfiguratorWindow::processExport()
     }
     else
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Question);
-        msgbox.setText("Не выбран допустимый пункт меню");
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Экспорт"), tr("Не выбран допустимый пункт меню"), QMessageBox::Warning);
     }
 }
 //--------------------------------------
@@ -2362,13 +2309,7 @@ void ConfiguratorWindow::processImport()
     }
     else
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Question);
-        msgbox.setText("Не выбран допустимый пункт меню");
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Импорт"), tr("Не выбран допустимый пункт меню"), QMessageBox::Warning);
     }
 }
 //-----------------------------------------------------------
@@ -2674,13 +2615,7 @@ void ConfiguratorWindow::errorDevice(const QString& error)
 //---------------------------------------------------------
 void ConfiguratorWindow::errorConnect(const QString& error)
 {
-    QMessageBox msgbox;
-    msgbox.setWindowTitle(tr("Ошибка подлкючения"));
-    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-    msgbox.setIcon(QMessageBox::Question);
-    msgbox.setText(error);
-    outApplicationEvent(msgbox.text());
-    msgbox.exec();
+    showMessageBox(tr("Ошибка подлкючения"), error, QMessageBox::Warning);
 }
 /*!
  * \brief ConfiguratorWindow::indicatorVisiblity
@@ -2927,15 +2862,7 @@ void ConfiguratorWindow::writeSettings()
         return;
     }
 
-    QMessageBox msgbox;
-    msgbox.setWindowTitle(tr("Сохранение настроек утройства"));
-    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-    msgbox.setIcon(QMessageBox::Question);
-    msgbox.setText("Вы действительно хотите перезаписать настройки?");
-    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    outApplicationEvent(msgbox.text());
-    int answer = msgbox.exec();
-
+    int answer = showMessageBox(tr("Сохранение настроек утройства"), tr("Вы действительно хотите перезаписать настройки?"), QMessageBox::Question);
     if(answer == QMessageBox::No)
         return;
 
@@ -3714,7 +3641,9 @@ void ConfiguratorWindow::initModelTables()
         initTableProtection(ui->tablewgtProtectionCtrl, m_block_list);
     }
     else
-        qWarning() << tr("Ошибка чтения привязок для таблицы Управления Защитами");
+    {
+        outLogMessage(tr("Ошибка чтения привязок для таблицы Управления Защитами"));
+    }
 }
 //-----------------------------------------
 void ConfiguratorWindow::initEventJournal()
@@ -3727,7 +3656,7 @@ void ConfiguratorWindow::initEventJournal()
 
     if(!query.exec("SELECT code, name FROM event_t;"))
     {
-        qWarning() << tr("Ошибка чтения типов журнала событий: %1").arg(query.lastError().text());
+        outLogMessage(tr("Ошибка чтения типов журнала событий: %1").arg(query.lastError().text()));
         return;
     }
 
@@ -3745,7 +3674,7 @@ void ConfiguratorWindow::initEventJournal()
     {
         if(!query.exec("SELECT code, name FROM event_category WHERE event_t = " + QString::number(event.code) + ";"))
         {
-            qWarning() << tr("Ошибка чтения категорий журнала событий: %1").arg(query.lastError().text());
+            outLogMessage(tr("Ошибка чтения категорий журнала событий: %1").arg(query.lastError().text()));
             return;
         }
 
@@ -3765,7 +3694,7 @@ void ConfiguratorWindow::initEventJournal()
             if(!query.exec("SELECT code, name FROM event_parameter WHERE event_category = " +
                            QString::number(category.code) + ";"))
             {
-                qWarning() << tr("Ошибка чтения параметров журнала событий: %1").arg(query.lastError().text());
+                outLogMessage(tr("Ошибка чтения параметров журнала событий: %1").arg(query.lastError().text()));
                 return;
             }
 
@@ -3792,14 +3721,7 @@ void ConfiguratorWindow::initCrashJournal()
     // Загружаем список защит
     if(!query.exec(QString("SELECT code, name FROM protection;")))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(title_msg);
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Question);
-        msgbox.setText(tr("Не удалось загрузить список доступных защит: %1").arg(query.lastError().text()));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(title_msg, tr("Не удалось загрузить список доступных защит: %1").arg(query.lastError().text()), QMessageBox::Warning);
         return;
     }
 
@@ -3816,14 +3738,7 @@ void ConfiguratorWindow::initCrashJournal()
         // Загружаем переменные списка защит по коду защиты
         if(!query_item.exec(QString("SELECT name, index_var, type, first FROM protection_items WHERE protect_id=%1").arg(code)))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(title_msg);
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Question);
-            msgbox.setText(tr("Не удалось загрузить переменные защит: %1").arg(query_item.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
-
+            showMessageBox(title_msg, tr("Не удалось загрузить переменные защит: %1").arg(query_item.lastError().text()), QMessageBox::Warning);
             return;
         }
 
@@ -3853,14 +3768,8 @@ void ConfiguratorWindow::initCrashJournal()
             {
                 if(!query.exec(QString("SELECT number FROM protection_set WHERE index_var=\"%1\";").arg(item.index)))
                 {
-                    QMessageBox msgbox;
-                    msgbox.setWindowTitle(title_msg);
-                    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-                    msgbox.setIcon(QMessageBox::Question);
-                    msgbox.setText(tr("Не удалось загрузить перечень списов вариантов переменных типа LIST: %1").arg(query.lastError().text()));
-                    outApplicationEvent(msgbox.text());
-                    msgbox.exec();
-
+                    showMessageBox(title_msg, tr("Не удалось загрузить перечень списов вариантов переменных типа LIST: %1").arg(query.lastError().text()),
+                                   QMessageBox::Warning);
                     break;
                 }
 
@@ -3874,14 +3783,8 @@ void ConfiguratorWindow::initCrashJournal()
 
                     if(!query_set.exec(QString("SELECT name FROM protection_set_list WHERE set_number=%1;").arg(number)))
                     {
-                        QMessageBox msgbox;
-                        msgbox.setWindowTitle(title_msg);
-                        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-                        msgbox.setIcon(QMessageBox::Question);
-                        msgbox.setText(tr("Не удалось загрузить варианты переменных типа LIST: %1").arg(query_set.lastError().text()));
-                        outApplicationEvent(msgbox.text());
-                        msgbox.exec();
-
+                        showMessageBox(title_msg, tr("Не удалось загрузить варианты переменных типа LIST: %1").arg(query_set.lastError().text()),
+                                       QMessageBox::Warning);
                         break;
                     }
 
@@ -3978,7 +3881,9 @@ void ConfiguratorWindow::initHalfhourJournal()
         }
     }
     else
-        qWarning() << tr("Ошибка чтения переменных halfhour: %1").arg(query_halfhour.lastError().text());
+    {
+        outLogMessage(tr("Ошибка чтения переменных halfhour: %1").arg(query_halfhour.lastError().text()));
+    }
 
     if(query_halfhour.exec(QString("SELECT * FROM halfhour_var;")))
     {
@@ -3991,7 +3896,7 @@ void ConfiguratorWindow::initHalfhourJournal()
         }
     }
     else
-        qWarning() << tr("Ошибка чтения значений halfhour_val: %1").arg(query_halfhour.lastError().text());
+        outLogMessage(tr("Ошибка чтения значений halfhour_val: %1").arg(query_halfhour.lastError().text()));
 
     if(!columns.isEmpty() && !rows.isEmpty())
     {
@@ -4007,7 +3912,7 @@ void ConfiguratorWindow::initDeviceCode()
 
     if(!query.exec("SELECT code, name FROM device_code;"))
     {
-        qWarning() << tr("Ошибка чтения кодов устройств: %1").arg(query.lastError().text());
+        outLogMessage(tr("Ошибка чтения кодов устройств: %1").arg(query.lastError().text()));
         return;
     }
 
@@ -4218,7 +4123,7 @@ void ConfiguratorWindow::initWordStatus()
         m_status_window->setStatusList(status_info_list);
     }
     else
-        qWarning() << tr("Ошибка чтения базы данных \"Статус\": %1").arg(query.lastError().text());
+        outLogMessage(tr("Ошибка чтения базы данных \"Статус\": %1").arg(query.lastError().text()));
 }
 /*!
  * \brief ConfiguratorWindow::initDebugVariables
@@ -4494,14 +4399,8 @@ void ConfiguratorWindow::connectSystemDb()
 
     if(!m_system_db.open())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Системная база данных"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Critical);
-        msgbox.setText(tr("Невозможно открыть системную базу данных: %1").arg(m_system_db.lastError().text()));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Системная база данных"), tr("Невозможно открыть системную базу данных: %1").arg(m_system_db.lastError().text()),
+                       QMessageBox::Critical);
         exit(1);
     }
 }
@@ -4513,16 +4412,9 @@ bool ConfiguratorWindow::connectDb(QSqlDatabase*& db, const QString& path)
 
     if(!db->open())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("База данных журнала событий"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Critical);
-        msgbox.setText(tr("Невозможно открыть базу данных журнала событий: %1").arg(db->lastError().text()));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("База данных журнала событий"), tr("Невозможно открыть базу данных журнала событий: %1").arg(db->lastError().text()),
+                       QMessageBox::Critical);
         disconnectDb(db);
-
         return false;
     }
 
@@ -4815,7 +4707,7 @@ void ConfiguratorWindow::displayStatusInfo(const CModBusDataUnit& unit)
 
             if(value == 0)
             {
-                QMessageBox::information(m_status_window, tr("Информация о статусах"), tr("Нет ни одного активного статуса"));
+                showMessageBox(tr("Информация о статусах"), tr("Нет ни одного активного статуса"), QMessageBox::Information);
                 return;
             }
 
@@ -4944,7 +4836,6 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
 //------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
 {
-    qDebug() << "ЗАПРОС ПРИВЯЗОК ВЫХОДОВ";
     if(unit.count() == 0)
         return;
 
@@ -4975,8 +4866,6 @@ void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
 
     CMatrix& matrix = model->matrix();
 
-    qDebug() << tr("Количество строк в моделе выходов: %1").arg(model->rowCount());
-
     int col_offset = matrix.columnIndexByKey(first); // получаем начальный индекс колонки для которой обрабатывается запрос
                                                      // например, если first = LED1, то получим 0, или first = LED3 -> 2
     if(col_offset == -1)
@@ -4995,8 +4884,6 @@ void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
         int offset_pos   = i*24; // смещение в данных, т.е. 24 ячейки длина одного запроса
 
         CMatrix::RowArray& rows = matrix.rows();
-
-        qDebug() << tr("Количество строк в таблице выходов: %1").arg(matrix.rowCount());
 
         for(CRow& row: rows)
         {
@@ -5020,8 +4907,8 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
 {
     if(input_list.count() != input_inverse_list.count())
     {
-        qDebug() << tr("Количество привязок входов не соответствует количеству инверсных привязок: %1/%2").
-                    arg(input_inverse_list.count()).arg(input_inverse_list.count());
+        outLogMessage(tr("Количество привязок входов не соответствует количеству инверсных привязок: %1/%2").
+                      arg(input_inverse_list.count()).arg(input_inverse_list.count()));
         return;
     }
 
@@ -5159,7 +5046,7 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
 {
     if(data.isEmpty())
     {
-        qWarning() << tr("Защиты->Резервные->Сигналы пуска: нет данных.");
+       outLogMessage(tr("Защиты->Резервные->Сигналы пуска: нет данных."));
         return;
     }
 
@@ -5253,7 +5140,6 @@ void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>&
 //---------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint16>& data)
 {
-    qDebug() << tr("Чтение таймаут запроса устройства: %1").arg(data[0]);
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationRequestTimeout->setValue(data[0]);
@@ -5262,7 +5148,6 @@ void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint1
 //-------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutSpeed(const QVector<quint16>& data)
 {
-    qDebug() << tr("Чтение таймаут скорости устройства: %1").arg(data[0]);
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationTimeoutSpeed->setValue(data[0]);
@@ -5271,7 +5156,6 @@ void ConfiguratorWindow::displayCommunicationTimeoutSpeed(const QVector<quint16>
 //--------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& data)
 {
-    qDebug() << tr("Чтение адреса устройства: %1").arg(data[0]);
     if(data.count() > 0)
     {
         ui->spinBoxCommunicationAddress->setValue(data[0]);
@@ -5465,7 +5349,7 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
     if(!model)
     {
-        qInfo() << tr("Не удалось получить модель таблицы Управления защитами.");
+        outLogMessage(tr("Не удалось получить модель таблицы Управления защитами."));
         return;
     }
 
@@ -5731,7 +5615,7 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
 
     if(!query.exec(QString("SELECT id FROM menu_group WHERE name=\"%1\";").arg(group_name)))
     {
-        qWarning() << tr("Не удалось прочитать ID группы \"%1\", (%2)").arg(group_name).arg(query.lastError().text());
+        outLogMessage(tr("Не удалось прочитать ID группы \"%1\", (%2)").arg(group_name).arg(query.lastError().text()));
     }
 
     if(query.first())
@@ -5741,7 +5625,7 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
 
     if(!query.exec(QString("SELECT * FROM iodevice WHERE sort_id=%1").arg(group_id)))
     {
-        qWarning() << tr("Не удалось прочитать свойства группы с ID=%1 (%2)").arg(group_id).arg(query.lastError().text());
+        outLogMessage(tr("Не удалось прочитать свойства группы с ID=%1 (%2)").arg(group_id).arg(query.lastError().text()));
     }
 
     while(query.next())
@@ -6086,9 +5970,7 @@ bool ConfiguratorWindow::createProjectTablePurpose(const QString& tableType)
 
     if(!query.exec(str_db))
     {
-        QString text = tr("Ошибка создания таблицы привязок <%1> (%2): %3").arg(tableType).arg(query.lastError().text()).arg(str_db);
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Ошибка создания таблицы привязок <%1> (%2): %3").arg(tableType).arg(query.lastError().text()).arg(str_db));
         return false;
     }
 
@@ -6115,10 +5997,7 @@ bool ConfiguratorWindow::createProjectTableProtection(int columns)
 
     if(!query.exec(str_db))
     {
-        QString text = tr("Ошибка создания таблицы привязок защит (%1): %2").arg(query.lastError().text()).arg(str_db);
-        qWarning() << text;
-        outApplicationEvent(text);
-
+        outLogMessage(tr("Ошибка создания таблицы привязок защит (%1): %2").arg(query.lastError().text()).arg(str_db));
         return false;
     }
 
@@ -6141,10 +6020,7 @@ bool ConfiguratorWindow::createProjectTableSet(const QString& tableName)
                            "val STRING, "
                            "type STRING);").arg(tableName)))
     {
-        QString text = tr("Ошибка создания таблицы уставок устройства (%1): %2").arg(tableName).arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
-
+        outLogMessage(tr("Ошибка создания таблицы уставок устройства (%1): %2").arg(tableName).arg(query.lastError().text()));
         return false;
     }
 
@@ -6171,10 +6047,7 @@ bool ConfiguratorWindow::createProjectTableCommunication()
                            "Trequest INTEGER, "
                            "Tspeed INTEGER);")))
     {
-        QString text = tr("Ошибка создания таблицы настроек связи устройства: %1").arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
-
+        outLogMessage(tr("Ошибка создания таблицы настроек связи устройства: %1").arg(query.lastError().text()));
         return false;
     }
 
@@ -6204,10 +6077,7 @@ bool ConfiguratorWindow::createProjectTableCalibrationCurrent()
                            "dataCount INTEGER, "
                            "pauseRequest INTEGER);")))
     {
-        QString text = tr("Ошибка создания таблицы калибровок по току: %1").arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
-
+        outLogMessage(tr("Ошибка создания таблицы калибровок по току: %1").arg(query.lastError().text()));
         return false;
     }
 
@@ -6234,10 +6104,7 @@ bool ConfiguratorWindow::createProjectTableContainer()
                            "pos INTEGER, "
                            "geometry BLOB);")))
     {
-        QString text = tr("Ошибка создания таблицы настроек положения контейнеров: %1").arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
-
+        outLogMessage(tr("Ошибка создания таблицы настроек положения контейнеров: %1").arg(query.lastError().text()));
         return false;
     }
 
@@ -6253,9 +6120,7 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
 {
     if(!table || (m_project_db && !m_project_db->isOpen()) || type.isEmpty())
     {
-        QString text = tr("Запись привязок: Файл проекта не создан, либо закрыт");
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Запись привязок: Файл проекта не создан, либо закрыт"));
         return;
     }
 
@@ -6263,9 +6128,7 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
 
     if(!model)
     {
-        QString text = tr("Запись привязок: Невозможно обратиться к модели представления");
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Запись привязок: Невозможно обратиться к модели представления"));
         return;
     }
 
@@ -6273,9 +6136,7 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
 
     if(matrix.rowCount() == 0)
     {
-        QString text = tr("Запись привязок: Нет данных в матрице").arg(type);
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Запись привязок: Нет данных в матрице").arg(type));
         return;
     }
 
@@ -6283,9 +6144,7 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
     // очистка таблицы привязок дискретных входов
     if(!query.exec(QString("DELETE FROM purpose%1;").arg(type)))
     {
-        QString text = tr("Запись привязок <%1>: не удалось очисть таблицу привязок (%2)").arg(type).arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Запись привязок <%1>: не удалось очисть таблицу привязок (%2)").arg(type).arg(query.lastError().text()));
         return;
     }
 
@@ -6320,10 +6179,8 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
 
         if(!query.exec())
         {
-            QString text = tr("Запись привязок <%1>: не удалось вставить строку %2 в таблицу привязок (%3)").arg(type).arg(row).
-                                                                                                             arg(query.lastError().text());
-            qWarning() << text;
-            outApplicationEvent(text);
+            outLogMessage(tr("Запись привязок <%1>: не удалось вставить строку %2 в таблицу привязок (%3)").arg(type).arg(row).
+                                                                                                            arg(query.lastError().text()));
         }
     }
     m_project_db->commit();
@@ -6345,9 +6202,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
     if(!query.exec(QString("DELETE FROM journal%1;").arg(type)))
     {
-        QString text = tr("Сохранение журнала <%1>: ошибка удаления данных журнала (%2)").arg(type).arg(m_project_db->lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Сохранение журнала <%1>: ошибка удаления данных журнала (%2)").arg(type).arg(m_project_db->lastError().text()));
         return;
     }
 
@@ -6357,10 +6212,8 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
     {
         if(!query.exec(QString("DELETE FROM propertyJournal%1;").arg(type)))
         {
-            QString text = tr("Сохранение журнала <%1>: возникли ошибки в процессе стирания свойств журнала (%2)").arg(type).
-                           arg(query.lastError().text());
-            qWarning() << text;
-            outApplicationEvent(text);
+            outLogMessage(tr("Сохранение журнала <%1>: возникли ошибки в процессе стирания свойств журнала (%2)").arg(type).
+                          arg(query.lastError().text()));
         }
 
         query.clear();
@@ -6446,10 +6299,8 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
                     if(!query_property.exec())
                     {
-                        QString text = tr("Сохранение журнала <%1>: возникли ошибки в процессе сохранения свойств журнала (%2)").arg(type).
-                                       arg(query_property.lastError().text());
-                        qWarning() << text;
-                        outApplicationEvent(text);
+                        outLogMessage(tr("Сохранение журнала <%1>: возникли ошибки в процессе сохранения свойств журнала (%2)").arg(type).
+                                      arg(query_property.lastError().text()));
                     }
                }
            }
@@ -6475,9 +6326,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
                     if(!query_property.exec())
                     {
-                        QString text = tr("Ошибка сохранения свойств данных журнала получасовок в БД: %1").arg(query_property.lastError().text());
-                        qWarning() << text;
-                        outApplicationEvent(text);
+                        outLogMessage(tr("Ошибка сохранения свойств данных журнала получасовок в БД: %1").arg(query_property.lastError().text()));
                     }
                 }
             }
@@ -6488,9 +6337,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
     if(isError)
     {
-        QString text = tr("Сохранение журнала <%1>: возникли ошибки в процессе записи журнала (%2)").arg(type).arg(lastError);
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Сохранение журнала <%1>: возникли ошибки в процессе записи журнала (%2)").arg(type).arg(lastError));
     }
 
     m_progressbar->increment(5);
@@ -6505,10 +6352,8 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
     if(!query.exec(QString("DELETE FROM deviceSet%1;").arg(tableName)))
     {
-        QString text = tr("Сохранение уставок устройства для группы <%1>: ошибка удаления данных из таблицы уставок (%2)").
-                       arg(tableName).arg(m_project_db->lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Сохранение уставок устройства для группы <%1>: ошибка удаления данных из таблицы уставок (%2)").
+                      arg(tableName).arg(m_project_db->lastError().text()));
         return;
     }
 
@@ -6558,9 +6403,7 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
             if(!query.exec(QString("INSERT INTO deviceSet%1 (val, type) VALUES(\'%2\', \'%3\');").arg(tableName).arg(value).arg(type)))
             {
-                QString text = tr("Ошибка сохранения уставок группы %1: %2").arg(tableName).arg(m_project_db->lastError().text());
-                qWarning() << text;
-                outApplicationEvent(text);
+                outLogMessage(tr("Ошибка сохранения уставок группы %1: %2").arg(tableName).arg(m_project_db->lastError().text()));
             }
         }
     }
@@ -6582,9 +6425,7 @@ void ConfiguratorWindow::saveDeviceCommunication()
 
     if(!query.exec(QString("DELETE FROM deviceCommunication;")))
     {
-        QString text = tr("Сохранение настроек связи устройства: ошибка удаления данных из таблицы (%1)").arg(m_project_db->lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Сохранение настроек связи устройства: ошибка удаления данных из таблицы (%1)").arg(m_project_db->lastError().text()));
         return;
     }
 
@@ -6595,9 +6436,7 @@ void ConfiguratorWindow::saveDeviceCommunication()
                                                    arg(ui->comboBoxCommunicationParity->currentIndex()).arg(ui->spinBoxCommunicationRequestTimeout->value()).
                                                    arg(ui->spinBoxCommunicationTimeoutSpeed->value())))
     {
-        QString text = tr("Ошибка сохранения настроек связи устройства: %1").arg(m_project_db->lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Ошибка сохранения настроек связи устройства: %1").arg(m_project_db->lastError().text()));
     }
 
     m_progressbar->increment(5);
@@ -6616,9 +6455,7 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
 
     if(!query.exec(QString("DELETE FROM deviceCalibrationCurrent;")))
     {
-        QString text = tr("Сохранение эталонных значений калибровок по току: ошибка удаления данных из таблицы (%1)").arg(m_project_db->lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Сохранение эталонных значений калибровок по току: ошибка удаления данных из таблицы (%1)").arg(m_project_db->lastError().text()));
         return;
     }
 
@@ -6634,9 +6471,7 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
                                                                        arg(ui->widgetCalibrationOfCurrent->calibrationCurrentDataCount()).
                                                                        arg(ui->widgetCalibrationOfCurrent->calibrationCurrentPauseRequest())))
     {
-        QString text = tr("Ошибка сохранения эталонных значений калибровок по току устройства: %1").arg(m_project_db->lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Ошибка сохранения эталонных значений калибровок по току устройства: %1").arg(m_project_db->lastError().text()));
     }
 
     m_progressbar->increment(5);
@@ -6668,10 +6503,8 @@ void ConfiguratorWindow::saveContainerSettings(const CContainerWidget* container
 
     if(!query.exec())
     {
-        QString text = tr("Загрузка настроек контейнера: не удалось сохранить настройки контейнера <%1> в файле проекта (%2)").arg(container->name()).
-                       arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка настроек контейнера: не удалось сохранить настройки контейнера <%1> в файле проекта (%2)").arg(container->name()).
+                      arg(query.lastError().text()));
         return;
     }
 }
@@ -6743,15 +6576,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
 
             if(!query_property.exec(QString("SELECT name, value FROM propertyJournalCRASH WHERE id_journal=%1;").arg(id_journal)))
             {
-                QMessageBox msgbox;
-                msgbox.setWindowTitle(tr("Импорт журнала"));
-                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-                msgbox.setIcon(QMessageBox::Warning);
-                msgbox.setText(tr("Не удалось прочитать свойства журнала аварий: %1").
-                               arg(query_property.lastError().text()));
-                outApplicationEvent(msgbox.text());
-                msgbox.exec();
-
+                outLogMessage(tr("Импорт журнала: Не удалось прочитать свойства журнала аварий: %1").arg(query_property.lastError().text()));
                 continue;
             }
 
@@ -6780,7 +6605,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
 
             if(!query_property.exec(QString("SELECT value FROM propertyJournalHALFHOUR WHERE id_journal=%1;").arg(id_journal)))
             {
-                qWarning() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
+                outLogMessage(tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text()));
                 continue;
             }
 
@@ -6811,9 +6636,7 @@ void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QS
 {
     if(!table || !m_project_db || (m_project_db && !m_project_db->isOpen()) || type.isEmpty())
     {
-        QString text = tr("Загрузка привязок: Файл проекта не создан, либо закрыт");
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка привязок: Файл проекта не создан, либо закрыт"));
         return;
     }
 
@@ -6821,9 +6644,7 @@ void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QS
 
     if(!model)
     {
-        QString text = tr("Загрузка привязок: Невозможно обратиться к модели представления");
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка привязок: Невозможно обратиться к модели представления"));
         return;
     }
 
@@ -6833,9 +6654,7 @@ void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QS
 
     if(!query.exec(query_str))
     {
-        QString text = tr("Загрузка привязок: не удалось прочитать привязки и БД: %1").arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка привязок: не удалось прочитать привязки и БД: %1").arg(query.lastError().text()));
     }
 
     int row = 0;
@@ -6878,9 +6697,7 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
     if(!query.exec(query_str))
     {
-        QString text = tr("Загрузка уставок: не удалось загрузить уставки из файла проекта для таблицы %1: %2").arg(tableName).arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка уставок: не удалось загрузить уставки из файла проекта для таблицы %1: %2").arg(tableName).arg(query.lastError().text()));
         return;
     }
 
@@ -6937,9 +6754,7 @@ void ConfiguratorWindow::loadDeviceCommunication()
 
     if(!query.exec(query_str))
     {
-        QString text = tr("Загрузка настроек связи: не удалось загрузить из БД (%1)").arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка настроек связи: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
         return;
     }
 
@@ -6974,9 +6789,7 @@ void ConfiguratorWindow::loadDeviceCalibrationCurrent()
 
     if(!query.exec(query_str))
     {
-        QString text = tr("Загрузка настроек калиброки по току: не удалось загрузить из БД (%1)").arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка настроек калиброки по току: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
         return;
     }
 
@@ -7017,9 +6830,7 @@ void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container)
 
     if(!query.exec(query_str))
     {
-        QString text = tr("Загрузка настроек контейнера: не удалось загрузить настройки из БД (%1)").arg(query.lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка настроек контейнера: не удалось загрузить настройки из БД (%1)").arg(query.lastError().text()));
         return;
     }
 
@@ -7083,6 +6894,42 @@ bool ConfiguratorWindow::clearTableDB(const QSqlDatabase* db, const QString& tab
         return false;
 
     return true;
+}
+/*!
+ * \brief ConfiguratorWindow::showMessageBox
+ * \param title Заголовок сообщения
+ * \param text Текст сообщения
+ * \param type Тип сообщения
+ * \return Выбор пользователя
+ *
+ * Вывод сообщения о каком-либо событии или вопрос для реакции пользователя
+ */
+int ConfiguratorWindow::showMessageBox(const QString& title, const QString& text, const QMessageBox::Icon type)
+{
+    QMessageBox msgbox;
+    msgbox.setWindowTitle(title);
+    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+    msgbox.setText(text);
+    msgbox.setIcon(type);
+
+    if(type == QMessageBox::Question)
+    {
+        msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgbox.setButtonText(QMessageBox::Yes, tr("Да"));
+        msgbox.setButtonText(QMessageBox::No, tr("Нет"));
+    }
+    else
+    {
+        outLogMessage(msgbox.text());
+    }
+
+    return msgbox.exec();
+}
+//------------------------------------------------------------
+void ConfiguratorWindow::outLogMessage(const QString& message)
+{
+    qInfo() << message;
+    outApplicationEvent(message);
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
@@ -7613,14 +7460,7 @@ void ConfiguratorWindow::startExportToPDF()
 {
     if(!m_active_journal_current)
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Эксорт в PDF"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Выберите текущий журнал для экспорта"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Эксорт в PDF"), tr("Выберите текущий журнал для экспорта"), QMessageBox::Warning);
         return;
     }
 
@@ -7660,14 +7500,7 @@ void ConfiguratorWindow::filterDialog()
 {
     if(!m_active_journal_current)
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Фильтр"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Выберите текущий журнал"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Фильтр"), tr("Выберите текущий журнал"), QMessageBox::Warning);
         return;
     }
 
@@ -7719,15 +7552,7 @@ void ConfiguratorWindow::filterDialog()
 //----------------------------------------------
 void ConfiguratorWindow::deviceDefaultSettings()
 {
-    QMessageBox msgbox;
-    msgbox.setWindowTitle(tr("Отправка команды"));
-    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-    msgbox.setIcon(QMessageBox::Question);
-    msgbox.setText(tr("Вы действительно хотите сбросить настройки устройства по умолчанию?"));
-    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    outApplicationEvent(msgbox.text());
-    int answer = msgbox.exec();
-
+    int answer = showMessageBox(tr("Отправка команды"), tr("Вы действительно хотите сбросить настройки устройства по умолчанию?"), QMessageBox::Question);
     if(answer == QMessageBox::Yes)
     {
         sendDeviceCommand(0x0001); // отправка команды на сброс настроек по умолчанию
@@ -7737,13 +7562,7 @@ void ConfiguratorWindow::deviceDefaultSettings()
 //-----------------------------------------
 void ConfiguratorWindow::noConnectMessage()
 {
-    QMessageBox msgbox;
-    msgbox.setWindowTitle(tr("Отправка данных"));
-    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-    msgbox.setIcon(QMessageBox::Warning);
-    msgbox.setText(tr("Невозможно отправить запрос. Нет соединения с устройством"));
-    outApplicationEvent(msgbox.text());
-    msgbox.exec();
+    showMessageBox(tr("Отправка данных"), tr("Невозможно отправить запрос. Нет соединения с устройством"), QMessageBox::Warning);
 }
 /*!
  * \brief ConfiguratorWindow::setNewBaudrate
@@ -8005,13 +7824,7 @@ void ConfiguratorWindow::timeoutJournalRead()
         if(m_journal_read_current)
             nameJournal = m_journal_read_current->property("NAME").toString();
 
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Чтение журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Ошибка чтения журнала %1.").arg(nameJournal));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Чтение журнала"), tr("Ошибка чтения журнала %1.").arg(nameJournal), QMessageBox::Warning);
     }
 }
 //--------------------------------------------
@@ -8120,14 +7933,8 @@ void ConfiguratorWindow::newProject()
 
     if(fi.exists(projectPathName)) // Файл уже существует
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Question);
-        msgbox.setText(tr("Файл проекта с таким именем уже существует.\nПерезаписать его?"));
-        msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         outApplicationEvent(tr("Перезапись существующего файла проекта: %1").arg(baseNameFile));
-        int reply = msgbox.exec();
+        int reply = showMessageBox(tr("Экспорт журнала"), tr("Файл проекта с таким именем уже существует.\nПерезаписать его?"), QMessageBox::Question);
 
         if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
         {
@@ -8142,16 +7949,8 @@ void ConfiguratorWindow::newProject()
 
             if(!file.remove())
             {
-                QMessageBox msgbox;
-                msgbox.setWindowTitle(tr("Удаление файла проекта"));
-                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-                msgbox.setIcon(QMessageBox::Warning);
-                QString text = tr("Невозможно удалить файл проекта %1!\nВозможно уже используется или у Вас нет прав.").arg(baseNameFile);
-                msgbox.setText(text);
-                outApplicationEvent(msgbox.text());
-                msgbox.exec();
-                qWarning() << text;
-
+                showMessageBox(tr("Удаление файла проекта"), tr("Невозможно удалить файл проекта %1! Возможно уже используется или у Вас нет прав").
+                               arg(baseNameFile), QMessageBox::Warning);
                 return;
             }
         }
@@ -8170,9 +7969,7 @@ void ConfiguratorWindow::newProject()
 
     if(m_project_db && !m_project_db->open())
     {
-        QString text = tr("Не удалось создать файл нового проекта (%1).\nПопробуйтей еще раз.").arg(m_project_db->lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Не удалось создать файл нового проекта (%1). Попробуйтей еще раз").arg(m_project_db->lastError().text()));
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8208,15 +8005,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблиц для хранения состояний выходов
     if(!createProjectTablePurpose("LED")) // светодиоды
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы привязок светодиодов"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу привязок светодиодов в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы привязок светодиодов"), tr("Невозможно создать таблицу привязок светодиодов в файле проекта"),
+                       QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8225,15 +8015,7 @@ void ConfiguratorWindow::newProject()
 
     if(!createProjectTablePurpose("RELAY")) // реле
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы привязок реле"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу привязок реле в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы привязок реле"), tr("Невозможно создать таблицу привязок реле в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8242,15 +8024,8 @@ void ConfiguratorWindow::newProject()
 
     if(!createProjectTablePurpose("INPUT")) // дискретные входы
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы привязок дискретных входов"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу привязок дискретных входов в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы привязок дискретных входов"), tr("Невозможно создать таблицу привязок дискретных входов в файле проекта"),
+                       QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8260,15 +8035,7 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы привязок блокировок защит
     if(!createProjectTableProtection(loadProtectionList().count()))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы привязок защит"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу привязок защит в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы привязок защит"), tr("Невозможно создать таблицу привязок защит в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8278,15 +8045,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок Аналоговые входы
     if(!createProjectTableSet("ANALOG"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Аналоговые входы"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Аналоговые входы в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Аналоговые входы"),
+                       tr("Невозможно создать таблицу уставок группы Аналоговые входы в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8296,15 +8056,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Защиты по току"
     if(!createProjectTableSet("MTZ"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы МТЗ"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы МТЗ в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы МТЗ"), tr("Невозможно создать таблицу уставок группы МТЗ в файле проекта"),
+                       QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8314,15 +8067,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Защиты по напряжению"
     if(!createProjectTableSet("PWR"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Защиты по напряжению"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Защиты по напряжнию в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Защиты по напряжению"),
+                       tr("Невозможно создать таблицу уставок группы Защиты по напряжнию в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8332,15 +8078,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Направленные"
     if(!createProjectTableSet("DIR"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Направленные"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Направленные в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Направленные"), tr("Невозможно создать таблицу уставок группы Направленные в файле проекта"),
+                       QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8350,15 +8089,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Защиты по частоте"
     if(!createProjectTableSet("FREQ"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Защиты по частоте"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Защиты по частоте в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Защиты по частоте"),
+                       tr("Невозможно создать таблицу уставок группы Защиты по частоте в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8368,15 +8100,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Внешние защиты"
     if(!createProjectTableSet("EXT"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Внешние защиты"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Внешние защиты в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Внешние защиты"),
+                       tr("Невозможно создать таблицу уставок группы Внешние защиты в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8386,15 +8111,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Для двигателя"
     if(!createProjectTableSet("MOTOR"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Защиты для двигателя"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Защиты для двигателя в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Защиты для двигателя"),
+                       tr("Невозможно создать таблицу уставок группы Защиты для двигателя в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8404,15 +8122,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Защиты по температуре"
     if(!createProjectTableSet("TEMP"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Защиты по температуре"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Защиты по температуре в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Защиты по температуре"),
+                       tr("Невозможно создать таблицу уставок группы Защиты по температуре в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8422,15 +8133,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Резервные защиты"
     if(!createProjectTableSet("RESERVE"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Резервные защиты"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Резервные защиты в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Резервные защиты"),
+                       tr("Невозможно создать таблицу уставок группы Резервные защиты в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8440,15 +8144,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Предварительного контроля"
     if(!createProjectTableSet("CTRL"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Предварительного контроля"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Предварительного контроля в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Предварительного контроля"),
+                       tr("Невозможно создать таблицу уставок группы Предварительного контроля в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8458,15 +8155,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы уставок группы "Автоматика"
     if(!createProjectTableSet("AUTO"))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы уставок группы Автоматика"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
+                       QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8476,15 +8166,7 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы настроек связи
     if(!createProjectTableCommunication())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы настроек связи"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу настроек связи в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы настроек связи"), tr("Невозможно создать таблицу настроек связи в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8494,15 +8176,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы настроек связи
     if(!createProjectTableCalibrationCurrent())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы калибровок по току"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу калибровок по току в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы калибровок по току"), tr("Невозможно создать таблицу калибровок по току в файле проекта"),
+                       QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8512,15 +8187,8 @@ void ConfiguratorWindow::newProject()
     // Создание таблицы настроек контейнеров
     if(!createProjectTableContainer())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Создание таблицы настройки положения контейнеров"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        QString text = tr("Невозможно создать таблицу настроек положения контейнеров в файле проекта.");
-        msgbox.setText(text);
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-        qWarning() << text;
+        showMessageBox(tr("Создание таблицы настройки положения контейнеров"), tr("Невозможно создать таблицу настроек положения контейнеров в файле проекта"),
+                       QMessageBox::Warning);
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8562,9 +8230,7 @@ void ConfiguratorWindow::openProject()
 
     if(m_project_db && !m_project_db->open())
     {
-        QString text = tr("Не удалось загрузить файл проекта (%1).\nПопробуйтей еще раз.").arg(m_project_db->lastError().text());
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Не удалось загрузить файл проекта (%1).\nПопробуйтей еще раз.").arg(m_project_db->lastError().text()));
         m_project_db->close();
         delete m_project_db;
         QSqlDatabase::removeDatabase("PROJECT");
@@ -8609,10 +8275,7 @@ void ConfiguratorWindow::openProject()
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
 
-    QString text = tr("Файл проекта успешно загружен: %1").arg(projectPathName);
-    qWarning() << text;
-    outApplicationEvent(text);
-
+    outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
     m_progressbar->progressStop();
 }
 //------------------------------------
@@ -8649,9 +8312,7 @@ void ConfiguratorWindow::saveProject()
 
     if(!clearTableDB(m_project_db, "containerSettings"))
     {
-        QString text = tr("Загрузка настроек контейнера: не удалось удалить старые данные из таблицы");
-        qWarning() << text;
-        outApplicationEvent(text);
+        outLogMessage(tr("Загрузка настроек контейнера: не удалось удалить старые данные из таблицы"));
         return;
     }
 
@@ -8666,10 +8327,7 @@ void ConfiguratorWindow::saveProject()
     saveContainerSettings(m_containerTerminalEvent);
     saveContainerSettings(m_containerTerminalModbus);
 
-    QString text = tr("Данные проекта успешно сохранены");
-    qInfo() << text;
-    outApplicationEvent(text);
-
+    outLogMessage(tr("Данные проекта успешно сохранены"));
     m_progressbar->progressStop();
 }
 //--------------------------------------
@@ -8687,7 +8345,7 @@ void ConfiguratorWindow::exportToPDFProject()
 //---------------------------------------------
 void ConfiguratorWindow::exportToExcelProject()
 {
-    qDebug() << tr("Экспорт уставок в Excel");
+    outLogMessage(tr("Экспорт уставок в Excel"));
     QDir dir;
 
     if(!dir.exists("outputs/excel"))
@@ -8796,7 +8454,7 @@ void ConfiguratorWindow::importFromExcelProject()
 
     if(!xlsx.selectSheet(tr("Защиты")))
     {
-        qWarning() << tr("Импорт данных из файла Excel: лист <Защиты> не найден.");
+        outLogMessage(tr("Импорт данных из файла Excel: лист <Защиты> не найден"));
         return;
     }
 
@@ -8814,7 +8472,7 @@ void ConfiguratorWindow::importFromExcelProject()
 
     if(!xlsx.selectSheet(tr("Автоматика")))
     {
-        qWarning() << tr("Импорт данных из файла Excel: лист <Автоматика> не найден.");
+        outLogMessage(tr("Импорт данных из файла Excel: лист <Автоматика> не найден"));
         return;
     }
 
@@ -8822,7 +8480,7 @@ void ConfiguratorWindow::importFromExcelProject()
 
     if(!xlsx.selectSheet(tr("Аналоговые входы")))
     {
-        qWarning() << tr("Импорт данных из файла Excel: лист <Аналоговые входы> не найден.");
+        outLogMessage(tr("Импорт данных из файла Excel: лист <Аналоговые входы> не найден"));
         return;
     }
 
@@ -8858,14 +8516,7 @@ void ConfiguratorWindow::calibrationOfCurrent()
     if(!checkBoxIa->isChecked() && !checkBoxIb->isChecked() && !checkBoxIc->isChecked() &&
        !checkBox3I0->isChecked())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Калибровка по току"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Нет выбранных каналов для калибровки"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Калибровка по току"), tr("Нет выбранных каналов для калибровки"), QMessageBox::Warning);
         return;
     }
 
@@ -8905,8 +8556,8 @@ void ConfiguratorWindow::calibrationOfCurrent()
 void ConfiguratorWindow::displayCalibrationOfCurrent()
 {
     CCalibrationWidget::calibration_current_t calib = ui->widgetCalibrationOfCurrent->calibrationCurrent();
+    outLogMessage(tr("Калибровка по току:"));
 
-    qInfo() << tr("Калибровка по току:");
     if(!calib.Ia.isEmpty())
     {
         CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral,
@@ -8920,14 +8571,14 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         ui->widgetCalibrationOfCurrent->setFactorIa(newFactor);
         ui->widgetCalibrationOfCurrent->setMeasureIa(float(deviation.x()));
         ui->widgetCalibrationOfCurrent->setDeviationIa(float(deviation.y()));
-        qInfo() << tr("Калибровка тока фазы А");
+        outLogMessage(tr("Калибровка тока фазы А"));
         for(float value: calib.Ia)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(cur_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+            outLogMessage(QString("value: %1").arg(QLocale::system().toString(value, 'f', 6)));
+        outLogMessage(QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                      arg(QLocale::system().toString(deviation.y(), 'f', 6)));
+        outLogMessage(tr("Старое калибровочное значение: %1").arg(double(cur_factor)));
+        outLogMessage(tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6)));
     }
 
     if(!calib.Ib.isEmpty())
@@ -8943,14 +8594,14 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         ui->widgetCalibrationOfCurrent->setFactorIb(newFactor);
         ui->widgetCalibrationOfCurrent->setMeasureIb(float(deviation.x()));
         ui->widgetCalibrationOfCurrent->setDeviationIb(float(deviation.y()));
-        qInfo() << tr("Калибровка тока фазы B");
+        outLogMessage(tr("Калибровка тока фазы B"));
         for(float value: calib.Ib)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(cur_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+            outLogMessage(QString("value: %1").arg(QLocale::system().toString(value, 'f', 6)));
+        outLogMessage(QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                      arg(QLocale::system().toString(deviation.y(), 'f', 6)));
+        outLogMessage(tr("Старое калибровочное значение: %1").arg(double(cur_factor)));
+        outLogMessage(tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6)));
     }
 
     if(!calib.Ic.isEmpty())
@@ -8966,14 +8617,14 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         ui->widgetCalibrationOfCurrent->setFactorIc(newFactor);
         ui->widgetCalibrationOfCurrent->setMeasureIc(float(deviation.x()));
         ui->widgetCalibrationOfCurrent->setDeviationIc(float(deviation.y()));
-        qInfo() << tr("Калибровка тока фазы C");
+        outLogMessage(tr("Калибровка тока фазы C"));
         for(float value: calib.Ic)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(cur_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+            outLogMessage(QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6)));
+        outLogMessage(QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                      arg(QLocale::system().toString(deviation.y(), 'f', 6)));
+        outLogMessage(tr("Старое калибровочное значение: %1").arg(double(cur_factor)));
+        outLogMessage(tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6)));
     }
 
     if(!calib._3I0.isEmpty())
@@ -8989,14 +8640,14 @@ void ConfiguratorWindow::displayCalibrationOfCurrent()
         ui->widgetCalibrationOfCurrent->setFactor3I0(newFactor);
         ui->widgetCalibrationOfCurrent->setMeasure3I0(float(deviation.x()));
         ui->widgetCalibrationOfCurrent->setDeviation3I0(float(deviation.y()));
-        qInfo() << tr("Калибровка среднего тока 3I0");
+        outLogMessage(tr("Калибровка среднего тока 3I0"));
         for(float value: calib._3I0)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(cur_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+            outLogMessage(QString("value: %1").arg(QLocale::system().toString(value, 'f', 6)));
+        outLogMessage(QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                      arg(QLocale::system().toString(deviation.y(), 'f', 6)));
+        outLogMessage(tr("Старое калибровочное значение: %1").arg(double(cur_factor)));
+        outLogMessage(tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6)));
     }
 
     ui->widgetCalibrationOfCurrent->calibrationCurrentClear();
@@ -9142,14 +8793,8 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Создание таблицы"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно создать служебную таблицу журналов: ").arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
-
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать служебную таблицу журналов: ").arg(query.lastError().text()),
+                           QMessageBox::Warning);
             return false;
         }
 
@@ -9161,14 +8806,8 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Создание таблицы"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно создать таблицу списка журналов: ").arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
-
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу списка журналов: ").arg(query.lastError().text()),
+                           QMessageBox::Warning);
             return false;
         }
 
@@ -9190,14 +8829,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Создание таблицы"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно создать таблицу журналов событий: ").arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
-
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу журналов событий: ").arg(query.lastError().text()), QMessageBox::Warning);
             return false;
         }
     }
@@ -9215,14 +8847,7 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Создание таблицы"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно создать таблицу журналов аварий: ").arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
-
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу журналов аварий: ").arg(query.lastError().text()), QMessageBox::Warning);
             return false;
         }
 
@@ -9235,14 +8860,8 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Создание таблицы"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно создать таблицу свойств журналов аварий: ").arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
-
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу свойств журналов аварий: ").arg(query.lastError().text()),
+                           QMessageBox::Warning);
             return false;
         }
     }
@@ -9261,14 +8880,8 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Создание таблицы"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно создать таблицу журналов получасовок: ").arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
-
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу журналов получасовок: ").arg(query.lastError().text()),
+                           QMessageBox::Warning);
             return false;
         }
 
@@ -9280,14 +8893,8 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
 
         if(!query.exec(db_str))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Создание таблицы"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно создать таблицу свойств журналов получасовок: ").arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
-
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу свойств журналов получасовок: ").arg(query.lastError().text()),
+                           QMessageBox::Warning);
             return false;
         }
     }
@@ -9324,7 +8931,7 @@ bool ConfiguratorWindow::currentJournal(const CJournalWidget*& widget)
 //-------------------------------------
 void ConfiguratorWindow::loadSettings()
 {
-    qInfo() << tr("Загрузка настроек программы...");
+    outLogMessage(tr("Загрузка настроек программы..."));
 
     int baudrate = -1;
 
@@ -9388,7 +8995,7 @@ void ConfiguratorWindow::loadSettings()
 //-------------------------------------
 void ConfiguratorWindow::saveSettings()
 {
-    qInfo() << tr("Сохранение настроек программы...");
+    outLogMessage(tr("Сохранение настроек программы..."));
 
     if(m_settings)
     {
@@ -9564,6 +9171,13 @@ void ConfiguratorWindow::initApplication()
         m_containerInputs->setName("INPUTS");
         m_containerDebugInfo->setName("DEBUG_INFO");
         m_containerStatusInfo->setName("STATUS_INFO");
+
+        bool is_remove = deleteLogFile();
+
+        outLogMessage(tr("Запуск программы..."));
+
+        if(is_remove)
+            outLogMessage(tr("Файл логирования <log.txt> удален."));
 
         loadSettings();
         initConnect();
@@ -9779,13 +9393,11 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
 
     for(int i = 0; i < rows; i++)
     {
-        qDebug() << tr("Начало экспорта в пдф, строка = %1").arg(i);
         for(int j = 0; j < columnCount; j++)
         {
             QTextTableCell cell = textTable->cellAt(i + row_cur + 1, j);
             Q_ASSERT(cell.isValid());
             QTextCursor cellCursor = cell.firstCursorPosition();
-            qDebug() << tr("вставка текста, строка: %1, колонка: %2.").arg(pos.x() + i).arg(j);
             QTableWidgetItem* item = widget->table()->item(pos.x() + i, j);
 
             if(item)
@@ -9812,10 +9424,8 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
                 }
 
                 row_cur += property_list.count();
-                qDebug() << tr("Экспорт в пдф, текущая строка = %1 из %2").arg(row_cur).arg(rows);
             }
         }
-        qDebug() << tr("Конец экспорта в пдф, строка = %1").arg(i);
     }
 
     cursor.movePosition(QTextCursor::End);
@@ -9977,14 +9587,7 @@ void ConfiguratorWindow::exportPurposeToJSON()
 
     if(!file.open(QFile::WriteOnly))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Сохранение профиля привязок"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно создать файл для записи \"%1\"").arg(fileName));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Сохранение профиля привязок"), tr("Невозможно создать файл для записи \"%1\"").arg(fileName), QMessageBox::Warning);
         return;
     }
 
@@ -10049,14 +9652,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     if(!file.open(QFile::ReadOnly | QFile::Text))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт профиля привязок"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно открыть файл профиля привязок: %1").arg(file.errorString()));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Импорт профиля привязок"), tr("Невозможно открыть файл профиля привязок: %1").arg(file.errorString()), QMessageBox::Warning);
         return;
     }
 
@@ -10066,14 +9662,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     if(!json.isObject())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт профиля привязок"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Неизвестный формат файла привязок"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Импорт профиля привязок"), tr("Неизвестный формат файла привязок"), QMessageBox::Warning);
         return;
     }
 
@@ -10081,14 +9670,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     if(t.toUpper() != typeName.toUpper())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт профиля привязок"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Ошибка типа файла привязок.\nВыберите другой файл"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Импорт профиля привязок"), tr("Ошибка типа файла привязок.\nВыберите другой файл"), QMessageBox::Warning);
         return;
     }
 
@@ -10096,14 +9678,8 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
     if(matrix.rowCount() != arrRows.count())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт профиля привязок"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Количество привязок в файле не соответствует\nколичеству привязок в таблице"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Импорт профиля привязок"), tr("Количество привязок в файле не соответствует\nколичеству привязок в таблице"),
+                       QMessageBox::Warning);
         return;
     }
 
@@ -10123,7 +9699,6 @@ void ConfiguratorWindow::importPurposeFromJSON()
 
         if(arrColumns.count() != matrix.columnCount())
         {
-            qDebug() << tr("Количество колонок в строке %1 не соответствует количеству колонок в файле.").arg(i);
             continue;
         }
 
@@ -10158,13 +9733,8 @@ void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
         case READ_JOURNAL_SHIFT_PTR:
             if(unit.error() != CModBusDataUnit::ERROR_NO)
             {
-                QMessageBox msgbox;
-                msgbox.setWindowTitle(tr("Чтение журнала"));
-                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-                msgbox.setIcon(QMessageBox::Warning);
-                msgbox.setText(tr("Ошибка перемещения указателя журнала:\n%1").arg(CModBusDataUnit::errorDescription(unit.error())));
-                outApplicationEvent(msgbox.text());
-                msgbox.exec();
+                showMessageBox(tr("Чтение журнала"), tr("Ошибка перемещения указателя журнала:\n%1").arg(CModBusDataUnit::errorDescription(unit.error())),
+                               QMessageBox::Warning);
             }
         break;
 
@@ -10411,14 +9981,7 @@ void ConfiguratorWindow::importJournalToTable()
 {
     if(!m_active_journal_current) // не выбран текущий журнал
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Выберите пожалуйста журнал в который необходимо произвести импорт"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Импорт журнала"), tr("Выберите пожалуйста журнал в который необходимо произвести импорт"), QMessageBox::Warning);
         return;
     }
 
@@ -10439,14 +10002,7 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(journal_name.isEmpty() || journal_type.isEmpty())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Не удалось определить имя или тип журнала"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Экспорт журнала"), tr("Не удалось определить имя или тип журнала"), QMessageBox::Warning);
         return;
     }
 
@@ -10466,15 +10022,8 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(!connectDb(db, journal_path)) // открываем базу данных
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно открыть базу данных журналов \"%1\"").arg(journal_name));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Импорт журнала"), tr("Невозможно открыть базу данных журналов \"%1\"").arg(journal_name), QMessageBox::Warning);
         disconnectDb(db);
-
         return;
     }
 
@@ -10483,24 +10032,12 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(count == 0) // такой записи в служебной таблице нет - тип журнала не совпадает с текущим
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Импортируемы журнал не является журналом %1.\n%2.").arg(journal_name).
-                       arg("Выберите другой журнал"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Импорт журнала"), tr("Импортируемы журнал не является журналом %1.\n%2.").arg(journal_name).arg("Выберите другой журнал"),
+                       QMessageBox::Warning);
     }
     else if(count == -1) // открытая база не является базой журналов
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Импортируемый журнал не является каким-либо журналом.\nВыберите другой файл."));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Импорт журнала"), tr("Импортируемый журнал не является каким-либо журналом.\nВыберите другой файл"), QMessageBox::Warning);
     }
 
     if(count <= 0) // выходим, если выбрана не та база
@@ -10515,16 +10052,9 @@ void ConfiguratorWindow::importJournalToTable()
     // получаем список журналов из базы
     if(!query.exec(query_str))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно получить список журналов из базы %1:\n%2").
-                       arg(journal_name).arg(query.lastError().text()));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Импорт журнала"), tr("Невозможно получить список журналов из базы %1:\n%2").arg(journal_name).arg(query.lastError().text()),
+                       QMessageBox::Warning);
         disconnectDb(db);
-
         return;
     }
 
@@ -10544,15 +10074,8 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(journal_list.isEmpty())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Список журналов %1 пуст.").arg(journal_name));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Импорт журнала"), tr("Список журналов %1 пуст.").arg(journal_name), QMessageBox::Warning);
         disconnectDb(db);
-
         return;
     }
 
@@ -10574,16 +10097,7 @@ void ConfiguratorWindow::importJournalToTable()
     {
         if(serialNumber != m_status_bar->serialNumberText()) // серийные номера не совпадают
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Импорт журнала"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Этот журнал не от этого устройства.\nВсе равно загрузить?"));
-            msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            outApplicationEvent(msgbox.text());
-
-            int reply = msgbox.exec();
-
+            int reply = showMessageBox(tr("Импорт журнала"), tr("Этот журнал не от этого устройства. Все равно загрузить?"), QMessageBox::Question);
             if(reply == QMessageBox::No) // уходим, если нет
             {
                 disconnectDb(db);
@@ -10596,15 +10110,8 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(rows <= 0)
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("База журнала %1 пуста.").arg(journal_name));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Импорт журнала"), tr("База журнала %1 пуста.").arg(journal_name), QMessageBox::Warning);
         disconnectDb(db);
-
         return;
     }
 
@@ -10634,13 +10141,8 @@ void ConfiguratorWindow::importJournalToTable()
 
     if(!query.exec(str))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Импорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Не возможно получить записи журнала %1: %2").arg(journal_name).arg(query.lastError().text()));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Импорт журнала"), tr("Не возможно получить записи журнала %1: %2").arg(journal_name).arg(query.lastError().text()),
+                       QMessageBox::Warning);
     }
 
     m_progressbar->setProgressTitle(QString("Импорт журнала %1").arg(journal_name));
@@ -10691,15 +10193,8 @@ void ConfiguratorWindow::importJournalToTable()
 
             if(!query_property.exec(QString("SELECT name, value FROM propertyJournalCRASH WHERE id_journal=%1;").arg(id_journal)))
             {
-                QMessageBox msgbox;
-                msgbox.setWindowTitle(tr("Импорт журнала"));
-                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-                msgbox.setIcon(QMessageBox::Warning);
-                msgbox.setText(tr("Не удалось прочитать свойства журнала аварий: %1").
-                               arg(query_property.lastError().text()));
-                outApplicationEvent(msgbox.text());
-                msgbox.exec();
-
+                showMessageBox(tr("Импорт журнала"), tr("Не удалось прочитать свойства журнала аварий: %1").arg(query_property.lastError().text()),
+                               QMessageBox::Warning);
                 continue;
             }
 
@@ -10728,7 +10223,7 @@ void ConfiguratorWindow::importJournalToTable()
 
             if(!query_property.exec(QString("SELECT value FROM propertyJournalHALFHOUR WHERE id_journal=%1;").arg(id_journal)))
             {
-                qWarning() <<  tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text());
+                outLogMessage(tr("Не удалось прочитать свойства журнала получасовок: %1").arg(query_property.lastError().text()));
                 continue;
             }
 
@@ -10784,14 +10279,7 @@ void ConfiguratorWindow::exportJournalToDb()
 {
     if(!m_active_journal_current) // не выбран текущий журнал
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Выберите пожалуйста журнал из которого необходимо произвести экспорт"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Экспорт журнала"), tr("Выберите пожалуйста журнал из которого необходимо произвести экспорт"), QMessageBox::Warning);
         return;
     }
 
@@ -10804,14 +10292,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(table->rowCount() == 0) // таблица пуста
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Текущий журнал пуст"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Экспорт журнала"), tr("Текущий журнал пуст"), QMessageBox::Warning);
         return;
     }
 
@@ -10820,14 +10301,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(journal_name.isEmpty() || journal_type.isEmpty())
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Не удалось определить имя или тип журнала"));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(tr("Экспорт журнала"), tr("Не удалось определить имя или тип журнала"), QMessageBox::Warning);
         return;
     }
 
@@ -10857,29 +10331,15 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(fi.exists(journal_path)) // Файл уже существует
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Question);
-        msgbox.setText(tr("Такая база уже существует. Перезаписать данные?"));
-        msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        outApplicationEvent(msgbox.text());
-        int reply = msgbox.exec();
-
+        int reply = showMessageBox(tr("Экспорт журнала"), tr("Такая база уже существует. Перезаписать данные?"), QMessageBox::Question);
         if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
         {
             QFile file(journal_path);
 
             if(!file.remove())
             {
-                QMessageBox msgbox;
-                msgbox.setWindowTitle(tr("Удаление базы журналов"));
-                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-                msgbox.setIcon(QMessageBox::Warning);
-                msgbox.setText(tr("Невозможно удалить базу %1!\nВозможно уже используется или у Вас нет прав.").arg(baseNameFile));
-                outApplicationEvent(msgbox.text());
-                msgbox.exec();
-
+                showMessageBox(tr("Удаление базы журналов"),
+                               tr("Невозможно удалить базу %1!\nВозможно уже используется или у Вас нет прав").arg(baseNameFile), QMessageBox::Warning);
                 return;
             }
         }
@@ -10891,15 +10351,8 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(!connectDb(db, journal_path))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно открыть/создать файл \"%1\".").arg(baseNameFile));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Экспорт журнала"), tr("Невозможно открыть/создать файл \"%1\"").arg(baseNameFile), QMessageBox::Warning);
         disconnectDb(db);
-
         return;
     }
 
@@ -10914,15 +10367,8 @@ void ConfiguratorWindow::exportJournalToDb()
 
         if(!query.exec(query_str)) // читаем служебную информацию о типе журнала
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Экспорт журнала"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно открыть базу \"%1\" для дозаписи новых данных").arg(baseNameFile));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
+            showMessageBox(tr("Экспорт журнала"), tr("Невозможно открыть базу \"%1\" для дозаписи новых данных").arg(baseNameFile), QMessageBox::Warning);
             disconnectDb(db);
-
             return;
         }
 
@@ -10932,17 +10378,10 @@ void ConfiguratorWindow::exportJournalToDb()
 
             if(type.toUpper() != journal_type.toUpper()) // типы журналов не совпадают
             {
-                QMessageBox msgbox;
-                msgbox.setWindowTitle(tr("Экспорт журнала"));
-                msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-                msgbox.setIcon(QMessageBox::Warning);
-                msgbox.setText(tr("Невозможно выполнить запись журнала в эту базу.\n"
-                                  "Требуется тип журнала \"%1\", а текущий имеет тип \"%2\"").
-                                  arg(type.toLower()).arg(journal_type.toLower()));
-                outApplicationEvent(msgbox.text());
-                msgbox.exec();
+                showMessageBox(tr("Экспорт журнала"), tr("Невозможно выполнить запись журнала в эту базу. "
+                                                         "Требуется тип журнала \"%1\", а текущий имеет тип \"%2\"").
+                                                         arg(type.toLower()).arg(journal_type.toLower()), QMessageBox::Warning);
                 disconnectDb(db);
-
                 return;
             }
         }
@@ -10965,16 +10404,9 @@ void ConfiguratorWindow::exportJournalToDb()
 
         if(!query.exec(query_str)) // вставляем служебную информацию о типе журнала
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Экспорт журнала"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно вставить служебную информацию в базу данных: %1").
-                           arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
+            showMessageBox(tr("Экспорт журнала"), tr("Невозможно вставить служебную информацию в базу данных: %1").arg(query.lastError().text()),
+                           QMessageBox::Warning);
             disconnectDb(db);
-
             return;
         }
     }
@@ -10991,14 +10423,8 @@ void ConfiguratorWindow::exportJournalToDb()
 
         if(!query.exec(query_str))
         {
-            QMessageBox msgbox;
-            msgbox.setWindowTitle(tr("Экспорт журнала"));
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setIcon(QMessageBox::Warning);
-            msgbox.setText(tr("Невозможно записать новый журнал в базу данных: %1").
-                           arg(query.lastError().text()));
-            outApplicationEvent(msgbox.text());
-            msgbox.exec();
+            showMessageBox(tr("Экспорт журнала"), tr("Невозможно записать новый журнал в базу данных: %1").arg(query.lastError().text()),
+                           QMessageBox::Warning);
             disconnectDb(db);
             return;
         }
@@ -11009,13 +10435,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
     if(!query.exec(query_str))
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(tr("Экспорт журнала"));
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Невозможно прочитать id записи \"%1\"").arg(query_str));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
+        showMessageBox(tr("Экспорт журнала"), tr("Невозможно прочитать id записи \"%1\"").arg(query_str), QMessageBox::Warning);
         disconnectDb(db);
         return;
     }
@@ -11076,9 +10496,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
             if(!query.exec())
             {
-                QString text = tr("Ошибка вставки данных журнала событий в БД: %1").arg(query.lastError().text());
-                qWarning() << text;
-                outApplicationEvent(text);
+                outLogMessage(tr("Ошибка вставки данных журнала событий в БД: %1").arg(query.lastError().text()));
             }
         }
         else if(journal_type == "CRASH")
@@ -11096,9 +10514,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
             if(!query.exec())
             {
-                QString text = tr("Ошибка вставки данных журнала аварий в БД: %1").arg(query.lastError().text());
-                qWarning() << text;
-                outApplicationEvent(text);
+                outLogMessage(tr("Ошибка вставки данных журнала аварий в БД: %1").arg(query.lastError().text()));
             }
 
             property_list_t property_list = qvariant_cast<property_list_t>(table->rowData(i));
@@ -11117,9 +10533,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
                     if(!query_property.exec())
                     {
-                        QString text = tr("Ошибка вставки свойств данных журнала аварий в БД: %1").arg(query_property.lastError().text());
-                        qWarning() << text;
-                        outApplicationEvent(text);
+                        outLogMessage(tr("Ошибка вставки свойств данных журнала аварий в БД: %1").arg(query_property.lastError().text()));
                     }
                 }
 
@@ -11150,9 +10564,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
             if(!query.exec())
             {
-                QString text = tr("Ошибка вставки данных журнала получасовок в БД: %1").arg(query.lastError().text());
-                qWarning() << text;
-                outApplicationEvent(text);
+                outLogMessage(tr("Ошибка вставки данных журнала получасовок в БД: %1").arg(query.lastError().text()));
             }
 
             halfhour_t halfhour = qvariant_cast<halfhour_t>(table->rowData(i));
@@ -11170,9 +10582,7 @@ void ConfiguratorWindow::exportJournalToDb()
 
                     if(!query_property.exec())
                     {
-                        QString text = tr("Ошибка вставки свойств данных журнала получасовок в БД: %1").arg(query_property.lastError().text());
-                        qWarning() << text;
-                        outApplicationEvent(text);
+                        outLogMessage(tr("Ошибка вставки свойств данных журнала получасовок в БД: %1").arg(query_property.lastError().text()));
                     }
                 }
 
@@ -11848,14 +11258,7 @@ bool ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit&
 {
     if(unit.error() != CModBusDataUnit::ERROR_NO)
     {
-        QMessageBox msgbox;
-        msgbox.setWindowTitle(title);
-        msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-        msgbox.setIcon(QMessageBox::Warning);
-        msgbox.setText(tr("Ошибка: %1.").arg(CModBusDataUnit::errorDescription(unit.error())));
-        outApplicationEvent(msgbox.text());
-        msgbox.exec();
-
+        showMessageBox(title, tr("Ошибка: %1.").arg(CModBusDataUnit::errorDescription(unit.error())), QMessageBox::Warning);
         return true;
     }
 
