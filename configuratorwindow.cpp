@@ -5729,7 +5729,7 @@ QString ConfiguratorWindow::loadUserPassword(const QString& login)
 void ConfiguratorWindow::outApplicationEvent(const QString& text)
 {
     QString dateTimeText = QString("%1 - %2.").arg(QDateTime::currentDateTime().toString("[dd.mm.yyyy - HH:mm:ss.zzz]")).arg(text);
-    m_event_window->appendPlainText(dateTimeText);
+//    m_event_window->appendPlainText(dateTimeText);
 }
 //--------------------------------------------------------------------------
 bool ConfiguratorWindow::createProjectTablePurpose(const QString& tableType)
@@ -6912,6 +6912,8 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     for(int i = 0; i < (data.count() - 1); i += 2)
         values << data[i + 1] << data[i];
 
+    sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
+
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                    CModBusDataUnit::WriteMultipleRegisters);
 
@@ -6989,6 +6991,8 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
         }
     }
 
+    sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
+
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                  CModBusDataUnit::WriteMultipleRegisters);
 
@@ -7050,6 +7054,8 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
             values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
         }
     }
+
+    sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
 
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                    CModBusDataUnit::WriteMultipleRegisters);
