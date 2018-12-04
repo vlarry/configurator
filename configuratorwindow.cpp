@@ -5156,10 +5156,10 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
             }
 
             block_protection_purpose_t purpose = purpose_list[pos];
-            int trow = purpose.bit/16;
-            int bit  = purpose.bit%16;
+            int val_pos = purpose.bit/16;
+            int bit     = purpose.bit%16;
 
-            bool state = (col_data[trow]&(1 << bit));
+            bool state = (col_data[val_pos]&(1 << bit));
 
             matrix[col][row].data().state = ((state)?CHECKED:UNCHECKED);
         }
