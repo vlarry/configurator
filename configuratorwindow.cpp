@@ -4726,7 +4726,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
         input_inverse_data << value;
     }
 
-    for(int i = 0; i < input_data.count(); i++)
+    for(int i = 0; i < var_list.count(); i++)
     {
         QString key = var_list[i].toUpper();
 
