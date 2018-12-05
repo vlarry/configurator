@@ -5163,7 +5163,7 @@ void ConfiguratorWindow::displayBlockProtectionRead(const QVector<quint16>& data
 
             bool state = (col_data[val_pos]&(1 << bit));
 
-            matrix[col][row].data().state = ((state)?CHECKED:UNCHECKED);
+            matrix[row][col].data().state = ((state)?CHECKED:UNCHECKED);
         }
     }
 
