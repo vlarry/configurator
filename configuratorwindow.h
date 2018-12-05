@@ -106,7 +106,7 @@
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
                 PURPOSE_INPUT_INVERSE_TYPE, // матрица привязок инверсий входов
                 PROTECTION_WORK_MODE_TYPE, // чтение режима работы защит
-                MONITONR_PURPOSE_K10_K11_TYPE, // чтение привязок для внутренних переменных К10-К11
+                MONITOR_PURPOSE_K10_K11_TYPE, // чтение привязок для внутренних переменных К10-К11
                 READ_OUTPUT_ALL, // чтение состояний всех выходов
                 READ_INPUTS, // чтение состояний входов
                 READ_EVENT_JOURNAL, // чтение журнала событий

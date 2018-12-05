@@ -216,6 +216,8 @@ void ConfiguratorWindow::serialPortSettings()
 //------------------------------------------------
 void ConfiguratorWindow::blockProtectionCtrlRead()
 {
+    sendDeviceCommand(45); // установка ключа записи
+
     for(const block_protection_t& block: m_block_list)
     {
         sendRequestRead(block.address, 24, READ_BLOCK_PROTECTION);
@@ -252,7 +254,7 @@ void ConfiguratorWindow::blockProtectionCtrlWrite()
             int r   = purpose.bit/16;
             int bit = purpose.bit%16;
 
-            bool state = matrix[col][row].data().state;
+            bool state = matrix[row][col].data().state;
 
             quint16 value = values[r];
 
@@ -2444,7 +2446,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     {
         displayProtectionWorkMode(unit);
     }
-    else if(type == MONITONR_PURPOSE_K10_K11_TYPE)
+    else if(type == MONITOR_PURPOSE_K10_K11_TYPE)
     {
         showErrorMessage(tr("Мониторинг привязок К10/К11"), unit);
 
@@ -7091,7 +7093,7 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(firstAddr),
                          QVector<quint16>() << 48);
 
-    unit.setProperty("REQUEST", MONITONR_PURPOSE_K10_K11_TYPE);
+    unit.setProperty("REQUEST", MONITOR_PURPOSE_K10_K11_TYPE);
 
     m_modbus->sendData(unit);
 }
