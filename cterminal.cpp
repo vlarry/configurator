@@ -45,6 +45,9 @@ void CTerminal::appendData(QByteArray& data, bool isRequest)
 {
     ui->pteConsole->appendPlainText(((isRequest)?tr("Запрос: "):tr("Ответ: ")) + data.toHex(' ').toUpper() + QString(5, ' ') +
                                     tr("(%1 байт).\n").arg(QString::number(data.count())));
+
+    if(!isRequest)
+        ui->pteConsole->appendPlainText("");
 }
 //------------------------------------
 void CTerminal::convertDeviceCommand()

@@ -6986,7 +6986,10 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
                                matrix[row_index][k].data().state == INVERSE)?true:false);
 
                 if(state)
+                {
+//                    qDebug() << QString("Input Write ON -> (pos: %1, bit: %2)").arg(row_index).arg(k);
                     value |= (1 << k);
+                }
             }
 
             values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
