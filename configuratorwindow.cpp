@@ -6972,7 +6972,6 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
             if(key == row_key)
             {
                 row_index = j;
-                break;
             }
         }
 
@@ -6987,12 +6986,15 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
                 if(state)
                 {
-//                    qDebug() << QString("Input Write ON -> (pos: %1, bit: %2)").arg(row_index).arg(k);
                     value |= (1 << k);
                 }
             }
 
-            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+            values << static_cast<quint16>((value&0xFFFF0000) >> 16) << static_cast<quint16>(value&0x0000FFFF);
+        }
+        else if(key.contains("_R")) // если имя переменной оканчивается на "_R", т.е. переменная является резервной, то заполяем значение состояниями привязок нулями
+        {
+            values << static_cast<quint16>(0) << static_cast<quint16>(0);
         }
     }
 
@@ -7040,7 +7042,6 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
             if(key == row_key)
             {
                 row_index = j;
-                break;
             }
         }
 
@@ -7056,7 +7057,11 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
                     value |= (1 << k);
             }
 
-            values << quint16((value&0xFFFF0000) >> 16) << quint16(value&0x0000FFFF);
+            values << static_cast<quint16>((value&0xFFFF0000) >> 16) << static_cast<quint16>(value&0x0000FFFF);
+        }
+        else if(key.contains("_R")) // если имя переменной оканчивается на "_R", т.е. переменная является резервной, то заполяем значение состояниями привязок нулями
+        {
+            values << static_cast<quint16>(0) << static_cast<quint16>(0);
         }
     }
 
