@@ -8228,6 +8228,7 @@ void ConfiguratorWindow::exportToExcelProject()
 
     writeDataToExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral);
 
+    xlsx.deleteSheet("Sheet1");
     xlsx.selectSheet(tr("Защиты"));
     xlsx.saveAs(fileName);
 

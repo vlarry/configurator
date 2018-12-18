@@ -5,6 +5,7 @@
     #include <QButtonGroup>
     #include <QPushButton>
     #include <QDebug>
+    #include "RangeSlider.h"
     #include "ctimefilterdialog.h"
     #include "cfilter.h"
     //----------

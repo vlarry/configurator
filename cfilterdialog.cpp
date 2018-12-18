@@ -34,6 +34,8 @@ CFilterDialog::CFilterDialog(const CFilter& filter, QWidget* parent):
     connect(ui->listWidgetFilterButton, &QListWidget::currentRowChanged, this, &CFilterDialog::filterChanged);
     connect(ui->spinboxIntervalBegin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this,
                                                                            &CFilterDialog::intervalChanged);
+
+    ui->widgetSlider->SetRange(0, 1000);
 }
 //------------------------------------------
 void CFilterDialog::filterChanged(int index)
