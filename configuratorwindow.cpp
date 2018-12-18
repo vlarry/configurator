@@ -8186,7 +8186,7 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
 
-    xlsx.currentWorksheet()->freezePane("A1", "C2");
+//    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3, QXlsx::XLSX_PANE_TOP_LEFT);
 
     int pos;
 
@@ -8210,7 +8210,7 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
 
-    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3);
+//    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3, QXlsx::XLSX_PANE_TOP_LEFT);
 
     writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
 
@@ -8224,7 +8224,7 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
 
-    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3);
+//    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3, QXlsx::XLSX_PANE_TOP_LEFT);
 
     writeDataToExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral);
 
@@ -11167,7 +11167,7 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenu
                 }
 
                 doc.write(QString("A%1").arg(++row_count), item->text());
-                doc.mergeCells(QString("A%1:C%1").arg(row_count).arg(row_count), headerFormat);
+                doc.mergeCells(QString("A%1:C%2").arg(row_count).arg(row_count), headerFormat);
                 pos_group = row_count + 1;
                 continue;
             }
