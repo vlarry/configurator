@@ -35,6 +35,28 @@ CFilterDialog::CFilterDialog(const CFilter& filter, QWidget* parent):
     connect(ui->spinboxIntervalBegin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this,
                                                                            &CFilterDialog::intervalChanged);
 
+    QObjectList objList = children();
+
+    for(QObject* obj: objList)
+    {
+        if(QString(obj->metaObject()->className()).toUpper() == "QDIALOGBUTTONBOX")
+        {
+            QDialogButtonBox* buttons = qobject_cast<QDialogButtonBox*>(obj);
+
+            if(buttons)
+            {
+                QPushButton* butOk     = qobject_cast<QPushButton*>(buttons->button(QDialogButtonBox::Yes));
+                QPushButton* butCancel = qobject_cast<QPushButton*>(buttons->button(QDialogButtonBox::Cancel));
+
+                if(butOk)
+                    butOk->setText(tr("Ок"));
+
+                if(butCancel)
+                    butCancel->setText(tr("Отмена"));
+            }
+        }
+    }
+
     ui->widgetSlider->SetRange(0, 1000);
 }
 //------------------------------------------
