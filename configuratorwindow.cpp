@@ -6789,6 +6789,8 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
         value++;
 
+    sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
+
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, quint16(addr),
                          QVector<quint16>() << value);
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
