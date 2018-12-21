@@ -49,7 +49,7 @@ void CVariableWidget::setData(const QVector<quint16>& data)
         cell_val.buffer[1] = data[index];
         cell_val.buffer[0] = data[index + 1];
 
-        lineEdit->setText(QLocale().system().toString(cell_val.value, 'g', 6));
+        lineEdit->setText(QLocale().system().toString(cell_val.value, 'g', 2));
     }
 }
 //---------------------------------
