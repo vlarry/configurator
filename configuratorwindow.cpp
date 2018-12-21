@@ -366,7 +366,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
             if(msgbox.clickedButton() == next)
             {
-                set.message.read_start = set.message.read_current = m_journal_read_current->table()->rowCount();
+                set.message.read_start = set.message.read_current = m_journal_read_current->table()->rowCount() + 1;
             }
             else if(msgbox.clickedButton() == begin)
             {

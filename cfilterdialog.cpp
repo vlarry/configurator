@@ -59,8 +59,6 @@ CFilterDialog::CFilterDialog(const CFilter& filter, QWidget* parent):
             }
         }
     }
-
-    ui->widgetSliderInterval->SetRange(filter.interval().begin, filter.interval().end);
 }
 //------------------------------------------
 void CFilterDialog::filterChanged(int index)
