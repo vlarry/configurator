@@ -28,7 +28,10 @@
 
         private slots:
             void filterChanged(int index);
-            void intervalChanged(int value);
+            void spinBoxIntervalFromChanged(int value);
+            void spinBoxIntervalToChanged(int value);
+            void sliderIntervalFromChanged();
+            void sliderIntervalToChanged();
 
         protected:
             void showEvent(QShowEvent* event);
