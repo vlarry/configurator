@@ -30,6 +30,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="whatsThis">
+        <string>Выбор типа фильтрации</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -49,12 +52,18 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="whatsThis">
+              <string>выбор диапазона (начало и конец) чтения журнала</string>
+             </property>
             </widget>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QSpinBox" name="spinBoxIntervalFrom">
+               <property name="whatsThis">
+                <string>начало чтения сообщений журнала</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
                </property>
@@ -75,6 +84,9 @@
              </item>
              <item>
               <widget class="QSpinBox" name="spinBoxIntervalTo">
+               <property name="whatsThis">
+                <string>конец чтения сообщений журнала</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
                </property>
