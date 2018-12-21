@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Фильтр данных</string>
   </property>
+  <property name="whatsThis">
+   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Диалог предназначен для выполнения фильтрации данных журналов по интервалу или по дате.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
