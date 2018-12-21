@@ -189,6 +189,12 @@ void ConfiguratorWindow::stateChanged(bool state)
         ui->toolButtonConnect->setToolTip(tr("Подключение к БЗУ"));
         synchronization(); // отключение синхронизации
         m_status_bar->connectStateChanged(false);
+
+        if(ui->pushButtonJournalRead->isChecked())
+        {
+            ui->pushButtonJournalRead->setChecked(false);
+            m_progressbar->progressStop();
+        }
     }
 }
 //------------------------------------------
