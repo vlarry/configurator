@@ -355,6 +355,12 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
         if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
         {
+            if(m_journal_read_current->table()->rowCount() >= set.message.read_total)
+            {
+                m_popup->setPopupText(tr("Все сообщения прочитаны"));
+                return;
+            }
+
             QMessageBox msgbox;
             msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
             msgbox.setWindowTitle(tr("Чтение журнала"));
