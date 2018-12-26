@@ -1,6 +1,7 @@
 #include "configuratorwindow.h"
 #include <QApplication>
 #include <QMessageLogContext>
+#include <QTranslator>
 //-----------------------------------------------------------------------------------
 void logOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
@@ -70,6 +71,10 @@ int main(int argc, char* argv[])
     qInstallMessageHandler(logOutput);
 
     QApplication a(argc, argv);
+    QTranslator translator;
+
+    translator.load("qt_Ru"/* + QLocale::system().name()*/, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    a.installTranslator(&translator);
 
     QFile styleFile(":/styles/resource/styles/default_style.qss");
 
