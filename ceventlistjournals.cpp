@@ -24,6 +24,28 @@ CEventListJournals::CEventListJournals(const QString& journal_name, QVector<cell
     setWindowTitle(tr("Список журналов %1").arg(journal_name));
 
     connect(ui->listwgtListEventJournals, &QListWidget::itemDoubleClicked, this, &CEventListJournals::slotDoubleClicked);
+
+    QObjectList objList = children();
+
+    for(QObject* obj: objList)
+    {
+        if(QString(obj->metaObject()->className()).toUpper() == "QDIALOGBUTTONBOX")
+        {
+            QDialogButtonBox* buttons = qobject_cast<QDialogButtonBox*>(obj);
+
+            if(buttons)
+            {
+                QPushButton* butOk     = qobject_cast<QPushButton*>(buttons->button(QDialogButtonBox::Yes));
+                QPushButton* butCancel = qobject_cast<QPushButton*>(buttons->button(QDialogButtonBox::Cancel));
+
+                if(butOk)
+                    butOk->setText(tr("Ок"));
+
+                if(butCancel)
+                    butCancel->setText(tr("Отмена"));
+            }
+        }
+    }
 }
 //---------------------------------------
 CEventListJournals::~CEventListJournals()

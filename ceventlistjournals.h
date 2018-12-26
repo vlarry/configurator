@@ -5,6 +5,7 @@
     #include <QListWidget>
     #include <QListWidgetItem>
     #include <QModelIndex>
+    #include <QPushButton>
     #include <QDebug>
     //----------
     namespace Ui
