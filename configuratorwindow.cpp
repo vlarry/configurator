@@ -385,7 +385,17 @@ void ConfiguratorWindow::journalRead(const QString& key)
             }
             else if(msgbox.clickedButton() == cancel)
             {
-                m_journal_read_current = nullptr;
+                m_journal_read_current   = nullptr;
+                set.isStart              = false;
+                set.isStop               = false;
+                set.shift_ptr            = 0;
+                set.message.read_count   = 0;
+                set.message.read_current = 0;
+                set.message.read_start   = 0;
+                set.message.read_limit   = set.message.read_total;
+                set.buffer.clear();
+                ui->pushButtonJournalRead->setChecked(false);
+
                 return;
             }
         }
