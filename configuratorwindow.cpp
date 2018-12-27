@@ -48,7 +48,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_status_bar                = new CStatusBar(statusBar());
     m_popup                     = new PopUp(this);
     m_watcher                   = new QFutureWatcher<void>(this);
-    m_progressbar               = new CProgressBarWidget(this);
+    m_progressbar               = new CProgressBarWidget(m_status_bar);
     m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator", this);
     m_tim_calculate             = new QTimer(this);
     m_timer_new_address_set     = new QTimer(this);
@@ -56,7 +56,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_timer_synchronization     = new QTimer(this);
     m_journal_timer             = new QTimer(this);
 
-    m_status_bar->addWidget(m_progressbar);
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
     connectSystemDb();

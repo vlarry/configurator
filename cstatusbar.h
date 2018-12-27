@@ -18,7 +18,6 @@
             explicit CStatusBar(QWidget* parent = nullptr);
             ~CStatusBar();
 
-            void    addWidget(QWidget* widget);
             void    connectStateChanged(bool state);
             void    clearSerialNumber();
             void    clearStatusMessage();

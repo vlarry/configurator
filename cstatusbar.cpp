@@ -17,11 +17,6 @@ CStatusBar::~CStatusBar()
 {
     delete ui;
 }
-//--------------------------
-void CStatusBar::addWidget(QWidget* widget)
-{
-    ui->hlayoutWidget->addWidget(widget);
-}
 //----------------------------------------------
 void CStatusBar::connectStateChanged(bool state)
 {

@@ -21,6 +21,20 @@ CProgressBarWidget::~CProgressBarWidget()
 //--------------------------------------
 void CProgressBarWidget::progressStart()
 {
+    if(!parent())
+        return;
+
+    QWidget* widget = qobject_cast<QWidget*>(parent());
+
+    if(!widget)
+        return;
+
+    QSize s = widget->geometry().size();
+
+    int x = s.width()/2 - size().width()/2;
+    int y = s.height()/2 - size().height()/2;
+
+    move(x, y);
     show();
 }
 //-------------------------------------
