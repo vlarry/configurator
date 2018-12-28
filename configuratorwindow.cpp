@@ -2599,6 +2599,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
 {
+    saveProject();
     close();
 }
 //-------------------------------------------------------
@@ -8092,12 +8093,6 @@ void ConfiguratorWindow::openProject()
     loadContainerSettings(m_containerTerminalEvent);
     loadContainerSettings(m_containerTerminalModbus);
 
-    // Расположение контейнеров по умолчанию
-    ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
-    ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
-    ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
-    ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
-
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
 
@@ -11304,6 +11299,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);
     connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
+    connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
     connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
     connect(ui->pushButtonImport, &QPushButton::clicked, this, &ConfiguratorWindow::processImport);

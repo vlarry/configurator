@@ -12,6 +12,8 @@ CProgressBarWidget::CProgressBarWidget(QWidget* parent):
 
     connect(this, &CProgressBarWidget::increment, this, &CProgressBarWidget::progressIncrement);
     connect(this, &CProgressBarWidget::settingChanged, this, &CProgressBarWidget::setSettings);
+
+    setWindowFlags(Qt::FramelessWindowHint);
 }
 //---------------------------------------
 CProgressBarWidget::~CProgressBarWidget()
