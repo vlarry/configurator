@@ -4,6 +4,8 @@
     #include <QWidget>
     #include <QProgressBar>
     #include <QLabel>
+    #include <QFont>
+    #include <QFontMetrics>
     #include <QDebug>
     //----------
     namespace Ui

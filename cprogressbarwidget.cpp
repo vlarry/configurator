@@ -8,7 +8,9 @@ CProgressBarWidget::CProgressBarWidget(QWidget* parent):
     ui->setupUi(this);
     hide();
 
-    ui->progressBar->setRange(0, 0);
+    ui->progressBar->setRange(0, 0);   
+    ui->progressBar->setMaximumWidth(300);
+    ui->progressBar->setMinimumWidth(300);
 
     connect(this, &CProgressBarWidget::increment, this, &CProgressBarWidget::progressIncrement);
     connect(this, &CProgressBarWidget::settingChanged, this, &CProgressBarWidget::setSettings);
@@ -32,6 +34,13 @@ void CProgressBarWidget::progressStart()
         return;
 
     QSize s = widget->geometry().size();
+
+    QFont f = ui->lblProgressbarTitle->font();
+    QFontMetrics fm(f);
+
+    int w_label = fm.width(ui->lblProgressbarTitle->text())*1.2f;
+    setMinimumWidth(w_label + 300);
+    ui->lblProgressbarTitle->setMinimumWidth(w_label);
 
     int x = s.width()/2 - size().width()/2;
     int y = s.height()/2 - size().height()/2;

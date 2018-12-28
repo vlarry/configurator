@@ -2599,7 +2599,9 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
 {
-    saveProject();
+    if(m_isProject)
+        saveProject();
+
     close();
 }
 //-------------------------------------------------------
@@ -8105,8 +8107,8 @@ void ConfiguratorWindow::openProject()
     }
 
     m_progressbar->setProgressTitle(tr("Открытие проекта"));
-    m_progressbar->progressStart();
     m_progressbar->setSettings(0, 100, "%");
+    m_progressbar->progressStart();
 
     loadJournalFromProject(ui->widgetJournalEvent); // Загрузка журнала событий
     loadJournalFromProject(ui->widgetJournalCrash); // Загрузка журнала аварий
@@ -8152,8 +8154,8 @@ void ConfiguratorWindow::saveProject()
         return;
 
     m_progressbar->setProgressTitle(tr("Сохранение проекта"));
-    m_progressbar->progressStart();
     m_progressbar->setSettings(0, 100, "%");
+    m_progressbar->progressStart();
 
     saveJournalToProject(ui->widgetJournalEvent);
     saveJournalToProject(ui->widgetJournalCrash);

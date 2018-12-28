@@ -37,6 +37,7 @@
     #include <QKeyEvent>
     #include <cmath>
     #include <algorithm>
+    #include <windows.h>
     #include "modbus.h"
     #include "menubar.h"
     #include "cterminal.h"
