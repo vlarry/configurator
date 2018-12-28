@@ -8021,12 +8021,6 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
-    // Расположение контейнеров по умолчанию
-    ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
-    ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
-    ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
-    ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
-
     unblockInterface();
     outApplicationEvent(tr("Создание нового файла проекта: %1").arg(projectPathName));
     m_progressbar->progressStop();
@@ -8097,6 +8091,12 @@ void ConfiguratorWindow::openProject()
     loadContainerSettings(m_containerStatusInfo);
     loadContainerSettings(m_containerTerminalEvent);
     loadContainerSettings(m_containerTerminalModbus);
+
+    // Расположение контейнеров по умолчанию
+    ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
+    ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
+    ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
+    ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
 
     unblockInterface();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
@@ -8998,6 +8998,12 @@ void ConfiguratorWindow::initApplication()
         m_containerInputs->setName("INPUTS");
         m_containerDebugInfo->setName("DEBUG_INFO");
         m_containerStatusInfo->setName("STATUS_INFO");
+
+        // Расположение контейнеров по умолчанию
+        ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
+        ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
+        ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
+        ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
 
         bool is_remove = deleteLogFile();
 
