@@ -6151,7 +6151,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         outLogMessage(tr("Сохранение журнала <%1>: возникли ошибки в процессе записи журнала (%2)").arg(type).arg(lastError));
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 }
 //---------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName)
@@ -6220,7 +6220,7 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
     }
 
     m_project_db->commit();
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 }
 /*!
  * \brief ConfiguratorWindow::saveDeviceCommunication
@@ -6250,7 +6250,7 @@ void ConfiguratorWindow::saveDeviceCommunication()
         outLogMessage(tr("Ошибка сохранения настроек связи устройства: %1").arg(m_project_db->lastError().text()));
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 }
 /*!
  * \brief ConfiguratorWindow::saveDeviceCalibrationCurrent
@@ -6285,7 +6285,7 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
         outLogMessage(tr("Ошибка сохранения эталонных значений калибровок по току устройства: %1").arg(m_project_db->lastError().text()));
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 }
 /*!
  * \brief ConfiguratorWindow::saveContainerSettings
@@ -6318,6 +6318,8 @@ void ConfiguratorWindow::saveContainerSettings(const CContainerWidget* container
                       arg(query.lastError().text()));
         return;
     }
+
+    m_progressbar->increment(4);
 }
 /*!
  * \brief ConfiguratorWindow::loadJournalFromProject
@@ -6434,7 +6436,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
 
     journal->resizeColumnsToContents();
     journal->horizontalHeader()->setStretchLastSection(true);
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 
     return true;
 }
@@ -6484,7 +6486,7 @@ void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QS
     }
 
     model->updateData();
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 }
 /*!
  * \brief ConfiguratorWindow::loadDeviceSetToProject
@@ -6548,7 +6550,7 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
         }
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 }
 /*!
  * \brief ConfiguratorWindow::loadDeviceCommunication
@@ -6583,7 +6585,7 @@ void ConfiguratorWindow::loadDeviceCommunication()
     ui->spinBoxCommunicationRequestTimeout->setValue(Trequest);
     ui->spinBoxCommunicationTimeoutSpeed->setValue(Tspeed);
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 }
 /*!
  * \brief ConfiguratorWindow::loadDeviceCalibrationCurrent
@@ -6624,7 +6626,7 @@ void ConfiguratorWindow::loadDeviceCalibrationCurrent()
     ui->widgetCalibrationOfCurrent->setCurrentDataCount(dataCount);
     ui->widgetCalibrationOfCurrent->setCurrentPauseRequest(pauseRequest);
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 }
 /*!
  * \brief ConfiguratorWindow::loadContainerSettings
@@ -6664,6 +6666,8 @@ void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container)
     {
         ui->tabWidgetMessage->addContainer(container);
     }
+
+    m_progressbar->increment(4);
 }
 /*!
  * \brief ConfiguratorWindow::unblockInterface
@@ -7788,8 +7792,8 @@ void ConfiguratorWindow::newProject()
     }
 
     m_progressbar->setProgressTitle(tr("Создание нового проекта"));
-    m_progressbar->setSettings(0, 100, "%");
     m_progressbar->progressStart();
+    m_progressbar->setSettings(0, 100, "%");
 
     m_project_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "PROJECT"));
     m_project_db->setDatabaseName(projectPathName);
@@ -7813,6 +7817,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     if(!createJournalTable(m_project_db, "CRASH", false)) // журнал аварий
     {
         m_project_db->close();
@@ -7821,6 +7827,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     if(!createJournalTable(m_project_db, "HALFHOUR", false)) // журнал получасовок
     {
         m_project_db->close();
@@ -7828,6 +7836,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     // Создание таблиц для хранения состояний выходов
     if(!createProjectTablePurpose("LED")) // светодиоды
@@ -7840,6 +7850,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     if(!createProjectTablePurpose("RELAY")) // реле
     {
         showMessageBox(tr("Создание таблицы привязок реле"), tr("Невозможно создать таблицу привязок реле в файле проекта"), QMessageBox::Warning);
@@ -7848,6 +7860,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     if(!createProjectTablePurpose("INPUT")) // дискретные входы
     {
@@ -7859,6 +7873,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     // Создание таблицы привязок блокировок защит
     if(!createProjectTableProtection(loadProtectionList().count()))
     {
@@ -7868,6 +7884,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     // Создание таблицы уставок Аналоговые входы
     if(!createProjectTableSet("ANALOG"))
@@ -7880,6 +7898,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     // Создание таблицы уставок группы "Защиты по току"
     if(!createProjectTableSet("MTZ"))
     {
@@ -7890,6 +7910,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Защиты по напряжению"
     if(!createProjectTableSet("PWR"))
@@ -7902,6 +7924,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     // Создание таблицы уставок группы "Направленные"
     if(!createProjectTableSet("DIR"))
     {
@@ -7912,6 +7936,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Защиты по частоте"
     if(!createProjectTableSet("FREQ"))
@@ -7924,6 +7950,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     // Создание таблицы уставок группы "Внешние защиты"
     if(!createProjectTableSet("EXT"))
     {
@@ -7934,6 +7962,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Для двигателя"
     if(!createProjectTableSet("MOTOR"))
@@ -7946,6 +7976,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     // Создание таблицы уставок группы "Защиты по температуре"
     if(!createProjectTableSet("TEMP"))
     {
@@ -7956,6 +7988,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Резервные защиты"
     if(!createProjectTableSet("RESERVE"))
@@ -7968,6 +8002,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     // Создание таблицы уставок группы "Предварительного контроля"
     if(!createProjectTableSet("CTRL"))
     {
@@ -7978,6 +8014,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Автоматика"
     if(!createProjectTableSet("AUTO"))
@@ -7990,6 +8028,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(5);
+
     // Создание таблицы настроек связи
     if(!createProjectTableCommunication())
     {
@@ -7999,6 +8039,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(5);
 
     // Создание таблицы настроек связи
     if(!createProjectTableCalibrationCurrent())
@@ -8011,6 +8053,8 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
+    m_progressbar->increment(3);
+
     // Создание таблицы настроек контейнеров
     if(!createProjectTableContainer())
     {
@@ -8021,6 +8065,8 @@ void ConfiguratorWindow::newProject()
         QSqlDatabase::removeDatabase("PROJECT");
         return;
     }
+
+    m_progressbar->increment(2);
 
     unblockInterface();
     outApplicationEvent(tr("Создание нового файла проекта: %1").arg(projectPathName));
@@ -8059,8 +8105,8 @@ void ConfiguratorWindow::openProject()
     }
 
     m_progressbar->setProgressTitle(tr("Открытие проекта"));
-    m_progressbar->setSettings(0, 100, "%");
     m_progressbar->progressStart();
+    m_progressbar->setSettings(0, 100, "%");
 
     loadJournalFromProject(ui->widgetJournalEvent); // Загрузка журнала событий
     loadJournalFromProject(ui->widgetJournalCrash); // Загрузка журнала аварий
@@ -8094,10 +8140,10 @@ void ConfiguratorWindow::openProject()
     loadContainerSettings(m_containerTerminalModbus);
 
     unblockInterface();
+    m_progressbar->progressStop();
     emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
 
     outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
-    m_progressbar->progressStop();
 }
 //------------------------------------
 void ConfiguratorWindow::saveProject()
@@ -8106,8 +8152,8 @@ void ConfiguratorWindow::saveProject()
         return;
 
     m_progressbar->setProgressTitle(tr("Сохранение проекта"));
-    m_progressbar->setSettings(0, 100, "%");
     m_progressbar->progressStart();
+    m_progressbar->setSettings(0, 100, "%");
 
     saveJournalToProject(ui->widgetJournalEvent);
     saveJournalToProject(ui->widgetJournalCrash);
