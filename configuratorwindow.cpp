@@ -8303,9 +8303,6 @@ void ConfiguratorWindow::exportToExcelProject()
 //-----------------------------------------------
 void ConfiguratorWindow::importFromExcelProject()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
-
     QDir dir;
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Импорт уставок из Excel"),
