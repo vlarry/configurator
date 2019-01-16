@@ -15,8 +15,10 @@ void logOutput(QtMsgType type, const QMessageLogContext& context, const QString&
     switch (type)
     {
         case QtDebugMsg:
+#ifdef DEBUG_BUILD
             message = QObject::tr("Отладка: %1 (%2:%3, %4).").arg(msg).arg(context.file).arg(context.line).
                                                               arg(context.function);
+#endif
         break;
 
         case QtInfoMsg:
@@ -44,23 +46,26 @@ void logOutput(QtMsgType type, const QMessageLogContext& context, const QString&
     if(!dir.exists("outputs"))
         dir.mkdir("outputs");
 
-    QFile file("outputs/log.txt");
-
-    if(!file.open(QFile::WriteOnly | QFile::Append))
+    if(!message.isEmpty())
     {
-        qDebug() << QObject::tr("Невозможно открыть файл логирования для записи");
+        QFile file("outputs/log.txt");
+
+        if(!file.open(QFile::WriteOnly | QFile::Append))
+        {
+            qDebug() << QObject::tr("Невозможно открыть файл логирования для записи");
+            file.close();
+
+            return;
+        }
+
+        QTextStream out(&file);
+
+        QString dt = QDateTime::currentDateTime().toString("[dd.mm.yyyy - HH:mm:ss.zzz]");
+
+        out <<  QString("%1 -> %2").arg(dt).arg(message) << end_line;
+
         file.close();
-
-        return;
     }
-
-    QTextStream out(&file);
-
-    QString dt = QDateTime::currentDateTime().toString("[dd.mm.yyyy - HH:mm:ss.zzz]");
-
-    out <<  QString("%1 -> %2").arg(dt).arg(message) << end_line;
-
-    file.close();
 }
 //------------------------------
 int main(int argc, char* argv[])
