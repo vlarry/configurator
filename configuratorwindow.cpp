@@ -346,8 +346,11 @@ void ConfiguratorWindow::journalRead(const QString& key)
                     int pos_beg = filter.interval().begin;
                     int pos_end = filter.interval().end;
 
-                    set.message.read_start = set.message.read_current = ((pos_beg == 0)?0:pos_beg - 1); // устанавливаем номер сообщения с которого будем читать
-                    set.message.read_limit = pos_end - pos_beg + 1; // устанавливаем сообщение до которого будем читать
+                    if(pos_beg > 0)
+                        pos_beg--;
+
+                    set.message.read_start = set.message.read_current = ((pos_beg == 0)?0:pos_beg); // устанавливаем номер сообщения с которого будем читать
+                    set.message.read_limit = pos_end - pos_beg - 1; // устанавливаем сообщение до которого будем читать
                 }
             }
         }
@@ -400,7 +403,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
             }
         }
 
-        if(set.message.read_start >= sector_size) // если начальное сообщение находится не в на первой странице
+        if(set.message.read_start >= sector_size) // если начальное сообщение находится не на первой странице
         {
             set.shift_ptr            = (--set.message.read_start/sector_size)*4096; // получаем смещение указателя
             set.message.read_current = set.message.read_start%sector_size; // устанавливаем текущее сообщение (для определения перехода указатеяля)

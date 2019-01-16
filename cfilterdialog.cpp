@@ -113,7 +113,7 @@ const CFilter CFilterDialog::filter()
     date.end   = ui->calendarwgtEnd->selectedDate();
 
     interval.begin = ui->spinBoxIntervalFrom->value();
-    interval.end   = ui->spinBoxIntervalFrom->value() + ui->spinBoxIntervalTo->value() - 1;
+    interval.end   = ui->spinBoxIntervalTo->value();
 
     CFilter cfilter(interval, date, ui->timeEditBeginFilter->time());
 
