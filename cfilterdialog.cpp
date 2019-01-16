@@ -35,8 +35,10 @@ CFilterDialog::CFilterDialog(const CFilter& filter, QWidget* parent):
     connect(ui->listWidgetFilterButton, &QListWidget::currentRowChanged, this, &CFilterDialog::filterChanged);
     connect(ui->widgetSliderInterval, &RangeSlider::lowerValueChanged, this, &CFilterDialog::spinBoxIntervalFromChanged);
     connect(ui->widgetSliderInterval, &RangeSlider::upperValueChanged, this, &CFilterDialog::spinBoxIntervalToChanged);
-    connect(ui->spinBoxIntervalFrom, &QSpinBox::editingFinished, this, &CFilterDialog::sliderIntervalFromChanged);
-    connect(ui->spinBoxIntervalTo, &QSpinBox::editingFinished, this, &CFilterDialog::sliderIntervalToChanged);
+    connect(ui->spinBoxIntervalFrom, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this,
+            &CFilterDialog::sliderIntervalFromChanged);
+    connect(ui->spinBoxIntervalTo, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this,
+            &CFilterDialog::sliderIntervalToChanged);
 
     QObjectList objList = children();
 
@@ -71,32 +73,26 @@ void CFilterDialog::filterChanged(int index)
 //-------------------------------------------------------
 void CFilterDialog::spinBoxIntervalFromChanged(int value)
 {
-    if(value >= ui->widgetSliderInterval->GetUpperValue())
-        ui->widgetSliderInterval->setLowerValue(--value);
-
-    ui->spinBoxIntervalFrom->setValue(value);
+    if(value < ui->widgetSliderInterval->GetUpperValue())
+        ui->spinBoxIntervalFrom->setValue(value);
 }
 //-----------------------------------------------------
 void CFilterDialog::spinBoxIntervalToChanged(int value)
 {
-    if(value <= ui->widgetSliderInterval->GetLowerValue())
-        ui->widgetSliderInterval->setUpperValue(++value);
-
-    ui->spinBoxIntervalTo->setValue(value);
+    if(value > ui->widgetSliderInterval->GetLowerValue())
+        ui->spinBoxIntervalTo->setValue(value);
 }
-//---------------------------------------------
-void CFilterDialog::sliderIntervalFromChanged()
+//------------------------------------------------------
+void CFilterDialog::sliderIntervalFromChanged(int value)
 {
-    ui->widgetSliderInterval->setLowerValue(ui->spinBoxIntervalFrom->value());
+    if(value < ui->widgetSliderInterval->GetUpperValue())
+        ui->widgetSliderInterval->SetLowerValue(value);
 }
-//-------------------------------------------
-void CFilterDialog::sliderIntervalToChanged()
+//----------------------------------------------------
+void CFilterDialog::sliderIntervalToChanged(int value)
 {
-    int value = ui->spinBoxIntervalTo->value();
-    if(ui->spinBoxIntervalTo->value() <= ui->spinBoxIntervalFrom->value())
-        value = ui->spinBoxIntervalFrom->value() + 1;
-
-    ui->widgetSliderInterval->setUpperValue(value);
+    if(value > ui->widgetSliderInterval->GetLowerValue())
+        ui->widgetSliderInterval->SetUpperValue(value);
 }
 //----------------------------------------------
 void CFilterDialog::showEvent(QShowEvent* event)
@@ -112,8 +108,8 @@ const CFilter CFilterDialog::filter()
     date.begin = ui->calendarwgtBegin->selectedDate();
     date.end   = ui->calendarwgtEnd->selectedDate();
 
-    interval.begin = ui->spinBoxIntervalFrom->value();
-    interval.end   = ui->spinBoxIntervalTo->value();
+    interval.begin = ui->widgetSliderInterval->GetLowerValue();
+    interval.end   = ui->widgetSliderInterval->GetUpperValue();
 
     CFilter cfilter(interval, date, ui->timeEditBeginFilter->time());
 
@@ -127,8 +123,8 @@ const CFilter::FilterIntervalType CFilterDialog::interval()
 {
     CFilter::FilterIntervalType i;
 
-    i.begin = ui->spinBoxIntervalFrom->value();
-    i.end   = ui->spinBoxIntervalTo->value();
+    i.begin = ui->widgetSliderInterval->GetLowerValue();
+    i.end   = ui->widgetSliderInterval->GetUpperValue();
 
     return i;
 }

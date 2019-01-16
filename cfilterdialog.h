@@ -30,8 +30,8 @@
             void filterChanged(int index);
             void spinBoxIntervalFromChanged(int value);
             void spinBoxIntervalToChanged(int value);
-            void sliderIntervalFromChanged();
-            void sliderIntervalToChanged();
+            void sliderIntervalFromChanged(int value);
+            void sliderIntervalToChanged(int value);
 
         protected:
             void showEvent(QShowEvent* event);
