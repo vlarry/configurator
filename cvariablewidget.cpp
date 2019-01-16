@@ -49,7 +49,7 @@ void CVariableWidget::setData(const QVector<quint16>& data)
         cell_val.buffer[1] = data[index];
         cell_val.buffer[0] = data[index + 1];
 
-        lineEdit->setText(QLocale().system().toString(cell_val.value, 'g', 2));
+        lineEdit->setText(QLocale().system().toString(cell_val.value, 'f', 2));
     }
 }
 //---------------------------------
@@ -290,7 +290,7 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
 
         if(data.var1.type == "VAR")
         {
-            QLineEdit* lineEditVar1 = new QLineEdit("0.0000", m_variablelist);
+            QLineEdit* lineEditVar1 = new QLineEdit("0.00", m_variablelist);
 
             if(lineEditVar1)
             {
@@ -334,7 +334,7 @@ int CVariableWidget::insertGroupRows(const CVariableWidget::var_list_t& var_list
             m_variablelist->setItem(row + row_index, 2, item);
         }
 
-        QLineEdit* lineEditVar2 = new QLineEdit("0.0000", m_variablelist);
+        QLineEdit* lineEditVar2 = new QLineEdit("0.00", m_variablelist);
 
         if(lineEditVar2)
         {
