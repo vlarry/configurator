@@ -2354,7 +2354,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
     if(type == CALCULATE_TYPE)
     {
-        showErrorMessage(tr("Чтение расчетных величин"), unit);
+        if(showErrorMessage(tr("Чтение расчетных величин"), unit))
+            return;
 
         RegisterAddress addr = RegisterAddress(unit.property("PART").toInt());
 
@@ -2370,18 +2371,18 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == GENERAL_TYPE)
     {
-        showErrorMessage(tr("Чтение уставок"), unit);
-        displaySettingResponse(unit);
+        if(!showErrorMessage(tr("Чтение уставок"), unit))
+            displaySettingResponse(unit);
     }
     else if(type == GENERAL_CONTROL_TYPE)
     {
-        showErrorMessage(tr("Чтение уставок"), unit);
-        displaySettingControlResponce(unit);
+        if(!showErrorMessage(tr("Чтение уставок"), unit))
+            displaySettingControlResponce(unit);
     }
     else if(type == PURPOSE_OUT_TYPE)
     {
-        showErrorMessage(tr("Матрица привязок выходов"), unit);
-        displayPurposeOutput(unit);
+        if(!showErrorMessage(tr("Матрица привязок выходов"), unit))
+            displayPurposeOutput(unit);
     }
     else if(type == PURPOSE_INPUT_TYPE || type == PURPOSE_INPUT_INVERSE_TYPE)
     {
@@ -2390,7 +2391,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
         if(type == PURPOSE_INPUT_TYPE)
         {
-            showErrorMessage(tr("Матрица привязок входов"), unit);
+            if(showErrorMessage(tr("Матрица привязок входов"), unit))
+                return;
 
             if(input_list.isEmpty())
                 input_list = unit.values();
@@ -2399,7 +2401,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         }
         else if(type == PURPOSE_INPUT_INVERSE_TYPE)
         {
-            showErrorMessage(tr("Матрица привязок инверсий входов"), unit);
+            if(showErrorMessage(tr("Матрица привязок инверсий входов"), unit))
+                return;
 
             if(input_inverse_list.isEmpty())
                 input_inverse_list = unit.values();
@@ -2423,7 +2426,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
             if(!key.isEmpty())
             {
                 journal_set_t& set = m_journal_set[key];
-                set.message.read_count += 0;
+                set.message.read_count = 0;
+                set.isStop = true;
             }
 
             ui->pushButtonJournalRead->setChecked(false);
@@ -2434,18 +2438,18 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == READ_SERIAL_NUMBER)
     {
-        showErrorMessage(tr("Чтение серийного номера"), unit);
-        displayDeviceSerialNumber(unit.values());
+        if(!showErrorMessage(tr("Чтение серийного номера"), unit))
+            displayDeviceSerialNumber(unit.values());
     }
     else if(type == DATETIME_TYPE)
     {
-        showErrorMessage(tr("Чтение настроек Дата/Время"), unit);
-        displayDateTime(unit);
+        if(!showErrorMessage(tr("Чтение настроек Дата/Время"), unit))
+            displayDateTime(unit);
     }
     else if(type == PORTECT_RESERVE_SIGNAL_START)
     {
-        showErrorMessage(tr("Чтение Защиты/Резервные/Сигналы Пуска"), unit);
-        displayProtectReserveSignalStart(unit.values());
+        if(!showErrorMessage(tr("Чтение Защиты/Резервные/Сигналы Пуска"), unit))
+            displayProtectReserveSignalStart(unit.values());
     }
     else if(type == AUTOMATION_SIGNAL_START)
     {
@@ -2453,18 +2457,18 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == COMMUNICATIONS_MODBUS_TIM_REQUEST)
     {
-        showErrorMessage(tr("Чтение времени запроса устройства"), unit);
-        displayCommunicationTimeoutRequest(unit.values());
+        if(!showErrorMessage(tr("Чтение времени запроса устройства"), unit))
+            displayCommunicationTimeoutRequest(unit.values());
     }
     else if(type == COMMUNICATIONS_MODBUS_TIM_SPEED)
     {
-        showErrorMessage(tr("Чтение скорости устройства"), unit);
-        displayCommunicationTimeoutSpeed(unit.values());
+        if(!showErrorMessage(tr("Чтение скорости устройства"), unit))
+            displayCommunicationTimeoutSpeed(unit.values());
     }
     else if(type == COMMUNICATIONS_MODBUS_ADDRESS)
     {
-        showErrorMessage(tr("Чтение адреса устройства"), unit);
-        displayCommunicationAddress(unit.values());
+        if(!showErrorMessage(tr("Чтение адреса устройства"), unit))
+            displayCommunicationAddress(unit.values());
     }
     else if(type == PROTECTION_WORK_MODE_TYPE)
     {
@@ -2472,30 +2476,28 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == MONITOR_PURPOSE_K10_K11_TYPE)
     {
-        showErrorMessage(tr("Мониторинг привязок К10/К11"), unit);
-
-        displayMonitorK10_K11(unit);
+        if(!showErrorMessage(tr("Мониторинг привязок К10/К11"), unit))
+            displayMonitorK10_K11(unit);
     }
     else if(type == READ_OUTPUT_ALL)
     {
-        showErrorMessage(tr("Чтение состояний все выходы"), unit);
-
+        if(!showErrorMessage(tr("Чтение состояний все выходы"), unit))
         displayOutputAllRead(unit);
     }
     else if(type == READ_INPUTS)
     {
-        showErrorMessage(tr("Чтение состояний входов"), unit);
-        displayInputsRead(unit.values());
+        if(!showErrorMessage(tr("Чтение состояний входов"), unit))
+            displayInputsRead(unit.values());
     }
     else if(type == READ_BLOCK_PROTECTION)
     {
-        showErrorMessage(tr("Чтение блокировок защит"), unit);
-        displayBlockProtectionRead(unit.values());
+        if(!showErrorMessage(tr("Чтение блокировок защит"), unit))
+            displayBlockProtectionRead(unit.values());
     }
     else if(type == READ_DEBUG_INFO)
     {
-        showErrorMessage(tr("Чтение отладочной информации"), unit);
-        displayDebugInfo(unit);
+        if(!showErrorMessage(tr("Чтение отладочной информации"), unit))
+            displayDebugInfo(unit);
     }
     else if(type == READ_STATUS_MCP_INFO || type == READ_STATUS_MODULE_INFO)
     {
@@ -2507,7 +2509,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     if(type >= CALIBRATION_CURRENT_IA && type <= CALIBRATION_CURRENT_3I0)
     {
-        showErrorMessage(tr("Чтение расчетных значений токов"), unit);
+        if(showErrorMessage(tr("Чтение расчетных значений токов"), unit))
+            return;
 
         if(unit.count() != 2)
             return;
@@ -2558,7 +2561,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type >= AMPLITUDE_READ_CH2 && type <= AMPLITUDE_READ_CH5)
     {
-        showErrorMessage(tr("Чтение амплитуд по каналам"), unit);
+        if(showErrorMessage(tr("Чтение амплитуд по каналам"), unit))
+            return;
 
         if(unit.count() != 2)
             return;
@@ -2595,8 +2599,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == INTERNAL_VARIABLES_READ)
     {
-        showErrorMessage(tr("Чтение состояний внутренних переменных"), unit);
-        displayInternalVariables(unit.values());
+        if(!showErrorMessage(tr("Чтение состояний внутренних переменных"), unit))
+            displayInternalVariables(unit.values());
     }
 }
 //------------------------------------
