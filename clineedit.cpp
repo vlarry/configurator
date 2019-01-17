@@ -29,7 +29,7 @@ bool CLineEdit::isValidateText(const QString& text) const
     else if(validatorType() == FLOAT)
     {
         const QDoubleValidator* floatValidator = dynamic_cast<const QDoubleValidator*>(validator());
-
+qDebug() << floatValidator->notation();
         if(floatValidator)
         {
             bottom = static_cast<float>(floatValidator->bottom());

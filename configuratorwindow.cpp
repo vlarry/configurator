@@ -10553,6 +10553,8 @@ void ConfiguratorWindow::synchronization(bool state)
 /*!
  * \brief ConfiguratorWindow::setLineEditValidator
  * \param object Объект к которому применяется валидатор (class CLineEdit)
+ *
+ * Этот метод устаревший и нигде не используется - на удаление
  */
 void ConfiguratorWindow::setLineEditValidator(QObject* object)
 {
@@ -10594,12 +10596,18 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
     }
     else if(limit_min == 0.0 && limit_max == 0.0)
     {
-        lineEdit->setValidator(new QDoubleValidator(0, 100, 6));
+        QDoubleValidator* doubleVal = new QDoubleValidator(0, 100, 6, lineEdit);
+        doubleVal->setNotation(QDoubleValidator::StandardNotation);
+        doubleVal->setLocale(QLocale::C);
+        lineEdit->setValidator(doubleVal);
         lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
     }
     else
     {
-        lineEdit->setValidator(new QDoubleValidator(limit_min, limit_max, 6));
+        QDoubleValidator* doubleVal = new QDoubleValidator(limit_min, limit_max, 6, lineEdit);
+        doubleVal->setNotation(QDoubleValidator::StandardNotation);
+        doubleVal->setLocale(QLocale::C);
+        lineEdit->setValidator(doubleVal);
         lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
     }
 }

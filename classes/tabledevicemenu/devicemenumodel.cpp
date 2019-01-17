@@ -213,7 +213,9 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         }
         else if(item.type.toUpper() == "FLOAT")
         {
-            le->setValidator(new QDoubleValidator(static_cast<double>(min), static_cast<double>(max), 6, le));
+            QDoubleValidator* doubleValidator = new QDoubleValidator(static_cast<double>(min), static_cast<double>(max), 6, le);
+            doubleValidator->setNotation(QDoubleValidator::StandardNotation);
+            le->setValidator(doubleValidator);
             le->setValidatorType(CLineEdit::FLOAT);
             le->setText(QLocale::system().toString(val_default, 'f', 6));
         }
