@@ -15,7 +15,7 @@ void logOutput(QtMsgType type, const QMessageLogContext& context, const QString&
     switch (type)
     {
         case QtDebugMsg:
-#ifdef DEBUG_BUILD
+#ifdef QT_DEBUG
             message = QObject::tr("Отладка: %1 (%2:%3, %4).").arg(msg).arg(context.file).arg(context.line).
                                                               arg(context.function);
 #endif
