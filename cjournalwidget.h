@@ -196,6 +196,7 @@
             void setHalfhourHeaders(const QVector<halfhour_item_t>& halfhour_cols, const QVector<halfhour_item_t>& halfhour_rows);
 
             void journalClear() const;
+            bool journalIsEmpty() const;
 
             static QDateTime unpackDateTime(QVector<quint8>& data);
             static void      convertHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);

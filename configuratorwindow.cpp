@@ -7300,6 +7300,12 @@ void ConfiguratorWindow::startExportToPDF()
         return;
     }
 
+    if(m_active_journal_current->journalIsEmpty())
+    {
+        showMessageBox(tr("Эксорт в PDF"), tr("Текущий журнал пуст. Экспорт невозможен."), QMessageBox::Warning);
+        return;
+    }
+
     QString journal_name = m_active_journal_current->property("NAME").toString();
     QString sn_device    = "s/n: " + m_status_bar->serialNumberText();
 

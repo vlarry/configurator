@@ -175,6 +175,11 @@ void CJournalWidget::journalClear() const
 
     ui->tableWidgetPropertyHalfhourJournal->clearContents();
 }
+//-----------------------------------------
+bool CJournalWidget::journalIsEmpty() const
+{
+    return !ui->tableWidgetJournal->rowCount();
+}
 /*!
  * \brief CJournalWidget::unpackDateTime
  * \param  data Данные в которых хранится упакованные дата и время
