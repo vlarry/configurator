@@ -318,6 +318,46 @@ void ConfiguratorWindow::journalRead(const QString& key)
         return;
 
     journal_set_t& set = m_journal_set[key];
+
+    if(!m_active_journal_current || !m_active_journal_current->table())
+    {
+        return;
+    }
+    else if(set.message.read_total == 0)
+    {
+        showMessageBox(tr("Чтение журнала"), tr("Нечего читать. Журнал Пуст."), QMessageBox::Warning);
+
+        set.isStart = false;
+        set.isStop = false;
+        set.shift_ptr = 0;
+        set.buffer.clear();
+        set.message.read_count = 0;
+        set.message.read_current = 0;
+        set.message.read_start = 0;
+        set.message.read_limit = set.message.read_total;
+
+        ui->pushButtonJournalRead->setChecked(false);
+
+        return;
+    }
+    else if(m_active_journal_current->table()->rowCount() >= set.message.read_total)
+    {
+        showMessageBox(tr("Чтение журнала"), tr("Все сообщения прочитаны"), QMessageBox::Warning);
+
+        set.isStart = false;
+        set.isStop = false;
+        set.shift_ptr = 0;
+        set.buffer.clear();
+        set.message.read_count = 0;
+        set.message.read_current = 0;
+        set.message.read_start = 0;
+        set.message.read_limit = set.message.read_total;
+
+        ui->pushButtonJournalRead->setChecked(false);
+
+        return;
+    }
+
     int sector_size = 4096/set.message.size; // размер сектора в сообщениях, т.е. сколько можно сообщений считать
                                              // без перехода
 
@@ -357,12 +397,6 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
         if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
         {
-            if(m_journal_read_current->table()->rowCount() >= set.message.read_total)
-            {
-                m_popup->setPopupText(tr("Все сообщения прочитаны"));
-                return;
-            }
-
             QMessageBox msgbox;
             msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
             msgbox.setWindowTitle(tr("Чтение журнала"));
