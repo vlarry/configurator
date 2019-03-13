@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QMessageLogContext>
 #include <QTranslator>
+#include <QLibraryInfo>
 //-----------------------------------------------------------------------------------
 void logOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
@@ -15,10 +16,10 @@ void logOutput(QtMsgType type, const QMessageLogContext& context, const QString&
     switch (type)
     {
         case QtDebugMsg:
-#ifdef QT_DEBUG
-            message = QObject::tr("Отладка: %1 (%2:%3, %4).").arg(msg).arg(context.file).arg(context.line).
-                                                              arg(context.function);
-#endif
+            if(QLibraryInfo::isDebugBuild())
+            {
+                message = QObject::tr("Отладка: %1 (%2:%3, %4).").arg(msg).arg(context.file).arg(context.line).arg(context.function);
+            }
         break;
 
         case QtInfoMsg:
@@ -26,18 +27,15 @@ void logOutput(QtMsgType type, const QMessageLogContext& context, const QString&
         break;
 
         case QtWarningMsg:
-            message = QObject::tr("Предупреждение: %1 (%2:%3, %4).").arg(msg).arg(context.file).
-                                                                     arg(context.line).arg(context.function);
+            message = QObject::tr("Предупреждение: %1 (%2:%3, %4).").arg(msg).arg(context.file).arg(context.line).arg(context.function);
         break;
 
         case QtCriticalMsg:
-            message = QObject::tr("Критическая ошибка: %1 (%2:%3, %4).").arg(msg).arg(context.file).
-                                                                         arg(context.line).arg(context.function);
+            message = QObject::tr("Критическая ошибка: %1 (%2:%3, %4).").arg(msg).arg(context.file).arg(context.line).arg(context.function);
         break;
 
         case QtFatalMsg:
-            message = QObject::tr("Фатальная ошибка: %1 (%2:%3, %4).").arg(msg).arg(context.file).
-                                                                       arg(context.line).arg(context.function);
+            message = QObject::tr("Фатальная ошибка: %1 (%2:%3, %4).").arg(msg).arg(context.file).arg(context.line).arg(context.function);
         break;
     }
 
@@ -73,7 +71,7 @@ int main(int argc, char* argv[])
     QCoreApplication::setOrganizationName(ORGANIZATION_NAME);
     QCoreApplication::setOrganizationDomain(ORGANIZATION_DOMAIN);
 
-//    qInstallMessageHandler(logOutput);
+    qInstallMessageHandler(logOutput);
 
     QApplication a(argc, argv);
     QTranslator translator;
