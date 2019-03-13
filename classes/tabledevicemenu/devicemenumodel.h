@@ -77,7 +77,7 @@
             int  rowCountSubgroup(const group_list_t& list);
             void insertHeader(int row, const QString& name, RowType type = HEADER);
             void insertItem(int row, const item_t& item, int index = 0);
-            void insertSubgroup(int row, const group_list_t& list, int index);
+            void insertSubgroup(int row, const group_list_t &list, int index);
 
         private:
             QMap<int, int> m_group_rows;

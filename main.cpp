@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     QCoreApplication::setOrganizationName(ORGANIZATION_NAME);
     QCoreApplication::setOrganizationDomain(ORGANIZATION_DOMAIN);
 
-    qInstallMessageHandler(logOutput);
+//    qInstallMessageHandler(logOutput);
 
     QApplication a(argc, argv);
     QTranslator translator;

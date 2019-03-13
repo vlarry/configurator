@@ -6316,8 +6316,8 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
     query.clear();
 
     if(!query.exec(QString("INSERT INTO deviceCalibrationCurrent (standardPhase, standard3I0, stateIa, stateIb, stateIc, state3I0, dataCount, pauseRequest)"
-                           " VALUES(%1, %2, %3, %4, %5, %6, %7, %8);").arg(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase()).
-                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0()).
+                           " VALUES(%1, %2, %3, %4, %5, %6, %7, %8);").arg(static_cast<double>(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase())).
+                                                                       arg(static_cast<double>(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0())).
                                                                        arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIaState()).
                                                                        arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIbState()).
                                                                        arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIcState()).

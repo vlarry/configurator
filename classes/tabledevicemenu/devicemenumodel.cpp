@@ -21,8 +21,8 @@ void CDeviceMenuTableWidget::setColumns(const QStringList& columns)
 void CDeviceMenuTableWidget::addGroup(const CDeviceMenuTableWidget::group_t& group)
 {
     int cur_row = rowCount();
-
-    setRowCount(cur_row + group.items.count() + rowCountSubgroup(group.subgroup) + 1);
+    int row_count = cur_row + group.items.count() + rowCountSubgroup(group.subgroup) + 1;
+    setRowCount(row_count);
     insertHeader(cur_row, group.name);
 
     m_group_rows[cur_row] = group.items.count() + rowCountSubgroup(group.subgroup) + 1;
@@ -278,15 +278,21 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
 //---------------------------------------------------------------------------------------------------------------
 void CDeviceMenuTableWidget::insertSubgroup(int row, const CDeviceMenuTableWidget::group_list_t& list, int index)
 {
-    for(int i = 0; i < list.count(); i++)
+    CDeviceMenuTableWidget::group_list_t group_list = list;
+    // сортировка переменных в пределах группы по полю sort_id
+    for(auto& group: group_list)
     {
-        group_t group = list[i];
+        std::sort(group.items.begin(), group.items.end(), [](item_t& item1, item_t& item2) { return item1.row < item2.row; });
+    }
+
+    for(int i = 0; i < group_list.count(); i++)
+    {
+        group_t group = group_list[i];
 
         for(int j = 0; j < group.items.count(); j++)
         {
             item_t item      = group.items[j];
-            int    row_index = row + item.row + i + 1;
-
+            int    row_index = row + j + 1;
             insertItem(row_index, item, index);
         }
     }
