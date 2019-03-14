@@ -70,6 +70,7 @@
     #include "terminalwindow.h"
     #include "containerwidget.h"
     #include "purposetableview.h"
+    #include "cjournal.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
@@ -110,9 +111,7 @@
                 MONITOR_PURPOSE_K10_K11_TYPE, // чтение привязок для внутренних переменных К10-К11
                 READ_OUTPUT_ALL, // чтение состояний всех выходов
                 READ_INPUTS, // чтение состояний входов
-                READ_EVENT_JOURNAL, // чтение журнала событий
-                READ_EVENT_COUNT, // чтение количества событий в журнале
-                READ_EVENT_SHIFT_PTR, // чтение позиции указателя сдвига журнала событий
+                READ_JOURNAL_EVENT, // чтение журнала событий
                 READ_SERIAL_NUMBER, // чтение серийного номера
                 READ_BLOCK_PROTECTION, // чтение блокировок защит
                 READ_DEBUG_INFO, // чтение отладочной информации
@@ -395,6 +394,7 @@
             void calculateRead(); // запрос расчетных величин
             void debugInfoRead(); // чтение отладочной информации
             void journalRead(const QString& key);
+            void journalRead(CJournal *journal_prt);
             void inputAnalogGeneralRead();
             void inputAnalogCalibrateRead();
             void inputAnalogGroupRead();
@@ -817,6 +817,7 @@
             calibration_current_t            m_calib_of_current; // структура для калибровок по току
             QMap<int, unit_t>                m_monitor_K10_K11_field; // ключ - номер строки, unit - описание полей (привязки для мониторинга К10 и К11
             QMap<int, QCheckBox*>            m_internal_variable_list; // список переменных (ключ - бит переменной)
+            CJournal*                        m_journal_event; // журнал событий
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

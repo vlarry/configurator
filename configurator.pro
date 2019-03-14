@@ -75,9 +75,10 @@ SOURCES += \
         classes/interval/intervaldialog.cpp \
         classes/widget/widget.cpp \
         classes/terminal/terminalwindow.cpp \
-    classes/widget/dockwidget.cpp \
-    classes/widget/containerwidget.cpp \
-    classes/widget/RangeSlider.cpp
+        classes/widget/dockwidget.cpp \
+        classes/widget/containerwidget.cpp \
+        classes/widget/RangeSlider.cpp \
+        classes/journal/cjournal.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -129,9 +130,10 @@ HEADERS += \
         classes/interval/intervaldialog.h \
         classes/widget/widget.h \
         classes/terminal/terminalwindow.h \
-    classes/widget/dockwidget.h \
-    classes/widget/containerwidget.h \
-    classes/widget/RangeSlider.h
+        classes/widget/dockwidget.h \
+        classes/widget/containerwidget.h \
+        classes/widget/RangeSlider.h \
+        classes/journal/cjournal.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -158,8 +160,8 @@ FORMS += \
         classes/calibrationwidget/calibrationwidget.ui \
         classes/user/userdialog.ui \
         classes/interval/intervaldialog.ui \
-    classes/widget/dockwidget.ui \
-    classes/widget/containerwidget.ui
+        classes/widget/dockwidget.ui \
+        classes/widget/containerwidget.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \
@@ -172,7 +174,8 @@ INCLUDEPATH += "classes/modbus" \
                "classes/user" \
                "classes/interval" \
                "classes/widget" \
-               "classes/terminal"
+               "classes/terminal" \
+               "classes/journal"
 
 include(classes/excel/xlsx/qtxlsx.pri)
 

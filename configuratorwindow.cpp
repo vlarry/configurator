@@ -113,6 +113,12 @@ ConfiguratorWindow::~ConfiguratorWindow()
         QSqlDatabase::removeDatabase("PROJECT");
     }
 
+    if(m_journal_event)
+    {
+        delete m_journal_event;
+        m_journal_event = nullptr;
+    }
+
     delete m_modbus;
     m_modbus = nullptr;
     
@@ -501,6 +507,34 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
     m_journal_timer->start(1000);
     m_time_process_speed.start();
+}
+/*!
+ * \brief ConfiguratorWindow::journalRead
+ * \param journal указатель на открытый журнал
+ */
+void ConfiguratorWindow::journalRead(CJournal *journal_prt)
+{
+    if(!journal_prt)
+        return;
+
+    int size_msg = journal_prt->sizeMsg();
+    int size_request = journal_prt->sizeRequest();
+
+    CJournal::cell_t msg_count = (size_msg/2)*size_request;
+
+    if(size_msg*size_request > 248) // размер сообщения превышает больше 248 байт 255 - 7 байт накладных расходов
+    {
+        msg_count = (size_msg/2)*size_request/2;
+    }
+
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
+                         journal_prt->shiftPrt(), msg_count);
+    unit.setProperty(tr("REQUEST"), READ_JOURNAL);
+    QVariant var;
+    var.setValue<JournalPtr>(journal_prt);
+    unit.setProperty(tr("JOURNAL"), var);
+
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -2313,31 +2347,41 @@ void ConfiguratorWindow::internalVariableRead()
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
 {
-    if(!m_active_journal_current) // если активынй журнал не выбран, значит ошибка
+    DeviceMenuItemType item = menuIndex();
+
+    JournalPtr journal = nullptr;
+
+    if(item == DEVICE_MENU_ITEM_JOURNALS_EVENTS)
     {
-        showMessageBox(tr("Чтение журнала"), tr("Не выбран текущий активный журнал. Поробуйте еще раз"), QMessageBox::Warning);
-        return;
+        journal = m_journal_event;
     }
 
-    QString key = m_active_journal_current->property("TYPE").toString();
+    journalRead(journal);
+//    if(!m_active_journal_current) // если активынй журнал не выбран, значит ошибка
+//    {
+//        showMessageBox(tr("Чтение журнала"), tr("Не выбран текущий активный журнал. Поробуйте еще раз"), QMessageBox::Warning);
+//        return;
+//    }
 
-    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
-    {
-        return;
-    }
+//    QString key = m_active_journal_current->property("TYPE").toString();
 
-    readJournalCount();
+//    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
+//    {
+//        return;
+//    }
 
-    if(!state)
-    {
-        journal_set_t& set = m_journal_set[key];
+//    readJournalCount();
 
-        set.message.read_limit = set.message.read_count;
+//    if(!state)
+//    {
+//        journal_set_t& set = m_journal_set[key];
 
-        set.isStop = true;
-    }
+//        set.message.read_limit = set.message.read_count;
 
-    journalRead(key);
+//        set.isStop = true;
+//    }
+
+//    journalRead(key);
 }
 //--------------------------------------
 void ConfiguratorWindow::processExport()
@@ -2453,22 +2497,22 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == READ_JOURNAL || type == READ_JOURNAL_COUNT || type == READ_JOURNAL_SHIFT_PTR)
     {
-        if(showErrorMessage(tr("Чтение журнала"), unit) && type == READ_JOURNAL)
+        if(!showErrorMessage(tr("Чтение журнала"), unit) && type == READ_JOURNAL)
         {
-            QString key = unit.property(tr("JOURNAL")).toString();
+            JournalPtr journal = unit.property(tr("JOURNAL")).value<JournalPtr>();
 
-            if(!key.isEmpty())
+            if(journal)
             {
-                journal_set_t& set = m_journal_set[key];
-                set.message.read_count = 0;
-                set.isStop = true;
-            }
+                journal->appendData(unit.values());
 
-            ui->pushButtonJournalRead->setChecked(false);
-            emit ui->pushButtonJournalRead->clicked(false);
-            return;
-        }
-        processReadJournal(unit);
+                CModBusDataUnit::vlist_t &values = journal->buffer();
+
+                if(values.count() == (journal->sizeMsg()/2)*journal->sizeRequest())
+                {
+                    journal->widget()->print(values);
+                    journal->buffer().clear();
+                }
+            }
     }
     else if(type == READ_SERIAL_NUMBER)
     {
@@ -3817,6 +3861,8 @@ void ConfiguratorWindow::initJournals()
                                                 journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
     m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
                                                 journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
+
+    m_journal_event = new CJournal(0x1000, 16, 8, 0x300C, 0x22, ui->widgetJournalEvent);
 }
 //-------------------------------------------
 void ConfiguratorWindow::initProtectionList()
