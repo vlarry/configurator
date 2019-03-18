@@ -6,36 +6,62 @@
     //------------
     class CJournal
     {
-        public:
-            typedef quint16 cell_t;
-            typedef QVector<cell_t> data_t;
-
         private:
-            int m_shift_prt; // указатель сдвига окна чтения
-            int m_size_msg; // размер одного сообщения в байтах
-            int m_size_request; // количество сообщений в одном запросе
-            int m_count_msg; // счетчик принятых сообщений
-            int m_count_limit; // счетчик сообщений, которые необходимо прочитать
-            int m_count_total; // всего доступно сообщений
-            int m_address_shift; // адрес чтения/записи указателя смщения окна чтения
-            int m_address_number; // адрес чтения количества записей в журнале
-            CModBusDataUnit::vlist_t m_buffer; // буфер хранения данных
+            enum { PAGE_LIMIT = 8192 }; // константа ограничения размера страницы (если дошли до этой границы, то необходимо сместить окно чтения)
+            int m_msg_size; // размер сообщения (количество ячеек, которое занимает сообщение)
+            int m_request_size; // размер запроса по умолчанию (содержит количество сообщений в одном запросе)
+            int m_request_last_count; // размер последнего запроса (для проверки пришедших данных)
+            int m_msg_read_on_page; // текущее сообщение на странице (локальный счетчик прочитанных сообщений на странице)
+            int m_msg_read_count; // количество прочитанных сообщений (глобальный счетчик прочитанных сообщений)
+            int m_addr_page_start; // адрес начальной страницы
+            int m_page_addr_cur; // адрес текущей страницы
+            int m_addr_msg_num_r; // адрес чтения доступных сообщений в устройстве (только чтение)
+            int m_addr_page_ptr_rw; // адрес чтения/записи указателя на текущую страницу (окно чтения)
+            int m_msg_total_num; // количество сообщений доступных для чтения
+            int m_msg_start_ptr; // указатель на сообщение с которого начинается чтение
+            int m_msg_limit; // количество сообщений которое необходимо прочитать
+            bool m_read_state; // состояние чтения
+            bool m_is_msg_part; // запрос был частью от одного запроса
+            CModBusDataUnit::vlist_t m_msg_buffer; // буфер запросов
             CJournalWidget* m_widget; // указатель на виджет журнала
-
-            static bool m_state;
 
         public:
             CJournal();
-            CJournal(int shift_ptr, int size_msg, int size_request, int addr_shift, int addr_num, CJournalWidget* widget);
-            ~CJournal();
-            int shiftPrt();
-            int sizeMsg();
-            int sizeRequest();
-            CModBusDataUnit::vlist_t &buffer();
-            CJournalWidget* widget();
+            CJournal(int addr_page_start, int msg_size, int request_size, int addr_msg_num, int addr_page_ptr, CJournalWidget *widget);
+            int addrMsgNum() const;
+            int addrPagePtr() const;
+            int addrPageStart() const;
+            bool isMsgPart() const;
+            CModBusDataUnit::vlist_t& msgBuffer();
+            int msgReadOnPage() const;
+            int msgLimit() const;
+            int msgReadCount() const;
+            int msgSize() const;
+            int msgStartPtr() const;
+            int msgTotalNum() const;
+            int nextPageAddr();
+            int nextRequestSize();
+            int pageAddrCur() const;
+            void print(const CModBusDataUnit::vlist_t &data);
+            int requestSize() const;
+            bool readState() const;
+            CJournalWidget *widget() const;
 
-            void appendData(const CModBusDataUnit::vlist_t &data);
-            void setShiftPtr(int shift_ptr);
+            void appendMsgToBuffer(CModBusDataUnit::vlist_t &msg_buf);
+            void setAddrMsgNum(int value);
+            void setAddrPagePtr(int value);
+            void setAddrPageStart(int value);
+            void setMsgOnPage(int value);
+            void setMsgLimit(int value);
+            void setMsgPart(bool state);
+            void setMsgReadCount(int value);
+            void setMsgSize(int value);
+            void setMsgStartPtr(int value);
+            void setMsgTotalNum(int value);
+            void setPageAddrCur(int value);
+            void setRequestSize(int value);
+            void setReadState(bool state);
+            void widget(CJournalWidget *widget);
     };
     typedef CJournal *JournalPtr;
     Q_DECLARE_METATYPE(JournalPtr)

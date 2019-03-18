@@ -1566,6 +1566,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="pushButtonTestSend">
+          <property name="text">
+           <string>test send</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_58">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>

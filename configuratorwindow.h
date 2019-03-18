@@ -394,7 +394,7 @@
             void calculateRead(); // запрос расчетных величин
             void debugInfoRead(); // чтение отладочной информации
             void journalRead(const QString& key);
-            void journalRead(CJournal *journal_prt);
+            void journalRead(JournalPtr journal);
             void inputAnalogGeneralRead();
             void inputAnalogCalibrateRead();
             void inputAnalogGroupRead();
@@ -671,7 +671,7 @@
             void displaySettingControlResponce(const CModBusDataUnit& unit);
             void displayPurposeOutput(CModBusDataUnit& unit);
             void displayPurposeDIResponse(const QVector<quint16>& input_list, const QVector<quint16>& input_inverse_list);
-            void displayJournalResponse(QVector<quint16>& data);
+            void displayJournalResponse(JournalPtr journal, const QVector<quint16> &values);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void displayProtectReserveSignalStart(const QVector<quint16>& data);
             void displayAutomationAPVSignalStart(const QVector<quint16>& data);
@@ -693,7 +693,7 @@
             int  addressSettingKey(const QString& key) const;
             int  addressPurposeKey(const QString& key) const;
             void readShiftPrtEventJournal();
-            void readJournalCount();
+            void readJournalCount(JournalPtr journal);
             void synchronization(bool state = false);
             void setLineEditValidator(QObject* object);
             void panelVisibleCtrl(QWidget* widget);
@@ -817,7 +817,9 @@
             calibration_current_t            m_calib_of_current; // структура для калибровок по току
             QMap<int, unit_t>                m_monitor_K10_K11_field; // ключ - номер строки, unit - описание полей (привязки для мониторинга К10 и К11
             QMap<int, QCheckBox*>            m_internal_variable_list; // список переменных (ключ - бит переменной)
-            CJournal*                        m_journal_event; // журнал событий
+            JournalPtr                       m_journal_crash; // журнал аварий
+            JournalPtr                       m_journal_event; // журнал событий
+            JournalPtr                       m_journal_halfhour; // журнал получасовок
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

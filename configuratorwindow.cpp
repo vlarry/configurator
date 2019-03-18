@@ -512,29 +512,31 @@ void ConfiguratorWindow::journalRead(const QString& key)
  * \brief ConfiguratorWindow::journalRead
  * \param journal указатель на открытый журнал
  */
-void ConfiguratorWindow::journalRead(CJournal *journal_prt)
+void ConfiguratorWindow::journalRead(JournalPtr journal)
 {
-    if(!journal_prt)
+    if(!journal)
         return;
 
-    int size_msg = journal_prt->sizeMsg();
-    int size_request = journal_prt->sizeRequest();
+    CModBusDataUnit::cell_t msg_count = journal->nextRequestSize();
 
-    CJournal::cell_t msg_count = (size_msg/2)*size_request;
+    int page_addr = journal->nextPageAddr();
 
-    if(size_msg*size_request > 248) // размер сообщения превышает больше 248 байт 255 - 7 байт накладных расходов
-    {
-        msg_count = (size_msg/2)*size_request/2;
-    }
+    if(page_addr == -1)
+        return;
 
     CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
-                         journal_prt->shiftPrt(), msg_count);
+                         page_addr, msg_count);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
     QVariant var;
-    var.setValue<JournalPtr>(journal_prt);
+    var.setValue<JournalPtr>(journal);
     unit.setProperty(tr("JOURNAL"), var);
 
-    m_modbus->sendData(unit);
+    CModBusDataUnit::vlist_t vlist(unit[0], 0);
+    unit.setValues(vlist);
+    qInfo() << QString("Запрос чтения журнала: page addr = %1, data size: %2 cells").arg(page_addr).arg(vlist.count());
+    Sleep(10); // пауза перед тестовой отправкой ответа
+    readyReadData(unit);
+//    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -2348,40 +2350,34 @@ void ConfiguratorWindow::internalVariableRead()
 void ConfiguratorWindow::processReadJournals(bool state)
 {
     DeviceMenuItemType item = menuIndex();
-
     JournalPtr journal = nullptr;
 
-    if(item == DEVICE_MENU_ITEM_JOURNALS_EVENTS)
+    switch(item)
     {
-        journal = m_journal_event;
+        case DEVICE_MENU_ITEM_JOURNALS_CRASHES:
+            journal = m_journal_crash;
+        break;
+
+        case DEVICE_MENU_ITEM_JOURNALS_EVENTS:
+            journal = m_journal_event;
+        break;
+
+        case DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS:
+            journal = m_journal_halfhour;
+        break;
+
+        default:
+            journal = nullptr;
+        break;
     }
 
-    journalRead(journal);
-//    if(!m_active_journal_current) // если активынй журнал не выбран, значит ошибка
-//    {
-//        showMessageBox(tr("Чтение журнала"), tr("Не выбран текущий активный журнал. Поробуйте еще раз"), QMessageBox::Warning);
-//        return;
-//    }
-
-//    QString key = m_active_journal_current->property("TYPE").toString();
-
-//    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
-//    {
-//        return;
-//    }
-
-//    readJournalCount();
-
-//    if(!state)
-//    {
-//        journal_set_t& set = m_journal_set[key];
-
-//        set.message.read_limit = set.message.read_count;
-
-//        set.isStop = true;
-//    }
-
-//    journalRead(key);
+    if(journal)
+    {
+        journal->setReadState(true);
+        journal->setMsgTotalNum(650);
+        journal->setMsgLimit(10);
+        journalRead(journal);
+    }
 }
 //--------------------------------------
 void ConfiguratorWindow::processExport()
@@ -2497,22 +2493,21 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == READ_JOURNAL || type == READ_JOURNAL_COUNT || type == READ_JOURNAL_SHIFT_PTR)
     {
+        JournalPtr journal = unit.property(tr("JOURNAL")).value<JournalPtr>();
+
+        if(!journal)
+            return;
+
+        if(type == READ_JOURNAL_COUNT)
+        {
+            int count = static_cast<int>(static_cast<int>(unit[0] << 16) | static_cast<int>(unit[1]));
+            journal->setMsgTotalNum(count);
+        }
+
         if(!showErrorMessage(tr("Чтение журнала"), unit) && type == READ_JOURNAL)
         {
-            JournalPtr journal = unit.property(tr("JOURNAL")).value<JournalPtr>();
-
-            if(journal)
-            {
-                journal->appendData(unit.values());
-
-                CModBusDataUnit::vlist_t &values = journal->buffer();
-
-                if(values.count() == (journal->sizeMsg()/2)*journal->sizeRequest())
-                {
-                    journal->widget()->print(values);
-                    journal->buffer().clear();
-                }
-            }
+            displayJournalResponse(journal, unit.values());
+        }
     }
     else if(type == READ_SERIAL_NUMBER)
     {
@@ -2839,6 +2834,13 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
     DeviceMenuItemType type = DeviceMenuItemType(item->type());
 
     int menu_item = m_menu_items.value(type, -1);
+
+    if(type == DEVICE_MENU_ITEM_JOURNALS_ROOT) // выбрана вкладка Журналы
+    {
+        readJournalCount(m_journal_event);
+        readJournalCount(m_journal_crash);
+        readJournalCount(m_journal_halfhour);
+    }
 
     if(menu_item != -1)
     {
@@ -3205,21 +3207,6 @@ void ConfiguratorWindow::initMenuPanel()
     m_treeWidgetDeviceMenu->addTopLevelItem(itemSettings);
 
     // заполнение карты меню устройства для доступа к настройкам при клике по пункту
-    m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT] = 10000;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT] = 10000;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ROOT]   = 10000;
-    m_menu_items[DEVICE_MENU_ITEM_MEASURES_ROOT]   = 10000;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ROOT]   = 10000;
-
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]       = 10000;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]    = 10000;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]   = 10000;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]    = 10000;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR ]      = 10000;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE] = 10000;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]     = 10000;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]     = 10000;
-
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG]         = 0;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 1;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]                   = 2;
@@ -3862,7 +3849,9 @@ void ConfiguratorWindow::initJournals()
     m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
                                                 journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 
-    m_journal_event = new CJournal(0x1000, 16, 8, 0x300C, 0x22, ui->widgetJournalEvent);
+    m_journal_event    = new CJournal(0x1000, 16, 8, 0x300C, 0x22, ui->widgetJournalEvent);
+    m_journal_crash    = new CJournal(0x2000, 256, 1, 0x3011, 0x26, ui->widgetJournalCrash);
+    m_journal_halfhour = new CJournal(0x5000, 64, 2, 0x3016, 0x2A, ui->widgetJournalHalfHour);
 }
 //-------------------------------------------
 void ConfiguratorWindow::initProtectionList()
@@ -4876,26 +4865,16 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
 
     model->updateData();
 }
-//---------------------------------------------------------------------
-void ConfiguratorWindow::displayJournalResponse(QVector<quint16>& data)
+//-------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, const QVector<quint16> &values)
 {
-    if(!m_journal_read_current)
+    if(journal)
     {
-        return;
+        journal->print(values);
+
+        if(journal->readState())
+            journalRead(journal);
     }
-
-    QString key = m_journal_read_current->property("TYPE").toString();
-
-    if(m_journal_set.find(key) != m_journal_set.end())
-    {
-        int read  = m_journal_set[key].message.read_count;
-        int total = m_journal_set[key].message.read_total;
-
-        m_journal_read_current->header()->setTextDeviceCountMessages(read, total);
-    }
-
-    if(data.count()*2 >= m_journal_set[key].message.size)
-        m_journal_read_current->print(data);
 }
 //------------------------------------------------------------------------------
 void ConfiguratorWindow::displayDeviceSerialNumber(const QVector<quint16>& data)
@@ -8914,7 +8893,7 @@ void ConfiguratorWindow::loadSettings()
         m_settings->beginGroup("device");
             ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
             ui->checkboxCalibTimeout->setChecked(m_settings->value("timeoutcalculateenable", true).toBool());
-            m_serialPortSettings_window->setDeviceSync(m_settings->value("synctime", 1000).toInt());
+            m_serialPortSettings_window->setDeviceSync(m_settings->value("synctime", 5000).toInt());
             m_serialPortSettings_window->setAutospeed(m_settings->value("autospeed", false).toBool());
         m_settings->endGroup();
 
@@ -9763,8 +9742,8 @@ void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
             set.message.read_count   += count;
             set.message.read_current += count;
 
-            if(!key.isEmpty())
-                displayJournalResponse(data);
+//            if(!key.isEmpty())
+//                displayJournalResponse(data);
 
             m_progressbar->progressIncrement(count);
             m_journal_timer->stop();
@@ -9835,6 +9814,23 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     }
     else if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
     {
+        switch(index)
+        {
+            case DEVICE_MENU_ITEM_JOURNALS_CRASHES:
+                readJournalCount(m_journal_crash);
+            break;
+
+            case DEVICE_MENU_ITEM_JOURNALS_EVENTS:
+                readJournalCount(m_journal_event);
+            break;
+
+            case DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS:
+                readJournalCount(m_journal_halfhour);
+            break;
+
+            default: break;
+        }
+
         ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
 
         int width = ui->stwgtMain->width() - 760;
@@ -9852,8 +9848,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
-
-        readJournalCount();
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME ||
@@ -9903,22 +9897,8 @@ void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
 void ConfiguratorWindow::timeoutSynchronization()
 {
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
-
     unit.setProperty("REQUEST", READ_SERIAL_NUMBER);
-
     m_modbus->sendData(unit);
-
-    DeviceMenuItemType item = menuIndex();
-
-    if(item != DEVICE_MENU_ITEM_NONE)
-    {
-        if(item >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && item <=
-                   DEVICE_MENU_ITEM_JOURNALS_ISOLATION &&
-                   !ui->pushButtonJournalRead->isChecked())
-        {
-            readJournalCount(); // читаем количество сообщений в каждом журнале
-        }
-    }
 
     m_timer_synchronization->start(m_serialPortSettings_window->deviceSync());
 }
@@ -10609,23 +10589,17 @@ void ConfiguratorWindow::readShiftPrtEventJournal()
         m_modbus->sendData(unit);
     }
 }
-//-----------------------------------------
-void ConfiguratorWindow::readJournalCount()
+//-----------------------------------------------------------
+void ConfiguratorWindow::readJournalCount(JournalPtr journal)
 {
-    if(m_journal_set.isEmpty())
-        return;
-
-    for(const QString& key: m_journal_set.keys())
-    {
-        journal_set_t set = m_journal_set[key];
-
         CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
-                             quint16(set.address.msg_count), QVector<quint16>() << 2);
+                             quint16(journal->addrMsgNum()), QVector<quint16>() << 2);
         unit.setProperty(tr("REQUEST"), READ_JOURNAL_COUNT);
-        unit.setProperty(tr("JOURNAL"), key);
+        QVariant var;
+        var.setValue<JournalPtr>(journal);
+        unit.setProperty(tr("JOURNAL"), var);
 
-        m_modbus->sendData(unit);
-    }
+        m_modbus->sendData(unit); 
 }
 //--------------------------------------------------
 void ConfiguratorWindow::synchronization(bool state)
@@ -11505,4 +11479,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonMessageEvent, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleMessage);
     connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
     connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
+
+    // тестовая отправка сообщения
+    connect(ui->pushButtonTestSend, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
 }
