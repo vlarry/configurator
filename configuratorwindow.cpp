@@ -9152,6 +9152,8 @@ void ConfiguratorWindow::initApplication()
         ui->pbtnMenuSaveProject->setDisabled(true);
         ui->pbtnMenuSaveAsProject->setDisabled(true);
     }
+
+    ui->checkBoxJournalPrintRead->hide();
 }
 //-------------------------------------------------------------------------------------------
 void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString& reportName,
@@ -9800,6 +9802,8 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     ui->pushButtonJournalClear->setVisible(false);
     ui->pushButtonDefaultSettings->setVisible(false);
 
+    ui->checkBoxJournalPrintRead->hide();
+
     if(ui->tabwgtMenu->currentIndex() == TAB_HELP_INDEX)
     {
         ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
@@ -9845,6 +9849,8 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
+
+        ui->checkBoxJournalPrintRead->show();
 
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);

@@ -1585,6 +1585,13 @@
           </property>
          </spacer>
         </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxJournalPrintRead">
+          <property name="text">
+           <string>Выводить сообщения в таблицу при чтении (замедляет работу)</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tabFilter">
