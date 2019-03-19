@@ -84,6 +84,7 @@ void CProgressBarWidget::setProgressRange(int min, int max)
 void CProgressBarWidget::setProgressTitle(const QString& title)
 {
     ui->lblProgressbarTitle->setText(title);
+    ui->lblProgressbarTitle->show();
 }
 //--------------------------------------------------
 void CProgressBarWidget::setProgressValue(int value)

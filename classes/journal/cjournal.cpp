@@ -13,7 +13,7 @@ CJournal::CJournal():
     m_msg_total_num(-1),
     m_msg_start_ptr(-1),
     m_msg_limit(-1),
-    m_read_state(false),
+    m_is_msg_read_state(false),
     m_is_msg_part(false),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
     m_widget(nullptr)
@@ -34,7 +34,7 @@ CJournal::CJournal(int addr_page_start, int msg_size, int request_size, int addr
     m_msg_total_num(0),
     m_msg_start_ptr(0),
     m_msg_limit(0),
-    m_read_state(false),
+    m_is_msg_read_state(false),
     m_is_msg_part(false),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
     m_widget(widget)
@@ -219,7 +219,7 @@ void CJournal::print(const CModBusDataUnit::vlist_t &data)
     m_msg_read_on_page += m_request_last_count;
 
     if(m_msg_read_count == m_msg_limit) // чтение окончено
-        m_read_state = false;
+        m_is_msg_read_state = false;
 
     if(m_widget)
         m_widget->print(m_msg_buffer);
@@ -238,9 +238,9 @@ int CJournal::requestSize() const
  * \brief CJournal::readState
  * \return состояние чтения
  */
-bool CJournal::readState() const
+bool CJournal::isMsgReadState() const
 {
-    return m_read_state;
+    return m_is_msg_read_state;
 }
 /*!
  * \brief CJournal::widget
@@ -363,9 +363,9 @@ void CJournal::setRequestSize(int value)
  * \brief CJournal::setState
  * \param state состояние чтения (активно или нет)
  */
-void CJournal::setReadState(bool state)
+void CJournal::setMsgReadState(bool state)
 {
-    m_read_state = state;
+    m_is_msg_read_state = state;
 }
 /*!
  * \brief CJournal::widget

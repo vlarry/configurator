@@ -20,7 +20,7 @@
             int m_msg_total_num; // количество сообщений доступных для чтения
             int m_msg_start_ptr; // указатель на сообщение с которого начинается чтение
             int m_msg_limit; // количество сообщений которое необходимо прочитать
-            bool m_read_state; // состояние чтения
+            bool m_is_msg_read_state; // состояние чтения
             bool m_is_msg_part; // запрос был частью от одного запроса
             CModBusDataUnit::vlist_t m_msg_buffer; // буфер запросов
             CJournalWidget* m_widget; // указатель на виджет журнала
@@ -44,7 +44,7 @@
             int pageAddrCur() const;
             void print(const CModBusDataUnit::vlist_t &data);
             int requestSize() const;
-            bool readState() const;
+            bool isMsgReadState() const;
             CJournalWidget *widget() const;
 
             void appendMsgToBuffer(CModBusDataUnit::vlist_t &msg_buf);
@@ -60,7 +60,7 @@
             void setMsgTotalNum(int value);
             void setPageAddrCur(int value);
             void setRequestSize(int value);
-            void setReadState(bool state);
+            void setMsgReadState(bool state);
             void widget(CJournalWidget *widget);
     };
     typedef CJournal *JournalPtr;

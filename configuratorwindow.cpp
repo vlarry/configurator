@@ -533,7 +533,6 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
 
     CModBusDataUnit::vlist_t vlist(unit[0], 0);
     unit.setValues(vlist);
-    qInfo() << QString("Запрос чтения журнала: page addr = %1, data size: %2 cells").arg(page_addr).arg(vlist.count());
     Sleep(10); // пауза перед тестовой отправкой ответа
     readyReadData(unit);
 //    m_modbus->sendData(unit);
@@ -2351,19 +2350,23 @@ void ConfiguratorWindow::processReadJournals(bool state)
 {
     DeviceMenuItemType item = menuIndex();
     JournalPtr journal = nullptr;
+    QString journal_name;
 
     switch(item)
     {
         case DEVICE_MENU_ITEM_JOURNALS_CRASHES:
             journal = m_journal_crash;
+            journal_name = tr("Аварий");
         break;
 
         case DEVICE_MENU_ITEM_JOURNALS_EVENTS:
             journal = m_journal_event;
+            journal_name = tr("Событий");
         break;
 
         case DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS:
             journal = m_journal_halfhour;
+            journal_name = tr("Получасовок");
         break;
 
         default:
@@ -2373,9 +2376,14 @@ void ConfiguratorWindow::processReadJournals(bool state)
 
     if(journal)
     {
-        journal->setReadState(true);
+        journal->setMsgReadState(true);
         journal->setMsgTotalNum(650);
-        journal->setMsgLimit(10);
+        journal->setMsgLimit(600);
+
+        m_progressbar->setProgressTitle(tr("Чтение журнала %1").arg(journal_name));
+        m_progressbar->setSettings(0, journal->msgLimit() - journal->msgStartPtr(), tr("сообщений"));
+        m_progressbar->progressStart();
+
         journalRead(journal);
     }
 }
@@ -4871,10 +4879,42 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, const QVecto
     if(journal)
     {
         journal->print(values);
-        journal->widget()->header()->setTextDeviceCountMessages(journal->msgReadCount(), journal->msgTotalNum());
 
-        if(journal->readState())
+        int msg_total = journal->msgTotalNum();
+        int msg_read_limit = journal->msgLimit();
+        int msg_read_count = journal->msgReadCount();
+        int msg_read_start = journal->msgStartPtr();
+
+        journal->widget()->header()->setTextDeviceCountMessages(msg_read_count, msg_total);
+        journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
+        m_progressbar->progressIncrement((values.count()/(journal->msgSize()/2)));
+
+        if(journal->isMsgReadState())
+        {
             journalRead(journal);
+        }
+        else
+        {
+            QString msg;
+            QString journal_name = journal->widget()->property("TYPE").toString();
+
+            if(msg_read_limit - msg_read_start == msg_read_count) // прочитаны все сообщения
+            {
+                msg = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
+                      arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
+            }
+            else
+            {
+
+                msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").
+                      arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
+            }
+
+            m_progressbar->progressStop();
+            m_popup->setPopupText(msg);
+            outApplicationEvent(msg);
+            m_popup->show();
+        }
     }
 }
 //------------------------------------------------------------------------------
