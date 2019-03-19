@@ -531,11 +531,7 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
     var.setValue<JournalPtr>(journal);
     unit.setProperty(tr("JOURNAL"), var);
 
-    CModBusDataUnit::vlist_t vlist(unit[0], 0);
-    unit.setValues(vlist);
-    Sleep(10); // пауза перед тестовой отправкой ответа
-    readyReadData(unit);
-//    m_modbus->sendData(unit);
+    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -2352,6 +2348,8 @@ void ConfiguratorWindow::processReadJournals(bool state)
     JournalPtr journal = nullptr;
     QString journal_name;
 
+    ui->pushButtonTestSend->setChecked(state);
+qDebug() << "processReadJournal: " << state;
     switch(item)
     {
         case DEVICE_MENU_ITEM_JOURNALS_CRASHES:
@@ -2376,15 +2374,33 @@ void ConfiguratorWindow::processReadJournals(bool state)
 
     if(journal)
     {
-        journal->setMsgReadState(true);
-        journal->setMsgTotalNum(650);
-        journal->setMsgLimit(600);
+        journal->setMsgReadState(state);
 
-        m_progressbar->setProgressTitle(tr("Чтение журнала %1").arg(journal_name));
-        m_progressbar->setSettings(0, journal->msgLimit() - journal->msgStartPtr(), tr("сообщений"));
-        m_progressbar->progressStart();
+        if(state)
+        {
+            CFilter filter = journal->filter();
 
-        journalRead(journal);
+            int read_limit = journal->msgTotalNum();
+            int read_start = 0;
+
+            if(filter)
+            {
+                if(filter.type() == CFilter::INTERVAL)
+                {
+                    read_start = filter.interval().begin;
+                    read_limit = filter.interval().end;
+                }
+            }
+
+            journal->setMsgStartPtr(read_start);
+            journal->setMsgLimit(read_limit);
+
+            m_progressbar->setProgressTitle(tr("Чтение журнала %1").arg(journal_name));
+            m_progressbar->setSettings(0, journal->msgLimit() - journal->msgStartPtr(), tr("сообщений"));
+            m_progressbar->progressStart();
+
+            journalRead(journal);
+        }
     }
 }
 //--------------------------------------
@@ -2510,11 +2526,18 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         {
             int count = static_cast<int>(static_cast<int>(unit[0] << 16) | static_cast<int>(unit[1]));
             journal->setMsgTotalNum(count);
+            CFilter &filter = journal->filter();
+
+            CFilter::FilterIntervalType interval_type;
+            interval_type.begin = 0;
+            interval_type.end = interval_type.max = count;
+
+            filter.setInterval(interval_type);
         }
 
         if(!showErrorMessage(tr("Чтение журнала"), unit) && type == READ_JOURNAL)
         {
-            displayJournalResponse(journal, unit.values());
+            displayJournalResponse(journal, unit);
         }
     }
     else if(type == READ_SERIAL_NUMBER)
@@ -3857,9 +3880,9 @@ void ConfiguratorWindow::initJournals()
     m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
                                                 journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 
-    m_journal_event    = new CJournal(0x1000, 16, 8, 0x300C, 0x22, ui->widgetJournalEvent);
-    m_journal_crash    = new CJournal(0x2000, 256, 1, 0x3011, 0x26, ui->widgetJournalCrash);
-    m_journal_halfhour = new CJournal(0x5000, 64, 2, 0x3016, 0x2A, ui->widgetJournalHalfHour);
+    m_journal_event    = new CJournal(0x1000, 16, 8, 0x22, 0x300C, ui->widgetJournalEvent);
+    m_journal_crash    = new CJournal(0x2000, 256, 1, 0x26, 0x3011, ui->widgetJournalCrash);
+    m_journal_halfhour = new CJournal(0x5000, 64, 2, 0x2A, 0x3016, ui->widgetJournalHalfHour);
 }
 //-------------------------------------------
 void ConfiguratorWindow::initProtectionList()
@@ -4873,12 +4896,12 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
 
     model->updateData();
 }
-//-------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, const QVector<quint16> &values)
+//----------------------------------------------------------------------------------------
+void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, CModBusDataUnit &unit)
 {
     if(journal)
     {
-        journal->print(values);
+        journal->print(unit);
 
         int msg_total = journal->msgTotalNum();
         int msg_read_limit = journal->msgLimit();
@@ -4887,7 +4910,7 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, const QVecto
 
         journal->widget()->header()->setTextDeviceCountMessages(msg_read_count, msg_total);
         journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
-        m_progressbar->progressIncrement((values.count()/(journal->msgSize()/2)));
+        m_progressbar->progressIncrement((unit.count()/(journal->msgSize()/2)));
 
         if(journal->isMsgReadState())
         {
@@ -4896,7 +4919,9 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, const QVecto
         else
         {
             QString msg;
-            QString journal_name = journal->widget()->property("TYPE").toString();
+            QString journal_type = journal->widget()->property("TYPE").toString();
+            QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
+                                                             tr("Получасовок"):tr("Неизвестный");
 
             if(msg_read_limit - msg_read_start == msg_read_count) // прочитаны все сообщения
             {
@@ -4910,6 +4935,7 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, const QVecto
                       arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
             }
 
+            journal->clear();
             m_progressbar->progressStop();
             m_popup->setPopupText(msg);
             outApplicationEvent(msg);
@@ -11528,5 +11554,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
 
     // тестовая отправка сообщения
-    connect(ui->pushButtonTestSend, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
+    connect(ui->pushButtonTestSend, &QPushButton::toggled, this, &ConfiguratorWindow::processReadJournals);
 }

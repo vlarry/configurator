@@ -13,6 +13,7 @@ CJournal::CJournal():
     m_msg_total_num(-1),
     m_msg_start_ptr(-1),
     m_msg_limit(-1),
+    m_request_time(-1),
     m_is_msg_read_state(false),
     m_is_msg_part(false),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
@@ -34,6 +35,7 @@ CJournal::CJournal(int addr_page_start, int msg_size, int request_size, int addr
     m_msg_total_num(0),
     m_msg_start_ptr(0),
     m_msg_limit(0),
+    m_request_time(0),
     m_is_msg_read_state(false),
     m_is_msg_part(false),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
@@ -64,6 +66,35 @@ int CJournal::addrPagePtr() const
 int CJournal::addrPageStart() const
 {
     return m_addr_page_start;
+}
+/*!
+ * \brief CJournal::clear
+ *
+ * Очистка журнала
+ */
+void CJournal::clear()
+{
+    m_request_last_count = 0;
+    m_msg_read_on_page = 0;
+    m_msg_read_count = 0;
+    m_page_addr_cur = m_addr_page_start;
+    m_msg_total_num = 0;
+    m_msg_start_ptr = 0;
+    m_msg_limit = 0;
+    m_request_time = 0;
+    m_is_msg_read_state = false;
+    m_is_msg_part = false;
+    m_msg_buffer = CModBusDataUnit::vlist_t(0);
+}
+/*!
+ * \brief CJournal::filter
+ * \return ссылка на фильтр
+ *
+ * Фильтр чтения данных
+ */
+CFilter &CJournal::filter()
+{
+    return m_filter;
 }
 /*!
  * \brief CJournal::isMsgPart
@@ -149,7 +180,7 @@ int CJournal::nextPageAddr()
         m_msg_read_on_page = 0;
         m_page_addr_cur += 4096;
     }
-
+    qDebug() << "NEXT PAGE:" << page_addr;
     return page_addr;
 }
 /*!
@@ -180,7 +211,7 @@ int CJournal::nextRequestSize()
 
         m_is_msg_part = !m_is_msg_part; // меняем состояние флага на противоположное
     }
-
+    qDebug() << "NEXT REQUEST: " << read_count;
     return read_count;
 }
 /*!
@@ -196,8 +227,10 @@ int CJournal::pageAddrCur() const
  *
  * Вывод данных в таблицу
  */
-void CJournal::print(const CModBusDataUnit::vlist_t &data)
+void CJournal::print(const CModBusDataUnit &unit)
 {
+    CModBusDataUnit::vlist_t data = unit.values();
+
     if(data.isEmpty() || m_request_last_count <= 0)
         return;
 
@@ -215,6 +248,7 @@ void CJournal::print(const CModBusDataUnit::vlist_t &data)
         return;
     }
 
+    m_request_time += unit.elapsed();
     m_msg_read_count += m_request_last_count;
     m_msg_read_on_page += m_request_last_count;
 
@@ -222,7 +256,11 @@ void CJournal::print(const CModBusDataUnit::vlist_t &data)
         m_is_msg_read_state = false;
 
     if(m_widget)
+    {
         m_widget->print(m_msg_buffer);
+        float speed_kb = float(m_request_last_count*m_msg_size/1024.0f)/float(unit.elapsed()/1000.0f);
+        m_widget->header()->setTextElapsedTime(QString("%1 КБ/сек.").arg(QLocale::system().toString(speed_kb, 'f', 3)));
+    }
 
     m_msg_buffer.clear();
 }
@@ -281,6 +319,14 @@ void CJournal::setAddrPagePtr(int value)
 void CJournal::setAddrPageStart(int value)
 {
     m_addr_page_start = value;
+}
+/*!
+ * \brief CJournal::setFilter
+ * \param filter Фильтр чтения данных
+ */
+void CJournal::setFilter(CFilter &filter)
+{
+    m_filter = filter;
 }
 /*!
  * \brief CJournal::setMsgOnPage

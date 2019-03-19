@@ -163,9 +163,11 @@ void CModBus::readyReadData(QByteArray& bytes)
                     values << CModBusDataUnit::cell_t((mbs << 8) | lbs);
                 }
 
+                m_request.processElapsed(false);
                 CModBusDataUnit unit(id, code_function, m_request.address(), values);
 
                 unit.setProperties(m_request.properties()); // наследуем свойства от запроса
+                unit.setElapsed(m_request.elapsed());
 
                 if(error != CModBusDataUnit::ERROR_NO)
                     unit.setError(error);
@@ -259,6 +261,7 @@ void CModBus::request(CModBusDataUnit& unit)
 
     m_channel->write(ba);
     m_request = unit;
+    m_request.processElapsed(true);
     m_timer_timeout_response->start(m_interval_timeout_response);
     m_time_process.start();
 

@@ -189,3 +189,23 @@ const CModBusDataUnit::vlist_t& CModBusDataUnit::values() const
 {
     return m_values;
 }
+//----------------------------------
+int CModBusDataUnit::elapsed() const
+{
+    return m_request_time;
+}
+//--------------------------------------------------
+void CModBusDataUnit::processElapsed(bool isProcess)
+{
+    if(isProcess)
+        m_elapsed.start();
+    else
+    {
+        m_request_time = m_elapsed.elapsed();
+    }
+}
+//----------------------------------------
+void CModBusDataUnit::setElapsed(int time)
+{
+    m_request_time = time;
+}

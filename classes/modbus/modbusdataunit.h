@@ -2,6 +2,7 @@
     #define CMODBUSDATAUNIT_H
     //----------------
     #include <QVector>
+    #include <QTime>
     #include <QDebug>
     //-------------------
     class CModBusDataUnit
@@ -57,6 +58,9 @@
             void           setValues(vlist_t& values);
             QString        toString() const;
             const vlist_t& values() const;
+            int            elapsed() const;
+            void           processElapsed(bool isProcess);
+            void           setElapsed(int time);
 
         private:
             bool                   m_valid;
@@ -68,5 +72,7 @@
             ErrorType              m_error;
             static function_desc_t m_function_description;
             static error_t         m_error_description;
+            QTime                  m_elapsed; // отслеживания времени выполнения запроса
+            int                    m_request_time; // время выполнения запроса
     };
 #endif // CMODBUSDATAUNIT_H

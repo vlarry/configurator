@@ -1570,6 +1570,9 @@
           <property name="text">
            <string>test send</string>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>

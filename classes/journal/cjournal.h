@@ -3,6 +3,7 @@
     //----------------
     #include "cjournalwidget.h"
     #include "modbusdataunit.h"
+    #include "cfilter.h"
     //------------
     class CJournal
     {
@@ -20,10 +21,12 @@
             int m_msg_total_num; // количество сообщений доступных для чтения
             int m_msg_start_ptr; // указатель на сообщение с которого начинается чтение
             int m_msg_limit; // количество сообщений которое необходимо прочитать
+            int m_request_time; // скорость выполнения запроса (накопитель времени запросов)
             bool m_is_msg_read_state; // состояние чтения
             bool m_is_msg_part; // запрос был частью от одного запроса
             CModBusDataUnit::vlist_t m_msg_buffer; // буфер запросов
             CJournalWidget* m_widget; // указатель на виджет журнала
+            CFilter         m_filter; // фильтр чтения сообщений
 
         public:
             CJournal();
@@ -31,6 +34,8 @@
             int addrMsgNum() const;
             int addrPagePtr() const;
             int addrPageStart() const;
+            void clear();
+            CFilter& filter();
             bool isMsgPart() const;
             CModBusDataUnit::vlist_t& msgBuffer();
             int msgReadOnPage() const;
@@ -42,7 +47,7 @@
             int nextPageAddr();
             int nextRequestSize();
             int pageAddrCur() const;
-            void print(const CModBusDataUnit::vlist_t &data);
+            void print(const CModBusDataUnit &unit);
             int requestSize() const;
             bool isMsgReadState() const;
             CJournalWidget *widget() const;
@@ -51,6 +56,7 @@
             void setAddrMsgNum(int value);
             void setAddrPagePtr(int value);
             void setAddrPageStart(int value);
+            void setFilter(CFilter& filter);
             void setMsgOnPage(int value);
             void setMsgLimit(int value);
             void setMsgPart(bool state);
