@@ -208,7 +208,9 @@ void CJournal::print(const CModBusDataUnit::vlist_t &data)
         return;
     }
 
-    if((m_msg_buffer.count()/(m_msg_size/2)) != m_request_last_count)
+    int read_count = (m_msg_buffer.count()/(m_msg_size/2));
+
+    if(read_count != m_request_last_count)
     {
         return;
     }

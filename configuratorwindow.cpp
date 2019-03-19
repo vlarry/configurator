@@ -4871,6 +4871,7 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, const QVecto
     if(journal)
     {
         journal->print(values);
+        journal->widget()->header()->setTextDeviceCountMessages(journal->msgReadCount(), journal->msgTotalNum());
 
         if(journal->readState())
             journalRead(journal);
