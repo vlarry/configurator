@@ -44,7 +44,7 @@
             int msgSize() const;
             int msgStartPtr() const;
             int msgTotalNum() const;
-            int nextPageAddr();
+            int nextPageAddr(bool *isShift);
             int nextRequestSize();
             int pageAddrCur() const;
             void print(const CModBusDataUnit &unit);

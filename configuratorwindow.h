@@ -587,7 +587,7 @@
             void importPurposeFromJSON();
             void processReadJournal(CModBusDataUnit& unit);
             void widgetStackIndexChanged(int);
-            void setJournalPtrShift(const QString& key, long pos);
+            void setJournalPtrShift(JournalPtr journal);
             void timeoutSynchronization();
             void timeoutDebugInfo();
             void debugInfoCtrl(int timer, bool state = false);
@@ -755,6 +755,7 @@
             void unblockInterface();
             bool clearTableDB(const QSqlDatabase* db, const QString& tableName);
             int showMessageBox(const QString& title, const QString& text, const QMessageBox::Icon type);
+            JournalPtr currentJournalWidget();
             void outLogMessage(const QString& message);
 
         signals:

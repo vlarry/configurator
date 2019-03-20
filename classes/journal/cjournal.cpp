@@ -167,20 +167,24 @@ int CJournal::msgTotalNum() const
  *
  * Расчитывается адрес следующего запроса исходя из заданных параметров
  */
-int CJournal::nextPageAddr()
+int CJournal::nextPageAddr(bool *isShift)
 {
     if(m_addr_page_start == -1 || m_msg_read_on_page == -1)
         return -1;
 
     int page_addr = m_addr_page_start + m_msg_read_on_page*(m_msg_size/2);
 
+    if(isShift)
+        *isShift = false;
+
     if(page_addr == PAGE_LIMIT)
     {
         page_addr = m_addr_page_start;
         m_msg_read_on_page = 0;
         m_page_addr_cur += 4096;
+        *isShift = true;
     }
-    qDebug() << "NEXT PAGE:" << page_addr;
+
     return page_addr;
 }
 /*!

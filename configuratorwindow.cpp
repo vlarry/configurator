@@ -449,7 +449,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
             set.message.read_current = set.message.read_start%sector_size; // устанавливаем текущее сообщение (для определения перехода указатеяля)
         }
 
-        setJournalPtrShift(key, set.shift_ptr);
+//        setJournalPtrShift(key, set.shift_ptr);
 
         m_time_process.start();
 
@@ -465,7 +465,7 @@ void ConfiguratorWindow::journalRead(const QString& key)
         set.shift_ptr += 4096;
         set.message.read_current = 0;
 
-        setJournalPtrShift(key, set.shift_ptr);
+//        setJournalPtrShift(key, set.shift_ptr);
     }
 
     // Расчет размера сообещния
@@ -519,7 +519,14 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
 
     CModBusDataUnit::cell_t msg_count = journal->nextRequestSize();
 
-    int page_addr = journal->nextPageAddr();
+    bool isShift;
+    int page_addr = journal->nextPageAddr(&isShift);
+
+    if(isShift)
+    {
+        setJournalPtrShift(journal);
+        Sleep(10);
+    }
 
     if(page_addr == -1)
         return;
@@ -2344,33 +2351,12 @@ void ConfiguratorWindow::internalVariableRead()
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
 {
-    DeviceMenuItemType item = menuIndex();
     JournalPtr journal = nullptr;
     QString journal_name;
 
     ui->pushButtonTestSend->setChecked(state);
-qDebug() << "processReadJournal: " << state;
-    switch(item)
-    {
-        case DEVICE_MENU_ITEM_JOURNALS_CRASHES:
-            journal = m_journal_crash;
-            journal_name = tr("Аварий");
-        break;
 
-        case DEVICE_MENU_ITEM_JOURNALS_EVENTS:
-            journal = m_journal_event;
-            journal_name = tr("Событий");
-        break;
-
-        case DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS:
-            journal = m_journal_halfhour;
-            journal_name = tr("Получасовок");
-        break;
-
-        default:
-            journal = nullptr;
-        break;
-    }
+    journal = currentJournalWidget();
 
     if(journal)
     {
@@ -6875,6 +6861,33 @@ int ConfiguratorWindow::showMessageBox(const QString& title, const QString& text
 
     return msgbox.exec();
 }
+//---------------------------------------------------
+JournalPtr ConfiguratorWindow::currentJournalWidget()
+{
+    DeviceMenuItemType item = menuIndex();
+    JournalPtr journal = nullptr;
+
+    switch(item)
+    {
+        case DEVICE_MENU_ITEM_JOURNALS_CRASHES:
+            journal = m_journal_crash;
+        break;
+
+        case DEVICE_MENU_ITEM_JOURNALS_EVENTS:
+            journal = m_journal_event;
+        break;
+
+        case DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS:
+            journal = m_journal_halfhour;
+        break;
+
+        default:
+            journal = nullptr;
+        break;
+    }
+
+    return journal;
+}
 //------------------------------------------------------------
 void ConfiguratorWindow::outLogMessage(const QString& message)
 {
@@ -7470,50 +7483,17 @@ void ConfiguratorWindow::startExportToPDF()
 //-------------------------------------
 void ConfiguratorWindow::filterDialog()
 {
-    if(!m_active_journal_current)
-    {
-        showMessageBox(tr("Фильтр"), tr("Выберите текущий журнал"), QMessageBox::Warning);
-        return;
-    }
+    JournalPtr journal = currentJournalWidget();
 
-    QString       key   = m_active_journal_current->property("TYPE").toString();
-    QTableWidget* table = m_active_journal_current->table();
-
-    if(key.isEmpty() || !table)
+    if(!journal)
         return;
 
-    if(m_filter.find(key) == m_filter.end()) // если запись уже присутствует
-    {
-        m_filter.take(key); // удаляем запись по ключу
-    }
-
-    QDate dBegin = QDate::currentDate();
-    QDate dEnd   = QDate::currentDate();
-
-    if(table->rowCount() > 0)
-    {
-        dBegin = QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy");
-        dEnd   = QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy");
-    }
-
-    int count = 0;
-
-    if(m_journal_set.find(key) != m_journal_set.end())
-    {
-        count = m_journal_set[key].message.read_total;
-    }
-
-    CFilter::FilterIntervalType tinterval = { count, 0, count };
-    CFilter::FilterDateType     tdate     = { dBegin, dEnd };
-
-    m_filter[key] = CFilter(tinterval, tdate);
-
-    CFilterDialog* filterDlg = new CFilterDialog(m_filter[key], this);
+    CFilter &filter = journal->filter();
+    CFilterDialog* filterDlg = new CFilterDialog(filter, this);
 
     if(filterDlg->exec() == QDialog::Accepted)
     {
-        CFilter filter = filterDlg->filter();
-        m_filter[key] = filter;
+        filter = filterDlg->filter();
 
         if(filter.type() == CFilter::DATE)
             filterJournal(filter);
@@ -9949,20 +9929,21 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         resizeColumns();
     }
 }
-//-----------------------------------------------------------------------
-void ConfiguratorWindow::setJournalPtrShift(const QString& key, long pos)
+//-------------------------------------------------------------
+void ConfiguratorWindow::setJournalPtrShift(JournalPtr journal)
 {
-    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
+    if(!journal)
         return;
 
-    journal_set_t set = m_journal_set[key];
+    int page_addr = journal->pageAddrCur();
+    QVector<quint16> values = QVector<quint16>() << static_cast<quint16>((page_addr >> 16)&0xFFFF) << static_cast<quint16>(page_addr&0xFFFF);
 
-    QVector<quint16> values = QVector<quint16>() << quint16((pos >> 16)&0xFFFF) << quint16(pos&0xFFFF);
-
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
-                         quint16(set.address.set_shift), values);
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+                         static_cast<quint16>(journal->addrPagePtr()), values);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
-    unit.setProperty(tr("JOURNAL"), key);
+    QVariant var;
+    var.setValue<JournalPtr>(journal);
+    unit.setProperty(tr("JOURNAL"), var);
 
     m_modbus->sendData(unit);
 }
