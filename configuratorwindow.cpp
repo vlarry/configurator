@@ -2510,6 +2510,11 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         if(!journal)
             return;
 
+        if(type == READ_JOURNAL_SHIFT_PTR)
+        {
+
+        }
+
         if(type == READ_JOURNAL_COUNT)
         {
             int count = static_cast<int>(static_cast<int>(unit[0] << 16) | static_cast<int>(unit[1]));
@@ -9939,18 +9944,18 @@ void ConfiguratorWindow::setJournalPtrShift(JournalPtr journal, bool isStart)
     if(!journal)
         return;
 
-    int page_addr = -1;
+    int shift_ptr = -1;
 
     if(isStart) // установлен флаг перемещения на начало чтения
     {
-        page_addr = journal->addrPageStart();
+        shift_ptr = 0;
     }
     else
     {
-        page_addr = journal->pageAddrCur();
+        shift_ptr = journal->pageAddrCur();
     }
 
-    QVector<quint16> values = QVector<quint16>() << static_cast<quint16>((page_addr >> 16)&0xFFFF) << static_cast<quint16>(page_addr&0xFFFF);
+    QVector<quint16> values = QVector<quint16>() << static_cast<quint16>((shift_ptr >> 16)&0xFFFF) << static_cast<quint16>(shift_ptr&0xFFFF);
 
     CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
                          static_cast<quint16>(journal->addrPagePtr()), values);
@@ -10638,24 +10643,29 @@ int ConfiguratorWindow::addressPurposeKey(const QString& key) const
 
     return -1;
 }
-//-------------------------------------------------
-void ConfiguratorWindow::readShiftPrtEventJournal()
+//--------------------------------------------------------------
+void ConfiguratorWindow::readJournalShiftPtr(JournalPtr journal)
 {
-    if(m_journal_set.isEmpty())
+    if(!journal)
         return;
 
-    for(const QString& key: m_journal_set.keys())
-    {
-        journal_set_t set = m_journal_set[key];
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters,
+                         quint16(journal->addrPagePtr()), QVector<quint16>() << 2);
 
-        CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters,
-                             quint16(set.address.set_shift), QVector<quint16>() << 2);
+    unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
+    QVariant var;
+    var.setValue<JournalPtr>(journal);
+    unit.setProperty(tr("JOURNAL"), var);
 
-        unit.setProperty(tr("REQUEST"), READ_JOURNAL_SHIFT_PTR);
-        unit.setProperty(tr("JOURNAL"), key);
+    m_modbus->sendData(unit);
+}
+//---------------------------------------------------
+void ConfiguratorWindow::processReadJournalShiftPtr()
+{
+    JournalPtr journal = currentJournalWidget();
 
-        m_modbus->sendData(unit);
-    }
+    if(journal)
+        readJournalShiftPtr(journal);
 }
 //-----------------------------------------------------------
 void ConfiguratorWindow::readJournalCount(JournalPtr journal)
@@ -11549,5 +11559,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
 
     // тестовая отправка сообщения
-    connect(ui->pushButtonTestSend, &QPushButton::toggled, this, &ConfiguratorWindow::processReadJournals);
+    connect(ui->pushButtonTestSend, &QPushButton::toggled, this, &ConfiguratorWindow::processReadJournalShiftPtr);
 }

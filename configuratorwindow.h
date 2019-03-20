@@ -692,7 +692,8 @@
             int  sizeBlockSetting(const QString& first, const QString& last);
             int  addressSettingKey(const QString& key) const;
             int  addressPurposeKey(const QString& key) const;
-            void readShiftPrtEventJournal();
+            void readJournalShiftPtr(JournalPtr journal);
+            void processReadJournalShiftPtr();
             void readJournalCount(JournalPtr journal);
             void synchronization(bool state = false);
             void setLineEditValidator(QObject* object);
