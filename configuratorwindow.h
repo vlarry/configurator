@@ -587,7 +587,7 @@
             void importPurposeFromJSON();
             void processReadJournal(CModBusDataUnit& unit);
             void widgetStackIndexChanged(int);
-            void setJournalPtrShift(JournalPtr journal);
+            void setJournalPtrShift(JournalPtr journal, bool isStart = false);
             void timeoutSynchronization();
             void timeoutDebugInfo();
             void debugInfoCtrl(int timer, bool state = false);

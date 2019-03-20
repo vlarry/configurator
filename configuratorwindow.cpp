@@ -522,10 +522,10 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
     bool isShift;
     int page_addr = journal->nextPageAddr(&isShift);
 
-    if(isShift)
+    if(isShift) // завиксирован конец страницы - перемещение окна но новую страницу
     {
         setJournalPtrShift(journal);
-        Sleep(10);
+        Sleep(10); // замираем на 10мс на всякий случай (лучше конечно таймер)
     }
 
     if(page_addr == -1)
@@ -2385,6 +2385,8 @@ void ConfiguratorWindow::processReadJournals(bool state)
             m_progressbar->setSettings(0, journal->msgLimit() - journal->msgStartPtr(), tr("сообщений"));
             m_progressbar->progressStart();
 
+            setJournalPtrShift(journal, true); // устанавливаем окно чтения в начало
+            m_time_process.start(); // засекаем время
             journalRead(journal);
         }
     }
@@ -4916,10 +4918,12 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, CModBusDataU
             }
             else
             {
-
                 msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").
                       arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
             }
+
+            float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
+            journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
 
             journal->clear();
             m_progressbar->progressStop();
@@ -9929,13 +9933,23 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         resizeColumns();
     }
 }
-//-------------------------------------------------------------
-void ConfiguratorWindow::setJournalPtrShift(JournalPtr journal)
+//---------------------------------------------------------------------------
+void ConfiguratorWindow::setJournalPtrShift(JournalPtr journal, bool isStart)
 {
     if(!journal)
         return;
 
-    int page_addr = journal->pageAddrCur();
+    int page_addr = -1;
+
+    if(isStart) // установлен флаг перемещения на начало чтения
+    {
+        page_addr = journal->addrPageStart();
+    }
+    else
+    {
+        page_addr = journal->pageAddrCur();
+    }
+
     QVector<quint16> values = QVector<quint16>() << static_cast<quint16>((page_addr >> 16)&0xFFFF) << static_cast<quint16>(page_addr&0xFFFF);
 
     CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
