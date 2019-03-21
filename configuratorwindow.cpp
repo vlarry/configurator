@@ -2386,28 +2386,29 @@ void ConfiguratorWindow::processReadJournals(bool state)
             if(journal->widget()->table()->rowCount() != 0) // таблица журнала не пустая
                 dialogJournalRead(journal);
 
-            int msg_start_ptr = journal->msgStartPtr();
-            int addr_msg = (msg_start_ptr*(journal->msgSize()/2));
+            setJournalPtrShift(journal, true); // сбрасываем указатель на окно чтения в начало
 
-            if(addr_msg >= CJournal::PAGE_SIZE) // если чтение идет не с первого сообщения, то расчитываем смещение
+            int msg_on_page_max = CJournal::PAGE_SIZE/(journal->msgSize()/2); // максимальное количество сообщений на странице
+            int msg_start_ptr = journal->msgStartPtr();
+
+            if(msg_start_ptr >= msg_on_page_max) // если сообщение с которого идет чтение больше максимального кол-ва сообщений на странице
             {
-                int page_num = (addr_msg/CJournal::PAGE_SIZE); // номер страницы
-                int msg_num = (addr_msg%CJournal::PAGE_SIZE)/(journal->msgSize()/2) - 1; // номер сообщения с которого идет чтение
-                int page_addr = page_num*CJournal::PAGE_SIZE + journal->addrPageStart(); // адрес страницы с которой пойдет чтение
+                int page_addr = (msg_start_ptr/msg_on_page_max)*CJournal::PAGE_LIMIT; // адрес страницы на которой находится сообщение (смещение указателя)
+                int msg_num = msg_start_ptr%msg_on_page_max - 1; // номер сообщения с которого начинается чтение
 
                 journal->setPageAddrCur(page_addr); // сохраняем текущую страницу (с которой пойдет чтение)
                 journal->setMsgOnPage(msg_num); // устанавливаем сообщение на странице с которого пойдет чтение
+
                 setJournalPtrShift(journal); // устанавливаем окно чтения на текущую страницу
             }
-            else if(msg_start_ptr > 0 && msg_start_ptr < CJournal::PAGE_SIZE) // сообщение идет не с начало, но на первой странице
+            else if(msg_start_ptr > 0 && msg_start_ptr < msg_on_page_max) // сообщение идет не с начало, но на первой странице
             {
                 journal->setMsgOnPage(msg_start_ptr); // устанавливаем сообщение на странице с которого пойдет чтение
             }
-            else if(msg_start_ptr == 0) // чтение идет с самого начала
-            {
-                setJournalPtrShift(journal, true);
-            }
 
+            journal_name = journal->widget()->property("TYPE").toString();
+            journal_name = (journal_name == "CRASH")?tr("Аварий"):(journal_name == "EVENT")?tr("Событий"):(journal_name == "HALFHOUR")?
+                                                     tr("Получасовок"):tr("Без имени");
             m_progressbar->setProgressTitle(tr("Чтение журнала %1").arg(journal_name));
             m_progressbar->setSettings(0, journal->msgLimit() - journal->msgStartPtr(), tr("сообщений"));
             m_progressbar->progressStart();

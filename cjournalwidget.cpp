@@ -437,67 +437,67 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
         quint16 id = static_cast<quint16>((data[i + 1] << 8) | data[i]);
 
         QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
+qInfo() << QString("ID: %1, date: %2, time: %3").arg(id).arg(dt.date().toString("dd.MM.yyyy")).arg(dt.time().toString("HH:mm:ss.zzz"));
+//        quint8  type_event      = data[i + 7];
+//        quint8  category_event  = data[i + 8];
+//        quint16 parameter_event = static_cast<quint16>(data[i + 9] | (data[i + 10] << 8));
 
-        quint8  type_event      = data[i + 7];
-        quint8  category_event  = data[i + 8];
-        quint16 parameter_event = static_cast<quint16>(data[i + 9] | (data[i + 10] << 8));
+//        QVector<QString> category_error_list = QVector<QString>() << tr("Ok") << tr("не ACK") << tr("Привязка") <<
+//                                                                     tr("Контрольная сумма") << tr("9 бит") <<
+//                                                                     tr("Ответ не полный") << tr("Нет ответа") << tr("HAL");
 
-        QVector<QString> category_error_list = QVector<QString>() << tr("Ok") << tr("не ACK") << tr("Привязка") <<
-                                                                     tr("Контрольная сумма") << tr("9 бит") <<
-                                                                     tr("Ответ не полный") << tr("Нет ответа") << tr("HAL");
+//        QVector<event_t> etype = qvariant_cast<QVector<event_t> >(m_journal_data);
 
-        QVector<event_t> etype = qvariant_cast<QVector<event_t> >(m_journal_data);
+//        if(!etype.isEmpty())
+//        {
+//            QVector<event_t> ecategory  = QVector<event_t>();
+//            QVector<event_t> eparameter = QVector<event_t>();
 
-        if(!etype.isEmpty())
-        {
-            QVector<event_t> ecategory  = QVector<event_t>();
-            QVector<event_t> eparameter = QVector<event_t>();
+//            if(etype.count() > type_event)
+//                ecategory = etype[type_event].sub_event;
 
-            if(etype.count() > type_event)
-                ecategory = etype[type_event].sub_event;
+//            if(ecategory.count() > category_event)
+//                eparameter = ecategory[category_event].sub_event;
 
-            if(ecategory.count() > category_event)
-                eparameter = ecategory[category_event].sub_event;
+//            int row = ui->tableWidgetJournal->rowCount();
 
-            int row = ui->tableWidgetJournal->rowCount();
+//            ui->tableWidgetJournal->insertRow(row);
 
-            ui->tableWidgetJournal->insertRow(row);
+//            QString etype_str = tr("Неизвестный тип");
 
-            QString etype_str = tr("Неизвестный тип");
+//            if(etype.count() > type_event)
+//                etype_str = etype[type_event].name;
 
-            if(etype.count() > type_event)
-                etype_str = etype[type_event].name;
+//            ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
+//            ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
 
-            ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-            ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+//            ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+//            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
+//                                                                                  arg(type_event))));
 
-            ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
-            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
-                                                                                  arg(type_event))));
+//            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
+//            QString eparameter_str = "";
 
-            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
-            QString eparameter_str = "";
+//            if(type_event == 3) // если событие - Ошибка выполнения команды модулем
+//            {
+//                int error_code  = ((parameter_event&0xFF00) >> 8);
+//                parameter_event = parameter_event&0x00FF;
+//                eparameter_str  = (error_code >= category_error_list.count())?tr("Неизвестная ошибка"):tr("Ошибка \'%1\': ").
+//                                                                              arg(category_error_list[error_code]);
+//            }
 
-            if(type_event == 3) // если событие - Ошибка выполнения команды модулем
-            {
-                int error_code  = ((parameter_event&0xFF00) >> 8);
-                parameter_event = parameter_event&0x00FF;
-                eparameter_str  = (error_code >= category_error_list.count())?tr("Неизвестная ошибка"):tr("Ошибка \'%1\': ").
-                                                                              arg(category_error_list[error_code]);
-            }
+//            eparameter_str += ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
+//                               tr("Неизвестный параметр"):eparameter[parameter_event].name);
 
-            eparameter_str += ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
-                               tr("Неизвестный параметр"):eparameter[parameter_event].name);
+//            ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str +
+//                                                    QString(" (%1)").arg(QString::number(category_event))));
+//            ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str +
+//                                                    QString(" (%1)").arg(QString::number(parameter_event))));
 
-            ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str +
-                                                    QString(" (%1)").arg(QString::number(category_event))));
-            ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str +
-                                                    QString(" (%1)").arg(QString::number(parameter_event))));
-
-            ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-            ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-            ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
-        }
+//            ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+//            ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+//            ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+//        }
     }
 }
 //-------------------------------------------------------------------
