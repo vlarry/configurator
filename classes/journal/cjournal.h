@@ -8,7 +8,6 @@
     class CJournal
     {
         private:
-            enum { PAGE_LIMIT = 8192 }; // константа ограничения размера страницы (если дошли до этой границы, то необходимо сместить окно чтения)
             int m_msg_size; // размер сообщения (количество ячеек, которое занимает сообщение)
             int m_request_size; // размер запроса по умолчанию (содержит количество сообщений в одном запросе)
             int m_request_last_count; // размер последнего запроса (для проверки пришедших данных)
@@ -29,6 +28,7 @@
             CFilter         m_filter; // фильтр чтения сообщений
 
         public:
+            enum { PAGE_LIMIT = 8192, PAGE_SIZE = 4096 }; // константа ограничения размера страницы (если дошли до этой границы, то необходимо сместить окно чтения)
             CJournal();
             CJournal(int addr_page_start, int msg_size, int request_size, int addr_msg_num, int addr_page_ptr, CJournalWidget *widget);
             int addrMsgNum() const;

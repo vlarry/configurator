@@ -78,13 +78,14 @@ void CJournal::clear()
     m_msg_read_on_page = 0;
     m_msg_read_count = 0;
     m_page_addr_cur = m_addr_page_start;
-    m_msg_total_num = 0;
     m_msg_start_ptr = 0;
-    m_msg_limit = 0;
     m_request_time = 0;
     m_is_msg_read_state = false;
     m_is_msg_part = false;
     m_msg_buffer = CModBusDataUnit::vlist_t(0);
+
+    CFilter::FilterIntervalType interv = { m_msg_total_num, 0, m_msg_total_num };
+    m_filter.setInterval(interv);
 }
 /*!
  * \brief CJournal::filter
@@ -184,7 +185,8 @@ int CJournal::nextPageAddr(bool *isShift)
         m_page_addr_cur += 4096;
         *isShift = true;
     }
-
+qDebug() << QString("PAGE: адрес начала = %1, сообщений на странице = %2, результирующий адрес = %3, адрес текущей страницы = %4").arg(m_addr_page_start).
+            arg(m_msg_read_on_page).arg(page_addr).arg(m_page_addr_cur);
     return page_addr;
 }
 /*!
@@ -198,7 +200,7 @@ int CJournal::nextRequestSize()
     if(m_msg_limit == -1 || m_msg_read_count == -1 || (m_msg_limit < m_msg_read_count))
         return -1;
 
-    int read_count = m_msg_limit - m_msg_read_count;
+    int read_count = (m_msg_limit - m_msg_start_ptr) - m_msg_read_count;
 
     if(read_count > m_request_size)
         read_count = m_request_size;
@@ -215,7 +217,9 @@ int CJournal::nextRequestSize()
 
         m_is_msg_part = !m_is_msg_part; // меняем состояние флага на противоположное
     }
-    qDebug() << "NEXT REQUEST: " << read_count;
+    qDebug() << QString("Прочитано: %1, текущее сообщение на странице: %2, размер следующего запроса: %3").arg(m_msg_read_count).arg(m_msg_read_on_page).
+                                                                                                           arg(read_count);
+    qDebug() << QString("Всего сообщений: %1, лимит: %2").arg(m_msg_total_num).arg(m_msg_limit);
     return read_count;
 }
 /*!
@@ -255,8 +259,9 @@ void CJournal::print(const CModBusDataUnit &unit)
     m_request_time += unit.elapsed();
     m_msg_read_count += m_request_last_count;
     m_msg_read_on_page += m_request_last_count;
-
-    if(m_msg_read_count == m_msg_limit) // чтение окончено
+qDebug() << QString("PRINT: прочитано: %1, прочитано на странице: %2, лимит: %3, стартовое сообщение: %4").arg(m_msg_read_count).arg(m_msg_read_on_page).
+                                                                                                           arg(m_msg_limit).arg(m_msg_start_ptr);
+    if(m_msg_read_count == m_msg_limit - m_msg_start_ptr) // чтение окончено
         m_is_msg_read_state = false;
 
     if(m_widget)

@@ -538,6 +538,8 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
     var.setValue<JournalPtr>(journal);
     unit.setProperty(tr("JOURNAL"), var);
 
+    qDebug() << QString("SEND: адрес страницы = %1, количество сообщений: %2").arg(page_addr).arg(msg_count);
+
     m_modbus->sendData(unit);
 }
 /*!
@@ -2381,11 +2383,35 @@ void ConfiguratorWindow::processReadJournals(bool state)
             journal->setMsgStartPtr(read_start);
             journal->setMsgLimit(read_limit);
 
+            if(journal->widget()->table()->rowCount() != 0) // таблица журнала не пустая
+                dialogJournalRead(journal);
+
+            int msg_start_ptr = journal->msgStartPtr();
+            int addr_msg = (msg_start_ptr*(journal->msgSize()/2));
+
+            if(addr_msg >= CJournal::PAGE_SIZE) // если чтение идет не с первого сообщения, то расчитываем смещение
+            {
+                int page_num = (addr_msg/CJournal::PAGE_SIZE); // номер страницы
+                int msg_num = (addr_msg%CJournal::PAGE_SIZE)/(journal->msgSize()/2) - 1; // номер сообщения с которого идет чтение
+                int page_addr = page_num*CJournal::PAGE_SIZE + journal->addrPageStart(); // адрес страницы с которой пойдет чтение
+
+                journal->setPageAddrCur(page_addr); // сохраняем текущую страницу (с которой пойдет чтение)
+                journal->setMsgOnPage(msg_num); // устанавливаем сообщение на странице с которого пойдет чтение
+                setJournalPtrShift(journal); // устанавливаем окно чтения на текущую страницу
+            }
+            else if(msg_start_ptr > 0 && msg_start_ptr < CJournal::PAGE_SIZE) // сообщение идет не с начало, но на первой странице
+            {
+                journal->setMsgOnPage(msg_start_ptr); // устанавливаем сообщение на странице с которого пойдет чтение
+            }
+            else if(msg_start_ptr == 0) // чтение идет с самого начала
+            {
+                setJournalPtrShift(journal, true);
+            }
+
             m_progressbar->setProgressTitle(tr("Чтение журнала %1").arg(journal_name));
             m_progressbar->setSettings(0, journal->msgLimit() - journal->msgStartPtr(), tr("сообщений"));
             m_progressbar->progressStart();
 
-            setJournalPtrShift(journal, true); // устанавливаем окно чтения в начало
             m_time_process.start(); // засекаем время
             journalRead(journal);
         }
@@ -4915,7 +4941,8 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, CModBusDataU
             QString journal_type = journal->widget()->property("TYPE").toString();
             QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
                                                              tr("Получасовок"):tr("Неизвестный");
-
+qDebug() << QString("Всего: %1, лимит: %2, прочитано: %3, стартовое сообщение: %4").arg(msg_total).arg(msg_read_limit).arg(msg_read_count).
+                                                                                    arg(msg_read_start);
             if(msg_read_limit - msg_read_start == msg_read_count) // прочитаны все сообщения
             {
                 msg = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
@@ -4930,6 +4957,7 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, CModBusDataU
             float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
             journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
 
+            ui->pushButtonJournalRead->setChecked(false);
             journal->clear();
             m_progressbar->progressStop();
             m_popup->setPopupText(msg);
@@ -6902,6 +6930,43 @@ void ConfiguratorWindow::outLogMessage(const QString& message)
 {
     qInfo() << message;
     outApplicationEvent(message);
+}
+//------------------------------------------------------------
+void ConfiguratorWindow::dialogJournalRead(JournalPtr journal)
+{
+    if(!journal)
+        return;
+
+    QMessageBox msgbox;
+    msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
+    msgbox.setWindowTitle(tr("Чтение журнала"));
+    msgbox.setInformativeText(tr("В таблице уже присутствуют данные!\nВыберите необходимое действие."));
+    msgbox.setIcon(QMessageBox::Question);
+
+    QPushButton* next   = msgbox.addButton(tr("Продолжить"), QMessageBox::ActionRole);
+    QPushButton* begin  = msgbox.addButton(tr("Сначала"), QMessageBox::ActionRole);
+    QPushButton* cancel = msgbox.addButton(tr("Отмена"), QMessageBox::ActionRole);
+
+    msgbox.setDefaultButton(next);
+    msgbox.exec();
+
+    outApplicationEvent(msgbox.text());
+
+    if(msgbox.clickedButton() == next)
+    {
+        journal->setMsgStartPtr(journal->widget()->table()->rowCount() + 1);
+    }
+    else if(msgbox.clickedButton() == begin)
+    {
+        clearJournal();
+    }
+    else if(msgbox.clickedButton() == cancel)
+    {
+        journal->clear();
+        ui->pushButtonJournalRead->setChecked(false);
+
+        return;
+    }
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
@@ -9963,7 +10028,7 @@ void ConfiguratorWindow::setJournalPtrShift(JournalPtr journal, bool isStart)
     QVariant var;
     var.setValue<JournalPtr>(journal);
     unit.setProperty(tr("JOURNAL"), var);
-
+qDebug() << QString("SHIFT_PTR: перемещение указателя на адрес->%1").arg(shift_ptr);
     m_modbus->sendData(unit);
 }
 //------------------------------------------------
