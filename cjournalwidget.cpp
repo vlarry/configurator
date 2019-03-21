@@ -243,7 +243,7 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
     quint16 id = static_cast<quint16>((data[1] << 8) | data[0]);
 
     QDateTime dt = unpackDateTime(QVector<quint8>() << data[2] << data[3] << data[4] << data[5] << data[6]);
-
+qInfo() << QString("ID: %1, date: %2, time: %3").arg(id).arg(dt.date().toString("dd.MM.yyyy")).arg(dt.time().toString("HH:mm:ss.zzz"));
     int row = ui->tableWidgetJournal->rowCount();
 
     ui->tableWidgetJournal->insertRow(row);

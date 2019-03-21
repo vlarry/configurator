@@ -2384,7 +2384,16 @@ void ConfiguratorWindow::processReadJournals(bool state)
             journal->setMsgLimit(read_limit);
 
             if(journal->widget()->table()->rowCount() != 0) // таблица журнала не пустая
+            {
+                if(journal->widget()->table()->rowCount() == journal->msgTotalNum())
+                {
+                    showMessageBox(tr("Чтение журнала"), tr("Все сообщения прочитаны!"), QMessageBox::Information);
+                    journal->setMsgReadState(false);
+                    ui->pushButtonJournalRead->setChecked(false);
+                    return;
+                }
                 dialogJournalRead(journal);
+            }
 
             setJournalPtrShift(journal, true); // сбрасываем указатель на окно чтения в начало
 
@@ -2403,7 +2412,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
             }
             else if(msg_start_ptr > 0 && msg_start_ptr < msg_on_page_max) // сообщение идет не с начало, но на первой странице
             {
-                journal->setMsgOnPage(msg_start_ptr); // устанавливаем сообщение на странице с которого пойдет чтение
+                journal->setMsgOnPage(msg_start_ptr - 1); // устанавливаем сообщение на странице с которого пойдет чтение
             }
 
             journal_name = journal->widget()->property("TYPE").toString();

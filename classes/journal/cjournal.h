@@ -21,6 +21,7 @@
             int m_msg_start_ptr; // указатель на сообщение с которого начинается чтение
             int m_msg_limit; // количество сообщений которое необходимо прочитать
             int m_request_time; // скорость выполнения запроса (накопитель времени запросов)
+            int m_page_limit; // граница страницы (константа - расчитывается в конструкторе)
             bool m_is_msg_read_state; // состояние чтения
             bool m_is_msg_part; // запрос был частью от одного запроса
             CModBusDataUnit::vlist_t m_msg_buffer; // буфер запросов
@@ -28,7 +29,7 @@
             CFilter         m_filter; // фильтр чтения сообщений
 
         public:
-            enum { PAGE_LIMIT = 8192, PAGE_SIZE = 4096 }; // константа ограничения размера страницы (если дошли до этой границы, то необходимо сместить окно чтения)
+            enum {PAGE_SIZE = 4096, PAGE_LIMIT = 8192 }; // константа ограничения размера страницы (если дошли до этой границы, то необходимо сместить окно чтения)
             CJournal();
             CJournal(int addr_page_start, int msg_size, int request_size, int addr_msg_num, int addr_page_ptr, CJournalWidget *widget);
             int addrMsgNum() const;
@@ -47,6 +48,7 @@
             int nextPageAddr(bool *isShift);
             int nextRequestSize();
             int pageAddrCur() const;
+            int pageLimit() const;
             void print(const CModBusDataUnit &unit);
             int requestSize() const;
             bool isMsgReadState() const;

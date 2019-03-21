@@ -14,6 +14,7 @@ CJournal::CJournal():
     m_msg_start_ptr(-1),
     m_msg_limit(-1),
     m_request_time(-1),
+    m_page_limit(-1),
     m_is_msg_read_state(false),
     m_is_msg_part(false),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
@@ -29,19 +30,20 @@ CJournal::CJournal(int addr_page_start, int msg_size, int request_size, int addr
     m_msg_read_on_page(0),
     m_msg_read_count(0),
     m_addr_page_start(addr_page_start),
-    m_page_addr_cur(addr_page_start),
+    m_page_addr_cur(PAGE_SIZE),
     m_addr_msg_num_r(addr_msg_num),
     m_addr_page_ptr_rw(addr_page_ptr),
     m_msg_total_num(0),
     m_msg_start_ptr(0),
     m_msg_limit(0),
     m_request_time(0),
+    m_page_limit(0),
     m_is_msg_read_state(false),
     m_is_msg_part(false),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
     m_widget(widget)
 {
-
+    m_page_limit = m_addr_page_start + PAGE_SIZE;
 }
 /*!
  * \brief CJournal::addrMsgNum
@@ -77,7 +79,7 @@ void CJournal::clear()
     m_request_last_count = 0;
     m_msg_read_on_page = 0;
     m_msg_read_count = 0;
-    m_page_addr_cur = m_addr_page_start;
+    m_page_addr_cur = PAGE_SIZE;
     m_msg_start_ptr = 0;
     m_request_time = 0;
     m_is_msg_read_state = false;
@@ -178,7 +180,7 @@ int CJournal::nextPageAddr(bool *isShift)
     if(isShift)
         *isShift = false;
 
-    if(page_addr == PAGE_LIMIT)
+    if(page_addr == m_page_limit)
     {
         page_addr = m_addr_page_start;
         m_msg_read_on_page = 0;
@@ -229,6 +231,14 @@ int CJournal::nextRequestSize()
 int CJournal::pageAddrCur() const
 {
     return m_page_addr_cur;
+}
+/*!
+ * \brief CJournal::PAGE_LIMIT
+ * \return предел (граница) окна чтения
+ */
+int CJournal::pageLimit() const
+{
+    return m_page_limit;
 }
 /*!
  * \brief CJournal::print
