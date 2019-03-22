@@ -203,8 +203,7 @@ int CJournal::nextPageAddr(bool *isShift)
         m_page_addr_cur += 4096;
         *isShift = true;
     }
-qDebug() << QString("PAGE: адрес начала = %1, сообщений на странице = %2, результирующий адрес = %3, адрес текущей страницы = %4").arg(m_addr_page_start).
-            arg(m_msg_read_on_page).arg(page_addr).arg(m_page_addr_cur);
+
     return page_addr;
 }
 /*!
@@ -235,9 +234,7 @@ int CJournal::nextRequestSize()
 
         m_is_msg_part = !m_is_msg_part; // меняем состояние флага на противоположное
     }
-    qDebug() << QString("Прочитано: %1, текущее сообщение на странице: %2, размер следующего запроса: %3").arg(m_msg_read_count).arg(m_msg_read_on_page).
-                                                                                                           arg(read_count);
-    qDebug() << QString("Всего сообщений: %1, лимит: %2").arg(m_msg_total_num).arg(m_msg_limit);
+
     return read_count;
 }
 /*!

@@ -535,7 +535,7 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
 
     if(page_addr == -1)
         return;
-
+qDebug() << QString("READ: addr = %1, message = %2").arg(page_addr).arg(msg_count);
     CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
                          page_addr, msg_count);
     unit.setProperty(tr("REQUEST"), READ_JOURNAL);
@@ -2359,8 +2359,6 @@ void ConfiguratorWindow::processReadJournals(bool state)
     JournalPtr journal = nullptr;
     QString journal_name;
 
-    ui->pushButtonTestSend->setChecked(state);
-
     journal = currentJournalWidget();
 
     if(journal)
@@ -2395,6 +2393,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
                     ui->pushButtonJournalRead->setChecked(false);
                     return;
                 }
+
                 dialogJournalRead(journal);
             }
 
@@ -2428,6 +2427,11 @@ void ConfiguratorWindow::processReadJournals(bool state)
             journal->setMsgPrintState(ui->checkBoxJournalPrintRead->isChecked());
 
             m_time_process.start(); // засекаем время
+            m_timer_synchronization->stop(); // отключаем синхронизацию
+
+            if(ui->checkboxCalibTimeout->isChecked()) // отключаем опрос расчетных величин, если было запущено
+                chboxCalculateTimeoutStateChanged(false);
+
             journalRead(journal);
         }
     }
@@ -6991,7 +6995,7 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
     journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
     journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
 
-    if(journal->widget()->table()->rowCount() == 0 && !journal->dataBuffer().isEmpty())
+    if(!journal->dataBuffer().isEmpty())
     {
         journal->widget()->print(journal->dataBuffer());
     }
@@ -7002,6 +7006,11 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
     m_popup->show();
 
     journal->clear();
+
+    timeoutSynchronization(); // включаем синхронизацию
+
+    if(ui->checkboxCalibTimeout->isChecked()) // включаем чтение расчетных величин, если было запущено
+        chboxCalculateTimeoutStateChanged(true);
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
@@ -11659,7 +11668,4 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonMessageEvent, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleMessage);
     connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
     connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
-
-    // тестовая отправка сообщения
-    connect(ui->pushButtonTestSend, &QPushButton::toggled, this, &ConfiguratorWindow::processReadJournalShiftPtr);
 }
