@@ -1,6 +1,7 @@
 #ifndef CJOURNAL_H
     #define CJOURNAL_H
     //----------------
+    #include <QHeaderView>
     #include "cjournalwidget.h"
     #include "modbusdataunit.h"
     #include "cfilter.h"
@@ -22,9 +23,12 @@
             int m_msg_limit; // количество сообщений которое необходимо прочитать
             int m_request_time; // скорость выполнения запроса (накопитель времени запросов)
             int m_page_limit; // граница страницы (константа - расчитывается в конструкторе)
+            bool m_is_clear; // флаг очистки журнала
             bool m_is_msg_read_state; // состояние чтения
             bool m_is_msg_part; // запрос был частью от одного запроса
-            CModBusDataUnit::vlist_t m_msg_buffer; // буфер запросов
+            bool m_is_msg_print; // выводить сообщения в таблицу при получении или сохранять в буфер сообщений
+            CModBusDataUnit::vlist_t m_msg_buffer; // буфер сообщений
+            CModBusDataUnit::vlist_t m_data_buffer; // буфер данных для сохранения сообщений (используется при чтении без вывода)
             CJournalWidget* m_widget; // указатель на виджет журнала
             CFilter         m_filter; // фильтр чтения сообщений
 
@@ -38,6 +42,7 @@
             void clear();
             CFilter& filter();
             bool isMsgPart() const;
+            bool isClear() const;
             CModBusDataUnit::vlist_t& msgBuffer();
             int msgReadOnPage() const;
             int msgLimit() const;
@@ -51,7 +56,9 @@
             int pageLimit() const;
             void print(const CModBusDataUnit &unit);
             int requestSize() const;
+            const CModBusDataUnit::vlist_t &dataBuffer() const;
             bool isMsgReadState() const;
+            bool isMsgPrint() const;
             CJournalWidget *widget() const;
 
             void appendMsgToBuffer(CModBusDataUnit::vlist_t &msg_buf);
@@ -69,6 +76,7 @@
             void setPageAddrCur(int value);
             void setRequestSize(int value);
             void setMsgReadState(bool state);
+            void setMsgPrintState(bool state);
             void widget(CJournalWidget *widget);
     };
     typedef CJournal *JournalPtr;

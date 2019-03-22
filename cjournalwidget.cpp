@@ -17,6 +17,7 @@ CJournalWidget::CJournalWidget(QWidget* parent):
 
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
     connect(ui->tableWidgetJournal, &CJournalTable::clicked, this, &CJournalWidget::clickedItemTable);
+    connect(this, &CJournalWidget::printFinished, this, &CJournalWidget::updateTableJournal);
 
     setAutoFillBackground(true);
 
@@ -28,6 +29,7 @@ CJournalWidget::CJournalWidget(QWidget* parent):
 //-------------------------------
 CJournalWidget::~CJournalWidget()
 {
+
     delete ui;
 }
 //--------------------------------------------
@@ -84,19 +86,6 @@ void CJournalWidget::print(const QVector<quint16>& data) const
     {
         printHalfHour(bytes);
     }
-
-    QTableWidgetItem* itemBeg = ui->tableWidgetJournal->item(0, 1);
-    QTableWidgetItem* itemEnd = ui->tableWidgetJournal->item(ui->tableWidgetJournal->rowCount(), 1);
-
-    if(itemBeg && itemEnd)
-    {
-        ui->widgetJournalHeader->setTextTableCountMessages(QString("%1 - %2/%3").arg(itemBeg->text()).
-                                                           arg(itemEnd->text()).
-                                                           arg(ui->tableWidgetJournal->rowCount()));
-    }
-
-    ui->tableWidgetJournal->resizeColumnsToContents();
-    ui->tableWidgetJournal->horizontalHeader()->setStretchLastSection(true);
 }
 //----------------------------------------------------------------------------------------------------------
 void CJournalWidget::setTableHeaders(CJournalWidget::PropertyType property_type, const QStringList& headers)
@@ -237,197 +226,203 @@ date_t CJournalWidget::secsToDate(quint32 secs)
 //----------------------------------------------------------------
 void CJournalWidget::printCrash(const QVector<quint8>& data) const
 {
-    if(data.count() != 256)
+    if(data.count() < 256 || (data.count()%256) != 0)
         return;
 
-    quint16 id = static_cast<quint16>((data[1] << 8) | data[0]);
-
-    QDateTime dt = unpackDateTime(QVector<quint8>() << data[2] << data[3] << data[4] << data[5] << data[6]);
-qInfo() << QString("ID: %1, date: %2, time: %3").arg(id).arg(dt.date().toString("dd.MM.yyyy")).arg(dt.time().toString("HH:mm:ss.zzz"));
     int row = ui->tableWidgetJournal->rowCount();
 
-    ui->tableWidgetJournal->insertRow(row);
-    ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-    ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
-    ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
-
-    int protect_code = data[7]; // код защиты
-
-    protection_t protection = qvariant_cast<protection_t>(m_journal_data);
-
-    if(protection.items.find(protect_code) == protection.items.end()) // код защиты не обнаружен
-        return;
-
-    QPair<QString, QVector<protection_item_t> > pair = protection.items[protect_code];
-
-    ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(pair.first)); // вывод в таблицу имени защиты
-
-    // парсинг свойств (настроек защиты, переменные, расчетные значения) и занесение их в хранилище таблицы
-    // Настройки защиты - хрантятся в 28 байтах с 8го по 35й включительно
-    QVector<protection_item_t> items = pair.second; // получаем список переменных защиты
-
-    if(items.isEmpty())
-        return;
-
-    property_list_t property_list;
-
-    union // объединение для преобразования в тип float
+    for(int index = 0; index < data.count(); index += 256)
     {
-        quint8  bytes[4];
-        float   _float;
-        quint32 _int;
-    } val;
+        QVector<quint8> msg_data = data.mid(index, 256);
 
-    // добавление в свойства настроек защит
-    property_list << property_data_item_t({ ";", tr("Настройки защиты") });
+        quint16 id = static_cast<quint16>((msg_data[1] << 8) | msg_data[0]);
+        QDateTime dt = unpackDateTime(QVector<quint8>() << msg_data[2] << msg_data[3] << msg_data[4] << msg_data[5] << msg_data[6]);
 
-    for(const protection_item_t& item: items)
-    {
-        if(item.type == "LIST") // если тип является списком, то получаем номер варианта настройки
+        ui->tableWidgetJournal->insertRow(row);
+        ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
+        ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+        ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+
+        int protect_code = msg_data[7]; // код защиты
+
+        protection_t protection = qvariant_cast<protection_t>(m_journal_data);
+
+        if(protection.items.find(protect_code) == protection.items.end()) // код защиты не обнаружен
+            return;
+
+        QPair<QString, QVector<protection_item_t> > pair = protection.items[protect_code];
+
+        ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(pair.first)); // вывод в таблицу имени защиты
+
+        // парсинг свойств (настроек защиты, переменные, расчетные значения) и занесение их в хранилище таблицы
+        // Настройки защиты - хрантятся в 28 байтах с 8го по 35й включительно
+        QVector<protection_item_t> items = pair.second; // получаем список переменных защиты
+
+        if(items.isEmpty())
+            return;
+
+        property_list_t property_list;
+
+        union // объединение для преобразования в тип float
         {
-            int row = data[item.first];
+            quint8  bytes[4];
+            float   _float;
+            quint32 _int;
+        } val;
 
-            if(protection.sets.find(item.index) != protection.sets.end()) // если такой набор настроек существует
+        // добавление в свойства настроек защит
+        property_list << property_data_item_t({ ";", tr("Настройки защиты") });
+
+        for(const protection_item_t& item: items)
+        {
+            if(item.type == "LIST") // если тип является списком, то получаем номер варианта настройки
             {
-                int     count    = protection.sets[item.index].count();
-                QString set_item = tr("Не определена");
+                int row_item = msg_data[item.first];
 
-                if(count >= 0 && row < count)
+                if(protection.sets.find(item.index) != protection.sets.end()) // если такой набор настроек существует
                 {
-                    set_item = protection.sets[item.index][row]; // получаем название варианта настройки
+                    int     count    = protection.sets[item.index].count();
+                    QString set_item = tr("Не определена");
+
+                    if(count >= 0 && row_item < count)
+                    {
+                        set_item = protection.sets[item.index][row_item]; // получаем название варианта настройки
+                    }
+
+                    property_list << property_data_item_t({ item.name, set_item });
+                }
+            }
+            else if(item.type == "FLOAT") // если тип является вещественным типом, то высчитываем значение
+            {
+                for(int i = 0; i < 4; i++) // размерность типа FLOAT 4 байта
+                {
+                    int pos = item.first + i;
+
+                    val.bytes[i] = msg_data[pos];
                 }
 
-                property_list << property_data_item_t({ item.name, set_item });
+                property_list << property_data_item_t({ item.name, QString::number(static_cast<double>(val._float), 'f', 6) });
             }
         }
-        else if(item.type == "FLOAT") // если тип является вещественным типом, то высчитываем значение
+
+        property_list << property_data_item_t({ ";", tr("Расчетные величины") }); // добавление разделителя между блоками переменных
+
+        // добавление в свойства расчетных величин
+        calc_value_list_t calc_value_list = protection.calc;
+
+        if(!calc_value_list.isEmpty())
         {
-            for(int i = 0; i < 4; i++) // размерность типа FLOAT 4 байта
+            for(const calc_value_t& value: calc_value_list)
             {
-                int pos = item.first + i;
+                for(int i = 0; i < 4; i++)
+                {
+                    int pos = value.first + i;
+                    val.bytes[i] = msg_data[pos];
+                }
 
-                val.bytes[i] = data[pos];
+                property_list << property_data_item_t({ value.name, QString::number(static_cast<double>(val._float), 'f', 6) });
             }
-
-            property_list << property_data_item_t({ item.name, QString::number(static_cast<double>(val._float), 'f', 6) });
         }
-    }
 
-    property_list << property_data_item_t({ ";", tr("Расчетные величины") }); // добавление разделителя между блоками переменных
+        property_list << property_data_item_t({ ";", tr("Внутренние переменные: выходы") }); // добавление разделителя между блоками переменных
 
-    // добавление в свойства расчетных величин
-    calc_value_list_t calc_value_list = protection.calc;
+        variable_list_t variable_list = protection.variable;
 
-    if(!calc_value_list.isEmpty())
-    {
-        for(const calc_value_t& value: calc_value_list)
+        if(!variable_list.isEmpty())
         {
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < 48; i += 4) // переход через 4 байта (32 бита) - 32*12 = 384 максимальное количество переменных,
+                // но их пока всего 358
             {
-                int pos = value.first + i;
-                val.bytes[i] = data[pos];
+                for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
+                {
+                    int pos = 36 + i + j;
+
+                    val.bytes[j] = msg_data[pos];
+                }
+
+                quint32 value = val._int;
+
+                for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
+                {
+                    int ivar = i*8 + k; // вычисляем индекс переменной
+
+                    if(ivar >= 358)
+                        break;
+
+                    bool    state = (value&(1 << k));
+                    QString str   = ((state)?tr("Да"):tr("Нет"));
+
+                    property_list << property_data_item_t({ QString("%1 (%2)").arg(variable_list[ivar].index).arg(variable_list[ivar].name),
+                                                            str });
+                }
             }
-
-            property_list << property_data_item_t({ value.name, QString::number(static_cast<double>(val._float), 'f', 6) });
         }
-    }
 
-    property_list << property_data_item_t({ ";", tr("Внутренние переменные: выходы") }); // добавление разделителя между блоками переменных
+        property_list << property_data_item_t({ ";", tr("Реле, светодиоды, модифицируемые переменные") });
 
-    variable_list_t variable_list = protection.variable;
+        io_list_t out_list = protection.out;
 
-    if(!variable_list.isEmpty())
-    {
-        for(int i = 0; i < 48; i += 4) // переход через 4 байта (32 бита) - 32*12 = 384 максимальное количество переменных,
-                                       // но их пока всего 358
+        if(!out_list.isEmpty())
+        {
+            for(int i = 0; i < 8; i += 4)
+            {
+                for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
+                {
+                    int pos = 84 + i + j;
+
+                    val.bytes[j] = msg_data[pos];
+                }
+
+                quint32 value = val._int;
+
+                for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
+                {
+                    int ivar = i*8 + k; // вычисляем индекс переменной
+
+                    if(ivar >= out_list.count())
+                        break;
+
+                    bool    state = (value&(1 << k));
+                    QString str   = ((state)?tr("Да"):tr("Нет"));
+
+                    property_list << property_data_item_t({ QString("%1 (%2)").arg(out_list[ivar].index).arg(out_list[ivar].description),
+                                                            str });
+                }
+            }
+        }
+
+        property_list << property_data_item_t({ ";", tr("Входы") });
+
+        io_list_t input_list = protection.input;
+
+        if(!input_list.isEmpty())
         {
             for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
             {
-                int pos = 36 + i + j;
+                int pos = 92 + j;
 
-                val.bytes[j] = data[pos];
+                val.bytes[j] = msg_data[pos];
             }
 
             quint32 value = val._int;
 
             for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
             {
-                int ivar = i*8 + k; // вычисляем индекс переменной
-
-                if(ivar >= 358)
+                if(k >= 20)
                     break;
 
                 bool    state = (value&(1 << k));
                 QString str   = ((state)?tr("Да"):tr("Нет"));
 
-                property_list << property_data_item_t({ QString("%1 (%2)").arg(variable_list[ivar].index).arg(variable_list[ivar].name),
+                property_list << property_data_item_t({ QString("%1 (%2)").arg(input_list[k].index).arg(input_list[k].description),
                                                         str });
             }
         }
+
+        ui->tableWidgetJournal->setRowData(row++, QVariant::fromValue(property_list));
     }
 
-    property_list << property_data_item_t({ ";", tr("Реле, светодиоды, модифицируемые переменные") });
-
-    io_list_t out_list = protection.out;
-
-    if(!out_list.isEmpty())
-    {
-        for(int i = 0; i < 8; i += 4)
-        {
-            for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
-            {
-                int pos = 84 + i + j;
-
-                val.bytes[j] = data[pos];
-            }
-
-            quint32 value = val._int;
-
-            for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
-            {
-                int ivar = i*8 + k; // вычисляем индекс переменной
-
-                if(ivar >= out_list.count())
-                    break;
-
-                bool    state = (value&(1 << k));
-                QString str   = ((state)?tr("Да"):tr("Нет"));
-
-                property_list << property_data_item_t({ QString("%1 (%2)").arg(out_list[ivar].index).arg(out_list[ivar].description),
-                                                        str });
-            }
-        }
-    }
-
-    property_list << property_data_item_t({ ";", tr("Входы") });
-
-    io_list_t input_list = protection.input;
-
-    if(!input_list.isEmpty())
-    {
-        for(int j = 0; j < 4; j++) // размерность типа INT 4 байта
-        {
-            int pos = 92 + j;
-
-            val.bytes[j] = data[pos];
-        }
-
-        quint32 value = val._int;
-
-        for(int k = 0; k < 32; k++) // обработка переменной состояний из 32 бит
-        {
-            if(k >= 20)
-                break;
-
-            bool    state = (value&(1 << k));
-            QString str   = ((state)?tr("Да"):tr("Нет"));
-
-            property_list << property_data_item_t({ QString("%1 (%2)").arg(input_list[k].index).arg(input_list[k].description),
-                                                    str });
-        }
-    }
-
-    ui->tableWidgetJournal->setRowData(row, QVariant::fromValue(property_list));
+    emit printFinished();
 }
 //----------------------------------------------------------------
 void CJournalWidget::printEvent(const QVector<quint8>& data) const
@@ -437,68 +432,70 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
         quint16 id = static_cast<quint16>((data[i + 1] << 8) | data[i]);
 
         QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
-qInfo() << QString("ID: %1, date: %2, time: %3").arg(id).arg(dt.date().toString("dd.MM.yyyy")).arg(dt.time().toString("HH:mm:ss.zzz"));
-//        quint8  type_event      = data[i + 7];
-//        quint8  category_event  = data[i + 8];
-//        quint16 parameter_event = static_cast<quint16>(data[i + 9] | (data[i + 10] << 8));
 
-//        QVector<QString> category_error_list = QVector<QString>() << tr("Ok") << tr("не ACK") << tr("Привязка") <<
-//                                                                     tr("Контрольная сумма") << tr("9 бит") <<
-//                                                                     tr("Ответ не полный") << tr("Нет ответа") << tr("HAL");
+        quint8  type_event      = data[i + 7];
+        quint8  category_event  = data[i + 8];
+        quint16 parameter_event = static_cast<quint16>(data[i + 9] | (data[i + 10] << 8));
 
-//        QVector<event_t> etype = qvariant_cast<QVector<event_t> >(m_journal_data);
+        QVector<QString> category_error_list = QVector<QString>() << tr("Ok") << tr("не ACK") << tr("Привязка") <<
+                                                                     tr("Контрольная сумма") << tr("9 бит") <<
+                                                                     tr("Ответ не полный") << tr("Нет ответа") << tr("HAL");
 
-//        if(!etype.isEmpty())
-//        {
-//            QVector<event_t> ecategory  = QVector<event_t>();
-//            QVector<event_t> eparameter = QVector<event_t>();
+        QVector<event_t> etype = qvariant_cast<QVector<event_t> >(m_journal_data);
 
-//            if(etype.count() > type_event)
-//                ecategory = etype[type_event].sub_event;
+        if(!etype.isEmpty())
+        {
+            QVector<event_t> ecategory  = QVector<event_t>();
+            QVector<event_t> eparameter = QVector<event_t>();
 
-//            if(ecategory.count() > category_event)
-//                eparameter = ecategory[category_event].sub_event;
+            if(etype.count() > type_event)
+                ecategory = etype[type_event].sub_event;
 
-//            int row = ui->tableWidgetJournal->rowCount();
+            if(ecategory.count() > category_event)
+                eparameter = ecategory[category_event].sub_event;
 
-//            ui->tableWidgetJournal->insertRow(row);
+            int row = ui->tableWidgetJournal->rowCount();
 
-//            QString etype_str = tr("Неизвестный тип");
+            ui->tableWidgetJournal->insertRow(row);
 
-//            if(etype.count() > type_event)
-//                etype_str = etype[type_event].name;
+            QString etype_str = tr("Неизвестный тип");
 
-//            ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-//            ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+            if(etype.count() > type_event)
+                etype_str = etype[type_event].name;
 
-//            ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
-//            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
-//                                                                                  arg(type_event))));
+            ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
+            ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
 
-//            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
-//            QString eparameter_str = "";
+            ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
+                                                                                  arg(type_event))));
 
-//            if(type_event == 3) // если событие - Ошибка выполнения команды модулем
-//            {
-//                int error_code  = ((parameter_event&0xFF00) >> 8);
-//                parameter_event = parameter_event&0x00FF;
-//                eparameter_str  = (error_code >= category_error_list.count())?tr("Неизвестная ошибка"):tr("Ошибка \'%1\': ").
-//                                                                              arg(category_error_list[error_code]);
-//            }
+            QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
+            QString eparameter_str = "";
 
-//            eparameter_str += ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
-//                               tr("Неизвестный параметр"):eparameter[parameter_event].name);
+            if(type_event == 3) // если событие - Ошибка выполнения команды модулем
+            {
+                int error_code  = ((parameter_event&0xFF00) >> 8);
+                parameter_event = parameter_event&0x00FF;
+                eparameter_str  = (error_code >= category_error_list.count())?tr("Неизвестная ошибка"):tr("Ошибка \'%1\': ").
+                                                                              arg(category_error_list[error_code]);
+            }
 
-//            ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str +
-//                                                    QString(" (%1)").arg(QString::number(category_event))));
-//            ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str +
-//                                                    QString(" (%1)").arg(QString::number(parameter_event))));
+            eparameter_str += ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
+                               tr("Неизвестный параметр"):eparameter[parameter_event].name);
 
-//            ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
-//            ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
-//            ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
-//        }
+            ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str +
+                                                    QString(" (%1)").arg(QString::number(category_event))));
+            ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str +
+                                                    QString(" (%1)").arg(QString::number(parameter_event))));
+
+            ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+            ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+            ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        }
     }
+
+    emit printFinished();
 }
 //-------------------------------------------------------------------
 void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
@@ -564,6 +561,8 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
             }
         }
     }
+
+    emit printFinished();
 }
 //-------------------------------------------------------------
 void CJournalWidget::clickedItemTable(const QModelIndex& index)
@@ -626,4 +625,11 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
             }
         }
     }
+}
+//---------------------------------------------
+void CJournalWidget::updateTableJournal() const
+{
+    ui->tableWidgetJournal->resizeColumnsToContents();
+    ui->tableWidgetJournal->horizontalHeader()->setStretchLastSection(true);
+    ui->widgetJournalHeader->setTextTableCountMessages(ui->tableWidgetJournal->rowCount());
 }

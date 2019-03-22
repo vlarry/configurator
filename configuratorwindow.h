@@ -302,7 +302,7 @@
                 bool              isStart;   // чтение первого сообщения
                 bool              isStop;    // останвка чтения сообщений
                 journal_address_t address;
-                journal_message_t message; 
+                journal_message_t message;
                 QVector<quint16>  buffer;    // буфер сообщений
             };
             /*!
@@ -759,6 +759,7 @@
             JournalPtr currentJournalWidget();
             void outLogMessage(const QString& message);
             void dialogJournalRead(JournalPtr journal);
+            void endJournalRead(JournalPtr journal);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

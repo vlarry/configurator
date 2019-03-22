@@ -15,9 +15,12 @@ CJournal::CJournal():
     m_msg_limit(-1),
     m_request_time(-1),
     m_page_limit(-1),
+    m_is_clear(true),
     m_is_msg_read_state(false),
     m_is_msg_part(false),
+    m_is_msg_print(true),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
+    m_data_buffer(CModBusDataUnit::vlist_t(0)),
     m_widget(nullptr)
 {
 
@@ -38,9 +41,12 @@ CJournal::CJournal(int addr_page_start, int msg_size, int request_size, int addr
     m_msg_limit(0),
     m_request_time(0),
     m_page_limit(0),
+    m_is_clear(true),
     m_is_msg_read_state(false),
     m_is_msg_part(false),
+    m_is_msg_print(true),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
+    m_data_buffer(CModBusDataUnit::vlist_t(0)),
     m_widget(widget)
 {
     m_page_limit = m_addr_page_start + PAGE_SIZE;
@@ -82,9 +88,11 @@ void CJournal::clear()
     m_page_addr_cur = PAGE_SIZE;
     m_msg_start_ptr = 0;
     m_request_time = 0;
+    m_is_clear = true;
     m_is_msg_read_state = false;
     m_is_msg_part = false;
     m_msg_buffer = CModBusDataUnit::vlist_t(0);
+    m_data_buffer = CModBusDataUnit::vlist_t(0);
 
     CFilter::FilterIntervalType interv = { m_msg_total_num, 0, m_msg_total_num };
     m_filter.setInterval(interv);
@@ -106,6 +114,14 @@ CFilter &CJournal::filter()
 bool CJournal::isMsgPart() const
 {
     return m_is_msg_part;
+}
+/*!
+ * \brief CJournal::isClear
+ * \return флаг очистки журнала
+ */
+bool CJournal::isClear() const
+{
+    return m_is_clear;
 }
 /*!
  * \brief CJournal::msgBuffer
@@ -269,14 +285,31 @@ void CJournal::print(const CModBusDataUnit &unit)
     m_request_time += unit.elapsed();
     m_msg_read_count += m_request_last_count;
     m_msg_read_on_page += m_request_last_count;
-qDebug() << QString("PRINT: прочитано: %1, прочитано на странице: %2, лимит: %3, стартовое сообщение: %4").arg(m_msg_read_count).arg(m_msg_read_on_page).
-                                                                                                           arg(m_msg_limit).arg(m_msg_start_ptr);
+
     if(m_msg_read_count == m_msg_limit - m_msg_start_ptr) // чтение окончено
+    {
+        if(!m_is_msg_print && !m_data_buffer.isEmpty()) // если данные сохранялись в буфере, то выводим их
+        {
+            m_data_buffer += m_msg_buffer;
+
+            if(m_widget)
+            {
+                m_widget->print(m_data_buffer);
+            }
+
+            m_data_buffer.clear();
+        }
+
         m_is_msg_read_state = false;
+    }
 
     if(m_widget)
     {
-        m_widget->print(m_msg_buffer);
+        if(m_is_msg_print)
+            m_widget->print(m_msg_buffer);
+        else
+            m_data_buffer += m_msg_buffer;
+
         float speed_kb = float(m_request_last_count*m_msg_size/1024.0f)/float(unit.elapsed()/1000.0f);
         m_widget->header()->setTextElapsedTime(QString("%1 КБ/сек.").arg(QLocale::system().toString(speed_kb, 'f', 3)));
     }
@@ -292,12 +325,28 @@ int CJournal::requestSize() const
     return m_request_size;
 }
 /*!
+ * \brief CJournal::dataBuffer
+ * \return ссылка на буфер сообщений
+ */
+const CModBusDataUnit::vlist_t &CJournal::dataBuffer() const
+{
+    return m_data_buffer;
+}
+/*!
  * \brief CJournal::readState
  * \return состояние чтения
  */
 bool CJournal::isMsgReadState() const
 {
     return m_is_msg_read_state;
+}
+/*!
+ * \brief CJournal::isMsgPrint
+ * \return флаг вывода сообщений в таблицу при чтении
+ */
+bool CJournal::isMsgPrint() const
+{
+    return m_is_msg_print;
 }
 /*!
  * \brief CJournal::widget
@@ -431,6 +480,17 @@ void CJournal::setRequestSize(int value)
 void CJournal::setMsgReadState(bool state)
 {
     m_is_msg_read_state = state;
+
+    if(state)
+        m_is_clear = false;
+}
+/*!
+ * \brief CJournal::setMsgPrintState
+ * \param state состояние флага вывода сообщений в таблицу при чтении
+ */
+void CJournal::setMsgPrintState(bool state)
+{
+    m_is_msg_print = state;
 }
 /*!
  * \brief CJournal::widget

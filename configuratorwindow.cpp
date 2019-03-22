@@ -156,6 +156,11 @@ void ConfiguratorWindow::serialPortCtrl()
     else
     {
         m_progressbar->progressStop();
+
+        endJournalRead(m_journal_crash);
+        endJournalRead(m_journal_event);
+        endJournalRead(m_journal_halfhour);
+
         emit m_modbus->close();
     }
 }
@@ -537,8 +542,6 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
     QVariant var;
     var.setValue<JournalPtr>(journal);
     unit.setProperty(tr("JOURNAL"), var);
-
-    qDebug() << QString("SEND: адрес страницы = %1, количество сообщений: %2").arg(page_addr).arg(msg_count);
 
     m_modbus->sendData(unit);
 }
@@ -2421,6 +2424,8 @@ void ConfiguratorWindow::processReadJournals(bool state)
             m_progressbar->setProgressTitle(tr("Чтение журнала %1").arg(journal_name));
             m_progressbar->setSettings(0, journal->msgLimit() - journal->msgStartPtr(), tr("сообщений"));
             m_progressbar->progressStart();
+
+            journal->setMsgPrintState(ui->checkBoxJournalPrintRead->isChecked());
 
             m_time_process.start(); // засекаем время
             journalRead(journal);
@@ -4930,16 +4935,14 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, CModBusDataU
 {
     if(journal)
     {
-        journal->print(unit);
-
         int msg_total = journal->msgTotalNum();
-        int msg_read_limit = journal->msgLimit();
         int msg_read_count = journal->msgReadCount();
-        int msg_read_start = journal->msgStartPtr();
 
         journal->widget()->header()->setTextDeviceCountMessages(msg_read_count, msg_total);
         journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
         m_progressbar->progressIncrement((unit.count()/(journal->msgSize()/2)));
+
+        journal->print(unit);
 
         if(journal->isMsgReadState())
         {
@@ -4947,32 +4950,7 @@ void ConfiguratorWindow::displayJournalResponse(JournalPtr journal, CModBusDataU
         }
         else
         {
-            QString msg;
-            QString journal_type = journal->widget()->property("TYPE").toString();
-            QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
-                                                             tr("Получасовок"):tr("Неизвестный");
-qDebug() << QString("Всего: %1, лимит: %2, прочитано: %3, стартовое сообщение: %4").arg(msg_total).arg(msg_read_limit).arg(msg_read_count).
-                                                                                    arg(msg_read_start);
-            if(msg_read_limit - msg_read_start == msg_read_count) // прочитаны все сообщения
-            {
-                msg = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
-                      arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
-            }
-            else
-            {
-                msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").
-                      arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
-            }
-
-            float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
-            journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
-
-            ui->pushButtonJournalRead->setChecked(false);
-            journal->clear();
-            m_progressbar->progressStop();
-            m_popup->setPopupText(msg);
-            outApplicationEvent(msg);
-            m_popup->show();
+            endJournalRead(journal);
         }
     }
 }
@@ -6978,6 +6956,53 @@ void ConfiguratorWindow::dialogJournalRead(JournalPtr journal)
         return;
     }
 }
+//---------------------------------------------------------
+void ConfiguratorWindow::endJournalRead(JournalPtr journal)
+{
+    ui->pushButtonJournalRead->setChecked(false);
+
+    if(!journal || (journal && journal->isClear()))
+        return;
+
+    int msg_read_limit = journal->msgLimit();
+    int msg_read_start = journal->msgStartPtr();
+    int msg_read_count = journal->msgReadCount();
+    int msg_total = journal->msgTotalNum();
+
+    QString msg;
+    QString journal_type = journal->widget()->property("TYPE").toString();
+    QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
+                                                     tr("Получасовок"):tr("Неизвестный");
+
+    if(msg_read_limit - msg_read_start == msg_read_count) // прочитаны все сообщения
+    {
+        msg = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
+              arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
+    }
+    else
+    {
+        msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").
+              arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
+    }
+
+    float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
+
+    journal->widget()->header()->setTextDeviceCountMessages(msg_read_count, msg_total);
+    journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
+    journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
+
+    if(journal->widget()->table()->rowCount() == 0 && !journal->dataBuffer().isEmpty())
+    {
+        journal->widget()->print(journal->dataBuffer());
+    }
+
+    m_progressbar->progressStop();
+    m_popup->setPopupText(msg);
+    outApplicationEvent(msg);
+    m_popup->show();
+
+    journal->clear();
+}
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
                                                 DeviceMenuItemType index)
@@ -7571,6 +7596,8 @@ void ConfiguratorWindow::filterDialog()
 
     if(!journal)
         return;
+
+    journal->clear();
 
     CFilter &filter = journal->filter();
     CFilterDialog* filterDlg = new CFilterDialog(filter, this);

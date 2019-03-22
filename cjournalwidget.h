@@ -209,14 +209,18 @@
 
         signals:
             void clickedButtonRead(bool = false);
+            void printFinished() const;
+
+        public slots:
+            void updateTableJournal() const;
 
         private slots:
             void clickedItemTable(const QModelIndex& index);
 
         private:
-            Ui::CJournalWidget* ui;
-            QVariant            m_journal_data;
-            PropertyType        m_property_type;
+            Ui::CJournalWidget*   ui;
+            QVariant              m_journal_data;
+            PropertyType          m_property_type;
     };
     // регистрация новых пользовательских типов
     Q_DECLARE_METATYPE(event_t)
