@@ -522,10 +522,9 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
     if(!journal)
         return;
 
-    CModBusDataUnit::cell_t msg_count = journal->nextRequestSize();
-
     bool isShift;
     int page_addr = journal->nextPageAddr(&isShift);
+    CModBusDataUnit::cell_t msg_count = journal->nextRequestSize();
 
     if(isShift) // завиксирован конец страницы - перемещение окна но новую страницу
     {

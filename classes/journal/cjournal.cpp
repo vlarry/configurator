@@ -219,8 +219,14 @@ int CJournal::nextRequestSize()
 
     int read_count = (m_msg_limit - m_msg_start_ptr) - m_msg_read_count;
 
-    if(read_count > m_request_size)
-        read_count = m_request_size;
+    if(read_count > m_request_size) // если количество оставшихся сообщений больше максимального количества в одном запросе
+        read_count = m_request_size; // то запрашиваем максимальное допустимое количество в одном запросе
+
+    int msg_on_page_max = PAGE_SIZE/(m_msg_size/2); // максимальное количество сообщений на странице
+    int msg_read_limit_on_page = msg_on_page_max - m_msg_read_on_page; // количество доступных сообщений на странице
+
+    if(read_count > msg_read_limit_on_page) // количество сообщений доступных для чтения на одной странице меньше, чем расчетное
+        read_count = msg_read_limit_on_page; // значит запрашиваем оставшиеся доступные сообщения на этой странице
 
     m_request_last_count = read_count; // последний запрос измеряемый в количестве запрашиваемых сообщений
     read_count *= m_msg_size/2; // получаем размер запроса в ячейках
