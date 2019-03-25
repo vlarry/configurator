@@ -27,6 +27,7 @@
 
             const FilterDateType&     date() const;
             const FilterIntervalType& interval() const;
+            vod                       reset();
             QTime                     time() const;
             bool                      state() const;
             FilterType                type() const;

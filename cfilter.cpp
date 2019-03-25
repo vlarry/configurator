@@ -29,6 +29,13 @@ const CFilter::FilterIntervalType& CFilter::interval() const
 {
     return m_interval;
 }
+//------------------
+vod CFilter::reset()
+{
+    m_interval = FilterIntervalType({ m_interval.max, 0, m_interval.max });
+    m_date = FilterDateType({ QDate::currentDate(), QDate::currentDate() });
+    m_type = INTERVAL;
+}
 //-------------------------
 QTime CFilter::time() const
 {
