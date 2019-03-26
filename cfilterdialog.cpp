@@ -5,27 +5,9 @@ CFilterDialog::CFilterDialog(const CFilter& filter, QWidget* parent):
     QDialog(parent),
     ui(new Ui::CFilterDialog),
     m_btnGroup(nullptr),
-    m_intervalMax(filter.interval().max)
+    m_filter(filter)
 {
     ui->setupUi(this);
-
-    ui->widgetSliderInterval->SetRange(filter.interval().begin, filter.interval().end);
-    ui->spinBoxIntervalFrom->setRange(filter.interval().begin, filter.interval().end - 1);
-    ui->spinBoxIntervalTo->setRange(filter.interval().begin + 1, filter.interval().end);
-    ui->spinBoxIntervalFrom->setValue(filter.interval().begin);
-    ui->spinBoxIntervalTo->setValue(filter.interval().end);
-    ui->calendarwgtBegin->setSelectedDate(filter.date().begin);
-    ui->calendarwgtEnd->setSelectedDate(filter.date().end);
-
-    ui->listWidgetFilterButton->addItems(QStringList() << tr("Интервал") << tr("Дата"));
-    ui->listWidgetFilterButton->setCurrentRow(0);
-
-    if(filter.interval().begin == 0 && filter.interval().end == 0)
-    {
-        ui->spinBoxIntervalFrom->setDisabled(true);
-        ui->spinBoxIntervalTo->setDisabled(true);
-        ui->widgetSliderInterval->setDisabled(true);
-    }
 
     ui->stackwgtFilter->setCurrentIndex(0);
 
@@ -98,48 +80,33 @@ void CFilterDialog::sliderIntervalToChanged(int value)
 void CFilterDialog::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
+
+    ui->widgetSliderInterval->SetRange(m_filter.rangeMinValue(), m_filter.rangeMaxValue());
+    ui->spinBoxIntervalFrom->setRange(m_filter.rangeMinValue(), m_filter.rangeMaxValue());
+    ui->spinBoxIntervalTo->setRange(m_filter.rangeMinValue(), m_filter.rangeMaxValue());
+    ui->spinBoxIntervalFrom->setValue(m_filter.limitLowValue());
+    ui->spinBoxIntervalTo->setValue(m_filter.limitUpperValue());
+    ui->calendarwgtBegin->setSelectedDate(m_filter.dateFrom());
+    ui->calendarwgtEnd->setSelectedDate(m_filter.dateTo());
+
+    ui->listWidgetFilterButton->addItems(QStringList() << tr("Интервал") << tr("Дата"));
+    ui->listWidgetFilterButton->setCurrentRow(0);
+
+    if(m_filter.limitLowValue() == 0 && m_filter.limitUpperValue() == 0)
+    {
+        ui->spinBoxIntervalFrom->setDisabled(true);
+        ui->spinBoxIntervalTo->setDisabled(true);
+        ui->widgetSliderInterval->setDisabled(true);
+    }
 }
-//-----------------------------------
-const CFilter CFilterDialog::filter()
+//------------------------------------
+const CFilter &CFilterDialog::filter()
 {
-    CFilter::FilterDateType     date;
-    CFilter::FilterIntervalType interval;
+    m_filter.setDate(ui->calendarwgtBegin->selectedDate(), ui->calendarwgtEnd->selectedDate());
+    m_filter.setLimit(ui->widgetSliderInterval->GetLowerValue(), ui->widgetSliderInterval->GetUpperValue());
+    m_filter.setTime(ui->timeEditBeginFilter->time());
+    m_filter.setType(((ui->stackwgtFilter->currentIndex() == 0)?CFilter::FilterLimitType:CFilter::FilterDateType));
+    m_filter.setState(true);
 
-    date.begin = ui->calendarwgtBegin->selectedDate();
-    date.end   = ui->calendarwgtEnd->selectedDate();
-
-    interval.begin = ui->widgetSliderInterval->GetLowerValue();
-    interval.end   = ui->widgetSliderInterval->GetUpperValue();
-
-    CFilter cfilter(interval, date, ui->timeEditBeginFilter->time());
-
-    cfilter.setType(((ui->stackwgtFilter->currentIndex() == 0)?CFilter::INTERVAL:CFilter::DATE));
-    cfilter.setState(true);
-
-    return cfilter;
-}
-//---------------------------------------------------------
-const CFilter::FilterIntervalType CFilterDialog::interval()
-{
-    CFilter::FilterIntervalType i;
-
-    i.begin = ui->widgetSliderInterval->GetLowerValue();
-    i.end   = ui->widgetSliderInterval->GetUpperValue();
-
-    return i;
-}
-//-------------------------------------------------
-const CFilter::FilterDateType CFilterDialog::date()
-{
-    CFilter::FilterDateType d;
-
-    d.begin = ui->calendarwgtBegin->selectedDate();
-    d.end   = ui->calendarwgtEnd->selectedDate();
-
-    return d;
-}
-//-------------------------------
-const QTime CFilterDialog::time()
-{
-    return ui->timeEditBeginFilter->time();
+    return m_filter;
 }

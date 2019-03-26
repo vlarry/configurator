@@ -20,11 +20,7 @@
 
         public:
             explicit CFilterDialog(const CFilter& filter, QWidget* parent = nullptr);
-
-            const CFilter                     filter();
-            const CFilter::FilterIntervalType interval();
-            const CFilter::FilterDateType     date();
-            const QTime                       time();
+            const CFilter &filter();
 
         private slots:
             void filterChanged(int index);
@@ -39,6 +35,6 @@
         private:
             Ui::CFilterDialog* ui;
             QButtonGroup*      m_btnGroup;
-            int                m_intervalMax;
+            CFilter            m_filter;
     };
 #endif // CFILTERDIALOG_H

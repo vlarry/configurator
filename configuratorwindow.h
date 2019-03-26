@@ -581,8 +581,7 @@
             void sendDebugInfoRead(int channel);
             void clearIOTable();
             void clearJournal();
-            void exportToPDF(const CJournalWidget* widget, const QString& reportName, const QString& sn_device,
-                                                                                      const QString& filename);
+            void exportToPDF(const JournalPtr journal, const QString& reportName, const QString& sn_device, const QString& filename);
             void exportPurposeToJSON();
             void importPurposeFromJSON();
             void processReadJournal(CModBusDataUnit& unit);
@@ -603,7 +602,7 @@
             void autospeedStateChanged(bool state);
             void panelMoved(int pos, int index);
             void panelButtonCtrlPress();
-            void filterJournal(const CFilter& filter);
+            void filterJournal(JournalPtr journal);
             void stopProgressbar();
             void timeoutJournalRead();
             void testStyle(bool state);
@@ -760,6 +759,7 @@
             void outLogMessage(const QString& message);
             void dialogJournalRead(JournalPtr journal);
             void endJournalRead(JournalPtr journal);
+            QString journalName(JournalPtr journal);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

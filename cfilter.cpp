@@ -1,78 +1,152 @@
 #include "cfilter.h"
 //-----------------
 CFilter::CFilter():
-    m_interval({ 0, 0, 0 }),
-    m_date({ QDate::currentDate(), QDate::currentDate() }),
+    m_range(RangeType({ 0, 0 })),
+    m_limit(LimitType({ 0, 0 })),
+    m_date(DateType({ QDate::currentDate(), QDate::currentDate() })),
     m_time(QTime::fromString("00:00:00", "HH:mm:ss")),
-    m_state(OFF),
-    m_type(INTERVAL)
+    m_type(FilterLimitType),
+    m_state(false)
 {
 
 }
-//--------------------------------------------------------------------------------------------------
-CFilter::CFilter(const FilterIntervalType& interval, const FilterDateType& date, const QTime& time):
-    m_interval(interval),
+//-----------------------------------------------------------------------------
+CFilter::CFilter(int min, int max, int low, int upper, QDate &from, QDate &to):
+    m_range(RangeType({ min, max })),
+    m_limit(LimitType({ low, upper })),
+    m_date(DateType({ from, to })),
+    m_time(QTime::fromString("00:00:00", "HH:mm:ss")),
+    m_type(FilterLimitType),
+    m_state(false)
+{
+
+}
+//----------------------------------------------------------------------------------------------
+CFilter::CFilter(CFilter::RangeType &range, CFilter::LimitType &limit, CFilter::DateType &date):
+    m_range(range),
+    m_limit(limit),
     m_date(date),
-    m_time(time),
-    m_state(OFF),
-    m_type(INTERVAL)
+    m_time(QTime::fromString("00:00:00", "HH:mm:ss")),
+    m_type(FilterLimitType),
+    m_state(false)
 {
 
 }
-//--------------------------------------------------
-const CFilter::FilterDateType& CFilter::date() const
+//----------------------------------
+CFilter::RangeType &CFilter::range()
+{
+    return m_range;
+}
+//----------------------------------
+CFilter::LimitType &CFilter::limit()
+{
+    return m_limit;
+}
+//--------------------------------
+CFilter::DateType &CFilter::date()
 {
     return m_date;
 }
-//----------------------------------------------------------
-const CFilter::FilterIntervalType& CFilter::interval() const
+//--------------------------------
+int CFilter::rangeMinValue() const
 {
-    return m_interval;
+    return m_range.min;
 }
-//------------------
-vod CFilter::reset()
+//--------------------------------
+int CFilter::rangeMaxValue() const
 {
-    m_interval = FilterIntervalType({ m_interval.max, 0, m_interval.max });
-    m_date = FilterDateType({ QDate::currentDate(), QDate::currentDate() });
-    m_type = INTERVAL;
+    return m_range.max;
 }
-//-------------------------
-QTime CFilter::time() const
+//--------------------------------
+int CFilter::limitLowValue() const
+{
+    return m_limit.low;
+}
+//----------------------------------
+int CFilter::limitUpperValue() const
+{
+    return m_limit.upper;
+}
+//------------------------
+QDate &CFilter::dateFrom()
+{
+    return m_date.from;
+}
+//----------------------
+QDate &CFilter::dateTo()
+{
+    return m_date.to;
+}
+//--------------------
+QTime &CFilter::time()
 {
     return m_time;
-}
-//-------------------------
-bool CFilter::state() const
-{
-    return m_state;
 }
 //---------------------------------------
 CFilter::FilterType CFilter::type() const
 {
     return m_type;
 }
+//-------------------------
+bool CFilter::state() const
+{
+    return m_state;
+}
+//-------------------
+void CFilter::reset()
+{
+    m_limit = LimitType({ m_range.min, m_range.max });
+    m_date  = DateType({ QDate::currentDate(), QDate::currentDate() });
+    m_type  = FilterLimitType;
+    m_state = false;
+}
 //-----------------------------------------------
-void CFilter::setDate(const FilterDateType& date)
+void CFilter::setRange(CFilter::RangeType &range)
+{
+    m_range = range;
+}
+//--------------------------------------
+void CFilter::setRange(int min, int max)
+{
+    m_range = RangeType({ min, max });
+}
+//-----------------------------------------------
+void CFilter::setLimit(CFilter::LimitType &limit)
+{
+    m_limit = limit;
+}
+//----------------------------------------
+void CFilter::setLimit(int low, int upper)
+{
+    m_limit = LimitType({ low, upper });
+}
+//-----------------------------------
+void CFilter::setDate(DateType &date)
 {
     m_date = date;
 }
-//-----------------------------------------------------------
-void CFilter::setInterval(const FilterIntervalType& interval)
+//-------------------------------------------------------
+void CFilter::setDate(const QDate &from, const QDate &to)
 {
-    m_interval = interval;
+    m_date = DateType({ from, to });
 }
 //--------------------------------------
-void CFilter::setTime(const QTime& time)
+void CFilter::setTime(const QTime &time)
 {
     m_time = time;
+}
+//---------------------------------------------
+void CFilter::setType(CFilter::FilterType type)
+{
+    m_type = type;
 }
 //--------------------------------
 void CFilter::setState(bool state)
 {
     m_state = state;
 }
-//---------------------------------------------
-void CFilter::setType(CFilter::FilterType type)
+//----------------------------
+CFilter::operator bool() const
 {
-    m_type = type;
+    return m_state;
 }

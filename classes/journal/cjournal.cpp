@@ -93,9 +93,6 @@ void CJournal::clear()
     m_is_msg_part = false;
     m_msg_buffer = CModBusDataUnit::vlist_t(0);
     m_data_buffer = CModBusDataUnit::vlist_t(0);
-
-    CFilter::FilterIntervalType interv = { m_msg_total_num, 0, m_msg_total_num };
-    m_filter.setInterval(interv);
 }
 /*!
  * \brief CJournal::filter

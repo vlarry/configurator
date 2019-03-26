@@ -6,48 +6,65 @@
     class CFilter
     {
         public:
-            struct FilterIntervalType
+            struct RangeType
             {
+                int min;
                 int max;
-                int begin;
-                int end;
             };
-            struct FilterDateType
+            //--------------
+            struct LimitType
             {
-                QDate begin;
-                QDate end;
+                int low;
+                int upper;
             };
-            enum FilterType { INTERVAL, DATE };
-            enum { OFF, ON };
+            //-------------
+            struct DateType
+            {
+                QDate from;
+                QDate to;
+            };
+            //-------------
+            enum FilterType
+            {
+                FilterDateType,
+                FilterLimitType
+            };
+
+        private:
+            RangeType  m_range;
+            LimitType  m_limit;
+            DateType   m_date;
+            QTime      m_time;
+            FilterType m_type;
+            bool       m_state;
 
         public:
             CFilter();
-            CFilter(const FilterIntervalType& interval, const FilterDateType& date,
-                    const QTime& time = QTime::fromString("00:00:00", "HH:mm:ss"));
+            CFilter(int min, int max, int low, int upper, QDate& from, QDate& to);
+            CFilter(RangeType &range, LimitType &limit, DateType& date);
+            RangeType& range();
+            LimitType& limit();
+            DateType& date();
+            int rangeMinValue() const;
+            int rangeMaxValue() const;
+            int limitLowValue() const;
+            int limitUpperValue() const;
+            QDate &dateFrom();
+            QDate &dateTo();
+            QTime &time();
+            FilterType type() const;
+            bool state() const;
+            void reset();
+            operator bool() const;
 
-            const FilterDateType&     date() const;
-            const FilterIntervalType& interval() const;
-            vod                       reset();
-            QTime                     time() const;
-            bool                      state() const;
-            FilterType                type() const;
-
-            void setDate(const FilterDateType& date);
-            void setInterval(const FilterIntervalType& interval);
-            void setTime(const QTime& time);
-            void setState(bool state);
+            void setRange(RangeType &range);
+            void setRange(int min, int max);
+            void setLimit(LimitType &limit);
+            void setLimit(int low, int upper);
+            void setDate(DateType &date);
+            void setDate(const QDate &from, const QDate &to);
+            void setTime(const QTime &time);
             void setType(FilterType type);
-
-            operator bool() const
-            {
-                return m_state;
-            }
-
-        private:
-            FilterIntervalType m_interval;
-            FilterDateType     m_date;
-            QTime              m_time;
-            bool               m_state;
-            FilterType         m_type;
+            void setState(bool state);
     };
 #endif // CFILTER_H

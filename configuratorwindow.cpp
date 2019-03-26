@@ -388,22 +388,22 @@ void ConfiguratorWindow::journalRead(const QString& key)
 
         if(m_filter.find(key) != m_filter.end()) // если фильтр журнала существует и в таблице нет данных
         {
-            CFilter filter = m_filter[key]; // получаем фильтр журнала
+//            CFilter filter = m_filter[key]; // получаем фильтр журнала
 
-            if(filter) // фильтр активен
-            {
-                if(filter.type() == CFilter::INTERVAL) // если выбран фильр по интервалу
-                {
-                    int pos_beg = filter.interval().begin;
-                    int pos_end = filter.interval().end;
+//            if(filter) // фильтр активен
+//            {
+//                if(filter.type() == CFilter::INTERVAL) // если выбран фильр по интервалу
+//                {
+//                    int pos_beg = filter.interval().begin;
+//                    int pos_end = filter.interval().end;
 
-                    if(pos_beg > 0)
-                        pos_beg--;
+//                    if(pos_beg > 0)
+//                        pos_beg--;
 
-                    set.message.read_start = set.message.read_current = ((pos_beg == 0)?0:pos_beg); // устанавливаем номер сообщения с которого будем читать
-                    set.message.read_limit = pos_end - pos_beg - 1; // устанавливаем сообщение до которого будем читать
-                }
-            }
+//                    set.message.read_start = set.message.read_current = ((pos_beg == 0)?0:pos_beg); // устанавливаем номер сообщения с которого будем читать
+//                    set.message.read_limit = pos_end - pos_beg - 1; // устанавливаем сообщение до которого будем читать
+//                }
+//            }
         }
 
         if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
@@ -2373,10 +2373,10 @@ void ConfiguratorWindow::processReadJournals(bool state)
 
             if(filter)
             {
-                if(filter.type() == CFilter::INTERVAL)
+                if(filter.type() == CFilter::FilterLimitType)
                 {
-                    read_start = filter.interval().begin;
-                    read_limit = filter.interval().end;
+                    read_start = filter.limitLowValue();
+                    read_limit = filter.limitUpperValue();
                 }
             }
 
@@ -2563,13 +2563,10 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         {
             int count = static_cast<int>(static_cast<int>(unit[0] << 16) | static_cast<int>(unit[1]));
             journal->setMsgTotalNum(count);
+
             CFilter &filter = journal->filter();
-
-            CFilter::FilterIntervalType interval_type;
-            interval_type.begin = 0;
-            interval_type.end = interval_type.max = count;
-
-            filter.setInterval(interval_type);
+            filter.setRange(0, count);
+            filter.setLimit(0, count);
         }
 
         if(!showErrorMessage(tr("Чтение журнала"), unit) && type == READ_JOURNAL)
@@ -7011,6 +7008,18 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
     if(ui->checkboxCalibTimeout->isChecked()) // включаем чтение расчетных величин, если было запущено
         chboxCalculateTimeoutStateChanged(true);
 }
+//---------------------------------------------------------
+QString ConfiguratorWindow::journalName(JournalPtr journal)
+{
+    if(!journal)
+        return "";
+
+    QString journal_type = journal->widget()->property("TYPE").toString();
+    QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?tr("Получасовок"):
+                                                     tr("Неизвестный");
+
+    return journal_name;
+}
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
                                                 DeviceMenuItemType index)
@@ -7539,13 +7548,19 @@ void ConfiguratorWindow::clearIOTable()
 //-------------------------------------
 void ConfiguratorWindow::clearJournal()
 {
-    if(!m_active_journal_current)
+    JournalPtr journal = currentJournalWidget();
+
+    if(!journal)
         return;
 
-    QString journal_name = m_active_journal_current->property("NAME").toString();
 
-    m_active_journal_current->journalClear();
-    m_active_journal_current->headerClear();
+    QString journal_type = journal->widget()->property("TYPE").toString();
+    QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?tr("Получасовок"):
+                                                     tr("Неизвестный");
+
+    journal->widget()->journalClear();
+    journal->widget()->headerClear();
+    journal->filter().reset();
 
     QString text = tr("Очистка таблицы журнала %1").arg(journal_name);
     m_status_bar->setStatusMessage(text, 2000);
@@ -7554,19 +7569,21 @@ void ConfiguratorWindow::clearJournal()
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
 {
-    if(!m_active_journal_current)
+    JournalPtr journal = currentJournalWidget();
+
+    if(!journal)
     {
         showMessageBox(tr("Эксорт в PDF"), tr("Выберите текущий журнал для экспорта"), QMessageBox::Warning);
         return;
     }
 
-    if(m_active_journal_current->journalIsEmpty())
+    if(journal->widget()->journalIsEmpty())
     {
         showMessageBox(tr("Эксорт в PDF"), tr("Текущий журнал пуст. Экспорт невозможен."), QMessageBox::Warning);
         return;
     }
 
-    QString journal_name = m_active_journal_current->property("NAME").toString();
+    QString journal_name = journalName(journal);
     QString sn_device    = "s/n: " + m_status_bar->serialNumberText();
 
     // выбираем файл для экспорта
@@ -7592,8 +7609,7 @@ void ConfiguratorWindow::startExportToPDF()
 
     connect(m_watcher, &QFutureWatcher<void>::finished, m_progressbar, &CProgressBarWidget::progressStop);
 
-    QFuture<void> future = QtConcurrent::run(this, &ConfiguratorWindow::exportToPDF, m_active_journal_current,
-                                             QString(tr("Журнал %1")).arg(journal_name),
+    QFuture<void> future = QtConcurrent::run(this, &ConfiguratorWindow::exportToPDF, journal, QString(tr("Журнал %1")).arg(journal_name),
                                              sn_device, journal_path);
     m_watcher->setFuture(future);
 }
@@ -7605,8 +7621,6 @@ void ConfiguratorWindow::filterDialog()
     if(!journal)
         return;
 
-    journal->clear();
-
     CFilter &filter = journal->filter();
     CFilterDialog* filterDlg = new CFilterDialog(filter, this);
 
@@ -7614,8 +7628,8 @@ void ConfiguratorWindow::filterDialog()
     {
         filter = filterDlg->filter();
 
-        if(filter.type() == CFilter::DATE)
-            filterJournal(filter);
+        if(filter.type() == CFilter::FilterDateType)
+            filterJournal(journal);
     }
 
     delete filterDlg;
@@ -7816,18 +7830,20 @@ void ConfiguratorWindow::panelButtonCtrlPress()
  *
  * Фильтрация текущей таблицы
  */
-void ConfiguratorWindow::filterJournal(const CFilter& filter)
+void ConfiguratorWindow::filterJournal(JournalPtr journal)
 {
-    if(!m_active_journal_current || !filter.time().isValid())
+    if(!journal)
         return;
 
-    CJournalTable* table = m_active_journal_current->table();
+    CJournalTable* table = journal->widget()->table();
 
     if(!table || table->rowCount() == 0 || table->columnCount() < 3)
         return;
 
     int count = 0;
     int beg_num = -1, end_num = -1;
+
+    CFilter filter = journal->filter();
 
     for(int i = 0; i < table->rowCount(); i++)
     {
@@ -7843,11 +7859,11 @@ void ConfiguratorWindow::filterJournal(const CFilter& filter)
         if(!fdate.isValid() || !ftime.isValid())
             continue;
 
-        if(fdate < filter.date().begin || fdate > filter.date().end)
+        if(fdate < filter.dateFrom() || fdate > filter.dateTo())
         {
             table->setRowHidden(i, true);
         }
-        else if(fdate == filter.date().begin && ftime < filter.time())
+        else if(fdate == filter.dateFrom() && ftime < filter.time())
             table->setRowHidden(i, true);
         else
         {
@@ -9321,9 +9337,8 @@ void ConfiguratorWindow::initApplication()
 
     ui->checkBoxJournalPrintRead->hide();
 }
-//-------------------------------------------------------------------------------------------
-void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString& reportName,
-                                     const QString& sn_device, const QString& filename)
+//------------------------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::exportToPDF(const JournalPtr journal, const QString& reportName, const QString& sn_device, const QString& filename)
 {
     QPrinter* printer = new QPrinter(QPrinter::ScreenResolution);
 
@@ -9385,20 +9400,17 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
 
     cursor.insertBlock(blockFormat);
 
-    int columnCount = widget->table()->columnCount();
+    int columnCount = journal->widget()->table()->columnCount();
 
-    QPoint pos = QPoint(0, widget->table()->rowCount() - 1);
+    QPoint pos = QPoint(0, journal->widget()->table()->rowCount() - 1);
 
-    QString key = widget->property("TYPE").toString();
+    QString key = journal->widget()->property("TYPE").toString();
 
-    if(m_filter.find(key) != m_filter.end()) // получае данные от фильтра, если он задействован
+    CFilter filter = journal->filter();
+
+    if(filter && filter.type() == CFilter::FilterDateType) // если фильтр активен
     {
-        CFilter filter = m_filter[key];
-
-        if(filter && filter.type() == CFilter::DATE) // если фильтр активен
-        {
-            pos = indexDateFilter(widget->table(), filter.date().begin, filter.date().end);
-        }
+        pos = indexDateFilter(journal->widget()->table(), filter.dateFrom(), filter.dateTo());
     }
 
     int rows = pos.y() - pos.x() + 1; // считаем количество строк для экспорта
@@ -9410,7 +9422,7 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
     {
         for(int i = pos.x(); i <= pos.y(); i++)
         {
-            property_list_t property_list = qvariant_cast<property_list_t>(widget->table()->rowData(i));
+            property_list_t property_list = qvariant_cast<property_list_t>(journal->widget()->table()->rowData(i));
             property_list_t sub_list;
 
             int index_calc_value = -1;
@@ -9445,15 +9457,15 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
     }
     else if(key == "HALFHOUR")
     {
-        halfhour_labels_t column_labels = qvariant_cast<halfhour_labels_t>(widget->property("COLUMNS"));
-        halfhour_labels_t row_labels    = qvariant_cast<halfhour_labels_t>(widget->property("ROWS"));
+        halfhour_labels_t column_labels = qvariant_cast<halfhour_labels_t>(journal->widget()->property("COLUMNS"));
+        halfhour_labels_t row_labels    = qvariant_cast<halfhour_labels_t>(journal->widget()->property("ROWS"));
 
         if(column_labels.isEmpty() || row_labels.isEmpty())
             return;
 
         for(int i = pos.x(); i <= pos.y(); i++)
         {
-            halfhour_t halfhour = qvariant_cast<halfhour_t>(widget->table()->rowData(i));
+            halfhour_t halfhour = qvariant_cast<halfhour_t>(journal->widget()->table()->rowData(i));
 
             if(halfhour.values.isEmpty())
                 list << property_list_t(QVector<property_data_item_t>(0));
@@ -9499,7 +9511,7 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
         cell.setFormat(tableHeaderFormat);
         QTextCursor cellCursor = cell.firstCursorPosition();
         cellCursor.setBlockFormat(blockTableHeaderFormat);
-        cellCursor.insertText(widget->table()->horizontalHeaderItem(i)->text());
+        cellCursor.insertText(journal->widget()->table()->horizontalHeaderItem(i)->text());
     }
 
     int row_cur = 0;
@@ -9511,10 +9523,10 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
             QTextTableCell cell = textTable->cellAt(i + row_cur + 1, j);
             Q_ASSERT(cell.isValid());
             QTextCursor cellCursor = cell.firstCursorPosition();
-            QTableWidgetItem* item = widget->table()->item(pos.x() + i, j);
+            QTableWidgetItem* item = journal->widget()->table()->item(pos.x() + i, j);
 
             if(item)
-                cellCursor.insertText(widget->table()->item(pos.x() + i, j)->text());
+                cellCursor.insertText(journal->widget()->table()->item(pos.x() + i, j)->text());
         }
 
         if(!list.isEmpty())
@@ -9572,8 +9584,8 @@ void ConfiguratorWindow::exportToPDF(const CJournalWidget* widget, const QString
             headerRect.setBottom(textRect.top());
             headerRect.setHeight(footerHeight);
 
-            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, widget->table()->item(pos.x(), 1)->text() +
-                                         " - " + widget->table()->item(pos.y(), 1)->text());
+            painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignLeft, journal->widget()->table()->item(pos.x(), 1)->text() +
+                                         " - " + journal->widget()->table()->item(pos.y(), 1)->text());
 
             painter.drawText(headerRect, Qt::AlignVCenter|Qt::AlignRight, QObject::tr("Страниц: %1").arg(pageCount));
         }
@@ -10108,15 +10120,17 @@ void ConfiguratorWindow::debugInfoCtrl(int timer, bool state)
 //---------------------------------------------
 void ConfiguratorWindow::importJournalToTable()
 {
-    if(!m_active_journal_current) // не выбран текущий журнал
+    JournalPtr journal = currentJournalWidget();
+
+    if(!journal) // не выбран текущий журнал
     {
         showMessageBox(tr("Импорт журнала"), tr("Выберите пожалуйста журнал в который необходимо произвести импорт"), QMessageBox::Warning);
         return;
     }
 
     // Получение таблицы и заголовка текущего журнала
-    CJournalTable*  table  = m_active_journal_current->table();
-    CHeaderJournal* header = m_active_journal_current->header();
+    CJournalTable*  table  = journal->widget()->table();
+    CHeaderJournal* header = journal->widget()->header();
 
     if(!table || !header)
         return;
@@ -10126,8 +10140,8 @@ void ConfiguratorWindow::importJournalToTable()
         clearJournal();
     }
 
-    QString journal_name = m_active_journal_current->property("NAME").toString();
-    QString journal_type = m_active_journal_current->property("TYPE").toString();
+    QString journal_name = journalName(journal);
+    QString journal_type = journal->widget()->property("TYPE").toString();
 
     if(journal_name.isEmpty() || journal_type.isEmpty())
     {
@@ -10251,19 +10265,16 @@ void ConfiguratorWindow::importJournalToTable()
 
     int max_read_msg = rows; // максимальное значение считываемых записей (используется для прогрессбара)
 
-    if(m_filter.find(journal_type) != m_filter.end())
+    CFilter &filter = journal->filter();
+
+    if(filter && filter.type() == CFilter::FilterDateType)
     {
-        CFilter filter = m_filter[journal_type];
+        str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(filter.dateFrom().toString(Qt::ISODate)).
+                                                              arg(filter.dateTo().toString(Qt::ISODate));
 
-        if(filter && filter.type() == CFilter::DATE)
-        {
-            str += QString(" AND date BETWEEN \"%1\" AND \"%2\"").arg(filter.date().begin.toString(Qt::ISODate)).
-                    arg(filter.date().end.toString(Qt::ISODate));
-
-            max_read_msg = recordCountDb(db, "journals", "sn_device", QString::number(id), "date", QStringList() <<
-                                         QString("\'%1\'").arg(filter.date().begin.toString(Qt::ISODate)) <<
-                                         QString("\'%1\'").arg(filter.date().end.toString(Qt::ISODate)));
-        }
+        max_read_msg = recordCountDb(db, "journals", "sn_device", QString::number(id), "date", QStringList() <<
+                                     QString("\'%1\'").arg(filter.dateFrom().toString(Qt::ISODate)) <<
+                                     QString("\'%1\'").arg(filter.dateTo().toString(Qt::ISODate)));
     }
 
     str += ";";
@@ -10376,12 +10387,10 @@ void ConfiguratorWindow::importJournalToTable()
     table->setSortingEnabled(true);
     table->setSortingEnabled(false);
 
-    if(m_filter.find(journal_type) != m_filter.end())
-    {
-        CFilter::FilterDateType d = { QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy"),
-                                      QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy")};
-        m_filter[journal_type].setDate(d);
-    }
+
+    CFilter::DateType d = { QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy"),
+                            QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy") };
+    filter.setDate(d);
 
 
     header->setTextTableCountMessages(msg_count);
@@ -10406,27 +10415,29 @@ void ConfiguratorWindow::importJournalToTable()
 //------------------------------------------
 void ConfiguratorWindow::exportJournalToDb()
 {
-    if(!m_active_journal_current) // не выбран текущий журнал
+    JournalPtr journal = currentJournalWidget();
+
+    if(!journal) // не выбран текущий журнал
     {
         showMessageBox(tr("Экспорт журнала"), tr("Выберите пожалуйста журнал из которого необходимо произвести экспорт"), QMessageBox::Warning);
         return;
     }
 
     // Получение таблицы и заголовка текущего журнала
-    CJournalTable*  table  = m_active_journal_current->table();
-    CHeaderJournal* header = m_active_journal_current->header();
+    CJournalTable*  table  = journal->widget()->table();
+    CHeaderJournal* header = journal->widget()->header();
 
     if(!table || !header)
         return;
 
-    if(table->rowCount() == 0) // таблица пуста
+    if(journal->widget()->table()->rowCount() == 0) // таблица пуста
     {
         showMessageBox(tr("Экспорт журнала"), tr("Текущий журнал пуст"), QMessageBox::Warning);
         return;
     }
 
-    QString journal_name = m_active_journal_current->property("NAME").toString();
-    QString journal_type = m_active_journal_current->property("TYPE").toString();
+    QString journal_name = journalName(journal);
+    QString journal_type = journal->widget()->property("TYPE").toString();
 
     if(journal_name.isEmpty() || journal_type.isEmpty())
     {
@@ -10581,15 +10592,12 @@ void ConfiguratorWindow::exportJournalToDb()
 
     QPoint pos(0, table->rowCount() - 1);
 
-    if(m_filter.find(journal_type) != m_filter.end()) // фильтр для текущего журнала существует
-    {
-        CFilter filter = m_filter[journal_type]; // получаем фильтр
 
-        if(filter && filter.type() == CFilter::DATE) // фильтр активен
-        {
-            CFilter::FilterDateType date = filter.date();
-            pos = indexDateFilter(table, date.begin, date.end); // получаем новые позиции начала/конца записей (фильтруем)
-        }
+    CFilter filter = journal->filter(); // получаем фильтр
+
+    if(filter && filter.type() == CFilter::FilterDateType) // фильтр активен
+    {
+        pos = indexDateFilter(journal->widget()->table(), filter.dateFrom(), filter.dateTo()); // получаем новые позиции начала/конца записей (фильтруем)
     }
 
     m_progressbar->setProgressTitle(tr("Экспорт журнала %1").arg(journal_name));
@@ -10602,16 +10610,16 @@ void ConfiguratorWindow::exportJournalToDb()
 
     for(i = pos.x(); i <= pos.y(); i++)
     {
-        int     id_msg = table->item(i, 0)->text().toInt();
-        QString date   = QDate::fromString(table->item(i, 1)->text(),
+        int     id_msg = journal->widget()->table()->item(i, 0)->text().toInt();
+        QString date   = QDate::fromString(journal->widget()->table()->item(i, 1)->text(),
                                            "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
-        QString time   = table->item(i, 2)->text();
+        QString time   = journal->widget()->table()->item(i, 2)->text();
 
         if(journal_type == "EVENT")
         {
-            QString type      = table->item(i, 3)->text();
-            QString category  = table->item(i, 4)->text();
-            QString parameter = table->item(i, 5)->text();
+            QString type      = journal->widget()->table()->item(i, 3)->text();
+            QString category  = journal->widget()->table()->item(i, 4)->text();
+            QString parameter = journal->widget()->table()->item(i, 5)->text();
 
             query.prepare(QString("INSERT OR REPLACE INTO journals (id_msg, date, time, type, category, parameter, sn_device)"
                                   "VALUES(:id_msg, :date, :time, :type, :category, :parameter, :sn_device)"));
@@ -10630,7 +10638,7 @@ void ConfiguratorWindow::exportJournalToDb()
         }
         else if(journal_type == "CRASH")
         {
-            QString protect_name = table->item(i, 3)->text();
+            QString protect_name = journal->widget()->table()->item(i, 3)->text();
 
             query.prepare("INSERT OR REPLACE INTO journals (id_msg, date, time, protection, id_journal, sn_device)"
                           "VALUES(:id_msg, :date, :time, :protection, :id_journal, :sn_device)");
@@ -10671,7 +10679,7 @@ void ConfiguratorWindow::exportJournalToDb()
         }
         else if(journal_type == "HALFHOUR")
         {
-            QTableWidgetItem* item = table->item(i, 3);
+            QTableWidgetItem* item = journal->widget()->table()->item(i, 3);
 
             if(!item)
                 continue;
@@ -10685,7 +10693,7 @@ void ConfiguratorWindow::exportJournalToDb()
             query.bindValue(":time", time);
             query.bindValue(":type", type);
 
-            QTableWidgetItem* itemTimeReset = table->item(i, 4);
+            QTableWidgetItem* itemTimeReset = journal->widget()->table()->item(i, 4);
 
             query.bindValue(":time_reset", ((itemTimeReset)?itemTimeReset->text():""));
             query.bindValue(":id_journal", id_journal);
@@ -10696,7 +10704,7 @@ void ConfiguratorWindow::exportJournalToDb()
                 outLogMessage(tr("Ошибка вставки данных журнала получасовок в БД: %1").arg(query.lastError().text()));
             }
 
-            halfhour_t halfhour = qvariant_cast<halfhour_t>(table->rowData(i));
+            halfhour_t halfhour = qvariant_cast<halfhour_t>(journal->widget()->table()->rowData(i));
 
             if(!halfhour.values.isEmpty() && type.toUpper() == tr("ДАННЫЕ"))
             {
