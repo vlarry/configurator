@@ -2573,6 +2573,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         {
             displayJournalResponse(journal, unit);
         }
+        else if(type == READ_JOURNAL)
+            endJournalRead(journal);
     }
     else if(type == READ_SERIAL_NUMBER)
     {

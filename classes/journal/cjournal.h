@@ -29,6 +29,7 @@
             bool m_is_msg_print; // выводить сообщения в таблицу при получении или сохранять в буфер сообщений
             CModBusDataUnit::vlist_t m_msg_buffer; // буфер сообщений
             CModBusDataUnit::vlist_t m_data_buffer; // буфер данных для сохранения сообщений (используется при чтении без вывода)
+            CModBusDataUnit::vlist_t m_part_buffer; // буфер частей запросов (при превышении максимального размера запроса)
             CJournalWidget* m_widget; // указатель на виджет журнала
             CFilter         m_filter; // фильтр чтения сообщений
 
@@ -59,6 +60,7 @@
             const CModBusDataUnit::vlist_t &dataBuffer() const;
             bool isMsgReadState() const;
             bool isMsgPrint() const;
+            QString typeJournal();
             CJournalWidget *widget() const;
 
             void appendMsgToBuffer(CModBusDataUnit::vlist_t &msg_buf);

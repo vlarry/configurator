@@ -21,6 +21,7 @@ CJournal::CJournal():
     m_is_msg_print(true),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
     m_data_buffer(CModBusDataUnit::vlist_t(0)),
+    m_part_buffer(CModBusDataUnit::vlist_t(0)),
     m_widget(nullptr)
 {
 
@@ -47,6 +48,7 @@ CJournal::CJournal(int addr_page_start, int msg_size, int request_size, int addr
     m_is_msg_print(true),
     m_msg_buffer(CModBusDataUnit::vlist_t(0)),
     m_data_buffer(CModBusDataUnit::vlist_t(0)),
+    m_part_buffer(CModBusDataUnit::vlist_t(0)),
     m_widget(widget)
 {
     m_page_limit = m_addr_page_start + PAGE_SIZE;
@@ -93,6 +95,7 @@ void CJournal::clear()
     m_is_msg_part = false;
     m_msg_buffer = CModBusDataUnit::vlist_t(0);
     m_data_buffer = CModBusDataUnit::vlist_t(0);
+    m_part_buffer = CModBusDataUnit::vlist_t(0);
 }
 /*!
  * \brief CJournal::filter
@@ -190,6 +193,11 @@ int CJournal::nextPageAddr(bool *isShift)
 
     int page_addr = m_addr_page_start + m_msg_read_on_page*(m_msg_size/2);
 
+    if(typeJournal() == "CRASH" && m_is_msg_part)
+    {
+        page_addr += 64;
+    }
+
     if(isShift)
         *isShift = false;
 
@@ -228,14 +236,20 @@ int CJournal::nextRequestSize()
     m_request_last_count = read_count; // последний запрос измеряемый в количестве запрашиваемых сообщений
     read_count *= m_msg_size/2; // получаем размер запроса в ячейках
 
-    if(read_count*2 > 248) // размер запроса превосходит допустимую величину
+    if(typeJournal() == "CRASH")
     {
-        read_count /= 2; // делим размер запрашиваемых данных на 2 части
-
-        if(m_request_last_count > 1)
-            m_request_last_count /= 2;
-
-        m_is_msg_part = !m_is_msg_part; // меняем состояние флага на противоположное
+        if(!m_is_msg_part)
+        {
+            read_count = 64;
+            m_is_msg_part = true;
+            m_request_last_count = 1;
+        }
+        else
+        {
+            read_count = 64;
+            m_is_msg_part = false;
+            m_request_last_count = 1;
+        }
     }
 
     return read_count;
@@ -268,12 +282,21 @@ void CJournal::print(const CModBusDataUnit &unit)
     if(data.isEmpty() || m_request_last_count <= 0)
         return;
 
-    m_msg_buffer += data;
-
-    if(m_is_msg_part)
+    if(typeJournal() == "CRASH")
     {
-        return;
+        if(m_is_msg_part)
+        {
+            m_part_buffer = data;
+            return;
+        }
+        else
+        {
+            m_msg_buffer = m_part_buffer;
+            m_part_buffer.clear();
+        }
     }
+
+    m_msg_buffer += data;
 
     int read_count = (m_msg_buffer.count()/(m_msg_size/2));
 
@@ -347,6 +370,14 @@ bool CJournal::isMsgReadState() const
 bool CJournal::isMsgPrint() const
 {
     return m_is_msg_print;
+}
+/*!
+ * \brief CJournal::typeJournal
+ * \return тип журнала (CRASH, EVENT or HALFHOUR)
+ */
+QString CJournal::typeJournal()
+{
+    return m_widget->property("TYPE").toString();
 }
 /*!
  * \brief CJournal::widget
