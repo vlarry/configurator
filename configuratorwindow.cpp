@@ -4344,6 +4344,18 @@ void ConfiguratorWindow::internalVariablePressKey(bool isAlt, bool isCtrl, int k
         clearInternalVariableState();
     }
 }
+/*!
+ * \brief ConfiguratorWindow::calibrationRoll
+ * \param state состояния виджета калибровок
+ *
+ * Разворачивание/Сворачивание виджета калибровок
+ */
+void ConfiguratorWindow::calibrationRoll(bool state)
+{
+    ui->tabWidgetCalibration->setVisible(state);
+    ui->pushButtonCalibrationRoll->setChecked(state);
+    ui->pushButtonCalibrationRoll->setText((state)?tr("Свернуть калибровки"):tr("Развернуть калибровки"));
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -9091,15 +9103,18 @@ void ConfiguratorWindow::loadSettings()
         m_settings->endGroup();
 
         m_settings->beginGroup("settings");
-                m_settings->beginGroup("menu_device_widget");
-                    ui->dockWidgetMenuDevice->setProperty("WIDTH", m_settings->value("width", 100).toInt());
-                    ui->dockWidgetMenuDevice->setVisibleContent(m_settings->value("visible").toBool());
-                m_settings->endGroup();
-                m_settings->beginGroup("variable_widget");
-                    ui->dockWidgetVariable->setProperty("WIDTH", m_settings->value("width", 100).toInt());
-                    ui->dockWidgetVariable->setVisibleContent(m_settings->value("visible").toBool());
-                m_settings->endGroup();
+            m_settings->beginGroup("menu_device_widget");
+                ui->dockWidgetMenuDevice->setProperty("WIDTH", m_settings->value("width", 100).toInt());
+                ui->dockWidgetMenuDevice->setVisibleContent(m_settings->value("visible").toBool());
+            m_settings->endGroup();
+            m_settings->beginGroup("variable_widget");
+                ui->dockWidgetVariable->setProperty("WIDTH", m_settings->value("width", 100).toInt());
+                ui->dockWidgetVariable->setVisibleContent(m_settings->value("visible").toBool());
+            m_settings->endGroup();
             ui->framePanelMessage->setProperty("HEIGHT", m_settings->value("panel_message_height", 100).toInt());
+            m_settings->beginGroup("central_widget");
+                calibrationRoll(m_settings->value("calibration_roll", false).toBool());
+            m_settings->endGroup();
         m_settings->endGroup();
     }
 
@@ -9151,15 +9166,18 @@ void ConfiguratorWindow::saveSettings()
             m_settings->setValue("downpanel", ui->splitterPanelMessage->saveState());
         m_settings->endGroup();
         m_settings->beginGroup("settings");
-                m_settings->beginGroup("menu_device_widget");
-                    m_settings->setValue("width", ui->dockWidgetMenuDevice->property("WIDTH").toInt());
-                    m_settings->setValue("visible", !ui->dockWidgetMenuDevice->isContentHidden());
-                m_settings->endGroup();
-                m_settings->beginGroup("variable_widget");
-                    m_settings->setValue("width", ui->dockWidgetVariable->property("WIDTH").toInt());
-                    m_settings->setValue("visible", !ui->dockWidgetVariable->isContentHidden());
-                m_settings->endGroup();
+            m_settings->beginGroup("menu_device_widget");
+                m_settings->setValue("width", ui->dockWidgetMenuDevice->property("WIDTH").toInt());
+                m_settings->setValue("visible", !ui->dockWidgetMenuDevice->isContentHidden());
+            m_settings->endGroup();
+            m_settings->beginGroup("variable_widget");
+                m_settings->setValue("width", ui->dockWidgetVariable->property("WIDTH").toInt());
+                m_settings->setValue("visible", !ui->dockWidgetVariable->isContentHidden());
+            m_settings->endGroup();
             m_settings->setValue("panel_message_height", ui->framePanelMessage->property("HEIGHT").toInt());
+            m_settings->beginGroup("central_widget");
+                m_settings->setValue("calibration_roll", ui->pushButtonCalibrationRoll->isChecked());
+            m_settings->endGroup();
         m_settings->endGroup();
     }
 }
@@ -11676,4 +11694,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonMessageEvent, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleMessage);
     connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
     connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
+    connect(ui->pushButtonCalibrationRoll, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRoll);
 }

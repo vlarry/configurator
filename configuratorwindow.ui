@@ -1818,9 +1818,36 @@
             <number>0</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
-            <layout class="QVBoxLayout" name="verticalLayout_26">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="CDeviceMenuTableWidget" name="tableWidgetSettingsAnalogGroupGeneral"/>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonCalibrationRoll">
+                 <property name="text">
+                  <string>Развернуть калибровки</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <widget class="QTabWidget" name="tabWidgetCalibration">
