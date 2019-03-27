@@ -11,6 +11,7 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->tableWidgetJournal->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->tableWidgetJournal->horizontalHeader()->setSortIndicatorShown(true);
 
     ui->listViewPropertyCrashJournal->hide(); // по умолчанию окно свойств журнала аварий скрыто
     ui->tableWidgetPropertyHalfhourJournal->hide(); // по умолчанию окно свойств журнала получасовок скрыто
@@ -65,6 +66,8 @@ QWidget* CJournalWidget::propertyJournal() const
  */
 void CJournalWidget::print(const QVector<quint16>& data) const
 {
+    ui->tableWidgetJournal->setSortingEnabled(false);
+
     QString journal_type = property("TYPE").toString();
 
     if(journal_type.isEmpty())
@@ -467,7 +470,7 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
             ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
 
             ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
-            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
+            ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
                                                                                   arg(type_event))));
 
             QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
@@ -486,7 +489,7 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
 
             ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str +
                                                     QString(" (%1)").arg(QString::number(category_event))));
-            ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(eparameter_str +
+            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(eparameter_str +
                                                     QString(" (%1)").arg(QString::number(parameter_event))));
 
             ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
@@ -632,4 +635,5 @@ void CJournalWidget::updateTableJournal() const
     ui->tableWidgetJournal->resizeColumnsToContents();
     ui->tableWidgetJournal->horizontalHeader()->setStretchLastSection(true);
     ui->widgetJournalHeader->setTextTableCountMessages(ui->tableWidgetJournal->rowCount());
+    ui->tableWidgetJournal->setSortingEnabled(true);
 }

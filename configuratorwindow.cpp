@@ -3876,12 +3876,9 @@ void ConfiguratorWindow::initDeviceCode()
 //-------------------------------------
 void ConfiguratorWindow::initJournals()
 {
-    QStringList eventJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
-                                                           tr("Тип") << tr("Категория") << tr("Параметр");
-    QStringList crashJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
-                                                           tr("Защита");
-    QStringList halfHourJournalHeaders  = QStringList() << tr("ID") << tr("Дата") << tr("Время") <<
-                                                           tr("Тип записи") << tr("Время учета, сек");
+    QStringList eventJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Параметр") << tr("Категория") << tr("Тип");
+    QStringList crashJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Защита");
+    QStringList halfHourJournalHeaders  = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип записи") << tr("Время учета, сек");
     QStringList isolationJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
@@ -10319,9 +10316,9 @@ void ConfiguratorWindow::importJournalToTable()
             QString category  = query.value("category").toString();
             QString parameter = query.value("parameter").toString();
 
-            table->setItem(row, 3, new QTableWidgetItem(type));
+            table->setItem(row, 5, new QTableWidgetItem(type));
             table->setItem(row, 4, new QTableWidgetItem(category));
-            table->setItem(row, 5, new QTableWidgetItem(parameter));
+            table->setItem(row, 3, new QTableWidgetItem(parameter));
         }
         else if(journal_type == "CRASH")
         {
@@ -10385,15 +10382,11 @@ void ConfiguratorWindow::importJournalToTable()
         msg_count++;
     }
 
-    table->sortByColumn(1, Qt::AscendingOrder);
     table->setSortingEnabled(true);
-    table->setSortingEnabled(false);
-
 
     CFilter::DateType d = { QDate::fromString(table->item(0, 1)->text(), "dd.MM.yyyy"),
                             QDate::fromString(table->item(table->rowCount() - 1, 1)->text(), "dd.MM.yyyy") };
     filter.setDate(d);
-
 
     header->setTextTableCountMessages(msg_count);
     header->setTextElapsedTime(timer.elapsed());
