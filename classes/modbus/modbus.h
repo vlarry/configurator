@@ -62,7 +62,7 @@
             bool            m_is_autochoicespeed;
             int             m_interval_timeout_response;
             int             m_interval_timeout_silence;
-            int             m_trycount;
+            int             m_try_count;
             int             m_try_counter;
             QSerialPort::BaudRate m_baudrate_init;
             QTimer*         m_timer_timeout_response;

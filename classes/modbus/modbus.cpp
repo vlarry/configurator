@@ -10,7 +10,7 @@ CModBus::CModBus(QObject* parent):
     m_is_autochoicespeed(false),
     m_interval_timeout_response(1000),
     m_interval_timeout_silence(4),
-    m_trycount(3),
+    m_try_count(3),
     m_try_counter(0),
     m_timer_timeout_response(nullptr),
     m_timer_timeout_silence(nullptr)
@@ -118,7 +118,7 @@ void CModBus::readyReadData(QByteArray& bytes)
         qDebug() << tr("Принятые данные больше по размеру, чем ожидается: %1/%2.").arg(m_buffer.count()).arg(size);
         emit rawData(m_buffer, false);
     }
-    else // прияты все данные
+    else // приняты все данные
     {
         if(!m_connect) // синхронизация по первому принятому сообщению
         {
@@ -132,6 +132,9 @@ void CModBus::readyReadData(QByteArray& bytes)
         }
 
         qDebug() << tr("Данные приняты в полном объеме %1 байт за %2мс.").arg(m_buffer.count()).arg(m_time_process.elapsed());
+
+        if(m_try_counter > 0) // обнуляем счетчик попыток соединения
+            m_try_counter = 0;
 
         // расчет и проверка контрольной суммы
         quint8 mbs = static_cast<quint8>(m_buffer[m_buffer.count() - 2]);
@@ -298,7 +301,7 @@ void CModBus::setIntervalSilence(int interval)
 //----------------------------------
 void CModBus::setTryCount(int count)
 {
-    m_trycount = count;
+    m_try_count = count;
 }
 //------------------------------------
 void CModBus::autochoicespeedProcess()
@@ -345,7 +348,7 @@ void CModBus::timeoutResponce()
     if(!m_channel->isOpen())
         return;
 
-    if(m_try_counter < m_trycount)
+    if(m_try_counter < m_try_count)
     {
         m_try_counter++;
 

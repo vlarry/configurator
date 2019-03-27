@@ -7564,6 +7564,8 @@ void ConfiguratorWindow::clearJournal()
     QString text = tr("Очистка таблицы журнала %1").arg(journal_name);
     m_status_bar->setStatusMessage(text, 2000);
     outApplicationEvent(text);
+
+    readJournalCount(journal);
 }
 //-----------------------------------------
 void ConfiguratorWindow::startExportToPDF()
