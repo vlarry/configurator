@@ -2,7 +2,7 @@
     #define CTABLEWIDGETITEM_H
     //-------------------------
     #include <QTableWidgetItem>
-    #include <QDate>
+    #include <QDateTime>
     //---------------------------------------------
     class CTableWidgetItem: public QTableWidgetItem
     {
