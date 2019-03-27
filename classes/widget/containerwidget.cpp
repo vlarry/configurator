@@ -338,3 +338,16 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
 
     return false;
 }
+//-------------------------------------------------------
+void CContainerWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    QFrame::mouseMoveEvent(event);
+
+    QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
+    QRect container = geometry();
+
+    if(container.left() >= (screen.right() - 10) || container.top() >= (screen.bottom() - 10))
+    {
+        move(screen.width()/2 - width()/2, screen.height()/2 - height()/2);
+    }
+}

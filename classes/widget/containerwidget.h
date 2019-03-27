@@ -9,6 +9,9 @@
     #include <QDebug>
     #include <QSizeGrip>
     #include <QPainter>
+    #include <QMouseEvent>
+    #include <QGuiApplication>
+    #include <QScreen>
     #include "cdockpanelitemctrl.h"
     //----------
     namespace Ui
@@ -69,6 +72,7 @@
 
         protected:
             bool eventFilter(QObject* object, QEvent* event) override;
+            void mouseMoveEvent(QMouseEvent* event);
 
         private:
             Ui::CContainerWidget*       ui;
