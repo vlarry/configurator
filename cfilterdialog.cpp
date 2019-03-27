@@ -88,6 +88,7 @@ void CFilterDialog::showEvent(QShowEvent* event)
     ui->spinBoxIntervalTo->setValue(m_filter.limitUpperValue());
     ui->calendarwgtBegin->setSelectedDate(m_filter.dateFrom());
     ui->calendarwgtEnd->setSelectedDate(m_filter.dateTo());
+    ui->timeEditBeginFilter->setTime(m_filter.time());
 
     ui->listWidgetFilterButton->addItems(QStringList() << tr("Интервал") << tr("Дата"));
     ui->listWidgetFilterButton->setCurrentRow(0);

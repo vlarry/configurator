@@ -10,23 +10,23 @@ CFilter::CFilter():
 {
 
 }
-//-----------------------------------------------------------------------------
-CFilter::CFilter(int min, int max, int low, int upper, QDate &from, QDate &to):
+//---------------------------------------------------------------------------------------
+CFilter::CFilter(int min, int max, int low, int upper, QDate &from, QDate &to, QTime &t):
     m_range(RangeType({ min, max })),
     m_limit(LimitType({ low, upper })),
     m_date(DateType({ from, to })),
-    m_time(QTime::fromString("00:00:00", "HH:mm:ss")),
+    m_time(t),
     m_type(FilterLimitType),
     m_state(false)
 {
 
 }
-//----------------------------------------------------------------------------------------------
-CFilter::CFilter(CFilter::RangeType &range, CFilter::LimitType &limit, CFilter::DateType &date):
+//--------------------------------------------------------------------------------------------------------
+CFilter::CFilter(CFilter::RangeType &range, CFilter::LimitType &limit, CFilter::DateType &date, QTime &t):
     m_range(range),
     m_limit(limit),
     m_date(date),
-    m_time(QTime::fromString("00:00:00", "HH:mm:ss")),
+    m_time(t),
     m_type(FilterLimitType),
     m_state(false)
 {

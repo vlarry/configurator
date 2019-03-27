@@ -40,8 +40,8 @@
 
         public:
             CFilter();
-            CFilter(int min, int max, int low, int upper, QDate& from, QDate& to);
-            CFilter(RangeType &range, LimitType &limit, DateType& date);
+            CFilter(int min, int max, int low, int upper, QDate& from, QDate& to, QTime &t);
+            CFilter(RangeType &range, LimitType &limit, DateType& date, QTime &t);
             RangeType& range();
             LimitType& limit();
             DateType& date();

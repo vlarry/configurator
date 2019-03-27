@@ -7844,6 +7844,10 @@ void ConfiguratorWindow::filterJournal(JournalPtr journal)
 
     CFilter filter = journal->filter();
 
+    QDate filter_date_from = filter.dateFrom();
+    QDate filter_date_to = filter.dateTo();
+    QTime filter_time = filter.time();
+
     for(int i = 0; i < table->rowCount(); i++)
     {
         QTableWidgetItem* itemDate = table->item(i, 1);
@@ -7852,17 +7856,17 @@ void ConfiguratorWindow::filterJournal(JournalPtr journal)
         if(!itemDate || !itemTime)
             continue;
 
-        QDate fdate = QDate::fromString(itemDate->text(), "dd.MM.yyyy");
-        QTime ftime = QTime::fromString(itemTime->text(), "hh:mm:ss.zzz");
+        QDate row_date = QDate::fromString(itemDate->text(), "dd.MM.yyyy");
+        QTime row_time = QTime::fromString(itemTime->text(), "hh:mm:ss.zzz");
 
-        if(!fdate.isValid() || !ftime.isValid())
+        if(!row_date.isValid() || !row_time.isValid())
             continue;
 
-        if(fdate < filter.dateFrom() || fdate > filter.dateTo())
+        if(row_date < filter_date_from || row_date > filter_date_to)
         {
             table->setRowHidden(i, true);
         }
-        else if(fdate == filter.dateFrom() && ftime < filter.time())
+        else if((row_date >= filter_date_from && row_date <= filter_date_to) && row_time < filter_time)
             table->setRowHidden(i, true);
         else
         {
