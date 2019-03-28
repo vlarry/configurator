@@ -4,7 +4,7 @@
 int CDockWidget::m_idCount = 0;
 //----------------------------------------
 CDockWidget::CDockWidget(QWidget* parent):
-    QWidget(parent),
+    QFrame(parent),
     ui(new Ui::CDockWidget),
     m_controlItem(nullptr)
 {
@@ -148,14 +148,59 @@ void CDockWidget::removeItem(int id)
 void CDockWidget::dragEnterEvent(QDragEnterEvent* event)
 {
     if(event->mimeData()->hasFormat("application/widget_container"))
-        event->acceptProposedAction();
+    {
+        if(event->source() == this)
+        {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+            setStyleSheet("CDockWidget { border: none; }");
+        }
+        else
+        {
+            event->acceptProposedAction();
+            setStyleSheet("CDockWidget { border: 5px solid lightgreen; }");
+        }
+    }
     else
+    {
         event->ignore();
+        setStyleSheet("CDockWidget { border: none; }");
+    }
+}
+//----------------------------------------------------
+void CDockWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    if(event->mimeData()->hasFormat("application/widget_container"))
+    {
+        if(event->source() == this)
+        {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+            setStyleSheet("CDockWidget { border: none; }");
+        }
+        else
+        {
+            event->acceptProposedAction();
+            setStyleSheet("CDockWidget { border: 5px solid lightgreen; }");
+        }
+    }
+    else
+    {
+        event->ignore();
+        setStyleSheet("CDockWidget { border: none; }");
+    }
+}
+//------------------------------------------------------
+void CDockWidget::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    Q_UNUSED(event);
+    setStyleSheet("CDockWidget { border: none; }");
 }
 //--------------------------------------------
 void CDockWidget::dropEvent(QDropEvent* event)
 {
     CContainerWidget* container = event->mimeData()->property("CONTAINER").value<CContainerWidget*>();
+    setStyleSheet("CDockWidget { border: none; }");
 
     if(container)
     {

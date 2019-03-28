@@ -1,9 +1,10 @@
 #ifndef DOCKWIDGET_H
     #define DOCKWIDGET_H
-    //----------------
-    #include <QWidget>
+    //---------------
+    #include <QFrame>
     #include <QDragEnterEvent>
     #include <QDropEvent>
+    #include <QDrag>
     #include <QToolButton>
     #include <QDebug>
     #include "cdockpanelitemctrl.h"
@@ -14,7 +15,7 @@
         class CDockWidget;
     }
     //-------------------------------
-    class CDockWidget: public QWidget
+    class CDockWidget: public QFrame
     {
         Q_OBJECT
 
@@ -38,6 +39,8 @@
 
         protected:
             void dragEnterEvent(QDragEnterEvent* event);
+            void dragMoveEvent(QDragMoveEvent* event);
+            void dragLeaveEvent(QDragLeaveEvent* event);
             void dropEvent(QDropEvent* event);
 
         private:

@@ -15,7 +15,7 @@ void CTabWidget::addContainer(CContainerWidget* container)
 {
     container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
     container->setSide(CDockPanelItemCtrl::DirBottom);
-//    container->headerHide();
+
     addTab(container, container->headerTitle());
 }
 //----------------------------------------------
@@ -57,14 +57,59 @@ void CTabWidget::tabDoubleClicked(int index)
 void CTabWidget::dragEnterEvent(QDragEnterEvent* event)
 {
     if(event->mimeData()->hasFormat("application/widget_container"))
-        event->acceptProposedAction();
+    {
+        if(event->source() == this)
+        {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+            setStyleSheet("border: none;");
+        }
+        else
+        {
+            event->acceptProposedAction();
+            setStyleSheet("border: 5px solid lightgreen;");
+        }
+    }
     else
+    {
         event->ignore();
+        setStyleSheet("border: none;");
+    }
+}
+//---------------------------------------------------
+void CTabWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    if(event->mimeData()->hasFormat("application/widget_container"))
+    {
+        if(event->source() == this)
+        {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+            setStyleSheet("border: none;");
+        }
+        else
+        {
+            event->acceptProposedAction();
+            setStyleSheet("border: 5px solid lightgreen;");
+        }
+    }
+    else
+    {
+        event->ignore();
+        setStyleSheet("border: none;");
+    }
+}
+//-----------------------------------------------------
+void CTabWidget::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    Q_UNUSED(event);
+    setStyleSheet("border: none;");
 }
 //-------------------------------------------
 void CTabWidget::dropEvent(QDropEvent* event)
 {
     CContainerWidget* container = event->mimeData()->property("CONTAINER").value<CContainerWidget*>();
+    setStyleSheet("border: none;");
 
     if(container)
     {
