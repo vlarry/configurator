@@ -7608,7 +7608,9 @@ void ConfiguratorWindow::startExportToPDF()
     }
 
     QString selectedFilter    = tr("PDF (*.pdf)");
-    QString journal_full_name = tr("Журнал %1-%2").arg(journal_name).arg(m_status_bar->serialNumberText());
+    QString journal_full_name = tr("Журнал %1-%2 (%3 - %4)").arg(journal_name).arg(m_status_bar->serialNumberText()).
+                                                             arg(QDate::currentDate().toString("dd_MM_yyyy")).
+                                                             arg(QTime::currentTime().toString("HH_mm_ss"));;
     QString journal_path      = QFileDialog::getSaveFileName(this, tr("Экспорт журнала %1 в PDF").arg(journal_name),
                                                              dir.absolutePath() + QString("/outputs/reports/%1.%2").
                                                              arg(journal_full_name).arg("pdf"),
@@ -10471,7 +10473,9 @@ void ConfiguratorWindow::exportJournalToDb()
         dir.mkdir("outputs/db");
 
     QString selectedFilter    = tr("Базы данных (*.db)");
-    QString journal_full_name = tr("Журнал %1-%2").arg(journal_name).arg(m_status_bar->serialNumberText());
+    QString journal_full_name = tr("Журнал %1-%2 (%3 - %4)").arg(journal_name).arg(m_status_bar->serialNumberText()).
+                                                             arg(QDate::currentDate().toString("dd_MM_yyyy")).
+                                                             arg(QTime::currentTime().toString("HH_mm_ss"));
     QString journal_path      = QFileDialog::getSaveFileName(this, tr("Экспорт журнала %1 в базу данных").arg(journal_name),
                                                              dir.absolutePath() + QString("/outputs/db/%1.%2").
                                                              arg(journal_full_name).arg("db"),
