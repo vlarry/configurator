@@ -2370,18 +2370,20 @@ void ConfiguratorWindow::processReadJournals(bool state)
 
             int read_limit = journal->msgTotalNum();
             int read_start = 0;
+            int row_start = 1;
 
             if(filter)
             {
                 if(filter.type() == CFilter::FilterLimitType)
                 {
-                    read_start = filter.limitLowValue();
+                    read_start = row_start = filter.limitLowValue();
                     read_limit = filter.limitUpperValue();
                 }
             }
 
             journal->setMsgStartPtr(read_start);
             journal->setMsgLimit(read_limit);
+            journal->widget()->setRowStartTable(row_start);
 
             if(journal->widget()->table()->rowCount() != 0) // таблица журнала не пустая
             {
@@ -2393,8 +2395,14 @@ void ConfiguratorWindow::processReadJournals(bool state)
                     return;
                 }
 
-                dialogJournalRead(journal);
+                row_start = dialogJournalRead(journal);
+                journal->setMsgLimit(journal->msgTotalNum());
             }
+
+            if(row_start == -1)
+                return;
+            else if(row_start == 0)
+                row_start++;
 
             setJournalPtrShift(journal, true); // сбрасываем указатель на окно чтения в начало
 
@@ -6216,10 +6224,10 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         QString bindValue;
         QString type_data;
 
-        for(int col = 0; col < journal->columnCount(); col++)
+        for(int col = 1; col < journal->columnCount(); col++)
         {
             QString value = journal->rowColumnData(row, col).toString();
-            QString field = colListBind.at(col);
+            QString field = colListBind.at(col - 1);
 
             if(field.toUpper() == ":TYPE")
                 type_data = value;
@@ -6516,13 +6524,15 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
         QString date   = query.value("date").toString();
         QString time   = query.value("time").toString();
 
-        journal->setItem(row, 0, new CTableWidgetItem(id_msg));
-        journal->setItem(row, 1, new CTableWidgetItem(date));
-        journal->setItem(row, 2, new CTableWidgetItem(time));
+        journal->setItem(row, 0, new CTableWidgetItem(QString(row + 1)));
+        journal->setItem(row, 1, new CTableWidgetItem(id_msg));
+        journal->setItem(row, 2, new CTableWidgetItem(date));
+        journal->setItem(row, 3, new CTableWidgetItem(time));
 
         journal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
         journal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
         journal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        journal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
 
         if(journal_type == "EVENT")
         {
@@ -6530,16 +6540,16 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
             QString category  = query.value("category").toString();
             QString parameter = query.value("parameter").toString();
 
-            journal->setItem(row, 3, new CTableWidgetItem(type));
-            journal->setItem(row, 4, new CTableWidgetItem(category));
-            journal->setItem(row, 5, new CTableWidgetItem(parameter));
+            journal->setItem(row, 6, new CTableWidgetItem(type));
+            journal->setItem(row, 5, new CTableWidgetItem(category));
+            journal->setItem(row, 4, new CTableWidgetItem(parameter));
         }
         else if(journal_type == "CRASH")
         {
             QString protection = query.value("protection").toString();
             int     id_journal = query.value("id_journal").toInt();
 
-            journal->setItem(row, 3, new CTableWidgetItem(protection));
+            journal->setItem(row, 4, new CTableWidgetItem(protection));
 
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*m_project_db);
@@ -6567,8 +6577,8 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
             int     id_journal = query.value("id_journal").toInt();
             QString time_reset = query.value("time_reset").toString();
 
-            journal->setItem(row, 3, new CTableWidgetItem(type));
-            journal->setItem(row, 4, new CTableWidgetItem(time_reset));
+            journal->setItem(row, 4, new CTableWidgetItem(type));
+            journal->setItem(row, 5, new CTableWidgetItem(time_reset));
 
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*m_project_db);
@@ -6930,11 +6940,11 @@ void ConfiguratorWindow::outLogMessage(const QString& message)
     qInfo() << message;
     outApplicationEvent(message);
 }
-//------------------------------------------------------------
-void ConfiguratorWindow::dialogJournalRead(JournalPtr journal)
+//-----------------------------------------------------------
+int ConfiguratorWindow::dialogJournalRead(JournalPtr journal)
 {
     if(!journal)
-        return;
+        return -1;
 
     QMessageBox msgbox;
     msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
@@ -6953,7 +6963,17 @@ void ConfiguratorWindow::dialogJournalRead(JournalPtr journal)
 
     if(msgbox.clickedButton() == next)
     {
-        journal->setMsgStartPtr(journal->widget()->table()->rowCount() + 1);
+        int row_next = journal->widget()->table()->rowCount();
+        CTableWidgetItem* item = static_cast<CTableWidgetItem*>(journal->widget()->table()->item(journal->widget()->table()->rowCount() - 1, 0));
+
+        if(item)
+        {
+            row_next = item->data(Qt::DisplayRole).toInt();
+        }
+
+        journal->setMsgStartPtr(row_next + 1);
+
+        return row_next + 1;
     }
     else if(msgbox.clickedButton() == begin)
     {
@@ -6964,8 +6984,10 @@ void ConfiguratorWindow::dialogJournalRead(JournalPtr journal)
         journal->clear();
         ui->pushButtonJournalRead->setChecked(false);
 
-        return;
+        return - 1;
     }
+
+    return -1;
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::endJournalRead(JournalPtr journal)
@@ -10328,13 +10350,15 @@ void ConfiguratorWindow::importJournalToTable()
         QString date   = QDate::fromString(query.value("date").toString(), Qt::ISODate).toString("dd.MM.yyyy");
         QString time   = query.value("time").toString();
 
-        table->setItem(row, 0, new CTableWidgetItem(id_msg));
-        table->setItem(row, 1, new CTableWidgetItem(date));
-        table->setItem(row, 2, new CTableWidgetItem(time));
+        table->setItem(row, 0, new CTableWidgetItem(QString("%1").arg(row + 1)));
+        table->setItem(row, 1, new CTableWidgetItem(id_msg));
+        table->setItem(row, 2, new CTableWidgetItem(date));
+        table->setItem(row, 3, new CTableWidgetItem(time));
 
         table->item(row, 0)->setTextAlignment(Qt::AlignCenter);
         table->item(row, 1)->setTextAlignment(Qt::AlignCenter);
         table->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        table->item(row, 3)->setTextAlignment(Qt::AlignCenter);
 
         if(journal_type == "EVENT")
         {
@@ -10342,16 +10366,16 @@ void ConfiguratorWindow::importJournalToTable()
             QString category  = query.value("category").toString();
             QString parameter = query.value("parameter").toString();
 
-            table->setItem(row, 5, new CTableWidgetItem(type));
-            table->setItem(row, 4, new CTableWidgetItem(category));
-            table->setItem(row, 3, new CTableWidgetItem(parameter));
+            table->setItem(row, 6, new CTableWidgetItem(type));
+            table->setItem(row, 5, new CTableWidgetItem(category));
+            table->setItem(row, 4, new CTableWidgetItem(parameter));
         }
         else if(journal_type == "CRASH")
         {
             QString protection = query.value("protection").toString();
             int     id_journal = query.value("id_journal").toInt();
 
-            table->setItem(row, 3, new CTableWidgetItem(protection));
+            table->setItem(row, 4, new CTableWidgetItem(protection));
 
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*db);
@@ -10380,8 +10404,8 @@ void ConfiguratorWindow::importJournalToTable()
             int     id_journal = query.value("id_journal").toInt();
             QString time_reset = query.value("time_reset").toString();
 
-            table->setItem(row, 3, new CTableWidgetItem(type));
-            table->setItem(row, 4, new CTableWidgetItem(time_reset));
+            table->setItem(row, 4, new CTableWidgetItem(type));
+            table->setItem(row, 5, new CTableWidgetItem(time_reset));
 
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*db);

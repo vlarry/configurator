@@ -758,7 +758,7 @@
             int showMessageBox(const QString& title, const QString& text, const QMessageBox::Icon type);
             JournalPtr currentJournalWidget();
             void outLogMessage(const QString& message);
-            void dialogJournalRead(JournalPtr journal);
+            int dialogJournalRead(JournalPtr journal);
             void endJournalRead(JournalPtr journal);
             QString journalName(JournalPtr journal);
 

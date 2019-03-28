@@ -198,6 +198,8 @@
             void journalClear() const;
             bool journalIsEmpty() const;
 
+            void setRowStartTable(int row);
+
             static QDateTime unpackDateTime(QVector<quint8>& data);
             static void      convertHalfwordToBytes(const QVector<quint16>& source, QVector<quint8>& dest);
             static date_t    secsToDate(quint32 secs);
@@ -221,6 +223,7 @@
             Ui::CJournalWidget*   ui;
             QVariant              m_journal_data;
             PropertyType          m_property_type;
+            int                   m_row_start; // старт порядкового номера строк в таблице
     };
     // регистрация новых пользовательских типов
     Q_DECLARE_METATYPE(event_t)
