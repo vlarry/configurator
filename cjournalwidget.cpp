@@ -242,9 +242,10 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
         QDateTime dt = unpackDateTime(QVector<quint8>() << msg_data[2] << msg_data[3] << msg_data[4] << msg_data[5] << msg_data[6]);
 
         ui->tableWidgetJournal->insertRow(row);
-        ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-        ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
-        ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+        ui->tableWidgetJournal->setItem(row, 0, new CTableWidgetItem(QString::number(0)));
+        ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(QString::number(id)));
+        ui->tableWidgetJournal->setItem(row, 2, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+        ui->tableWidgetJournal->setItem(row, 3, new CTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
 
         int protect_code = msg_data[7]; // код защиты
 
@@ -255,7 +256,12 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
 
         QPair<QString, QVector<protection_item_t> > pair = protection.items[protect_code];
 
-        ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(pair.first)); // вывод в таблицу имени защиты
+        ui->tableWidgetJournal->setItem(row, 4, new CTableWidgetItem(pair.first)); // вывод в таблицу имени защиты
+
+        ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
 
         // парсинг свойств (настроек защиты, переменные, расчетные значения) и занесение их в хранилище таблицы
         // Настройки защиты - хрантятся в 28 байтах с 8го по 35й включительно
@@ -466,11 +472,12 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
             if(etype.count() > type_event)
                 etype_str = etype[type_event].name;
 
-            ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-            ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+            ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString::number(0)));
+            ui->tableWidgetJournal->setItem(row, 1, new QTableWidgetItem(QString::number(id)));
+            ui->tableWidgetJournal->setItem(row, 2, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
 
-            ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
-            ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
+            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+            ui->tableWidgetJournal->setItem(row, 6, new QTableWidgetItem(QTableWidgetItem(etype_str + QString(" (%1)").
                                                                                   arg(type_event))));
 
             QString ecategory_str  = (ecategory.isEmpty())?tr("Неизвестная категория"):ecategory[category_event].name;
@@ -487,14 +494,15 @@ void CJournalWidget::printEvent(const QVector<quint8>& data) const
             eparameter_str += ((eparameter.isEmpty() || (eparameter.count() <= parameter_event))?
                                tr("Неизвестный параметр"):eparameter[parameter_event].name);
 
-            ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(ecategory_str +
+            ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(ecategory_str +
                                                     QString(" (%1)").arg(QString::number(category_event))));
-            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(eparameter_str +
+            ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(eparameter_str +
                                                     QString(" (%1)").arg(QString::number(parameter_event))));
 
             ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
             ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
             ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+            ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
         }
     }
 
@@ -515,18 +523,20 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 
         ui->tableWidgetJournal->insertRow(row);
 
-        ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString("%1").arg(id)));
-        ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
-        ui->tableWidgetJournal->setItem(row, 2, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+        ui->tableWidgetJournal->setItem(row, 0, new QTableWidgetItem(QString("%1").arg(0)));
+        ui->tableWidgetJournal->setItem(row, 1, new QTableWidgetItem(QString("%1").arg(id)));
+        ui->tableWidgetJournal->setItem(row, 2, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+        ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
 
         ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
         ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
         ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
 
         if(type < type_list.count())
         {
-            ui->tableWidgetJournal->setItem(row, 3, new QTableWidgetItem(QString("%1").arg(type_list[type])));
-            ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
+            ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(QString("%1").arg(type_list[type])));
+            ui->tableWidgetJournal->item(row, 4)->setTextAlignment(Qt::AlignCenter);
 
             if(type == 0)
             {
@@ -538,7 +548,7 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
                 date_t  t    = secsToDate(secs);
                 QString time = tr("%1 дн. %2 ч. %3 мин. %4 сек.").arg(t.day).arg(t.hour).arg(t.min).arg(t.sec);
 
-                ui->tableWidgetJournal->setItem(row, 4, new QTableWidgetItem(time));
+                ui->tableWidgetJournal->setItem(row, 5, new QTableWidgetItem(time));
 
                 union
                 {

@@ -3876,10 +3876,10 @@ void ConfiguratorWindow::initDeviceCode()
 //-------------------------------------
 void ConfiguratorWindow::initJournals()
 {
-    QStringList eventJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Параметр") << tr("Категория") << tr("Тип");
-    QStringList crashJournalHeaders     = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Защита");
-    QStringList halfHourJournalHeaders  = QStringList() << tr("ID") << tr("Дата") << tr("Время") << tr("Тип записи") << tr("Время учета, сек");
-    QStringList isolationJournalHeaders = QStringList() << tr("ID") << tr("Дата") << tr("Время");
+    QStringList eventJournalHeaders     = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Параметр") << tr("Категория") << tr("Тип");
+    QStringList crashJournalHeaders     = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Защита");
+    QStringList halfHourJournalHeaders  = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Тип записи") << tr("Время учета, сек");
+    QStringList isolationJournalHeaders = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
