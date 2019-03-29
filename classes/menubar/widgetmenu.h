@@ -30,7 +30,10 @@
                 SETTINGS,
                 SETTINGDEBUG,
                 CLOSEPROJECT,
-                EXITAPPLICATION
+                EXITAPPLICATION,
+                PROTECTION_EXPORT, // кнопка "Защиты и автоматика (уставки)" в меню экспорт
+                JOURNAL_EXPORT, // кнопка "Журналы" в меню экспорт
+                SETTINGS_EXPORT // кнопка "Настройки" в меню экспорт
             };
 
         public:
@@ -58,8 +61,13 @@
             void settings();
             void addDocument(const QString&);
 
+        protected:
+            QSize sizeHint() const;
+            QSize minimumSizeHint() const;
+
         private:
             void createMenuButtonGroup();
+            void exportProtection();
 
         private:
             Ui::CWidgetMenu* ui;

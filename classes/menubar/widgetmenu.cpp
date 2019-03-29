@@ -21,6 +21,10 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonSettings->setID(SETTINGS);
     ui->toolButtonSettingDebug->setID(SETTINGDEBUG);
 
+    ui->toolButtonProtectionExport->setID(PROTECTION_EXPORT);
+    ui->toolButtonJournalExport->setID(JOURNAL_EXPORT);
+    ui->toolButtonSettingsExport->setID(SETTINGS_EXPORT);
+
     ui->toolButtonNewProject->installEventFilter(this);
     ui->toolButtonOpenProject->installEventFilter(this);
     ui->toolButtonSaveProject->installEventFilter(this);
@@ -29,6 +33,9 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonImportProject->installEventFilter(this);
     ui->toolButtonCloseProject->installEventFilter(this);
     ui->toolButtonSettings->installEventFilter(this);
+    ui->toolButtonProtectionExport->installEventFilter(this);
+    ui->toolButtonJournalExport->installEventFilter(this);
+    ui->toolButtonSettingsExport->installEventFilter(this);
 
     ui->toolButtonNewProject->setShortcut(QKeySequence("CTRL+N"));
     ui->toolButtonOpenProject->setShortcut(QKeySequence("CTRL+O"));
@@ -45,10 +52,21 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     ui->toolButtonSettings->setMenu(menu);
     ui->toolButtonSettings->setCheckable(false);
 
+    ui->toolButtonProtectionExport->setMenu(menu);
+    ui->toolButtonProtectionExport->setCheckable(false);
+
+    ui->toolButtonJournalExport->setMenu(menu);
+    ui->toolButtonJournalExport->setCheckable(false);
+
+    ui->toolButtonSettingsExport->setMenu(menu);
+    ui->toolButtonSettingsExport->setCheckable(false);
+
     ui->listWidgetOpenDocument->setPalette(palette());
     ui->listWidgetOpenDocument->hide();
 
-    ui->stackedWidgetMenuFunction->setCurrentIndex(0);
+    ui->stackedWidgetMenuLevel1->setCurrentIndex(0);
+    ui->stackedWidgetMenuLevel2->hide();
+    ui->stackedWidgetMenuLevel3->hide();
 
     connect(ui->toolButtonExit, &CToolButton::clicked, this, &CWidgetMenu::closeWindow);
     connect(ui->toolButtonNewProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
@@ -63,7 +81,11 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonImportProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonSettings, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonSettingDebug, &CToolButton::clicked, this, &CWidgetMenu::clicked);
-    connect(ui->toolButtonExportJournalToDataBase, &CToolButton::clicked, this, &CWidgetMenu::exportJournalToDataBase);
+
+    connect(ui->toolButtonProtectionExport, &CToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(ui->toolButtonJournalExport, &CToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(ui->toolButtonSettingsExport, &CToolButton::clicked, this, &CWidgetMenu::clicked);
+
     connect(ui->toolButtonImportJournalFromDataBase, &CToolButton::clicked, this, &CWidgetMenu::importJournalFromDataBase);
     connect(ui->toolButtonNewProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonOpenProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
@@ -76,6 +98,11 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     connect(ui->toolButtonExportProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonImportProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonSettings, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
+
+    connect(ui->toolButtonProtectionExport, &CToolButton::clicked, this, &CWidgetMenu::hoverChanged);
+    connect(ui->toolButtonJournalExport, &CToolButton::clicked, this, &CWidgetMenu::hoverChanged);
+    connect(ui->toolButtonSettingsExport, &CToolButton::clicked, this, &CWidgetMenu::hoverChanged);
+
     connect(this, &CWidgetMenu::addDocument, this, &CWidgetMenu::addOpenDocument);
 
     ui->toolButtonSaveProject->setDisabled(true);
@@ -106,6 +133,40 @@ void CWidgetMenu::activateMenuButtons()
     ui->toolButtonImportProject->setEnabled(true);
     ui->toolButtonSettings->setEnabled(true);
 }
+//---------------------------------
+QSize CWidgetMenu::sizeHint() const
+{
+    int w = ui->frameMenuMain->sizeHint().width() + ui->stackedWidgetMenuLevel1->sizeHint().width() + 100;
+
+    if(!ui->stackedWidgetMenuLevel2->isHidden())
+    {
+        w += ui->stackedWidgetMenuLevel2->sizeHint().width();
+    }
+
+    if(!ui->stackedWidgetMenuLevel3->isHidden())
+    {
+        w += ui->stackedWidgetMenuLevel3->sizeHint().width();
+    }
+
+    QSize s = QSize(w, 450);
+    qDebug() << "sizeHint: " << s;
+    return s;
+}
+//----------------------------------------
+QSize CWidgetMenu::minimumSizeHint() const
+{
+    return sizeHint();
+}
+//----------------------------------
+void CWidgetMenu::exportProtection()
+{
+    setFixedSize(QSize(700, 450));/*
+    ui->stackedWidgetMenuLevel2->hide();
+    ui->stackedWidgetMenuLevel3->show();
+    ui->stackedWidgetMenuLevel3->setCurrentIndex(0);*/
+    updateGeometry();
+    qDebug() << "export protection";
+}
 //-------------------------
 void CWidgetMenu::clicked()
 {
@@ -135,11 +196,11 @@ void CWidgetMenu::clicked()
         break;
 
         case EXPORTPROJECT:
-            ui->stackedWidgetMenuFunction->setCurrentIndex(1);
+            ui->stackedWidgetMenuLevel1->setCurrentIndex(1);
         break;
 
         case IMPORTPROJECT:
-            ui->stackedWidgetMenuFunction->setCurrentIndex(2);
+            ui->stackedWidgetMenuLevel1->setCurrentIndex(2);
         break;
 
         case EXPORTTOPDFPROJECT:
@@ -159,11 +220,15 @@ void CWidgetMenu::clicked()
         break;
 
         case SETTINGS:
-            ui->stackedWidgetMenuFunction->setCurrentIndex(3);
+            ui->stackedWidgetMenuLevel1->setCurrentIndex(3);
         break;
 
         case SETTINGDEBUG:
             emit settings();
+        break;
+
+        case PROTECTION_EXPORT:
+            exportProtection();
         break;
 
         default: qDebug() << QString("ID кнопки не определено: %1").arg(button_id); break;
@@ -172,15 +237,22 @@ void CWidgetMenu::clicked()
 //------------------------------------
 void CWidgetMenu::hoverChanged(int id)
 {
-    ButtonIDType button_id = static_cast<ButtonIDType>(id);
+    switch (id)
+    {
+        case IMPORTPROJECT:
+        case EXPORTTOEXCELPROJECT:
+        case IMPORTFROMEXCELPROJECT:
+        case EXPORTTOPDFPROJECT:
+        case SETTINGS:
+            ui->stackedWidgetMenuLevel1->setCurrentIndex(0);
+        break;
 
-    if(button_id != EXPORTPROJECT && button_id != IMPORTPROJECT && button_id != EXPORTTOEXCELPROJECT &&
-       button_id != IMPORTFROMEXCELPROJECT && button_id != EXPORTTOPDFPROJECT && button_id != SETTINGS)
-        ui->stackedWidgetMenuFunction->setCurrentIndex(0);
-    else if(button_id == EXPORTPROJECT)
-        ui->stackedWidgetMenuFunction->setCurrentIndex(1);
-    else if(button_id == IMPORTPROJECT)
-        ui->stackedWidgetMenuFunction->setCurrentIndex(2);
-    else if(button_id == SETTINGS)
-        ui->stackedWidgetMenuFunction->setCurrentIndex(3);
+        case EXPORTPROJECT:
+            ui->stackedWidgetMenuLevel1->setCurrentIndex(1);
+        break;
+
+        case PROTECTION_EXPORT:
+            exportProtection();
+        break;
+    }
 }

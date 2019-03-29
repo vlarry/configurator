@@ -75,6 +75,8 @@
         <file>resource/images/device_menu.png</file>
         <file>resource/images/message.png</file>
         <file>resource/images/terminal.png</file>
+        <file>resource/images/db_export.png</file>
+        <file>resource/images/db_import.png</file>
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>

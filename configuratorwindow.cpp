@@ -7040,6 +7040,8 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
 
     if(ui->checkboxCalibTimeout->isChecked()) // включаем чтение расчетных величин, если было запущено
         chboxCalculateTimeoutStateChanged(true);
+
+    readJournalCount(journal);
 }
 //---------------------------------------------------------
 QString ConfiguratorWindow::journalName(JournalPtr journal)
@@ -9381,8 +9383,6 @@ void ConfiguratorWindow::initApplication()
         ui->pbtnMenuSaveProject->setDisabled(true);
         ui->pbtnMenuSaveAsProject->setDisabled(true);
     }
-
-    ui->checkBoxJournalPrintRead->hide();
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::exportToPDF(const JournalPtr journal, const QString& reportName, const QString& sn_device, const QString& filename)
