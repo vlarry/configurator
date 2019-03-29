@@ -13,6 +13,7 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->tableWidgetJournal->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidgetJournal->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->tableWidgetJournal->horizontalHeader()->setSortIndicatorShown(true);
+    ui->tableWidgetJournal->verticalHeader()->hide();
 
     ui->listViewPropertyCrashJournal->hide(); // по умолчанию окно свойств журнала аварий скрыто
     ui->tableWidgetPropertyHalfhourJournal->hide(); // по умолчанию окно свойств журнала получасовок скрыто
