@@ -15,9 +15,11 @@
 
         protected:
             void enterEvent(QEvent* event);
+            void leaveEvent(QEvent* event);
 
         signals:
-            void hovered(int id);
+            void hovered(int id = -1);
+            void leaved(int id);
 
         private:
             int m_id;

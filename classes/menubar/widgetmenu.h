@@ -18,22 +18,15 @@
         public:
             enum ButtonIDType
             {
-                NEWPROJECT,
-                OPENPROJECT,
-                SAVEPROJECT,
-                SAVEASPROJECT,
-                EXPORTPROJECT,
-                EXPORTTOPDFPROJECT,
-                EXPORTTOEXCELPROJECT,
-                IMPORTPROJECT,
-                IMPORTFROMEXCELPROJECT,
-                SETTINGS,
-                SETTINGDEBUG,
-                CLOSEPROJECT,
-                EXITAPPLICATION,
-                PROTECTION_EXPORT, // кнопка "Защиты и автоматика (уставки)" в меню экспорт
-                JOURNAL_EXPORT, // кнопка "Журналы" в меню экспорт
-                SETTINGS_EXPORT // кнопка "Настройки" в меню экспорт
+                BUTTON_NEW_PROJECT, // кнопка "Новый" - создание нового проекта
+                BUTTON_OPEN_PROJECT, // кнопка "Открыть" - открытие проекта
+                BUTTON_SAVE_PROJECT, // кнопка "Сохранить" - сохранение проекта в текущий файл
+                BUTTON_SAVE_AS_PROJECT, // кнопка "Сохранить как" - сохранение проекта в указанный каталог
+                BUTTON_EXPORT_PROJECT, // кнопка-меню "Экспорт" - открывает перечень допустимых пунктов меню для экспорта
+                BUTTON_IMPORT_PROJECT, // кнопка-меню "Импорт" - открывает перечень допустимых пунктов меню для импорта
+                BUTTON_SETTINGS_PROJECT, // кнопка-меню "Настройки" - открывает выбор настроек
+                BUTTON_CLOSE_PROJECT, // кнопка "Закрыть" - установка дефолтных значений проекта и закрытие текущего файла проекта
+                BUTTON_EXIT_APP // кнопка "Выход" - выход из программы
             };
 
         public:
@@ -62,12 +55,13 @@
             void addDocument(const QString&);
 
         protected:
-            QSize sizeHint() const;
-            QSize minimumSizeHint() const;
+            bool eventFilter(QObject *watched, QEvent *event);
 
         private:
             void createMenuButtonGroup();
             void exportProtection();
+            void exportJournalMenu();
+            void exportJournal();
 
         private:
             Ui::CWidgetMenu* ui;

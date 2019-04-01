@@ -23,3 +23,9 @@ void CToolButton::enterEvent(QEvent* event)
 
     emit hovered(m_id);
 }
+//-----------------------------------------
+void CToolButton::leaveEvent(QEvent *event)
+{
+    QToolButton::leaveEvent(event);
+    emit leaved(m_id);
+}
