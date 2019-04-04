@@ -2,7 +2,15 @@
     #define TOOLBUTTON_H
     //--------------------
     #include <QToolButton>
+    #include <QFrame>
+    #include <QVBoxLayout>
     #include <QEvent>
+    #include <QDebug>
+    #include <QMenu>
+    #include <QPainter>
+    #include <QPaintEvent>
+    //----------
+    class CMenu;
     //-----------------------------------
     class CToolButton: public QToolButton
     {
@@ -10,12 +18,14 @@
 
         public:
             CToolButton(QWidget* parent = nullptr);
-            void setID(int id);
             int  id() const;
+            void setID(int id);
+            void setIndicatorMenu(bool state);
 
         protected:
             void enterEvent(QEvent* event);
             void leaveEvent(QEvent* event);
+            void paintEvent(QPaintEvent *event);
 
         signals:
             void hovered(int id = -1);
@@ -23,5 +33,6 @@
 
         private:
             int m_id;
+            int m_is_menu;
     };
 #endif // TOOLBUTTON_H
