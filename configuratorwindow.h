@@ -615,7 +615,6 @@
             void openProject();
             void saveProject();
             void saveAsProject();
-            void exportToPDFProject();
             void exportToExcelProject();
             void importFromExcelProject();
             void closeProject();

@@ -8502,12 +8502,6 @@ void ConfiguratorWindow::saveAsProject()
     m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
     m_popup->show();
 }
-//-------------------------------------------
-void ConfiguratorWindow::exportToPDFProject()
-{
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
-}
 //---------------------------------------------
 void ConfiguratorWindow::exportToExcelProject()
 {
@@ -8549,8 +8543,6 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
 
-//    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3, QXlsx::XLSX_PANE_TOP_LEFT);
-
     int pos;
 
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupMTZ);
@@ -8573,8 +8565,6 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
 
-//    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3, QXlsx::XLSX_PANE_TOP_LEFT);
-
     writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
 
     xlsx.addSheet(tr("Аналоговые входы"));
@@ -8586,8 +8576,6 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("A1", tr("Параметр"), headerFormat);
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
-
-//    xlsx.currentWorksheet()->freezePane(1, 1, 1, 3, QXlsx::XLSX_PANE_TOP_LEFT);
 
     writeDataToExcel(xlsx, ui->tableWidgetSettingsAnalogGroupGeneral);
 
@@ -11707,6 +11695,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openProject, this, &ConfiguratorWindow::openProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveProject, this, &ConfiguratorWindow::saveProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveAsProject, this, &ConfiguratorWindow::saveAsProject);
+
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportProtectionAutomaticToExcel, this, &ConfiguratorWindow::exportToExcelProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importProtectionAutomaticFromExcel, this, &ConfiguratorWindow::importFromExcelProject);
 //    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this, &ConfiguratorWindow::exportToPDFProject);
 //    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this, &ConfiguratorWindow::exportToExcelProject);
 //    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importFromExcelProject, this, &ConfiguratorWindow::importFromExcelProject);

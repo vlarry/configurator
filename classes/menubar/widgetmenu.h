@@ -60,6 +60,12 @@
                 BUTTON_IMPORT_FROM_EXCEL // кнопка экспорта в эксель
             };
 
+            struct OperationType
+            {
+                int type; // export or import
+                int operation; // operation type (export|import protection, journal or settings)
+            };
+
         public:
             explicit CWidgetMenu(QWidget* parent = nullptr);
             ~CWidgetMenu();
@@ -120,6 +126,6 @@
 
         private:
             Ui::CWidgetMenu* ui;
-            int m_operation;
+            OperationType m_operation;
     };
 #endif // WIDGETMENU_H

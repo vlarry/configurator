@@ -4,7 +4,7 @@
 CWidgetMenu::CWidgetMenu(QWidget* parent):
     QWidget(parent),
     ui(new Ui::CWidgetMenu),
-    m_operation(BUTTON_NONE)
+    m_operation(OperationType({ BUTTON_NONE, BUTTON_NONE }))
 {
     ui->setupUi(this);
     initMenu();
@@ -113,30 +113,30 @@ void CWidgetMenu::exportSettingsMenu()
 //--------------------------------------------------------
 void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
 {
-    if(m_operation & BUTTON_PROTECTION_EXPORT)
+    if(m_operation.operation == BUTTON_PROTECTION_EXPORT)
     {
         if(id == BUTTON_EXPORT_TO_EXCEL)
             emit exportProtectionAutomaticToExcel();
         else if(id == BUTTON_EXPORT_TO_DATEBASE)
             emit exportProtectionAutomaticToDatabase();
     }
-    else if(m_operation & BUTTON_JOURNAL_EXPORT)
+    else if(m_operation.type == BUTTON_JOURNAL_EXPORT)
     {
         QString journal_type;
 
-        if(m_operation & BUTTON_JOURNAL_CRASH_EXPORT)
+        if(m_operation.operation == BUTTON_JOURNAL_CRASH_EXPORT)
         {
             journal_type = "CRASH";
         }
-        else if(m_operation & BUTTON_JOURNAL_EVENT_EXPORT)
+        else if(m_operation.operation == BUTTON_JOURNAL_EVENT_EXPORT)
         {
             journal_type = "EVENT";
         }
-        else if(m_operation & BUTTON_JOURNAL_HALFHOUR_EXPORT)
+        else if(m_operation.operation == BUTTON_JOURNAL_HALFHOUR_EXPORT)
         {
             journal_type = "HALFHOUR";
         }
-        else if(m_operation & BUTTON_JOURNAL_ISOLATION_EXPORT)
+        else if(m_operation.operation == BUTTON_JOURNAL_ISOLATION_EXPORT)
         {
             journal_type = "ISOLATION";
         }
@@ -157,27 +157,27 @@ void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
             emit exportJournalToPDF(journal_type);
         }
     }
-    else if(m_operation & BUTTON_SETTINGS_EXPORT)
+    else if(m_operation.type == BUTTON_SETTINGS_EXPORT)
     {
         QString type;
 
-        if(m_operation & BUTTON_SETTINGS_ANALOG_INPUT_EXPORT)
+        if(m_operation.operation == BUTTON_SETTINGS_ANALOG_INPUT_EXPORT)
         {
             type = "ANALOG";
         }
-        else if(m_operation & BUTTON_SETTINGS_DISCRET_INPUT_EXPORT)
+        else if(m_operation.operation == BUTTON_SETTINGS_DISCRET_INPUT_EXPORT)
         {
             type = "DISCRET";
         }
-        else if(m_operation & BUTTON_SETTINGS_RELAY_EXPORT)
+        else if(m_operation.operation == BUTTON_SETTINGS_RELAY_EXPORT)
         {
             type = "RELAY";
         }
-        else if(m_operation & BUTTON_SETTINGS_LED_EXPORT)
+        else if(m_operation.operation == BUTTON_SETTINGS_LED_EXPORT)
         {
             type = "LED";
         }
-        else if(m_operation & BUTTON_SETTINGS_PROTECTION_BLOCK_EXPORT)
+        else if(m_operation.operation == BUTTON_SETTINGS_PROTECTION_BLOCK_EXPORT)
         {
             type = "BLOCK";
         }
@@ -194,6 +194,8 @@ void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
             emit exportSettingsToDatabase(type);
         }
     }
+
+    m_operation = OperationType({ BUTTON_NONE, BUTTON_NONE });
 }
 //----------------------------------
 void CWidgetMenu::importProtection()
@@ -255,30 +257,30 @@ void CWidgetMenu::importSettingsMenu()
 //--------------------------------------------------------
 void CWidgetMenu::emitImport(CWidgetMenu::ButtonIDType id)
 {
-    if(m_operation & BUTTON_PROTECTION_IMPORT)
+    if(m_operation.operation == BUTTON_PROTECTION_IMPORT)
     {
         if(id == BUTTON_IMPORT_FROM_EXCEL)
             emit importProtectionAutomaticFromExcel();
         else if(id == BUTTON_IMPORT_FROM_DATEBASE)
             emit importProtectionAutomaticFromDatabase();
     }
-    else if(m_operation & BUTTON_JOURNAL_IMPORT)
+    else if(m_operation.type == BUTTON_JOURNAL_IMPORT)
     {
         QString journal_type;
 
-        if(m_operation & BUTTON_JOURNAL_CRASH_IMPORT)
+        if(m_operation.operation == BUTTON_JOURNAL_CRASH_IMPORT)
         {
             journal_type = "CRASH";
         }
-        else if(m_operation & BUTTON_JOURNAL_EVENT_IMPORT)
+        else if(m_operation.operation == BUTTON_JOURNAL_EVENT_IMPORT)
         {
             journal_type = "EVENT";
         }
-        else if(m_operation & BUTTON_JOURNAL_HALFHOUR_IMPORT)
+        else if(m_operation.operation == BUTTON_JOURNAL_HALFHOUR_IMPORT)
         {
             journal_type = "HALFHOUR";
         }
-        else if(m_operation & BUTTON_JOURNAL_ISOLATION_IMPORT)
+        else if(m_operation.operation == BUTTON_JOURNAL_ISOLATION_IMPORT)
         {
             journal_type = "ISOLATION";
         }
@@ -295,27 +297,27 @@ void CWidgetMenu::emitImport(CWidgetMenu::ButtonIDType id)
             emit importJournalFromDatabase(journal_type);
         }
     }
-    else if(m_operation & BUTTON_SETTINGS_IMPORT)
+    else if(m_operation.type == BUTTON_SETTINGS_IMPORT)
     {
         QString type;
 
-        if(m_operation & BUTTON_SETTINGS_ANALOG_INPUT_IMPORT)
+        if(m_operation.operation == BUTTON_SETTINGS_ANALOG_INPUT_IMPORT)
         {
             type = "ANALOG";
         }
-        else if(m_operation & BUTTON_SETTINGS_DISCRET_INPUT_IMPORT)
+        else if(m_operation.operation == BUTTON_SETTINGS_DISCRET_INPUT_IMPORT)
         {
             type = "DISCRET";
         }
-        else if(m_operation & BUTTON_SETTINGS_RELAY_IMPORT)
+        else if(m_operation.operation == BUTTON_SETTINGS_RELAY_IMPORT)
         {
             type = "RELAY";
         }
-        else if(m_operation & BUTTON_SETTINGS_LED_IMPORT)
+        else if(m_operation.operation == BUTTON_SETTINGS_LED_IMPORT)
         {
             type = "LED";
         }
-        else if(m_operation & BUTTON_SETTINGS_PROTECTION_BLOCK_IMPORT)
+        else if(m_operation.operation == BUTTON_SETTINGS_PROTECTION_BLOCK_IMPORT)
         {
             type = "BLOCK";
         }
@@ -332,6 +334,8 @@ void CWidgetMenu::emitImport(CWidgetMenu::ButtonIDType id)
             emit importSettingsFromDatabase(type);
         }
     }
+
+    m_operation = OperationType({ BUTTON_NONE, BUTTON_NONE });
 }
 //--------------------------
 void CWidgetMenu::initMenu()
@@ -577,11 +581,12 @@ void CWidgetMenu::hoverChanged(int id)
             ui->frameSubmenu2->hide();
             ui->frameSubmenu3->hide();
             ui->toolButtonExportProject->setChecked(true);
-            m_operation = static_cast<ButtonIDType>(id);
+            m_operation.type = id;
         break;
 
         case BUTTON_PROTECTION_EXPORT:
             exportProtection();
+            m_operation.operation = id;
         break;
 
         case BUTTON_JOURNAL_EXPORT:
@@ -593,7 +598,7 @@ void CWidgetMenu::hoverChanged(int id)
         case BUTTON_JOURNAL_HALFHOUR_EXPORT:
         case BUTTON_JOURNAL_ISOLATION_EXPORT:
             exportJournalMenu();
-            m_operation |= id;
+            m_operation.operation = id;
         break;
 
         case BUTTON_SETTINGS_EXPORT:
@@ -602,7 +607,7 @@ void CWidgetMenu::hoverChanged(int id)
 
         case BUTTON_SETTINGS_ANALOG_INPUT_EXPORT:
             exportSettingsAnalogInput();
-            m_operation |= id;
+            m_operation.operation = id;
         break;
 
         case BUTTON_SETTINGS_DISCRET_INPUT_EXPORT:
@@ -610,7 +615,7 @@ void CWidgetMenu::hoverChanged(int id)
         case BUTTON_SETTINGS_LED_EXPORT:
         case BUTTON_SETTINGS_PROTECTION_BLOCK_EXPORT:
             exportSettingsMenu();
-            m_operation |= id;
+            m_operation.operation = id;
         break;
 
         case BUTTON_IMPORT_PROJECT:
@@ -622,11 +627,12 @@ void CWidgetMenu::hoverChanged(int id)
             ui->frameSubmenuImport2->hide();
             ui->frameSubmenuImport3->hide();
             ui->toolButtonImportProject->setChecked(true);
-            m_operation = static_cast<ButtonIDType>(id);
+            m_operation.type = id;
         break;
 
         case BUTTON_PROTECTION_IMPORT:
             importProtection();
+            m_operation.operation = id;
         break;
 
         case BUTTON_JOURNAL_IMPORT:
@@ -638,7 +644,7 @@ void CWidgetMenu::hoverChanged(int id)
         case BUTTON_JOURNAL_HALFHOUR_IMPORT:
         case BUTTON_JOURNAL_ISOLATION_IMPORT:
             importJournalMenu();
-            m_operation |= id;
+            m_operation.operation = id;
         break;
 
         case BUTTON_SETTINGS_IMPORT:
@@ -647,7 +653,7 @@ void CWidgetMenu::hoverChanged(int id)
 
         case BUTTON_SETTINGS_ANALOG_INPUT_IMPORT:
             importSettingsAnalogInput();
-            m_operation |= id;
+            m_operation.operation = id;
         break;
 
         case BUTTON_SETTINGS_DISCRET_INPUT_IMPORT:
@@ -655,7 +661,7 @@ void CWidgetMenu::hoverChanged(int id)
         case BUTTON_SETTINGS_LED_IMPORT:
         case BUTTON_SETTINGS_PROTECTION_BLOCK_IMPORT:
             importSettingsMenu();
-            m_operation |= id;
+            m_operation.operation = id;
         break;
 
         case BUTTON_SETTINGS_PROJECT:
@@ -664,7 +670,6 @@ void CWidgetMenu::hoverChanged(int id)
             ui->toolButtonSettings->setChecked(false);
             ui->stackedWidgetMenuLevel1->setCurrentIndex(3);
             ui->toolButtonSettings->setChecked(true);
-            m_operation = BUTTON_NONE;
         break;
 
         default:
@@ -672,7 +677,8 @@ void CWidgetMenu::hoverChanged(int id)
             ui->toolButtonExportProject->setChecked(false);
             ui->toolButtonImportProject->setChecked(false);
             ui->toolButtonSettings->setChecked(false);
-            m_operation = BUTTON_NONE;
         break;
     }
+
+    qDebug() << "operation: " << m_operation.operation;
 }
