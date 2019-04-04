@@ -590,9 +590,13 @@
             void timeoutSynchronization();
             void timeoutDebugInfo();
             void debugInfoCtrl(int timer, bool state = false);
-            void importJournalToTable();
-            void exportJournalToDb();
-            void startExportToPDF();
+            void importJournalToTable(JournalPtr journal_ptr = nullptr);
+            void exportJournalToDb(JournalPtr journal_ptr = nullptr);
+            void startExportToPDF(JournalPtr journal = nullptr);
+            void startMenuJournalExportToPDF(const QString &type);
+            void startCurrentJournalExportToPDF();
+            void startMenuJournalExportToDB(const QString &type);
+            void startMenuJournalImportFromDB(const QString &type);
             void filterDialog();
             void deviceDefaultSettings();
             void noConnectMessage();
@@ -760,6 +764,7 @@
             int dialogJournalRead(JournalPtr journal);
             void endJournalRead(JournalPtr journal);
             QString journalName(JournalPtr journal);
+            JournalPtr journalWidgetByName(const QString &name);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

@@ -7055,6 +7055,27 @@ QString ConfiguratorWindow::journalName(JournalPtr journal)
 
     return journal_name;
 }
+//---------------------------------------------------------------------
+JournalPtr ConfiguratorWindow::journalWidgetByName(const QString &name)
+{
+    if(name.isEmpty())
+        return nullptr;
+
+    JournalPtr journal = nullptr;
+
+    if(name == "CRASH")
+        journal = m_journal_crash;
+    else if(name == "EVENT")
+        journal = m_journal_event;
+    else if(name == "HALFHOUR")
+        journal = m_journal_halfhour;
+    else if(name == "ISOLATION")
+        journal = nullptr;
+    else
+        journal = nullptr;
+
+    return journal;
+}
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
                                                 DeviceMenuItemType index)
@@ -7603,11 +7624,9 @@ void ConfiguratorWindow::clearJournal()
 
     readJournalCount(journal);
 }
-//-----------------------------------------
-void ConfiguratorWindow::startExportToPDF()
+//-----------------------------------------------------------
+void ConfiguratorWindow::startExportToPDF(JournalPtr journal)
 {
-    JournalPtr journal = currentJournalWidget();
-
     if(!journal)
     {
         showMessageBox(tr("Эксорт в PDF"), tr("Выберите текущий журнал для экспорта"), QMessageBox::Warning);
@@ -7651,6 +7670,55 @@ void ConfiguratorWindow::startExportToPDF()
     QFuture<void> future = QtConcurrent::run(this, &ConfiguratorWindow::exportToPDF, journal, QString(tr("Журнал %1")).arg(journal_name),
                                              sn_device, journal_path);
     m_watcher->setFuture(future);
+}
+//-----------------------------------------------------------------------
+void ConfiguratorWindow::startMenuJournalExportToPDF(const QString &type)
+{
+    if(type.isEmpty())
+        return;
+
+    JournalPtr journal = journalWidgetByName(type);
+    startExportToPDF(journal);
+}
+//-------------------------------------------------------
+void ConfiguratorWindow::startCurrentJournalExportToPDF()
+{
+    JournalPtr journal = currentJournalWidget();
+    startExportToPDF(journal);
+}
+//----------------------------------------------------------------------
+void ConfiguratorWindow::startMenuJournalExportToDB(const QString &type)
+{
+    if(type.isEmpty())
+        return;
+
+    JournalPtr journal = journalWidgetByName(type);
+    exportJournalToDb(journal);
+}
+//------------------------------------------------------------------------
+void ConfiguratorWindow::startMenuJournalImportFromDB(const QString &type)
+{
+    if(type.isEmpty())
+        return;
+
+    JournalPtr journal = journalWidgetByName(type);
+
+    int index = -1;
+
+    if(type == "CRASH")
+        index = 11;
+    else if(type == "EVENT")
+        index = 12;
+    else if(type == "HALFHOUR")
+        index = 13;
+    else if(type == "ISOLATION")
+        index = 14;
+
+    if(index != -1)
+    {
+        ui->stwgtMain->setCurrentIndex(index);
+        importJournalToTable(journal);
+    }
 }
 //-------------------------------------
 void ConfiguratorWindow::filterDialog()
@@ -10152,10 +10220,13 @@ void ConfiguratorWindow::debugInfoCtrl(int timer, bool state)
         m_tim_debug_info->stop();
     }
 }
-//---------------------------------------------
-void ConfiguratorWindow::importJournalToTable()
+//-------------------------------------------------------------------
+void ConfiguratorWindow::importJournalToTable(JournalPtr journal_ptr)
 {
     JournalPtr journal = currentJournalWidget();
+
+    if(journal_ptr)
+        journal = journal_ptr;
 
     if(!journal) // не выбран текущий журнал
     {
@@ -10435,7 +10506,7 @@ void ConfiguratorWindow::importJournalToTable()
     if(itemBeg && itemEnd)
     {
         QString text = QString("%1 - %2/%3").arg(itemBeg->text()).arg(itemEnd->text()).arg(table->rowCount());
-        m_active_journal_current->header()->setTextTableCountMessages(text);
+        header->setTextTableCountMessages(text);
     }
 
     m_progressbar->progressStop();
@@ -10445,10 +10516,13 @@ void ConfiguratorWindow::importJournalToTable()
 
     disconnectDb(db);
 }
-//------------------------------------------
-void ConfiguratorWindow::exportJournalToDb()
+//----------------------------------------------------------------
+void ConfiguratorWindow::exportJournalToDb(JournalPtr journal_ptr)
 {
     JournalPtr journal = currentJournalWidget();
+
+    if(journal_ptr)
+        journal = journal_ptr;
 
     if(!journal) // не выбран текущий журнал
     {
@@ -10645,16 +10719,16 @@ void ConfiguratorWindow::exportJournalToDb()
 
     for(i = pos.x(); i <= pos.y(); i++)
     {
-        int     id_msg = journal->widget()->table()->item(i, 0)->text().toInt();
-        QString date   = QDate::fromString(journal->widget()->table()->item(i, 1)->text(),
+        int     id_msg = journal->widget()->table()->item(i, 1)->text().toInt();
+        QString date   = QDate::fromString(journal->widget()->table()->item(i, 2)->text(),
                                            "dd.MM.yyyy").toString(Qt::ISODate); // приведение строки к yyyy-MM-dd для sqlite
-        QString time   = journal->widget()->table()->item(i, 2)->text();
+        QString time   = journal->widget()->table()->item(i, 3)->text();
 
         if(journal_type == "EVENT")
         {
-            QString type      = journal->widget()->table()->item(i, 3)->text();
-            QString category  = journal->widget()->table()->item(i, 4)->text();
-            QString parameter = journal->widget()->table()->item(i, 5)->text();
+            QString type      = journal->widget()->table()->item(i, 4)->text();
+            QString category  = journal->widget()->table()->item(i, 5)->text();
+            QString parameter = journal->widget()->table()->item(i, 6)->text();
 
             query.prepare(QString("INSERT OR REPLACE INTO journals (id_msg, date, time, type, category, parameter, sn_device)"
                                   "VALUES(:id_msg, :date, :time, :type, :category, :parameter, :sn_device)"));
@@ -10714,7 +10788,7 @@ void ConfiguratorWindow::exportJournalToDb()
         }
         else if(journal_type == "HALFHOUR")
         {
-            QTableWidgetItem* item = journal->widget()->table()->item(i, 3);
+            QTableWidgetItem* item = journal->widget()->table()->item(i, 4);
 
             if(!item)
                 continue;
@@ -10728,7 +10802,7 @@ void ConfiguratorWindow::exportJournalToDb()
             query.bindValue(":time", time);
             query.bindValue(":type", type);
 
-            QTableWidgetItem* itemTimeReset = journal->widget()->table()->item(i, 4);
+            QTableWidgetItem* itemTimeReset = journal->widget()->table()->item(i, 5);
 
             query.bindValue(":time_reset", ((itemTimeReset)?itemTimeReset->text():""));
             query.bindValue(":id_journal", id_journal);
@@ -11651,7 +11725,7 @@ void ConfiguratorWindow::initConnect()
     connect(this, &ConfiguratorWindow::buttonReadJournalStateChanged, ui->pushButtonJournalRead, &QPushButton::setChecked);
     connect(ui->pbtnMenuExit, &QPushButton::clicked, this, &ConfiguratorWindow::exitFromApp);
     connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::exitFromApp);
-    connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startExportToPDF);
+    connect(ui->pbtnMenuExportToPDF, &QPushButton::clicked, this, &ConfiguratorWindow::startCurrentJournalExportToPDF);
     connect(ui->pushButtonExport, &QPushButton::clicked, this, &ConfiguratorWindow::processExport);
     connect(ui->pushButtonImport, &QPushButton::clicked, this, &ConfiguratorWindow::processImport);
     connect(ui->widgetMenuBar, &CMenuBar::exportToDataBaseAction, this, &ConfiguratorWindow::processExport);
@@ -11698,6 +11772,10 @@ void ConfiguratorWindow::initConnect()
 
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportProtectionAutomaticToExcel, this, &ConfiguratorWindow::exportToExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importProtectionAutomaticFromExcel, this, &ConfiguratorWindow::importFromExcelProject);
+
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportJournalToPDF, this, &ConfiguratorWindow::startMenuJournalExportToPDF);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportJournalToDatabase, this, &ConfiguratorWindow::startMenuJournalExportToDB);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importJournalFromDatabase, this, &ConfiguratorWindow::startMenuJournalImportFromDB);
 //    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this, &ConfiguratorWindow::exportToPDFProject);
 //    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this, &ConfiguratorWindow::exportToExcelProject);
 //    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importFromExcelProject, this, &ConfiguratorWindow::importFromExcelProject);

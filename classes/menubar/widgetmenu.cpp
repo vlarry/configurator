@@ -45,6 +45,8 @@ void CWidgetMenu::showEvent(QShowEvent *event)
 void CWidgetMenu::leaveEvent(QEvent *event)
 {
     QWidget::leaveEvent(event);
+    ui->stackedWidgetMenuLevel1->setCurrentIndex(0);
+    m_operation = OperationType({ BUTTON_NONE, BUTTON_NONE });
 }
 //----------------------------------
 void CWidgetMenu::exportProtection()
@@ -144,16 +146,17 @@ void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
         if(journal_type.isEmpty())
             return;
 
-        if(id & BUTTON_EXPORT_TO_EXCEL)
+        if(id == BUTTON_EXPORT_TO_EXCEL)
         {
             emit exportJournalToExcel(journal_type);
         }
-        else if(id & BUTTON_EXPORT_TO_DATEBASE)
+        else if(id == BUTTON_EXPORT_TO_DATEBASE)
         {
             emit exportJournalToDatabase(journal_type);
         }
-        else if(id & BUTTON_EXPORT_TO_PDF)
+        else if(id == BUTTON_EXPORT_TO_PDF)
         {
+            qDebug() << "emit: " << journal_type;
             emit exportJournalToPDF(journal_type);
         }
     }
@@ -185,11 +188,11 @@ void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
         if(type.isEmpty())
             return;
 
-        if(id & BUTTON_EXPORT_TO_EXCEL)
+        if(id == BUTTON_EXPORT_TO_EXCEL)
         {
             emit exportSettingsToExcel(type);
         }
-        else if(id & BUTTON_EXPORT_TO_DATEBASE)
+        else if(id == BUTTON_EXPORT_TO_DATEBASE)
         {
             emit exportSettingsToDatabase(type);
         }
@@ -288,11 +291,11 @@ void CWidgetMenu::emitImport(CWidgetMenu::ButtonIDType id)
         if(journal_type.isEmpty())
             return;
 
-        if(id & BUTTON_IMPORT_FROM_EXCEL)
+        if(id == BUTTON_IMPORT_FROM_EXCEL)
         {
             emit importJournalFromExcel(journal_type);
         }
-        else if(id & BUTTON_IMPORT_FROM_DATEBASE)
+        else if(id == BUTTON_IMPORT_FROM_DATEBASE)
         {
             emit importJournalFromDatabase(journal_type);
         }
@@ -325,11 +328,11 @@ void CWidgetMenu::emitImport(CWidgetMenu::ButtonIDType id)
         if(type.isEmpty())
             return;
 
-        if(id & BUTTON_IMPORT_FROM_EXCEL)
+        if(id == BUTTON_IMPORT_FROM_EXCEL)
         {
             emit importSettingsFromExcel(type);
         }
-        else if(id & BUTTON_IMPORT_FROM_DATEBASE)
+        else if(id == BUTTON_IMPORT_FROM_DATEBASE)
         {
             emit importSettingsFromDatabase(type);
         }
@@ -591,6 +594,7 @@ void CWidgetMenu::hoverChanged(int id)
 
         case BUTTON_JOURNAL_EXPORT:
             exportJournal();
+            m_operation.type = id;
         break;
 
         case BUTTON_JOURNAL_CRASH_EXPORT:
@@ -637,6 +641,7 @@ void CWidgetMenu::hoverChanged(int id)
 
         case BUTTON_JOURNAL_IMPORT:
             importJournal();
+            m_operation.type = id;
         break;
 
         case BUTTON_JOURNAL_CRASH_IMPORT:
@@ -680,5 +685,5 @@ void CWidgetMenu::hoverChanged(int id)
         break;
     }
 
-    qDebug() << "operation: " << m_operation.operation;
+    qDebug() << QString("operation: type->%1, operation->%2").arg(m_operation.type).arg(m_operation.operation);
 }

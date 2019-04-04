@@ -93,8 +93,7 @@
             void importProtectionAutomaticFromExcel();
             void importProtectionAutomaticFromDatabase();
             void importJournalFromExcel(const QString&);
-            void importJournalFromDatabase(const QString&);
-            void importJournalFromPDF(const QString&);
+            void importJournalFromDatabase(const QString = "");
             void importSettingsFromExcel(const QString&);
             void importSettingsFromDatabase(const QString&);
             void closeProject();

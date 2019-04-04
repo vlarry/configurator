@@ -28,6 +28,7 @@ CJournalWidget::CJournalWidget(QWidget* parent):
 
     ui->listViewPropertyCrashJournal->setModel(model);
     ui->listViewPropertyCrashJournal->setItemDelegate(new CJournalPropertyDelegate(ui->listViewPropertyCrashJournal));
+    qDebug() << "constructo JornalWidget";
 }
 //-------------------------------
 CJournalWidget::~CJournalWidget()
@@ -38,7 +39,10 @@ CJournalWidget::~CJournalWidget()
 //--------------------------------------------
 CHeaderJournal* CJournalWidget::header() const
 {
-    return ui->widgetJournalHeader;
+    if(ui->widgetJournalHeader)
+        return ui->widgetJournalHeader;
+    else
+        return nullptr;
 }
 //--------------------------------------
 void CJournalWidget::headerClear() const
