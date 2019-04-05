@@ -170,7 +170,7 @@ void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
         }
         else if(m_operation.operation == BUTTON_SETTINGS_DISCRET_INPUT_EXPORT)
         {
-            type = "DISCRET";
+            type = "INPUT";
         }
         else if(m_operation.operation == BUTTON_SETTINGS_RELAY_EXPORT)
         {
@@ -182,7 +182,7 @@ void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
         }
         else if(m_operation.operation == BUTTON_SETTINGS_PROTECTION_BLOCK_EXPORT)
         {
-            type = "BLOCK";
+            type = "PROTECTION";
         }
 
         if(type.isEmpty())
@@ -310,7 +310,7 @@ void CWidgetMenu::emitImport(CWidgetMenu::ButtonIDType id)
         }
         else if(m_operation.operation == BUTTON_SETTINGS_DISCRET_INPUT_IMPORT)
         {
-            type = "DISCRET";
+            type = "INPUT";
         }
         else if(m_operation.operation == BUTTON_SETTINGS_RELAY_IMPORT)
         {
@@ -322,7 +322,7 @@ void CWidgetMenu::emitImport(CWidgetMenu::ButtonIDType id)
         }
         else if(m_operation.operation == BUTTON_SETTINGS_PROTECTION_BLOCK_IMPORT)
         {
-            type = "BLOCK";
+            type = "PROTECTION";
         }
 
         if(type.isEmpty())
@@ -607,6 +607,7 @@ void CWidgetMenu::hoverChanged(int id)
 
         case BUTTON_SETTINGS_EXPORT:
             exportSettings();
+            m_operation.type = id;
         break;
 
         case BUTTON_SETTINGS_ANALOG_INPUT_EXPORT:
@@ -654,6 +655,7 @@ void CWidgetMenu::hoverChanged(int id)
 
         case BUTTON_SETTINGS_IMPORT:
             importSettings();
+            m_operation.type = id;
         break;
 
         case BUTTON_SETTINGS_ANALOG_INPUT_IMPORT:

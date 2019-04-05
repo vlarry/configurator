@@ -3574,6 +3574,8 @@ void ConfiguratorWindow::initModelTables()
 
     if(!group.isEmpty())
     {
+        ui->tablewgtLedPurpose->setProperty("NAME", tr("Светодиоды"));
+        ui->tablewgtLedPurpose->setProperty("TYPE", "LED");
         QVector<QPair<QString, QString> > labels = loadLabelColumns("LED");
         initTable(ui->tablewgtLedPurpose, labels, group);
     }
@@ -3582,6 +3584,8 @@ void ConfiguratorWindow::initModelTables()
 
     if(!group.isEmpty())
     {
+        ui->tablewgtRelayPurpose->setProperty("NAME", tr("Реле"));
+        ui->tablewgtRelayPurpose->setProperty("TYPE", "RELAY");
         QVector<QPair<QString, QString> > labels = loadLabelColumns("RELAY");
         initTable(ui->tablewgtRelayPurpose, labels, group);
     }
@@ -3590,6 +3594,8 @@ void ConfiguratorWindow::initModelTables()
 
     if(!group.isEmpty())
     {
+        ui->tablewgtDiscreteInputPurpose->setProperty("NAME", tr("Дискретные входы"));
+        ui->tablewgtDiscreteInputPurpose->setProperty("TYPE", "INPUT");
         QVector<QPair<QString, QString> > labels = loadLabelColumns("INPUT");
         initTable(ui->tablewgtDiscreteInputPurpose, labels, group);
     }
@@ -3598,6 +3604,8 @@ void ConfiguratorWindow::initModelTables()
 
     if(!m_block_list.isEmpty())
     {
+        ui->tablewgtProtectionCtrl->setProperty("NAME", tr("Блокировка защит"));
+        ui->tablewgtProtectionCtrl->setProperty("TYPE", "PROTECTION");
         initTableProtection(ui->tablewgtProtectionCtrl, m_block_list);
     }
     else
@@ -5920,10 +5928,13 @@ void ConfiguratorWindow::outApplicationEvent(const QString& text)
     QString dateTimeText = QString("%1 - %2.").arg(QDateTime::currentDateTime().toString("[dd.mm.yyyy - HH:mm:ss.zzz]")).arg(text);
 //    m_event_window->appendPlainText(dateTimeText);
 }
-//--------------------------------------------------------------------------
-bool ConfiguratorWindow::createProjectTablePurpose(const QString& tableType)
+//--------------------------------------------------------------------------------------------
+bool ConfiguratorWindow::createTablePurpose(const QString& tableType, QSqlDatabase *db)
 {
-    if((m_project_db && !m_project_db->isOpen()) || tableType.isEmpty())
+    if(!db)
+        db = m_project_db;
+
+    if((db && !db->isOpen()) || tableType.isEmpty())
         return false;
 
     QVector<QPair<QString, QString> > labels = loadLabelColumns(tableType);
@@ -5932,7 +5943,8 @@ bool ConfiguratorWindow::createProjectTablePurpose(const QString& tableType)
         return false;
 
     QString str_db = QString("CREATE TABLE purpose%1 ("
-                     "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ").arg(tableType);
+                             "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, ").arg(tableType);
+
     for(int col = 0; col < labels.count(); col++)
     {
         str_db += QString("col%1 INTEGER").arg(col);
@@ -5942,7 +5954,7 @@ bool ConfiguratorWindow::createProjectTablePurpose(const QString& tableType)
 
     str_db += ");";
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(str_db))
     {
@@ -7056,25 +7068,46 @@ QString ConfiguratorWindow::journalName(JournalPtr journal)
     return journal_name;
 }
 //---------------------------------------------------------------------
-JournalPtr ConfiguratorWindow::journalWidgetByName(const QString &name)
+JournalPtr ConfiguratorWindow::journalWidgetByType(const QString &type)
 {
-    if(name.isEmpty())
+    if(type.isEmpty())
         return nullptr;
 
     JournalPtr journal = nullptr;
 
-    if(name == "CRASH")
+    if(type == "CRASH")
         journal = m_journal_crash;
-    else if(name == "EVENT")
+    else if(type == "EVENT")
         journal = m_journal_event;
-    else if(name == "HALFHOUR")
+    else if(type == "HALFHOUR")
         journal = m_journal_halfhour;
-    else if(name == "ISOLATION")
+    else if(type == "ISOLATION")
         journal = nullptr;
     else
         journal = nullptr;
 
     return journal;
+}
+//----------------------------------------------------------------------------
+CPurposeTableView *ConfiguratorWindow::purposeTableByType(const QString &type)
+{
+    if(type.isEmpty())
+        return nullptr;
+
+    CPurposeTableView *table = nullptr;
+
+    if(type == "INPUT")
+        table = ui->tablewgtDiscreteInputPurpose;
+    else if(type == "RELAY")
+        table = ui->tablewgtRelayPurpose;
+    else if(type == "LED")
+        table = ui->tablewgtLedPurpose;
+    else if(type == "PROTECTION")
+        table = ui->tablewgtProtectionCtrl;
+    else
+        table = nullptr;
+
+    return table;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
@@ -7677,7 +7710,7 @@ void ConfiguratorWindow::startMenuJournalExportToPDF(const QString &type)
     if(type.isEmpty())
         return;
 
-    JournalPtr journal = journalWidgetByName(type);
+    JournalPtr journal = journalWidgetByType(type);
     startExportToPDF(journal);
 }
 //-------------------------------------------------------
@@ -7692,7 +7725,7 @@ void ConfiguratorWindow::startMenuJournalExportToDB(const QString &type)
     if(type.isEmpty())
         return;
 
-    JournalPtr journal = journalWidgetByName(type);
+    JournalPtr journal = journalWidgetByType(type);
     exportJournalToDb(journal);
 }
 //------------------------------------------------------------------------
@@ -7701,7 +7734,7 @@ void ConfiguratorWindow::startMenuJournalImportFromDB(const QString &type)
     if(type.isEmpty())
         return;
 
-    JournalPtr journal = journalWidgetByName(type);
+    JournalPtr journal = journalWidgetByType(type);
 
     int index = -1;
 
@@ -8207,7 +8240,7 @@ void ConfiguratorWindow::newProject()
     m_progressbar->increment(5);
 
     // Создание таблиц для хранения состояний выходов
-    if(!createProjectTablePurpose("LED")) // светодиоды
+    if(!createTablePurpose("LED")) // светодиоды
     {
         showMessageBox(tr("Создание таблицы привязок светодиодов"), tr("Невозможно создать таблицу привязок светодиодов в файле проекта"),
                        QMessageBox::Warning);
@@ -8219,7 +8252,7 @@ void ConfiguratorWindow::newProject()
 
     m_progressbar->increment(5);
 
-    if(!createProjectTablePurpose("RELAY")) // реле
+    if(!createTablePurpose("RELAY")) // реле
     {
         showMessageBox(tr("Создание таблицы привязок реле"), tr("Невозможно создать таблицу привязок реле в файле проекта"), QMessageBox::Warning);
         m_project_db->close();
@@ -8230,7 +8263,7 @@ void ConfiguratorWindow::newProject()
 
     m_progressbar->increment(5);
 
-    if(!createProjectTablePurpose("INPUT")) // дискретные входы
+    if(!createTablePurpose("INPUT")) // дискретные входы
     {
         showMessageBox(tr("Создание таблицы привязок дискретных входов"), tr("Невозможно создать таблицу привязок дискретных входов в файле проекта"),
                        QMessageBox::Warning);
@@ -10844,6 +10877,130 @@ void ConfiguratorWindow::exportJournalToDb(JournalPtr journal_ptr)
 
     m_progressbar->progressStop();
 }
+//-------------------------------------------------------------
+void ConfiguratorWindow::exportPurposeToDb(const QString &type)
+{
+    CPurposeTableView *table = purposeTableByType(type);
+
+    if(!table || type.isEmpty())
+    {
+        outApplicationEvent(tr("Невозможно получить доступ к таблице привязок."));
+        return;
+    }
+
+    // выбираем файл для экспорта
+    QDir dir;
+
+    if(!dir.exists("outputs/profile"))
+        dir.mkdir("outputs/profile");
+
+    QString purpose_name = table->property("NAME").toString();
+    QString selectedFilter = tr("Файлы привязок (*.prf)");
+    QString purpose_full_name = tr("Профиль привязок %1-%2 (%3 - %4)").arg(purpose_full_name).arg(m_status_bar->serialNumberText()).
+                                                                       arg(QDate::currentDate().toString("dd_MM_yyyy")).
+                                                                       arg(QTime::currentTime().toString("HH_mm_ss"));
+    QString purpose_path = QFileDialog::getSaveFileName(this, tr("Экспорт привязок %1 в базу данных").arg(purpose_name),
+                                                        dir.absolutePath() + QString("/outputs/profile/%1.%2").
+                                                        arg(purpose_full_name).arg("prf"),
+                                                        tr("Файлы привязок (*.prf);;Все файлы (*.*)"), &selectedFilter,
+                                                        QFileDialog::DontConfirmOverwrite);
+    outApplicationEvent(tr("Экспорт привязок в БД: %1").arg(purpose_full_name));
+
+    if(purpose_path.isEmpty())
+        return;
+
+    QString baseNameFile = QFileInfo(purpose_path).baseName();
+
+    QFileInfo fi;
+
+    if(fi.exists(purpose_path)) // Файл уже существует
+    {
+        QFile file(purpose_path);
+
+        if(!file.remove())
+        {
+            showMessageBox(tr("Удаление базы привязок"),
+                           tr("Невозможно удалить базу %1!\nВозможно уже используется или у Вас нет прав").arg(baseNameFile), QMessageBox::Warning);
+            return;
+        }
+    }
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+    if(!model)
+    {
+        outLogMessage(tr("Запись привязок: Невозможно обратиться к модели представления"));
+        return;
+    }
+
+    CMatrix matrix = model->matrix();
+
+    if(matrix.rowCount() == 0)
+    {
+        outLogMessage(tr("Запись привязок: Нет данных в матрице").arg(type));
+        return;
+    }
+
+    // вставка данных в таблицу
+    QString colListBind;
+    QString colList;
+    for(int col = 0; col < matrix.columnCount(); col++)
+    {
+        QString colName = QString("col%1").arg(col);
+        colList += colName;
+        colListBind += QString(":%1").arg(colName);
+
+        if(col != matrix.columnCount() - 1)
+        {
+            colList += ", ";
+            colListBind += ", ";
+        }
+    }
+
+    QSqlDatabase* db = nullptr;
+
+    if(!connectDb(db, purpose_path))
+    {
+        showMessageBox(tr("Экспорт привязок"), tr("Невозможно открыть/создать файл \"%1\"").arg(baseNameFile), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    createTablePurpose(type, db);
+
+    QSqlQuery query(*db);
+
+    db->transaction();
+    query.prepare(QString("INSERT INTO purpose%1 (%2) VALUES(%3)").arg(type).arg(colList).arg(colListBind));
+
+    m_progressbar->setProgressTitle(tr("Экспорт привязок %1").arg(purpose_name));
+    m_progressbar->progressStart();
+    m_progressbar->setSettings(0, matrix.rowCount(), "привязок");
+
+    for(int row = 0; row < matrix.rowCount(); row++)
+    {
+        CRow::ColumnArray columns = matrix[row].columns();
+        for(int col = 0; col < columns.count(); col++)
+        {
+            CColumn column = columns[col];
+            int state = static_cast<int>(column.data().state);
+
+            query.bindValue(QString(":col%1").arg(col), state);
+        }
+
+        if(!query.exec())
+        {
+            outLogMessage(tr("Запись привязок <%1>: не удалось вставить строку %2 в таблицу привязок (%3)").arg(type).arg(row).
+                                                                                                            arg(query.lastError().text()));
+        }
+
+        m_progressbar->progressIncrement();
+    }
+
+    db->commit();
+    m_progressbar->progressStop();
+    disconnectDb(db);
+}
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
 {
@@ -11776,9 +11933,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportJournalToPDF, this, &ConfiguratorWindow::startMenuJournalExportToPDF);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportJournalToDatabase, this, &ConfiguratorWindow::startMenuJournalExportToDB);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importJournalFromDatabase, this, &ConfiguratorWindow::startMenuJournalImportFromDB);
-//    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToPDFProject, this, &ConfiguratorWindow::exportToPDFProject);
-//    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportToExcelProject, this, &ConfiguratorWindow::exportToExcelProject);
-//    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importFromExcelProject, this, &ConfiguratorWindow::importFromExcelProject);
+
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportSettingsToDatabase, this, &ConfiguratorWindow::exportPurposeToDb);
+
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::authorization);

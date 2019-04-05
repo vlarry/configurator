@@ -592,6 +592,7 @@
             void debugInfoCtrl(int timer, bool state = false);
             void importJournalToTable(JournalPtr journal_ptr = nullptr);
             void exportJournalToDb(JournalPtr journal_ptr = nullptr);
+            void exportPurposeToDb(const QString &type);
             void startExportToPDF(JournalPtr journal = nullptr);
             void startMenuJournalExportToPDF(const QString &type);
             void startCurrentJournalExportToPDF();
@@ -738,7 +739,7 @@
             QStringList loadLoginList() const;
             QString loadUserPassword(const QString& login);
             void outApplicationEvent(const QString& text);
-            bool createProjectTablePurpose(const QString& tableType);
+            bool createTablePurpose(const QString& tableType, QSqlDatabase *db = nullptr);
             bool createProjectTableProtection(int columns);
             bool createProjectTableSet(const QString& tableName);
             bool createProjectTableCommunication();
@@ -764,7 +765,8 @@
             int dialogJournalRead(JournalPtr journal);
             void endJournalRead(JournalPtr journal);
             QString journalName(JournalPtr journal);
-            JournalPtr journalWidgetByName(const QString &name);
+            JournalPtr journalWidgetByType(const QString &type);
+            CPurposeTableView *purposeTableByType(const QString &type);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
