@@ -593,6 +593,7 @@
             void importJournalToTable(JournalPtr journal_ptr = nullptr);
             void exportJournalToDb(JournalPtr journal_ptr = nullptr);
             void exportPurposeToDb(const QString &type);
+            void importPurposeFromDb(const QString &type);
             void startExportToPDF(JournalPtr journal = nullptr);
             void startMenuJournalExportToPDF(const QString &type);
             void startCurrentJournalExportToPDF();
@@ -740,7 +741,7 @@
             QString loadUserPassword(const QString& login);
             void outApplicationEvent(const QString& text);
             bool createTablePurpose(const QString& tableType, QSqlDatabase *db = nullptr);
-            bool createProjectTableProtection(int columns);
+            bool createProjectTableProtection(int columns, QSqlDatabase *db = nullptr);
             bool createProjectTableSet(const QString& tableName);
             bool createProjectTableCommunication();
             bool createProjectTableCalibrationCurrent();

@@ -5928,7 +5928,7 @@ void ConfiguratorWindow::outApplicationEvent(const QString& text)
     QString dateTimeText = QString("%1 - %2.").arg(QDateTime::currentDateTime().toString("[dd.mm.yyyy - HH:mm:ss.zzz]")).arg(text);
 //    m_event_window->appendPlainText(dateTimeText);
 }
-//--------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
 bool ConfiguratorWindow::createTablePurpose(const QString& tableType, QSqlDatabase *db)
 {
     if(!db)
@@ -5964,10 +5964,13 @@ bool ConfiguratorWindow::createTablePurpose(const QString& tableType, QSqlDataba
 
     return true;
 }
-//----------------------------------------------------------------
-bool ConfiguratorWindow::createProjectTableProtection(int columns)
+//----------------------------------------------------------------------------------
+bool ConfiguratorWindow::createProjectTableProtection(int columns, QSqlDatabase *db)
 {
-    if((m_project_db && !m_project_db->isOpen()) || columns == 0)
+    if(!db)
+        db = m_project_db;
+
+    if((db && !db->isOpen()) || columns == 0)
         return false;
 
     QString str_db = QString("CREATE TABLE purposeProtection ("
@@ -5981,7 +5984,7 @@ bool ConfiguratorWindow::createProjectTableProtection(int columns)
 
     str_db += ");";
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(str_db))
     {
@@ -9790,7 +9793,7 @@ void ConfiguratorWindow::exportPurposeToJSON()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Открытие профиля привязок"),
                                                     QString(dir.absolutePath() + "/%1/%2").
                                                     arg("outputs/profiles").arg(fileNameDefault),
-                                                    tr("Профили привязок (*.prf)"));
+                                                    tr("Профили привязок (*.jprf)"));
 
     if(fileName.isEmpty())
         return;
@@ -9904,7 +9907,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Открытие профиля привязок"),
                                                     QString(dir.absolutePath() + "/%1/%2").arg("outputs/profiles").
                                                     arg(fileNameDefault),
-                                                    tr("Профили привязок (*.prf)"));
+                                                    tr("Профили привязок (*.jprf)"));
 
     if(fileName.isEmpty())
         return;
@@ -10891,16 +10894,16 @@ void ConfiguratorWindow::exportPurposeToDb(const QString &type)
     // выбираем файл для экспорта
     QDir dir;
 
-    if(!dir.exists("outputs/profile"))
-        dir.mkdir("outputs/profile");
+    if(!dir.exists("outputs/profiles"))
+        dir.mkdir("outputs/profiles");
 
     QString purpose_name = table->property("NAME").toString();
     QString selectedFilter = tr("Файлы привязок (*.prf)");
-    QString purpose_full_name = tr("Профиль привязок %1-%2 (%3 - %4)").arg(purpose_full_name).arg(m_status_bar->serialNumberText()).
+    QString purpose_full_name = tr("Профиль привязок %1-%2 (%3 - %4)").arg(purpose_name).arg(m_status_bar->serialNumberText()).
                                                                        arg(QDate::currentDate().toString("dd_MM_yyyy")).
                                                                        arg(QTime::currentTime().toString("HH_mm_ss"));
     QString purpose_path = QFileDialog::getSaveFileName(this, tr("Экспорт привязок %1 в базу данных").arg(purpose_name),
-                                                        dir.absolutePath() + QString("/outputs/profile/%1.%2").
+                                                        dir.absolutePath() + QString("/outputs/profiles/%1.%2").
                                                         arg(purpose_full_name).arg("prf"),
                                                         tr("Файлы привязок (*.prf);;Все файлы (*.*)"), &selectedFilter,
                                                         QFileDialog::DontConfirmOverwrite);
@@ -10915,6 +10918,11 @@ void ConfiguratorWindow::exportPurposeToDb(const QString &type)
 
     if(fi.exists(purpose_path)) // Файл уже существует
     {
+        int result = QMessageBox::question(this, tr("Экспорт привязок"), tr("Вы действительно хотите перезаписать данные?"));
+
+        if(result == QMessageBox::No)
+            return;
+
         QFile file(purpose_path);
 
         if(!file.remove())
@@ -10966,7 +10974,24 @@ void ConfiguratorWindow::exportPurposeToDb(const QString &type)
         return;
     }
 
-    createTablePurpose(type, db);
+    if(type != "PROTECTION")
+    {
+        if(!createTablePurpose(type, db))
+        {
+            showMessageBox(tr("Экспорт привязок"), tr("Не удалось создать таблицу привязок для %1").arg(purpose_name), QMessageBox::Warning);
+            disconnectDb(db);
+            return;
+        }
+    }
+    else
+    {
+        if(!createProjectTableProtection(loadProtectionList().count(), db))
+        {
+            showMessageBox(tr("Экспорт привязок"), tr("Не удалось создать таблицу привязок для %1").arg(purpose_name), QMessageBox::Warning);
+            disconnectDb(db);
+            return;
+        }
+    }
 
     QSqlQuery query(*db);
 
@@ -10977,6 +11002,8 @@ void ConfiguratorWindow::exportPurposeToDb(const QString &type)
     m_progressbar->progressStart();
     m_progressbar->setSettings(0, matrix.rowCount(), "привязок");
 
+    bool isError = false;
+
     for(int row = 0; row < matrix.rowCount(); row++)
     {
         CRow::ColumnArray columns = matrix[row].columns();
@@ -10985,13 +11012,15 @@ void ConfiguratorWindow::exportPurposeToDb(const QString &type)
             CColumn column = columns[col];
             int state = static_cast<int>(column.data().state);
 
-            query.bindValue(QString(":col%1").arg(col), state);
+            QString bindVal = QString(":col%1").arg(col);
+            query.bindValue(bindVal, state);
         }
 
         if(!query.exec())
         {
             outLogMessage(tr("Запись привязок <%1>: не удалось вставить строку %2 в таблицу привязок (%3)").arg(type).arg(row).
                                                                                                             arg(query.lastError().text()));
+            isError = true;
         }
 
         m_progressbar->progressIncrement();
@@ -11000,6 +11029,104 @@ void ConfiguratorWindow::exportPurposeToDb(const QString &type)
     db->commit();
     m_progressbar->progressStop();
     disconnectDb(db);
+
+    QString text = QString("Привязки \"%1\" успешно экспортированны в базу данных!").arg(purpose_name);
+
+    if(isError)
+        text = QString("Привязки \"%1\" экспортированны в базу данных с ошибками!").arg(purpose_name);
+
+    m_popup->setPopupText(text);
+    outLogMessage(text);
+    m_popup->show();
+}
+//---------------------------------------------------------------
+void ConfiguratorWindow::importPurposeFromDb(const QString &type)
+{
+    CPurposeTableView *table = purposeTableByType(type);
+
+    if(!table)
+    {
+        showMessageBox(tr("Импорт привязок"), tr("Не удалось получить доступ к таблице журнала"), QMessageBox::Warning);
+        return;
+    }
+
+    QString purpose_name = table->property("NAME").toString();
+
+    if(purpose_name.isEmpty())
+    {
+        showMessageBox(tr("Импорт привязок"), tr("Не удалось определить имя привязок"), QMessageBox::Warning);
+        return;
+    }
+
+    // выбираем файл для импорта
+    QDir dir;
+    QString selectedFilter    = tr("Файлы привязок (*.prf)");
+    QString purpose_full_name = tr("Привязки %1-%2").arg(purpose_name).arg(m_status_bar->serialNumberText());
+    QString purpose_path      = QFileDialog::getOpenFileName(this, tr("Импорт привязок %1 из базы данных").arg(purpose_name),
+                                                             dir.absolutePath() + QString("/outputs/profiles/%1.%2").
+                                                             arg(purpose_full_name).arg("prf"),
+                                                             tr("Файлы привязок (*.prf);;Все файлы (*.*)"), &selectedFilter);
+
+    if(purpose_path.isEmpty())
+        return;
+
+    QSqlDatabase* db = nullptr;
+
+    if(!connectDb(db, purpose_path)) // открываем базу данных
+    {
+        showMessageBox(tr("Импорт привязок"), tr("Невозможно открыть базу данных привязок \"%1\"").arg(purpose_name), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    if(!db || (db && !db->isOpen()))
+    {
+        outLogMessage(tr("Загрузка привязок: Файл проекта не создан, либо закрыт"));
+        return;
+    }
+
+    CMatrixPurposeModel* model = static_cast<CMatrixPurposeModel*>(table->model());
+
+    if(!model)
+    {
+        outLogMessage(tr("Загрузка привязок: Невозможно обратиться к модели представления"));
+        return;
+    }
+
+    CMatrix& matrix = model->matrix();
+    QSqlQuery query(*db);
+    QString query_str = QString("SELECT * FROM purpose%1;").arg(type);
+
+    if(!query.exec(query_str))
+    {
+        outLogMessage(tr("Загрузка привязок: не удалось прочитать привязки из БД: %1").arg(query.lastError().text()));
+        disconnectDb(db);
+        return;
+    }
+
+    int row = 0;
+
+    while(query.next())
+    {
+        for(int col = 0; col < matrix.columnCount(); col++)
+        {
+            QString colName = QString("col%1").arg(col);
+            StateType state = static_cast<StateType>(query.value(colName).toInt());
+
+            matrix[row][col].data().state = state;
+        }
+
+        row++;
+    }
+
+    model->updateData();
+    disconnectDb(db);
+
+    QString text = QString("Привязки \"%1\" успешно импортированны из базы данных!").arg(purpose_name);
+
+    m_popup->setPopupText(text);
+    outLogMessage(text);
+    m_popup->show();
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
@@ -11935,6 +12062,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importJournalFromDatabase, this, &ConfiguratorWindow::startMenuJournalImportFromDB);
 
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportSettingsToDatabase, this, &ConfiguratorWindow::exportPurposeToDb);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importSettingsFromDatabase, this, &ConfiguratorWindow::importPurposeFromDb);
 
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
