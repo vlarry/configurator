@@ -5999,12 +5999,15 @@ bool ConfiguratorWindow::createProjectTableProtection(int columns, QSqlDatabase 
  * \param tableName Имя таблицы
  * \return Истина в случае успешного создания таблицы
  */
-bool ConfiguratorWindow::createProjectTableSet(const QString& tableName)
+bool ConfiguratorWindow::createProjectTableSet(const QString& tableName, QSqlDatabase *db)
 {
-    if((m_project_db && !m_project_db->isOpen()) || tableName.isEmpty())
+    if(!db)
+        db = m_project_db;
+
+    if((db && !db->isOpen()) || tableName.isEmpty())
         return false;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(QString("CREATE TABLE deviceSet%1 ("
                            "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
@@ -6333,18 +6336,21 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
     m_progressbar->increment(3);
 }
-//---------------------------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName)
+//---------------------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName, QSqlDatabase *db)
 {
-    if(!m_project_db || (m_project_db && !m_project_db->isOpen()) || index == DEVICE_MENU_ITEM_NONE || tableName.isEmpty())
+    if(!db)
+        db = m_project_db;
+
+    if(!db || (db && !db->isOpen()) || index == DEVICE_MENU_ITEM_NONE || tableName.isEmpty())
         return;
 
-    QSqlQuery query (*m_project_db);
+    QSqlQuery query (*db);
 
     if(!query.exec(QString("DELETE FROM deviceSet%1;").arg(tableName)))
     {
         outLogMessage(tr("Сохранение уставок устройства для группы <%1>: ошибка удаления данных из таблицы уставок (%2)").
-                      arg(tableName).arg(m_project_db->lastError().text()));
+                      arg(tableName).arg(db->lastError().text()));
         return;
     }
 
@@ -6355,7 +6361,7 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
     if(!table)
         return;
 
-    m_project_db->transaction();
+    db->transaction();
 
     for(int row = 0; row < table->rowCount(); row++)
     {
@@ -6390,16 +6396,16 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
         if(!value.isEmpty() && !type.isEmpty())
         {
-            QSqlQuery query(*m_project_db);
+            QSqlQuery query(*db);
 
             if(!query.exec(QString("INSERT INTO deviceSet%1 (val, type) VALUES(\'%2\', \'%3\');").arg(tableName).arg(value).arg(type)))
             {
-                outLogMessage(tr("Ошибка сохранения уставок группы %1: %2").arg(tableName).arg(m_project_db->lastError().text()));
+                outLogMessage(tr("Ошибка сохранения уставок группы %1: %2").arg(tableName).arg(db->lastError().text()));
             }
         }
     }
 
-    m_project_db->commit();
+    db->commit();
     m_progressbar->increment(3);
 }
 /*!
@@ -11039,6 +11045,170 @@ void ConfiguratorWindow::exportPurposeToDb(const QString &type)
     outLogMessage(text);
     m_popup->show();
 }
+//------------------------------------------------------
+void ConfiguratorWindow::exportProtectionAutomaticToDB()
+{
+    // выбираем файл для экспорта
+    QDir dir;
+
+    if(!dir.exists("outputs/profiles"))
+        dir.mkdir("outputs/profiles");
+
+    QString name = "Уставки устройства";
+    QString selectedFilter = tr("Файлы уставок (*.set)");
+    QString set_full_name = tr("%1-%2 (%3 - %4)").arg(name).arg(m_status_bar->serialNumberText()).
+                                                      arg(QDate::currentDate().toString("dd_MM_yyyy")).
+                                                      arg(QTime::currentTime().toString("HH_mm_ss"));
+    QString set_path = QFileDialog::getSaveFileName(this, tr("Экспорт уставок устройства в базу данных"),
+                                                        dir.absolutePath() + QString("/outputs/profiles/%1.%2").
+                                                        arg(set_full_name).arg("set"),
+                                                        tr("Файлы уставок (*.set);;Все файлы (*.*)"), &selectedFilter,
+                                                        QFileDialog::DontConfirmOverwrite);
+    outLogMessage(tr("Экспорт уставок устройства в БД: %1"));
+
+    QString baseNameFile = QFileInfo(set_path).baseName();
+
+    QFileInfo fi;
+
+    if(fi.exists(set_path)) // Файл уже существует
+    {
+        int result = QMessageBox::question(this, tr("Экспорт уставок устройства"), tr("Вы действительно хотите перезаписать данные?"));
+
+        if(result == QMessageBox::No)
+            return;
+
+        QFile file(set_path);
+
+        if(!file.remove())
+        {
+            showMessageBox(tr("Удаление базы уставок"),
+                           tr("Невозможно удалить базу %1!\nВозможно уже используется или у Вас нет прав").arg(baseNameFile), QMessageBox::Warning);
+            return;
+        }
+    }
+
+    QSqlDatabase *db = nullptr;
+
+    if(!connectDb(db, set_path))
+    {
+        showMessageBox(tr("Экспорт уставок устройства"), tr("Невозможно открыть/создать файл \"%1\"").arg(baseNameFile), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок Аналоговые входы
+    if(!createProjectTableSet("ANALOG"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Аналоговые входы"),
+                       tr("Невозможно создать таблицу уставок группы Аналоговые входы в файле проекта"), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Защиты по току"
+    if(!createProjectTableSet("MTZ"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы МТЗ"), tr("Невозможно создать таблицу уставок группы МТЗ в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Защиты по напряжению"
+    if(!createProjectTableSet("PWR"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Защиты по напряжению"),
+                       tr("Невозможно создать таблицу уставок группы Защиты по напряжнию в файле проекта"), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Направленные"
+    if(!createProjectTableSet("DIR", db))
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Направленные"), tr("Невозможно создать таблицу уставок группы Направленные в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Защиты по частоте"
+    if(!createProjectTableSet("FREQ"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Защиты по частоте"),
+                       tr("Невозможно создать таблицу уставок группы Защиты по частоте в файле проекта"), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Внешние защиты"
+    if(!createProjectTableSet("EXT"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Внешние защиты"),
+                       tr("Невозможно создать таблицу уставок группы Внешние защиты в файле проекта"), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Для двигателя"
+    if(!createProjectTableSet("MOTOR"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Защиты для двигателя"),
+                       tr("Невозможно создать таблицу уставок группы Защиты для двигателя в файле проекта"), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Защиты по температуре"
+    if(!createProjectTableSet("TEMP"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Защиты по температуре"),
+                       tr("Невозможно создать таблицу уставок группы Защиты по температуре в файле проекта"), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Резервные защиты"
+    if(!createProjectTableSet("RESERVE"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Резервные защиты"),
+                       tr("Невозможно создать таблицу уставок группы Резервные защиты в файле проекта"), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Предварительного контроля"
+    if(!createProjectTableSet("CTRL"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Предварительного контроля"),
+                       tr("Невозможно создать таблицу уставок группы Предварительного контроля в файле проекта"), QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Автоматика"
+    if(!createProjectTableSet("AUTO"), db)
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+
+    disconnectDb(db);
+}
 //---------------------------------------------------------------
 void ConfiguratorWindow::importPurposeFromDb(const QString &type)
 {
@@ -12056,6 +12226,7 @@ void ConfiguratorWindow::initConnect()
 
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportProtectionAutomaticToExcel, this, &ConfiguratorWindow::exportToExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importProtectionAutomaticFromExcel, this, &ConfiguratorWindow::importFromExcelProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportProtectionAutomaticToDatabase, this, &ConfiguratorWindow::exportProtectionAutomaticToDB);
 
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportJournalToPDF, this, &ConfiguratorWindow::startMenuJournalExportToPDF);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportJournalToDatabase, this, &ConfiguratorWindow::startMenuJournalExportToDB);

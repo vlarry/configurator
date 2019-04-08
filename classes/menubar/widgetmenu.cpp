@@ -515,6 +515,12 @@ void CWidgetMenu::initMenu()
     connect(ui->toolButtonSettingsProtectionBlockImport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
 
     ui->stackedWidgetMenuLevel1->setCurrentIndex(0);
+
+    ui->toolButtonSaveProject->setEnabled(false);
+    ui->toolButtonSaveAsProject->setEnabled(false);
+    ui->toolButtonExportProject->setEnabled(false);
+    ui->toolButtonImportProject->setEnabled(false);
+    ui->toolButtonSettings->setEnabled(true);
 }
 //-------------------------
 void CWidgetMenu::clicked()

@@ -593,6 +593,7 @@
             void importJournalToTable(JournalPtr journal_ptr = nullptr);
             void exportJournalToDb(JournalPtr journal_ptr = nullptr);
             void exportPurposeToDb(const QString &type);
+            void exportProtectionAutomaticToDB();
             void importPurposeFromDb(const QString &type);
             void startExportToPDF(JournalPtr journal = nullptr);
             void startMenuJournalExportToPDF(const QString &type);
@@ -742,13 +743,13 @@
             void outApplicationEvent(const QString& text);
             bool createTablePurpose(const QString& tableType, QSqlDatabase *db = nullptr);
             bool createProjectTableProtection(int columns, QSqlDatabase *db = nullptr);
-            bool createProjectTableSet(const QString& tableName);
+            bool createProjectTableSet(const QString& tableName, QSqlDatabase *db = nullptr);
             bool createProjectTableCommunication();
             bool createProjectTableCalibrationCurrent();
             bool createProjectTableContainer();
             void savePurposeToProject(CPurposeTableView* table, const QString& type);
             void saveJournalToProject(const CJournalWidget *widgetJournal);
-            void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
+            void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName, QSqlDatabase *db = nullptr);
             void saveDeviceCommunication();
             void saveDeviceCalibrationCurrent();
             void saveContainerSettings(const CContainerWidget* container);
