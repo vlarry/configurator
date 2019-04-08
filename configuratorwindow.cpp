@@ -11326,6 +11326,71 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     m_popup->show();
     outLogMessage(text);
 }
+//--------------------------------------------------------
+void ConfiguratorWindow::importProtectionAutomaticFromDB()
+{
+    // выбираем файл для импорта
+    QDir dir;
+    QString selectedFilter = tr("Файлы уставок (*.set)");
+    QString set_full_name = tr("Уставки устройства - %1").arg(m_status_bar->serialNumberText());
+    QString set_path = QFileDialog::getOpenFileName(this, tr("Импорт уставок устройства из базы данных"),
+                                                    dir.absolutePath() + QString("/outputs/profiles/%1.%2").
+                                                    arg(set_full_name).arg("set"),
+                                                    tr("Файлы привязок (*.set);;Все файлы (*.*)"), &selectedFilter);
+
+    if(set_path.isEmpty())
+        return;
+
+    QSqlDatabase* db = nullptr;
+
+    if(!connectDb(db, set_path)) // открываем базу данных
+    {
+        showMessageBox(tr("Импорт уставок устройства"), tr("Невозможно открыть базу данных уставок устройства"),
+                       QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    if(!db || (db && !db->isOpen()))
+    {
+        outLogMessage(tr("Загрузка уставок устройства: Файл проекта не создан, либо закрыт"));
+        return;
+    }
+
+    m_progressbar->setProgressTitle(tr("Импорт уставок устройства"));
+    m_progressbar->progressStart();
+    m_progressbar->setSettings(0, 100, "%");
+
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
+    m_progressbar->progressIncrement(10);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+
+    disconnectDb(db);
+    m_progressbar->progressStop();
+
+    QString text = tr("Защита и автоматика (уставки) успешно импортированы из БД");
+    m_popup->setPopupText(text);
+    m_popup->show();
+    outLogMessage(text);
+}
 //---------------------------------------------------------------
 void ConfiguratorWindow::importPurposeFromDb(const QString &type)
 {
@@ -12345,6 +12410,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportProtectionAutomaticToExcel, this, &ConfiguratorWindow::exportToExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importProtectionAutomaticFromExcel, this, &ConfiguratorWindow::importFromExcelProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportProtectionAutomaticToDatabase, this, &ConfiguratorWindow::exportProtectionAutomaticToDB);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::importProtectionAutomaticFromDatabase, this, &ConfiguratorWindow::importProtectionAutomaticFromDB);
 
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportJournalToPDF, this, &ConfiguratorWindow::startMenuJournalExportToPDF);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::exportJournalToDatabase, this, &ConfiguratorWindow::startMenuJournalExportToDB);

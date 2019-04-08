@@ -594,6 +594,7 @@
             void exportJournalToDb(JournalPtr journal_ptr = nullptr);
             void exportPurposeToDb(const QString &type);
             void exportProtectionAutomaticToDB();
+            void importProtectionAutomaticFromDB();
             void importPurposeFromDb(const QString &type);
             void startExportToPDF(JournalPtr journal = nullptr);
             void startMenuJournalExportToPDF(const QString &type);
