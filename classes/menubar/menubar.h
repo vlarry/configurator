@@ -45,6 +45,7 @@
             void exportToDataBaseAction();
             void importFromDataBaseAction();
             void activateButtons();
+            void deactivateButtons();
 
         protected:
             void mousePressEvent(QMouseEvent* event);

@@ -620,6 +620,7 @@
             void mouseMove(QPoint pos);
             void newProject();
             void openProject();
+            void openExistsProject(const QString &projectPath);
             void saveProject();
             void saveAsProject();
             void exportToExcelProject();
@@ -741,24 +742,25 @@
             QStringList loadLoginList() const;
             QString loadUserPassword(const QString& login);
             void outApplicationEvent(const QString& text);
-            bool createTablePurpose(const QString& tableType, QSqlDatabase *db = nullptr);
-            bool createProjectTableProtection(int columns, QSqlDatabase *db = nullptr);
-            bool createProjectTableSet(const QString& tableName, QSqlDatabase *db = nullptr);
-            bool createProjectTableCommunication();
-            bool createProjectTableCalibrationCurrent();
-            bool createProjectTableContainer();
-            void savePurposeToProject(CPurposeTableView* table, const QString& type);
-            void saveJournalToProject(const CJournalWidget *widgetJournal);
-            void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName, QSqlDatabase *db = nullptr);
-            void saveDeviceCommunication();
-            void saveDeviceCalibrationCurrent();
-            void saveContainerSettings(const CContainerWidget* container);
-            bool loadJournalFromProject(const CJournalWidget* widgetJournal);
-            void loadPurposeToProject(CPurposeTableView* table, const QString& type);
-            void loadDeviceSetToProject(DeviceMenuItemType index, const QString& tableName);
-            void loadDeviceCommunication();
-            void loadDeviceCalibrationCurrent();
-            void loadContainerSettings(CContainerWidget *container);
+            bool createTablePurpose(const QString& tableType, QSqlDatabase *db);
+            bool createProjectTableProtection(int columns, QSqlDatabase *db);
+            bool createProjectTableSet(const QString& tableName, QSqlDatabase *db);
+            bool createProjectTableCommunication(QSqlDatabase *db);
+            bool createProjectTableCalibrationCurrent(QSqlDatabase *db);
+            bool createProjectTableContainer(QSqlDatabase *db);
+            void savePurposeToProject(CPurposeTableView* table, const QString& type, QSqlDatabase *db);
+            void saveJournalToProject(const CJournalWidget *widgetJournal, QSqlDatabase *db);
+            void saveDeviceSetToProject(DeviceMenuItemType index, const QString& tableName, QSqlDatabase *db);
+            void saveDeviceCommunication(QSqlDatabase *db);
+            void saveDeviceCalibrationCurrent(QSqlDatabase *db);
+            void saveContainerSettings(const CContainerWidget* container, QSqlDatabase *db);
+            bool loadJournalFromProject(const CJournalWidget* widgetJournal, QSqlDatabase *db);
+            void loadPurposeToProject(CPurposeTableView* table, const QString& type, QSqlDatabase *db);
+            void loadDeviceSetToProject(DeviceMenuItemType index, const QString& tableName, QSqlDatabase *db);
+            void loadDeviceCommunication(QSqlDatabase *db);
+            void loadDeviceCalibrationCurrent(QSqlDatabase *db);
+            void loadContainerSettings(CContainerWidget *container, QSqlDatabase *db);
+            void blockInterface();
             void unblockInterface();
             bool clearTableDB(const QSqlDatabase* db, const QString& tableName);
             int showMessageBox(const QString& title, const QString& text, const QMessageBox::Icon type);
@@ -804,7 +806,6 @@
             QTimer*                          m_tim_debug_info;
             CVersionSoftware*                m_version_window;
             QSqlDatabase                     m_system_db;
-            QSqlDatabase*                    m_project_db;
             cell_list_t                      m_cell_list;
             purpose_t                        m_purpose_list;
             QTime                            m_time_process;
@@ -833,6 +834,7 @@
             JournalPtr                       m_journal_crash; // журнал аварий
             JournalPtr                       m_journal_event; // журнал событий
             JournalPtr                       m_journal_halfhour; // журнал получасовок
+            QString                          m_project_cur_path; // путь к текущему проекту
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

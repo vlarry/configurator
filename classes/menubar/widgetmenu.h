@@ -4,6 +4,7 @@
     #include <QWidget>
     #include <QEvent>
     #include <QWidgetAction>
+    #include <QListWidgetItem>
     #include <QDebug>
     #include <QFocusEvent>
     //----------
@@ -75,11 +76,14 @@
             void hoverChanged(int id);
             void addOpenDocument(const QString& doc);
             void activateMenuButtons();
+            void deactivateMenuButton();
+            void itemDoubleClicked(QListWidgetItem *item);
 
         signals:
             void closeWindow();
             void newProject();
             void openProject();
+            void openExistsProject(const QString&);
             void saveProject();
             void saveAsProject();
             void exportProtectionAutomaticToExcel();
@@ -89,7 +93,6 @@
             void exportJournalToPDF(const QString&);
             void exportSettingsToExcel(const QString&);
             void exportSettingsToDatabase(const QString&);
-
             void importProtectionAutomaticFromExcel();
             void importProtectionAutomaticFromDatabase();
             void importJournalFromExcel(const QString&);
@@ -126,5 +129,6 @@
         private:
             Ui::CWidgetMenu* ui;
             OperationType m_operation;
+            bool m_isButtonActive;
     };
 #endif // WIDGETMENU_H

@@ -33,6 +33,7 @@ CMenuBar::CMenuBar(QWidget* parent):
     connect(ui->toolButtonMinimizeWindow, &QToolButton::clicked, this, &CMenuBar::minimizeWindow);
     connect(actionMinimizeTabMenu, &QAction::triggered, this, &CMenuBar::minimizeMenu);
     connect(this, &CMenuBar::activateButtons, m_widgetMenu, &CWidgetMenu::activateMenuButtons);
+    connect(this, &CMenuBar::deactivateButtons, m_widgetMenu, &CWidgetMenu::deactivateMenuButton);
 }
 //-------------------
 CMenuBar::~CMenuBar()

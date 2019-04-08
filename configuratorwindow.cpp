@@ -29,7 +29,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_calculate(nullptr),
     m_tim_debug_info(nullptr),
     m_version_window(nullptr),
-    m_project_db(nullptr),
     m_timer_synchronization(nullptr),
     m_timer_new_address_set(nullptr),
     m_status_bar(nullptr),
@@ -38,7 +37,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_settings(nullptr),
     m_active_journal_current(nullptr),
     m_journal_read_current(nullptr),
-    m_journal_timer(nullptr)
+    m_journal_timer(nullptr),
+    m_project_cur_path("")
 {
     ui->setupUi(this);
 
@@ -103,15 +103,6 @@ ConfiguratorWindow::~ConfiguratorWindow()
 
     if(m_system_db.isOpen())
         m_system_db.close();
-
-    if(m_project_db)
-    {
-        if(m_project_db->isOpen())
-            m_project_db->close();
-
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
-    }
 
     if(m_journal_event)
     {
@@ -5931,10 +5922,7 @@ void ConfiguratorWindow::outApplicationEvent(const QString& text)
 //-------------------------------------------------------------------------------------
 bool ConfiguratorWindow::createTablePurpose(const QString& tableType, QSqlDatabase *db)
 {
-    if(!db)
-        db = m_project_db;
-
-    if((db && !db->isOpen()) || tableType.isEmpty())
+    if(!db || (db && !db->isOpen()) || tableType.isEmpty())
         return false;
 
     QVector<QPair<QString, QString> > labels = loadLabelColumns(tableType);
@@ -5967,9 +5955,6 @@ bool ConfiguratorWindow::createTablePurpose(const QString& tableType, QSqlDataba
 //----------------------------------------------------------------------------------
 bool ConfiguratorWindow::createProjectTableProtection(int columns, QSqlDatabase *db)
 {
-    if(!db)
-        db = m_project_db;
-
     if((db && !db->isOpen()) || columns == 0)
         return false;
 
@@ -6001,9 +5986,6 @@ bool ConfiguratorWindow::createProjectTableProtection(int columns, QSqlDatabase 
  */
 bool ConfiguratorWindow::createProjectTableSet(const QString& tableName, QSqlDatabase *db)
 {
-    if(!db)
-        db = m_project_db;
-
     if((db && !db->isOpen()) || tableName.isEmpty())
         return false;
 
@@ -6026,12 +6008,12 @@ bool ConfiguratorWindow::createProjectTableSet(const QString& tableName, QSqlDat
  *
  * Создание таблицы в проектном файле для хранения настроек связи
  */
-bool ConfiguratorWindow::createProjectTableCommunication()
+bool ConfiguratorWindow::createProjectTableCommunication(QSqlDatabase *db)
 {
-    if((m_project_db && !m_project_db->isOpen()))
+    if((db && !db->isOpen()))
         return false;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(QString("CREATE TABLE deviceCommunication ("
                            "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
@@ -6053,12 +6035,12 @@ bool ConfiguratorWindow::createProjectTableCommunication()
  *
  * Сохранение данных калибровок (по умолчанию)
  */
-bool ConfiguratorWindow::createProjectTableCalibrationCurrent()
+bool ConfiguratorWindow::createProjectTableCalibrationCurrent(QSqlDatabase *db)
 {
-    if((m_project_db && !m_project_db->isOpen()))
+    if((db && !db->isOpen()))
         return false;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(QString("CREATE TABLE deviceCalibrationCurrent ("
                            "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
@@ -6083,12 +6065,12 @@ bool ConfiguratorWindow::createProjectTableCalibrationCurrent()
  *
  * Создание таблицы настроек положения контейнеров панелей
  */
-bool ConfiguratorWindow::createProjectTableContainer()
+bool ConfiguratorWindow::createProjectTableContainer(QSqlDatabase *db)
 {
-    if((m_project_db && !m_project_db->isOpen()))
+    if((db && !db->isOpen()))
         return false;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(QString("CREATE TABLE containerSettings ("
                            "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
@@ -6110,9 +6092,9 @@ bool ConfiguratorWindow::createProjectTableContainer()
  *
  * Вставка привязок дискретных входов в таблицу проектного файла
  */
-void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QString& type)
+void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QString& type, QSqlDatabase *db)
 {
-    if(!table || (m_project_db && !m_project_db->isOpen()) || type.isEmpty())
+    if(!table || (db && !db->isOpen()) || type.isEmpty())
     {
         outLogMessage(tr("Запись привязок: Файл проекта не создан, либо закрыт"));
         return;
@@ -6134,7 +6116,7 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
         return;
     }
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
     // очистка таблицы привязок дискретных входов
     if(!query.exec(QString("DELETE FROM purpose%1;").arg(type)))
     {
@@ -6158,7 +6140,7 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
         }
     }
 
-    m_project_db->transaction();
+    db->transaction();
     query.prepare(QString("INSERT INTO purpose%1 (%2) VALUES(%3)").arg(type).arg(colList).arg(colListBind));
     for(int row = 0; row < matrix.rowCount(); row++)
     {
@@ -6177,13 +6159,13 @@ void ConfiguratorWindow::savePurposeToProject(CPurposeTableView* table, const QS
                                                                                                             arg(query.lastError().text()));
         }
     }
-    m_project_db->commit();
+    db->commit();
     m_progressbar->increment(5);
 }
-//--------------------------------------------------------------------------------
-void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJournal)
+//--------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJournal, QSqlDatabase *db)
 {
-    if(!widgetJournal || !m_project_db)
+    if(!widgetJournal || !db || !db->isOpen())
         return;
 
     CJournalTable* journal = widgetJournal->table();
@@ -6192,11 +6174,11 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         return;
 
     QString type = widgetJournal->property("TYPE").toString();
-    QSqlQuery query (*m_project_db);
+    QSqlQuery query (*db);
 
     if(!query.exec(QString("DELETE FROM journal%1;").arg(type)))
     {
-        outLogMessage(tr("Сохранение журнала <%1>: ошибка удаления данных журнала (%2)").arg(type).arg(m_project_db->lastError().text()));
+        outLogMessage(tr("Сохранение журнала <%1>: ошибка удаления данных журнала (%2)").arg(type).arg(db->lastError().text()));
         return;
     }
 
@@ -6233,7 +6215,8 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         colListBind << ":id_msg" << ":date" << ":time" << ":type" << ":time_reset";
     }
 
-    m_project_db->transaction();
+    db->transaction();
+
     bool isError = false;
     QString lastError;
 
@@ -6282,7 +6265,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
            if(!propertyList.isEmpty())
            {
-               QSqlQuery query_property(*m_project_db);
+               QSqlQuery query_property(*db);
                query_property.prepare("INSERT INTO propertyJournalCRASH (name, value, id_journal) VALUES(:name, :value, :id_journal);");
 
                for(const property_data_item_t& item: propertyList)
@@ -6309,7 +6292,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 
             if(!halfhour.values.isEmpty() && type_data.toUpper() == tr("ДАННЫЕ"))
             {
-                QSqlQuery query_property(*m_project_db);
+                QSqlQuery query_property(*db);
 
                 for(const float& value: halfhour.values)
                 {
@@ -6327,7 +6310,7 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
         }
     }
 
-    m_project_db->commit();
+    db->commit();
 
     if(isError)
     {
@@ -6339,9 +6322,6 @@ void ConfiguratorWindow::saveJournalToProject(const CJournalWidget* widgetJourna
 //---------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName, QSqlDatabase *db)
 {
-    if(!db)
-        db = m_project_db;
-
     if(!db || (db && !db->isOpen()) || index == DEVICE_MENU_ITEM_NONE || tableName.isEmpty())
         return;
 
@@ -6413,16 +6393,16 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
  *
  * Сохранение настроек связи устройства в таблицу проекта
  */
-void ConfiguratorWindow::saveDeviceCommunication()
+void ConfiguratorWindow::saveDeviceCommunication(QSqlDatabase *db)
 {
-    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+    if(!db || (db && !db->isOpen()))
         return;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(QString("DELETE FROM deviceCommunication;")))
     {
-        outLogMessage(tr("Сохранение настроек связи устройства: ошибка удаления данных из таблицы (%1)").arg(m_project_db->lastError().text()));
+        outLogMessage(tr("Сохранение настроек связи устройства: ошибка удаления данных из таблицы (%1)").arg(db->lastError().text()));
         return;
     }
 
@@ -6433,7 +6413,7 @@ void ConfiguratorWindow::saveDeviceCommunication()
                                                    arg(ui->comboBoxCommunicationParity->currentIndex()).arg(ui->spinBoxCommunicationRequestTimeout->value()).
                                                    arg(ui->spinBoxCommunicationTimeoutSpeed->value())))
     {
-        outLogMessage(tr("Ошибка сохранения настроек связи устройства: %1").arg(m_project_db->lastError().text()));
+        outLogMessage(tr("Ошибка сохранения настроек связи устройства: %1").arg(query.lastError().text()));
     }
 
     m_progressbar->increment(3);
@@ -6443,16 +6423,16 @@ void ConfiguratorWindow::saveDeviceCommunication()
  *
  * Сохранение калибровок по току (эталонных значений) в проектном файле
  */
-void ConfiguratorWindow::saveDeviceCalibrationCurrent()
+void ConfiguratorWindow::saveDeviceCalibrationCurrent(QSqlDatabase *db)
 {
-    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+    if(!db || (db && !db->isOpen()))
         return;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(QString("DELETE FROM deviceCalibrationCurrent;")))
     {
-        outLogMessage(tr("Сохранение эталонных значений калибровок по току: ошибка удаления данных из таблицы (%1)").arg(m_project_db->lastError().text()));
+        outLogMessage(tr("Сохранение эталонных значений калибровок по току: ошибка удаления данных из таблицы (%1)").arg(query.lastError().text()));
         return;
     }
 
@@ -6468,7 +6448,7 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
                                                                        arg(ui->widgetCalibrationOfCurrent->calibrationCurrentDataCount()).
                                                                        arg(ui->widgetCalibrationOfCurrent->calibrationCurrentPauseRequest())))
     {
-        outLogMessage(tr("Ошибка сохранения эталонных значений калибровок по току устройства: %1").arg(m_project_db->lastError().text()));
+        outLogMessage(tr("Ошибка сохранения эталонных значений калибровок по току устройства: %1").arg(query.lastError().text()));
     }
 
     m_progressbar->increment(3);
@@ -6479,12 +6459,12 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent()
  *
  * Сохранение настроек контейнеров
  */
-void ConfiguratorWindow::saveContainerSettings(const CContainerWidget* container)
+void ConfiguratorWindow::saveContainerSettings(const CContainerWidget* container, QSqlDatabase *db)
 {
-    if(!container || !m_project_db || (m_project_db && !m_project_db->isOpen()))
+    if(!container || !db || (db && !db->isOpen()))
         return;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
     QString side = QString("%1").arg((container->side() == CDockPanelItemCtrl::DirLeft)?"LEFT":
                                      (container->side() == CDockPanelItemCtrl::DirRight)?"RIGHT":
                                      (container->side() == CDockPanelItemCtrl::DirBottom)?"BOTTOM":
@@ -6513,9 +6493,9 @@ void ConfiguratorWindow::saveContainerSettings(const CContainerWidget* container
  *
  * Загружает журнал из проектного файла
  */
-bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJournal)
+bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJournal, QSqlDatabase *db)
 {
-    if(!widgetJournal || !m_project_db || (m_project_db && !m_project_db->isOpen()))
+    if(!widgetJournal || !db || (db && !db->isOpen()))
         return false;
 
     CJournalTable* journal = widgetJournal->table();
@@ -6531,7 +6511,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
     widgetJournal->journalClear();
 
     QString query_str = QString("SELECT * FROM journal%1;").arg(journal_type);
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
 
     if(!query.exec(query_str))
         return false;
@@ -6573,7 +6553,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
             journal->setItem(row, 4, new CTableWidgetItem(protection));
 
             // формирование запроса для получения свойств записи
-            QSqlQuery query_property(*m_project_db);
+            QSqlQuery query_property(*db);
 
             if(!query_property.exec(QString("SELECT name, value FROM propertyJournalCRASH WHERE id_journal=%1;").arg(id_journal)))
             {
@@ -6602,7 +6582,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
             journal->setItem(row, 5, new CTableWidgetItem(time_reset));
 
             // формирование запроса для получения свойств записи
-            QSqlQuery query_property(*m_project_db);
+            QSqlQuery query_property(*db);
 
             if(!query_property.exec(QString("SELECT value FROM propertyJournalHALFHOUR WHERE id_journal=%1;").arg(id_journal)))
             {
@@ -6633,9 +6613,9 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
  * \param table Таблица привязок
  * \param type Тип таблицы привязок
  */
-void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QString& type)
+void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QString& type, QSqlDatabase *db)
 {
-    if(!table || !m_project_db || (m_project_db && !m_project_db->isOpen()) || type.isEmpty())
+    if(!table || !db || (db && !db->isOpen()) || type.isEmpty())
     {
         outLogMessage(tr("Загрузка привязок: Файл проекта не создан, либо закрыт"));
         return;
@@ -6650,7 +6630,7 @@ void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QS
     }
 
     CMatrix& matrix = model->matrix();
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
     QString query_str = QString("SELECT * FROM purpose%1;").arg(type);
 
     if(!query.exec(query_str))
@@ -6683,9 +6663,9 @@ void ConfiguratorWindow::loadPurposeToProject(CPurposeTableView* table, const QS
  *
  * Загрузка уставок из БД
  */
-void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName)
+void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuItemType index, const QString& tableName, QSqlDatabase *db)
 {
-    if(!m_project_db || (m_project_db && !m_project_db->isOpen()) || index == DEVICE_MENU_ITEM_NONE || tableName.isEmpty())
+    if(!db || (db && !db->isOpen()) || index == DEVICE_MENU_ITEM_NONE || tableName.isEmpty())
         return;
 
     CDeviceMenuTableWidget* table = groupMenuWidget(index);
@@ -6693,7 +6673,7 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
     if(!table)
         return;
 
-    QSqlQuery query (*m_project_db);
+    QSqlQuery query (*db);
     QString query_str = QString("SELECT * FROM deviceSet%1;").arg(tableName);
 
     if(!query.exec(query_str))
@@ -6745,12 +6725,12 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
  *
  * Загрузка настроек связи из файла проекта
  */
-void ConfiguratorWindow::loadDeviceCommunication()
+void ConfiguratorWindow::loadDeviceCommunication(QSqlDatabase *db)
 {
-    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+    if(!db || (db && !db->isOpen()))
         return;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
     QString query_str = QString("SELECT * FROM deviceCommunication;");
 
     if(!query.exec(query_str))
@@ -6780,12 +6760,12 @@ void ConfiguratorWindow::loadDeviceCommunication()
  *
  * Загрузка настроек калибровки из файла проекта
  */
-void ConfiguratorWindow::loadDeviceCalibrationCurrent()
+void ConfiguratorWindow::loadDeviceCalibrationCurrent(QSqlDatabase *db)
 {
-    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+    if(!db || (db && !db->isOpen()))
         return;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
     QString query_str = QString("SELECT * FROM deviceCalibrationCurrent;");
 
     if(!query.exec(query_str))
@@ -6821,12 +6801,12 @@ void ConfiguratorWindow::loadDeviceCalibrationCurrent()
  * \param Указатель на контейнер
  * Загрузка настроек контейнеров
  */
-void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container)
+void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container, QSqlDatabase *db)
 {
-    if(!container || !m_project_db || (m_project_db && !m_project_db->isOpen()))
+    if(!container || !db || (db && !db->isOpen()))
         return;
 
-    QSqlQuery query(*m_project_db);
+    QSqlQuery query(*db);
     QString query_str = QString("SELECT * FROM containerSettings WHERE name=\'%1\';").arg(container->name());
 
     if(!query.exec(query_str))
@@ -6856,6 +6836,28 @@ void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container)
     }
 
     m_progressbar->increment(4);
+}
+/*!
+ * \brief ConfiguratorWindow::blockInterface
+ *
+ * Блокировка интерфейса
+ */
+void ConfiguratorWindow::blockInterface()
+{
+    m_isProject = false;
+
+    ui->splitterCentralWidget->setDisabled(true);
+    ui->tabwgtMenu->setCurrentIndex(TAB_FILE_INDEX);
+    ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+    ui->pbtnMenuSaveProject->setDisabled(true);
+    ui->pbtnMenuSaveAsProject->setDisabled(true);
+    emit ui->widgetMenuBar->deactivateButtons();
+    m_project_cur_path = "";
 }
 /*!
  * \brief ConfiguratorWindow::unblockInterface
@@ -7035,8 +7037,9 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
     }
     else
     {
-        msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").
-              arg(journal_name).arg(msg_read_count).arg(msg_read_limit - msg_read_start);
+        msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").arg(journal_name).
+                                                                                             arg(msg_read_count).
+                                                                                             arg(msg_read_limit - msg_read_start);
     }
 
     float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
@@ -8176,16 +8179,11 @@ void ConfiguratorWindow::newProject()
         outApplicationEvent(tr("Перезапись существующего файла проекта: %1").arg(baseNameFile));
         int reply = showMessageBox(tr("Экспорт журнала"), tr("Файл проекта с таким именем уже существует.\nПерезаписать его?"), QMessageBox::Question);
 
-        if(reply == QMessageBox::Yes) // удаляемы старый файл базы данных
+        if(reply == QMessageBox::Yes) // удаляем старый файл базы данных
         {
             QFile file(projectPathName);
 
-            if(m_project_db && m_project_db->isOpen())
-            {
-                m_project_db->close();
-                delete m_project_db;
-                QSqlDatabase::removeDatabase("PROJECT");
-            }
+            m_project_cur_path = "";
 
             if(!file.remove())
             {
@@ -8204,286 +8202,281 @@ void ConfiguratorWindow::newProject()
     m_progressbar->progressStart();
     m_progressbar->setSettings(0, 100, "%");
 
-    m_project_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "PROJECT"));
-    m_project_db->setDatabaseName(projectPathName);
+    QSqlDatabase *project_db;
 
-    if(m_project_db && !m_project_db->open())
+    if(!connectDb(project_db, projectPathName))
     {
-        outLogMessage(tr("Не удалось создать файл нового проекта (%1). Попробуйтей еще раз").arg(m_project_db->lastError().text()));
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        QMessageBox::warning(this, tr("Создание нового проекта"), tr("Не удалось создать новый проект: %1.\n Попробуйте еще раз.").
+                             arg(projectPathName));
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     // Создание таблиц для хранения настроек пользователя и хранения данных
     // Создание таблиц журналов
-    if(!createJournalTable(m_project_db, "EVENT", false)) // журнал событий
+    if(!createJournalTable(project_db, "EVENT", false)) // журнал событий
     {
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
-    if(!createJournalTable(m_project_db, "CRASH", false)) // журнал аварий
+    if(!createJournalTable(project_db, "CRASH", false)) // журнал аварий
     {
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
-    if(!createJournalTable(m_project_db, "HALFHOUR", false)) // журнал получасовок
+    if(!createJournalTable(project_db, "HALFHOUR", false)) // журнал получасовок
     {
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблиц для хранения состояний выходов
-    if(!createTablePurpose("LED")) // светодиоды
+    if(!createTablePurpose("LED", project_db)) // светодиоды
     {
         showMessageBox(tr("Создание таблицы привязок светодиодов"), tr("Невозможно создать таблицу привязок светодиодов в файле проекта"),
                        QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
-    if(!createTablePurpose("RELAY")) // реле
+    if(!createTablePurpose("RELAY", project_db)) // реле
     {
         showMessageBox(tr("Создание таблицы привязок реле"), tr("Невозможно создать таблицу привязок реле в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
-    if(!createTablePurpose("INPUT")) // дискретные входы
+    if(!createTablePurpose("INPUT", project_db)) // дискретные входы
     {
         showMessageBox(tr("Создание таблицы привязок дискретных входов"), tr("Невозможно создать таблицу привязок дискретных входов в файле проекта"),
                        QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы привязок блокировок защит
-    if(!createProjectTableProtection(loadProtectionList().count()))
+    if(!createProjectTableProtection(loadProtectionList().count(), project_db))
     {
         showMessageBox(tr("Создание таблицы привязок защит"), tr("Невозможно создать таблицу привязок защит в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок Аналоговые входы
-    if(!createProjectTableSet("ANALOG"))
+    if(!createProjectTableSet("ANALOG", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Аналоговые входы"),
                        tr("Невозможно создать таблицу уставок группы Аналоговые входы в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Защиты по току"
-    if(!createProjectTableSet("MTZ"))
+    if(!createProjectTableSet("MTZ", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы МТЗ"), tr("Невозможно создать таблицу уставок группы МТЗ в файле проекта"),
                        QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Защиты по напряжению"
-    if(!createProjectTableSet("PWR"))
+    if(!createProjectTableSet("PWR", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Защиты по напряжению"),
                        tr("Невозможно создать таблицу уставок группы Защиты по напряжнию в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Направленные"
-    if(!createProjectTableSet("DIR"))
+    if(!createProjectTableSet("DIR", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Направленные"), tr("Невозможно создать таблицу уставок группы Направленные в файле проекта"),
                        QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Защиты по частоте"
-    if(!createProjectTableSet("FREQ"))
+    if(!createProjectTableSet("FREQ", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Защиты по частоте"),
                        tr("Невозможно создать таблицу уставок группы Защиты по частоте в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Внешние защиты"
-    if(!createProjectTableSet("EXT"))
+    if(!createProjectTableSet("EXT", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Внешние защиты"),
                        tr("Невозможно создать таблицу уставок группы Внешние защиты в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Для двигателя"
-    if(!createProjectTableSet("MOTOR"))
+    if(!createProjectTableSet("MOTOR", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Защиты для двигателя"),
                        tr("Невозможно создать таблицу уставок группы Защиты для двигателя в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Защиты по температуре"
-    if(!createProjectTableSet("TEMP"))
+    if(!createProjectTableSet("TEMP", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Защиты по температуре"),
                        tr("Невозможно создать таблицу уставок группы Защиты по температуре в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Резервные защиты"
-    if(!createProjectTableSet("RESERVE"))
+    if(!createProjectTableSet("RESERVE", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Резервные защиты"),
                        tr("Невозможно создать таблицу уставок группы Резервные защиты в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Предварительного контроля"
-    if(!createProjectTableSet("CTRL"))
+    if(!createProjectTableSet("CTRL", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Предварительного контроля"),
                        tr("Невозможно создать таблицу уставок группы Предварительного контроля в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы уставок группы "Автоматика"
-    if(!createProjectTableSet("AUTO"))
+    if(!createProjectTableSet("AUTO", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
                        QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы настроек связи
-    if(!createProjectTableCommunication())
+    if(!createProjectTableCommunication(project_db))
     {
         showMessageBox(tr("Создание таблицы настроек связи"), tr("Невозможно создать таблицу настроек связи в файле проекта"), QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(5);
 
     // Создание таблицы настроек связи
-    if(!createProjectTableCalibrationCurrent())
+    if(!createProjectTableCalibrationCurrent(project_db))
     {
         showMessageBox(tr("Создание таблицы калибровок по току"), tr("Невозможно создать таблицу калибровок по току в файле проекта"),
                        QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
 
     m_progressbar->increment(3);
 
     // Создание таблицы настроек контейнеров
-    if(!createProjectTableContainer())
+    if(!createProjectTableContainer(project_db))
     {
         showMessageBox(tr("Создание таблицы настройки положения контейнеров"), tr("Невозможно создать таблицу настроек положения контейнеров в файле проекта"),
                        QMessageBox::Warning);
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
         return;
     }
+
+    disconnectDb(project_db);
 
     m_progressbar->increment(2);
 
     unblockInterface();
     outApplicationEvent(tr("Создание нового файла проекта: %1").arg(projectPathName));
     m_progressbar->progressStop();
+
+    m_project_cur_path = projectPathName;
+    emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
 }
 //------------------------------------
 void ConfiguratorWindow::openProject()
 {
+    if(!m_project_cur_path.isEmpty())
+    {
+        int answer = showMessageBox(tr("Открыть проект"), tr("Вы хотите сохранить изменения в текущем проекте?"),
+                                    QMessageBox::Question);
+
+        if(answer == QMessageBox::Yes)
+        {
+            saveProject();
+            m_project_cur_path = "";
+        }
+    }
+
     QDir dir;
     QString projectPathName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
                                                            QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
@@ -8492,24 +8485,14 @@ void ConfiguratorWindow::openProject()
     if(projectPathName.isEmpty())
         return;
 
-    if(m_project_db)
+    QSqlDatabase *db = nullptr;
+
+    if(!connectDb(db, projectPathName))
     {
-        if(m_project_db->isOpen())
-            m_project_db->close();
-
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
-    }
-
-    m_project_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "PROJECT"));
-    m_project_db->setDatabaseName(projectPathName);
-
-    if(m_project_db && !m_project_db->open())
-    {
-        outLogMessage(tr("Не удалось загрузить файл проекта (%1).\nПопробуйтей еще раз.").arg(m_project_db->lastError().text()));
-        m_project_db->close();
-        delete m_project_db;
-        QSqlDatabase::removeDatabase("PROJECT");
+        QMessageBox::warning(this, tr("Открытие проекта"), tr("Не удалось открыть проект: %1.\n Попробуйте еще раз.").
+                             arg(projectPathName));
+        disconnectDb(db);
+        m_progressbar->progressStop();
         return;
     }
 
@@ -8517,100 +8500,180 @@ void ConfiguratorWindow::openProject()
     m_progressbar->setSettings(0, 100, "%");
     m_progressbar->progressStart();
 
-    loadJournalFromProject(ui->widgetJournalEvent); // Загрузка журнала событий
-    loadJournalFromProject(ui->widgetJournalCrash); // Загрузка журнала аварий
-    loadJournalFromProject(ui->widgetJournalHalfHour); // Загрузка журнала получасовок
-    loadPurposeToProject(ui->tablewgtLedPurpose, "LED");
-    loadPurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
-    loadPurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
-    loadPurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
-    loadDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
-    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
-    loadDeviceCommunication();
-    loadDeviceCalibrationCurrent();
-    loadContainerSettings(m_containerWidgetVariable);
-    loadContainerSettings(m_containerWidgetDeviceMenu);
-    loadContainerSettings(m_containerIndicatorState);
-    loadContainerSettings(m_containerMonitorK10K11);
-    loadContainerSettings(m_containerOutputAll);
-    loadContainerSettings(m_containerInputs);
-    loadContainerSettings(m_containerDebugInfo);
-    loadContainerSettings(m_containerStatusInfo);
-    loadContainerSettings(m_containerTerminalEvent);
-    loadContainerSettings(m_containerTerminalModbus);
+    loadJournalFromProject(ui->widgetJournalEvent, db); // Загрузка журнала событий
+    loadJournalFromProject(ui->widgetJournalCrash, db); // Загрузка журнала аварий
+    loadJournalFromProject(ui->widgetJournalHalfHour, db); // Загрузка журнала получасовок
+    loadPurposeToProject(ui->tablewgtLedPurpose, "LED", db);
+    loadPurposeToProject(ui->tablewgtRelayPurpose, "RELAY", db);
+    loadPurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT", db);
+    loadPurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+    loadDeviceCommunication(db);
+    loadDeviceCalibrationCurrent(db);
+    loadContainerSettings(m_containerWidgetVariable, db);
+    loadContainerSettings(m_containerWidgetDeviceMenu, db);
+    loadContainerSettings(m_containerIndicatorState, db);
+    loadContainerSettings(m_containerMonitorK10K11, db);
+    loadContainerSettings(m_containerOutputAll, db);
+    loadContainerSettings(m_containerInputs, db);
+    loadContainerSettings(m_containerDebugInfo, db);
+    loadContainerSettings(m_containerStatusInfo, db);
+    loadContainerSettings(m_containerTerminalEvent, db);
+    loadContainerSettings(m_containerTerminalModbus, db);
 
     unblockInterface();
     m_progressbar->progressStop();
-    emit ui->widgetMenuBar->widgetMenu()->addDocument(projectPathName);
+
+    m_project_cur_path = projectPathName;
+    emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
 
     outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
+    disconnectDb(db);
+}
+//--------------------------------------------------------------------
+void ConfiguratorWindow::openExistsProject(const QString &projectPath)
+{
+    m_popup->setPopupText(projectPath);
+    m_popup->show();
 }
 //------------------------------------
 void ConfiguratorWindow::saveProject()
 {
-    if(!m_project_db || (m_project_db && !m_project_db->isOpen()))
+    if(m_project_cur_path.isEmpty())
         return;
+
+    QSqlDatabase *db = nullptr;
+
+    if(!connectDb(db, m_project_cur_path))
+    {
+        QMessageBox::warning(this, tr("Сохранение проекта"), tr("Не удалось сохранить проект: %1.\n Попробуйте еще раз.").
+                             arg(m_project_cur_path));
+        disconnectDb(db);
+        m_progressbar->progressStop();
+        return;
+    }
 
     m_progressbar->setProgressTitle(tr("Сохранение проекта"));
     m_progressbar->setSettings(0, 100, "%");
     m_progressbar->progressStart();
 
-    saveJournalToProject(ui->widgetJournalEvent);
-    saveJournalToProject(ui->widgetJournalCrash);
-    saveJournalToProject(ui->widgetJournalHalfHour);
-    savePurposeToProject(ui->tablewgtLedPurpose, "LED");
-    savePurposeToProject(ui->tablewgtRelayPurpose, "RELAY");
-    savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT");
-    savePurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION");
+    saveJournalToProject(ui->widgetJournalEvent, db);
+    saveJournalToProject(ui->widgetJournalCrash, db);
+    saveJournalToProject(ui->widgetJournalHalfHour, db);
+    savePurposeToProject(ui->tablewgtLedPurpose, "LED", db);
+    savePurposeToProject(ui->tablewgtRelayPurpose, "RELAY", db);
+    savePurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT", db);
+    savePurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION", db);
 
-    saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE");
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL");
-    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO");
-    saveDeviceCommunication();
-    saveDeviceCalibrationCurrent();
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+    saveDeviceCommunication(db);
+    saveDeviceCalibrationCurrent(db);
 
-    if(!clearTableDB(m_project_db, "containerSettings"))
+    if(!clearTableDB(db, "containerSettings"))
     {
         outLogMessage(tr("Загрузка настроек контейнера: не удалось удалить старые данные из таблицы"));
         return;
     }
 
-    saveContainerSettings(m_containerWidgetVariable);
-    saveContainerSettings(m_containerWidgetDeviceMenu);
-    saveContainerSettings(m_containerIndicatorState);
-    saveContainerSettings(m_containerMonitorK10K11);
-    saveContainerSettings(m_containerOutputAll);
-    saveContainerSettings(m_containerInputs);
-    saveContainerSettings(m_containerDebugInfo);
-    saveContainerSettings(m_containerStatusInfo);
-    saveContainerSettings(m_containerTerminalEvent);
-    saveContainerSettings(m_containerTerminalModbus);
+    saveContainerSettings(m_containerWidgetVariable, db);
+    saveContainerSettings(m_containerWidgetDeviceMenu, db);
+    saveContainerSettings(m_containerIndicatorState, db);
+    saveContainerSettings(m_containerMonitorK10K11, db);
+    saveContainerSettings(m_containerOutputAll, db);
+    saveContainerSettings(m_containerInputs, db);
+    saveContainerSettings(m_containerDebugInfo, db);
+    saveContainerSettings(m_containerStatusInfo, db);
+    saveContainerSettings(m_containerTerminalEvent, db);
+    saveContainerSettings(m_containerTerminalModbus, db);
 
     outLogMessage(tr("Данные проекта успешно сохранены"));
     m_progressbar->progressStop();
+    disconnectDb(db);
 }
 //--------------------------------------
 void ConfiguratorWindow::saveAsProject()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
+    //Сохранение файла проекта
+    QDir dir;
+
+    if(!dir.exists("outputs/projects"))
+        dir.mkdir("outputs/projects");
+
+    QString selectedFilter  = tr("Файлы проектов (*.project)");
+    QString projectPathName = QFileDialog::getSaveFileName(this, tr("Сохранить файл проекта как..."), QString(m_project_cur_path),
+                                                           tr("Файлы проектов (*.project);;Все файлы (*.*)"), &selectedFilter,
+                                                           QFileDialog::DontConfirmOverwrite);
+
+    if(projectPathName.isEmpty())
+    {
+        outLogMessage(tr("Отказ пользователя от сохранения файла проекта"));
+        return;
+    }
+
+    if(m_project_cur_path == projectPathName)
+        return;
+
+    QFileInfo fi;
+    QString   baseNameFile = QFileInfo(projectPathName).baseName();
+
+    if(fi.exists(projectPathName)) // Файл уже существует
+    {
+        outApplicationEvent(tr("Перезапись существующего файла проекта: %1").arg(baseNameFile));
+        int reply = showMessageBox(tr("Сохранить проект"), tr("Файл проекта с таким именем уже существует.\nПерезаписать его?"),
+                                   QMessageBox::Question);
+
+        if(reply == QMessageBox::Yes) // удаляем старый файл базы данных
+        {
+            QFile file(projectPathName);
+
+            if(!file.remove())
+            {
+                showMessageBox(tr("Удаление файла проекта"), tr("Невозможно удалить файл проекта %1! Возможно уже используется или у Вас нет прав").
+                               arg(baseNameFile), QMessageBox::Warning);
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    QString text = tr("Проект успешно сохранен!");
+
+    if(!QFile::copy(m_project_cur_path, projectPathName))
+    {
+        text = tr("Не удалось сохранить проект.\nВозможно у Вас нет прав на этот каталог!");
+        showMessageBox(tr("Сохранить проект как"), text, QMessageBox::Warning);
+        outLogMessage(text);
+        return;
+    }
+
+    m_popup->setPopupText(text);
     m_popup->show();
+
+    m_project_cur_path = projectPathName;
+    emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
 }
 //---------------------------------------------
 void ConfiguratorWindow::exportToExcelProject()
@@ -8753,8 +8816,8 @@ void ConfiguratorWindow::importFromExcelProject()
 //-------------------------------------
 void ConfiguratorWindow::closeProject()
 {
-    m_popup->setPopupText(tr("Эта функция находится на стадии разработки!"));
-    m_popup->show();
+    if(m_isProject)
+        blockInterface();
 }
 //--------------------------------------------------
 void ConfiguratorWindow::minimizeTabMenu(bool state)
@@ -9470,16 +9533,7 @@ void ConfiguratorWindow::initApplication()
 
     if(!m_isProject)
     {
-        ui->splitterCentralWidget->setDisabled(true);
-        ui->tabwgtMenu->setCurrentIndex(TAB_FILE_INDEX);
-        ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, false);
-        ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, false);
-        ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, false);
-        ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, false);
-        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
-        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
-        ui->pbtnMenuSaveProject->setDisabled(true);
-        ui->pbtnMenuSaveAsProject->setDisabled(true);
+        blockInterface();
     }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -11097,7 +11151,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок Аналоговые входы
-    if(!createProjectTableSet("ANALOG"), db)
+    if(!createProjectTableSet("ANALOG", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Аналоговые входы"),
                        tr("Невозможно создать таблицу уставок группы Аналоговые входы в файле проекта"), QMessageBox::Warning);
@@ -11106,7 +11160,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Защиты по току"
-    if(!createProjectTableSet("MTZ"), db)
+    if(!createProjectTableSet("MTZ", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы МТЗ"), tr("Невозможно создать таблицу уставок группы МТЗ в файле проекта"),
                        QMessageBox::Warning);
@@ -11115,7 +11169,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Защиты по напряжению"
-    if(!createProjectTableSet("PWR"), db)
+    if(!createProjectTableSet("PWR", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Защиты по напряжению"),
                        tr("Невозможно создать таблицу уставок группы Защиты по напряжнию в файле проекта"), QMessageBox::Warning);
@@ -11133,7 +11187,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Защиты по частоте"
-    if(!createProjectTableSet("FREQ"), db)
+    if(!createProjectTableSet("FREQ", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Защиты по частоте"),
                        tr("Невозможно создать таблицу уставок группы Защиты по частоте в файле проекта"), QMessageBox::Warning);
@@ -11142,7 +11196,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Внешние защиты"
-    if(!createProjectTableSet("EXT"), db)
+    if(!createProjectTableSet("EXT", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Внешние защиты"),
                        tr("Невозможно создать таблицу уставок группы Внешние защиты в файле проекта"), QMessageBox::Warning);
@@ -11151,7 +11205,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Для двигателя"
-    if(!createProjectTableSet("MOTOR"), db)
+    if(!createProjectTableSet("MOTOR", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Защиты для двигателя"),
                        tr("Невозможно создать таблицу уставок группы Защиты для двигателя в файле проекта"), QMessageBox::Warning);
@@ -11160,7 +11214,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Защиты по температуре"
-    if(!createProjectTableSet("TEMP"), db)
+    if(!createProjectTableSet("TEMP", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Защиты по температуре"),
                        tr("Невозможно создать таблицу уставок группы Защиты по температуре в файле проекта"), QMessageBox::Warning);
@@ -11169,7 +11223,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Резервные защиты"
-    if(!createProjectTableSet("RESERVE"), db)
+    if(!createProjectTableSet("RESERVE", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Резервные защиты"),
                        tr("Невозможно создать таблицу уставок группы Резервные защиты в файле проекта"), QMessageBox::Warning);
@@ -11178,7 +11232,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Предварительного контроля"
-    if(!createProjectTableSet("CTRL"), db)
+    if(!createProjectTableSet("CTRL", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Предварительного контроля"),
                        tr("Невозможно создать таблицу уставок группы Предварительного контроля в файле проекта"), QMessageBox::Warning);
@@ -11187,7 +11241,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     }
 
     // Создание таблицы уставок группы "Автоматика"
-    if(!createProjectTableSet("AUTO"), db)
+    if(!createProjectTableSet("AUTO", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
                        QMessageBox::Warning);
@@ -12221,6 +12275,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeWindow, this, &ConfiguratorWindow::close);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::newProject, this, &ConfiguratorWindow::newProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openProject, this, &ConfiguratorWindow::openProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openExistsProject, this, &ConfiguratorWindow::openExistsProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveProject, this, &ConfiguratorWindow::saveProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveAsProject, this, &ConfiguratorWindow::saveAsProject);
 

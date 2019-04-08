@@ -4,10 +4,13 @@
 CWidgetMenu::CWidgetMenu(QWidget* parent):
     QWidget(parent),
     ui(new Ui::CWidgetMenu),
-    m_operation(OperationType({ BUTTON_NONE, BUTTON_NONE }))
+    m_operation(OperationType({ BUTTON_NONE, BUTTON_NONE })),
+    m_isButtonActive(false)
 {
     ui->setupUi(this);
     initMenu();
+
+    connect(ui->listWidgetOpenDocument, &QListWidget::itemDoubleClicked, this, &CWidgetMenu::itemDoubleClicked);
 }
 //-------------------------
 CWidgetMenu::~CWidgetMenu()
@@ -17,6 +20,13 @@ CWidgetMenu::~CWidgetMenu()
 //---------------------------------------------------
 void CWidgetMenu::addOpenDocument(const QString& doc)
 {
+    if(ui->listWidgetOpenDocument->count() != 0)
+    {
+        QList<QListWidgetItem*> items = ui->listWidgetOpenDocument->findItems(doc, Qt::MatchCaseSensitive);
+        if(!items.isEmpty())
+            return;
+    }
+
     if(ui->listWidgetOpenDocument->isHidden())
         ui->listWidgetOpenDocument->show();
 
@@ -30,6 +40,23 @@ void CWidgetMenu::activateMenuButtons()
     ui->toolButtonExportProject->setEnabled(true);
     ui->toolButtonImportProject->setEnabled(true);
     ui->toolButtonSettings->setEnabled(true);
+    m_isButtonActive = true;
+}
+//--------------------------------------
+void CWidgetMenu::deactivateMenuButton()
+{
+    ui->toolButtonSaveProject->setDisabled(true);
+    ui->toolButtonSaveAsProject->setDisabled(true);
+    ui->toolButtonExportProject->setDisabled(true);
+    ui->toolButtonImportProject->setDisabled(true);
+    ui->toolButtonSettings->setDisabled(true);
+    m_isButtonActive = false;
+}
+//--------------------------------------------------------
+void CWidgetMenu::itemDoubleClicked(QListWidgetItem *item)
+{
+    if(item)
+        openExistsProject(item->text());
 }
 //--------------------------------------------
 void CWidgetMenu::showEvent(QShowEvent *event)
@@ -579,6 +606,9 @@ void CWidgetMenu::clicked()
 //------------------------------------
 void CWidgetMenu::hoverChanged(int id)
 {
+    if(!m_isButtonActive)
+        return;
+
     switch (id)
     {
         case BUTTON_EXPORT_PROJECT:
