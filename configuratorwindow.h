@@ -619,7 +619,7 @@
             void expandedWindow(); // управление разворачиванием окна
             void mouseMove(QPoint pos);
             void newProject();
-            void openProject();
+            void openFileProject();
             void openExistsProject(const QString &projectPath);
             void saveProject();
             void saveAsProject();
@@ -771,6 +771,7 @@
             QString journalName(JournalPtr journal);
             JournalPtr journalWidgetByType(const QString &type);
             CPurposeTableView *purposeTableByType(const QString &type);
+            void openProject(const QString &projectPathName);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

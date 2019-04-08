@@ -7121,6 +7121,67 @@ CPurposeTableView *ConfiguratorWindow::purposeTableByType(const QString &type)
 
     return table;
 }
+//------------------------------------------------------------------
+void ConfiguratorWindow::openProject(const QString &projectPathName)
+{
+    if(projectPathName.isEmpty())
+        return;
+
+    QSqlDatabase *db = nullptr;
+
+    if(!connectDb(db, projectPathName))
+    {
+        QMessageBox::warning(this, tr("Открытие проекта"), tr("Не удалось открыть проект: %1.\n Попробуйте еще раз.").
+                             arg(projectPathName));
+        disconnectDb(db);
+        m_progressbar->progressStop();
+        return;
+    }
+
+    m_progressbar->setProgressTitle(tr("Открытие проекта"));
+    m_progressbar->setSettings(0, 100, "%");
+    m_progressbar->progressStart();
+
+    loadJournalFromProject(ui->widgetJournalEvent, db); // Загрузка журнала событий
+    loadJournalFromProject(ui->widgetJournalCrash, db); // Загрузка журнала аварий
+    loadJournalFromProject(ui->widgetJournalHalfHour, db); // Загрузка журнала получасовок
+    loadPurposeToProject(ui->tablewgtLedPurpose, "LED", db);
+    loadPurposeToProject(ui->tablewgtRelayPurpose, "RELAY", db);
+    loadPurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT", db);
+    loadPurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+    loadDeviceCommunication(db);
+    loadDeviceCalibrationCurrent(db);
+    loadContainerSettings(m_containerWidgetVariable, db);
+    loadContainerSettings(m_containerWidgetDeviceMenu, db);
+    loadContainerSettings(m_containerIndicatorState, db);
+    loadContainerSettings(m_containerMonitorK10K11, db);
+    loadContainerSettings(m_containerOutputAll, db);
+    loadContainerSettings(m_containerInputs, db);
+    loadContainerSettings(m_containerDebugInfo, db);
+    loadContainerSettings(m_containerStatusInfo, db);
+    loadContainerSettings(m_containerTerminalEvent, db);
+    loadContainerSettings(m_containerTerminalModbus, db);
+
+    unblockInterface();
+    m_progressbar->progressStop();
+
+    m_project_cur_path = projectPathName;
+    emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
+
+    outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
+    disconnectDb(db);
+}
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
                                                 DeviceMenuItemType index)
@@ -8462,8 +8523,8 @@ void ConfiguratorWindow::newProject()
     m_project_cur_path = projectPathName;
     emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
 }
-//------------------------------------
-void ConfiguratorWindow::openProject()
+//----------------------------------------
+void ConfiguratorWindow::openFileProject()
 {
     if(!m_project_cur_path.isEmpty())
     {
@@ -8481,70 +8542,27 @@ void ConfiguratorWindow::openProject()
     QString projectPathName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
                                                            QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
                                                            arg("project"), tr("Проекты (*.project)"));
-
-    if(projectPathName.isEmpty())
-        return;
-
-    QSqlDatabase *db = nullptr;
-
-    if(!connectDb(db, projectPathName))
-    {
-        QMessageBox::warning(this, tr("Открытие проекта"), tr("Не удалось открыть проект: %1.\n Попробуйте еще раз.").
-                             arg(projectPathName));
-        disconnectDb(db);
-        m_progressbar->progressStop();
-        return;
-    }
-
-    m_progressbar->setProgressTitle(tr("Открытие проекта"));
-    m_progressbar->setSettings(0, 100, "%");
-    m_progressbar->progressStart();
-
-    loadJournalFromProject(ui->widgetJournalEvent, db); // Загрузка журнала событий
-    loadJournalFromProject(ui->widgetJournalCrash, db); // Загрузка журнала аварий
-    loadJournalFromProject(ui->widgetJournalHalfHour, db); // Загрузка журнала получасовок
-    loadPurposeToProject(ui->tablewgtLedPurpose, "LED", db);
-    loadPurposeToProject(ui->tablewgtRelayPurpose, "RELAY", db);
-    loadPurposeToProject(ui->tablewgtDiscreteInputPurpose, "INPUT", db);
-    loadPurposeToProject(ui->tablewgtProtectionCtrl, "PROTECTION", db);
-    loadDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
-    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
-    loadDeviceCommunication(db);
-    loadDeviceCalibrationCurrent(db);
-    loadContainerSettings(m_containerWidgetVariable, db);
-    loadContainerSettings(m_containerWidgetDeviceMenu, db);
-    loadContainerSettings(m_containerIndicatorState, db);
-    loadContainerSettings(m_containerMonitorK10K11, db);
-    loadContainerSettings(m_containerOutputAll, db);
-    loadContainerSettings(m_containerInputs, db);
-    loadContainerSettings(m_containerDebugInfo, db);
-    loadContainerSettings(m_containerStatusInfo, db);
-    loadContainerSettings(m_containerTerminalEvent, db);
-    loadContainerSettings(m_containerTerminalModbus, db);
-
-    unblockInterface();
-    m_progressbar->progressStop();
-
-    m_project_cur_path = projectPathName;
-    emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
-
-    outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
-    disconnectDb(db);
+    openProject(projectPathName);
 }
 //--------------------------------------------------------------------
 void ConfiguratorWindow::openExistsProject(const QString &projectPath)
 {
-    m_popup->setPopupText(projectPath);
-    m_popup->show();
+    if(projectPath.isEmpty() || (!m_project_cur_path.isEmpty() && projectPath == m_project_cur_path))
+        return;
+
+    if(!m_project_cur_path.isEmpty())
+    {
+        int answer = showMessageBox(tr("Открыть проект"), tr("Вы хотите сохранить изменения в текущем проекте?"),
+                                    QMessageBox::Question);
+
+        if(answer == QMessageBox::Yes)
+        {
+            saveProject();
+            m_project_cur_path = "";
+        }
+    }
+
+    openProject(projectPath);
 }
 //------------------------------------
 void ConfiguratorWindow::saveProject()
@@ -12269,12 +12287,12 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
     connect(ui->widgetMenuBar, &CMenuBar::menubarMouseUpdatePosition, this, &ConfiguratorWindow::mouseMove);
     connect(ui->pbtnMenuNewProject, &QPushButton::clicked, this, &ConfiguratorWindow::newProject);
-    connect(ui->pbtnMenuOpenProject, &QPushButton::clicked, this, &ConfiguratorWindow::openProject);
+    connect(ui->pbtnMenuOpenProject, &QPushButton::clicked, this, &ConfiguratorWindow::openFileProject);
     connect(ui->pbtnMenuSaveProject, &QPushButton::clicked, this, &ConfiguratorWindow::saveProject);
     connect(ui->pbtnMenuSaveAsProject, &QPushButton::clicked, this, &ConfiguratorWindow::saveAsProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeWindow, this, &ConfiguratorWindow::close);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::newProject, this, &ConfiguratorWindow::newProject);
-    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openProject, this, &ConfiguratorWindow::openProject);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openProject, this, &ConfiguratorWindow::openFileProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::openExistsProject, this, &ConfiguratorWindow::openExistsProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveProject, this, &ConfiguratorWindow::saveProject);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::saveAsProject, this, &ConfiguratorWindow::saveAsProject);
