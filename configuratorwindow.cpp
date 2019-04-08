@@ -11161,12 +11161,18 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
 
     QSqlDatabase *db = nullptr;
 
+    m_progressbar->setProgressTitle(tr("Экспорт уставок %1").arg(name));
+    m_progressbar->progressStart();
+    m_progressbar->setSettings(0, 100, "%");
+
     if(!connectDb(db, set_path))
     {
         showMessageBox(tr("Экспорт уставок устройства"), tr("Невозможно открыть/создать файл \"%1\"").arg(baseNameFile), QMessageBox::Warning);
         disconnectDb(db);
         return;
     }
+
+    m_progressbar->progressIncrement(5);
 
     // Создание таблицы уставок Аналоговые входы
     if(!createProjectTableSet("ANALOG", db))
@@ -11177,6 +11183,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         return;
     }
 
+    m_progressbar->progressIncrement(5);
+
     // Создание таблицы уставок группы "Защиты по току"
     if(!createProjectTableSet("MTZ", db))
     {
@@ -11185,6 +11193,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         disconnectDb(db);
         return;
     }
+
+    m_progressbar->progressIncrement(5);
 
     // Создание таблицы уставок группы "Защиты по напряжению"
     if(!createProjectTableSet("PWR", db))
@@ -11195,6 +11205,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         return;
     }
 
+    m_progressbar->progressIncrement(5);
+
     // Создание таблицы уставок группы "Направленные"
     if(!createProjectTableSet("DIR", db))
     {
@@ -11203,6 +11215,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         disconnectDb(db);
         return;
     }
+
+    m_progressbar->progressIncrement(5);
 
     // Создание таблицы уставок группы "Защиты по частоте"
     if(!createProjectTableSet("FREQ", db))
@@ -11213,6 +11227,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         return;
     }
 
+    m_progressbar->progressIncrement(5);
+
     // Создание таблицы уставок группы "Внешние защиты"
     if(!createProjectTableSet("EXT", db))
     {
@@ -11221,6 +11237,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         disconnectDb(db);
         return;
     }
+
+    m_progressbar->progressIncrement(5);
 
     // Создание таблицы уставок группы "Для двигателя"
     if(!createProjectTableSet("MOTOR", db))
@@ -11231,6 +11249,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         return;
     }
 
+    m_progressbar->progressIncrement(5);
+
     // Создание таблицы уставок группы "Защиты по температуре"
     if(!createProjectTableSet("TEMP", db))
     {
@@ -11239,6 +11259,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         disconnectDb(db);
         return;
     }
+
+    m_progressbar->progressIncrement(5);
 
     // Создание таблицы уставок группы "Резервные защиты"
     if(!createProjectTableSet("RESERVE", db))
@@ -11249,6 +11271,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         return;
     }
 
+    m_progressbar->progressIncrement(5);
+
     // Создание таблицы уставок группы "Предварительного контроля"
     if(!createProjectTableSet("CTRL", db))
     {
@@ -11257,6 +11281,8 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         disconnectDb(db);
         return;
     }
+
+    m_progressbar->progressIncrement(5);
 
     // Создание таблицы уставок группы "Автоматика"
     if(!createProjectTableSet("AUTO", db))
@@ -11267,19 +11293,38 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
         return;
     }
 
+    m_progressbar->progressIncrement(5);
+
     saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
+    m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+    m_progressbar->progressIncrement(5);
 
     disconnectDb(db);
+    m_progressbar->progressStop();
+
+    QString text = tr("Защита и автоматика (уставки) успешно экспортированы в БД");
+    m_popup->setPopupText(text);
+    m_popup->show();
+    outLogMessage(text);
 }
 //---------------------------------------------------------------
 void ConfiguratorWindow::importPurposeFromDb(const QString &type)
