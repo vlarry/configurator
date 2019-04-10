@@ -18,10 +18,11 @@
 
             int m_shift_ptr_cur; // позиция указателя смещения окна чтения
             int m_msg_count; // счетчик прочитанных сообщений
-            int m_msg_cur; // текущее сообщение (относительно страницы - при смещении указателя окна обнуляется)
+            int m_msg_to_shift; // количество сообщений до смещения указателя окна
             int m_msg_read; // количество сообщений которое необходимо прочитать
             CFilter m_filter; // данные фильтра
             CJournalWidget *m_widget; // виджет журнала
+            CModBusDataUnit::vlist_t m_buffer; // буфер для хранения ответов устройства
             bool m_isRead; // флаг чтения журнала (для отслеживания оставновки)
             bool m_isShiftPrt; // флаг смещения окна чтения
 
@@ -35,16 +36,19 @@
             int msgOnPage() const;
             int shiftPtrCur() const;
             int msgCount() const;
-            int msgCurrent() const;
+            int msgToShift() const;
             int msgRead() const;
             CFilter &filter();
             CJournalWidget *widget();
             void initRead();
-            CModBusDataUnit read();
-            void receiver(CModBusDataUnit::cell_t &data);
+            CModBusDataUnit read(int id, int type, bool *isShift);
+            void receiver(const CModBusDataUnit::vlist_t &data);
             bool isReadState() const;
             bool isShiftPtr() const;
             void setReadState(bool state);
+
+        private:
+            void reset();
     };
     typedef CJournal *JournalPtr;
     Q_DECLARE_METATYPE(JournalPtr)

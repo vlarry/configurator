@@ -513,27 +513,17 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
     if(!journal)
         return;
 
-//    bool isShift;
-//    int page_addr = journal->nextPageAddr(&isShift);
-//    CModBusDataUnit::cell_t msg_count = journal->nextRequestSize();
+    if(journal->isReadState())
+    {
+        bool isShift;
+        CModBusDataUnit unit = journal->read(m_serialPortSettings_window->deviceID(), READ_JOURNAL, &isShift);
 
-//    if(isShift) // завиксирован конец страницы - перемещение окна но новую страницу
-//    {
-//        setJournalShiftPtr(journal);
-//        Sleep(10); // замираем на 10мс на всякий случай (лучше конечно таймер)
-//    }
+        if(isShift)
+            setJournalShiftPtr(journal);
 
-//    if(page_addr == -1)
-//        return;
-//qDebug() << QString("READ: addr = %1, message = %2").arg(page_addr).arg(msg_count);
-//    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
-//                         page_addr, msg_count);
-//    unit.setProperty(tr("REQUEST"), READ_JOURNAL);
-//    QVariant var;
-//    var.setValue<JournalPtr>(journal);
-//    unit.setProperty(tr("JOURNAL"), var);
-
-//    m_modbus->sendData(unit);
+        if(unit.isValid())
+            m_modbus->sendData(unit);
+    }
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -2352,17 +2342,24 @@ void ConfiguratorWindow::processReadJournals(bool state)
 
     if(journal)
     {
-        journal->setReadState(state);
-
         if(state)
         {
             if(m_modbus->isConnected())
             {
                 journal->initRead();
+                setJournalShiftPtr(journal);
 
-                CModBusDataUnit unit = journal->read();
-                m_modbus->sendData(unit);
+                m_timer_synchronization->stop(); // отключаем синхронизацию
+
+                if(ui->checkboxCalibTimeout->isChecked()) // отключаем опрос расчетных величин, если было запущено
+                    chboxCalculateTimeoutStateChanged(false);
+
+                journalRead(journal);
             }
+        }
+        else
+        {
+            journal->setReadState(false); // чтение прервано пользователем
         }
     }
 }
@@ -2412,7 +2409,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
 
     RequestType type = static_cast<RequestType>(unit.property(tr("REQUEST")).toInt());
-
+qDebug() << "RequestType: " << type;
     if(type == CALCULATE_TYPE)
     {
         if(showErrorMessage(tr("Чтение расчетных величин"), unit))
@@ -2497,19 +2494,14 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
             CFilter &filter = journal->filter();
             filter.setRange(0, count);
             filter.setLimit(0, count);
+
+            journal->widget()->header()->setTextDeviceCountMessages(0, filter.rangeMaxValue());
         }
 
         if(!showErrorMessage(tr("Чтение журнала"), unit) && type == READ_JOURNAL)
         {
-            if(journal->isReadState())
-            {
-                if(m_modbus->isConnected())
-                {
-                    CModBusDataUnit unit = journal->read();
-                    m_modbus->sendData(unit);
-                }
-            }
-//            displayJournalResponse(journal, unit);
+            journal->receiver(unit.values());
+            journalRead(journal);
         }
         else if(type == READ_JOURNAL)
             endJournalRead(journal);
@@ -2697,14 +2689,14 @@ void ConfiguratorWindow::resizeEvent(QResizeEvent* event)
 //--------------------------------------------------------------------
 void ConfiguratorWindow::chboxCalculateTimeoutStateChanged(bool state)
 {
-    if(state)
-    {
-        m_tim_calculate->start(ui->sboxTimeoutCalc->value());
-    }
-    else
-    {
-        m_tim_calculate->stop();
-    }
+//    if(state)
+//    {
+//        m_tim_calculate->start(ui->sboxTimeoutCalc->value());
+//    }
+//    else
+//    {
+//        m_tim_calculate->stop();
+//    }
 }
 //--------------------------------------------------------
 void ConfiguratorWindow::timeCalculateChanged(int newTime)
@@ -10136,8 +10128,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     ui->pushButtonJournalClear->setVisible(false);
     ui->pushButtonDefaultSettings->setVisible(false);
 
-    ui->checkBoxJournalPrintRead->hide();
-
     if(ui->tabwgtMenu->currentIndex() == TAB_HELP_INDEX)
     {
         ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
@@ -10183,8 +10173,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
-
-        ui->checkBoxJournalPrintRead->show();
 
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
@@ -10238,11 +10226,11 @@ qDebug() << QString("SHIFT_PTR: перемещение указателя на �
 //------------------------------------------------
 void ConfiguratorWindow::timeoutSynchronization()
 {
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
-    unit.setProperty("REQUEST", READ_SERIAL_NUMBER);
-    m_modbus->sendData(unit);
+//    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters, 0x0001, QVector<quint16>() << 4);
+//    unit.setProperty("REQUEST", READ_SERIAL_NUMBER);
+//    m_modbus->sendData(unit);
 
-    m_timer_synchronization->start(m_serialPortSettings_window->deviceSync());
+//    m_timer_synchronization->start(m_serialPortSettings_window->deviceSync());
 }
 //-----------------------------------------
 void ConfiguratorWindow::timeoutDebugInfo()

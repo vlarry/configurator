@@ -8,10 +8,11 @@ CJournal::CJournal(int msg_size, int addr_msg_count, int addr_shift_ptr, int pag
     m_msg_on_page(PAGE_SIZE/m_msg_size),
     m_shift_ptr_cur(0),
     m_msg_count(0),
-    m_msg_cur(0),
+    m_msg_to_shift(0),
     m_msg_read(0),
     m_filter(CFilter()),
     m_widget(widget),
+    m_buffer(CModBusDataUnit::vlist_t()),
     m_isRead(false),
     m_isShiftPrt(false)
 {
@@ -53,9 +54,9 @@ int CJournal::msgCount() const
     return m_msg_count;
 }
 //------------------------------
-int CJournal::msgCurrent() const
+int CJournal::msgToShift() const
 {
-    return m_msg_cur;
+    return m_msg_to_shift;
 }
 //---------------------------
 int CJournal::msgRead() const
@@ -79,17 +80,59 @@ CJournalWidget *CJournal::widget()
  */
 void CJournal::initRead()
 {
+    reset(); // сбос настроек журнала
 
+    int msg_start = m_filter.limitLowValue();
+
+    m_msg_to_shift = m_msg_on_page - msg_start;
+    m_msg_read = m_filter.limitUpperValue() - msg_start;
+
+    if(msg_start != 0) // если сообщения не читаются сначала - расчет смещения указателя окна
+    {
+        if(msg_start >= m_msg_on_page) // сообщение с которого начинается чтение находится не на первой странице
+        {
+            m_shift_ptr_cur = msg_start/m_msg_on_page*(PAGE_SIZE*2); // заносим адрес в указатель смещения окна чтения
+            m_msg_to_shift = m_msg_on_page - (msg_start%m_msg_on_page); // заносим количество сообщений до конца страницы
+        }
+    }
+
+    m_isRead = true; // устанавливаем флаг чтения активным
 }
 /*!
  * \brief CJournal::read
+ * \param id адрес устройства
+ * \param type тип запроса
  * \return unit запроса
  *
  * Возвращает запрос на чтение сообщений
  */
-CModBusDataUnit CJournal::read()
+CModBusDataUnit CJournal::read(int id, int type, bool *isShift)
 {
+    *isShift = false;
 
+    if(m_msg_to_shift == 0) // дочитали до конца страницы - переводим указатель
+    {
+        m_shift_ptr_cur += PAGE_SIZE*2;
+        m_msg_to_shift = m_msg_on_page;
+
+        *isShift = true;
+    }
+
+    int page_addr = m_page_addr_start + (m_msg_on_page - m_msg_to_shift)*m_msg_size;
+    CModBusDataUnit unit(id, CModBusDataUnit::ReadInputRegisters, page_addr, m_msg_size);
+
+    unit.setProperty("REQUEST", type);
+
+    QVariant var;
+    var.setValue<JournalPtr>(this);
+    unit.setProperty("JOURNAL", var);
+
+    if(m_msg_count == m_msg_read - 1) // дочитали до конца (-1 с учетом отправленного запроса)
+    {
+        m_isRead = false;
+    }
+
+    return unit;
 }
 /*!
  * \brief CJournal::receiver
@@ -97,9 +140,19 @@ CModBusDataUnit CJournal::read()
  *
  * Приемник сообщений и их вывод в журнал
  */
-void CJournal::receiver(CModBusDataUnit::cell_t &data)
+void CJournal::receiver(const CModBusDataUnit::vlist_t &data)
 {
+    m_buffer += data;
 
+    if(data.count() == m_msg_size)
+    {
+        m_msg_count++;
+        m_msg_to_shift--;
+
+        m_widget->header()->setTextDeviceCountMessages(m_msg_count, m_filter.rangeMaxValue());
+
+        m_widget->print(data);
+    }
 }
 /*!
  * \brief CJournal::isReadState
@@ -129,5 +182,20 @@ bool CJournal::isShiftPtr() const
  */
 void CJournal::setReadState(bool state)
 {
-
+    m_isRead = state;
+}
+/*!
+ * \brief CJournal::reset
+ *
+ * Сброс настроек журнала по умолчаниию
+ */
+void CJournal::reset()
+{
+    m_shift_ptr_cur = 0;
+    m_msg_count = 0;
+    m_msg_to_shift = 0;
+    m_msg_read = 0;
+    m_buffer.clear();
+    m_isRead = false;
+    m_isShiftPrt = false;
 }
