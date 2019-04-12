@@ -118,9 +118,19 @@ CModBusDataUnit CJournal::read(int id, int type, bool *isShift)
         *isShift = true;
     }
 
-    int page_addr = m_page_addr_start + (m_msg_on_page - m_msg_to_shift)*m_msg_size;
-    CModBusDataUnit unit(id, CModBusDataUnit::ReadInputRegisters, page_addr, m_msg_size);
+    int msg_size = m_msg_size;
 
+    if(msg_size == 128) // размер сообщения равен максимальному размеру запроса в протоколе (128 ячеек = 256 байт),
+        msg_size = 64; // то разбиваем на 2 части
+
+    int page_addr = m_page_addr_start + (m_msg_on_page - m_msg_to_shift)*m_msg_size;
+
+    // буфер сообщений не пустой и не кратный размеру сообщения и размер сообщения равен максимальному размеру
+    if(!m_buffer.isEmpty() && m_buffer.count()%m_msg_size != 0 && m_msg_size == 128)
+        page_addr += msg_size; // добавляем смещене к адресу в половину размера
+
+    CModBusDataUnit unit(id, CModBusDataUnit::ReadInputRegisters, page_addr, msg_size);
+qDebug() << QString("READ: page_addr = %1, msg_size = %2").arg(page_addr).arg(msg_size);
     unit.setProperty("REQUEST", type);
 
     QVariant var;
@@ -129,7 +139,13 @@ CModBusDataUnit CJournal::read(int id, int type, bool *isShift)
 
     if(m_msg_count == m_msg_read - 1) // дочитали до конца (-1 с учетом отправленного запроса)
     {
-        m_isRead = false;
+        if(m_msg_size != 128)
+            m_isRead = false;
+        else
+        {
+            if(m_buffer.count()%m_msg_size != 0)
+                m_isRead = false;
+        }
     }
 
     return unit;
@@ -144,14 +160,15 @@ void CJournal::receiver(const CModBusDataUnit::vlist_t &data)
 {
     m_buffer += data;
 
-    if(data.count() == m_msg_size)
+    if(m_buffer.count()%m_msg_size == 0)
     {
         m_msg_count++;
         m_msg_to_shift--;
 
         m_widget->header()->setTextDeviceCountMessages(m_msg_count, m_filter.rangeMaxValue());
 
-        m_widget->print(data);
+        if(!m_isRead)
+            m_widget->print(m_buffer);
     }
 }
 /*!
