@@ -92,7 +92,8 @@ void CJournal::initRead()
         if(msg_start >= m_msg_on_page) // сообщение с которого начинается чтение находится не на первой странице
         {
             m_shift_ptr_cur = msg_start/m_msg_on_page*(PAGE_SIZE*2); // заносим адрес в указатель смещения окна чтения
-            m_msg_to_shift = m_msg_on_page - (msg_start%m_msg_on_page); // заносим количество сообщений до конца страницы
+            m_msg_to_shift = m_msg_on_page - (msg_start%m_msg_on_page) + 1; // заносим количество сообщений до конца страницы
+            m_msg_read++;
         }
     }
 
@@ -130,7 +131,7 @@ CModBusDataUnit CJournal::read(int id, int type, bool *isShift)
         page_addr += msg_size; // добавляем смещене к адресу в половину размера
 
     CModBusDataUnit unit(id, CModBusDataUnit::ReadInputRegisters, page_addr, msg_size);
-qDebug() << QString("READ: page_addr = %1, msg_size = %2").arg(page_addr).arg(msg_size);
+
     unit.setProperty("REQUEST", type);
 
     QVariant var;
