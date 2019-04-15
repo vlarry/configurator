@@ -71,6 +71,7 @@
     #include "containerwidget.h"
     #include "purposetableview.h"
     #include "cjournal.h"
+    #include "journalprogress.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
@@ -835,6 +836,7 @@
             JournalPtr                       m_journal_crash; // журнал аварий
             JournalPtr                       m_journal_event; // журнал событий
             JournalPtr                       m_journal_halfhour; // журнал получасовок
+            JournalProgress                 *m_journal_progress; // прогресбар для чтения журнала
             QString                          m_project_cur_path; // путь к текущему проекту
     };
     // Регистрация пользовательских типов

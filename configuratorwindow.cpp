@@ -38,6 +38,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_active_journal_current(nullptr),
     m_journal_read_current(nullptr),
     m_journal_timer(nullptr),
+    m_journal_progress(nullptr),
     m_project_cur_path("")
 {
     ui->setupUi(this);
@@ -522,7 +523,9 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
             setJournalShiftPtr(journal);
 
         if(unit.isValid())
+        {
             m_modbus->sendData(unit);
+        }
     }
     else // дочитали журнал до конца
     {
@@ -2359,6 +2362,16 @@ void ConfiguratorWindow::processReadJournals(bool state)
                     chboxCalculateTimeoutStateChanged(false);
 
                 m_time_process.start();
+
+
+                m_journal_progress = new JournalProgress(journal->msgRead(), tr("Чтение журнала %1").arg(journalName(journal)), this);
+
+                if(m_journal_progress)
+                {
+                    connect(m_journal_progress, &JournalProgress::cancel, this, &ConfiguratorWindow::processReadJournals);
+                    m_journal_progress->show();
+                }
+
                 journalRead(journal);
             }
         }
@@ -2510,6 +2523,10 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
             float speed_kb = float(journal->msgSize()/1024.0f)/float(unit.elapsed()/1000.0f);
             journal->widget()->header()->setTextElapsedTime(QString("%1 КБ/сек.").
                                                             arg(QLocale::system().toString(speed_kb, 'f', 3)));
+            if(m_journal_progress)
+            {
+                m_journal_progress->setProgressValue(journal->msgCount());
+            }
 
             journalRead(journal);
         }
@@ -6962,10 +6979,14 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
     journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
     journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
 
-    m_progressbar->progressStop();
-    m_popup->setPopupText(msg);
+    if(m_journal_progress)
+    {
+        disconnect(m_journal_progress, &JournalProgress::cancel, this, &ConfiguratorWindow::processReadJournals);
+        delete m_journal_progress;
+        m_journal_progress = nullptr;
+    }
+
     outLogMessage(msg);
-    m_popup->show();
 
     journal->reset();
 
