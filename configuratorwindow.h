@@ -679,7 +679,6 @@
             void displaySettingControlResponce(const CModBusDataUnit& unit);
             void displayPurposeOutput(CModBusDataUnit& unit);
             void displayPurposeDIResponse(const QVector<quint16>& input_list, const QVector<quint16>& input_inverse_list);
-            void displayJournalResponse(JournalPtr journal, CModBusDataUnit &unit);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void displayProtectReserveSignalStart(const QVector<quint16>& data);
             void displayAutomationAPVSignalStart(const QVector<quint16>& data);

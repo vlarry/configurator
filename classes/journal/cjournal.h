@@ -46,8 +46,6 @@
             bool isReadState() const;
             bool isShiftPtr() const;
             void setReadState(bool state);
-
-        private:
             void reset();
     };
     typedef CJournal *JournalPtr;
