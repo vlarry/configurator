@@ -61,6 +61,8 @@
             void setRange(int min, int max);
             void setLimit(LimitType &limit);
             void setLimit(int low, int upper);
+            void setLimitLow(int value);
+            void setLimitUpper(int value);
             void setDate(DateType &date);
             void setDate(const QDate &from, const QDate &to);
             void setTime(const QTime &time);

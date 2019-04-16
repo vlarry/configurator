@@ -120,6 +120,16 @@ void CFilter::setLimit(int low, int upper)
 {
     m_limit = LimitType({ low, upper });
 }
+//----------------------------------
+void CFilter::setLimitLow(int value)
+{
+    m_limit.low = value;
+}
+//------------------------------------
+void CFilter::setLimitUpper(int value)
+{
+    m_limit.upper = value;
+}
 //-----------------------------------
 void CFilter::setDate(DateType &date)
 {

@@ -19,31 +19,23 @@
             explicit CSerialPortSetting(QWidget* parent = nullptr);
             ~CSerialPortSetting();
 
-            QSerialPort::DataBits dataBits() const;
             QSerialPort::Parity   parity() const;
-            QSerialPort::StopBits stopBits() const;
             QSerialPort::BaudRate baudrate() const;
             QString               serialPortName() const;
             const QVector<QSerialPort::BaudRate> baudrateList();
 
             int  modbusTimeout() const;
-            int  modbusTryCount() const;
-            int  modbusIntervalSilence() const;
+            int  modbusTimeoutSpeed() const;
             bool autospeedState() const;
             int  deviceID() const;
-            int  deviceSync() const;
-
             void setAutospeed(bool state);
             void setSerialPortList(const QStringList& list);
-            void setDataBits(QSerialPort::DataBits databits);
-            void setStopBits(QSerialPort::StopBits stopbits);
             void setParity(QSerialPort::Parity parity);
 
             void setDeviceID(int id);
             void setDeviceSync(int time_sync);
             void setModbusTimeout(int value);
-            void setModbusTryCount(int value);
-            void setModbusIntervalSilence(int value);
+            void setModbusTimeoutSpeed(int value);
 
         public slots:
             void show();
@@ -63,19 +55,11 @@
 
         private:
             Ui::CSerialPortSetting* ui;
-            QButtonGroup*           m_group_databits;
-            QButtonGroup*           m_group_stopbits;
-            QButtonGroup*           m_group_parity;
             QSerialPort::BaudRate   m_default_baudrate;
-            QSerialPort::DataBits   m_default_databits;
-            QSerialPort::StopBits   m_default_stopbits;
             QSerialPort::Parity     m_default_parity;
             bool                    m_default_autospeed;
             int                     m_default_id;
-            int                     m_default_interval_silence;
             int                     m_default_timeout;
-            int                     m_default_trycount;
-            int                     m_default_sync;
     };
 
 #endif // CSERIALPORTSETTING_H

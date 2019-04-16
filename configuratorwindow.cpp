@@ -137,9 +137,9 @@ void ConfiguratorWindow::serialPortCtrl()
         {
             m_serialPortSettings_window->serialPortName(),
             m_serialPortSettings_window->baudrate(),
-            m_serialPortSettings_window->dataBits(),
+            QSerialPort::Data8,
             m_serialPortSettings_window->parity(),
-            m_serialPortSettings_window->stopBits()
+            QSerialPort::OneStop
         };
 
         m_modbus->channel()->setSettings(settings);
@@ -2362,8 +2362,25 @@ void ConfiguratorWindow::processReadJournals(bool state)
                 if(ui->checkboxCalibTimeout->isChecked()) // отключаем опрос расчетных величин, если было запущено
                     chboxCalculateTimeoutStateChanged(false);
 
-                m_time_process.start();
+//                if(journal->widget()->table()->rowCount() != 0) // таблица журнала не пустая
+//                {
+//                    if(journal->widget()->table()->rowCount() == journal->filter().rangeMaxValue())
+//                    {
+//                        showMessageBox(tr("Чтение журнала"), tr("Все сообщения прочитаны!"), QMessageBox::Information);
+//                        endJournalRead(journal);
+//                        ui->pushButtonJournalRead->setChecked(false);
+//                        return;
+//                    }
 
+//                    if(dialogJournalRead(journal) == -1)
+//                    {
+//                        endJournalRead(journal);
+//                        ui->pushButtonJournalRead->setChecked(false);
+//                        return;
+//                    }
+//                }
+
+                m_time_process.start();
 
                 m_journal_progress = new JournalProgress(journal->msgRead(), tr("Чтение журнала %1").arg(journalName(journal)), this);
 
@@ -6936,9 +6953,12 @@ int ConfiguratorWindow::dialogJournalRead(JournalPtr journal)
             row_next = item->data(Qt::DisplayRole).toInt();
         }
 
-//        journal->setMsgStartPtr(row_next + 1);
+        row_next++;
 
-        return row_next + 1;
+        CFilter &filter = journal->filter();
+        filter.setLimitLow(row_next);
+
+        return row_next;
     }
     else if(msgbox.clickedButton() == begin)
     {
@@ -6946,7 +6966,6 @@ int ConfiguratorWindow::dialogJournalRead(JournalPtr journal)
     }
     else if(msgbox.clickedButton() == cancel)
     {
-//        journal->clear();
         ui->pushButtonJournalRead->setChecked(false);
 
         return - 1;
@@ -8108,9 +8127,7 @@ void ConfiguratorWindow::readStatusInfo()
  */
 void ConfiguratorWindow::updateSerialPortSettings()
 {
-    m_modbus->setIntervalSilence(m_serialPortSettings_window->modbusIntervalSilence());
     m_modbus->setIntervalResponce(m_serialPortSettings_window->modbusTimeout());
-    m_modbus->setTryCount(m_serialPortSettings_window->modbusTryCount());
 
     int index = ui->comboBoxCommunicationBaudrate->findText(QString("%1").arg(m_serialPortSettings_window->baudrate()));
 
@@ -9221,21 +9238,17 @@ void ConfiguratorWindow::loadSettings()
         m_settings->beginGroup("serial-port");
             baudrate = m_settings->value("baudrate", QSerialPort::Baud115200).toInt();
             m_serialPortSettings_window->setBaudrate(QSerialPort::BaudRate(baudrate));
-            m_serialPortSettings_window->setDataBits(QSerialPort::DataBits(m_settings->value("databits", QSerialPort::Data8).toInt()));
-            m_serialPortSettings_window->setStopBits(QSerialPort::StopBits(m_settings->value("stopbits", QSerialPort::OneStop).toInt()));
             m_serialPortSettings_window->setParity(QSerialPort::Parity(m_settings->value("parity", QSerialPort::EvenParity).toInt()));
         m_settings->endGroup();
 
         m_settings->beginGroup("modbus");
-            m_serialPortSettings_window->setModbusTimeout(m_settings->value("timeout", 500).toInt());
-            m_serialPortSettings_window->setModbusTryCount(m_settings->value("trycount", 3).toInt());
-            m_serialPortSettings_window->setModbusIntervalSilence(m_settings->value("interval_silence", 4).toInt());
+            m_serialPortSettings_window->setModbusTimeout(m_settings->value("timeout", 5000).toInt());
+            m_serialPortSettings_window->setModbusTimeoutSpeed(m_settings->value("timeout_speed", 500).toInt());
         m_settings->endGroup();
 
         m_settings->beginGroup("device");
             ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
             ui->checkboxCalibTimeout->setChecked(m_settings->value("timeoutcalculateenable", true).toBool());
-            m_serialPortSettings_window->setDeviceSync(m_settings->value("synctime", 5000).toInt());
             m_serialPortSettings_window->setAutospeed(m_settings->value("autospeed", false).toBool());
         m_settings->endGroup();
 
@@ -9285,21 +9298,17 @@ void ConfiguratorWindow::saveSettings()
     {
         m_settings->beginGroup("serial-port");
             m_settings->setValue("baudrate", m_serialPortSettings_window->baudrate());
-            m_settings->setValue("databits", m_serialPortSettings_window->dataBits());
-            m_settings->setValue("stopbits", m_serialPortSettings_window->stopBits());
             m_settings->setValue("parity", m_serialPortSettings_window->parity());
         m_settings->endGroup();
 
         m_settings->beginGroup("modbus");
             m_settings->setValue("timeout", m_serialPortSettings_window->modbusTimeout());
-            m_settings->setValue("trycount", m_serialPortSettings_window->modbusTryCount());
-            m_settings->setValue("interval_silence", m_serialPortSettings_window->modbusIntervalSilence());
+            m_settings->setValue("timeout_speed", m_serialPortSettings_window->modbusTimeoutSpeed());
         m_settings->endGroup();
 
         m_settings->beginGroup("device");
             m_settings->setValue("timeoutcalculate", ui->sboxTimeoutCalc->value());
             m_settings->setValue("timeoutcalculateenable", ui->checkboxCalibTimeout->isChecked());
-            m_settings->setValue("synctime", m_serialPortSettings_window->deviceSync());
             m_settings->setValue("autospeed", m_serialPortSettings_window->autospeedState());
         m_settings->endGroup();
 
@@ -10237,7 +10246,7 @@ void ConfiguratorWindow::timeoutSynchronization()
     unit.setProperty("REQUEST", READ_SERIAL_NUMBER);
     m_modbus->sendData(unit);
 
-    m_timer_synchronization->start(m_serialPortSettings_window->deviceSync());
+    m_timer_synchronization->start(5000);
 }
 //-----------------------------------------
 void ConfiguratorWindow::timeoutDebugInfo()
