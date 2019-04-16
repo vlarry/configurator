@@ -47,6 +47,7 @@
             bool isShiftPtr() const;
             void setReadState(bool state);
             void reset();
+            void print();
     };
     typedef CJournal *JournalPtr;
     Q_DECLARE_METATYPE(JournalPtr)

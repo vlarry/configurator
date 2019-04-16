@@ -528,6 +528,8 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
     }
     else // дочитали журнал до конца
     {
+        if(journal->msgCount() == journal->msgRead())
+            journal->print();
         endJournalRead(journal);
     }
 }

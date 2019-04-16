@@ -169,9 +169,6 @@ void CJournal::receiver(const CModBusDataUnit::vlist_t &data)
         m_msg_to_shift--;
 
         m_widget->header()->setTextDeviceCountMessages(m_msg_count, m_filter.rangeMaxValue());
-
-        if(!m_isRead)
-            m_widget->print(m_buffer);
     }
 }
 /*!
@@ -218,4 +215,10 @@ void CJournal::reset()
     m_buffer.clear();
     m_isRead = false;
     m_isShiftPrt = false;
+}
+//--------------------
+void CJournal::print()
+{
+    if(!m_buffer.isEmpty())
+        m_widget->print(m_buffer);
 }
