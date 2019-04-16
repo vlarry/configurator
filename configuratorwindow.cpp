@@ -148,11 +148,6 @@ void ConfiguratorWindow::serialPortCtrl()
     else
     {
         m_progressbar->progressStop();
-
-        endJournalRead(m_journal_crash);
-        endJournalRead(m_journal_event);
-        endJournalRead(m_journal_halfhour);
-
         emit m_modbus->close();
     }
 }
@@ -197,6 +192,10 @@ void ConfiguratorWindow::stateChanged(bool state)
             ui->pushButtonJournalRead->setChecked(false);
             m_progressbar->progressStop();
         }
+
+        endJournalRead(m_journal_crash);
+        endJournalRead(m_journal_event);
+        endJournalRead(m_journal_halfhour);
     }
 }
 //------------------------------------------
