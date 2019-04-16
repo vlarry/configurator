@@ -2377,7 +2377,14 @@ void ConfiguratorWindow::processReadJournals(bool state)
         }
         else
         {
-            journal->setReadState(false); // чтение прервано пользователем
+            QString journal_name = journalName(journal);
+            int result = QMessageBox::question(this, tr("Отмена вычитки журнала %1").arg(journal_name),
+                                                     tr("Прекратить чтение журнала %1").arg(journal_name));
+
+            if(result == QMessageBox::Yes)
+            {
+                journal->reset(); // отменяем чтение журнала
+            }
         }
     }
 }
