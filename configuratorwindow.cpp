@@ -529,7 +529,10 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
     else // дочитали журнал до конца
     {
         if(journal->msgCount() == journal->msgRead())
+        {
             journal->print();
+        }
+
         endJournalRead(journal);
     }
 }
@@ -6989,23 +6992,6 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
     QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
                                                      tr("Получасовок"):tr("Неизвестный");
 
-    if(msg_read== msg_count) // прочитаны все сообщения
-    {
-        msg = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
-              arg(journal_name).arg(msg_count).arg(msg_read);
-    }
-    else
-    {
-        msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").arg(journal_name).arg(msg_count).
-                                                                                             arg(msg_read);
-    }
-
-    float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
-
-    journal->widget()->header()->setTextDeviceCountMessages(msg_count, journal->filter().rangeMaxValue());
-    journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
-    journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
-
     if(m_journal_progress)
     {
         disconnect(m_journal_progress, &JournalProgress::cancel, this, &ConfiguratorWindow::processReadJournals);
@@ -7013,8 +6999,30 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
         m_journal_progress = nullptr;
     }
 
-    outLogMessage(msg);
+    if(msg_read == msg_count) // прочитаны все сообщения
+    {
+        msg = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
+              arg(journal_name).arg(msg_count).arg(msg_read);
 
+        float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
+
+        journal->widget()->header()->setTextDeviceCountMessages(msg_count, journal->filter().rangeMaxValue());
+        journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
+        journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
+
+        DialogJournalReadResult *dialog = new DialogJournalReadResult(tr("Результаты чтения журнала %1").arg(journal_name), this);
+        dialog->setValues(journal->filter().rangeMaxValue(), journal->msgRead(), read_time);
+        dialog->exec();
+
+        delete dialog;
+    }
+    else
+    {
+        msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").arg(journal_name).arg(msg_count).
+                                                                                             arg(msg_read);
+    }
+
+    outLogMessage(msg);
     journal->reset();
 
     timeoutSynchronization(); // включаем синхронизацию
@@ -8127,8 +8135,6 @@ void ConfiguratorWindow::readStatusInfo()
  */
 void ConfiguratorWindow::updateSerialPortSettings()
 {
-    m_modbus->setIntervalResponce(m_serialPortSettings_window->modbusTimeout());
-
     int index = ui->comboBoxCommunicationBaudrate->findText(QString("%1").arg(m_serialPortSettings_window->baudrate()));
 
     if(index != -1)
@@ -9241,11 +9247,6 @@ void ConfiguratorWindow::loadSettings()
             m_serialPortSettings_window->setParity(QSerialPort::Parity(m_settings->value("parity", QSerialPort::EvenParity).toInt()));
         m_settings->endGroup();
 
-        m_settings->beginGroup("modbus");
-            m_serialPortSettings_window->setModbusTimeout(m_settings->value("timeout", 5000).toInt());
-            m_serialPortSettings_window->setModbusTimeoutSpeed(m_settings->value("timeout_speed", 500).toInt());
-        m_settings->endGroup();
-
         m_settings->beginGroup("device");
             ui->sboxTimeoutCalc->setValue(m_settings->value("timeoutcalculate", 1000).toInt());
             ui->checkboxCalibTimeout->setChecked(m_settings->value("timeoutcalculateenable", true).toBool());
@@ -9299,11 +9300,6 @@ void ConfiguratorWindow::saveSettings()
         m_settings->beginGroup("serial-port");
             m_settings->setValue("baudrate", m_serialPortSettings_window->baudrate());
             m_settings->setValue("parity", m_serialPortSettings_window->parity());
-        m_settings->endGroup();
-
-        m_settings->beginGroup("modbus");
-            m_settings->setValue("timeout", m_serialPortSettings_window->modbusTimeout());
-            m_settings->setValue("timeout_speed", m_serialPortSettings_window->modbusTimeoutSpeed());
         m_settings->endGroup();
 
         m_settings->beginGroup("device");

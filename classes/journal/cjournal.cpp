@@ -157,7 +157,7 @@ CModBusDataUnit CJournal::read(int id, int type, bool *isShift)
  * \brief CJournal::receiver
  * \param data данные сообщения
  *
- * Приемник сообщений и их вывод в журнал
+ * Приемник сообщений
  */
 void CJournal::receiver(const CModBusDataUnit::vlist_t &data)
 {

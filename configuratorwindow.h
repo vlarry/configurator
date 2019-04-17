@@ -72,6 +72,7 @@
     #include "purposetableview.h"
     #include "cjournal.h"
     #include "journalprogress.h"
+    #include "dialogjournalreadresult.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов

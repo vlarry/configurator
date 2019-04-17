@@ -79,7 +79,8 @@ SOURCES += \
         classes/widget/containerwidget.cpp \
         classes/widget/RangeSlider.cpp \
         classes/journal/cjournal.cpp \
-    classes/journal/journalprogress.cpp
+    classes/journal/journalprogress.cpp \
+    classes/journal/dialogjournalreadresult.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -135,7 +136,8 @@ HEADERS += \
         classes/widget/containerwidget.h \
         classes/widget/RangeSlider.h \
         classes/journal/cjournal.h \
-    classes/journal/journalprogress.h
+    classes/journal/journalprogress.h \
+    classes/journal/dialogjournalreadresult.h
 
 FORMS += \
         configuratorwindow.ui \
@@ -164,7 +166,8 @@ FORMS += \
         classes/interval/intervaldialog.ui \
         classes/widget/dockwidget.ui \
         classes/widget/containerwidget.ui \
-    classes/journal/journalprogress.ui
+    classes/journal/journalprogress.ui \
+    classes/journal/dialogjournalreadresult.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \

@@ -15,7 +15,7 @@ JournalProgress::JournalProgress(int total, const QString &title, QWidget *paren
     ui->labelMsgReadDone->clear();
 
     connect(ui->pushButtonMsgReadCancel, &QPushButton::clicked, this, &JournalProgress::readCancel);
-    setWindowFlag(Qt::Window);
+    setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
 }
 //---------------------------------
 JournalProgress::~JournalProgress()

@@ -24,8 +24,6 @@
             QString               serialPortName() const;
             const QVector<QSerialPort::BaudRate> baudrateList();
 
-            int  modbusTimeout() const;
-            int  modbusTimeoutSpeed() const;
             bool autospeedState() const;
             int  deviceID() const;
             void setAutospeed(bool state);
@@ -34,8 +32,6 @@
 
             void setDeviceID(int id);
             void setDeviceSync(int time_sync);
-            void setModbusTimeout(int value);
-            void setModbusTimeoutSpeed(int value);
 
         public slots:
             void show();

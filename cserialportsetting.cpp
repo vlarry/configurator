@@ -8,7 +8,6 @@ CSerialPortSetting::CSerialPortSetting(QWidget* parent):
     ui->setupUi(this);
 
     connect(ui->toolButtonPortRefresh, &QToolButton::clicked, this, &CSerialPortSetting::refreshSerialPort);
-    connect(ui->sboxTimeout, SIGNAL(valueChanged(int)), this, SIGNAL(timeout(int)));
     connect(ui->checkBoxAutoSpeed, &QCheckBox::clicked, this, &CSerialPortSetting::autospeed);
 
     connect(ui->pushButtonOk, &QPushButton::clicked, this, &CSerialPortSetting::okProcess);
@@ -25,16 +24,6 @@ CSerialPortSetting::~CSerialPortSetting()
 QSerialPort::BaudRate CSerialPortSetting::baudrate() const
 {
     return QSerialPort::BaudRate(ui->cboxBaudrate->currentText().toInt());
-}
-//-------------------------------------------
-int CSerialPortSetting::modbusTimeout() const
-{
-    return ui->sboxTimeout->value();
-}
-//------------------------------------------------
-int CSerialPortSetting::modbusTimeoutSpeed() const
-{
-    return ui->sboxTimeoutSpeed->value();
 }
 //---------------------------------------------
 bool CSerialPortSetting::autospeedState() const
@@ -115,16 +104,6 @@ void CSerialPortSetting::setDeviceID(int id)
 {
     ui->sboxSlaveID->setValue(id);
 }
-//--------------------------------------------------
-void CSerialPortSetting::setModbusTimeout(int value)
-{
-    ui->sboxTimeout->setValue(value);
-}
-//-------------------------------------------------------
-void CSerialPortSetting::setModbusTimeoutSpeed(int value)
-{
-    ui->sboxTimeoutSpeed->setValue(value);
-}
 //-----------------------------
 void CSerialPortSetting::show()
 {
@@ -136,7 +115,6 @@ void CSerialPortSetting::show()
     m_default_parity           = parity();
     m_default_autospeed        = autospeedState();
     m_default_id               = deviceID();
-    m_default_timeout          = modbusTimeout();
 }
 //--------------------------------------
 void CSerialPortSetting::cancelProcess()
@@ -145,7 +123,6 @@ void CSerialPortSetting::cancelProcess()
     setParity(m_default_parity);
     setAutospeed(m_default_autospeed);
     setDeviceID(m_default_id);
-    setModbusTimeout(m_default_timeout);
 
     hide();
 }
