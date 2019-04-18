@@ -1805,7 +1805,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>6</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1921,13 +1921,6 @@
             <layout class="QVBoxLayout" name="verticalLayout_12">
              <item>
               <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupExternal"/>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="pageGroupMotor">
-            <layout class="QVBoxLayout" name="verticalLayout_13">
-             <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupMotor"/>
              </item>
             </layout>
            </widget>

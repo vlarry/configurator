@@ -3194,8 +3194,6 @@ void ConfiguratorWindow::initMenuPanel()
                                                                   DEVICE_MENU_PROTECT_ITEM_FREQUENCY); // по частоте
     QTreeWidgetItem* protectItemExternal    = new QTreeWidgetItem(itemProtections, QStringList() << tr("Внешние"),
                                                                   DEVICE_MENU_PROTECT_ITEM_EXTERNAL); // внешние
-    QTreeWidgetItem* protectItemMotor       = new QTreeWidgetItem(itemProtections, QStringList() << tr("Для двигателя"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_MOTOR); // для двигателя
     QTreeWidgetItem* protectItemTemperature = new QTreeWidgetItem(itemProtections, QStringList() << tr("По температуре"),
                                                                   DEVICE_MENU_PROTECT_ITEM_TEMPERATURE); // по температуре
     QTreeWidgetItem* protectItemReserve     = new QTreeWidgetItem(itemProtections, QStringList() << tr("Резервные"),
@@ -3204,8 +3202,8 @@ void ConfiguratorWindow::initMenuPanel()
                                                                   DEVICE_MENU_PROTECT_ITEM_CONTROL); // предварительного контроля
 
     itemProtections->addChildren(QList<QTreeWidgetItem*>() << protectItemCurrent << protectItemPower << protectItemDirected <<
-                                                              protectItemFrequency << protectItemExternal << protectItemMotor <<
-                                                              protectItemTemperature << protectItemReserve <<protectItemControl);
+                                                              protectItemFrequency << protectItemExternal << protectItemTemperature <<
+                                                              protectItemReserve <<protectItemControl);
 
     // ЖУРНАЛЫ
     QTreeWidgetItem* journalCrash     = new QTreeWidgetItem(itemJournals, QStringList() << tr("Аварий"),
@@ -3265,23 +3263,22 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]                = 3;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]               = 4;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]                = 5;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_MOTOR]                   = 6;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE]             = 7;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]                 = 8;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]                 = 9;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]                 = 10;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 11;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 12;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 13;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 14;
-    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 15;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 16;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 17;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 18;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 19;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 20;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 21;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 23;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE]             = 6;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]                 = 7;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]                 = 8;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]                 = 9;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 10;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 11;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 12;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 13;
+    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 14;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 15;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 16;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 17;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 18;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 19;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 20;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 21;
     m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT]                 = 1; // при открытии меню Защиты открывается группа МТЗ
 
     QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел") << tr("Ед. изм.");
@@ -3292,7 +3289,6 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupDirect->setColumns(columns);
     ui->tableWidgetProtectionGroupFrequency->setColumns(columns);
     ui->tableWidgetProtectionGroupExternal->setColumns(columns);
-    ui->tableWidgetProtectionGroupMotor->setColumns(columns);
     ui->tableWidgetProtectionGroupTemperature->setColumns(columns);
     ui->tableWidgetProtectionGroupReserve->setColumns(columns);
     ui->tableWidgetProtectionGroupControl->setColumns(columns);
@@ -3314,6 +3310,10 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("МТЗ3"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ4"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("Пусковая"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("Imin"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
 
     // группа по напряжению
@@ -3355,12 +3355,6 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupExternal->addGroup(group);
     group = loadMenuGroup(tr("Внешняя3"));
     ui->tableWidgetProtectionGroupExternal->addGroup(group);
-
-    // группа по двигателям
-    group = loadMenuGroup(tr("Пусковая"));
-    ui->tableWidgetProtectionGroupMotor->addGroup(group);
-    group = loadMenuGroup(tr("Imin"));
-    ui->tableWidgetProtectionGroupMotor->addGroup(group);
 
     // группа по температуре
     group = loadMenuGroup(tr("Температурная1"));
@@ -5723,9 +5717,6 @@ CDeviceMenuTableWidget* ConfiguratorWindow::groupMenuWidget(DeviceMenuItemType t
 
         case DEVICE_MENU_PROTECT_ITEM_EXTERNAL:
             return ui->tableWidgetProtectionGroupExternal;
-
-        case DEVICE_MENU_PROTECT_ITEM_MOTOR:
-            return ui->tableWidgetProtectionGroupMotor;
 
         case DEVICE_MENU_PROTECT_ITEM_TEMPERATURE:
             return ui->tableWidgetProtectionGroupTemperature;
@@ -8702,7 +8693,6 @@ void ConfiguratorWindow::exportToExcelProject()
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupDirect, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupFrequency, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupExternal, pos - 1);
-    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupMotor, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupReserve, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupControl, pos - 1);
@@ -8769,7 +8759,6 @@ void ConfiguratorWindow::importFromExcelProject()
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupDirect, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupFrequency, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupExternal, offset);
-    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupMotor, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupReserve, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupControl, offset);
