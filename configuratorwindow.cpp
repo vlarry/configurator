@@ -3432,38 +3432,38 @@ void ConfiguratorWindow::initMenuPanel()
     }
 
     // Вставка кнопки Кор КЦУ для перенаправления на таблицу Автоматика->Выключатель (Umin1, Umin2)
-    int rowKCUUmin1 = groupMenuPosition("UMIN1", ui->tableWidgetProtectionGroupPower);
-    int rowKCUUmin2 = groupMenuPosition("UMIN2", ui->tableWidgetProtectionGroupPower);
+//    int rowKCUUmin1 = groupMenuPosition("UMIN1", ui->tableWidgetProtectionGroupPower);
+//    int rowKCUUmin2 = groupMenuPosition("UMIN2", ui->tableWidgetProtectionGroupPower);
 
-    if(rowKCUUmin1 != -1)
-    {
-        QWidget*     wgtCellKCUUmin1 = new QWidget;
-        QHBoxLayout* layoutKCUUmin1  = new QHBoxLayout;
-        QPushButton* buttonKCUUmin1  = new QPushButton(tr("Кор КЦУ"), wgtCellKCUUmin1);
+//    if(rowKCUUmin1 != -1)
+//    {
+//        QWidget*     wgtCellKCUUmin1 = new QWidget;
+//        QHBoxLayout* layoutKCUUmin1  = new QHBoxLayout;
+//        QPushButton* buttonKCUUmin1  = new QPushButton(tr("Кор КЦУ"), wgtCellKCUUmin1);
 
-        buttonKCUUmin1->setObjectName("pushButtonKCU");
-        buttonKCUUmin1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        layoutKCUUmin1->addWidget(buttonKCUUmin1);
-        layoutKCUUmin1->setAlignment(Qt::AlignCenter);
-        layoutKCUUmin1->setContentsMargins(0, 0, 0, 0);
-        wgtCellKCUUmin1->setLayout(layoutKCUUmin1);
-        ui->tableWidgetProtectionGroupPower->setCellWidget(rowKCUUmin1 + 3, 2, wgtCellKCUUmin1);
+//        buttonKCUUmin1->setObjectName("pushButtonKCU");
+//        buttonKCUUmin1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+//        layoutKCUUmin1->addWidget(buttonKCUUmin1);
+//        layoutKCUUmin1->setAlignment(Qt::AlignCenter);
+//        layoutKCUUmin1->setContentsMargins(0, 0, 0, 0);
+//        wgtCellKCUUmin1->setLayout(layoutKCUUmin1);
+//        ui->tableWidgetProtectionGroupPower->setCellWidget(rowKCUUmin1 + 3, 2, wgtCellKCUUmin1);
 
-        QWidget*     wgtCellKCUUmin2 = new QWidget;
-        QHBoxLayout* layoutKCUUmin2  = new QHBoxLayout;
-        QPushButton* buttonKCUUmin2  = new QPushButton(tr("Кор КЦУ"), wgtCellKCUUmin2);
+//        QWidget*     wgtCellKCUUmin2 = new QWidget;
+//        QHBoxLayout* layoutKCUUmin2  = new QHBoxLayout;
+//        QPushButton* buttonKCUUmin2  = new QPushButton(tr("Кор КЦУ"), wgtCellKCUUmin2);
 
-        buttonKCUUmin2->setObjectName("pushButtonKCU");
-        buttonKCUUmin2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        layoutKCUUmin2->addWidget(buttonKCUUmin2);
-        layoutKCUUmin2->setAlignment(Qt::AlignCenter);
-        layoutKCUUmin2->setContentsMargins(0, 0, 0, 0);
-        wgtCellKCUUmin2->setLayout(layoutKCUUmin2);
-        ui->tableWidgetProtectionGroupPower->setCellWidget(rowKCUUmin2 + 3, 2, wgtCellKCUUmin2);
+//        buttonKCUUmin2->setObjectName("pushButtonKCU");
+//        buttonKCUUmin2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+//        layoutKCUUmin2->addWidget(buttonKCUUmin2);
+//        layoutKCUUmin2->setAlignment(Qt::AlignCenter);
+//        layoutKCUUmin2->setContentsMargins(0, 0, 0, 0);
+//        wgtCellKCUUmin2->setLayout(layoutKCUUmin2);
+//        ui->tableWidgetProtectionGroupPower->setCellWidget(rowKCUUmin2 + 3, 2, wgtCellKCUUmin2);
 
-        connect(buttonKCUUmin1, &QPushButton::clicked, this, &ConfiguratorWindow::processKCUUmin);
-        connect(buttonKCUUmin2, &QPushButton::clicked, this, &ConfiguratorWindow::processKCUUmin);
-    }
+//        connect(buttonKCUUmin1, &QPushButton::clicked, this, &ConfiguratorWindow::processKCUUmin);
+//        connect(buttonKCUUmin2, &QPushButton::clicked, this, &ConfiguratorWindow::processKCUUmin);
+//    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
