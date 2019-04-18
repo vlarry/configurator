@@ -3188,7 +3188,7 @@ void ConfiguratorWindow::initMenuPanel()
                                                                   DEVICE_MENU_PROTECT_ITEM_CURRENT); // по току
     QTreeWidgetItem* protectItemPower       = new QTreeWidgetItem(itemProtections, QStringList() << tr("По напряжению"),
                                                                   DEVICE_MENU_PROTECT_ITEM_POWER); // по напряжению
-    QTreeWidgetItem* protectItemDirected    = new QTreeWidgetItem(itemProtections, QStringList() << tr("Направленные"),
+    QTreeWidgetItem* protectItemDirected    = new QTreeWidgetItem(itemProtections, QStringList() << tr("Утечка"),
                                                                   DEVICE_MENU_PROTECT_ITEM_DIRECTED); // направленные
     QTreeWidgetItem* protectItemFrequency   = new QTreeWidgetItem(itemProtections, QStringList() << tr("По частоте"),
                                                                   DEVICE_MENU_PROTECT_ITEM_FREQUENCY); // по частоте
@@ -3328,7 +3328,7 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("3U0"));
     ui->tableWidgetProtectionGroupPower->addGroup(group);
 
-    // группа направленные
+    // группа направленные - новое название "Утечка"
     group = loadMenuGroup(tr("ОЗЗ1"));
     ui->tableWidgetProtectionGroupDirect->addGroup(group);
     group = loadMenuGroup(tr("ОЗЗ2"));
