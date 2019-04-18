@@ -6975,53 +6975,55 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
     if(!journal)
         return;
 
-    int msg_count = journal->msgCount(); // прочитано сообщений
-    int msg_read = journal->msgRead(); // сколько нужно было прочитать
-
-    QString msg;
-    QString journal_type = journal->widget()->property("TYPE").toString();
-    QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
-                                                     tr("Получасовок"):tr("Неизвестный");
-
-    if(m_journal_progress)
+    if(m_modbus->isConnected())
     {
-        disconnect(m_journal_progress, &JournalProgress::cancel, this, &ConfiguratorWindow::processReadJournals);
-        delete m_journal_progress;
-        m_journal_progress = nullptr;
+        int msg_count = journal->msgCount(); // прочитано сообщений
+        int msg_read = journal->msgRead(); // сколько нужно было прочитать
+
+        QString msg;
+        QString journal_type = journal->widget()->property("TYPE").toString();
+        QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
+                                                                                                    tr("Получасовок"):tr("Неизвестный");
+
+        if(m_journal_progress)
+        {
+            disconnect(m_journal_progress, &JournalProgress::cancel, this, &ConfiguratorWindow::processReadJournals);
+            delete m_journal_progress;
+            m_journal_progress = nullptr;
+        }
+
+        if(msg_read == msg_count && msg_read > 0 && msg_count > 0) // прочитаны все сообщения
+        {
+            msg = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
+                    arg(journal_name).arg(msg_count).arg(msg_read);
+
+            float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
+
+            journal->widget()->header()->setTextDeviceCountMessages(msg_count, journal->filter().rangeMaxValue());
+            journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
+            journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
+
+            DialogJournalReadResult dialog(tr("Результаты чтения журнала %1").arg(journal_name), this);
+            dialog.setValues(journal->filter().rangeMaxValue(), journal->msgRead(), read_time);
+            dialog.exec();
+        }
+        else
+        {
+            msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").arg(journal_name).arg(msg_count).
+                    arg(msg_read);
+        }
+
+        outLogMessage(msg);
+
+        timeoutSynchronization(); // включаем синхронизацию
+
+        if(ui->checkboxCalibTimeout->isChecked()) // включаем чтение расчетных величин, если было запущено
+            chboxCalculateTimeoutStateChanged(true);
+
+        readJournalCount(journal);
     }
 
-    if(msg_read == msg_count) // прочитаны все сообщения
-    {
-        msg = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
-              arg(journal_name).arg(msg_count).arg(msg_read);
-
-        float read_time = static_cast<float>(m_time_process.elapsed())/1000.0f;
-
-        journal->widget()->header()->setTextDeviceCountMessages(msg_count, journal->filter().rangeMaxValue());
-        journal->widget()->header()->setTextTableCountMessages(journal->widget()->table()->rowCount());
-        journal->widget()->header()->setTextElapsedTime(tr("%1 сек").arg(QLocale::system().toString(read_time, 'f', 1)));
-
-        DialogJournalReadResult *dialog = new DialogJournalReadResult(tr("Результаты чтения журнала %1").arg(journal_name), this);
-        dialog->setValues(journal->filter().rangeMaxValue(), journal->msgRead(), read_time);
-        dialog->exec();
-
-        delete dialog;
-    }
-    else
-    {
-        msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").arg(journal_name).arg(msg_count).
-                                                                                             arg(msg_read);
-    }
-
-    outLogMessage(msg);
     journal->reset();
-
-    timeoutSynchronization(); // включаем синхронизацию
-
-    if(ui->checkboxCalibTimeout->isChecked()) // включаем чтение расчетных величин, если было запущено
-        chboxCalculateTimeoutStateChanged(true);
-
-    readJournalCount(journal);
 }
 //---------------------------------------------------------
 QString ConfiguratorWindow::journalName(JournalPtr journal)

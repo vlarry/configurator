@@ -11,7 +11,7 @@ DialogJournalReadResult::DialogJournalReadResult(const QString &title, QWidget *
     ui->labelMsgReadDoneValue->clear();
     ui->labelTimeElapsedValue->clear();
 
-    connect(ui->pushButton, &QPushButton::clicked, this, &DialogJournalReadResult::close);
+    connect(ui->pushButton, &QPushButton::clicked, this, &DialogJournalReadResult::accept);
 
     setWindowTitle(title);
     setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
