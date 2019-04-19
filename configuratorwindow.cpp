@@ -3349,6 +3349,10 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupDirect->addGroup(group);
     group = loadMenuGroup(tr("НЗЗ2"));
     ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("БРУ"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    group = loadMenuGroup(tr("Вакуум"));
+    ui->tableWidgetProtectionGroupDirect->addGroup(group);
 
     // группа по частоте
     group = loadMenuGroup(tr("АЧР1"));
@@ -3381,12 +3385,6 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupReserve->addGroup(group);
     group = loadMenuGroup(tr("Сигнал пуска"));
     ui->tableWidgetProtectionGroupReserve->addGroup(group);
-
-    // группа предварительного контроля
-    group = loadMenuGroup(tr("БРУ"));
-    ui->tableWidgetProtectionGroupControl->addGroup(group);
-    group = loadMenuGroup(tr("Вакуум"));
-    ui->tableWidgetProtectionGroupControl->addGroup(group);
 
     // группа автоматики
     group = loadMenuGroup(tr("Выключатель"));
