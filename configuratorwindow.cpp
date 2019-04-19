@@ -2550,7 +2550,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
             if(journal->isReadState())
             {
-                float speed_kb = float(journal->msgSize()/1024.0f)/float(unit.elapsed()/1000.0f);
+                float speed_kb = float((unit.values().count()*2)/1024.0f)/float(unit.elapsed()/1000.0f);
                 journal->widget()->header()->setTextElapsedTime(QString("%1 КБ/сек.").
                                                                 arg(QLocale::system().toString(speed_kb, 'f', 3)));
                 if(m_journal_progress)
