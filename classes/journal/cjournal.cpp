@@ -6,6 +6,7 @@ CJournal::CJournal(int msg_size, int addr_msg_count, int addr_shift_ptr, int pag
     m_addr_shift_ptr(addr_shift_ptr),
     m_page_addr_start(page_addr_start),
     m_msg_on_page(PAGE_SIZE/m_msg_size),
+    m_default_reques_size((m_msg_size < 127)?127/m_msg_size:1), // 127 ячеек делим на размер сообщения в ячейках
     m_shift_ptr_cur(0),
     m_msg_count(0),
     m_msg_to_shift(0),
@@ -42,6 +43,11 @@ int CJournal::pageAddrStart() const
 int CJournal::msgOnPage() const
 {
     return m_msg_on_page;
+}
+//-------------------------------------
+int CJournal::defaultRequesSize() const
+{
+    return m_default_reques_size;
 }
 //-------------------------------
 int CJournal::shiftPtrCur() const
@@ -125,6 +131,23 @@ CModBusDataUnit CJournal::read(int id, int type, bool *isShift)
 
     if(msg_size == 128) // размер сообщения равен максимальному размеру запроса в протоколе (128 ячеек = 256 байт),
         msg_size = 64; // то разбиваем на 2 части
+    else
+    {
+        int request_size = m_default_reques_size;
+
+        // количество сообщений в запросе по умолчанию больше, чем осталось прочитать на текущей странице
+        if(m_default_reques_size > m_msg_to_shift)
+        {
+            request_size = m_msg_to_shift; // обрезаем размер запроса до максимального количества
+        }
+
+        if(request_size > m_msg_read - m_msg_count)
+        {
+            request_size = m_msg_read - m_msg_count;
+        }
+
+        msg_size = request_size*m_msg_size;
+    }
 
     int page_addr = m_page_addr_start + (m_msg_on_page - m_msg_to_shift)*m_msg_size;
 
@@ -140,17 +163,6 @@ CModBusDataUnit CJournal::read(int id, int type, bool *isShift)
     var.setValue<JournalPtr>(this);
     unit.setProperty("JOURNAL", var);
 
-    if(m_msg_count == m_msg_read - 1) // дочитали до конца (-1 с учетом отправленного запроса)
-    {
-        if(m_msg_size != 128)
-            m_isRead = false;
-        else
-        {
-            if(m_buffer.count()%m_msg_size != 0)
-                m_isRead = false;
-        }
-    }
-
     return unit;
 }
 /*!
@@ -163,13 +175,21 @@ void CJournal::receiver(const CModBusDataUnit::vlist_t &data)
 {
     m_buffer += data;
 
+    int count = data.count()/m_msg_size; // количество сообщений в полученных данных
+
     if(m_buffer.count()%m_msg_size == 0)
     {
-        m_msg_count++;
-        m_msg_to_shift--;
+        if(m_msg_size == 128 && count == 0)
+            count = 1;
+
+        m_msg_count += count;
+        m_msg_to_shift -= count;
 
         m_widget->header()->setTextDeviceCountMessages(m_msg_count, m_filter.rangeMaxValue());
     }
+
+    if(m_msg_count == m_msg_read) // дочитали до конца
+        m_isRead = false;
 }
 /*!
  * \brief CJournal::isReadState

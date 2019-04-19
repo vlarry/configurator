@@ -526,15 +526,15 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
             m_modbus->sendData(unit);
         }
     }
-    else // дочитали журнал до конца
-    {
-        if(journal->msgCount() == journal->msgRead())
-        {
-            journal->print();
-        }
+//    else // дочитали журнал до конца
+//    {
+//        if(journal->msgCount() == journal->msgRead())
+//        {
+//            journal->print();
+//        }
 
-        endJournalRead(journal);
-    }
+//        endJournalRead(journal);
+//    }
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -2548,15 +2548,27 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         {
             journal->receiver(unit.values());
 
-            float speed_kb = float(journal->msgSize()/1024.0f)/float(unit.elapsed()/1000.0f);
-            journal->widget()->header()->setTextElapsedTime(QString("%1 КБ/сек.").
-                                                            arg(QLocale::system().toString(speed_kb, 'f', 3)));
-            if(m_journal_progress)
+            if(journal->isReadState())
             {
-                m_journal_progress->setProgressValue(journal->msgCount());
-            }
+                float speed_kb = float(journal->msgSize()/1024.0f)/float(unit.elapsed()/1000.0f);
+                journal->widget()->header()->setTextElapsedTime(QString("%1 КБ/сек.").
+                                                                arg(QLocale::system().toString(speed_kb, 'f', 3)));
+                if(m_journal_progress)
+                {
+                    m_journal_progress->setProgressValue(journal->msgCount());
+                }
 
-            journalRead(journal);
+                journalRead(journal);
+            }
+            else
+            {
+                if(journal->msgCount() == journal->msgRead())
+                {
+                    journal->print();
+                }
+
+                endJournalRead(journal);
+            }
         }
         else if(type == READ_JOURNAL)
             endJournalRead(journal);

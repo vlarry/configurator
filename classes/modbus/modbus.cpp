@@ -282,7 +282,7 @@ void CModBus::unblock()
  */
 void CModBus::sendData(CModBusDataUnit& unit, int count)
 {
-    if(unit.isValid())
+    if(unit.isValid() && m_channel->isOpen())
     {
         for(int i = 0; i < count; i++)
             request(unit); // отправляем запрос заданное количество раз
