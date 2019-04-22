@@ -3415,8 +3415,12 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetAutomationSwitch->addGroup(group);
     group = loadMenuGroup(tr("АПВ"));
     ui->tableWidgetAutomationAPV->addGroup(group);
+
+    // группа автоматики "АВР"
     group = loadMenuGroup(tr("АВР"));
     ui->tableWidgetAutomationAVR->addGroup(group);
+
+    // группа автоматики "КЦН"
     group = loadMenuGroup(tr("КЦН"));
     ui->tableWidgetAutomationKCN->addGroup(group);
 
