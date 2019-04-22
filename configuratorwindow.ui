@@ -1805,7 +1805,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>6</number>
+            <number>10</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1938,17 +1938,31 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="pageGroupControl">
+           <widget class="QWidget" name="pageAutomationSwitch">
             <layout class="QVBoxLayout" name="verticalLayout_18">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupControl"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationSwitch"/>
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="pageAutomationGroup">
+           <widget class="QWidget" name="pageAutomationAPV">
             <layout class="QVBoxLayout" name="verticalLayout_20">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationGroup"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationAPV"/>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="pageAutomationAVR">
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationAVR"/>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="pageAutomationKCN">
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <item>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationKCN"/>
              </item>
             </layout>
            </widget>

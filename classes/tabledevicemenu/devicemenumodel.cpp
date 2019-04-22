@@ -22,6 +22,7 @@ void CDeviceMenuTableWidget::addGroup(const CDeviceMenuTableWidget::group_t& gro
 {
     int cur_row = rowCount();
     int row_count = cur_row + group.items.count() + rowCountSubgroup(group.subgroup) + 1;
+
     setRowCount(row_count);
     insertHeader(cur_row, group.name);
 

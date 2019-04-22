@@ -1280,57 +1280,57 @@ void ConfiguratorWindow::automationAPVWrite()
  */
 void ConfiguratorWindow::automationAPVSignalStartWrite()
 {
-    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
-    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
+//    QVector<quint16> data(24, 0); // 24 ячейки со значением нуль
+//    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
 
-    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
-    {
-        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
+//    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
+//    {
+//        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
 
-        if(!widget)
-            continue;
+//        if(!widget)
+//            continue;
 
-        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
-            continue;
+//        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+//            continue;
 
-        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+//        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
 
-        if(!combobox)
-            continue;
+//        if(!combobox)
+//            continue;
 
-        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
+//        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
 
-        if(key.isEmpty())
-            continue;
+//        if(key.isEmpty())
+//            continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < data.count())
-        {
-            int item_pos = combobox->currentIndex();
+//        if(val_pos < data.count())
+//        {
+//            int item_pos = combobox->currentIndex();
 
-            if(item_pos == 1)
-                data[val_pos] |= (1 << bit_pos);
-        }
-    }
+//            if(item_pos == 1)
+//                data[val_pos] |= (1 << bit_pos);
+//        }
+//    }
 
-    QVector<quint16> tdata;
+//    QVector<quint16> tdata;
 
-    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-    {
-        tdata << data[i + 1] << data[i];
-    }
+//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+//    {
+//        tdata << data[i + 1] << data[i];
+//    }
 
-    int addr = addressSettingKey("M86");
+//    int addr = addressSettingKey("M86");
 
-    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
-                         static_cast<quint16>(addr), tdata);
+//    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
+//                         static_cast<quint16>(addr), tdata);
 
-    unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
+//    unit.setProperty("REQUEST", AUTOMATION_SIGNAL_START);
 
-    m_modbus->sendData(unit);
+//    m_modbus->sendData(unit);
 }
 /*!
  * \brief ConfiguratorWindow::purposeLedsWrite
@@ -3210,12 +3210,22 @@ void ConfiguratorWindow::initMenuPanel()
                                                                   DEVICE_MENU_PROTECT_ITEM_TEMPERATURE); // по температуре
     QTreeWidgetItem* protectItemReserve     = new QTreeWidgetItem(itemProtections, QStringList() << tr("Резервные"),
                                                                   DEVICE_MENU_PROTECT_ITEM_RESERVE); // резервные
-    QTreeWidgetItem* protectItemControl     = new QTreeWidgetItem(itemProtections, QStringList() << tr("Предварительного контроля"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_CONTROL); // предварительного контроля
 
     itemProtections->addChildren(QList<QTreeWidgetItem*>() << protectItemCurrent << protectItemPower << protectItemDirected <<
                                                               protectItemFrequency << protectItemExternal << protectItemTemperature <<
-                                                              protectItemReserve <<protectItemControl);
+                                                              protectItemReserve);
+
+    QTreeWidgetItem* automationItemSwitch = new QTreeWidgetItem(itemAutomation, QStringList() << tr("Выключатель"),
+                                                                DEVICE_MENU_ITEM_AUTOMATION_SWITCH); // Автоматика->Выключатель
+    QTreeWidgetItem* automationItemApv = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АПВ"),
+                                                             DEVICE_MENU_ITEM_AUTOMATION_APV); // Автоматика->АПВ
+    QTreeWidgetItem* automationItemAvr = new QTreeWidgetItem(itemAutomation, QStringList() << tr("АВР"),
+                                                             DEVICE_MENU_ITEM_AUTOMATION_AVR); // Автоматика->АВР
+    QTreeWidgetItem* automationItemKcn = new QTreeWidgetItem(itemAutomation, QStringList() << tr("КЦН"),
+                                                             DEVICE_MENU_ITEM_AUTOMATION_KCN); // Автоматика->КЦН
+
+    itemAutomation->addChildren(QList<QTreeWidgetItem*>() << automationItemSwitch << automationItemApv << automationItemAvr <<
+                                                             automationItemKcn);
 
     // ЖУРНАЛЫ
     QTreeWidgetItem* journalCrash     = new QTreeWidgetItem(itemJournals, QStringList() << tr("Аварий"),
@@ -3227,7 +3237,7 @@ void ConfiguratorWindow::initMenuPanel()
     QTreeWidgetItem* journalIsolation = new QTreeWidgetItem(itemJournals, QStringList() << tr("Изоляции"),
                                                             DEVICE_MENU_ITEM_JOURNALS_ISOLATION);
 
-    itemAutomation->addChildren(QList<QTreeWidgetItem*>() << journalCrash << journalEvents << journalHalfHour << journalIsolation);
+    itemJournals->addChildren(QList<QTreeWidgetItem*>() << journalCrash << journalEvents << journalHalfHour << journalIsolation);
 
     // ИЗМЕРЕНИЯ
     QTreeWidgetItem* measureInputs = new QTreeWidgetItem(itemMeasures,
@@ -3277,20 +3287,24 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]                = 5;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE]             = 6;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]                 = 7;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_CONTROL]                 = 8;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]                 = 9;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 10;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 11;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 12;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 13;
-    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 14;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 15;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 16;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 17;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 18;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 19;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 20;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 21;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]                 = 8;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_SWITCH]               = 8;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV]                  = 9;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_AVR]                  = 10;
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_KCN]                  = 11;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ROOT]                   = 12;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 12;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 13;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 14;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ISOLATION]              = 15;
+    m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 16;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 17;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 18;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 19;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 20;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 21;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 22;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 23;
     m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT]                 = 1; // при открытии меню Защиты открывается группа МТЗ
 
     QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел") << tr("Ед. изм.");
@@ -3303,8 +3317,10 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupExternal->setColumns(columns);
     ui->tableWidgetProtectionGroupTemperature->setColumns(columns);
     ui->tableWidgetProtectionGroupReserve->setColumns(columns);
-    ui->tableWidgetProtectionGroupControl->setColumns(columns);
-    ui->tableWidgetAutomationGroup->setColumns(columns);
+    ui->tableWidgetAutomationSwitch->setColumns(columns);
+    ui->tableWidgetAutomationAPV->setColumns(columns);
+    ui->tableWidgetAutomationAVR->setColumns(columns);
+    ui->tableWidgetAutomationKCN->setColumns(columns);
 
     CDeviceMenuTableWidget::group_t group;
 
@@ -3384,25 +3400,25 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Уров2"));
     ui->tableWidgetProtectionGroupReserve->addGroup(group);
 
-    // группа автоматики
-    group = loadMenuGroup(tr("Выключатель"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
-    group = loadMenuGroup(tr("Тележка выключателя"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
+    // группа автоматики "Выключатель"
+    group = loadMenuGroup(tr("Параметры ВКЛ"));
+    ui->tableWidgetAutomationSwitch->addGroup(group);
+    group = loadMenuGroup(tr("Параметры ОТКЛ"));
+    ui->tableWidgetAutomationSwitch->addGroup(group);
+    group = loadMenuGroup(tr("Контроль состояний"));
+    ui->tableWidgetAutomationSwitch->addGroup(group);
     group = loadMenuGroup(tr("Блокировки"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
-    group = loadMenuGroup(tr("Шинный разъединитель"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
-    group = loadMenuGroup(tr("Линейный разъединитель"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
-    group = loadMenuGroup(tr("Заземляющий разъединитель"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
-    group = loadMenuGroup(tr("Контроль ТН"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
-    group = loadMenuGroup(tr("АВР"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
+    ui->tableWidgetAutomationSwitch->addGroup(group);
+    group = loadMenuGroup(tr("Схема внешнего управления"));
+
+    // группа автоматики "АПВ"
+    ui->tableWidgetAutomationSwitch->addGroup(group);
     group = loadMenuGroup(tr("АПВ"));
-    ui->tableWidgetAutomationGroup->addGroup(group);
+    ui->tableWidgetAutomationAPV->addGroup(group);
+    group = loadMenuGroup(tr("АВР"));
+    ui->tableWidgetAutomationAVR->addGroup(group);
+    group = loadMenuGroup(tr("КЦН"));
+    ui->tableWidgetAutomationKCN->addGroup(group);
 
     // формирование связей между отдельными ячейками
     // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2
@@ -5034,47 +5050,47 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
 //------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>& data)
 {
-    QVector<quint16> tdata;
+//    QVector<quint16> tdata;
 
-    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-    {
-        tdata << data[i + 1] << data[i];
-    }
+//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
+//    {
+//        tdata << data[i + 1] << data[i];
+//    }
 
-    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
+//    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
 
-    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
-    {
-        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
+//    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
+//    {
+//        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
 
-        if(!widget)
-            continue;
+//        if(!widget)
+//            continue;
 
-        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
-            continue;
+//        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+//            continue;
 
-        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+//        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
 
-        if(!combobox)
-            continue;
+//        if(!combobox)
+//            continue;
 
-        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
+//        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
 
-        if(key.isEmpty())
-            continue;
+//        if(key.isEmpty())
+//            continue;
 
-        int bit     = m_variable_bits[key];
-        int val_pos = bit/16;
-        int bit_pos = bit%16;
+//        int bit     = m_variable_bits[key];
+//        int val_pos = bit/16;
+//        int bit_pos = bit%16;
 
-        if(val_pos < tdata.count())
-        {
-            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
+//        if(val_pos < tdata.count())
+//        {
+//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
 
-            if(item_pos < combobox->count())
-                combobox->setCurrentIndex(item_pos);
-        }
-    }
+//            if(item_pos < combobox->count())
+//                combobox->setCurrentIndex(item_pos);
+//        }
+//    }
 }
 //---------------------------------------------------------------------------------------
 void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint16>& data)
@@ -5732,11 +5748,18 @@ CDeviceMenuTableWidget* ConfiguratorWindow::groupMenuWidget(DeviceMenuItemType t
         case DEVICE_MENU_PROTECT_ITEM_RESERVE:
             return ui->tableWidgetProtectionGroupReserve;
 
-        case DEVICE_MENU_PROTECT_ITEM_CONTROL:
-            return ui->tableWidgetProtectionGroupControl;
-
         case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
-            return ui->tableWidgetAutomationGroup;
+        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH:
+            return ui->tableWidgetAutomationSwitch;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_APV:
+            return ui->tableWidgetAutomationAPV;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_AVR:
+            return ui->tableWidgetAutomationAVR;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_KCN:
+            return ui->tableWidgetAutomationKCN;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG:
             return ui->tableWidgetSettingsAnalogGroupGeneral;
@@ -8705,7 +8728,7 @@ void ConfiguratorWindow::exportToExcelProject()
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupExternal, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupReserve, pos - 1);
-    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupControl, pos - 1);
+//    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupControl, pos - 1);
 
     xlsx.addSheet(tr("Автоматика"));
 
@@ -8717,7 +8740,7 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
 
-    writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
+//    writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
 
     xlsx.addSheet(tr("Аналоговые входы"));
 
@@ -8771,7 +8794,7 @@ void ConfiguratorWindow::importFromExcelProject()
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupExternal, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupReserve, offset);
-    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupControl, offset);
+//    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupControl, offset);
 
     if(!xlsx.selectSheet(tr("Автоматика")))
     {
@@ -8779,7 +8802,7 @@ void ConfiguratorWindow::importFromExcelProject()
         return;
     }
 
-    readDataFromExcel(xlsx, ui->tableWidgetAutomationGroup, 0);
+//    readDataFromExcel(xlsx, ui->tableWidgetAutomationGroup, 0);
 
     if(!xlsx.selectSheet(tr("Аналоговые входы")))
     {
@@ -9031,27 +9054,27 @@ void ConfiguratorWindow::resizeColumns()
 //---------------------------------------
 void ConfiguratorWindow::processKCUUmin()
 {
-    int index = groupMenuPosition(tr("Выключатель"), ui->tableWidgetAutomationGroup);
+//    int index = groupMenuPosition(tr("Выключатель"), ui->tableWidgetAutomationGroup);
 
-    if(index != -1)
-    {
-        QTableWidgetItem* item = ui->tableWidgetAutomationGroup->item(index - 1, 0);
+//    if(index != -1)
+//    {
+//        QTableWidgetItem* item = ui->tableWidgetAutomationGroup->item(index - 1, 0);
 
-        if(item)
-        {
-            CDeviceMenuTableWidget::RowType    rowType    = static_cast<CDeviceMenuTableWidget::RowType>(item->data(Qt::UserRole + 100).toInt());
-            CDeviceMenuTableWidget::GroupState groupState = static_cast<CDeviceMenuTableWidget::GroupState>(item->data(Qt::UserRole + 101).toInt());
+//        if(item)
+//        {
+//            CDeviceMenuTableWidget::RowType    rowType    = static_cast<CDeviceMenuTableWidget::RowType>(item->data(Qt::UserRole + 100).toInt());
+//            CDeviceMenuTableWidget::GroupState groupState = static_cast<CDeviceMenuTableWidget::GroupState>(item->data(Qt::UserRole + 101).toInt());
 
-            if(rowType == CDeviceMenuTableWidget::HEADER || rowType == CDeviceMenuTableWidget::SUBHEADER)
-            {
-                if(groupState == CDeviceMenuTableWidget::CLOSE)
-                    emit ui->tableWidgetAutomationGroup->itemClicked(item);
+//            if(rowType == CDeviceMenuTableWidget::HEADER || rowType == CDeviceMenuTableWidget::SUBHEADER)
+//            {
+//                if(groupState == CDeviceMenuTableWidget::CLOSE)
+//                    emit ui->tableWidgetAutomationGroup->itemClicked(item);
 
-                ui->tableWidgetAutomationGroup->scrollToItem(item);
-                ui->stwgtMain->setCurrentIndex(m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]);
-            }
-        }
-    }
+//                ui->tableWidgetAutomationGroup->scrollToItem(item);
+//                ui->stwgtMain->setCurrentIndex(m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]);
+//            }
+//        }
+//    }
 }
 //------------------------------------------------------
 void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
@@ -10146,12 +10169,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
     DeviceMenuItemType index = menuIndex();
 
-    if(index >= DEVICE_MENU_ITEM_PROTECTION_ROOT && index <= DEVICE_MENU_ITEM_AUTOMATION_APV_SIGNAL_START)
-    {
-        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
-        ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
-    }
-    else if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
+    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
     {
         switch(index)
         {
