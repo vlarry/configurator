@@ -3383,8 +3383,6 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupReserve->addGroup(group);
     group = loadMenuGroup(tr("Уров2"));
     ui->tableWidgetProtectionGroupReserve->addGroup(group);
-    group = loadMenuGroup(tr("Сигнал пуска"));
-    ui->tableWidgetProtectionGroupReserve->addGroup(group);
 
     // группа автоматики
     group = loadMenuGroup(tr("Выключатель"));
