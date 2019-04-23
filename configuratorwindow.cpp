@@ -3249,28 +3249,24 @@ void ConfiguratorWindow::initMenuPanel()
     // НАСТРОЙКИ
     QTreeWidgetItem* settingInputAnalog    = new QTreeWidgetItem(itemSettings, QStringList() << tr("Аналоговые входы"),
                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    QTreeWidgetItem* ioDSInputMDVV01       = new QTreeWidgetItem(itemSettings, QStringList() << tr("Дискретные входы"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS);
+    QTreeWidgetItem* settingLeds           = new QTreeWidgetItem(itemSettings, QStringList() << tr("Светодиоды"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS);
+    QTreeWidgetItem* ioRelayMDVV01         = new QTreeWidgetItem(itemSettings, QStringList() << tr("Реле"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
+    QTreeWidgetItem* ioProtectionCtrl      = new QTreeWidgetItem(itemSettings, QStringList() << tr("Блокировка защит"),
+                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION);
     QTreeWidgetItem* settingCommunications = new QTreeWidgetItem(itemSettings, QStringList() << tr("Связь"),
                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS);
     QTreeWidgetItem* settingDateTime       = new QTreeWidgetItem(itemSettings, QStringList() << tr("Дата и время"),
                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME);
     QTreeWidgetItem* settingKeyboard       = new QTreeWidgetItem(itemSettings, QStringList() << tr("Клавиатура"),
                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD);
-    QTreeWidgetItem* settingLeds           = new QTreeWidgetItem(itemSettings, QStringList() << tr("Светодиоды"),
-                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS);
-    QTreeWidgetItem* settingIO             = new QTreeWidgetItem(itemSettings, QStringList() << tr("Входы и выходы"),
-                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IO);
 
-    itemSettings->addChildren(QList<QTreeWidgetItem*>() << settingInputAnalog << settingCommunications << settingDateTime <<
-                                                           settingKeyboard << settingLeds << settingIO);
-
-    QTreeWidgetItem* ioRelayMDVV01    = new QTreeWidgetItem(settingIO, QStringList() << tr("Реле"),
-                                                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY);
-    QTreeWidgetItem* ioDSInputMDVV01  = new QTreeWidgetItem(settingIO, QStringList() << tr("Дискретные входы"),
-                                                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS);
-    QTreeWidgetItem* ioProtectionCtrl = new QTreeWidgetItem(settingIO, QStringList() << tr("Блокировка защит"),
-                                                            DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION);
-
-    settingIO->addChildren(QList<QTreeWidgetItem*>() << ioRelayMDVV01 << ioDSInputMDVV01 << ioProtectionCtrl);
+    itemSettings->addChildren(QList<QTreeWidgetItem*>() << settingInputAnalog << ioDSInputMDVV01 << settingLeds << ioRelayMDVV01 <<
+                                                           ioProtectionCtrl << settingCommunications << settingDateTime <<
+                                                           settingKeyboard );
 
     m_treeWidgetDeviceMenu->addTopLevelItem(itemProtections);
     m_treeWidgetDeviceMenu->addTopLevelItem(itemAutomation);
@@ -3327,7 +3323,25 @@ void ConfiguratorWindow::initMenuPanel()
     // группа аналоговые основные
     group = loadMenuGroup(tr("Основные"));
     ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
-    group = loadMenuGroup(tr("Калибровка"));
+
+    // группа аналоговые калибровки "Ток"
+    group = loadMenuGroup(tr("Ток"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+
+    // группа аналоговые калибровки "Напряжение АС"
+    group = loadMenuGroup(tr("Напряжение AC"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+
+    // группа аналоговые калибровки "Напряжение DC"
+    group = loadMenuGroup(tr("Напряжение DC"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+
+    // группа аналоговые калибровки "Сопротивление"
+    group = loadMenuGroup(tr("Сопротивление"));
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+
+    // группа аналоговые калибровки "Угол сдвига фазы"
+    group = loadMenuGroup(tr("Угол сдвига фазы"));
     ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
 
     // группа по току
