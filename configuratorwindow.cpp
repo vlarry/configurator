@@ -526,15 +526,6 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
             m_modbus->sendData(unit);
         }
     }
-//    else // дочитали журнал до конца
-//    {
-//        if(journal->msgCount() == journal->msgRead())
-//        {
-//            journal->print();
-//        }
-
-//        endJournalRead(journal);
-//    }
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGeneralRead
@@ -543,9 +534,11 @@ void ConfiguratorWindow::journalRead(JournalPtr journal)
  */
 void ConfiguratorWindow::inputAnalogGeneralRead()
 {
-    sendSettingReadRequest("M01", "M03", CModBusDataUnit::ReadHoldingRegisters, 6,
-                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
-    sendSettingControlReadRequest("M04", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // чтение состояния настройки
+    QStringList list = QStringList() << "M01" << "M02" << "M03" << "K61" << "K62" << "K63" << "K64";
+    sendSettingReadRequest(list, CModBusDataUnit::ReadHoldingRegisters, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+
+    sendSettingControlReadRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingControlReadRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateRead
@@ -553,10 +546,12 @@ void ConfiguratorWindow::inputAnalogGeneralRead()
  */
 void ConfiguratorWindow::inputAnalogCalibrateRead()
 {
-    sendSettingReadRequest("KIA", "KUC", CModBusDataUnit::ReadHoldingRegisters, 14,
-                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
-    sendSettingReadRequest("KUAB", "KY03T", CModBusDataUnit::ReadHoldingRegisters, 58,
-                           DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    QStringList list = QStringList() << "K3I0" << "KIA" << "KIB" << "KIC" << "KUA" << "KUB" << "KUC" << "KUABT" << "KUBCT" <<
+                                        "KUCAT" << "K3U0R" << "K3U0S" << "K3U0T" << "KUADC" << "AUADC" << "KUBDC" << "AUBDC" <<
+                                        "KUCDC" << "AUCDC" << "KUMDC" << "AUMDC" << "KRA" << "ARA" << "KRB" << "ARB" << "KRC" <<
+                                        "ARC" << "KY01T" << "KY02T" << "KY03T" << "KY01R" << "KY02R" << "KY03R" << "KY04R" <<
+                                        "KY04S" << "KY04T";
+    sendSettingReadRequest(list, CModBusDataUnit::ReadHoldingRegisters, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGroupRead
@@ -7206,6 +7201,26 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
     unit.setProperty("GROUP", index);
 
     m_modbus->sendData(unit);
+}
+//--------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingReadRequest(const QStringList &key_list, CModBusDataUnit::FunctionType type,
+                                                ConfiguratorWindow::DeviceMenuItemType index)
+{
+    if(key_list.isEmpty())
+        return;
+
+    for(QString key: key_list)
+    {
+        int addr = addressSettingKey(key);
+
+        CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), type, quint16(addr), 2);
+        unit.setProperty("REQUEST", GENERAL_TYPE);
+        unit.setProperty("GROUP", index);
+        unit.setProperty("FIRST", key);
+        unit.setProperty("LAST", key);
+
+        m_modbus->sendData(unit);
+    }
 }
 //----------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index)

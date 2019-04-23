@@ -556,6 +556,7 @@
             void sendCalculateRead(CModBusDataUnit& unit);
             void sendSettingReadRequest(const QString& first, const QString& last,
                                         CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index);
+            void sendSettingReadRequest(const QStringList &key_list, CModBusDataUnit::FunctionType type, DeviceMenuItemType index);
             void sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index);
             void sendSettingControlWriteRequest(const QString& index, DeviceMenuItemType group_index);
             void sendSettingWriteRequest(const QString& first, const QString& last, DeviceMenuItemType group_index);
