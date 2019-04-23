@@ -3300,7 +3300,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 20;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 21;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 22;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 23;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 24;
     m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT]                 = 1; // при открытии меню Защиты открывается группа МТЗ
 
     QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел") << tr("Ед. изм.");
