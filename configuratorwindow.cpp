@@ -210,7 +210,7 @@ void ConfiguratorWindow::refreshSerialPort()
     
     if(port_list.isEmpty())
     {
-        showMessageBox(tr("Com-порт"), tr("Не удалось найти ни одного доступного последовательного порта на этом компьютере"), QMessageBox::Warning);
+        showMessageBox(tr("Com-порт"), tr("Не удалось найти ни одного доступного\nпоследовательного порта на этом компьютере"), QMessageBox::Warning);
     }
     
     m_serialPortSettings_window->setSerialPortList(port_list);

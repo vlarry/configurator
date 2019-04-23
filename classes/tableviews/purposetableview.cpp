@@ -9,6 +9,9 @@ CPurposeTableView::CPurposeTableView(QWidget* parent):
 void CPurposeTableView::mouseMoveEvent(QMouseEvent* event)
 {
     QModelIndex index = indexAt(event->pos());
+    if(!index.isValid())
+        return;
+
     selectionModel()->clear();
 
     int rows    = model()->rowCount();

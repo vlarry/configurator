@@ -218,7 +218,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
             doubleValidator->setNotation(QDoubleValidator::StandardNotation);
             le->setValidator(doubleValidator);
             le->setValidatorType(CLineEdit::FLOAT);
-            le->setText(QLocale::system().toString(val_default, 'f', 6));
+            le->setText(QLocale::system().toString(static_cast<double>(val_default), 'f', 6));
         }
 
         widget = le;
@@ -241,8 +241,8 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
 
     QWidget*     wgt_limit    = new QWidget;
     QHBoxLayout* layout_limit = new QHBoxLayout;
-    QLabel*      label_limit  = new QLabel(QString("%1...%2").arg(static_cast<double>(item.unit.min)).
-                                                               arg(static_cast<double>(item.unit.max)), wgt_limit);
+    QLabel*      label_limit  = new QLabel(QString("%1...%2").arg(QLocale::system().toString(item.unit.min, 'f', 6)).
+                                                              arg(QLocale::system().toString(item.unit.max, 'f', 6)), wgt_limit);
 
     QWidget*     wgt_unit    = new QWidget;
     QHBoxLayout* layout_unit = new QHBoxLayout;
