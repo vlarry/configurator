@@ -1077,7 +1077,9 @@ void ConfiguratorWindow::protectionTemp1Write()
 {
     sendSettingControlWriteRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingControlWriteRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
-    sendSettingWriteRequest("M67", "X20", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("M67", "M67", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("X20", "X20", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("M69", "M69", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendProtectionWorkModeRequest("TEMP1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
@@ -1089,7 +1091,9 @@ void ConfiguratorWindow::protectionTemp2Write()
 {
     sendSettingControlWriteRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingControlWriteRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
-    sendSettingWriteRequest("M68", "X21", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("M68", "M68", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("X21", "X21", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingWriteRequest("M70", "M70", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendProtectionWorkModeRequest("TEMP2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
@@ -2029,7 +2033,9 @@ void ConfiguratorWindow::protectionTemp1Read()
 {
     sendSettingControlReadRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingControlReadRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
-    sendSettingReadRequest("M67", "X20", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingReadRequest("M67", "M67", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingReadRequest("X20", "X20", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingReadRequest("M69", "M69", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendProtectionWorkModeRequest("TEMP1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
@@ -2041,7 +2047,9 @@ void ConfiguratorWindow::protectionTemp2Read()
 {
     sendSettingControlReadRequest("M65", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingControlReadRequest("M66", DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
-    sendSettingReadRequest("M68", "X21", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingReadRequest("M68", "M68", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingReadRequest("X21", "X21", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+    sendSettingReadRequest("M70", "M70", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendProtectionWorkModeRequest("TEMP2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
