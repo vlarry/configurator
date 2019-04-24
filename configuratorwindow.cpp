@@ -3021,6 +3021,22 @@ void ConfiguratorWindow::readSetCurrent()
             automationGroupRead();
         break;
 
+        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH:
+            automationSwitchRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_APV:
+            automationAPVRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_AVR:
+            automationAVRRead();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_KCN:
+            automationKCNRead();
+        break;
+
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // чтение настройки Светодиоды
             purposeLedsRead();
             purposeMemoryOutLedRead();
@@ -3141,6 +3157,22 @@ void ConfiguratorWindow::writeSetCurrent()
 
         case DEVICE_MENU_ITEM_AUTOMATION_ROOT:
             automationGroupWrite();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_SWITCH:
+            automationSwitchWrite();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_APV:
+            automationAPVWrite();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_AVR:
+            automationAVRWrite();
+        break;
+
+        case DEVICE_MENU_ITEM_AUTOMATION_KCN:
+            automationKCNWrite();
         break;
 
         case DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS: // запись настройки Светодиоды
