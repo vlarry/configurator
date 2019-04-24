@@ -570,8 +570,13 @@ void ConfiguratorWindow::inputAnalogGroupRead()
  */
 void ConfiguratorWindow::inputAnalogGeneralWrite()
 {
-    sendSettingWriteRequest("M01", "M03", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
-    sendSettingControlWriteRequest("M04", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
+    QStringList list = QStringList() << "M01" << "M02" << "M03" << "K61" << "K62" << "K63" << "K64";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+
+    sendSettingControlWriteRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
+    sendSettingControlWriteRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateWrite
@@ -580,8 +585,14 @@ void ConfiguratorWindow::inputAnalogGeneralWrite()
  */
 void ConfiguratorWindow::inputAnalogCalibrateWrite()
 {
-    sendSettingWriteRequest("KIA", "KUC", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
-    sendSettingWriteRequest("KUAB", "KY03T", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    QStringList list = QStringList() << "K3I0" << "KIA" << "KIB" << "KIC" << "KUA" << "KUB" << "KUC" << "KUABT" << "KUBCT" <<
+                                        "KUCAT" << "K3U0R" << "K3U0S" << "K3U0T" << "KUADC" << "AUADC" << "KUBDC" << "AUBDC" <<
+                                        "KUCDC" << "AUCDC" << "KUMDC" << "AUMDC" << "KRA" << "ARA" << "KRB" << "ARB" << "KRC" <<
+                                        "ARC" << "KY01T" << "KY02T" << "KY03T" << "KY01R" << "KY02R" << "KY03R" << "KY04R" <<
+                                        "KY04S" << "KY04T";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGroupWrite
@@ -600,8 +611,12 @@ void ConfiguratorWindow::inputAnalogGroupWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Write()
 {
+    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
     sendSettingControlWriteRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingWriteRequest("M06", "X01", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -611,8 +626,12 @@ void ConfiguratorWindow::protectionMTZ1Write()
  */
 void ConfiguratorWindow::protectionMTZ2Write()
 {
+    QStringList list = QStringList() << "M10" << "X03" << "M11" << "M12";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
     sendSettingControlWriteRequest("M09", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingWriteRequest("M10", "X03", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -622,12 +641,14 @@ void ConfiguratorWindow::protectionMTZ2Write()
  */
 void ConfiguratorWindow::protectionMTZ3Write()
 {
+    QStringList list = QStringList() << "M14" << "X04" << "K22" << "TZ1" << "TZ2" << "TZ3" << "TZ4" << "TZ5" << "TZ6";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
     sendSettingControlWriteRequest("M13", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingControlWriteRequest("TZ", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingWriteRequest("M14", "K22", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingWriteRequest("X04", "X04", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingWriteRequest("TZ1", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3SetCharWrite
@@ -636,7 +657,7 @@ void ConfiguratorWindow::protectionMTZ3Write()
  */
 void ConfiguratorWindow::protectionMTZ3SetCharWrite()
 {
-    sendSettingWriteRequest("TZ1", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingWriteRequest("TZ1", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySteepWrite
@@ -645,7 +666,7 @@ void ConfiguratorWindow::protectionMTZ3SetCharWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySteepWrite()
 {
-    sendSettingWriteRequest("TZ1", "TZ1", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingWriteRequest("TZ1", "TZ1", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySlopWrite
@@ -654,7 +675,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySteepWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySlopWrite()
 {
-    sendSettingWriteRequest("TZ2", "TZ2", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingWriteRequest("TZ2", "TZ2", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyInversionWrite
@@ -663,7 +684,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySlopWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyInversionWrite()
 {
-    sendSettingWriteRequest("TZ3", "TZ3", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingWriteRequest("TZ3", "TZ3", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyDInversionWrite
@@ -672,7 +693,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyDInversionWrite()
 {
-    sendSettingWriteRequest("TZ4", "TZ4", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingWriteRequest("TZ4", "TZ4", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyBackWrite
@@ -681,7 +702,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyDInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyBackWrite()
 {
-    sendSettingWriteRequest("TZ5", "TZ5", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingWriteRequest("TZ5", "TZ5", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyStrongInversionWrite
@@ -690,7 +711,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyBackWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionWrite()
 {
-    sendSettingWriteRequest("TZ6", "TZ6", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingWriteRequest("TZ6", "TZ6", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyExtremalInversionWrite
@@ -699,7 +720,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionWrite()
 {
-    sendSettingWriteRequest("TZ7", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingWriteRequest("TZ7", "TZ7", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ4Write
@@ -708,8 +729,12 @@ void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionWrite()
  */
 void ConfiguratorWindow::protectionMTZ4Write()
 {
+    QStringList list = QStringList() << "M17" << "X05" << "M07" << "X05a" << "M18";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
     sendSettingControlWriteRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingWriteRequest("M17", "X05a", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ4", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -723,6 +748,7 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
     protectionMTZ2Write();
     protectionMTZ3Write();
     protectionMTZ4Write();
+    protectionMotorGroupWrite();
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Write
@@ -731,8 +757,12 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
  */
 void ConfiguratorWindow::protectionUmax1Write()
 {
+    QStringList list = QStringList() << "M33" << "X11" << "M34";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlWriteRequest("M32", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingWriteRequest("M33", "X11", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMAX1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -742,8 +772,12 @@ void ConfiguratorWindow::protectionUmax1Write()
  */
 void ConfiguratorWindow::protectionUmax2Write()
 {
+    QStringList list = QStringList() << "M36" << "X12" << "M37";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlWriteRequest("M35", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingWriteRequest("M36", "X12", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMAX2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -753,10 +787,13 @@ void ConfiguratorWindow::protectionUmax2Write()
  */
 void ConfiguratorWindow::protectionUmin1Write()
 {
+    QStringList list = QStringList() << "M41" << "X13" << "M42" << "V09" << "V15";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlWriteRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingControlWriteRequest("M40", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingWriteRequest("M41", "X13", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -766,10 +803,13 @@ void ConfiguratorWindow::protectionUmin1Write()
  */
 void ConfiguratorWindow::protectionUmin2Write()
 {
+    QStringList list = QStringList() << "M46" << "X14" << "M47" << "V09" << "V15";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlWriteRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingControlWriteRequest("M45", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingWriteRequest("M46", "X14", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -779,8 +819,12 @@ void ConfiguratorWindow::protectionUmin2Write()
  */
 void ConfiguratorWindow::protection3U0Write()
 {
+    QStringList list = QStringList() << "M49" << "X15" << "M50";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlWriteRequest("M48", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingWriteRequest("M49", "X15", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("3U0", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -961,8 +1005,12 @@ void ConfiguratorWindow::protectionExternalGroupWrite()
  */
 void ConfiguratorWindow::protectionStartingWrite()
 {
+    QStringList list = QStringList() << "M20" << "X06" << "M21";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+
     sendSettingControlWriteRequest("M19", DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendSettingWriteRequest("M20", "X06", DEVICE_MENU_PROTECT_ITEM_MOTOR);
     sendProtectionWorkModeRequest("STARTING", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
@@ -972,8 +1020,12 @@ void ConfiguratorWindow::protectionStartingWrite()
  */
 void ConfiguratorWindow::protectionIminWrite()
 {
+    QStringList list = QStringList() << "M30" << "X10" << "M31";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+
     sendSettingControlWriteRequest("M29", DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendSettingWriteRequest("M30", "X10", DEVICE_MENU_PROTECT_ITEM_MOTOR);
     sendProtectionWorkModeRequest("IMIN", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
@@ -1468,8 +1520,12 @@ void ConfiguratorWindow::settingCommunicationsWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Read()
 {
+    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
     sendSettingControlReadRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingReadRequest("M06", "X01", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -1479,8 +1535,12 @@ void ConfiguratorWindow::protectionMTZ1Read()
  */
 void ConfiguratorWindow::protectionMTZ2Read()
 {
+    QStringList list = QStringList() << "M10" << "X03" << "M11" << "M12";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
     sendSettingControlReadRequest("M09", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingReadRequest(tr("M10"), tr("X03"), CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -1490,12 +1550,14 @@ void ConfiguratorWindow::protectionMTZ2Read()
  */
 void ConfiguratorWindow::protectionMTZ3Read()
 {
+    QStringList list = QStringList() << "M14" << "X04" << "K22" << "TZ1" << "TZ2" << "TZ3" << "TZ4" << "TZ5" << "TZ6";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
     sendSettingControlReadRequest("M13", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingControlReadRequest("TZ", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ3", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingReadRequest("M14", "K22", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingReadRequest("X04", "X04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingReadRequest("TZ1", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 14, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3SetCharRead
@@ -1504,7 +1566,7 @@ void ConfiguratorWindow::protectionMTZ3Read()
  */
 void ConfiguratorWindow::protectionMTZ3SetCharRead()
 {
-    sendSettingReadRequest("TZ1", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 14, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingReadRequest("TZ1", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 14, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySteepRead
@@ -1513,7 +1575,7 @@ void ConfiguratorWindow::protectionMTZ3SetCharRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySteepRead()
 {
-    sendSettingReadRequest("TZ1", "TZ1", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingReadRequest("TZ1", "TZ1", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySlopRead
@@ -1522,7 +1584,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySteepRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertySlopRead()
 {
-    sendSettingReadRequest("TZ2", "TZ2", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingReadRequest("TZ2", "TZ2", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyInversionRead
@@ -1531,7 +1593,7 @@ void ConfiguratorWindow::protectionMTZ3PropertySlopRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyInversionRead()
 {
-    sendSettingReadRequest("TZ3", "TZ3", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingReadRequest("TZ3", "TZ3", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyDInversionRead
@@ -1540,7 +1602,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyInversionRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyDInversionRead()
 {
-    sendSettingReadRequest("TZ4", "TZ4", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingReadRequest("TZ4", "TZ4", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyBackRead
@@ -1549,7 +1611,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyDInversionRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyBackRead()
 {
-    sendSettingReadRequest("TZ5", "TZ5", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingReadRequest("TZ5", "TZ5", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyStrongInversionRead
@@ -1558,7 +1620,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyBackRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionRead()
 {
-    sendSettingReadRequest("TZ6", "TZ6", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingReadRequest("TZ6", "TZ6", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperyExtremalInversionRead
@@ -1567,7 +1629,7 @@ void ConfiguratorWindow::protectionMTZ3PropertyStrongInversionRead()
  */
 void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionRead()
 {
-    sendSettingReadRequest("TZ7", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingReadRequest("TZ7", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ4Read
@@ -1576,8 +1638,12 @@ void ConfiguratorWindow::protectionMTZ3PropertyExtremalInversionRead()
  */
 void ConfiguratorWindow::protectionMTZ4Read()
 {
+    QStringList list = QStringList() << "M17" << "X05" << "M07" << "X05a" << "M18";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
     sendSettingControlReadRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendSettingReadRequest("M17", "X05a", CModBusDataUnit::ReadHoldingRegisters, 12, DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ4", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -1591,6 +1657,7 @@ void ConfiguratorWindow::protectionMTZGroupRead()
     protectionMTZ2Read();
     protectionMTZ3Read();
     protectionMTZ4Read();
+    protectionMotorGroupRead();
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Read
@@ -1599,8 +1666,12 @@ void ConfiguratorWindow::protectionMTZGroupRead()
  */
 void ConfiguratorWindow::protectionUmax1Read()
 {
+    QStringList list = QStringList() << "M33" << "X11" << "M34";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlReadRequest("M32", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequest("M33", "X11", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMAX1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1610,8 +1681,12 @@ void ConfiguratorWindow::protectionUmax1Read()
  */
 void ConfiguratorWindow::protectionUmax2Read()
 {
+    QStringList list = QStringList() << "M36" << "X12" << "M37";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlReadRequest("M35", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequest("M36", "X12", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMAX2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1621,10 +1696,15 @@ void ConfiguratorWindow::protectionUmax2Read()
  */
 void ConfiguratorWindow::protectionUmin1Read()
 {
+    QStringList list = QStringList() << "M41" << "X13" << "M42";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlReadRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingControlReadRequest("M40", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequest("M41", "X13", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlReadRequest("V09", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlReadRequest("V15", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1634,10 +1714,15 @@ void ConfiguratorWindow::protectionUmin1Read()
  */
 void ConfiguratorWindow::protectionUmin2Read()
 {
+    QStringList list = QStringList() << "M46" << "X14" << "M47";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlReadRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingControlReadRequest("M45", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequest("M46", "X14", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlReadRequest("V09", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlReadRequest("V15", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1647,8 +1732,12 @@ void ConfiguratorWindow::protectionUmin2Read()
  */
 void ConfiguratorWindow::protection3U0Read()
 {
+    StringList list = QStringList() << "M49" << "X15" << "M50";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
+
     sendSettingControlReadRequest("M48", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequest("M49", "X15", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("3U0", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1829,8 +1918,12 @@ void ConfiguratorWindow::protectionExternalGroupRead()
  */
 void ConfiguratorWindow::protectionStartingRead()
 {
+    QStringList list = QStringList() << "M20" << "X06" << "M21";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+
     sendSettingControlReadRequest("M19", DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendSettingReadRequest("M20", "X06", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_MOTOR);
     sendProtectionWorkModeRequest("STARTING", FUN_READ, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
@@ -1840,8 +1933,12 @@ void ConfiguratorWindow::protectionStartingRead()
  */
 void ConfiguratorWindow::protectionIminRead()
 {
+    QStringList list = QStringList() << "M30" << "X10" << "M31";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+
     sendSettingControlReadRequest("M29", DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendSettingReadRequest("M30", "X10", CModBusDataUnit::ReadHoldingRegisters, 6, DEVICE_MENU_PROTECT_ITEM_MOTOR);
     sendProtectionWorkModeRequest("IMIN", FUN_READ, DEVICE_MENU_PROTECT_ITEM_MOTOR);
 }
 /*!
