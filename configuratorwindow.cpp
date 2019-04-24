@@ -905,8 +905,12 @@ void ConfiguratorWindow::protectionDirectedGroupWrite()
  */
 void ConfiguratorWindow::protectionAchr1Write()
 {
+    QStringList list = QStringList() << "M52" << "M52V" << "M53";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+
     sendSettingControlWriteRequest("M51", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendSettingWriteRequest("M52", "X16", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendProtectionWorkModeRequest("ACHR1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
@@ -916,8 +920,12 @@ void ConfiguratorWindow::protectionAchr1Write()
  */
 void ConfiguratorWindow::protectionAchr2Write()
 {
+    QStringList list = QStringList() << "M56" << "M56V" << "M57";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+
     sendSettingControlWriteRequest("M55", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendSettingWriteRequest("M56", "X17", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendProtectionWorkModeRequest("ACHR2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
@@ -927,8 +935,12 @@ void ConfiguratorWindow::protectionAchr2Write()
  */
 void ConfiguratorWindow::protectionAchr3Write()
 {
+    QStringList list = QStringList() << "M60" << "M60V" << "M61";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+
     sendSettingControlWriteRequest("M59", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendSettingWriteRequest("M60", "X18", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendProtectionWorkModeRequest("ACHR3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
@@ -1732,7 +1744,7 @@ void ConfiguratorWindow::protectionUmin2Read()
  */
 void ConfiguratorWindow::protection3U0Read()
 {
-    StringList list = QStringList() << "M49" << "X15" << "M50";
+    QStringList list = QStringList() << "M49" << "X15" << "M50";
 
     for(QString key: list)
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
@@ -1818,8 +1830,12 @@ void ConfiguratorWindow::protectionDirectedGroupRead()
  */
 void ConfiguratorWindow::protectionAchr1Read()
 {
+    QStringList list = QStringList() << "M52" << "M52V" << "M53";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+
     sendSettingControlReadRequest("M51", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendSettingReadRequest("M52", "X16", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendProtectionWorkModeRequest("ACHR1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
@@ -1829,8 +1845,12 @@ void ConfiguratorWindow::protectionAchr1Read()
  */
 void ConfiguratorWindow::protectionAchr2Read()
 {
+    QStringList list = QStringList() << "M56" << "M56V" << "M57";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+
     sendSettingControlReadRequest("M55", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendSettingReadRequest("M56", "X17", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendProtectionWorkModeRequest("ACHR2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
@@ -1840,8 +1860,12 @@ void ConfiguratorWindow::protectionAchr2Read()
  */
 void ConfiguratorWindow::protectionAchr3Read()
 {
+    QStringList list = QStringList() << "M60" << "M60V" << "M61";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+
     sendSettingControlReadRequest("M59", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendSettingReadRequest("M60", "X18", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
     sendProtectionWorkModeRequest("ACHR3", FUN_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
@@ -10361,6 +10385,11 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         ui->pushButtonDefaultSettings->setVisible(true);
 
         resizeColumns();
+    }
+    else if(index >= DEVICE_MENU_PROTECT_ITEM_CURRENT && index <= DEVICE_MENU_ITEM_AUTOMATION_APV)
+    {
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+        ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
     }
 }
 //-------------------------------------------------------------
