@@ -313,197 +313,6 @@ void ConfiguratorWindow::debugInfoRead()
     sendDebugInfoRead(11);
     sendDebugInfoRead(12);
 }
-//------------------------------------------------------
-void ConfiguratorWindow::journalRead(const QString& key)
-{
-    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
-        return;
-
-    journal_set_t& set = m_journal_set[key];
-
-    if(!m_active_journal_current || !m_active_journal_current->table())
-    {
-        return;
-    }
-    else if(set.message.read_total == 0)
-    {
-        showMessageBox(tr("Чтение журнала"), tr("Нечего читать. Журнал Пуст."), QMessageBox::Warning);
-
-        set.isStart = false;
-        set.isStop = false;
-        set.shift_ptr = 0;
-        set.buffer.clear();
-        set.message.read_count = 0;
-        set.message.read_current = 0;
-        set.message.read_start = 0;
-        set.message.read_limit = set.message.read_total;
-
-        ui->pushButtonJournalRead->setChecked(false);
-
-        return;
-    }
-    else if(m_active_journal_current->table()->rowCount() >= set.message.read_total)
-    {
-        showMessageBox(tr("Чтение журнала"), tr("Все сообщения прочитаны"), QMessageBox::Warning);
-
-        set.isStart = false;
-        set.isStop = false;
-        set.shift_ptr = 0;
-        set.buffer.clear();
-        set.message.read_count = 0;
-        set.message.read_current = 0;
-        set.message.read_start = 0;
-        set.message.read_limit = set.message.read_total;
-
-        ui->pushButtonJournalRead->setChecked(false);
-
-        return;
-    }
-
-    int sector_size = 4096/set.message.size; // размер сектора в сообщениях, т.е. сколько можно сообщений считать
-                                             // без перехода
-
-    if(!set.isStart) // если это первый запрос сообщения
-    {
-        m_journal_read_current = m_active_journal_current; // сохраняем текущий виджет таблицы
-
-        m_journal_read_current->header()->setTextDeviceCountMessages(0, set.message.read_total);
-
-        set.isStart = true;
-        set.shift_ptr = 0;
-        set.buffer.clear();
-        set.message.read_count = 0;
-        set.message.read_current = 0;
-        set.message.read_start = 0;
-        set.message.read_limit = set.message.read_total;
-
-        if(m_filter.find(key) != m_filter.end()) // если фильтр журнала существует и в таблице нет данных
-        {
-//            CFilter filter = m_filter[key]; // получаем фильтр журнала
-
-//            if(filter) // фильтр активен
-//            {
-//                if(filter.type() == CFilter::INTERVAL) // если выбран фильр по интервалу
-//                {
-//                    int pos_beg = filter.interval().begin;
-//                    int pos_end = filter.interval().end;
-
-//                    if(pos_beg > 0)
-//                        pos_beg--;
-
-//                    set.message.read_start = set.message.read_current = ((pos_beg == 0)?0:pos_beg); // устанавливаем номер сообщения с которого будем читать
-//                    set.message.read_limit = pos_end - pos_beg - 1; // устанавливаем сообщение до которого будем читать
-//                }
-//            }
-        }
-
-        if(m_journal_read_current->table()->rowCount() > 0) // есть данные в таблице
-        {
-            QMessageBox msgbox;
-            msgbox.setWindowIcon(QIcon(QPixmap(":/images/resource/images/configurator.png")));
-            msgbox.setWindowTitle(tr("Чтение журнала"));
-            msgbox.setInformativeText(tr("В таблице уже присутствуют данные!\nВыберите необходимое действие."));
-            msgbox.setIcon(QMessageBox::Question);
-
-            QPushButton* next   = msgbox.addButton(tr("Продолжить"), QMessageBox::ActionRole);
-            QPushButton* begin  = msgbox.addButton(tr("Сначала"), QMessageBox::ActionRole);
-            QPushButton* cancel = msgbox.addButton(tr("Отмена"), QMessageBox::ActionRole);
-
-            msgbox.setDefaultButton(next);
-            msgbox.exec();
-
-            outApplicationEvent(msgbox.text());
-
-            if(msgbox.clickedButton() == next)
-            {
-                set.message.read_start = set.message.read_current = m_journal_read_current->table()->rowCount() + 1;
-            }
-            else if(msgbox.clickedButton() == begin)
-            {
-                clearJournal();
-            }
-            else if(msgbox.clickedButton() == cancel)
-            {
-                m_journal_read_current   = nullptr;
-                set.isStart              = false;
-                set.isStop               = false;
-                set.shift_ptr            = 0;
-                set.message.read_count   = 0;
-                set.message.read_current = 0;
-                set.message.read_start   = 0;
-                set.message.read_limit   = set.message.read_total;
-                set.buffer.clear();
-                ui->pushButtonJournalRead->setChecked(false);
-
-                return;
-            }
-        }
-
-        if(set.message.read_start >= sector_size) // если начальное сообщение находится не на первой странице
-        {
-            set.shift_ptr            = (--set.message.read_start/sector_size)*4096; // получаем смещение указателя
-            set.message.read_current = set.message.read_start%sector_size; // устанавливаем текущее сообщение (для определения перехода указатеяля)
-        }
-
-//        setJournalPtrShift(key, set.shift_ptr);
-
-        m_time_process.start();
-
-        m_progressbar->setProgressTitle(tr("Чтение журнала %1").arg(m_journal_read_current->property("NAME").toString()));
-        m_progressbar->progressStart();
-        m_progressbar->setSettings(set.message.read_count, set.message.read_limit, "сообщений");
-
-        connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::stopProgressbar);
-    }
-
-    if(set.message.read_current == sector_size) // дочитали до конца очередной страницы - переводим указатель
-    {
-        set.shift_ptr += 4096;
-        set.message.read_current = 0;
-
-//        setJournalPtrShift(key, set.shift_ptr);
-    }
-
-    // Расчет размера сообещния
-    int request_size = set.message.read_number*set.message.size;
-    int msg_size     = 0;
-
-    if(request_size > 250) // размер запроса превышает 250 байт (максимальный размер запроса 250 байт + 5 байт накладные расходы
-    {
-        if(!set.buffer.isEmpty()) // буфер данных не пустой
-        {
-            msg_size = request_size/2 - set.msg_part; // высчитываем разницу между отправленными данными и оставшимися
-        }
-        else
-        {
-            msg_size = request_size/4; // запрос делится на две части (делитель 4, т.к. request_size в байтах, а запрос в двухбайтовых
-            set.msg_part = msg_size; // размер запроса заносится в переменную, которая хранит размеры частей запроса
-        }
-    }
-    else // иначе отправляем одним запросом
-    {
-        msg_size = (((set.message.read_limit - set.message.read_count) >= set.message.read_number)?request_size/2:
-                     (set.message.read_limit - set.message.read_count)*(set.message.size/2));
-    }
-
-    // Расчет адреса
-    int address = set.message.read_current*(set.message.size/2) + set.address.start_page;
-
-    if(set.msg_part > 0 && set.buffer.count() > 0) // размер части запроса не равен нулю и буфер хранящий часть ответа не пустой
-    {
-        address += set.msg_part;
-    }
-
-    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadInputRegisters,
-                         static_cast<quint16>(address), QVector<quint16>() << static_cast<quint16>(msg_size));
-    unit.setProperty(tr("REQUEST"), READ_JOURNAL);
-    unit.setProperty(tr("JOURNAL"), key);
-
-    m_modbus->sendData(unit);
-
-    m_journal_timer->start(1000);
-    m_time_process_speed.start();
-}
 /*!
  * \brief ConfiguratorWindow::journalRead
  * \param journal указатель на открытый журнал
@@ -7379,7 +7188,10 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
-    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_SWITCH, "AUTO_SWITCH", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_APV, "AUTO_APV", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_AVR, "AUTO_AVR", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_KCN, "AUTO_KCN", db);
     loadDeviceCommunication(db);
     loadDeviceCalibrationCurrent(db);
     loadContainerSettings(m_containerWidgetVariable, db);
@@ -8703,8 +8515,38 @@ void ConfiguratorWindow::newProject()
 
     m_progressbar->increment(5);
 
-    // Создание таблицы уставок группы "Автоматика"
-    if(!createProjectTableSet("AUTO", project_db))
+    // Создание таблицы уставок группы "Автоматика->Выключатель"
+    if(!createProjectTableSet("AUTO_SWITCH", project_db))
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
+        return;
+    }
+
+    // Создание таблицы уставок группы "Автоматика->АПВ"
+    if(!createProjectTableSet("AUTO_APV", project_db))
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
+        return;
+    }
+
+    // Создание таблицы уставок группы "Автоматика->АВР"
+    if(!createProjectTableSet("AUTO_AVR", project_db))
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
+        return;
+    }
+
+    // Создание таблицы уставок группы "Автоматика->КЦН"
+    if(!createProjectTableSet("AUTO_KCN", project_db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
                        QMessageBox::Warning);
@@ -8839,7 +8681,10 @@ void ConfiguratorWindow::saveProject()
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
-    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_SWITCH, "AUTO_SWITCH", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_APV, "AUTO_APV", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_AVR, "AUTO_AVR", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_KCN, "AUTO_KCN", db);
     saveDeviceCommunication(db);
     saveDeviceCalibrationCurrent(db);
 
@@ -8979,7 +8824,7 @@ void ConfiguratorWindow::exportToExcelProject()
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupExternal, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupReserve, pos - 1);
-//    pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupControl, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationSwitch, pos - 1);
 
     xlsx.addSheet(tr("Автоматика"));
 
@@ -8991,7 +8836,9 @@ void ConfiguratorWindow::exportToExcelProject()
     xlsx.write("B1", tr("Значение"), headerFormat);
     xlsx.write("C1", tr("Диапазон"), headerFormat);
 
-//    writeDataToExcel(xlsx, ui->tableWidgetAutomationGroup);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationSwitch);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationAPV, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationKCN, pos - 1);
 
     xlsx.addSheet(tr("Аналоговые входы"));
 
@@ -9045,7 +8892,6 @@ void ConfiguratorWindow::importFromExcelProject()
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupExternal, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, offset);
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupReserve, offset);
-//    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupControl, offset);
 
     if(!xlsx.selectSheet(tr("Автоматика")))
     {
@@ -9053,7 +8899,11 @@ void ConfiguratorWindow::importFromExcelProject()
         return;
     }
 
-//    readDataFromExcel(xlsx, ui->tableWidgetAutomationGroup, 0);
+    offset = 0;
+
+    readDataFromExcel(xlsx, ui->tableWidgetAutomationSwitch, offset);
+    readDataFromExcel(xlsx, ui->tableWidgetAutomationAPV, offset);
+    readDataFromExcel(xlsx, ui->tableWidgetAutomationKCN, offset);
 
     if(!xlsx.selectSheet(tr("Аналоговые входы")))
     {
@@ -10273,134 +10123,6 @@ void ConfiguratorWindow::importPurposeFromJSON()
     model->updateData();
     m_progressbar->progressStop();
 }
-//----------------------------------------------------------------
-void ConfiguratorWindow::processReadJournal(CModBusDataUnit& unit)
-{
-    RequestType type = RequestType(unit.property(tr("REQUEST")).toInt());
-
-    QString key = unit.property(tr("JOURNAL")).toString();
-
-    if(key.isEmpty() || m_journal_set.find(key) == m_journal_set.end())
-        return;
-
-    journal_set_t& set = m_journal_set[key];
-    static int time_sum = 0; // текущее время выполнения чтения (для расчета скорости)
-
-    switch(type)
-    {
-        case READ_JOURNAL_SHIFT_PTR:
-            if(unit.error() != CModBusDataUnit::ERROR_NO)
-            {
-                showMessageBox(tr("Чтение журнала"), tr("Ошибка перемещения указателя журнала:\n%1").arg(CModBusDataUnit::errorDescription(unit.error())),
-                               QMessageBox::Warning);
-            }
-        break;
-
-        case READ_JOURNAL_COUNT:
-            if(unit.count() == 2)
-            {
-                int count = static_cast<int>(static_cast<int>(unit[0] << 16) | static_cast<int>(unit[1]));
-
-                set.message.read_total = count;
-
-                CHeaderJournal* header = nullptr;
-
-                if(key == "CRASH")
-                    header = ui->widgetJournalCrash->header();
-                else if(key == "EVENT")
-                    header = ui->widgetJournalEvent->header();
-                else if(key == "HALFHOUR")
-                    header = ui->widgetJournalHalfHour->header();
-
-                if(header)
-                    header->setTextDeviceCountMessages(0, count);
-            }
-        break;
-
-        case READ_JOURNAL:
-        {
-            if(!m_journal_read_current)
-                return;
-
-            QVector<quint16> data = unit.values();
-
-            if(set.message.read_count == 0) // обнуление счетчика времени передачи данных (если пришло первое сообщение)
-                time_sum = 0;
-
-            if(unit.count()*2 < set.message.size) // принятые данные меньше, чем размер одного сообщения
-            {
-                if(set.buffer.isEmpty()) // буфер сообщений пуст
-                {
-                    set.buffer.append(unit.values()); // сохраняем сообщения в буфер
-                    m_journal_timer->stop();
-                    journalRead(key);
-
-                    return;
-                }
-                else
-                {
-                    if((unit.count()*2 + set.buffer.count()*2) == set.message.size) // данные приняты полностью
-                    {
-                        data = set.buffer;
-                        data.append(unit.values());
-
-                        set.buffer.clear(); // чистим буфер
-                        set.msg_part = 0; // обнуляем счетчик частей
-                    }
-                }
-            }
-
-            int count = data.count()/(set.message.size/2);
-
-            set.message.read_count   += count;
-            set.message.read_current += count;
-
-//            if(!key.isEmpty())
-//                displayJournalResponse(data);
-
-            m_progressbar->progressIncrement(count);
-            m_journal_timer->stop();
-
-            time_sum += m_time_process_speed.elapsed();
-
-            if(time_sum > 0)
-            {
-                float speed_kb = float(set.message.size*set.message.read_count/1024.0f)/float(time_sum/1000.0f);
-
-                m_journal_read_current->header()->setTextElapsedTime(QString("%1 КБ/сек.").arg(QLocale::system().toString(speed_kb, 'f', 3)));
-            }
-
-            // Проверка условий на окончание чтения журнала
-            if(set.isStart && set.message.read_count >= set.message.read_limit)
-            {
-                QString text;
-                QString journal_name = m_journal_read_current->property("NAME").toString();
-
-                if(!set.isStop)
-                {
-                    text = tr("Чтение журнала %1 успешно завершено.\nПрочитано %2 из %3 сообщений.").
-                           arg(journal_name).arg(set.message.read_count).arg(set.message.read_total);
-                }
-                else
-                {
-                    text = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").
-                           arg(journal_name).arg(set.message.read_count).arg(set.message.read_total);
-                }
-
-
-                set.isStart = set.isStop = false;
-                endJournalReadProcess(text);
-
-                return;
-            }
-
-            journalRead(key);
-        }
-        break;
-
-        default: break;
-    }
-}
 //---------------------------------------------------
 void ConfiguratorWindow::widgetStackIndexChanged(int)
 {
@@ -11487,8 +11209,35 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
 
     m_progressbar->progressIncrement(5);
 
-    // Создание таблицы уставок группы "Автоматика"
-    if(!createProjectTableSet("AUTO", db))
+    // Создание таблицы уставок группы "Автоматика->Выключатель"
+    if(!createProjectTableSet("AUTO_SWITCH", db))
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Автоматика->АПВ"
+    if(!createProjectTableSet("AUTO_APV", db))
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Автоматика->АВР"
+    if(!createProjectTableSet("AUTO_AVR", db))
+    {
+        showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(db);
+        return;
+    }
+
+    // Создание таблицы уставок группы "Автоматика->КЦН"
+    if(!createProjectTableSet("AUTO_KCN", db))
     {
         showMessageBox(tr("Создание таблицы уставок группы Автоматика"), tr("Невозможно создать таблицу уставок группы Автоматика в файле проекта"),
                        QMessageBox::Warning);
@@ -11518,7 +11267,10 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
     m_progressbar->progressIncrement(5);
-    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_SWITCH, "AUTO_SWITCH", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_APV, "AUTO_APV", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_AVR, "AUTO_AVR", db);
+    saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_KCN, "AUTO_KCN", db);
     m_progressbar->progressIncrement(5);
 
     disconnectDb(db);
@@ -11584,7 +11336,10 @@ void ConfiguratorWindow::importProtectionAutomaticFromDB()
     m_progressbar->progressIncrement(10);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
     m_progressbar->progressIncrement(10);
-    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_ROOT, "AUTO", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_SWITCH, "AUTO_SWITCH", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_APV, "AUTO_APV", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_AVR, "AUTO_AVR", db);
+    loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_KCN, "AUTO_KCN", db);
 
     disconnectDb(db);
     m_progressbar->progressStop();

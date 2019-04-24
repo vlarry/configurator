@@ -388,7 +388,6 @@
             void blockProtectionCtrlWrite(); // запись состояний блокировок защит (таблица "Управление блокировками"
             void calculateRead(); // запрос расчетных величин
             void debugInfoRead(); // чтение отладочной информации
-            void journalRead(const QString& key);
             void journalRead(JournalPtr journal);
             void inputAnalogGeneralRead();
             void inputAnalogCalibrateRead();
@@ -582,7 +581,6 @@
             void exportToPDF(const JournalPtr journal, const QString& reportName, const QString& sn_device, const QString& filename);
             void exportPurposeToJSON();
             void importPurposeFromJSON();
-            void processReadJournal(CModBusDataUnit& unit);
             void widgetStackIndexChanged(int);
             void setJournalShiftPtr(JournalPtr journal);
             void timeoutSynchronization();
