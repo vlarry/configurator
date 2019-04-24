@@ -977,8 +977,10 @@ void ConfiguratorWindow::protectionFrequencyGroupWrite()
  */
 void ConfiguratorWindow::protectionArcWrite()
 {
+    sendSettingWriteRequest("M64", "M64", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("X19", "X19", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+
     sendSettingControlWriteRequest("M63", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendSettingWriteRequest("M64", "X19", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendProtectionWorkModeRequest("ARC", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
@@ -1925,8 +1927,12 @@ void ConfiguratorWindow::protectionFrequencyGroupRead()
  */
 void ConfiguratorWindow::protectionArcRead()
 {
+    QStringList list = QStringList() << "M64" << "X19";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+
     sendSettingControlReadRequest("M63", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendSettingReadRequest("M64", "X19", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendProtectionWorkModeRequest("ARC", FUN_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
