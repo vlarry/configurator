@@ -66,7 +66,7 @@ void CDeviceMenuTableWidget::showEvent(QShowEvent* event)
 
     for(int i = 0; i < columnCount(); i++)
     {
-        setColumnWidth(i, ((i == 2 || i == 3)?100:(i == 0)?400:300));
+        setColumnWidth(i, (i == 3)?50:(i == 2)?150:(i == 0)?400:300);
     }
 }
 //-----------------------------------------------------------------
