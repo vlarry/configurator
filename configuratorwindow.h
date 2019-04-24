@@ -449,6 +449,7 @@
             void automationDisconnectorsGroupRead();
             void automationCtrlTNRead();
             void automationAVRRead();
+            void automationKCNRead();
             void automationAPVSignalStartRead();
             void automationAPVRead();
             void automationGroupRead();
@@ -521,6 +522,7 @@
             void automationCtrlTNWrite();
             void automationAVRWrite();
             void automationAPVWrite();
+            void automationKCNWrite();
             void automationAPVSignalStartWrite();
             void purposeLedsWrite();
             void purposeInputWrite();

@@ -1113,7 +1113,11 @@ void ConfiguratorWindow::protectionTemperatureGroupWrite()
  */
 void ConfiguratorWindow::protectionLevel1Write()
 {
-    sendSettingControlWriteRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    QStringList list = QStringList() << "M77" << "I50" << "I15" << "I66" << "N55";
+
+    for(QString key: list)
+        sendSettingControlWriteRequest(key, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+
     sendSettingWriteRequest("M78", "M78", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
@@ -1124,7 +1128,11 @@ void ConfiguratorWindow::protectionLevel1Write()
  */
 void ConfiguratorWindow::protectionLevel2Write()
 {
-    sendSettingControlWriteRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    QStringList list = QStringList() << "K11" << "I50" << "I15" << "I66" << "N55";
+
+    for(QString key: list)
+        sendSettingControlWriteRequest(key, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+
     sendSettingWriteRequest("M79", "M79", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
@@ -1196,7 +1204,6 @@ void ConfiguratorWindow::protectionReserveGroupWrite()
 {
     protectionLevel1Write();
     protectionLevel2Write();
-    protectionSignalStartWrite();
 }
 /*!
  * \brief ConfiguratorWindow::protectionBRUWrite
@@ -1248,18 +1255,22 @@ void ConfiguratorWindow::protectionControlGroupWrite()
 void ConfiguratorWindow::automationSwitchWrite()
 {
     sendSettingControlWriteRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K50", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K51", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlWriteRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K07", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("SPRK_CNF", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
     sendSettingWriteRequest("K02", "K02", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K50", "K50", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingWriteRequest("K04", "K04", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K51", "K51", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K05", "K05", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K08", "K08", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K10", "K10", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K01", "K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingWriteRequest("K09", "K09", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingWriteRequest("X22", "X22", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K08", "K08", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K05", "K05", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckWrite
@@ -1348,8 +1359,7 @@ void ConfiguratorWindow::automationCtrlTNWrite()
  */
 void ConfiguratorWindow::automationAVRWrite()
 {
-    sendSettingControlWriteRequest("M81", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("M82", "M85", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVWrite
@@ -1358,8 +1368,24 @@ void ConfiguratorWindow::automationAVRWrite()
  */
 void ConfiguratorWindow::automationAPVWrite()
 {
-    sendSettingControlWriteRequest("M87", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("M88", "M89", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    QStringList list = QStringList() << "M87" << "V04" << "V07" << "V10" << "V13" << "V19" << "N64" << "V22" << "N67" << "V44" <<
+                                        "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
+
+    for(QString key: list)
+        sendSettingControlWriteRequest(key, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
+    sendSettingWriteRequest("K17", "K17", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("M88", "M88", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("M89", "M89", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+}
+/*!
+ * \brief ConfiguratorWindow::automationKCNWrite
+ *
+ * Запись автоматик КЦН
+ */
+void ConfiguratorWindow::automationKCNWrite()
+{
+    sendSettingWriteRequest("K19", "K19", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVSignalStartWrite
@@ -2069,7 +2095,11 @@ void ConfiguratorWindow::protectionTemperatureGroupRead()
  */
 void ConfiguratorWindow::protectionLevel1Read()
 {
-    sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    QStringList list = QStringList() << "M77" << "I50" << "I15" << "I66" << "N55";
+
+    for(QString key: list)
+        sendSettingControlReadRequest(key, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+
     sendSettingReadRequest("M78", "M78", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
@@ -2080,7 +2110,11 @@ void ConfiguratorWindow::protectionLevel1Read()
  */
 void ConfiguratorWindow::protectionLevel2Read()
 {
-    sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    QStringList list = QStringList() << "K11" << "I50" << "I15" << "I66" << "N55";
+
+    for(QString key: list)
+        sendSettingControlReadRequest(key, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+
     sendSettingReadRequest("M79", "M79", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
@@ -2109,7 +2143,6 @@ void ConfiguratorWindow::protectionReserveGroupRead()
 {
     protectionLevel1Read();
     protectionLevel2Read();
-    protectionSignalStartRead();
 }
 /*!
  * \brief ConfiguratorWindow::protectionBRURead
@@ -2177,18 +2210,22 @@ void ConfiguratorWindow::amplitudeReadOfCurrent()
 void ConfiguratorWindow::automationSwitchRead()
 {
     sendSettingControlReadRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K50", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K51", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlReadRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K07", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("SPRK_CNF", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
     sendSettingReadRequest("K02", "K02", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K50", "K50", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingReadRequest("K04", "K04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K51", "K51", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K05", "K05", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K08", "K08", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K10", "K10", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K01", "K01", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingReadRequest("K09", "K09", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingReadRequest("X22", "X22", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K08", "K08", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K05", "K05", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckRead
@@ -2267,8 +2304,7 @@ void ConfiguratorWindow::automationDisconnectorsGroupRead()
  */
 void ConfiguratorWindow::automationCtrlTNRead()
 {
-    sendSettingControlReadRequest("K18", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K19", "K19", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
 }
 /*!
  * \brief ConfiguratorWindow::automationAVRRead
@@ -2277,8 +2313,16 @@ void ConfiguratorWindow::automationCtrlTNRead()
  */
 void ConfiguratorWindow::automationAVRRead()
 {
-    sendSettingControlReadRequest("M81", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("M82", "M85", CModBusDataUnit::ReadHoldingRegisters, 8, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
+}
+/*!
+ * \brief ConfiguratorWindow::automationKCNRead
+ *
+ *  Чтение автоматика КЦН
+ */
+void ConfiguratorWindow::automationKCNRead()
+{
+    sendSettingReadRequest("K19", "K19", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVSignalStartRead
@@ -2303,8 +2347,15 @@ void ConfiguratorWindow::automationAPVSignalStartRead()
  */
 void ConfiguratorWindow::automationAPVRead()
 {
-    sendSettingControlReadRequest("M87", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("M88", "M89", CModBusDataUnit::ReadHoldingRegisters, 4, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    QStringList list = QStringList() << "M87" << "V04" << "V07" << "V10" << "V13" << "V19" << "N64" << "V22" << "N67" << "V44" <<
+                                        "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
+
+    for(QString key: list)
+        sendSettingControlReadRequest(key, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
+    sendSettingReadRequest("K17", "K17", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("M88", "M88", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("M89", "M89", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
 }
 /*!
  * \brief ConfiguratorWindow::automationGroupRead
@@ -2314,16 +2365,9 @@ void ConfiguratorWindow::automationAPVRead()
 void ConfiguratorWindow::automationGroupRead()
 {
     automationSwitchRead(); // автоматики защиты Выключатель
-    automationSwitchTruckRead(); // автоматики защиты Тележка выключателя
-    automationBlockRead(); // чтение автоматики Блокировки
-    automationBusRead(); // чтение автоматики Шинный разъединитель
-    automationLineRead(); // чтение автоматики Линейный разъединитель
-    automationEarthRead(); // чтение автоматики Заземляющий разъединитель
-    automationDisconnectorsGroupRead(); // чтение группы автоматики Разъединители
-    automationCtrlTNRead(); // чтение автоматики Контроль ТН
-    automationAVRRead(); // чтение автоматики АВР
-    automationAPVRead(); // чтение автоматики АПВ
-    automationAPVSignalStartRead(); // чтение пусковых сигналов АПВ
+    automationAPVRead();
+    automationAVRRead();
+    automationKCNRead();
 }
 /*!
  * \brief ConfiguratorWindow::automationGroupWrite
@@ -2333,16 +2377,9 @@ void ConfiguratorWindow::automationGroupRead()
 void ConfiguratorWindow::automationGroupWrite()
 {
     automationSwitchWrite(); // запись автоматика Выключатель
-    automationSwitchTruckWrite(); // запись автоматика Тележка выключателя
-    automationBlockWrite(); // запись автоматика Блокировки
-    automationBusWrite(); // запись автоматика Шинный разъединитель
-    automationLineWrite(); // запись автоматика Линейный разъединитель
-    automationEarthWrite(); // запись автоматика Заземляющий разъединитель
-    automationDisconnectorsGroupWrite(); // запись автоматика Разъединители
-    automationCtrlTNWrite(); // запись автоматика Контроль ТН
-    automationAVRWrite(); // запись автоматика АВР
-    automationAPVWrite(); // запись автоматикаи АПВ
-    automationAPVSignalStartWrite(); // запись автоматика пусковые сигналы АПВ
+    automationAPVWrite();
+    automationAVRWrite();
+    automationKCNWrite();
 }
 /*!
  * \brief ConfiguratorWindow::calibrationOfCurrentWrite
