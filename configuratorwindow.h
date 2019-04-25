@@ -260,47 +260,6 @@
              */
             typedef QMap<DeviceMenuItemType, int> device_menu_item_key_t;
             /*!
-             * \brief The journal_address_t struct
-             *
-             *  Структура адресов журнала (используется при чтении)
-             */
-            struct journal_address_t
-            {
-                int msg_count;  // адрес чтения количества сообщений
-                int set_shift;  // адрес установки указателя свдига (установка текущего окна для чтения)
-                int start_page; // начальный адрес страницы
-            };
-            /*!
-             * \brief The journal_message_t struct
-             *
-             *  Структура опсывающая сообщения (параметры)
-             */
-            struct journal_message_t
-            {
-                int read_number;  // количество сообщений читаемых в одном запросе
-                int read_count;   // счетчик прочитанных сообщений
-                int read_limit;   // сообщение до которого читаем (по умолчанию последнее, но изменяется фильтром)
-                int read_total;   // всего сообщений доступных для чтения
-                int read_current; // текущее читаемое сообщение
-                int read_start;   // сообщение с которого начинается чтение
-                int size;         // размер одного сообщения
-            };
-            /*!
-             * \brief The journal_set struct
-             *
-             *  Структура описывающая установки чтения журнала
-             */
-            struct journal_set_t
-            {
-                int               shift_ptr; // текущее положение указателя сдвига
-                int               msg_part;
-                bool              isStart;   // чтение первого сообщения
-                bool              isStop;    // останвка чтения сообщений
-                journal_address_t address;
-                journal_message_t message;
-                QVector<quint16>  buffer;    // буфер сообщений
-            };
-            /*!
              * \brief The protection_t struct
              *
              * Структура определяющая тип защиты
@@ -677,7 +636,6 @@
             void displayPurposeDIResponse(const QVector<quint16>& input_list, const QVector<quint16>& input_inverse_list);
             void displayDeviceSerialNumber(const QVector<quint16>& data);
             void displayProtectReserveSignalStart(const QVector<quint16>& data);
-            void displayAutomationAPVSignalStart(const QVector<quint16>& data);
             void displayCommunicationTimeoutRequest(const QVector<quint16>& data);
             void displayCommunicationTimeoutSpeed(const QVector<quint16>& data);
             void displayCommunicationAddress(const QVector<quint16>& data);
@@ -722,7 +680,6 @@
             block_protection_list_t loadProtectionList();
             bool deleteLogFile();
             bool showErrorMessage(const QString& title, CModBusDataUnit& unit);
-            void endJournalReadProcess(const QString& text);
             float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
             QPointF standardDeviation(QVector<float>& list);
             int writeDataToExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset = 0);
@@ -815,9 +772,6 @@
             CProgressBarWidget*              m_progressbar;
             QSettings*                       m_settings;
             QMap<QString, CFilter>           m_filter;
-            const CJournalWidget*            m_active_journal_current; // текущий активный журнал
-            const CJournalWidget*            m_journal_read_current; // текущий журнал чтения, т.е. журнал, который читают из устройства
-            QMap<QString, journal_set_t>     m_journal_set; // установки журналов
             device_menu_item_key_t           m_menu_items; // карта пунктов меню устройства
             QVector<quint16>                 m_calculate_buffer; // буфер расчетных величи (два запроса, поэтому необходимо клеить)
             variable_bit_t                   m_variable_bits;

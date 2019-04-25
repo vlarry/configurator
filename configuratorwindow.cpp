@@ -35,8 +35,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_watcher(nullptr),
     m_progressbar(nullptr),
     m_settings(nullptr),
-    m_active_journal_current(nullptr),
-    m_journal_read_current(nullptr),
     m_journal_timer(nullptr),
     m_journal_progress(nullptr),
     m_project_cur_path("")
@@ -1379,15 +1377,16 @@ void ConfiguratorWindow::synchronizationDateTime()
 void ConfiguratorWindow::settingCommunicationsWrite()
 {
 
-    int answer = showMessageBox(tr("Запись настроек связи"), tr("Вы действительно хотите перезаписать настройки связи?"), QMessageBox::Question);
-    if(answer == QMessageBox::No)
-        return;
+//    int answer = showMessageBox(tr("Запись настроек связи"), tr("Вы действительно хотите перезаписать настройки связи?"), QMessageBox::Question);
+//    if(answer == QMessageBox::No)
+//        return;
 
-    sendRequestWrite(0x26, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationRequestTimeout->value()), 255);
-    sendRequestWrite(0x27, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationTimeoutSpeed->value()), 255);
-    sendRequestWrite(0x25, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationAddress->value()), 255);
-    connect(m_timer_new_address_set, &QTimer::timeout, this, &ConfiguratorWindow::setNewAddress);
-    m_timer_new_address_set->start(500);
+//    sendRequestWrite(0x26, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationRequestTimeout->value()), 255);
+//    sendRequestWrite(0x27, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationTimeoutSpeed->value()), 255);
+//    sendRequestWrite(0x25, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationAddress->value()), 255);
+//    connect(m_timer_new_address_set, &QTimer::timeout, this, &ConfiguratorWindow::setNewAddress);
+//    m_timer_new_address_set->start(500);
+    setNewAddress();
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Read
@@ -2610,25 +2609,6 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         if(!showErrorMessage(tr("Чтение Защиты/Резервные/Сигналы Пуска"), unit))
             displayProtectReserveSignalStart(unit.values());
     }
-    else if(type == AUTOMATION_SIGNAL_START)
-    {
-        displayAutomationAPVSignalStart(unit.values());
-    }
-    else if(type == COMMUNICATIONS_MODBUS_TIM_REQUEST)
-    {
-        if(!showErrorMessage(tr("Чтение времени запроса устройства"), unit))
-            displayCommunicationTimeoutRequest(unit.values());
-    }
-    else if(type == COMMUNICATIONS_MODBUS_TIM_SPEED)
-    {
-        if(!showErrorMessage(tr("Чтение скорости устройства"), unit))
-            displayCommunicationTimeoutSpeed(unit.values());
-    }
-    else if(type == COMMUNICATIONS_MODBUS_ADDRESS)
-    {
-        if(!showErrorMessage(tr("Чтение адреса устройства"), unit))
-            displayCommunicationAddress(unit.values());
-    }
     else if(type == PROTECTION_WORK_MODE_TYPE)
     {
         displayProtectionWorkMode(unit);
@@ -3240,13 +3220,11 @@ void ConfiguratorWindow::initMenuPanel()
     QTreeWidgetItem* itemProtections = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_PROTECTION_ROOT); // Защиты
     QTreeWidgetItem* itemAutomation  = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_AUTOMATION_ROOT); // Автоматика
     QTreeWidgetItem* itemJournals    = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_JOURNALS_ROOT); // Журналы
-    QTreeWidgetItem* itemMeasures    = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_MEASURES_ROOT); // Измерения
     QTreeWidgetItem* itemSettings    = new QTreeWidgetItem(m_treeWidgetDeviceMenu, DEVICE_MENU_ITEM_SETTINGS_ROOT); // Настройки
 
     itemProtections->setText(0, tr("Защиты"));
     itemAutomation->setText(0, tr("Автоматика"));
     itemJournals->setText(0, tr("Журналы"));
-    itemMeasures->setText(0, tr("Измерения"));
     itemSettings->setText(0, tr("Настройки"));
 
     // ЗАЩИТЫ
@@ -3293,13 +3271,6 @@ void ConfiguratorWindow::initMenuPanel()
 
     itemJournals->addChildren(QList<QTreeWidgetItem*>() << journalCrash << journalEvents << journalHalfHour << journalIsolation);
 
-    // ИЗМЕРЕНИЯ
-    QTreeWidgetItem* measureInputs = new QTreeWidgetItem(itemMeasures,
-                                                         QStringList() << tr("Напряжения и токи на измерительных входах"),
-                                                         DEVICE_MENU_ITEM_MEASURES_INPUTS);
-
-    itemMeasures->addChild(measureInputs);
-
     // НАСТРОЙКИ
     QTreeWidgetItem* settingInputAnalog    = new QTreeWidgetItem(itemSettings, QStringList() << tr("Аналоговые входы"),
                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
@@ -3315,17 +3286,13 @@ void ConfiguratorWindow::initMenuPanel()
                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS);
     QTreeWidgetItem* settingDateTime       = new QTreeWidgetItem(itemSettings, QStringList() << tr("Дата и время"),
                                                                  DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME);
-    QTreeWidgetItem* settingKeyboard       = new QTreeWidgetItem(itemSettings, QStringList() << tr("Клавиатура"),
-                                                                 DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD);
 
     itemSettings->addChildren(QList<QTreeWidgetItem*>() << settingInputAnalog << ioDSInputMDVV01 << settingLeds << ioRelayMDVV01 <<
-                                                           ioProtectionCtrl << settingCommunications << settingDateTime <<
-                                                           settingKeyboard );
+                                                           ioProtectionCtrl << settingCommunications << settingDateTime);
 
     m_treeWidgetDeviceMenu->addTopLevelItem(itemProtections);
     m_treeWidgetDeviceMenu->addTopLevelItem(itemAutomation);
     m_treeWidgetDeviceMenu->addTopLevelItem(itemJournals);
-    m_treeWidgetDeviceMenu->addTopLevelItem(itemMeasures);
     m_treeWidgetDeviceMenu->addTopLevelItem(itemSettings);
 
     // заполнение карты меню устройства для доступа к настройкам при клике по пункту
@@ -3350,7 +3317,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 16;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 17;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 18;
-    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 19;
+//    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 19;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 20;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 21;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 22;
@@ -3988,13 +3955,6 @@ void ConfiguratorWindow::initJournals()
 
     ui->widgetJournalCrash->setVisibleProperty(CJournalWidget::CRASH_PROPERTY, true);
     ui->widgetJournalHalfHour->setVisibleProperty(CJournalWidget::HALFHOUR_PROPERTY , true);
-
-    m_journal_set["CRASH"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x26, 0x3011, 0x2000 }),
-                                                journal_message_t({ 1, 0, 0, 0, 0, 0, 256 }), QVector<quint16>()});
-    m_journal_set["EVENT"]    = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x22, 0x300C, 0x1000 }),
-                                                journal_message_t({ 8, 0, 0, 0, 0, 0, 16 }), QVector<quint16>()});
-    m_journal_set["HALFHOUR"] = journal_set_t({ 0, 0, false, false, journal_address_t({ 0x2A, 0x3016, 0x5000 }),
-                                                journal_message_t({ 2, 0, 0, 0, 0, 0, 64 }), QVector<quint16>()});
 
     m_journal_event = new CJournal(0x08, 0x22, 0x300C, 0x1000, ui->widgetJournalEvent);
     m_journal_crash = new CJournal(0x80, 0x26, 0x3011, 0x2000, ui->widgetJournalCrash);
@@ -5117,75 +5077,6 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
             if(item_pos < combobox->count())
                 combobox->setCurrentIndex(item_pos);
         }
-    }
-}
-//------------------------------------------------------------------------------------
-void ConfiguratorWindow::displayAutomationAPVSignalStart(const QVector<quint16>& data)
-{
-//    QVector<quint16> tdata;
-
-//    for(int i = 0; i < data.count() - 1; i += 2) // меняем местами старший и младший байт
-//    {
-//        tdata << data[i + 1] << data[i];
-//    }
-
-//    int pos = groupMenuPosition(tr("АПВ сигналы пуска"), ui->tableWidgetAutomationGroup);
-
-//    for(int row = pos; row < ui->tableWidgetAutomationGroup->rowCount(); row++)
-//    {
-//        QWidget* widget = groupMenuCellWidget(ui->tableWidgetAutomationGroup, row, 1);
-
-//        if(!widget)
-//            continue;
-
-//        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
-//            continue;
-
-//        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
-
-//        if(!combobox)
-//            continue;
-
-//        QString key = (combobox->objectName().remove("comboBox")).remove("_1");
-
-//        if(key.isEmpty())
-//            continue;
-
-//        int bit     = m_variable_bits[key];
-//        int val_pos = bit/16;
-//        int bit_pos = bit%16;
-
-//        if(val_pos < tdata.count())
-//        {
-//            int item_pos = (tdata[val_pos]&(1 << bit_pos))?1:0;
-
-//            if(item_pos < combobox->count())
-//                combobox->setCurrentIndex(item_pos);
-//        }
-//    }
-}
-//---------------------------------------------------------------------------------------
-void ConfiguratorWindow::displayCommunicationTimeoutRequest(const QVector<quint16>& data)
-{
-    if(data.count() > 0)
-    {
-        ui->spinBoxCommunicationRequestTimeout->setValue(data[0]);
-    }
-}
-//-------------------------------------------------------------------------------------
-void ConfiguratorWindow::displayCommunicationTimeoutSpeed(const QVector<quint16>& data)
-{
-    if(data.count() > 0)
-    {
-        ui->spinBoxCommunicationTimeoutSpeed->setValue(data[0]);
-    }
-}
-//--------------------------------------------------------------------------------
-void ConfiguratorWindow::displayCommunicationAddress(const QVector<quint16>& data)
-{
-    if(data.count() > 0)
-    {
-        ui->spinBoxCommunicationAddress->setValue(data[0]);
     }
 }
 //-----------------------------------------------------------------------
@@ -6465,9 +6356,8 @@ void ConfiguratorWindow::saveDeviceCommunication(QSqlDatabase *db)
     query.clear();
 
     if(!query.exec(QString("INSERT INTO deviceCommunication (address, speed, parity, Trequest, Tspeed) VALUES("
-                           "%1, %2, %3, %4, %5);").arg(ui->spinBoxCommunicationAddress->value()).arg(ui->comboBoxCommunicationBaudrate->currentIndex()).
-                                                   arg(ui->comboBoxCommunicationParity->currentIndex()).arg(ui->spinBoxCommunicationRequestTimeout->value()).
-                                                   arg(ui->spinBoxCommunicationTimeoutSpeed->value())))
+                           "%1, %2, %3, %4, %5);").arg(0).arg(ui->comboBoxCommunicationBaudrate->currentIndex()).
+                                                   arg(0).arg(0).arg(0)))
     {
         outLogMessage(tr("Ошибка сохранения настроек связи устройства: %1").arg(query.lastError().text()));
     }
@@ -6797,17 +6687,13 @@ void ConfiguratorWindow::loadDeviceCommunication(QSqlDatabase *db)
 
     query.next();
 
-    int address = query.value("address").toInt();
+//    int address = query.value("address").toInt();
     int speed = query.value("speed").toInt();
-    int parity = query.value("parity").toInt();
-    int Trequest = query.value("Trequest").toInt();
-    int Tspeed = query.value("Tspeed").toInt();
+//    int parity = query.value("parity").toInt();
+//    int Trequest = query.value("Trequest").toInt();
+//    int Tspeed = query.value("Tspeed").toInt();
 
-    ui->spinBoxCommunicationAddress->setValue(address);
     ui->comboBoxCommunicationBaudrate->setCurrentIndex(speed);
-    ui->comboBoxCommunicationParity->setCurrentIndex(parity);
-    ui->spinBoxCommunicationRequestTimeout->setValue(Trequest);
-    ui->spinBoxCommunicationTimeoutSpeed->setValue(Tspeed);
 
     m_progressbar->increment(3);
 }
@@ -8190,7 +8076,7 @@ void ConfiguratorWindow::filterJournal(JournalPtr journal)
         }
     }
 
-    m_active_journal_current->header()->setTextTableCountMessages(text);
+    journal->widget()->header()->setTextTableCountMessages(text);
 }
 //----------------------------------------
 void ConfiguratorWindow::stopProgressbar()
@@ -8208,9 +8094,6 @@ void ConfiguratorWindow::timeoutJournalRead()
         m_progressbar->progressStop();
 
         QString nameJournal;
-
-        if(m_journal_read_current)
-            nameJournal = m_journal_read_current->property("NAME").toString();
 
         showMessageBox(tr("Чтение журнала"), tr("Ошибка чтения журнала %1.").arg(nameJournal), QMessageBox::Warning);
     }
@@ -8262,8 +8145,6 @@ void ConfiguratorWindow::updateSerialPortSettings()
 //--------------------------------------
 void ConfiguratorWindow::setNewAddress()
 {
-    m_timer_new_address_set->stop();
-    disconnect(m_timer_new_address_set, &QTimer::timeout, this, &ConfiguratorWindow::setNewAddress);
     sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
     sendDeviceCommand(19); // установить новый адрес MODBUS
     sendDeviceCommand(2);
@@ -9511,8 +9392,6 @@ void ConfiguratorWindow::initApplication()
         ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
         ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
 
-        ui->comboBoxCommunicationParity->setCurrentIndex(1);
-
         QDateTime dt(QDateTime::currentDateTime());
 
         ui->dateEdit->setDate(dt.date());
@@ -10161,8 +10040,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
 
-    m_active_journal_current = nullptr;
-
     ui->pushButtonJournalRead->setVisible(false);
     ui->pushButtonJournalClear->setVisible(false);
     ui->pushButtonDefaultSettings->setVisible(false);
@@ -10201,9 +10078,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         ui->widgetJournalEvent->setTableColumnWidth(3, width);
         ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
         ui->widgetJournalIsolation->setTableColumnWidth(3, width);
-
-        if(!currentJournal(m_active_journal_current))
-            m_active_journal_current = nullptr;
 
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
@@ -12142,23 +12016,6 @@ bool ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit&
     }
 
     return false;
-}
-//-----------------------------------------------------------------
-void ConfiguratorWindow::endJournalReadProcess(const QString& text)
-{
-    m_journal_read_current->header()->setTextElapsedTime(m_time_process.elapsed());
-    m_journal_read_current->header()->setTextTableCountMessages(m_journal_read_current->table()->rowCount());
-
-    m_journal_read_current = nullptr;
-
-    emit buttonReadJournalStateChanged(); // отключаем кнопку чтения журналов
-
-    disconnect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::stopProgressbar);
-    m_progressbar->progressStop();
-
-    m_popup->setPopupText(text);
-    outApplicationEvent(text);
-    m_popup->show();
 }
 //---------------------------------------------------------------------------------------------------------------------
 float ConfiguratorWindow::newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list)

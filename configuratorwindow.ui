@@ -1805,7 +1805,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>24</number>
+            <number>17</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2085,124 +2085,7 @@
                     <property name="verticalSpacing">
                      <number>5</number>
                     </property>
-                    <item row="4" column="1">
-                     <widget class="QSpinBox" name="spinBoxCommunicationTimeoutSpeed">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>1000</number>
-                      </property>
-                      <property name="value">
-                       <number>2</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="1">
-                     <widget class="QSpinBox" name="spinBoxCommunicationRequestTimeout">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>1000</number>
-                      </property>
-                      <property name="value">
-                       <number>1</number>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="1">
-                     <widget class="QSpinBox" name="spinBoxCommunicationAddress">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>255</number>
-                      </property>
-                      <property name="value">
-                       <number>1</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="label_20">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Адресс</string>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <widget class="QComboBox" name="comboBoxCommunicationParity">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>No</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Even</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Odd</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Mark</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Space</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
                      <widget class="QComboBox" name="comboBoxCommunicationBaudrate">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -2252,7 +2135,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="1" column="0">
+                    <item row="0" column="0">
                      <widget class="QLabel" name="label_21">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -2262,54 +2145,6 @@
                       </property>
                       <property name="text">
                        <string>Скорость</string>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QLabel" name="label_22">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Паритет</string>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="4" column="0">
-                     <widget class="QLabel" name="label_24">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>T скорости</string>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="0">
-                     <widget class="QLabel" name="label_23">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>T запроса</string>
                       </property>
                       <property name="scaledContents">
                        <bool>true</bool>
@@ -2859,11 +2694,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>spinBoxCommunicationAddress</tabstop>
   <tabstop>comboBoxCommunicationBaudrate</tabstop>
-  <tabstop>comboBoxCommunicationParity</tabstop>
-  <tabstop>spinBoxCommunicationRequestTimeout</tabstop>
-  <tabstop>spinBoxCommunicationTimeoutSpeed</tabstop>
   <tabstop>dateEdit</tabstop>
   <tabstop>timeEdit</tabstop>
   <tabstop>lineEditWeekDay</tabstop>
