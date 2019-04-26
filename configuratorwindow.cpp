@@ -4281,14 +4281,14 @@ void ConfiguratorWindow::authorization()
             else
             {
                 m_popup->setPopupText(tr("Ошибка: пароль неправильный!"));
-                outApplicationEvent(tr("Ошибка: пароль неправильный!"));
+                outLogMessage(tr("Ошибка: пароль неправильный!"));
                 m_popup->show();
             }
         }
         else
         {
             m_popup->setPopupText(tr("Ошибка: пароль не может быть пустым."));
-            outApplicationEvent(tr("Ошибка: пароль не может быть пустым."));
+            outLogMessage(tr("Ошибка: пароль не может быть пустым."));
             m_popup->show();
         }
     }
@@ -7132,6 +7132,28 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
     disconnectDb(db);
 }
+//-------------------------------------------------------------------------------------
+int ConfiguratorWindow::validateSheetExcel(QXlsx::Document &xlsx, QStringList &columns)
+{
+    for(int col = 1; col <= columns.count(); col++)
+    {
+        QString col_name = columns.at(col - 1);
+
+        if(xlsx.read(1, col).toString().toUpper() != col_name.toUpper())
+        {
+            m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nКолонка (1, %1) не содержит имя \"%2\"!").arg(col).
+                                                                                                                  arg(col_name));
+            return -1;
+        }
+    }
+
+    int row = 2;
+    int row_count = 0;
+
+    while(!xlsx.read(row++, 1).toString().isEmpty()) { row_count++; }
+
+    return row_count;
+}
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
                                                 DeviceMenuItemType index)
@@ -9096,6 +9118,10 @@ void ConfiguratorWindow::keyPressEvent(QKeyEvent* event)
     if(event->key() == Qt::Key_F7)
     {
         testStyle(true);
+    }
+    else if(event->key() == Qt::Key_F3 && (event->modifiers() & Qt::AltModifier))
+    {
+        importPurposetToTableFromExcelStart();
     }
 }
 //---------------------------------------------------
@@ -11343,6 +11369,93 @@ void ConfiguratorWindow::importPurposeFromDb(const QString &type)
     m_popup->setPopupText(text);
     outLogMessage(text);
     m_popup->show();
+}
+/*!
+ * \brief ConfiguratorWindow::importPurposetToTableFromExcelStart
+ *
+ * Импорт матрицы привязок из excel
+ */
+void ConfiguratorWindow::importPurposetToTableFromExcelStart()
+{
+    QStringList logins = loadLoginList();
+
+    if(logins.isEmpty())
+        return;
+
+    CUserDialog* userDialog = new CUserDialog(logins, this);
+
+    int answer = userDialog->exec();
+
+    if(answer == QDialog::Accepted)
+    {
+        CUserDialog::user_t usr = userDialog->user();
+
+        if(!usr.password.isEmpty())
+        {
+            QString pass = loadUserPassword(usr.login);
+
+            if(usr.password.toUpper() == pass.toUpper())
+            {
+                QDir dir;
+
+                QString fileName = QFileDialog::getOpenFileName(this, tr("Импорт матрицы привязок из Excel"),
+                                                                dir.absolutePath(), "Excel (*.xlsx)");
+
+                if(fileName.isEmpty())
+                    return;
+
+                m_progressbar->setProgressTitle(tr("Импорт матрицы привязок из Excel"));
+                m_progressbar->setSettings(0, 50);
+                m_progressbar->progressStart();
+
+                QXlsx::Document xlsx(fileName);
+
+                QStringList sheet_list = xlsx.sheetNames();
+
+                if(!sheet_list.isEmpty())
+                {
+                    if(sheet_list.contains("VAR", Qt::CaseInsensitive) &&
+                       sheet_list.contains("VAR_GROUP", Qt::CaseInsensitive) &&
+                       sheet_list.contains("INPUT", Qt::CaseInsensitive) &&
+                       sheet_list.contains("RELAY", Qt::CaseInsensitive) &&
+                       sheet_list.contains("LED", Qt::CaseInsensitive))
+                    {
+                        importPurposetToTableFromExcel(xlsx);
+                    }
+                }
+            }
+            else
+            {
+                m_popup->setPopupText(tr("Ошибка: пароль неправильный!"));
+                outLogMessage(tr("Ошибка: пароль неправильный!"));
+                m_popup->show();
+            }
+        }
+        else
+        {
+            m_popup->setPopupText(tr("Ошибка: пароль не может быть пустым."));
+            outLogMessage(tr("Ошибка: пароль не может быть пустым."));
+            m_popup->show();
+        }
+    }
+
+    delete userDialog;
+    userDialog = nullptr;
+}
+//----------------------------------------------------------------------------
+void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
+{
+    // Загрузка переменных в таблицу variable
+    if(!xlsx.selectSheet("var"))
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНет доступа к странице \"var\"!"));
+        return;
+    }
+
+    QStringList column_list =  QStringList() << "key" << "group_id" << "sort_id" << "type_func" << "type_sort" << "bit" << "name" <<
+                                                "description";
+
+    int row_count = validateSheetExcel(xlsx, column_list);
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const

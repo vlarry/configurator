@@ -551,6 +551,8 @@
             void exportProtectionAutomaticToDB();
             void importProtectionAutomaticFromDB();
             void importPurposeFromDb(const QString &type);
+            void importPurposetToTableFromExcelStart();
+            void importPurposetToTableFromExcel(QXlsx::Document &xlsx);
             void startExportToPDF(JournalPtr journal = nullptr);
             void startMenuJournalExportToPDF(const QString &type);
             void startCurrentJournalExportToPDF();
@@ -725,6 +727,7 @@
             JournalPtr journalWidgetByType(const QString &type);
             CPurposeTableView *purposeTableByType(const QString &type);
             void openProject(const QString &projectPathName);
+            int validateSheetExcel(QXlsx::Document &xlsx, QStringList &columns);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
