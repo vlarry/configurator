@@ -727,7 +727,7 @@
             JournalPtr journalWidgetByType(const QString &type);
             CPurposeTableView *purposeTableByType(const QString &type);
             void openProject(const QString &projectPathName);
-            int validateSheetExcel(QXlsx::Document &xlsx, QStringList &columns);
+            int rowSheetExcel(QXlsx::Document &xlsx, QStringList &columns);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

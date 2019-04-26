@@ -7133,7 +7133,7 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     disconnectDb(db);
 }
 //-------------------------------------------------------------------------------------
-int ConfiguratorWindow::validateSheetExcel(QXlsx::Document &xlsx, QStringList &columns)
+int ConfiguratorWindow::rowSheetExcel(QXlsx::Document &xlsx, QStringList &columns)
 {
     for(int col = 1; col <= columns.count(); col++)
     {
@@ -11455,7 +11455,7 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
     QStringList column_list =  QStringList() << "key" << "group_id" << "sort_id" << "type_func" << "type_sort" << "bit" << "name" <<
                                                 "description";
 
-    int row_count = validateSheetExcel(xlsx, column_list);
+    int row_count = rowSheetExcel(xlsx, column_list);
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
