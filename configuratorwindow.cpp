@@ -3533,7 +3533,7 @@ void ConfiguratorWindow::initCellBind()
 {
     QSqlQuery query(m_system_db);
 
-    if(!query.exec("SELECT * FROM iodevice WHERE type = 'SET' OR type = 'MODIFY';"))
+    if(!query.exec("SELECT * FROM menu_item WHERE type = 'SET' OR type = 'MODIFY';"))
         return;
 
     while(query.next())
@@ -5541,7 +5541,7 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
 
     group.name = group_name;
 
-    if(!query.exec(QString("SELECT * FROM iodevice WHERE sort_id=%1").arg(group_id)))
+    if(!query.exec(QString("SELECT * FROM menu_item WHERE sort_id=%1").arg(group_id)))
     {
         outLogMessage(tr("Не удалось прочитать свойства группы с ID=%1 (%2)").arg(group_id).arg(query.lastError().text()));
     }
@@ -5633,7 +5633,7 @@ CDeviceMenuTableWidget::item_t ConfiguratorWindow::loadIODeviceItem(const QStrin
     QSqlQuery query(m_system_db);
     CDeviceMenuTableWidget::item_t item;
 
-    if(query.exec(QString("SELECT * FROM iodevice WHERE key=\"%1\";").arg(k)))
+    if(query.exec(QString("SELECT * FROM menu_item WHERE key=\"%1\";").arg(k)))
     {
         if(query.next())
         {
