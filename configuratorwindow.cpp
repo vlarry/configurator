@@ -2296,10 +2296,10 @@ void ConfiguratorWindow::calibrationOfCurrentWrite()
 //----------------------------------------
 void ConfiguratorWindow::purposeLedsRead()
 {
-    sendPurposeReadRequest(tr("LED1"), tr("LED2"));
-    sendPurposeReadRequest(tr("LED3"), tr("LED4"));
-    sendPurposeReadRequest(tr("LED5"), tr("LED6"));
-    sendPurposeReadRequest(tr("LED7"), tr("LED8"));
+    sendPurposeReadRequest("LED1", "LED2");
+    sendPurposeReadRequest("LED3", "LED4");
+    sendPurposeReadRequest("LED5", "LED6");
+    sendPurposeReadRequest("LED7", "LED8");
 }
 //-----------------------------------------
 void ConfiguratorWindow::purposeInputRead()
@@ -2312,12 +2312,12 @@ void ConfiguratorWindow::purposeInputRead()
 //-----------------------------------------
 void ConfiguratorWindow::purposeRelayRead()
 {
-    sendPurposeReadRequest(tr("DO1"), tr("DO2"));
-    sendPurposeReadRequest(tr("DO4"), tr("DO5"));
-    sendPurposeReadRequest(tr("DO6"), tr("DO7"));
-    sendPurposeReadRequest(tr("DO8"), tr("DO9"));
-    sendPurposeReadRequest(tr("DO10"), tr("DO11"));
-    sendPurposeReadRequest(tr("DO12"), tr("DO13"));
+    sendPurposeReadRequest("DO1", "DO2");
+    sendPurposeReadRequest("DO4", "DO5");
+    sendPurposeReadRequest("DO6", "DO7");
+    sendPurposeReadRequest("DO8", "DO9");
+    sendPurposeReadRequest("DO10", "DO11");
+    sendPurposeReadRequest("DO12", "DO13");
 }
 //------------------------------------------------
 void ConfiguratorWindow::purposeMemoryOutLedRead()
@@ -3564,7 +3564,7 @@ void ConfiguratorWindow::initPurposeBind()
 
     for(const QString& type: type_list)
     {
-        if(query.exec(tr("SELECT key, address, description FROM iodevice WHERE type = '") + type + "';"))
+        if(query.exec(QString("SELECT key, address, description FROM io_list WHERE type = '%1';").arg(type)))
         {
             while(query.next())
             {
@@ -3573,7 +3573,7 @@ void ConfiguratorWindow::initPurposeBind()
                 QString          desc = query.value(tr("description")).toString();
                 QVector<QString> var_list;
 
-                QSqlQuery query_var(tr("SELECT var_key FROM purpose WHERE io_key = '") + key + "'");
+                QSqlQuery query_var(QString("SELECT var_key FROM purpose WHERE io_key = '%1';").arg(key));
 
                 if(query_var.exec())
                 {
@@ -3819,7 +3819,7 @@ void ConfiguratorWindow::initCrashJournal()
     }
 
     // загружаем выходы (светодиоды, реле и модифицируемые переменные)
-    if(!query.exec("SELECT key, description FROM iodevice WHERE type=\"RELAY\" OR type=\"LED\" OR type=\"EMPTY\";"))
+    if(!query.exec("SELECT key, description FROM io_list WHERE type=\"RELAY\" OR type=\"LED\" OR type=\"EMPTY\";"))
     {
         outApplicationEvent(tr("Не удалось загрузить список выходов и модифицируемых переменных: %1").arg(query.lastError().text()));
         return;
@@ -3833,7 +3833,7 @@ void ConfiguratorWindow::initCrashJournal()
     }
 
     // загружаем входы
-    if(!query.exec("SELECT key, description FROM iodevice WHERE type=\"INPUT\";"))
+    if(!query.exec("SELECT key, description FROM io_list WHERE type=\"INPUT\";"))
     {
         outApplicationEvent(tr("Не удалось загрузить список входов: %1").arg(query.lastError().text()));
         return;
@@ -4033,7 +4033,7 @@ void ConfiguratorWindow::initOutputAll()
 
     QStringList list;
 
-    if(query.exec("SELECT description FROM iodevice WHERE type=\'RELAY\';"))
+    if(query.exec("SELECT description FROM io_list WHERE type=\'RELAY\';"))
     {
         while(query.next())
         {
@@ -4041,7 +4041,7 @@ void ConfiguratorWindow::initOutputAll()
         }
     }
 
-    if(query.exec("SELECT description FROM iodevice WHERE type=\'LED\';"))
+    if(query.exec("SELECT description FROM io_list WHERE type=\'LED\';"))
     {
         while(query.next())
         {
@@ -4049,7 +4049,7 @@ void ConfiguratorWindow::initOutputAll()
         }
     }
 
-    if(query.exec("SELECT key, description FROM iodevice WHERE type=\'MODIFY\';"))
+    if(query.exec("SELECT key, description FROM io_list WHERE type=\'MODIFY\';"))
     {
         while(query.next())
         {
@@ -4066,7 +4066,7 @@ void ConfiguratorWindow::initInputs()
 
     QStringList list;
 
-    if(query.exec("SELECT description FROM iodevice WHERE type=\'INPUT\';"))
+    if(query.exec("SELECT description FROM io_list WHERE type=\'INPUT\';"))
     {
         while(query.next())
         {
@@ -11778,18 +11778,18 @@ QTableView* ConfiguratorWindow::tableMatrixFromKeys(const QString& first, const 
     if(indexes.x() == -1 || indexes.y() == -1)
         return nullptr;
 
-    if(m_purpose_list[indexes.x()].first.contains(tr("DI"), Qt::CaseInsensitive) &&
-       m_purpose_list[indexes.y()].first.contains(tr("DI"), Qt::CaseInsensitive)) // входы
+    if(m_purpose_list[indexes.x()].first.contains("DI", Qt::CaseInsensitive) &&
+       m_purpose_list[indexes.y()].first.contains("DI", Qt::CaseInsensitive)) // входы
     {
         return ui->tablewgtDiscreteInputPurpose;
     }
-    else if(m_purpose_list[indexes.x()].first.contains(tr("DO"), Qt::CaseInsensitive) &&
-            m_purpose_list[indexes.y()].first.contains(tr("DO"), Qt::CaseInsensitive)) // выходы: реле
+    else if(m_purpose_list[indexes.x()].first.contains("DO", Qt::CaseInsensitive) &&
+            m_purpose_list[indexes.y()].first.contains("DO", Qt::CaseInsensitive)) // выходы: реле
     {
         return ui->tablewgtRelayPurpose;
     }
-    else if(m_purpose_list[indexes.x()].first.contains(tr("LED"), Qt::CaseInsensitive) &&
-            m_purpose_list[indexes.y()].first.contains(tr("LED"), Qt::CaseInsensitive)) // выходы: светодиоды
+    else if(m_purpose_list[indexes.x()].first.contains("LED", Qt::CaseInsensitive) &&
+            m_purpose_list[indexes.y()].first.contains("LED", Qt::CaseInsensitive)) // выходы: светодиоды
     {
         return ui->tablewgtLedPurpose;
     }
@@ -11922,7 +11922,7 @@ QVector<QPair<QString, QString> > ConfiguratorWindow::loadLabelColumns(const QSt
         return labels;
 
     QSqlQuery query(m_system_db);
-    QString str_db = QString("SELECT key, description FROM iodevice WHERE type = \'%1\';").arg(type);
+    QString str_db = QString("SELECT key, description FROM io_list WHERE type = \'%1\';").arg(type);
 
     if(query.exec(str_db))
     {
