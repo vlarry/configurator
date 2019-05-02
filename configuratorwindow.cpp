@@ -11377,6 +11377,13 @@ void ConfiguratorWindow::importPurposeFromDb(const QString &type)
  */
 void ConfiguratorWindow::importPurposetToTableFromExcelStart()
 {
+    if(m_isProject)
+    {
+        m_popup->setPopupText(tr("Невозможно импортировать привязки при созданном проекте"));
+        m_popup->show();
+        return;
+    }
+
     QStringList logins = loadLoginList();
 
     if(logins.isEmpty())
@@ -11492,10 +11499,89 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
         variables << var;
     }
 
-    exportPurposeToDbFromExcel(variables);
+    exportVariableToDbFromExcel(variables);
+
+    // Загрузка групп в таблицу var_group
+    if(!xlsx.selectSheet("var_group"))
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНет доступа к странице \"var_group\"!"));
+        m_popup->show();
+        return;
+    }
+
+    column_list.clear();
+    column_list = QStringList() << "id" << "name";
+
+    row_count = rowSheetExcel(xlsx, column_list);
+
+    if(row_count == -1)
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно прочитать список групп переменных!"));
+        m_popup->show();
+        return;
+    }
+
+    QVector<QPair<int, QString>> groups;
+
+    for(int row = 0; row < row_count; row++)
+    {
+        int group_id = xlsx.read(row + 2, 1).toInt();
+        QString group_name = xlsx.read(row + 2, 2).toString();
+
+        QPair<int, QString> group = qMakePair(group_id, group_name);
+        groups << group;
+    }
+
+    exportGroupToDbFromExcel(groups);
+
+    // Загрузка входов/выходов в таблицу purpose
+    QStringList io_type = QStringList() << "input" << "relay" << "led";
+
+    QSqlQuery query(m_system_db);
+
+    if(!query.exec("DELETE FROM io_list;"))
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно очистить таблицу списка входов/выходов\n(%1)!").
+                              arg(query.lastError().text()));
+        m_popup->show();
+        return;
+    }
+
+    for(const QString &type: io_type)
+    {
+        if(!xlsx.selectSheet(type))
+        {
+            m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНет доступа к странице \"%1\"!").arg(type));
+            m_popup->show();
+            return;
+        }
+
+        column_list.clear();
+        column_list = QStringList() << "io" << "address" << "description";
+
+        row_count = rowSheetExcel(xlsx, column_list);
+
+        if(row_count == -1)
+        {
+            m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно прочитать список входов/выходов!"));
+            m_popup->show();
+            return;
+        }
+
+        QVector<import_io_t> io_list;
+
+        for(int row = 0; row < row_count; row++)
+        {
+            import_io_t io = import_io_t({ xlsx.read(row + 2, 1).toString(), xlsx.read(row + 2, 2).toInt(),
+                                           xlsx.read(row + 2, 3).toString() });
+            io_list << io;
+        }
+
+        exportIOToDbFromExcel(io_list, type);
+    }
 }
 //-------------------------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::exportPurposeToDbFromExcel(const QVector<ConfiguratorWindow::import_variable_t> &variables)
+void ConfiguratorWindow::exportVariableToDbFromExcel(const QVector<ConfiguratorWindow::import_variable_t> &variables)
 {
     if(variables.isEmpty())
         return;
@@ -11531,6 +11617,75 @@ void ConfiguratorWindow::exportPurposeToDbFromExcel(const QVector<ConfiguratorWi
         if(!query.exec())
         {
             QString text = tr("Ошибка импорта матрицы привязок:\nНевозможно вставить переменную в базу данных\n(%1)!").
+                           arg(query.lastError().text());
+            m_popup->setPopupText(text);
+            m_popup->show();
+            outLogMessage(text);
+        }
+    }
+
+    m_system_db.commit();
+}
+//--------------------------------------------------------------------------------------------
+void ConfiguratorWindow::exportGroupToDbFromExcel(const QVector<QPair<int, QString> > &groups)
+{
+    if(groups.isEmpty())
+        return;
+
+    QSqlQuery query(m_system_db);
+
+    if(!query.exec("DELETE FROM var_group;"))
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно очистить таблицу групп переменных\n(%1)!").
+                              arg(query.lastError().text()));
+        m_popup->show();
+        return;
+    }
+
+    query.clear();
+
+    m_system_db.transaction();
+
+    query.prepare("INSERT INTO var_group (id, name) VALUES (:id, :name);");
+
+    for(int i = 0; i < groups.count(); i++)
+    {
+        query.bindValue(":id", groups[i].first);
+        query.bindValue(":name", groups[i].second);
+
+        if(!query.exec())
+        {
+            QString text = tr("Ошибка импорта матрицы привязок:\nНевозможно вставить группу в базу данных\n(%1)!").
+                           arg(query.lastError().text());
+            m_popup->setPopupText(text);
+            m_popup->show();
+            outLogMessage(text);
+        }
+    }
+
+    m_system_db.commit();
+}
+//--------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::exportIOToDbFromExcel(const QVector<ConfiguratorWindow::import_io_t> &io_list, const QString &type)
+{
+    if(io_list.isEmpty() || type.isEmpty())
+        return;
+
+    QSqlQuery query(m_system_db);
+    m_system_db.transaction();
+
+    query.prepare("INSERT INTO io_list (key, address, type, description) VALUES (:key, :address, :type, :description);");
+
+    for(int i = 0; i < io_list.count(); i++)
+    {
+        query.bindValue(":key", io_list[i].key);
+        query.bindValue(":address", io_list[i].address);
+        query.bindValue(":type", type.toUpper());
+        query.bindValue(":description", io_list[i].description);
+
+        if(!query.exec())
+        {
+            QString text = tr("Ошибка импорта матрицы привязок:\nНевозможно вставить вход/выход в базу данных\n(%1)!").
                            arg(query.lastError().text());
             m_popup->setPopupText(text);
             m_popup->show();

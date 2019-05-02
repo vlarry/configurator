@@ -325,7 +325,7 @@
             /*!
              * \brief The import_variable_t struct
              *
-             * Структура описывающая внутренние переменные устройства для импорта в БД
+             * Структура описывающая внутренние переменные устройства для экспорта в БД
              */
             struct import_variable_t
             {
@@ -337,6 +337,17 @@
                 int bit; // бит в котором хранится состояние переменной
                 QString name; // описание переменной
                 QString description; // развернутое описание переменной (тултип)
+            };
+            /*!
+             * \brief The import_io_t struct
+             *
+             * Структура описывающая входы/выходы устройства для экспорта в БД
+             */
+            struct import_io_t
+            {
+                QString key; // ключ (название входа/выхода)
+                int address; // адрес чтения состояния входа/выхода
+                QString description; // название входа/выхода (табличное представление)
             };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
@@ -569,7 +580,9 @@
             void importPurposeFromDb(const QString &type);
             void importPurposetToTableFromExcelStart();
             void importPurposetToTableFromExcel(QXlsx::Document &xlsx);
-            void exportPurposeToDbFromExcel(const QVector<import_variable_t> &variables);
+            void exportVariableToDbFromExcel(const QVector<import_variable_t> &variables);
+            void exportGroupToDbFromExcel(const QVector<QPair<int, QString>> &groups);
+            void exportIOToDbFromExcel(const QVector<import_io_t> &io_list, const QString &type);
             void startExportToPDF(JournalPtr journal = nullptr);
             void startMenuJournalExportToPDF(const QString &type);
             void startCurrentJournalExportToPDF();
