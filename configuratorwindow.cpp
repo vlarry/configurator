@@ -11445,6 +11445,13 @@ void ConfiguratorWindow::importPurposetToTableFromExcelStart()
 //----------------------------------------------------------------------------
 void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
 {
+    if(!m_system_db.isOpen())
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНет доступа к системной базе данных!"));
+        m_popup->show();
+        return;
+    }
+
     // Загрузка переменных в таблицу variable
     if(!xlsx.selectSheet("var"))
     {
@@ -11467,11 +11474,13 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
 
     QVector<import_variable_t> variables;
 
-    for(int row = 0; row < row_count; row++)
+    for(int row = 0, reserve = 0; row < row_count; row++)
     {
         import_variable_t var;
 
         var.key = xlsx.read(row + 2, 1).toString();
+        if(var.key.toUpper() == "RESERVE")
+            var.key += QString("_%1").arg(reserve++);
         var.group_id = xlsx.read(row + 2, 2).toInt();
         var.sort_id = xlsx.read(row + 2, 3).toInt();
         var.type_func = xlsx.read(row + 2, 4).toString();
@@ -11483,7 +11492,53 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
         variables << var;
     }
 
-    qDebug() << variables.count();
+    exportPurposeToDbFromExcel(variables);
+}
+//-------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::exportPurposeToDbFromExcel(const QVector<ConfiguratorWindow::import_variable_t> &variables)
+{
+    if(variables.isEmpty())
+        return;
+
+    QSqlQuery query(m_system_db);
+
+    if(!query.exec("DELETE FROM variable;"))
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно очистить таблицу переменных\n(%1)!").
+                              arg(query.lastError().text()));
+        m_popup->show();
+        return;
+    }
+
+    query.clear();
+
+    m_system_db.transaction();
+
+    query.prepare("INSERT INTO variable (key, group_id, sort_id, type_function, type_sort, bit, name, description) "
+                  "VALUES (:key, :group_id, :sort_id, :type_function, :type_sort, :bit, :name, :description);");
+
+    for(int i = 0; i < variables.count(); i++)
+    {
+        query.bindValue(":key", variables[i].key);
+        query.bindValue(":group_id", variables[i].group_id);
+        query.bindValue(":sort_id", variables[i].sort_id);
+        query.bindValue(":type_function", variables[i].type_func);
+        query.bindValue(":type_sort", variables[i].type_sort);
+        query.bindValue(":bit", variables[i].bit);
+        query.bindValue(":name", variables[i].name);
+        query.bindValue(":description", variables[i].description);
+
+        if(!query.exec())
+        {
+            QString text = tr("Ошибка импорта матрицы привязок:\nНевозможно вставить переменную в базу данных\n(%1)!").
+                           arg(query.lastError().text());
+            m_popup->setPopupText(text);
+            m_popup->show();
+            outLogMessage(text);
+        }
+    }
+
+    m_system_db.commit();
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const

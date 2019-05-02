@@ -569,6 +569,7 @@
             void importPurposeFromDb(const QString &type);
             void importPurposetToTableFromExcelStart();
             void importPurposetToTableFromExcel(QXlsx::Document &xlsx);
+            void exportPurposeToDbFromExcel(const QVector<import_variable_t> &variables);
             void startExportToPDF(JournalPtr journal = nullptr);
             void startMenuJournalExportToPDF(const QString &type);
             void startCurrentJournalExportToPDF();
