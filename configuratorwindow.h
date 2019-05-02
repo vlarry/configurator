@@ -322,6 +322,22 @@
                 QVector<CModBusDataUnit> units; // массив запросов
                 QTimer*                  timer; // таймер отправки запросов
             };
+            /*!
+             * \brief The import_variable_t struct
+             *
+             * Структура описывающая внутренние переменные устройства для импорта в БД
+             */
+            struct import_variable_t
+            {
+                QString key; // ключ - имя переменной
+                int group_id; // id группы к которой относится переменная
+                int sort_id; // id для сортировки в группе
+                QString type_func; // тип функции (может быть пересмотрено позже)
+                int type_sort; // id сортировки по типу (может быть пересмотрено позже)
+                int bit; // бит в котором хранится состояние переменной
+                QString name; // описание переменной
+                QString description; // развернутое описание переменной (тултип)
+            };
             //------------------------------------------------------------------------------------------
             //--------------------key, address, description, list variables purpose---------------------
             typedef QVector<QPair<QString, QPair<int, QPair<QString, QVector<QString> > > > > purpose_t;

@@ -7132,7 +7132,7 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
     disconnectDb(db);
 }
-//-------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 int ConfiguratorWindow::rowSheetExcel(QXlsx::Document &xlsx, QStringList &columns)
 {
     for(int col = 1; col <= columns.count(); col++)
@@ -11449,6 +11449,7 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
     if(!xlsx.selectSheet("var"))
     {
         m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНет доступа к странице \"var\"!"));
+        m_popup->show();
         return;
     }
 
@@ -11456,6 +11457,33 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
                                                 "description";
 
     int row_count = rowSheetExcel(xlsx, column_list);
+
+    if(row_count == -1)
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно прочитать список переменных!"));
+        m_popup->show();
+        return;
+    }
+
+    QVector<import_variable_t> variables;
+
+    for(int row = 0; row < row_count; row++)
+    {
+        import_variable_t var;
+
+        var.key = xlsx.read(row + 2, 1).toString();
+        var.group_id = xlsx.read(row + 2, 2).toInt();
+        var.sort_id = xlsx.read(row + 2, 3).toInt();
+        var.type_func = xlsx.read(row + 2, 4).toString();
+        var.type_sort = xlsx.read(row + 2, 5).toInt();
+        var.bit = xlsx.read(row + 2, 6).toInt();
+        var.name = xlsx.read(row + 2, 7).toString();
+        var.description = xlsx.read(row + 2, 8).toString();
+
+        variables << var;
+    }
+
+    qDebug() << variables.count();
 }
 //-----------------------------------------------------------------
 int ConfiguratorWindow::addressSettingKey(const QString& key) const
