@@ -11411,10 +11411,6 @@ void ConfiguratorWindow::importPurposetToTableFromExcelStart()
                 if(fileName.isEmpty())
                     return;
 
-                m_progressbar->setProgressTitle(tr("Импорт матрицы привязок из Excel"));
-                m_progressbar->setSettings(0, 50);
-                m_progressbar->progressStart();
-
                 QXlsx::Document xlsx(fileName);
 
                 QStringList sheet_list = xlsx.sheetNames();
@@ -11499,7 +11495,7 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
         variables << var;
     }
 
-    exportVariableToDbFromExcel(variables);
+    exportVariableToDbFromExcel(variables);;
 
     // Загрузка групп в таблицу var_group
     if(!xlsx.selectSheet("var_group"))
@@ -11547,6 +11543,16 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
         return;
     }
 
+    query.clear();
+
+    if(!query.exec("DELETE FROM purpose;"))
+    {
+        m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно очистить таблицу привязок "
+                                 "входов/выходов к переменным\n(%1)!").arg(query.lastError().text()));
+        m_popup->show();
+        return;
+    }
+
     for(const QString &type: io_type)
     {
         if(!xlsx.selectSheet(type))
@@ -11572,8 +11578,26 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
 
         for(int row = 0; row < row_count; row++)
         {
-            import_io_t io = import_io_t({ xlsx.read(row + 2, 1).toString(), xlsx.read(row + 2, 2).toInt(),
-                                           xlsx.read(row + 2, 3).toString() });
+            QString key = xlsx.read(row + 2, 1).toString();
+            int address = xlsx.read(row + 2, 2).toInt();
+            QString description = xlsx.read(row + 2, 3).toString();
+            QString vars = xlsx.read(row + 2, 4).toString();
+
+            if(!vars.isEmpty())
+            {
+                QStringList var_list = vars.split(";");
+
+                if(!var_list.isEmpty())
+                {
+                    for(QString &var: var_list)
+                        var = var.trimmed();
+
+                    exportPurposeVaribleToIO(key, var_list);
+                }
+            }
+
+            import_io_t io = import_io_t({ key, address, description });
+
             io_list << io;
         }
 
@@ -11686,6 +11710,34 @@ void ConfiguratorWindow::exportIOToDbFromExcel(const QVector<ConfiguratorWindow:
         if(!query.exec())
         {
             QString text = tr("Ошибка импорта матрицы привязок:\nНевозможно вставить вход/выход в базу данных\n(%1)!").
+                           arg(query.lastError().text());
+            m_popup->setPopupText(text);
+            m_popup->show();
+            outLogMessage(text);
+        }
+    }
+
+    m_system_db.commit();
+}
+//-----------------------------------------------------------------------------------------------
+void ConfiguratorWindow::exportPurposeVaribleToIO(const QString &key, const QStringList &io_list)
+{
+    if(key.isEmpty() || io_list.isEmpty())
+        return;
+
+    QSqlQuery query(m_system_db);
+    m_system_db.transaction();
+
+    query.prepare("INSERT INTO purpose (io_key, var_key) VALUES (:io_key, :var_key);");
+
+    for(int i = 0; i < io_list.count(); i++)
+    {
+        query.bindValue(":io_key", key);
+        query.bindValue(":var_key", io_list[i]);
+
+        if(!query.exec())
+        {
+            QString text = tr("Ошибка импорта матрицы привязок:\nНевозможно вставить привязку входа/выхода в базу данных\n(%1)!").
                            arg(query.lastError().text());
             m_popup->setPopupText(text);
             m_popup->show();

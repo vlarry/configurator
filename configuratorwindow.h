@@ -583,6 +583,7 @@
             void exportVariableToDbFromExcel(const QVector<import_variable_t> &variables);
             void exportGroupToDbFromExcel(const QVector<QPair<int, QString>> &groups);
             void exportIOToDbFromExcel(const QVector<import_io_t> &io_list, const QString &type);
+            void exportPurposeVaribleToIO(const QString &key, const QStringList &io_list);
             void startExportToPDF(JournalPtr journal = nullptr);
             void startMenuJournalExportToPDF(const QString &type);
             void startCurrentJournalExportToPDF();
