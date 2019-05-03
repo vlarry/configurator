@@ -35,6 +35,7 @@
     #include <QVBoxLayout>
     #include <QHBoxLayout>
     #include <QKeyEvent>
+    #include <QProgressDialog>
     #include <cmath>
     #include <algorithm>
     #include <windows.h>

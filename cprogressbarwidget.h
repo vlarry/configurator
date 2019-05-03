@@ -7,6 +7,7 @@
     #include <QFont>
     #include <QFontMetrics>
     #include <QDebug>
+    #include <windows.h>
     //----------
     namespace Ui
     {

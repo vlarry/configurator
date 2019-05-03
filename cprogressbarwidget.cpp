@@ -12,6 +12,8 @@ CProgressBarWidget::CProgressBarWidget(QWidget* parent):
     ui->progressBar->setMaximumWidth(300);
     ui->progressBar->setMinimumWidth(300);
 
+    ui->lblProgressbarTitle->setAlignment(Qt::AlignCenter);
+
     connect(this, &CProgressBarWidget::increment, this, &CProgressBarWidget::progressIncrement);
     connect(this, &CProgressBarWidget::settingChanged, this, &CProgressBarWidget::setSettings);
 
@@ -39,8 +41,8 @@ void CProgressBarWidget::progressStart()
     QFontMetrics fm(f);
 
     int w_label = fm.width(ui->lblProgressbarTitle->text())*1.2f;
-    setMinimumWidth(w_label + 300);
-    ui->lblProgressbarTitle->setMinimumWidth(w_label);
+    ui->lblProgressbarTitle->setFixedWidth(w_label);
+    setFixedWidth(w_label + 300);
 
     int x = s.width()/2 - size().width()/2;
     int y = s.height()/2 - size().height()/2;
@@ -51,6 +53,8 @@ void CProgressBarWidget::progressStart()
 //-------------------------------------
 void CProgressBarWidget::progressStop()
 {
+    Sleep(500);
+
     ui->progressBar->reset();
     ui->progressBar->resetFormat();
     ui->progressBar->setFormat("");
@@ -84,11 +88,13 @@ void CProgressBarWidget::setProgressRange(int min, int max)
 void CProgressBarWidget::setProgressTitle(const QString& title)
 {
     ui->lblProgressbarTitle->setText(title);
-    ui->lblProgressbarTitle->show();
 }
 //--------------------------------------------------
 void CProgressBarWidget::setProgressValue(int value)
 {
+    QString text = QString::number(value) + " " + tr("%1 из %2 %3").arg(m_format).arg(ui->progressBar->maximum()).arg(m_format);
+
+    ui->progressBar->setFormat(text);
     ui->progressBar->setValue(value);
 }
 //---------------------------------------------------------------------------
@@ -96,12 +102,15 @@ void CProgressBarWidget::setSettings(int min, int max, const QString& format)
 {
     ui->progressBar->reset();
     ui->progressBar->resetFormat();
-    ui->progressBar->setFormat("");
+    ui->progressBar->setFormat(format);
     ui->progressBar->setRange(min, max);
     ui->progressBar->setValue(min);
 
     if(!format.isEmpty())
         m_format = format;
+
+    if(ui->lblProgressbarTitle->isHidden())
+        ui->lblProgressbarTitle->setVisible(true);
 }
 //---------------------------------------------------
 void CProgressBarWidget::progressIncrement(int value)

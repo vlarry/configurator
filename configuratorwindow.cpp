@@ -11463,6 +11463,11 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
         return;
     }
 
+    m_progressbar->setProgressTitle(tr("Импорт матрицы привязок"));
+    m_progressbar->progressStart();
+    m_progressbar->setSettings(0, 100, "%");
+
+
     QStringList column_list =  QStringList() << "key" << "group_id" << "sort_id" << "type_func" << "type_sort" << "bit" << "name" <<
                                                 "description";
 
@@ -11470,6 +11475,7 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
 
     if(row_count == -1)
     {
+        m_progressbar->progressStop();
         m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно прочитать список переменных!"));
         m_popup->show();
         return;
@@ -11495,11 +11501,13 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
         variables << var;
     }
 
-    exportVariableToDbFromExcel(variables);;
+    exportVariableToDbFromExcel(variables);
+    m_progressbar->setProgressValue(20);
 
     // Загрузка групп в таблицу var_group
     if(!xlsx.selectSheet("var_group"))
     {
+        m_progressbar->progressStop();
         m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНет доступа к странице \"var_group\"!"));
         m_popup->show();
         return;
@@ -11512,6 +11520,7 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
 
     if(row_count == -1)
     {
+        m_progressbar->progressStop();
         m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно прочитать список групп переменных!"));
         m_popup->show();
         return;
@@ -11529,6 +11538,7 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
     }
 
     exportGroupToDbFromExcel(groups);
+    m_progressbar->setProgressValue(40);
 
     // Загрузка входов/выходов в таблицу purpose
     QStringList io_type = QStringList() << "input" << "relay" << "led";
@@ -11537,6 +11547,7 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
 
     if(!query.exec("DELETE FROM io_list;"))
     {
+        m_progressbar->progressStop();
         m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНевозможно очистить таблицу списка входов/выходов\n(%1)!").
                               arg(query.lastError().text()));
         m_popup->show();
@@ -11557,8 +11568,10 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
     {
         if(!xlsx.selectSheet(type))
         {
+            m_progressbar->progressStop();
             m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nНет доступа к странице \"%1\"!").arg(type));
             m_popup->show();
+
             return;
         }
 
@@ -11602,7 +11615,13 @@ void ConfiguratorWindow::importPurposetToTableFromExcel(QXlsx::Document &xlsx)
         }
 
         exportIOToDbFromExcel(io_list, type);
+        m_progressbar->setProgressValue(m_progressbar->progressValue() + 20);
     }
+
+    m_progressbar->progressStop();
+
+    m_popup->setPopupText(tr("Матрица привязок успешно импортирована!"));
+    m_popup->show();
 }
 //-------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::exportVariableToDbFromExcel(const QVector<ConfiguratorWindow::import_variable_t> &variables)
