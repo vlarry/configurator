@@ -2363,7 +2363,7 @@ void ConfiguratorWindow::internalVariableRead()
     }
 
     clearInternalVariableState();
-    sendRequestRead(0xac, 24, INTERNAL_VARIABLES_READ, CModBusDataUnit::ReadInputRegisters);
+    sendRequestRead(0xac, 20, INTERNAL_VARIABLES_READ, CModBusDataUnit::ReadInputRegisters);
 }
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
@@ -2385,24 +2385,6 @@ void ConfiguratorWindow::processReadJournals(bool state)
 
                 if(ui->checkboxCalibTimeout->isChecked()) // отключаем опрос расчетных величин, если было запущено
                     chboxCalculateTimeoutStateChanged(false);
-
-//                if(journal->widget()->table()->rowCount() != 0) // таблица журнала не пустая
-//                {
-//                    if(journal->widget()->table()->rowCount() == journal->filter().rangeMaxValue())
-//                    {
-//                        showMessageBox(tr("Чтение журнала"), tr("Все сообщения прочитаны!"), QMessageBox::Information);
-//                        endJournalRead(journal);
-//                        ui->pushButtonJournalRead->setChecked(false);
-//                        return;
-//                    }
-
-//                    if(dialogJournalRead(journal) == -1)
-//                    {
-//                        endJournalRead(journal);
-//                        ui->pushButtonJournalRead->setChecked(false);
-//                        return;
-//                    }
-//                }
 
                 m_time_process.start();
 
@@ -4772,7 +4754,7 @@ void ConfiguratorWindow::displayMemoryOut(const CModBusDataUnit::vlist_t& values
  */
 void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
 {
-    if(data.count() < 24 || !m_debug_var_window || m_internal_variable_list.isEmpty())
+    if(data.count() < 20 || !m_debug_var_window || m_internal_variable_list.isEmpty())
         return;
 
     QVector<quint16> values;
@@ -4856,8 +4838,7 @@ void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
     int faddr = addressPurposeKey(first);
     int eaddr = addressPurposeKey(last);
 
-    int columnCount = (eaddr - faddr)/24 + 1; // 24 полуслова хранит до 384 переменных, т.е. при чтении одной
-                                              // переменной мы получим 24 полуслова
+    int columnCount = (eaddr - faddr)/20 + 1; // 20 полуслов хранит до 320 переменных
 
     if(columnCount == 0)
         return;
@@ -4889,7 +4870,7 @@ void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
     for(int i = 0; i < columnCount; i++)
     {
         int column_index = i + col_offset; // индекс столбца (запрос разбит на несколько частей, н-р: LED = 4 запроса
-        int offset_pos   = i*24; // смещение в данных, т.е. 24 ячейки длина одного запроса
+        int offset_pos   = i*20; // смещение в данных, т.е. 20 ячеек длина одного запроса
 
         CMatrix::RowArray& rows = matrix.rows();
 
@@ -5082,7 +5063,7 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
 //-----------------------------------------------------------------------
 void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 {
-    if(unit.count() != 48)
+    if(unit.count() != 40)
         return;
 
     QString tprotect = unit.property("PROTECTION").toString();
@@ -5121,7 +5102,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         return;
 
     int k10_pos = bitNumber/16;
-    int k11_pos = k10_pos + 24;
+    int k11_pos = k10_pos + 20;
     int bit     = bitNumber%16;
 
     int k10_state = -1;
@@ -5185,7 +5166,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 //-------------------------------------------------------------------
 void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
 {
-    if(unit.count() != 48)
+    if(unit.count() != 40)
         return;
 
     QTableView* table = m_monitor_purpose_window->table();
@@ -5202,7 +5183,7 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
 
     for(int col = 0; col < matrix.columnCount(); col++)
     {
-        int offset = col*24;
+        int offset = col*20;
 
         for(int row = 0; row < matrix.rowCount(); row++)
         {
@@ -7317,7 +7298,7 @@ void ConfiguratorWindow::sendPurposeReadRequest(const QString& first, const QStr
     if(faddr == -1 || laddr == -1)
         return;
 
-    int size = laddr - faddr + 24; // получаем размер считываемого блока с учетом выравнивания в 48 байт (одна строка)
+    int size = laddr - faddr + 20; // получаем размер считываемого блока с учетом выравнивания в 40 байт (одна строка)
 
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(faddr),
                          QVector<quint16>() << quint16(size));
@@ -7344,14 +7325,14 @@ void ConfiguratorWindow::sendPurposeWriteRequest(const QString& first, const QSt
     if(bIndex == -1 || eIndex == -1)
         return;
 
-    int hword_size = (eIndex - bIndex + 1)*24;
+    int hword_size = (eIndex - bIndex + 1)*20;
 
     QVector<quint16> data = QVector<quint16>(hword_size, 0); // создаем вектор размерностью hword_size полуслов со значением 0
 
     for(int i = 0; i <= (eIndex - bIndex); i++) // обход колонок
     {
         int index      = i + bIndex;
-        int offset_pos = i*24;
+        int offset_pos = i*20;
 
         for(int j = 1; j < matrix.rowCount(); j++)
         {
@@ -8150,7 +8131,7 @@ void ConfiguratorWindow::testStyle(bool state)
 void ConfiguratorWindow::readStatusInfo()
 {
     sendRequestRead(16, 2, READ_STATUS_MCP_INFO, CModBusDataUnit::ReadInputRegisters);
-    sendRequestRead(538, 24, READ_STATUS_MODULE_INFO, CModBusDataUnit::ReadInputRegisters);
+    sendRequestRead(538, 20, READ_STATUS_MODULE_INFO, CModBusDataUnit::ReadInputRegisters);
 }
 /*!
  * \brief ConfiguratorWindow::updateSerialPortSettings
