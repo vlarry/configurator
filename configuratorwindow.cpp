@@ -7122,8 +7122,10 @@ int ConfiguratorWindow::rowSheetExcel(QXlsx::Document &xlsx, QStringList &column
 
         if(xlsx.read(1, col).toString().toUpper() != col_name.toUpper())
         {
-            m_popup->setPopupText(tr("Ошибка импорта матрицы привязок:\nКолонка (1, %1) не содержит имя \"%2\"!").arg(col).
-                                                                                                                  arg(col_name));
+            QString text = tr("Ошибка импорта матрицы привязок:\nКолонка (1, %1) не содержит имя \"%2\"(страница \'%3\')!").arg(col).
+                    arg(col_name).arg(xlsx.currentWorksheet()->sheetName());
+            m_popup->setPopupText(text);
+            outLogMessage(text);
             return -1;
         }
     }
@@ -11640,8 +11642,8 @@ void ConfiguratorWindow::exportVariableToDbFromExcel(const QVector<ConfiguratorW
 
         if(!query.exec())
         {
-            QString text = tr("Ошибка импорта матрицы привязок:\nНевозможно вставить переменную в базу данных\n(%1)!").
-                           arg(query.lastError().text());
+            QString text = tr("Ошибка импорта матрицы привязок:\nНевозможно вставить переменную \'%1\' в базу данных\n(%2)!").
+                           arg(variables[i].key).arg(query.lastError().text());
             m_popup->setPopupText(text);
             m_popup->show();
             outLogMessage(text);
