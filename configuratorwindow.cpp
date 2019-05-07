@@ -7146,6 +7146,12 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
 
     int addr = addressSettingKey(first);
 
+    if(addr == -1)
+    {
+        qWarning() << tr("Переменной \'%1\' не назначен адрес.").arg(first);
+        return;
+    }
+
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), type, quint16(addr), QVector<quint16>() << quint16(size));
 
     unit.setProperty("REQUEST", GENERAL_TYPE);
@@ -7166,6 +7172,12 @@ void ConfiguratorWindow::sendSettingReadRequest(const QStringList &key_list, CMo
     {
         int addr = addressSettingKey(key);
 
+        if(addr == -1)
+        {
+            qWarning() << tr("Переменной \'%1\' не назначен адрес.").arg(key);
+            continue;
+        }
+
         CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), type, quint16(addr), 2);
         unit.setProperty("REQUEST", GENERAL_TYPE);
         unit.setProperty("GROUP", index);
@@ -7179,6 +7191,12 @@ void ConfiguratorWindow::sendSettingReadRequest(const QStringList &key_list, CMo
 void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index)
 {
     int addr = addressSettingKey(index);
+
+    if(addr == -1)
+    {
+        qWarning() << tr("Переменной \'%1\' не назначен адрес.").arg(index);
+        return;
+    }
 
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters,
                          quint16(addr), QVector<quint16>() << 1);
@@ -7522,6 +7540,9 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
 {
     int firstAddr = addressSettingKey("K10");
 
+    if(firstAddr == -1)
+        qWarning() << tr("Переменной \'K10\' не назначен адрес.");
+
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(firstAddr),
                          QVector<quint16>() << 48);
 
@@ -7551,9 +7572,15 @@ void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
  */
 void ConfiguratorWindow::sendRequestRead(int addr, int size, int request, CModBusDataUnit::FunctionType functionType)
 {
+    if(addr == -1)
+    {
+        qWarning() << tr("Переменной не назначен адрес.");
+        return;
+    }
+
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), functionType, quint16(addr), QVector<quint16>() << quint16(size));
 
-    unit.setProperty(tr("REQUEST"), request);
+    unit.setProperty("REQUEST", request);
 
     m_modbus->sendData(unit);
 }
@@ -7564,6 +7591,12 @@ void ConfiguratorWindow::sendRequestRead(int addr, int size, int request, CModBu
  */
 void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, int request)
 {
+    if(addr == -1)
+    {
+        qWarning() << tr("Переменной не назначен адрес.");
+        return;
+    }
+
     CModBusDataUnit::FunctionType funType = ((values.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                  CModBusDataUnit::WriteMultipleRegisters);
 
