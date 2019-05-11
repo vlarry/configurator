@@ -7,6 +7,7 @@
     #include <QListWidgetItem>
     #include <QDebug>
     #include <QFocusEvent>
+    #include "toolbutton.h"
     //----------
     namespace Ui
     {
@@ -20,7 +21,7 @@
         public:
             enum ButtonIDType
             {
-                BUTTON_NONE,
+                BUTTON_NONE = 0,
                 BUTTON_NEW_PROJECT, // кнопка "Новый" - создание нового проекта
                 BUTTON_OPEN_PROJECT, // кнопка "Открыть" - открытие проекта
                 BUTTON_SAVE_PROJECT, // кнопка "Сохранить" - сохранение проекта в текущий файл
@@ -78,6 +79,7 @@
             void activateMenuButtons();
             void deactivateMenuButton();
             void itemDoubleClicked(QListWidgetItem *item);
+            void updateButtonGroup();
 
         signals:
             void closeWindow();
@@ -125,10 +127,12 @@
             void importSettingsMenu();
             void emitImport(ButtonIDType id);
             void initMenu();
+            void backlightControl();
 
         private:
             Ui::CWidgetMenu* ui;
             OperationType m_operation;
             bool m_isButtonActive;
+            QVector<CToolButton*> m_button_menu_list;
     };
 #endif // WIDGETMENU_H

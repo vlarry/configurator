@@ -5,7 +5,8 @@ CWidgetMenu::CWidgetMenu(QWidget* parent):
     QWidget(parent),
     ui(new Ui::CWidgetMenu),
     m_operation(OperationType({ BUTTON_NONE, BUTTON_NONE })),
-    m_isButtonActive(false)
+    m_isButtonActive(false),
+    m_button_menu_list(QVector<CToolButton*>())
 {
     ui->setupUi(this);
     initMenu();
@@ -58,16 +59,20 @@ void CWidgetMenu::itemDoubleClicked(QListWidgetItem *item)
     if(item)
         openExistsProject(item->text());
 }
+//-----------------------------------
+void CWidgetMenu::updateButtonGroup()
+{
+    for(CToolButton *button: m_button_menu_list)
+    {
+        if(button)
+            button->update();
+    }
+}
 //--------------------------------------------
 void CWidgetMenu::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
 }
-//------------------------------------------------------------
-//bool CWidgetMenu::eventFilter(QObject *watched, QEvent *event)
-//{
-//    return false;
-//}
 //-----------------------------------------
 void CWidgetMenu::leaveEvent(QEvent *event)
 {
@@ -183,7 +188,6 @@ void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
         }
         else if(id == BUTTON_EXPORT_TO_PDF)
         {
-            qDebug() << "emit: " << journal_type;
             emit exportJournalToPDF(journal_type);
         }
     }
@@ -421,23 +425,23 @@ void CWidgetMenu::initMenu()
     ui->toolButtonImportProject->setCheckable(true);
     ui->toolButtonSettings->setCheckable(true);
 
-    ui->toolButtonExportProject->setIndicatorMenu(true);
-    ui->toolButtonImportProject->setIndicatorMenu(true);
-    ui->toolButtonSettings->setIndicatorMenu(true);
+    ui->toolButtonExportProject->setButtonMenu(true, 1);
+    ui->toolButtonImportProject->setButtonMenu(true, 1);
+    ui->toolButtonSettings->setButtonMenu(true, 1);
 
     // Меню Экспорта
-    ui->toolButtonProtectionExport->setIndicatorMenu(true);
-    ui->toolButtonJournalExport->setIndicatorMenu(true);
-    ui->toolButtonSettingsExport->setIndicatorMenu(true);
-    ui->toolButtonJournalCrashExport->setIndicatorMenu(true);
-    ui->toolButtonJournalEventExport->setIndicatorMenu(true);
-    ui->toolButtonJournalHalfhourExport->setIndicatorMenu(true);
-    ui->toolButtonJournalIsolationExport->setIndicatorMenu(true);
-    ui->toolButtonSettingsAnalogInputExport->setIndicatorMenu(true);
-    ui->toolButtonSettingsDiscretInputExport->setIndicatorMenu(true);
-    ui->toolButtonSettingsRelayExport->setIndicatorMenu(true);
-    ui->toolButtonSettingsLedExport->setIndicatorMenu(true);
-    ui->toolButtonSettingsProtectionBlockExport->setIndicatorMenu(true);
+    ui->toolButtonProtectionExport->setButtonMenu(true, 2);
+    ui->toolButtonJournalExport->setButtonMenu(true, 2);
+    ui->toolButtonSettingsExport->setButtonMenu(true, 2);
+    ui->toolButtonJournalCrashExport->setButtonMenu(true, 3);
+    ui->toolButtonJournalEventExport->setButtonMenu(true, 3);
+    ui->toolButtonJournalHalfhourExport->setButtonMenu(true, 3);
+    ui->toolButtonJournalIsolationExport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsAnalogInputExport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsDiscretInputExport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsRelayExport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsLedExport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsProtectionBlockExport->setButtonMenu(true, 3);
     ui->toolButtonProtectionExport->setID(BUTTON_PROTECTION_EXPORT);
     ui->toolButtonJournalExport->setID(BUTTON_JOURNAL_EXPORT);
     ui->toolButtonSettingsExport->setID(BUTTON_SETTINGS_EXPORT);
@@ -450,6 +454,26 @@ void CWidgetMenu::initMenu()
     ui->toolButtonSettingsRelayExport->setID(BUTTON_SETTINGS_RELAY_EXPORT);
     ui->toolButtonSettingsLedExport->setID(BUTTON_SETTINGS_LED_EXPORT);
     ui->toolButtonSettingsProtectionBlockExport->setID(BUTTON_SETTINGS_PROTECTION_BLOCK_EXPORT);
+
+    m_button_menu_list << ui->toolButtonExportProject << ui->toolButtonImportProject << ui->toolButtonSettings <<
+                          ui->toolButtonProtectionExport << ui->toolButtonJournalExport << ui->toolButtonSettingsExport <<
+                          ui->toolButtonJournalCrashExport << ui->toolButtonJournalEventExport << ui->toolButtonJournalHalfhourExport <<
+                          ui->toolButtonJournalIsolationExport << ui->toolButtonSettingsAnalogInputExport <<
+                          ui->toolButtonSettingsDiscretInputExport << ui->toolButtonSettingsRelayExport << ui->toolButtonSettingsLedExport <<
+                          ui->toolButtonSettingsProtectionBlockExport << ui->toolButtonProtectionImport << ui->toolButtonJournalImport <<
+                          ui->toolButtonSettingsImport << ui->toolButtonJournalCrashImport << ui->toolButtonJournalEventImport <<
+                          ui->toolButtonJournalHalfhourImport << ui->toolButtonJournalIsolationImport <<
+                          ui->toolButtonSettingsAnalogInputImport << ui->toolButtonSettingsDiscretInputImport <<
+                          ui->toolButtonSettingsRelayImport << ui->toolButtonSettingsLedImport <<
+                          ui->toolButtonSettingsProtectionBlockImport;
+
+    for(CToolButton *button: m_button_menu_list)
+    {
+        if(button)
+        {
+            connect(button, &CToolButton::updateButtons, this, &CWidgetMenu::updateButtonGroup);
+        }
+    }
 
     ui->frameSubmenu1->hide();
     ui->frameSubmenu2->hide();
@@ -486,18 +510,18 @@ void CWidgetMenu::initMenu()
     connect(ui->toolButtonSettingsProtectionBlockExport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
 
     // Меню Импорта
-    ui->toolButtonProtectionImport->setIndicatorMenu(true);
-    ui->toolButtonJournalImport->setIndicatorMenu(true);
-    ui->toolButtonSettingsImport->setIndicatorMenu(true);
-    ui->toolButtonJournalCrashImport->setIndicatorMenu(true);
-    ui->toolButtonJournalEventImport->setIndicatorMenu(true);
-    ui->toolButtonJournalHalfhourImport->setIndicatorMenu(true);
-    ui->toolButtonJournalIsolationImport->setIndicatorMenu(true);
-    ui->toolButtonSettingsAnalogInputImport->setIndicatorMenu(true);
-    ui->toolButtonSettingsDiscretInputImport->setIndicatorMenu(true);
-    ui->toolButtonSettingsRelayImport->setIndicatorMenu(true);
-    ui->toolButtonSettingsLedImport->setIndicatorMenu(true);
-    ui->toolButtonSettingsProtectionBlockImport->setIndicatorMenu(true);
+    ui->toolButtonProtectionImport->setButtonMenu(true, 2);
+    ui->toolButtonJournalImport->setButtonMenu(true, 2);
+    ui->toolButtonSettingsImport->setButtonMenu(true, 2);
+    ui->toolButtonJournalCrashImport->setButtonMenu(true, 3);
+    ui->toolButtonJournalEventImport->setButtonMenu(true, 3);
+    ui->toolButtonJournalHalfhourImport->setButtonMenu(true, 3);
+    ui->toolButtonJournalIsolationImport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsAnalogInputImport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsDiscretInputImport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsRelayImport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsLedImport->setButtonMenu(true, 3);
+    ui->toolButtonSettingsProtectionBlockImport->setButtonMenu(true, 3);
     ui->toolButtonProtectionImport->setID(BUTTON_PROTECTION_IMPORT);
     ui->toolButtonJournalImport->setID(BUTTON_JOURNAL_IMPORT);
     ui->toolButtonSettingsImport->setID(BUTTON_SETTINGS_IMPORT);
@@ -548,6 +572,11 @@ void CWidgetMenu::initMenu()
     ui->toolButtonExportProject->setEnabled(false);
     ui->toolButtonImportProject->setEnabled(false);
     ui->toolButtonSettings->setEnabled(true);
+}
+//----------------------------------
+void CWidgetMenu::backlightControl()
+{
+
 }
 //-------------------------
 void CWidgetMenu::clicked()
@@ -722,6 +751,4 @@ void CWidgetMenu::hoverChanged(int id)
             ui->toolButtonSettings->setChecked(false);
         break;
     }
-
-    qDebug() << QString("operation: type->%1, operation->%2").arg(m_operation.type).arg(m_operation.operation);
 }
