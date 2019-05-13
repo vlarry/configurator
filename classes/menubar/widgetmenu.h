@@ -59,7 +59,8 @@
                 BUTTON_EXPORT_TO_EXCEL, // кнопка экспорта в эксель
                 BUTTON_EXPORT_TO_PDF, // кнопка экспорта в PDF
                 BUTTON_IMPORT_FROM_DATEBASE, // кнопка экспорта в базу данных
-                BUTTON_IMPORT_FROM_EXCEL // кнопка экспорта в эксель
+                BUTTON_IMPORT_FROM_EXCEL, // кнопка экспорта в эксель
+                BUTTON_SETTING_DEBUG // кнопка вызова окна отладки (вывод состояния всех переменных)
             };
 
             struct OperationType

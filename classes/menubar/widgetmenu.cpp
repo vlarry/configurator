@@ -383,6 +383,7 @@ void CWidgetMenu::initMenu()
     ui->toolButtonImportProject->setID(BUTTON_IMPORT_PROJECT);
     ui->toolButtonSettings->setID(BUTTON_SETTINGS_PROJECT);
     ui->toolButtonCloseProject->setID(BUTTON_CLOSE_PROJECT);
+    ui->toolButtonSettingDebug->setID(BUTTON_SETTING_DEBUG);
     ui->toolButtonExit->setID(BUTTON_EXIT_APP);
 
     QAction *actionNewProject = new QAction(QIcon(":/images/resource/images/new.png"), tr("Новый"), this);
@@ -410,6 +411,7 @@ void CWidgetMenu::initMenu()
     connect(ui->toolButtonSaveProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonSaveAsProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonCloseProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(ui->toolButtonSettingDebug, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonExit, &CToolButton::clicked, this, &CWidgetMenu::clicked);
 
     connect(ui->toolButtonNewProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
@@ -627,6 +629,10 @@ void CWidgetMenu::clicked()
         case BUTTON_IMPORT_FROM_EXCEL:
         case BUTTON_IMPORT_FROM_DATEBASE:
             emitImport(button_id);
+        break;
+
+        case BUTTON_SETTING_DEBUG:
+            emit settings();
         break;
 
         default: qDebug() << QString("ID кнопки не определено: %1").arg(button_id); break;
