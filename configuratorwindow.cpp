@@ -4754,7 +4754,7 @@ void ConfiguratorWindow::displayMemoryOut(const CModBusDataUnit::vlist_t& values
  */
 void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
 {
-    if(data.count() < 20 || !m_debug_var_window || m_internal_variable_list.isEmpty())
+    if(data.count() != 20 || !m_debug_var_window || m_internal_variable_list.isEmpty())
         return;
 
     QVector<quint16> values;
@@ -4774,9 +4774,18 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
             {
                 int var = i/16;
                 int bit = i%16;
-                bool state = ((values[var]&(1 << bit))?true:false);
 
-                checkBox->setChecked(state);
+                if(i < data.count()*16)
+                {
+                    bool state = ((values[var]&(1 << bit))?true:false);
+                    checkBox->setChecked(state);
+                }
+                else
+                {
+                    qWarning() << QString("Ошибка вывода отладочной информации: бит %1 выходит за предел %2").arg(i).
+                                  arg(data.count()*16 - 1);
+                    break;
+                }
             }
         }
     }
