@@ -81,37 +81,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
 {
-    saveSettings();
-
-    if(m_timer_synchronization->isActive())
-        m_timer_synchronization->stop();
-
-    if(m_watcher->isRunning())
-    {
-        m_watcher->cancel();
-        m_watcher->waitForFinished();
-    }
-
-    if(m_modbus)
-    {
-        if(m_modbus->channel()->isOpen())
-            emit m_modbus->close();
-    }
-
-    outLogMessage(tr("Завершение работы программы."));
-
-    if(m_system_db.isOpen())
-        m_system_db.close();
-
-    if(m_journal_event)
-    {
-        delete m_journal_event;
-        m_journal_event = nullptr;
-    }
-
-    delete m_modbus;
-    m_modbus = nullptr;
-    
     delete ui;
 }
 //---------------------------------------
@@ -2363,7 +2332,12 @@ void ConfiguratorWindow::internalVariableRead()
     }
 
     clearInternalVariableState();
-    sendRequestRead(0xac, 20, INTERNAL_VARIABLES_READ, CModBusDataUnit::ReadInputRegisters);
+
+    // Чтение двумя запросами, т.к. для того чтобы вместить состояния всех переменных (439 в новой матрице) необходимо было
+    // растянуть адреса, но они идут не линейно всего получается 14 32-битных переменных, т.е. 28 16-битных и могут вместить
+    // до 448 переменных
+    sendRequestRead(172, 24, INTERNAL_VARIABLES_READ, CModBusDataUnit::ReadInputRegisters); // читаем адреса 172-195
+    sendRequestRead(562, 4, INTERNAL_VARIABLES_READ, CModBusDataUnit::ReadInputRegisters); // читаем адреса 562-565
 }
 //------------------------------------------------------
 void ConfiguratorWindow::processReadJournals(bool state)
@@ -2720,8 +2694,19 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     }
     else if(type == INTERNAL_VARIABLES_READ)
     {
+        static CModBusDataUnit::vlist_t variable_list = CModBusDataUnit::vlist_t();
+
         if(!showErrorMessage(tr("Чтение состояний внутренних переменных"), unit))
-            displayInternalVariables(unit.values());
+        {
+            if(unit.count() == 24)
+                variable_list = unit.values();
+            else if(unit.count() == 4)
+            {
+                variable_list += unit.values();
+                displayInternalVariables(variable_list);
+                variable_list.clear();
+            }
+        }
     }
 }
 //------------------------------------
@@ -4381,6 +4366,54 @@ void ConfiguratorWindow::calibrationRoll(bool state)
     ui->pushButtonCalibrationRoll->setChecked(state);
     ui->pushButtonCalibrationRoll->setText((state)?tr("Свернуть калибровки"):tr("Развернуть калибровки"));
 }
+//------------------------------------------------
+void ConfiguratorWindow::applicationCloseProcess()
+{
+    saveSettings();
+
+    if(m_timer_synchronization->isActive())
+        m_timer_synchronization->stop();
+
+    if(m_watcher->isRunning())
+    {
+        m_watcher->cancel();
+        m_watcher->waitForFinished();
+    }
+
+    if(m_modbus)
+    {
+        if(m_modbus->channel()->isOpen())
+            emit m_modbus->close();
+    }
+
+    outLogMessage(tr("Завершение работы программы."));
+
+    if(m_system_db.isOpen())
+        m_system_db.close();
+
+    if(m_journal_crash)
+    {
+        delete m_journal_crash;
+        m_journal_crash = nullptr;
+    }
+
+    if(m_journal_event)
+    {
+        delete m_journal_event;
+        m_journal_event = nullptr;
+    }
+
+    if(m_journal_halfhour)
+    {
+        delete m_journal_halfhour;
+        m_journal_halfhour = nullptr;
+    }
+
+    delete m_modbus;
+    m_modbus = nullptr;
+
+    close();
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -4754,7 +4787,7 @@ void ConfiguratorWindow::displayMemoryOut(const CModBusDataUnit::vlist_t& values
  */
 void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
 {
-    if(data.count() != 20 || !m_debug_var_window || m_internal_variable_list.isEmpty())
+    if(data.count() != 28 || !m_debug_var_window || m_internal_variable_list.isEmpty())
         return;
 
     QVector<quint16> values;
@@ -4775,14 +4808,14 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
                 int var = i/16;
                 int bit = i%16;
 
-                if(i < data.count()*16)
+                if(i < m_internal_variable_list.count())
                 {
                     bool state = ((values[var]&(1 << bit))?true:false);
                     checkBox->setChecked(state);
                 }
                 else
                 {
-                    qWarning() << QString("Ошибка вывода отладочной информации: бит %1 выходит за предел %2").arg(i).
+                    qInfo() << QString("Конец вывода отладочной информации: бит %1 выходит за пределы 0 - %2").arg(i).
                                   arg(data.count()*16 - 1);
                     break;
                 }
@@ -6986,13 +7019,14 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
             dialog.setValues(journal->filter().rangeMaxValue(), journal->msgRead(), read_time);
             dialog.exec();
         }
-        else
+        else if(msg_count != 0 && msg_read != 0)
         {
             msg = tr("Чтение журнала %1 прервано пользователем.\nПрочитано %2 из %3 сообщений.").arg(journal_name).arg(msg_count).
                     arg(msg_read);
         }
 
-        outLogMessage(msg);
+        if(msg_count != 0 && msg_read != 0)
+            outLogMessage(msg);
 
         timeoutSynchronization(); // включаем синхронизацию
 
@@ -12686,7 +12720,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
     connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
     connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this, &ConfiguratorWindow::updateSerialPortSettings);
-    connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::close);
+    connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::applicationCloseProcess);
     connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeWindow, this, &ConfiguratorWindow::showMinimized);
     connect(ui->widgetMenuBar, &CMenuBar::menubarMouseUpdatePosition, this, &ConfiguratorWindow::mouseMove);

@@ -627,6 +627,7 @@
             void internalVariableSetInterval();
             void internalVariablePressKey(bool isAlt, bool isCtrl, int key);
             void calibrationRoll(bool state);
+            void applicationCloseProcess();
 
         protected:
             void keyPressEvent(QKeyEvent* event);
