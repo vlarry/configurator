@@ -4805,6 +4805,12 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
 
             if(checkBox)
             {
+                if(checkBox->text().toUpper().contains("RESERVE"))
+                {
+                    checkBox->setDisabled(true);
+                    continue;
+                }
+
                 int var = i/16;
                 int bit = i%16;
 
