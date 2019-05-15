@@ -4801,13 +4801,13 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
     {
         if(m_internal_variable_list.find(i) != m_internal_variable_list.end())
         {
-            QCheckBox* checkBox = m_internal_variable_list[i];
+            QCheckBox* checkbox = m_internal_variable_list[i];
 
-            if(checkBox)
+            if(checkbox)
             {
-                if(checkBox->text().toUpper().contains("RESERVE"))
+                if(checkbox->text().toUpper().contains("RESERVE"))
                 {
-                    checkBox->setDisabled(true);
+                    checkbox->setDisabled(true);
                     continue;
                 }
 
@@ -4817,7 +4817,7 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
                 if(i < m_internal_variable_list.count())
                 {
                     bool state = ((values[var]&(1 << bit))?true:false);
-                    checkBox->setChecked(state);
+                    checkbox->setChecked(state);
                 }
                 else
                 {
