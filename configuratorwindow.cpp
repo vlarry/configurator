@@ -814,10 +814,10 @@ void ConfiguratorWindow::protectionStartingWrite()
     QStringList list = QStringList() << "M20" << "X06" << "M21";
 
     for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
-    sendSettingControlWriteRequest("M19", DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendProtectionWorkModeRequest("STARTING", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingControlWriteRequest("M19", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("STARTING", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminWrite
@@ -829,10 +829,10 @@ void ConfiguratorWindow::protectionIminWrite()
     QStringList list = QStringList() << "M30" << "X10" << "M31";
 
     for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
-    sendSettingControlWriteRequest("M29", DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendProtectionWorkModeRequest("IMIN", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingControlWriteRequest("M29", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("IMIN", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorGroupWrite
@@ -1394,7 +1394,7 @@ void ConfiguratorWindow::protectionMTZ2Read()
  */
 void ConfiguratorWindow::protectionMTZ3Read()
 {
-    QStringList list = QStringList() << "M14" << "X04" << "K22" << "TZ1" << "TZ2" << "TZ3" << "TZ4" << "TZ5" << "TZ6";
+    QStringList list = QStringList() << "M14" << "X04" << "K22" << "TZ1" << "TZ2" << "TZ3" << "TZ4" << "TZ5" << "TZ6" << "TZ7";
 
     for(QString key: list)
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
@@ -1797,10 +1797,10 @@ void ConfiguratorWindow::protectionStartingRead()
     QStringList list = QStringList() << "M20" << "X06" << "M21";
 
     for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
-    sendSettingControlReadRequest("M19", DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendProtectionWorkModeRequest("STARTING", FUN_READ, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingControlReadRequest("M19", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("STARTING", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminRead
@@ -1812,10 +1812,10 @@ void ConfiguratorWindow::protectionIminRead()
     QStringList list = QStringList() << "M30" << "X10" << "M31";
 
     for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
-    sendSettingControlReadRequest("M29", DEVICE_MENU_PROTECT_ITEM_MOTOR);
-    sendProtectionWorkModeRequest("IMIN", FUN_READ, DEVICE_MENU_PROTECT_ITEM_MOTOR);
+    sendSettingControlReadRequest("M29", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("IMIN", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorRead
@@ -3460,40 +3460,6 @@ void ConfiguratorWindow::initMenuPanel()
         connect(cboxLevel1, SIGNAL(currentIndexChanged(int)), cboxLevel2, SLOT(setCurrentIndex(int)));
         connect(cboxLevel2, SIGNAL(currentIndexChanged(int)), cboxLevel1, SLOT(setCurrentIndex(int)));
     }
-
-    // Вставка кнопки Кор КЦУ для перенаправления на таблицу Автоматика->Выключатель (Umin1, Umin2)
-//    int rowKCUUmin1 = groupMenuPosition("UMIN1", ui->tableWidgetProtectionGroupPower);
-//    int rowKCUUmin2 = groupMenuPosition("UMIN2", ui->tableWidgetProtectionGroupPower);
-
-//    if(rowKCUUmin1 != -1)
-//    {
-//        QWidget*     wgtCellKCUUmin1 = new QWidget;
-//        QHBoxLayout* layoutKCUUmin1  = new QHBoxLayout;
-//        QPushButton* buttonKCUUmin1  = new QPushButton(tr("Кор КЦУ"), wgtCellKCUUmin1);
-
-//        buttonKCUUmin1->setObjectName("pushButtonKCU");
-//        buttonKCUUmin1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-//        layoutKCUUmin1->addWidget(buttonKCUUmin1);
-//        layoutKCUUmin1->setAlignment(Qt::AlignCenter);
-//        layoutKCUUmin1->setContentsMargins(0, 0, 0, 0);
-//        wgtCellKCUUmin1->setLayout(layoutKCUUmin1);
-//        ui->tableWidgetProtectionGroupPower->setCellWidget(rowKCUUmin1 + 3, 2, wgtCellKCUUmin1);
-
-//        QWidget*     wgtCellKCUUmin2 = new QWidget;
-//        QHBoxLayout* layoutKCUUmin2  = new QHBoxLayout;
-//        QPushButton* buttonKCUUmin2  = new QPushButton(tr("Кор КЦУ"), wgtCellKCUUmin2);
-
-//        buttonKCUUmin2->setObjectName("pushButtonKCU");
-//        buttonKCUUmin2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-//        layoutKCUUmin2->addWidget(buttonKCUUmin2);
-//        layoutKCUUmin2->setAlignment(Qt::AlignCenter);
-//        layoutKCUUmin2->setContentsMargins(0, 0, 0, 0);
-//        wgtCellKCUUmin2->setLayout(layoutKCUUmin2);
-//        ui->tableWidgetProtectionGroupPower->setCellWidget(rowKCUUmin2 + 3, 2, wgtCellKCUUmin2);
-
-//        connect(buttonKCUUmin1, &QPushButton::clicked, this, &ConfiguratorWindow::processKCUUmin);
-//        connect(buttonKCUUmin2, &QPushButton::clicked, this, &ConfiguratorWindow::processKCUUmin);
-//    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -7207,7 +7173,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
     unit.setProperty("FIRST", first);
     unit.setProperty("LAST", last);
     unit.setProperty("GROUP", index);
-
+qInfo() << "Запрос по ключу: " << first << ", размер = " << size;
     m_modbus->sendData(unit);
 }
 //--------------------------------------------------------------------------------------------------------------
@@ -7254,7 +7220,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index, Dev
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
     unit.setProperty("INDEX", index);
     unit.setProperty("GROUP", group_index);
-
+qInfo() << "Запрос по ключу: " << index;
     m_modbus->sendData(unit);
 }
 //-----------------------------------------------------------------------------------------------------------
