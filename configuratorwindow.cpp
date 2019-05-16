@@ -563,11 +563,13 @@ void ConfiguratorWindow::protectionUmax2Write()
  */
 void ConfiguratorWindow::protectionUmin1Write()
 {
-    QStringList list = QStringList() << "M41" << "X13" << "M42" << "V09" << "V15";
+    QStringList list = QStringList() << "M41" << "X13" << "M42";
 
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
 
+    sendSettingControlWriteRequest("V09", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("V15", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
@@ -579,11 +581,13 @@ void ConfiguratorWindow::protectionUmin1Write()
  */
 void ConfiguratorWindow::protectionUmin2Write()
 {
-    QStringList list = QStringList() << "M46" << "X14" << "M47" << "V09" << "V15";
+    QStringList list = QStringList() << "M46" << "X14" << "M47";
 
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
 
+    sendSettingControlWriteRequest("V09", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingControlWriteRequest("V15", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
@@ -7252,7 +7256,10 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     int addr = addressSettingKey(index);
 
     if(addr == -1)
+    {
+        qWarning() << tr("Переменной \'%1\' не назначен адрес.").arg(index);
         return;
+    }
 
     quint16 value = quint16(comboBox->currentIndex());
 
