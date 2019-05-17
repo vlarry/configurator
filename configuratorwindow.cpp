@@ -1034,23 +1034,23 @@ void ConfiguratorWindow::protectionControlGroupWrite()
  */
 void ConfiguratorWindow::automationSwitchWrite()
 {
-    sendSettingControlWriteRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K50", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K51", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlWriteRequest("SPRK_CNF", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlWriteRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlWriteRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlWriteRequest("K12", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlWriteRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlWriteRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlWriteRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlWriteRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlWriteRequest("SPRK_CNF", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
 
-    sendSettingWriteRequest("K02", "K02", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K04", "K04", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K10", "K10", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K01", "K01", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K09", "K09", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("X22", "X22", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K08", "K08", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("K05", "K05", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K02", "K02", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingWriteRequest("K04", "K04", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingWriteRequest("K10", "K10", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingWriteRequest("K01", "K01", DEVICE_MENU_ITEM_AUTOMATION_SWITCH, 1);
+    sendSettingWriteRequest("K09", "K09", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingWriteRequest("X22", "X22", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingWriteRequest("K08", "K08", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingWriteRequest("K05", "K05", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckWrite
@@ -1152,11 +1152,11 @@ void ConfiguratorWindow::automationAPVWrite()
                                         "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
 
     for(QString key: list)
-        sendSettingControlWriteRequest(key, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+        sendSettingControlWriteRequest(key, DEVICE_MENU_ITEM_AUTOMATION_APV);
 
-    sendSettingWriteRequest("K17", "K17", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("M88", "M88", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingWriteRequest("M89", "M89", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K17", "K17", DEVICE_MENU_ITEM_AUTOMATION_APV, 1);
+    sendSettingWriteRequest("M88", "M88", DEVICE_MENU_ITEM_AUTOMATION_APV);
+    sendSettingWriteRequest("M89", "M89", DEVICE_MENU_ITEM_AUTOMATION_APV);
 }
 /*!
  * \brief ConfiguratorWindow::automationKCNWrite
@@ -1990,23 +1990,23 @@ void ConfiguratorWindow::amplitudeReadOfCurrent()
  */
 void ConfiguratorWindow::automationSwitchRead()
 {
-    sendSettingControlReadRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K50", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K51", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingControlReadRequest("SPRK_CNF", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingControlReadRequest("K32", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlReadRequest("K06", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlReadRequest("K12", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlReadRequest("K03", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlReadRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlReadRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlReadRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingControlReadRequest("SPRK_CNF", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
 
-    sendSettingReadRequest("K02", "K02", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K04", "K04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K10", "K10", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K01", "K01", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K09", "K09", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("X22", "X22", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K08", "K08", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("K05", "K05", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K02", "K02", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingReadRequest("K04", "K04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingReadRequest("K10", "K10", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingReadRequest("K01", "K01", CModBusDataUnit::ReadHoldingRegisters, 1, DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingReadRequest("K09", "K09", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingReadRequest("X22", "X22", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingReadRequest("K08", "K08", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+    sendSettingReadRequest("K05", "K05", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckRead
@@ -2132,11 +2132,11 @@ void ConfiguratorWindow::automationAPVRead()
                                         "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
 
     for(QString key: list)
-        sendSettingControlReadRequest(key, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+        sendSettingControlReadRequest(key, DEVICE_MENU_ITEM_AUTOMATION_APV);
 
-    sendSettingReadRequest("K17", "K17", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("M88", "M88", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
-    sendSettingReadRequest("M89", "M89", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K17", "K17", CModBusDataUnit::ReadHoldingRegisters, 1, DEVICE_MENU_ITEM_AUTOMATION_APV);
+    sendSettingReadRequest("M88", "M88", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_APV);
+    sendSettingReadRequest("M89", "M89", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_APV);
 }
 /*!
  * \brief ConfiguratorWindow::automationGroupRead
@@ -4674,16 +4674,28 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
             }
         }
 
-        quint16 val1 = unit.values().at(index + 1);
-        quint16 val2 = unit.values().at(index);
+        QString str;
 
-        value.w[0] = val1;
-        value.w[1] = val2;
+        if(unit.count() > 1)
+        {
+            quint16 val1 = unit.values().at(index + 1);
+            quint16 val2 = unit.values().at(index);
 
-        QString str = QLocale::system().toString(value.f, 'f', 6);
-qInfo() << QString("Отображение уставки: переменная->%1, значение = %2").arg(first).arg(str);
+            value.w[0] = val1;
+            value.w[1] = val2;
+
+            str = QLocale::system().toString(value.f, 'f', 6);
+        }
+        else
+            str = QString::number(unit[0]);
+
         if(!str.isEmpty())
             lineEdit->setText(str);
+
+        qInfo() << QString("Отображение уставки: переменная->%1, значение = %2").arg(first).arg(str);
+
+        if(unit.count() == 1)
+            break;
 
         index += 2;
     }
@@ -7282,8 +7294,8 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
 qInfo() << "Запрос по ключу: " << index;
     m_modbus->sendData(unit);
 }
-//-------------------------------------------------------------------------------------------------------------------------
-void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QString& last, DeviceMenuItemType group_index)
+//-----------------------------------------------------------------------------------------------------------------------------------
+void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QString& last, DeviceMenuItemType group_index, int size)
 {
     if(first.isEmpty() || last.isEmpty())
         return;
@@ -7329,9 +7341,19 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 
         value.f = QLocale::system().toFloat(lineEdit->text());
 
-        data.append(value.w[1]);
-        data.append(value.w[0]);
+        if(size == 2)
+        {
+            data.append(value.w[1]);
+            data.append(value.w[0]);
+        }
+        else
+        {
+            data.append(lineEdit->text().toInt());
+        }
     }
+
+    if(data.isEmpty())
+        return;
 
     CModBusDataUnit::FunctionType funType = ((data.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                CModBusDataUnit::WriteMultipleRegisters);
@@ -7340,6 +7362,13 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
+
+    QString val;
+
+    for(quint16 v: data)
+        val += QString("%1 ").arg(v);
+
+qInfo() << QString("Запись уставки: %1, значение: { %2 }").arg(first).arg(val);
 
     m_modbus->sendData(unit);
 }
