@@ -4844,7 +4844,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
 
     if(indexName.toUpper() != "TZ")
         i--;
-
+qInfo() << QString("Отображение уставки: переменная->%1, значение = %2").arg(indexName).arg(i);
     comboBox->setCurrentIndex(i);
 }
 //------------------------------------------------------------------
@@ -7279,7 +7279,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
     unit.setProperty("INDEX", index);
-
+qInfo() << "Запрос по ключу: " << index;
     m_modbus->sendData(unit);
 }
 //-------------------------------------------------------------------------------------------------------------------------
