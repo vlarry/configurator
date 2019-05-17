@@ -234,7 +234,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         wgt_layout->setContentsMargins(50, 0, 50, 0);
         wgt_layout->setSpacing(0);
         wgt->setLayout(wgt_layout);
-
+qInfo() << QString("Создание итема меню устройства: %1").arg(widget->objectName());
         setCellWidget(row, 1, wgt);
     }
 

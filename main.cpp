@@ -17,9 +17,7 @@ void logOutput(QtMsgType type, const QMessageLogContext& context, const QString&
     {
         case QtDebugMsg:
             if(QLibraryInfo::isDebugBuild())
-            {
                 message = QObject::tr("Отладка: %1 (%2:%3, %4).").arg(msg).arg(context.file).arg(context.line).arg(context.function);
-            }
         break;
 
         case QtInfoMsg:

@@ -4664,8 +4664,14 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
 
         if(!lineEdit)
         {
-            index += 2;
-            continue;
+            nameWgt += "_1";
+            lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(table, nameWgt, 1));
+
+            if(!lineEdit)
+            {
+                index += 2;
+                continue;
+            }
         }
 
         quint16 val1 = unit.values().at(index + 1);
@@ -4675,7 +4681,7 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
         value.w[1] = val2;
 
         QString str = QLocale::system().toString(value.f, 'f', 6);
-
+qInfo() << QString("Отображение уставки: переменная->%1, значение = %2").arg(first).arg(str);
         if(!str.isEmpty())
             lineEdit->setText(str);
 
@@ -7313,7 +7319,13 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
         CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
         if(!lineEdit)
-            continue;
+        {
+            nameWgt += "_1";
+            lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(table, nameWgt, 1));
+
+            if(!lineEdit)
+                continue;
+        }
 
         value.f = QLocale::system().toFloat(lineEdit->text());
 
