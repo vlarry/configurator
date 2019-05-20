@@ -194,6 +194,7 @@ void ConfiguratorWindow::blockProtectionCtrlRead()
 
     for(const block_protection_t& block: m_block_list)
     {
+        qInfo() << QString("Чтение блокировок: имя->%1, адрес->%2, описание->%3").arg(block.name).arg(block.address).arg(block.description);
         sendRequestRead(block.address, 24, READ_BLOCK_PROTECTION);
     }
 }
@@ -1165,7 +1166,7 @@ void ConfiguratorWindow::automationAPVWrite()
  */
 void ConfiguratorWindow::automationKCNWrite()
 {
-    sendSettingWriteRequest("K19", "K19", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingWriteRequest("K19", "K19", DEVICE_MENU_ITEM_AUTOMATION_KCN);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVSignalStartWrite
@@ -2103,7 +2104,7 @@ void ConfiguratorWindow::automationAVRRead()
  */
 void ConfiguratorWindow::automationKCNRead()
 {
-    sendSettingReadRequest("K19", "K19", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+    sendSettingReadRequest("K19", "K19", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_KCN);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVSignalStartRead
