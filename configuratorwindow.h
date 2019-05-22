@@ -559,6 +559,7 @@
             void sendRequestRead(int addr, int size, int request,
                                  CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
+            void sendRequestReadVariableState(const QString &key, const QString var, const QString &suffix, DeviceMenuItemType group_item);
             void sendDeviceCommand(int cmd);
             void sendOutputAllRequest();
             void sendInputStatesRequest();
@@ -666,6 +667,7 @@
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CModBusDataUnit& unit);
             void displaySettingResponse(CModBusDataUnit& unit);
+            void displaySettingVariableResponse(CModBusDataUnit& unit);
             void displaySettingControlResponce(const CModBusDataUnit& unit);
             void displayPurposeOutput(CModBusDataUnit& unit);
             void displayPurposeDIResponse(const QVector<quint16>& input_list, const QVector<quint16>& input_inverse_list);
@@ -761,6 +763,7 @@
             CPurposeTableView *purposeTableByType(const QString &type);
             void openProject(const QString &projectPathName);
             int rowSheetExcel(QXlsx::Document &xlsx, QStringList &columns);
+            int bitByVariableName(const QString &key);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
