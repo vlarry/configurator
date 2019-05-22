@@ -559,7 +559,7 @@
             void sendRequestRead(int addr, int size, int request,
                                  CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
-            void sendRequestReadVariableState(const QString &key, const QString var, const QString &suffix, DeviceMenuItemType group_item);
+            void sendSettingReadRequestVariableState(const QString &key, const QString var, const QString &suffix, DeviceMenuItemType group_item);
             void sendDeviceCommand(int cmd);
             void sendOutputAllRequest();
             void sendInputStatesRequest();

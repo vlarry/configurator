@@ -1552,8 +1552,8 @@ void ConfiguratorWindow::protectionUmin1Read()
 
     sendSettingControlReadRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendRequestReadVariableState("N98", "V09", "_1", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendRequestReadVariableState("N98", "V15", "_1", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequestVariableState("N98", "V09", "_1", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequestVariableState("N98", "V15", "_1", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1570,8 +1570,8 @@ void ConfiguratorWindow::protectionUmin2Read()
 
     sendSettingControlReadRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendRequestReadVariableState("N99", "V09", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendRequestReadVariableState("N99", "V15", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequestVariableState("N99", "V09", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequestVariableState("N99", "V15", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1879,10 +1879,10 @@ void ConfiguratorWindow::protectionLevel1Read()
 {
     sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequest("M78", "M78", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendRequestReadVariableState("I67", "I50", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendRequestReadVariableState("I67", "I15", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendRequestReadVariableState("I67", "I66", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendRequestReadVariableState("I67", "N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I67", "I50", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I67", "I15", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I67", "I66", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I67", "N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
@@ -1894,10 +1894,10 @@ void ConfiguratorWindow::protectionLevel2Read()
 {
     sendSettingControlReadRequest("K11", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequest("M79", "M79", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendRequestReadVariableState("I68", "I50", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendRequestReadVariableState("I68", "I15", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendRequestReadVariableState("I68", "I66", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendRequestReadVariableState("I68", "N55", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I68", "I50", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I68", "I15", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I68", "I66", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I68", "N55", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
@@ -2139,7 +2139,7 @@ void ConfiguratorWindow::automationAPVRead()
                                         "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
 
     for(QString key: list)
-        sendRequestReadVariableState("", key, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV);
+        sendSettingReadRequestVariableState("", key, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV);
 }
 /*!
  * \brief ConfiguratorWindow::automationGroupRead
@@ -7764,13 +7764,14 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
     m_modbus->sendData(unit);
 }
 /*!
- * \brief ConfiguratorWindow::sendRequestReadVariableState
+ * \brief ConfiguratorWindow::sendSettingReadRequestVariableState
  * \param key Ключ - имя переменной для получения адреса строки (40 ячеек - 16бит) с состояниями внутренних переменных
  * \param var Имя внутренней переменной для получения бита позиции состояния этой переменной
+ * \param suffix - суффикс в названии виджета (может быть кроме переменной "var" еще и суффикс ввиде "_1" или "_1_1" в зависимости от вложенности)
  * \param request_type итем меню для которого считываются данные
  */
-void ConfiguratorWindow::sendRequestReadVariableState(const QString &key, const QString var, const QString &suffix,
-                                                      DeviceMenuItemType group_item)
+void ConfiguratorWindow::sendSettingReadRequestVariableState(const QString &key, const QString var, const QString &suffix,
+                                                             DeviceMenuItemType group_item)
 {
     if(key.isEmpty() || var.isEmpty())
         return;
