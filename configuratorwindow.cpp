@@ -2139,7 +2139,7 @@ void ConfiguratorWindow::automationAPVRead()
                                         "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
 
     for(QString key: list)
-        sendSettingReadRequestVariableState("", key, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV);
+        sendSettingReadRequestVariableState("I69", key, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV);
 }
 /*!
  * \brief ConfiguratorWindow::automationGroupRead
@@ -4714,7 +4714,7 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
  */
 void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
 {
-    if(unit.count() != 40)
+    if(unit.count() != 2)
         return;
 
     QString var = unit.property("VARIABLE").toString();
@@ -4749,15 +4749,7 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
     QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
     if(!comboBox)
-    {
-//        comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt + "_1", 1));
-
-//        if(!comboBox)
-//            comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt + "_1_1", 1));
-
-//        if(!comboBox)
-            return;
-    }
+        return;
 
     QVector<quint32> data32;
 
@@ -4769,14 +4761,11 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
         data32 << (static_cast<quint32>(mbs << 16) | lbs);
     }
 
-    qInfo() << "OUT DATA: " << data32;
-
-    int var_pos = var_bit/32;
+    int value = (static_cast<quint32>(unit[0] << 16) | unit[1]);
     int bit_pos = var_bit%32;
-
-    int state = data32[var_pos] >> bit_pos;
-qInfo() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (позиция переменной = %3, номер бита = %4)").
-           arg(var).arg(state).arg(var_pos).arg(bit_pos);
+    int state = (value >> bit_pos) & 0x00000001;
+qInfo() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (номер бита = %3)").
+           arg(var).arg(state).arg(bit_pos);
     comboBox->setCurrentIndex(state);
 }
 /*!
@@ -7781,7 +7770,19 @@ void ConfiguratorWindow::sendSettingReadRequestVariableState(const QString &key,
     if(addr == -1)
         return;
 
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, addr, 40);
+    int bit_pos = bitByVariableName(var);
+
+    if(bit_pos == -1)
+        return;
+
+    int addr_offset = bit_pos/16;
+
+    if(addr_offset%2 != 0) // для удобства чтение идет с четных адресов, т.е. читается 32битное значение (2 ячейки)
+        addr_offset--;
+
+    int addr_request = addr + addr_offset;
+
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, addr_request, 2);
 
     unit.setProperty("REQUEST", GENERAL_TYPE);
     unit.setProperty("GROUP", group_item);
