@@ -624,7 +624,6 @@
             void processKCUUmin();
             void initDebugVariables();
             void authorization();
-            void clearInternalVariableState();
             void internalVariableSetInterval();
             void internalVariablePressKey(bool isAlt, bool isCtrl, int key);
             void calibrationRoll(bool state);

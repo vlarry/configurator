@@ -2338,8 +2338,6 @@ void ConfiguratorWindow::internalVariableRead()
         return;
     }
 
-    clearInternalVariableState();
-
     // Чтение двумя запросами, т.к. для того чтобы вместить состояния всех переменных (439 в новой матрице) необходимо было
     // растянуть адреса, но они идут не линейно всего получается 14 32-битных переменных, т.е. 28 16-битных и могут вместить
     // до 448 переменных
@@ -4090,7 +4088,6 @@ void ConfiguratorWindow::initDebugVariables()
     m_debug_var_window->setWindowState(Qt::WindowMaximized);
     m_debug_var_window->setMinimumSize(minimumSizeHint());
 
-    connect(m_debug_var_window, &CWidget::clear, this, &ConfiguratorWindow::clearInternalVariableState);
     connect(m_debug_var_window, &CWidget::read, this, &ConfiguratorWindow::internalVariableRead);
     connect(m_debug_var_window, &CWidget::pressKey, this, &ConfiguratorWindow::internalVariablePressKey);
 
@@ -4242,19 +4239,6 @@ void ConfiguratorWindow::authorization()
     userDialog = nullptr;
 }
 /*!
- * \brief ConfiguratorWindow::clearInternalVariableState
- *
- * Очистка состояний внутренних переменных
- */
-void ConfiguratorWindow::clearInternalVariableState()
-{
-    for(QCheckBox* checkBox: m_internal_variable_list)
-    {
-        if(checkBox)
-            checkBox->setChecked(false);
-    }
-}
-/*!
  * \brief ConfiguratorWindow::internalVariableSetInterval
  *
  * Настйройка интервала опроса состояний внутренних входов
@@ -4326,10 +4310,6 @@ void ConfiguratorWindow::internalVariablePressKey(bool isAlt, bool isCtrl, int k
     else if(isAlt && key == Qt::Key_U)
     {
         internalVariableRead();
-    }
-    else if(isAlt && key == Qt::Key_C)
-    {
-        clearInternalVariableState();
     }
 }
 /*!
@@ -4872,8 +4852,11 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
 
                 if(i < m_internal_variable_list.count())
                 {
-                    bool state = ((values[var]&(1 << bit))?true:false);
-                    checkbox->setChecked(state);
+                    bool new_state = ((values[var]&(1 << bit))?true:false);
+                    bool cur_state = checkbox->isChecked();
+
+                    if(new_state != cur_state)
+                        checkbox->setChecked(new_state);
                 }
                 else
                 {

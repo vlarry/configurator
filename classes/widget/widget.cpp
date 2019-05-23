@@ -5,7 +5,7 @@ CWidget::CWidget(QWidget* parent):
     m_context_menu(nullptr),
     m_interval(nullptr),
     m_tim_interval(nullptr),
-    m_repeat_time(2000)
+    m_repeat_time(500)
 {
     m_context_menu = new QMenu(this);
     m_interval     = new CIntervalDialog(tr("Интервал опроса"), this);
