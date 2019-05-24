@@ -4694,7 +4694,7 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
  */
 void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
 {
-    if(unit.count() != 2)
+    if(unit.count() != 1)
         return;
 
     QString var = unit.property("VARIABLE").toString();
@@ -4716,7 +4716,6 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
     if(var_bit == -1)
         return;
 
-
     QString nameWgt = QString("comboBox%1").arg(var);
     QString nameSuffix = unit.property("SUFFIX").toString();
 
@@ -4731,18 +4730,8 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
     if(!comboBox)
         return;
 
-    QVector<quint32> data32;
-
-    for(int i = 0; i < unit.count() - 1; i += 2)
-    {
-        quint16 lbs = unit[i + 1];
-        quint16 mbs = unit[i];
-
-        data32 << (static_cast<quint32>(mbs << 16) | lbs);
-    }
-
-    int value = (static_cast<quint32>(unit[0] << 16) | unit[1]);
-    int bit_pos = var_bit%32;
+    quint16 value = unit[0];
+    int bit_pos = var_bit%16;
     int state = (value >> bit_pos) & 0x00000001;
 qInfo() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (номер бита = %3)").
            arg(var).arg(state).arg(bit_pos);
@@ -7740,10 +7729,11 @@ void ConfiguratorWindow::sendRequestWrite(int addr, QVector<quint16>& values, in
  * \param key Ключ - имя переменной для получения адреса строки (40 ячеек - 16бит) с состояниями внутренних переменных
  * \param var Имя внутренней переменной для получения бита позиции состояния этой переменной
  * \param suffix - суффикс в названии виджета (может быть кроме переменной "var" еще и суффикс ввиде "_1" или "_1_1" в зависимости от вложенности)
+ * \param is_save - флаг извещающий о чтении состояний перед записью (по умолчанию false, т.е. просто чтение)
  * \param request_type итем меню для которого считываются данные
  */
 void ConfiguratorWindow::sendSettingReadRequestVariableState(const QString &key, const QString var, const QString &suffix,
-                                                             DeviceMenuItemType group_item)
+                                                             DeviceMenuItemType group_item, bool is_save)
 {
     if(key.isEmpty() || var.isEmpty())
         return;
@@ -7760,17 +7750,20 @@ void ConfiguratorWindow::sendSettingReadRequestVariableState(const QString &key,
 
     int addr_offset = bit_pos/16;
 
-    if(addr_offset%2 != 0) // для удобства чтение идет с четных адресов, т.е. читается 32битное значение (2 ячейки)
-        addr_offset--;
+    if(addr_offset%2 != 0) // адреса ячеек переменных начинаются с четных адресов, поэтому если четный адрес,
+        addr_offset--;     // смещаемся на ячейку назад
+    else
+        addr_offset++; // иначе сдвигаемся на ячейку вперед
 
     int addr_request = addr + addr_offset;
 
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, addr_request, 2);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, addr_request, 1);
 
     unit.setProperty("REQUEST", GENERAL_TYPE);
     unit.setProperty("GROUP", group_item);
     unit.setProperty("KEY", key);
     unit.setProperty("VARIABLE", var);
+    unit.setProperty("READ_STATE", is_save);
 
     if(!suffix.isEmpty())
         unit.setProperty("SUFFIX", suffix);
