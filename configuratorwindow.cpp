@@ -896,13 +896,14 @@ void ConfiguratorWindow::protectionTemperatureGroupWrite()
  */
 void ConfiguratorWindow::protectionLevel1Write()
 {
-    QStringList list = QStringList() << "M77" << "I50" << "I15" << "I66" << "N55";
-
-    for(QString key: list)
-        sendSettingControlWriteRequest(key, DEVICE_MENU_PROTECT_ITEM_RESERVE);
-
+    sendSettingControlWriteRequest("77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingWriteRequest("M78", "M78", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+
+    sendSettingReadRequestVariableState("I67", "I50", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+    sendSettingReadRequestVariableState("I67", "I15", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+    sendSettingReadRequestVariableState("I67", "I66", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+    sendSettingReadRequestVariableState("I67", "N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Write
@@ -911,13 +912,14 @@ void ConfiguratorWindow::protectionLevel1Write()
  */
 void ConfiguratorWindow::protectionLevel2Write()
 {
-    QStringList list = QStringList() << "K11" << "I50" << "I15" << "I66" << "N55";
-
-    for(QString key: list)
-        sendSettingControlWriteRequest(key, DEVICE_MENU_PROTECT_ITEM_RESERVE);
-
+    sendSettingControlWriteRequest("K11", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingWriteRequest("M79", "M79", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+
+    sendSettingReadRequestVariableState("I68", "I50", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+    sendSettingReadRequestVariableState("I68", "I15", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+    sendSettingReadRequestVariableState("I68", "I66", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+    sendSettingReadRequestVariableState("I68", "N55", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartWrite
@@ -1151,15 +1153,16 @@ void ConfiguratorWindow::automationAVRWrite()
  */
 void ConfiguratorWindow::automationAPVWrite()
 {
-    QStringList list = QStringList() << "M87" << "V04" << "V07" << "V10" << "V13" << "V19" << "N64" << "V22" << "N67" << "V44" <<
-                                        "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
-
-    for(QString key: list)
-        sendSettingControlWriteRequest(key, DEVICE_MENU_ITEM_AUTOMATION_APV);
-
+    sendSettingControlWriteRequest("M87", DEVICE_MENU_ITEM_AUTOMATION_APV);
     sendSettingWriteRequest("K17", "K17", DEVICE_MENU_ITEM_AUTOMATION_APV, 1);
     sendSettingWriteRequest("M88", "M88", DEVICE_MENU_ITEM_AUTOMATION_APV);
     sendSettingWriteRequest("M89", "M89", DEVICE_MENU_ITEM_AUTOMATION_APV);
+
+    QStringList list = QStringList() << "V04" << "V07" << "V10" << "V13" << "V19" << "N64" << "V22" << "N67" << "V44" <<
+                                        "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
+
+    for(QString var: list)
+        sendSettingReadRequestVariableState("I69", var, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV, true);
 }
 /*!
  * \brief ConfiguratorWindow::automationKCNWrite
