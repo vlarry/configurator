@@ -4129,7 +4129,7 @@ void ConfiguratorWindow::initDebugVariables()
 
         for(const auto& var: group_item.var_list)
         {
-            QCheckBox* checkBox = new QCheckBox(QString("%1 (%2)").arg(var.key).arg(var.name), this);
+            CCheckBoxInternalVariable* checkBox = new CCheckBoxInternalVariable(QString("%1 (%2)").arg(var.key).arg(var.name), this);
             QFont tfont = checkBox->font();
             tfont.setPointSize(8);
             checkBox->setObjectName(QString("checkBox%1").arg(var.key));
@@ -4840,7 +4840,7 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
     {
         if(m_internal_variable_list.find(i) != m_internal_variable_list.end())
         {
-            QCheckBox* checkbox = m_internal_variable_list[i];
+            CCheckBoxInternalVariable* checkbox = m_internal_variable_list[i];
 
             if(checkbox)
             {
@@ -4859,7 +4859,10 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
                     bool cur_state = checkbox->isChecked();
 
                     if(new_state != cur_state)
+                    {
                         checkbox->setChecked(new_state);
+                        checkbox->setChangedState(true);
+                    }
                 }
                 else
                 {

@@ -74,6 +74,7 @@
     #include "cjournal.h"
     #include "journalprogress.h"
     #include "dialogjournalreadresult.h"
+    #include "ccheckboxinternalvariable.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
@@ -821,7 +822,7 @@
             QTimer*                          m_journal_timer; // проверка на обрыв чтения журнала
             calibration_current_t            m_calib_of_current; // структура для калибровок по току
             QMap<int, unit_t>                m_monitor_K10_K11_field; // ключ - номер строки, unit - описание полей (привязки для мониторинга К10 и К11
-            QMap<int, QCheckBox*>            m_internal_variable_list; // список переменных (ключ - бит переменной)
+            QMap<int, CCheckBoxInternalVariable*> m_internal_variable_list; // список переменных (ключ - бит переменной)
             JournalPtr                       m_journal_crash; // журнал аварий
             JournalPtr                       m_journal_event; // журнал событий
             JournalPtr                       m_journal_halfhour; // журнал получасовок

@@ -80,7 +80,8 @@ SOURCES += \
         classes/widget/RangeSlider.cpp \
         classes/journal/cjournal.cpp \
     classes/journal/journalprogress.cpp \
-    classes/journal/dialogjournalreadresult.cpp
+    classes/journal/dialogjournalreadresult.cpp \
+    classes/widget/ccheckboxinternalvariable.cpp
 
 HEADERS += \
         configuratorwindow.h \
@@ -137,7 +138,8 @@ HEADERS += \
         classes/widget/RangeSlider.h \
         classes/journal/cjournal.h \
     classes/journal/journalprogress.h \
-    classes/journal/dialogjournalreadresult.h
+    classes/journal/dialogjournalreadresult.h \
+    classes/widget/ccheckboxinternalvariable.h
 
 FORMS += \
         configuratorwindow.ui \
