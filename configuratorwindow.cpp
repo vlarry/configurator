@@ -569,11 +569,12 @@ void ConfiguratorWindow::protectionUmin1Write()
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
 
-    sendSettingControlWriteRequest("V09", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingControlWriteRequest("V15", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
+
+    sendSettingReadRequestVariableState("N98", "V09", "_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
+    sendSettingReadRequestVariableState("N98", "V15", "_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Write
@@ -587,11 +588,12 @@ void ConfiguratorWindow::protectionUmin2Write()
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_POWER);
 
-    sendSettingControlWriteRequest("V09", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingControlWriteRequest("V15", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlWriteRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
+
+    sendSettingReadRequestVariableState("N99", "V09", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
+    sendSettingReadRequestVariableState("N99", "V15", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Write
@@ -4732,6 +4734,15 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
 
     quint16 value = unit[0];
     int bit_pos = var_bit%16;
+
+    bool is_save = unit.property("READ_STATE").toBool();
+
+    if(is_save)
+    {
+        sendSettingWriteRequestVariableState(value, bit_pos, unit.address(), comboBox);
+        return;
+    }
+
     int state = (value >> bit_pos) & 0x00000001;
 qInfo() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (номер бита = %3)").
            arg(var).arg(state).arg(bit_pos);
@@ -7768,6 +7779,26 @@ void ConfiguratorWindow::sendSettingReadRequestVariableState(const QString &key,
     if(!suffix.isEmpty())
         unit.setProperty("SUFFIX", suffix);
 
+    m_modbus->sendData(unit);
+}
+/*!
+ * \brief ConfiguratorWindow::sendSettingWriteRequestVariableState
+ * \param value прочитанное значение из памяти устройства
+ * \param bit_pos позиция изменяемого бита
+ * \param address адрес записи переменной
+ */
+void ConfiguratorWindow::sendSettingWriteRequestVariableState(quint16 value, int bit_pos, int address, QComboBox *comboBox)
+{
+    if(!comboBox)
+        return;
+
+    int var_state = comboBox->currentIndex();
+
+    value &= ~(1 << bit_pos); // очищаем бит состояния переменной
+    value |= var_state << bit_pos; // устанавливаем новое состояние переменной
+qInfo() << QString("Запись состояния внутренной переменной: адрес = %1, значение = %2, позиция бита: %3").arg(address).arg(value).
+                                                                                                          arg(bit_pos);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, address, value);
     m_modbus->sendData(unit);
 }
 /*!
