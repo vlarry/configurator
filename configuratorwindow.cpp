@@ -314,8 +314,8 @@ void ConfiguratorWindow::inputAnalogGeneralRead()
     QStringList list = QStringList() << "M01" << "M02" << "M03" << "K61" << "K62" << "K63" << "K64";
     sendSettingReadRequest(list, CModBusDataUnit::ReadHoldingRegisters, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 
-    sendSettingControlReadRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
-    sendSettingControlReadRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+//    sendSettingControlReadRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+//    sendSettingControlReadRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateRead
@@ -352,8 +352,8 @@ void ConfiguratorWindow::inputAnalogGeneralWrite()
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 
-    sendSettingControlWriteRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
-    sendSettingControlWriteRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
+//    sendSettingControlWriteRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
+//    sendSettingControlWriteRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateWrite
@@ -7430,7 +7430,15 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
     CModBusDataUnit::FunctionType funType = ((data.count() == 1)?CModBusDataUnit::WriteSingleRegister:
                                                                CModBusDataUnit::WriteMultipleRegisters);
 
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(addressSettingKey(first)), data);
+    int addr = addressSettingKey(first);
+
+    if(addr == -1)
+    {
+        qWarning() << tr("Переменной \'%1\' не назначен адрес.").arg(first);
+        return;
+    }
+
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(addr), data);
 
     unit.setProperty(tr("FIRST"), first);
     unit.setProperty(tr("LAST"), last);
