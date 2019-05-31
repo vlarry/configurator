@@ -194,7 +194,7 @@ void ConfiguratorWindow::blockProtectionCtrlRead()
 
     for(const block_protection_t& block: m_block_list)
     {
-        qInfo() << QString("Чтение блокировок: имя->%1, адрес->%2, описание->%3").arg(block.name).arg(block.address).arg(block.description);
+        qDebug() << QString("Чтение блокировок: имя->%1, адрес->%2, описание->%3").arg(block.name).arg(block.address).arg(block.description);
         sendRequestRead(block.address, 24, READ_BLOCK_PROTECTION);
     }
 }
@@ -352,8 +352,8 @@ void ConfiguratorWindow::inputAnalogGeneralWrite()
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 
-//    sendSettingControlWriteRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
-//    sendSettingControlWriteRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
+    sendSettingControlWriteRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
+    sendSettingControlWriteRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG); // запись состояния настройки
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateWrite
@@ -380,6 +380,8 @@ void ConfiguratorWindow::inputAnalogGroupWrite()
 {
     inputAnalogGeneralWrite();
     inputAnalogCalibrateWrite();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Write
@@ -526,6 +528,8 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
     protectionMTZ3Write();
     protectionMTZ4Write();
     protectionMotorGroupWrite();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Write
@@ -622,6 +626,8 @@ void ConfiguratorWindow::protectionPowerGroupWrite()
     protectionUmin1Write();
     protectionUmin2Write();
     protection3U0Write();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionOZZ1Write
@@ -696,6 +702,8 @@ void ConfiguratorWindow::protectionDirectedGroupWrite()
     protectionNZZ2Write();
     protectionBRUWrite();
     protectionVacuumWrite();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr1Write
@@ -752,6 +760,8 @@ void ConfiguratorWindow::protectionFrequencyGroupWrite()
     protectionAchr1Write();
     protectionAchr2Write();
     protectionAchr3Write();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionArcWrite
@@ -810,6 +820,8 @@ void ConfiguratorWindow::protectionExternalGroupWrite()
     protectionExt1Write();
     protectionExt2Write();
     protectionExt3Write();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionStartingWrite
@@ -850,6 +862,8 @@ void ConfiguratorWindow::protectionMotorGroupWrite()
 {
     protectionStartingWrite();
     protectionIminWrite();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp1Write
@@ -888,6 +902,8 @@ void ConfiguratorWindow::protectionTemperatureGroupWrite()
 {
     protectionTemp1Write();
     protectionTemp2Write();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel1Write
@@ -989,6 +1005,8 @@ void ConfiguratorWindow::protectionReserveGroupWrite()
 {
     protectionLevel1Write();
     protectionLevel2Write();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionBRUWrite
@@ -1031,6 +1049,8 @@ void ConfiguratorWindow::protectionControlGroupWrite()
 {
     protectionBRUWrite();
     protectionVacuumWrite();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchWrite
@@ -1126,6 +1146,8 @@ void ConfiguratorWindow::automationDisconnectorsGroupWrite()
     automationBusWrite();
     automationLineWrite();
     automationEarthWrite();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::automationCtrlTNWrite
@@ -2169,6 +2191,8 @@ void ConfiguratorWindow::automationGroupWrite()
     automationAPVWrite();
     automationAVRWrite();
     automationKCNWrite();
+
+    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::calibrationOfCurrentWrite
@@ -4685,7 +4709,7 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
         if(!str.isEmpty())
             lineEdit->setText(str);
 
-        qInfo() << QString("Отображение уставки: переменная->%1, значение = %2").arg(first).arg(str);
+        qDebug() << QString("Отображение уставки: переменная->%1, значение = %2").arg(first).arg(str);
 
         if(unit.count() == 1)
             break;
@@ -4747,8 +4771,8 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
     }
 
     int state = (value >> bit_pos) & 0x00000001;
-qInfo() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (номер бита = %3)").
-           arg(var).arg(state).arg(bit_pos);
+qDebug() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (номер бита = %3)").
+            arg(var).arg(state).arg(bit_pos);
     comboBox->setCurrentIndex(state);
 }
 /*!
@@ -4866,8 +4890,8 @@ void ConfiguratorWindow::displayInternalVariables(const QVector<quint16>& data)
                 }
                 else
                 {
-                    qInfo() << QString("Конец вывода отладочной информации: бит %1 выходит за пределы 0 - %2").arg(i).
-                                  arg(data.count()*16 - 1);
+                    qDebug() << QString("Конец вывода отладочной информации: бит %1 выходит за пределы 0 - %2").arg(i).
+                                       arg(data.count()*16 - 1);
                     break;
                 }
             }
@@ -4913,7 +4937,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
 
     if(indexName.toUpper() != "TZ")
         i--;
-qInfo() << QString("Отображение уставки: переменная->%1, значение = %2").arg(indexName).arg(i);
+qDebug() << QString("Отображение уставки: переменная->%1, значение = %2").arg(indexName).arg(i);
     comboBox->setCurrentIndex(i);
 }
 //------------------------------------------------------------------
@@ -7267,7 +7291,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
     unit.setProperty("FIRST", first);
     unit.setProperty("LAST", last);
     unit.setProperty("GROUP", index);
-qInfo() << "Запрос по ключу: " << first << ", размер = " << size;
+qDebug() << "Запрос по ключу: " << first << ", размер = " << size;
     m_modbus->sendData(unit);
 }
 //--------------------------------------------------------------------------------------------------------------
@@ -7314,7 +7338,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index, Dev
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
     unit.setProperty("INDEX", index);
     unit.setProperty("GROUP", group_index);
-qInfo() << "Запрос по ключу: " << index;
+qDebug() << "Запрос по ключу: " << index;
     m_modbus->sendData(unit);
 }
 //-----------------------------------------------------------------------------------------------------------
@@ -7363,7 +7387,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
     unit.setProperty("INDEX", index);
-qInfo() << "Запрос по ключу: " << index;
+qDebug() << "Запрос по ключу: " << index;
     m_modbus->sendData(unit);
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
@@ -7448,7 +7472,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
     for(quint16 v: data)
         val += QString("%1 ").arg(v);
 
-qInfo() << QString("Запись уставки: %1, значение: { %2 }").arg(first).arg(val);
+qDebug() << QString("Запись уставки: %1, значение: { %2 }").arg(first).arg(val);
 
     m_modbus->sendData(unit);
 }
@@ -7810,7 +7834,7 @@ void ConfiguratorWindow::sendSettingWriteRequestVariableState(quint16 value, int
 
     value &= ~(1 << bit_pos); // очищаем бит состояния переменной
     value |= var_state << bit_pos; // устанавливаем новое состояние переменной
-qInfo() << QString("Запись состояния внутренной переменной: адрес = %1, значение = %2, позиция бита: %3").arg(address).arg(value).
+qDebug() << QString("Запись состояния внутренной переменной: адрес = %1, значение = %2, позиция бита: %3").arg(address).arg(value).
                                                                                                           arg(bit_pos);
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, address, value);
     m_modbus->sendData(unit);
