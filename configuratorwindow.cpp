@@ -7291,7 +7291,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QStr
     unit.setProperty("FIRST", first);
     unit.setProperty("LAST", last);
     unit.setProperty("GROUP", index);
-qDebug() << "Запрос по ключу: " << first << ", размер = " << size;
+qDebug() << QString("Чтение уставки по ключу: %1 (адрес: %2)").arg(first).arg(addr);
     m_modbus->sendData(unit);
 }
 //--------------------------------------------------------------------------------------------------------------
@@ -7316,7 +7316,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QStringList &key_list, CMo
         unit.setProperty("GROUP", index);
         unit.setProperty("FIRST", key);
         unit.setProperty("LAST", key);
-
+qDebug() << QString("Чтение уставки по ключу: %1 (адрес: %2)").arg(key).arg(addr);
         m_modbus->sendData(unit);
     }
 }
@@ -7338,7 +7338,7 @@ void ConfiguratorWindow::sendSettingControlReadRequest(const QString& index, Dev
     unit.setProperty("REQUEST_FUNCTION", FUN_READ);
     unit.setProperty("INDEX", index);
     unit.setProperty("GROUP", group_index);
-qDebug() << "Запрос по ключу: " << index;
+qDebug() << QString("Чтение уставки по ключу: %1 (адрес: %2)").arg(index).arg(addr);
     m_modbus->sendData(unit);
 }
 //-----------------------------------------------------------------------------------------------------------
@@ -7387,7 +7387,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
     unit.setProperty("REQUEST_FUNCTION", FUN_SAVE);
     unit.setProperty("INDEX", index);
-qDebug() << "Запрос по ключу: " << index;
+qDebug() << QString("Запись уставки по ключу: %1 (адрес: %2)").arg(index).arg(addr);
     m_modbus->sendData(unit);
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
@@ -7472,7 +7472,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
     for(quint16 v: data)
         val += QString("%1 ").arg(v);
 
-qDebug() << QString("Запись уставки: %1, значение: { %2 }").arg(first).arg(val);
+qDebug() << QString("Запись уставки: %1, значение: { %2 }, адрес: { %3 }").arg(first).arg(val).arg(addr);
 
     m_modbus->sendData(unit);
 }
@@ -9582,6 +9582,7 @@ void ConfiguratorWindow::loadSettings()
             ui->framePanelMessage->setProperty("HEIGHT", m_settings->value("panel_message_height", 100).toInt());
             m_settings->beginGroup("central_widget");
                 calibrationRoll(m_settings->value("calibration_roll", false).toBool());
+                ui->checkboxCalibTimeout->setChecked(m_settings->value("calculate_check", false).toBool());
             m_settings->endGroup();
         m_settings->endGroup();
     }
@@ -9636,6 +9637,7 @@ void ConfiguratorWindow::saveSettings()
             m_settings->setValue("panel_message_height", ui->framePanelMessage->property("HEIGHT").toInt());
             m_settings->beginGroup("central_widget");
                 m_settings->setValue("calibration_roll", ui->pushButtonCalibrationRoll->isChecked());
+                m_settings->setValue("calculate_check", ui->checkboxCalibTimeout->isChecked());
             m_settings->endGroup();
         m_settings->endGroup();
     }
