@@ -28,6 +28,7 @@
             int  deviceID() const;
             void setAutospeed(bool state);
             void setSerialPortList(const QStringList& list);
+            void setSerialPortCurrentName(const QString &name);
             void setParity(QSerialPort::Parity parity);
 
             void setDeviceID(int id);

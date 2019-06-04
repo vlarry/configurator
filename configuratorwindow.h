@@ -828,6 +828,7 @@
             JournalPtr                       m_journal_halfhour; // журнал получасовок
             JournalProgress                 *m_journal_progress; // прогресбар для чтения журнала
             QString                          m_project_cur_path; // путь к текущему проекту
+            QString                          m_serial_port_name; // имя com-порта по умолчанию
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

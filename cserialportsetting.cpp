@@ -65,6 +65,17 @@ void CSerialPortSetting::setSerialPortList(const QStringList& list)
     if(!list.isEmpty())
         ui->cboxPortName->addItems(list);
 }
+//--------------------------------------------------------------------
+void CSerialPortSetting::setSerialPortCurrentName(const QString &name)
+{
+    if(name.isEmpty())
+        return;
+
+    int index = ui->cboxPortName->findText(name.toUpper());
+
+    if(index != -1)
+        ui->cboxPortName->setCurrentIndex(index);
+}
 //------------------------------------------------------------
 void CSerialPortSetting::setParity(QSerialPort::Parity parity)
 {

@@ -37,7 +37,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_settings(nullptr),
     m_journal_timer(nullptr),
     m_journal_progress(nullptr),
-    m_project_cur_path("")
+    m_project_cur_path(""),
+    m_serial_port_name("")
 {
     ui->setupUi(this);
 
@@ -181,6 +182,11 @@ void ConfiguratorWindow::refreshSerialPort()
     }
     
     m_serialPortSettings_window->setSerialPortList(port_list);
+
+    if(!m_serial_port_name.isEmpty())
+    {
+        m_serialPortSettings_window->setSerialPortCurrentName(m_serial_port_name);
+    }
 }
 //-------------------------------------------
 void ConfiguratorWindow::serialPortSettings()
@@ -9553,6 +9559,7 @@ void ConfiguratorWindow::loadSettings()
     if(m_settings)
     {
         m_settings->beginGroup("serial-port");
+            m_serial_port_name = m_settings->value("port_name", "").toString();
             baudrate = m_settings->value("baudrate", QSerialPort::Baud115200).toInt();
             m_serialPortSettings_window->setBaudrate(QSerialPort::BaudRate(baudrate));
             m_serialPortSettings_window->setParity(QSerialPort::Parity(m_settings->value("parity", QSerialPort::EvenParity).toInt()));
@@ -9610,6 +9617,7 @@ void ConfiguratorWindow::saveSettings()
     if(m_settings)
     {
         m_settings->beginGroup("serial-port");
+            m_settings->setValue("port_name", m_serialPortSettings_window->serialPortName());
             m_settings->setValue("baudrate", m_serialPortSettings_window->baudrate());
             m_settings->setValue("parity", m_serialPortSettings_window->parity());
         m_settings->endGroup();
