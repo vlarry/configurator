@@ -25,7 +25,7 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
     ui->lineEditFactor3US->setValidator(validator);
     ui->lineEditFactor3U0->setValidator(validator);
 
-    ui->progressBarDataSet->hide();
+//    ui->progressBarDataSet->hide();
 
 //    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibration);
 //    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::stateButton);
@@ -80,7 +80,6 @@ void CCalibrationWidgetPower::paintEvent(QPaintEvent *event)
     painter.drawLine(topCenter, topRight);
     painter.drawLine(bottomCenter, bottomRight);
     painter.drawLine(centerLeft, centerRight);
-
 
     // Рисование отрезков перед постоянной составляющей 3U0S, 3US и 3U0
     r = ui->gridLayout_3->cellRect(0, 1);

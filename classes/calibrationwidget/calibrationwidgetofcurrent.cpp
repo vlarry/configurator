@@ -392,5 +392,5 @@ void CCalibrationWidgetOfCurrent::paintEvent(QPaintEvent* event)
     painter.drawLine(centerLeft, centerRight);
     painter.drawLine(leftCenter3I0, rightCenter3I0);
 
-    painter.drawRect(ui->verticalLayoutCenter->geometry());
+    painter.drawRect(ui->verticalLayoutCentral->geometry());
 }
