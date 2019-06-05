@@ -2649,7 +2649,14 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     {
         displayMemoryOut(unit.values());
     }
-    if(type >= CALIBRATION_CURRENT_IA && type <= CALIBRATION_CURRENT_3I0)
+    else if(type == CALIBRATION_PARAMETER)
+    {
+        if(showErrorMessage(tr("Чтение параметра калибровок"), unit))
+            return;
+
+        m_calibration_controller->dataIsReady(unit);
+    }
+    else if(type >= CALIBRATION_CURRENT_IA && type <= CALIBRATION_CURRENT_3I0)
     {
         if(showErrorMessage(tr("Чтение расчетных значений токов"), unit))
             return;
@@ -7849,6 +7856,17 @@ qDebug() << QString("Запись состояния внутренной пер
     m_modbus->sendData(unit);
 }
 /*!
+ * \brief ConfiguratorWindow::sendRequestCalibration
+ * \param unit Сформированный объект запроса
+ *
+ * Отправка запроса на чтение данных по параметрам калибровки
+ */
+void ConfiguratorWindow::sendRequestCalibration(CModBusDataUnit &unit)
+{
+    unit.setAddress(quint8(m_serialPortSettings_window->deviceID()));
+    unit.setProperty("REQUEST", CALIBRATION_PARAMETER);
+}
+/*!
  * \brief ConfiguratorWindow::sendDeviceCommand
  *
  * Отправка команды устройству
@@ -12963,5 +12981,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
     connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
     connect(ui->pushButtonCalibrationRoll, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRoll);
-    connect(m_calibration_controller, &CCalibrationController::readData, this, &ConfiguratorWindow::sendRequestRead);
+    connect(m_calibration_controller, &CCalibrationController::readData, this, &ConfiguratorWindow::sendRequestCalibration);
 }

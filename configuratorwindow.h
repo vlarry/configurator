@@ -135,6 +135,7 @@
                 CALIBRATION_CURRENT_IB, // калибровка токовго коэффициента Ib
                 CALIBRATION_CURRENT_IC, // калибровка токовго коэффициента Ic
                 CALIBRATION_CURRENT_3I0, // калибровка токовго коэффициента 3I0
+                CALIBRATION_PARAMETER, // калибровка (ток, напряжение и т.д. и т.п.)
                 AMPLITUDE_READ_CH2, // амплитуда канала №2
                 AMPLITUDE_READ_CH3, // амплитуда канала №3
                 AMPLITUDE_READ_CH4, // амплитуда канала №4
@@ -564,6 +565,7 @@
             void sendSettingReadRequestVariableState(const QString &key, const QString var, const QString &suffix,
                                                      DeviceMenuItemType group_item, bool is_save = false);
             void sendSettingWriteRequestVariableState(quint16 value, int bit_pos, int address, QComboBox *comboBox);
+            void sendRequestCalibration(CModBusDataUnit &unit);
             void sendDeviceCommand(int cmd);
             void sendOutputAllRequest();
             void sendInputStatesRequest();

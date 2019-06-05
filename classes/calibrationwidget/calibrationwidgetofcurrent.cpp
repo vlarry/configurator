@@ -367,7 +367,7 @@ void CCalibrationWidgetOfCurrent::progressBarIncrement()
     int step  = 100/ui->spinBoxSetDataCount->value();
     ui->progressBarDataSet->setValue(count + step);
 }
-//-----------------------------------------------------
+//--------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::paintEvent(QPaintEvent* event)
 {
     QWidget::paintEvent(event);
