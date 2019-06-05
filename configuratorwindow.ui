@@ -1808,7 +1808,7 @@
             <number>0</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
-            <layout class="QVBoxLayout" name="verticalLayout_4">
+            <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
               <widget class="CDeviceMenuTableWidget" name="tableWidgetSettingsAnalogGroupGeneral"/>
              </item>
@@ -1842,10 +1842,13 @@
              <item>
               <widget class="QTabWidget" name="tabWidgetCalibration">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
                </property>
                <widget class="QWidget" name="tabCurrentCalibration">
                 <property name="sizePolicy">
@@ -1857,24 +1860,9 @@
                 <attribute name="title">
                  <string>Ток</string>
                 </attribute>
-                <layout class="QVBoxLayout" name="verticalLayout_60">
-                 <property name="spacing">
-                  <number>0</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
+                <layout class="QVBoxLayout" name="verticalLayout_4">
                  <item>
-                  <widget class="CCalibrationWidget" name="widgetCalibrationOfCurrent" native="true">
+                  <widget class="CCalibrationWidgetOfCurrent" name="widgetCalibrationOfCurrent" native="true">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1882,6 +1870,42 @@
                     </sizepolicy>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>41</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="tabPowerCalibration">
+                <attribute name="title">
+                 <string>Напряжение</string>
+                </attribute>
+                <layout class="QVBoxLayout" name="verticalLayout_9">
+                 <item>
+                  <widget class="CCalibrationWidgetPower" name="widgetCalibrationPower" native="true"/>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>41</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </widget>
@@ -2551,7 +2575,7 @@
           </widget>
           <widget class="QFrame" name="framePanelMessage">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -2671,9 +2695,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>CCalibrationWidget</class>
+   <class>CCalibrationWidgetOfCurrent</class>
    <extends>QWidget</extends>
-   <header>calibrationwidget.h</header>
+   <header>calibrationwidgetofcurrent.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2690,6 +2714,12 @@
    <class>CDockWidget</class>
    <extends>QWidget</extends>
    <header>dockwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CCalibrationWidgetPower</class>
+   <extends>QWidget</extends>
+   <header>calibrationwidgetpower.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

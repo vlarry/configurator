@@ -25,6 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS \
 CONFIG += c++17
 
 SOURCES += \
+        classes/calibrationwidget/calibrationwidgetofcurrent.cpp \
+        classes/calibrationwidget/calibrationwidgetpower.cpp \
         main.cpp \
         configuratorwindow.cpp \
         qcell.cpp \
@@ -67,7 +69,6 @@ SOURCES += \
         classes/menubar/menubar.cpp \
         classes/menubar/widgetmenu.cpp \
         classes/tabwidget/tabwidget.cpp \
-        classes/calibrationwidget/calibrationwidget.cpp \
         classes/tableviews/purposetableview.cpp \
         classes/tabledevicemenu/devicemenumodel.cpp \
         classes/menubar/toolbutton.cpp \
@@ -79,11 +80,13 @@ SOURCES += \
         classes/widget/containerwidget.cpp \
         classes/widget/RangeSlider.cpp \
         classes/journal/cjournal.cpp \
-    classes/journal/journalprogress.cpp \
-    classes/journal/dialogjournalreadresult.cpp \
-    classes/widget/ccheckboxinternalvariable.cpp
+        classes/journal/journalprogress.cpp \
+        classes/journal/dialogjournalreadresult.cpp \
+        classes/widget/ccheckboxinternalvariable.cpp
 
 HEADERS += \
+        classes/calibrationwidget/calibrationwidgetofcurrent.h \
+        classes/calibrationwidget/calibrationwidgetpower.h \
         configuratorwindow.h \
         qcell.h \
         cterminal.h \
@@ -125,7 +128,6 @@ HEADERS += \
         classes/menubar/menubar.h \
         classes/menubar/widgetmenu.h \
         classes/tabwidget/tabwidget.h \
-        classes/calibrationwidget/calibrationwidget.h \
         classes/tableviews/purposetableview.h \
         classes/tabledevicemenu/devicemenumodel.h \
         classes/menubar/toolbutton.h \
@@ -137,11 +139,13 @@ HEADERS += \
         classes/widget/containerwidget.h \
         classes/widget/RangeSlider.h \
         classes/journal/cjournal.h \
-    classes/journal/journalprogress.h \
-    classes/journal/dialogjournalreadresult.h \
-    classes/widget/ccheckboxinternalvariable.h
+        classes/journal/journalprogress.h \
+        classes/journal/dialogjournalreadresult.h \
+        classes/widget/ccheckboxinternalvariable.h
 
 FORMS += \
+        classes/calibrationwidget/calibrationwidgetofcurrent.ui \
+        classes/calibrationwidget/calibrationwidgetpower.ui \
         configuratorwindow.ui \
         qcell.ui \
         cterminal.ui \
@@ -163,13 +167,12 @@ FORMS += \
         statusinfo.ui \
         classes/menubar/menubar.ui \
         classes/menubar/widgetmenu.ui \
-        classes/calibrationwidget/calibrationwidget.ui \
         classes/user/userdialog.ui \
         classes/interval/intervaldialog.ui \
         classes/widget/dockwidget.ui \
         classes/widget/containerwidget.ui \
-    classes/journal/journalprogress.ui \
-    classes/journal/dialogjournalreadresult.ui
+        classes/journal/journalprogress.ui \
+        classes/journal/dialogjournalreadresult.ui
 
 INCLUDEPATH += "classes/modbus" \
                "classes/popup" \

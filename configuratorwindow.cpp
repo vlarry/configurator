@@ -320,8 +320,8 @@ void ConfiguratorWindow::inputAnalogGeneralRead()
     QStringList list = QStringList() << "M01" << "M02" << "M03" << "K61" << "K62" << "K63" << "K64";
     sendSettingReadRequest(list, CModBusDataUnit::ReadHoldingRegisters, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 
-//    sendSettingControlReadRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
-//    sendSettingControlReadRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingControlReadRequest("K16", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingControlReadRequest("K60", DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogCalibrateRead
@@ -8276,7 +8276,7 @@ void ConfiguratorWindow::panelButtonCtrlPress()
 
                 ui->splitterPanelMessage->setSizes(sizes);
 
-                emit ui->splitterPanelMessage->splitterMoved(0, 0);
+                emit ui->splitterPanelMessage->splitterMoved(sizes[1], 0);
             }
         }
     }
@@ -9172,7 +9172,7 @@ void ConfiguratorWindow::calibrationOfCurrent()
  */
 void ConfiguratorWindow::displayCalibrationOfCurrent()
 {
-    CCalibrationWidget::calibration_current_t calib = ui->widgetCalibrationOfCurrent->calibrationCurrent();
+    CCalibrationWidgetOfCurrent::calibration_current_t calib = ui->widgetCalibrationOfCurrent->calibrationCurrent();
     outLogMessage(tr("Калибровка по току:"));
 
     if(!calib.Ia.isEmpty())
@@ -12950,9 +12950,9 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::authorization);
-    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::calibration, this, &ConfiguratorWindow::calibrationOfCurrent);
-    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
-    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidget::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::calibration, this, &ConfiguratorWindow::calibrationOfCurrent);
+    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
+    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(ui->pushButtonCalculateVarible, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleCalculateVariable);

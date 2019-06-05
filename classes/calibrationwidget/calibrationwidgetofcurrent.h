@@ -11,10 +11,10 @@
     //----------
     namespace Ui
     {
-        class CCalibrationWidget;
+        class CCalibrationWidgetOfCurrent;
     }
     //--------------------------------------
-    class CCalibrationWidget: public QWidget
+    class CCalibrationWidgetOfCurrent: public QWidget
     {
         Q_OBJECT
 
@@ -30,8 +30,8 @@
             };
 
         public:
-            explicit CCalibrationWidget(QWidget* parent = nullptr);
-            ~CCalibrationWidget();
+            explicit CCalibrationWidgetOfCurrent(QWidget* parent = nullptr);
+            ~CCalibrationWidgetOfCurrent();
 
             QCheckBox* ctrlIa() const;
             QCheckBox* ctrlIb() const;
@@ -104,7 +104,7 @@
             void paintEvent(QPaintEvent* event);
 
         private:
-            Ui::CCalibrationWidget* ui;
+            Ui::CCalibrationWidgetOfCurrent* ui;
             calibration_current_t   m_calibration_current_data;
     };
 #endif // CALIBRATIONWIDGET_H
