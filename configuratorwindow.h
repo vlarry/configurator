@@ -75,6 +75,7 @@
     #include "journalprogress.h"
     #include "dialogjournalreadresult.h"
     #include "ccheckboxinternalvariable.h"
+    #include "calibrationcontroller.h"
     //-------------------
 //    #define DEBUG_REQUEST // отладка отправки/приема данных (отключение синхронизации)
 //    #define DEBUG_JOURNAL // отладка чтение журналов
@@ -829,6 +830,7 @@
             JournalProgress                 *m_journal_progress; // прогресбар для чтения журнала
             QString                          m_project_cur_path; // путь к текущему проекту
             QString                          m_serial_port_name; // имя com-порта по умолчанию
+            CCalibrationController          *m_calibration_controller; // контроллер калибровокs
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

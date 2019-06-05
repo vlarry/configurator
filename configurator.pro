@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS \
 CONFIG += c++17
 
 SOURCES += \
+        classes/calibrationwidget/calibrationcontroller.cpp \
         classes/calibrationwidget/calibrationwidgetofcurrent.cpp \
         classes/calibrationwidget/calibrationwidgetpower.cpp \
         main.cpp \
@@ -85,6 +86,7 @@ SOURCES += \
         classes/widget/ccheckboxinternalvariable.cpp
 
 HEADERS += \
+        classes/calibrationwidget/calibrationcontroller.h \
         classes/calibrationwidget/calibrationwidgetofcurrent.h \
         classes/calibrationwidget/calibrationwidgetpower.h \
         configuratorwindow.h \

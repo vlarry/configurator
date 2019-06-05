@@ -38,7 +38,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_journal_timer(nullptr),
     m_journal_progress(nullptr),
     m_project_cur_path(""),
-    m_serial_port_name("")
+    m_serial_port_name(""),
+    m_calibration_controller(nullptr)
 {
     ui->setupUi(this);
 
@@ -55,6 +56,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_debug_info            = new QTimer(this);
     m_timer_synchronization     = new QTimer(this);
     m_journal_timer             = new QTimer(this);
+    m_calibration_controller    = new CCalibrationController(ui->widgetCalibrationOfCurrent, ui->widgetCalibrationPower);
 
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
@@ -12961,4 +12963,5 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
     connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
     connect(ui->pushButtonCalibrationRoll, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRoll);
+    connect(m_calibration_controller, &CCalibrationController::readData, this, &ConfiguratorWindow::sendRequestRead);
 }
