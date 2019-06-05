@@ -4357,6 +4357,7 @@ void ConfiguratorWindow::calibrationRoll(bool state)
 {
     ui->tabWidgetCalibration->setVisible(state);
     ui->pushButtonCalibrationRoll->setChecked(state);
+    ui->tableWidgetSettingsAnalogGroupGeneral->setVisible(!state);
     ui->pushButtonCalibrationRoll->setText((state)?tr("Свернуть калибровки"):tr("Развернуть калибровки"));
 }
 //------------------------------------------------
