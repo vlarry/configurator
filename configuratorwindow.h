@@ -703,7 +703,6 @@
             block_protection_list_t loadProtectionList();
             bool deleteLogFile();
             bool showErrorMessage(const QString& title, CModBusDataUnit& unit);
-            float newCalibrationOfCurrentFactor(float standard, float cur_factor, QVector<float>& measure_list);
             QPointF standardDeviation(QVector<float>& list);
             int writeDataToExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset = 0);
             int readDataFromExcel(QXlsx::Document& doc, const CDeviceMenuTableWidget* table, int offset);

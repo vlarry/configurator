@@ -27,7 +27,12 @@
             TYPE_POWER
         };
 
-        typedef QVector<CModBusDataUnit> calibration_data_t;
+        struct calibration_data_t
+        {
+            int counter; // счетчик данных
+            int limit; // количество данных, которые необходимо принять
+            QVector<CModBusDataUnit> data; // данные
+        };
 
         CCalibrationWidgetOfCurrent *m_widget_of_current;
         CCalibrationWidgetPower     *m_widget_power;
@@ -43,10 +48,11 @@
 
         signals:
             void calibration(CModBusDataUnit&);
+            void calibrationFactorAllRead();
 
         public slots:
             void dataIsReady(CModBusDataUnit &unit);
             void calibrationProcess();
-            void calibrationProcessStart(QVector<CModBusDataUnit> &unit_list);
+            void calibrationProcessStart(QVector<CModBusDataUnit> &unit_list, int param_count);
     };
 #endif // CALIBRATECONTROLLER_H

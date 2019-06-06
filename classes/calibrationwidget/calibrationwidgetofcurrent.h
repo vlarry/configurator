@@ -11,6 +11,7 @@
     #include <QMessageBox>
     #include <math.h>
     #include "modbusdataunit.h"
+    #include "clineedit.h"
     //----------
     namespace Ui
     {
@@ -101,7 +102,8 @@
         signals:
             void apply();
             void saveToFlash(int);
-            void calibrationStart(QVector<CModBusDataUnit> &unit_list);
+            void calibrationStart(QVector<CModBusDataUnit>&, int);
+            void calibrationFactorAllStart();
             void calibrationEnd(bool = false);
             void dataIncrement();
 

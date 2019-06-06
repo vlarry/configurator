@@ -7,6 +7,7 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     m_calibration_type(TYPE_NONE)
 {
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
+    connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
 }
 //-----------------------------------------------
 CCalibrationController::~CCalibrationController()
@@ -26,16 +27,17 @@ void CCalibrationController::setWidgetCalibrationPower(CCalibrationWidgetPower *
 //-------------------------------------------------------------
 void CCalibrationController::dataIsReady(CModBusDataUnit &unit)
 {
-    m_calibration_data << unit;
-
-    if(m_calibration.request_count == m_calibration.request_all) // Приняты все данные по калибровке
+    m_calibration_data.data << unit;
+    m_calibration_data.counter++;
+qDebug() << QString("Получено сообщение №%1").arg(m_calibration_data.counter);
+    if(m_calibration_data.counter == m_calibration_data.limit) // Приняты все данные по калибровке
     {
         if(m_calibration_type == TYPE_CURRENT)
-            m_widget_of_current->calibrationDataProcess(m_calibration_data);
+            m_widget_of_current->calibrationDataProcess(m_calibration_data.data);
         else if(m_calibration_type == TYPE_POWER)
-            m_widget_power->calibrationDataProcess(m_calibration_data);
-
-        m_calibration_data.clear();
+            m_widget_power->calibrationDataProcess(m_calibration_data.data);
+qDebug() << QString("Калибровочные данные приняты в полном объеме: %1 из %2").arg(m_calibration_data.counter).arg(m_calibration.request_all);
+        m_calibration_data = { 0, 0, QVector<CModBusDataUnit>(0) };
         m_calibration_type = TYPE_NONE;
     }
 }
@@ -47,13 +49,13 @@ void CCalibrationController::dataIsReady(CModBusDataUnit &unit)
 void CCalibrationController::calibrationProcess()
 {
     m_calibration.timer->stop();
-
+qDebug() << QString("запросов всего = %1, запросов отправлено = %2").arg(m_calibration.request_all).arg(m_calibration.request_count);
     if(m_calibration.request_all == 0)
         m_calibration.request_all = 1;
 
     if(m_calibration.request_count < m_calibration.request_all)
     {
-        for(CModBusDataUnit& unit: m_calibration.units)
+        for(CModBusDataUnit &unit: m_calibration.units)
             emit calibration(unit);
 
         m_calibration.request_count++;
@@ -65,8 +67,8 @@ void CCalibrationController::calibrationProcess()
         delete m_calibration.timer;
     }
 }
-//---------------------------------------------------------------------------------------
-void CCalibrationController::calibrationProcessStart(QVector<CModBusDataUnit> &unit_list)
+//--------------------------------------------------------------------------------------------------------
+void CCalibrationController::calibrationProcessStart(QVector<CModBusDataUnit> &unit_list, int param_count)
 {
     QWidget *widget = qobject_cast<QWidget*>(sender());
 
@@ -78,10 +80,11 @@ void CCalibrationController::calibrationProcessStart(QVector<CModBusDataUnit> &u
     else if(widget == m_widget_power)
         m_calibration_type = TYPE_POWER;
 
-    m_calibration.units       = unit_list;
-    m_calibration.request_all = m_widget_of_current->dataSetCount();
-    m_calibration.pause       = m_widget_of_current->timePauseRequest();
-    m_calibration.timer       = new QTimer;
+    m_calibration = { m_widget_of_current->dataSetCount(), 0, m_widget_of_current->timePauseRequest(), unit_list, nullptr };
+    m_calibration_data = { 0, param_count*m_calibration.request_all, QVector<CModBusDataUnit>(0) };
+
+    m_calibration.timer = new QTimer;
 
     connect(m_calibration.timer, &QTimer::timeout, this, &CCalibrationController::calibrationProcess);
+    calibrationProcess();
 }

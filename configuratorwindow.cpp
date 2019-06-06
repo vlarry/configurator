@@ -7811,7 +7811,7 @@ qDebug() << QString("Запись состояния внутренной пер
  */
 void ConfiguratorWindow::sendRequestCalibration(CModBusDataUnit &unit)
 {
-    unit.setAddress(quint8(m_serialPortSettings_window->deviceID()));
+    unit.setID(quint8(m_serialPortSettings_window->deviceID()));
     unit.setProperty("REQUEST", CALIBRATION_PARAMETER);
 
     if(m_modbus->isConnected())
@@ -12707,7 +12707,9 @@ void ConfiguratorWindow::initConnect()
 //    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::calibration, this, &ConfiguratorWindow::calibrationOfCurrent);
 //    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
 //    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(m_calibration_controller, &CCalibrationController::calibration, this, &ConfiguratorWindow::sendRequestCalibration);
     connect(this, &ConfiguratorWindow::calibrationDataIsReady, m_calibration_controller, &CCalibrationController::dataIsReady);
+    connect(m_calibration_controller, &CCalibrationController::calibrationFactorAllRead, this, &ConfiguratorWindow::inputAnalogCalibrateRead);
 
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
@@ -12716,5 +12718,4 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
     connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
     connect(ui->pushButtonCalibrationRoll, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRoll);
-    connect(m_calibration_controller, &CCalibrationController::calibration, this, &ConfiguratorWindow::sendRequestCalibration);
 }

@@ -23,15 +23,15 @@ CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
 
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::calibrationParameterStart);
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::stateButton);
-    connect(this, &CCalibrationWidgetOfCurrent::calibrationEnd, this, &CCalibrationWidgetOfCurrent::stateButton);
-    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::apply);
+//    connect(this, &CCalibrationWidgetOfCurrent::calibrationEnd, this, &CCalibrationWidgetOfCurrent::stateButton);
+//    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::apply);
     connect(ui->lineEditCurrentStandardPhase, &QLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
     connect(ui->lineEditCurrentStandard3I0, &QLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
     connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
     connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
     connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
     connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
-    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::saveCalibrationToFlash);
+//    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::saveCalibrationToFlash);
     connect(this, &CCalibrationWidgetOfCurrent::dataIncrement, this, &CCalibrationWidgetOfCurrent::progressBarIncrement);
 }
 //---------------------------------------
@@ -297,7 +297,7 @@ void CCalibrationWidgetOfCurrent::display(const calibration_t &data)
         qInfo() << tr("Калибровка тока фазы А");
 
         for(float value: data.Ia)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                       arg(QLocale::system().toString(deviation.x(), 'f', 6)).
                       arg(QLocale::system().toString(deviation.y(), 'f', 6));
@@ -319,7 +319,7 @@ void CCalibrationWidgetOfCurrent::display(const calibration_t &data)
         qInfo() << tr("Калибровка тока фазы B");
 
         for(float value: data.Ib)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
 
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
@@ -366,7 +366,7 @@ void CCalibrationWidgetOfCurrent::display(const calibration_t &data)
         qInfo() << tr("Калибровка среднего тока 3I0");
 
         for(float value: data._3I0)
-            qInfo() << QString("value: %1").arg(QLocale::system().toString(value, 'f', 6));
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
 
         qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
                    arg(QLocale::system().toString(deviation.x(), 'f', 6)).
@@ -498,10 +498,10 @@ void CCalibrationWidgetOfCurrent::calibrationParameterStart()
         return;
     }
 
-    CModBusDataUnit unit_Ia(-1, CModBusDataUnit::ReadInputRegisters, 64, 2);
-    CModBusDataUnit unit_Ib(-1, CModBusDataUnit::ReadInputRegisters, 66, 2);
-    CModBusDataUnit unit_Ic(-1, CModBusDataUnit::ReadInputRegisters, 68, 2);
-    CModBusDataUnit unit_3I0(-1, CModBusDataUnit::ReadInputRegisters, 70, 2);
+    CModBusDataUnit unit_Ia(0, CModBusDataUnit::ReadInputRegisters, 64, 2);
+    CModBusDataUnit unit_Ib(0, CModBusDataUnit::ReadInputRegisters, 66, 2);
+    CModBusDataUnit unit_Ic(0, CModBusDataUnit::ReadInputRegisters, 68, 2);
+    CModBusDataUnit unit_3I0(0, CModBusDataUnit::ReadInputRegisters, 70, 2);
 
     unit_Ia.setProperty("CHANNEL", CURRENT_IA);
     unit_Ib.setProperty("CHANNEL", CURRENT_IB);
@@ -509,17 +509,31 @@ void CCalibrationWidgetOfCurrent::calibrationParameterStart()
     unit_3I0.setProperty("CHANNEL", CURRENT_3I0);
 
     QVector<CModBusDataUnit> unit_list;
+    int param_count = 0;
 
     if(ui->checkBoxIa->isChecked())
+    {
         unit_list << unit_Ia;
+        param_count++;
+    }
     if(ui->checkBoxIb->isChecked())
+    {
         unit_list << unit_Ib;
+        param_count++;
+    }
     if(ui->checkBoxIc->isChecked())
+    {
         unit_list << unit_Ic;
+        param_count++;
+    }
     if(ui->checkBox3I0->isChecked())
+    {
         unit_list << unit_3I0;
+        param_count++;
+    }
 
-    emit calibrationStart(unit_list);
+    emit calibrationFactorAllStart();
+    emit calibrationStart(unit_list, param_count);
 }
 //--------------------------------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::calibrationDataProcess(QVector<CModBusDataUnit> &data)
@@ -534,7 +548,7 @@ void CCalibrationWidgetOfCurrent::calibrationDataProcess(QVector<CModBusDataUnit
         quint16 v[2];
         float   f;
     } value;
-
+qDebug() << QString("Разбор калибровочных данных: размер = %1").arg(data.count());
     for(const CModBusDataUnit &unit: data)
     {
         if(unit.count() != 2)
@@ -554,6 +568,8 @@ void CCalibrationWidgetOfCurrent::calibrationDataProcess(QVector<CModBusDataUnit
         else if(channel == CURRENT_3I0)
             calibration_data._3I0 << value.f;
     }
+
+    display(calibration_data);
 }
 //--------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::paintEvent(QPaintEvent* event)
