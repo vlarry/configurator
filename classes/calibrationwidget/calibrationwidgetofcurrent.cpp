@@ -23,7 +23,7 @@ CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
 
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::calibrationParameterStart);
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::stateButton);
-//    connect(this, &CCalibrationWidgetOfCurrent::calibrationEnd, this, &CCalibrationWidgetOfCurrent::stateButton);
+    connect(this, &CCalibrationWidgetOfCurrent::calibrationEnd, this, &CCalibrationWidgetOfCurrent::stateButton);
 //    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::apply);
     connect(ui->lineEditCurrentStandardPhase, &QLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
     connect(ui->lineEditCurrentStandard3I0, &QLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
@@ -376,8 +376,7 @@ void CCalibrationWidgetOfCurrent::display(const calibration_t &data)
         qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
     }
 
-//    ui->widgetCalibrationOfCurrent->calibrationCurrentClear();
-//    emit ui->widgetCalibrationOfCurrent->calibrationEnd(false);
+    emit calibrationEnd(false);
 }
 //-------------------------------------------------------
 void CCalibrationWidgetOfCurrent::stateButton(bool state)

@@ -12704,7 +12704,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::authorization);
-//    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::calibration, this, &ConfiguratorWindow::calibrationOfCurrent);
 //    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
 //    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(m_calibration_controller, &CCalibrationController::calibration, this, &ConfiguratorWindow::sendRequestCalibration);
