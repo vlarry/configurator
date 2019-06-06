@@ -8,6 +8,9 @@
     #include <QDebug>
     #include <QDoubleValidator>
     #include <QMessageBox>
+    #include <QMessageBox>
+    #include <math.h>
+    #include "modbusdataunit.h"
     //----------
     namespace Ui
     {
@@ -20,13 +23,21 @@
 
         public:
             typedef QVector<float> calibration_data_t;
-            //--------------------------
-            struct calibration_current_t
+            //------------------
+            struct calibration_t
             {
                 calibration_data_t Ia;
                 calibration_data_t Ib;
                 calibration_data_t Ic;
                 calibration_data_t _3I0;
+            };
+
+            enum ChannelType
+            {
+                CURRENT_IA,
+                CURRENT_IB,
+                CURRENT_IC,
+                CURRENT_3I0
             };
 
         public:
@@ -45,7 +56,6 @@
             void                         addCalibrationIb(float value);
             void                         addCalibrationIc(float value);
             void                         addCalibration3I0(float value);
-            const calibration_current_t& calibrationCurrent() const;
             float                        calibrationCurrentStandardPhase() const;
             float                        calibrationCurrentStandard3I0() const;
             float                        calibrationCurrentIa() const;
@@ -59,6 +69,8 @@
             bool                         calibrationCurrent3I0State() const;
             int                          calibrationCurrentDataCount() const;
             int                          calibrationCurrentPauseRequest() const;
+            float newCalibrationFactor(float standard, float cur_factor, const calibration_data_t &measure_list);
+            QPointF standardDeviation(const calibration_data_t &data);
 
             void setCurrentStandardPhase(float value);
             void setCurrentStandard3I0(float value);
@@ -89,22 +101,24 @@
         signals:
             void apply();
             void saveToFlash(int);
-            void calibration();
+            void calibrationStart(QVector<CModBusDataUnit> &unit_list);
             void calibrationEnd(bool = false);
             void dataIncrement();
 
         public slots:
+            void display(const calibration_t &data);
             void stateButton(bool state = false);
             void valueCurrentStandardChanged(const QString&);
             void stateChoiceCurrentChannelChanged(bool);
             void saveCalibrationToFlash();
             void progressBarIncrement();
+            void calibrationParameterStart();
+            void calibrationDataProcess(QVector<CModBusDataUnit> &data);
 
         protected:
             void paintEvent(QPaintEvent* event);
 
         private:
             Ui::CCalibrationWidgetOfCurrent* ui;
-            calibration_current_t   m_calibration_current_data;
     };
 #endif // CALIBRATIONWIDGET_H

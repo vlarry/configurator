@@ -25,7 +25,7 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
     ui->lineEditFactor3US->setValidator(validator);
     ui->lineEditFactor3U0->setValidator(validator);
 
-//    ui->progressBarDataSet->hide();
+    ui->progressBarDataSet->hide();
 
 //    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibration);
 //    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::stateButton);
@@ -44,6 +44,12 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
 CCalibrationWidgetPower::~CCalibrationWidgetPower()
 {
     delete ui;
+}
+//----------------------------------------------------------------------------------
+void CCalibrationWidgetPower::calibrationDataProcess(QVector<CModBusDataUnit> &data)
+{
+    if(data.isEmpty())
+        return;
 }
 //----------------------------------------------------------
 void CCalibrationWidgetPower::paintEvent(QPaintEvent *event)

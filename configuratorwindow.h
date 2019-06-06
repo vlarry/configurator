@@ -131,10 +131,6 @@
                 COMMUNICATIONS_MODBUS_ADDRESS,
                 COMMUNICATIONS_MODBUS_TIM_REQUEST,
                 COMMUNICATIONS_MODBUS_TIM_SPEED,
-                CALIBRATION_CURRENT_IA, // калибровка токовго коэффициента Ia
-                CALIBRATION_CURRENT_IB, // калибровка токовго коэффициента Ib
-                CALIBRATION_CURRENT_IC, // калибровка токовго коэффициента Ic
-                CALIBRATION_CURRENT_3I0, // калибровка токовго коэффициента 3I0
                 CALIBRATION_PARAMETER, // калибровка (ток, напряжение и т.д. и т.п.)
                 AMPLITUDE_READ_CH2, // амплитуда канала №2
                 AMPLITUDE_READ_CH3, // амплитуда канала №3
@@ -312,19 +308,6 @@
                 QString name;
                 QString description;
                 QVector<block_protection_purpose_t> purpose;
-            };
-            /*!
-             * \brief The calibration_current_t struct
-             *
-             * Структура описывающая переменные для выполнения калибровок по току
-             */
-            struct calibration_current_t
-            {
-                int                      request_all; // всего запросов
-                int                      request_count; // количество отправленных запросов
-                int                      pause; // пауза между запросами в мс
-                QVector<CModBusDataUnit> units; // массив запросов
-                QTimer*                  timer; // таймер отправки запросов
             };
             /*!
              * \brief The import_variable_t struct
@@ -624,8 +607,6 @@
             void importFromExcelProject();
             void closeProject();
             void minimizeTabMenu(bool state);
-            void calibrationOfCurrent();
-            void calibrationOfCurrentRequest();
             void resizeColumns();
             void processKCUUmin();
             void initDebugVariables();
@@ -772,6 +753,7 @@
 
         signals:
             void buttonReadJournalStateChanged(bool = false);
+            void calibrationDataIsReady(CModBusDataUnit&);
 
         private:
             Ui::ConfiguratorWindow*          ui;
@@ -823,7 +805,6 @@
             limit_unit_t                     m_limits; // лимиты редактируемых величин
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
             QTimer*                          m_journal_timer; // проверка на обрыв чтения журнала
-            calibration_current_t            m_calib_of_current; // структура для калибровок по току
             QMap<int, unit_t>                m_monitor_K10_K11_field; // ключ - номер строки, unit - описание полей (привязки для мониторинга К10 и К11
             QMap<int, CCheckBoxInternalVariable*> m_internal_variable_list; // список переменных (ключ - бит переменной)
             JournalPtr                       m_journal_crash; // журнал аварий

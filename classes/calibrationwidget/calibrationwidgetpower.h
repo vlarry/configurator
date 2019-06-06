@@ -4,6 +4,7 @@
     #include <QWidget>
     #include <QPaintEvent>
     #include <QPainter>
+    #include "modbusdataunit.h"
     //----------
     namespace Ui
     {
@@ -17,6 +18,9 @@
         public:
             explicit CCalibrationWidgetPower(QWidget *parent = nullptr);
             ~CCalibrationWidgetPower();
+
+        public slots:
+            void calibrationDataProcess(QVector<CModBusDataUnit> &data);
 
         protected:
             void paintEvent(QPaintEvent *event);
