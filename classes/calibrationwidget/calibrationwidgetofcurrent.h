@@ -100,7 +100,7 @@
             void setDeviation3I0(float value);
 
         signals:
-            void apply();
+            void calibrationWriteStart(QVector<CModBusDataUnit>&);
             void saveToFlash(int);
             void calibrationStart(QVector<CModBusDataUnit>&, int);
             void calibrationFactorAllStart();
@@ -116,6 +116,7 @@
             void progressBarIncrement();
             void calibrationParameterStart();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
+            void calibrationWriteProcess();
 
         protected:
             void paintEvent(QPaintEvent* event);

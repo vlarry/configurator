@@ -49,6 +49,7 @@
         signals:
             void calibration(CModBusDataUnit&);
             void calibrationFactorAllRead();
+            void calibrationWrite(QVector<CModBusDataUnit>&);
 
         public slots:
             void dataIsReady(CModBusDataUnit &unit);

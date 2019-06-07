@@ -24,7 +24,7 @@ CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::calibrationParameterStart);
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::stateButton);
     connect(this, &CCalibrationWidgetOfCurrent::calibrationEnd, this, &CCalibrationWidgetOfCurrent::stateButton);
-//    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::apply);
+    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::calibrationWriteProcess);
     connect(ui->lineEditCurrentStandardPhase, &QLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
     connect(ui->lineEditCurrentStandard3I0, &QLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
     connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
@@ -34,97 +34,97 @@ CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
 //    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::saveCalibrationToFlash);
     connect(this, &CCalibrationWidgetOfCurrent::dataIncrement, this, &CCalibrationWidgetOfCurrent::progressBarIncrement);
 }
-//---------------------------------------
+//---------------------------------------------------------
 CCalibrationWidgetOfCurrent::~CCalibrationWidgetOfCurrent()
 {
     delete ui;
 }
-//-------------------------------------------
+//----------------------------------------------------
 QCheckBox* CCalibrationWidgetOfCurrent::ctrlIa() const
 {
     return ui->checkBoxIa;
 }
-//-------------------------------------------
+//----------------------------------------------------
 QCheckBox* CCalibrationWidgetOfCurrent::ctrlIb() const
 {
     return ui->checkBoxIb;
 }
-//-------------------------------------------
+//----------------------------------------------------
 QCheckBox* CCalibrationWidgetOfCurrent::ctrlIc() const
 {
     return ui->checkBoxIc;
 }
-//--------------------------------------------
+//-----------------------------------------------------
 QCheckBox* CCalibrationWidgetOfCurrent::ctrl3I0() const
 {
     return ui->checkBox3I0;
 }
-//------------------------------------------
+//---------------------------------------------------
 int CCalibrationWidgetOfCurrent::dataSetCount() const
 {
     return ui->spinBoxSetDataCount->value();
 }
-//----------------------------------------------
+//-------------------------------------------------------
 int CCalibrationWidgetOfCurrent::timePauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
 }
-//---------------------------------------------------------------
+//------------------------------------------------------------------------
 float CCalibrationWidgetOfCurrent::calibrationCurrentStandardPhase() const
 {
     return QLocale::system().toFloat(ui->lineEditCurrentStandardPhase->text());
 }
-//-------------------------------------------------------------
+//----------------------------------------------------------------------
 float CCalibrationWidgetOfCurrent::calibrationCurrentStandard3I0() const
 {
     return QLocale::system().toFloat(ui->lineEditCurrentStandard3I0->text());
 }
-//----------------------------------------------------
+//-------------------------------------------------------------
 float CCalibrationWidgetOfCurrent::calibrationCurrentIa() const
 {
     return QLocale::system().toFloat(ui->lineEditFactorIa->text());
 }
-//----------------------------------------------------
+//-------------------------------------------------------------
 float CCalibrationWidgetOfCurrent::calibrationCurrentIb() const
 {
     return QLocale::system().toFloat(ui->lineEditFactorIb->text());
 }
-//----------------------------------------------------
+//-------------------------------------------------------------
 float CCalibrationWidgetOfCurrent::calibrationCurrentIc() const
 {
     return QLocale::system().toFloat(ui->lineEditFactorIc->text());
 }
-//-----------------------------------------------------
+//--------------------------------------------------------------
 float CCalibrationWidgetOfCurrent::calibrationCurrent3I0() const
 {
     return QLocale::system().toFloat(ui->lineEditFactor3I0->text());
 }
-//--------------------------------------------------------
+//------------------------------------------------------------------
 bool CCalibrationWidgetOfCurrent::calibrationCurrentIaState() const
 {
     return ui->checkBoxIa->isChecked();
 }
-//--------------------------------------------------------
+//-----------------------------------------------------------------
 bool CCalibrationWidgetOfCurrent::calibrationCurrentIbState() const
 {
     return ui->checkBoxIb->isChecked();
 }
-//--------------------------------------------------------
+//-----------------------------------------------------------------
 bool CCalibrationWidgetOfCurrent::calibrationCurrentIcState() const
 {
     return ui->checkBoxIc->isChecked();
 }
-//---------------------------------------------------------
+//------------------------------------------------------------------
 bool CCalibrationWidgetOfCurrent::calibrationCurrent3I0State() const
 {
     return ui->checkBox3I0->isChecked();
 }
-//---------------------------------------------------------
+//------------------------------------------------------------------
 int CCalibrationWidgetOfCurrent::calibrationCurrentDataCount() const
 {
     return ui->spinBoxSetDataCount->value();
 }
-//------------------------------------------------------------
+//---------------------------------------------------------------------
 int CCalibrationWidgetOfCurrent::calibrationCurrentPauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
@@ -178,92 +178,92 @@ void CCalibrationWidgetOfCurrent::setCurrentStandardPhase(float value)
 {
     ui->lineEditCurrentStandardPhase->setText(QLocale::system().toString(value, 'f', 6));
 }
-//---------------------------------------------------------
+//------------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setCurrentStandard3I0(float value)
 {
     ui->lineEditCurrentStandard3I0->setText(QLocale::system().toString(value, 'f', 6));
 }
-//----------------------------------------------------
+//-------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setCurrentIaState(bool state)
 {
     ui->checkBoxIa->setChecked(state);
 }
-//----------------------------------------------------
+//-------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setCurrentIbState(bool state)
 {
     ui->checkBoxIb->setChecked(state);
 }
-//----------------------------------------------------
+//-------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setCurrentIcState(bool state)
 {
     ui->checkBoxIc->setChecked(state);
 }
-//----------------------------------------------------
+//--------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setCurrent3I0State(bool state)
 {
     ui->checkBox3I0->setChecked(state);
 }
-//-----------------------------------------------------
+//--------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setCurrentDataCount(int count)
 {
     ui->spinBoxSetDataCount->setValue(count);
 }
-//--------------------------------------------------------
+//-----------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setCurrentPauseRequest(int pause)
 {
     ui->spinBoxPauseRequest->setValue(pause);
 }
-//-----------------------------------------------
+//--------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setFactorIa(float value)
 {
     ui->lineEditFactorIa->setText(QLocale::system().toString(value, 'f', 6));
 }
-//-----------------------------------------------
+//--------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setFactorIb(float value)
 {
     ui->lineEditFactorIb->setText(QLocale::system().toString(value, 'f', 6));
 }
-//-----------------------------------------------
+//--------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setFactorIc(float value)
 {
     ui->lineEditFactorIc->setText(QLocale::system().toString(value, 'f', 6));
 }
-//------------------------------------------------
+//---------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setFactor3I0(float value)
 {
     ui->lineEditFactor3I0->setText(QLocale::system().toString(value, 'f', 6));
 }
-//--------------------------------------------------
+//-----------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setMeasureIa(float average)
 {
     ui->lineEditMeasuredD01->setText(QLocale::system().toString(average, 'f', 6));
 }
-//--------------------------------------------------
+//-----------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setMeasureIb(float average)
 {
     ui->lineEditMeasuredD02->setText(QLocale::system().toString(average, 'f', 6));
 }
-//--------------------------------------------------
+//-----------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setMeasureIc(float average)
 {
     ui->lineEditMeasuredD03->setText(QLocale::system().toString(average, 'f', 6));
 }
-//---------------------------------------------------
+//------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setMeasure3I0(float average)
 {
     ui->lineEditMeasuredD04->setText(QLocale::system().toString(average, 'f', 6));
 }
-//--------------------------------------------------
+//-----------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setDeviationIa(float value)
 {
     ui->lineEditDeviationIa->setText(QLocale::system().toString(value, 'f', 6));
 }
-//--------------------------------------------------
+//-----------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setDeviationIb(float value)
 {
     ui->lineEditDeviationIb->setText(QLocale::system().toString(value, 'f', 6));
 }
-//--------------------------------------------------
+//-----------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setDeviationIc(float value)
 {
     ui->lineEditDeviationIc->setText(QLocale::system().toString(value, 'f', 6));
@@ -569,6 +569,82 @@ qDebug() << QString("Разбор калибровочных данных: ра�
     }
 
     display(calibration_data);
+}
+//---------------------------------------------------------
+void CCalibrationWidgetOfCurrent::calibrationWriteProcess()
+{
+    float Ia   = 0;
+    float Ib   = 0;
+    float Ic   = 0;
+    float _3I0 = 0;
+
+    if(ui->checkBoxIa->isChecked())
+        Ia  = calibrationCurrentIa();
+    if(ui->checkBoxIb->isChecked())
+        Ib = calibrationCurrentIb();
+    if(ui->checkBoxIc->isChecked())
+        Ic  = calibrationCurrentIc();
+    if(ui->checkBox3I0->isChecked())
+        _3I0 = calibrationCurrent3I0();
+
+    if(Ia == 0.0f && Ib == 0.0f && Ic == 0.0f && _3I0 == 0.0f)
+        return;
+
+    QString str;
+    QString textValue;
+
+    textValue += ((Ia != 0.0f)?QString("Ia = %1\n").arg(QLocale::system().toString(Ia, 'f', 6)):"");
+    textValue += ((Ib != 0.0f)?QString("Ib = %1\n").arg(QLocale::system().toString(Ib, 'f', 6)):"");
+    textValue += ((Ic != 0.0f)?QString("Ic = %1\n").arg(QLocale::system().toString(Ic, 'f', 6)):"");
+    textValue += ((_3I0 != 0.0f)?QString("3I0 = %1\n").arg(QLocale::system().toString(_3I0, 'f', 6)):"");
+
+    str = tr("Вы хотите сохранить новые калибровки?\n%1").arg(textValue);
+    int res = QMessageBox::question(this, tr("Запись калибровок по току"), str);
+
+    qInfo() << tr("Запись новых калибровочных коэффициентов по току:\n%1").arg(textValue);
+
+    if(res == QMessageBox::No)
+    {
+        qInfo() << tr("Отказ пользователя от записи калибровочных коэффициетов по току");
+        return;
+    }
+
+    union
+    {
+        quint16 i[2];
+        float   f;
+    } value;
+
+    value.f = Ia;
+    CModBusDataUnit unit_Ia(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Ia.setProperty("KEY", "KIA");
+
+    value.f = Ib;
+    CModBusDataUnit unit_Ib(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Ia.setProperty("KEY", "KIB");
+
+    value.f = Ic;
+    CModBusDataUnit unit_Ic(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Ia.setProperty("KEY", "KIC");
+
+    value.f = _3I0;
+    CModBusDataUnit unit_3I0(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Ia.setProperty("KEY", "K3I0");
+
+    QVector<CModBusDataUnit> units;
+
+    if(Ia != 0.0f)
+        units << unit_Ia;
+    if(Ib != 0.0f)
+        units << unit_Ib;
+    if(Ic != 0.0f)
+        units << unit_Ic;
+    if(_3I0!= 0.0f)
+        units << unit_3I0;
+
+    qInfo() << tr("Запись новых калибровочных коэффициентов по току подтверждена");
+
+    emit calibrationWriteStart(units);
 }
 //--------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::paintEvent(QPaintEvent* event)

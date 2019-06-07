@@ -426,7 +426,6 @@
             void automationAPVRead();
             void automationGroupRead();
             void automationGroupWrite();
-            void calibrationOfCurrentWrite();
             void purposeLedsRead();
             void purposeInputRead();
             void purposeRelayRead();
@@ -549,6 +548,7 @@
                                                      DeviceMenuItemType group_item, bool is_save = false);
             void sendSettingWriteRequestVariableState(quint16 value, int bit_pos, int address, QComboBox *comboBox);
             void sendRequestCalibration(CModBusDataUnit &unit);
+            void sendRequestCalibrationWrite(QVector<CModBusDataUnit> &units);
             void sendDeviceCommand(int cmd);
             void sendOutputAllRequest();
             void sendInputStatesRequest();

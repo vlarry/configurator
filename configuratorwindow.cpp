@@ -2202,110 +2202,6 @@ void ConfiguratorWindow::automationGroupWrite()
 
     sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
-/*!
- * \brief ConfiguratorWindow::calibrationOfCurrentWrite
- *
- * Запись калибровок по току
- */
-void ConfiguratorWindow::calibrationOfCurrentWrite()
-{
-    float Ia   = 0;
-    float Ib   = 0;
-    float Ic   = 0;
-    float _3I0 = 0;
-
-    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-        Ia  = ui->widgetCalibrationOfCurrent->calibrationCurrentIa();
-    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-        Ib = ui->widgetCalibrationOfCurrent->calibrationCurrentIb();
-    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-        Ic  = ui->widgetCalibrationOfCurrent->calibrationCurrentIc();
-    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
-        _3I0 = ui->widgetCalibrationOfCurrent->calibrationCurrent3I0();
-
-    if(Ia == 0.0f && Ib == 0.0f && Ic == 0.0f && _3I0 == 0.0f)
-        return;
-
-    QString str;
-    QString textValue;
-
-    textValue += ((Ia != 0.0f)?QString("Ia = %1\n").arg(QLocale::system().toString(Ia, 'f', 6)):"");
-    textValue += ((Ib != 0.0f)?QString("Ib = %1\n").arg(QLocale::system().toString(Ib, 'f', 6)):"");
-    textValue += ((Ic != 0.0f)?QString("Ic = %1\n").arg(QLocale::system().toString(Ic, 'f', 6)):"");
-    textValue += ((_3I0 != 0.0f)?QString("3I0 = %1\n").arg(QLocale::system().toString(_3I0, 'f', 6)):"");
-
-    str = tr("Вы хотите сохранить новые калибровки?\n%1").arg(textValue);
-    int res = showMessageBox(tr("Запись калибровок по току"), str, QMessageBox::Question);
-
-    outLogMessage(tr("Запись новых калибровочных коэффициентов по току:\n%1").arg(textValue));
-
-    if(res == QMessageBox::No)
-    {
-        outLogMessage(tr("Отказ пользователя от записи калибровочных коэффициетов по току"));
-        return;
-    }
-
-    QString nameWgt;
-    float   t_value = 0.0f;
-
-    if(Ia != 0.0f)
-    {
-        nameWgt = "lineEditKIA";
-        t_value = Ia;
-    }
-    if(Ib != 0.0f)
-    {
-        nameWgt = "lineEditKIB";
-        t_value = Ib;
-    }
-    if(Ic != 0.0f)
-    {
-        nameWgt = "lineEditKIC";
-        t_value = Ic;
-    }
-    if(_3I0 != 0.0f)
-    {
-        nameWgt = "lineEdit3I0";
-        t_value = _3I0;
-    }
-
-    CLineEdit* lineEdit = qobject_cast<CLineEdit*>(groupMenuCellWidgetByName(ui->tableWidgetSettingsAnalogGroupGeneral, nameWgt, 1));
-    if(lineEdit)
-        lineEdit->setText(QLocale::system().toString(t_value, 'f', 6));
-
-    union
-    {
-        quint16 i[2];
-        float   f;
-    } value;
-
-    value.f = Ia;
-    CModBusDataUnit unit_Ia(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
-                            static_cast<quint16>(addressSettingKey("KIA")), QVector<quint16>() << value.i[1] << value.i[0]);
-
-    value.f = Ib;
-    CModBusDataUnit unit_Ib(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
-                            static_cast<quint16>(addressSettingKey("KIB")), QVector<quint16>() << value.i[1] << value.i[0]);
-
-    value.f = Ic;
-    CModBusDataUnit unit_Ic(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
-                            static_cast<quint16>(addressSettingKey("KIC")), QVector<quint16>() << value.i[1] << value.i[0]);
-
-    value.f = _3I0;
-    CModBusDataUnit unit_3I0(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
-                             static_cast<quint16>(addressSettingKey("K3I0")), QVector<quint16>() << value.i[1] << value.i[0]);
-
-    if(Ia != 0.0f)
-        m_modbus->sendData(unit_Ia);
-    if(Ib != 0.0f)
-        m_modbus->sendData(unit_Ib);
-    if(Ic != 0.0f)
-        m_modbus->sendData(unit_Ic);
-    if(_3I0!= 0.0f)
-        m_modbus->sendData(unit_3I0);
-
-    outLogMessage(tr("Запись новых калибровочных коэффициентов по току подтверждена"));
-}
 //----------------------------------------
 void ConfiguratorWindow::purposeLedsRead()
 {
@@ -7818,6 +7714,38 @@ void ConfiguratorWindow::sendRequestCalibration(CModBusDataUnit &unit)
         m_modbus->sendData(unit);
 }
 /*!
+ * \brief ConfiguratorWindow::sendRequestCalibrationWrite
+ * \param units Список калибровок, которые выбраны для записи
+ *
+ * Отправка запроса на запись калибровок
+ */
+void ConfiguratorWindow::sendRequestCalibrationWrite(QVector<CModBusDataUnit> &units)
+{
+    if(!m_modbus->isConnected())
+    {
+        outLogMessage(tr("Невозможно отправить запрос на запись калибровок. Нет соединения с устройством."));
+        return;
+    }
+
+    for(CModBusDataUnit &unit: units)
+    {
+        QString key = unit.property("KEY").toString();
+
+        if(key.isEmpty())
+            continue;
+
+        int addr = addressSettingKey(key);
+
+        if(addr == -1)
+            continue;
+
+        unit.setID(quint8(m_serialPortSettings_window->deviceID()));
+        unit.setAddress(addr);
+
+        m_modbus->sendData(unit);
+    }
+}
+/*!
  * \brief ConfiguratorWindow::sendDeviceCommand
  *
  * Отправка команды устройству
@@ -12704,11 +12632,12 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::authorization);
-//    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::apply, this, &ConfiguratorWindow::calibrationOfCurrentWrite);
+
 //    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(m_calibration_controller, &CCalibrationController::calibration, this, &ConfiguratorWindow::sendRequestCalibration);
     connect(this, &ConfiguratorWindow::calibrationDataIsReady, m_calibration_controller, &CCalibrationController::dataIsReady);
     connect(m_calibration_controller, &CCalibrationController::calibrationFactorAllRead, this, &ConfiguratorWindow::inputAnalogCalibrateRead);
+    connect(m_calibration_controller, &CCalibrationController::calibrationWrite, this, &ConfiguratorWindow::sendRequestCalibrationWrite);
 
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);

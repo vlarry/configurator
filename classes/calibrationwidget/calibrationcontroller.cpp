@@ -8,6 +8,7 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
 {
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
+    connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
 }
 //-----------------------------------------------
 CCalibrationController::~CCalibrationController()
