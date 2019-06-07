@@ -65,11 +65,23 @@
             bool state3US() const;
             bool state3I0() const;
 
+            float valueUa() const;
+            float valueUb() const;
+            float valueUc() const;
+            float valueUab() const;
+            float valueUbc() const;
+            float valueUca() const;
+            float value3U0S() const;
+            float value3US() const;
+            float value3U0() const;
+
         public slots:
             void stateButton(bool state = false);
             void saveCalibrationToFlash();
+            void valueCurrentStandardChanged(const QString&);
             void calibrationParameterStart();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
+            void calibrationWriteProcess();
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);

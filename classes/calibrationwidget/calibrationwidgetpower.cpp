@@ -14,7 +14,7 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
 
     ui->lineEditPowerStandardPhase->setValidator(validator);
     ui->lineEditPowerStandardPhaseLinear->setValidator(validator);
-    ui->lineEditPowerStandardDC->setValidator(validator); // эталонное значение постоянной состовляющей для 3U0S, 3US и 3U0
+    ui->lineEditPowerStandard3U->setValidator(validator); // эталонное значение постоянной состовляющей для 3U0S, 3US и 3U0
     ui->lineEditFactorUA->setValidator(validator);
     ui->lineEditFactorUB->setValidator(validator);
     ui->lineEditFactorUC->setValidator(validator);
@@ -30,8 +30,8 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibrationParameterStart);
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::stateButton);
     connect(this, &CCalibrationWidgetPower::calibrationEnd, this, &CCalibrationWidgetPower::stateButton);
-//    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibrationWriteProcess);
-//    connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
+    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibrationWriteProcess);
+    connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
 //    connect(ui->lineEditPowerStandardPhaseLinear, &QLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
 //    connect(ui->lineEditPowerStandardDC, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
 //    connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
@@ -101,6 +101,51 @@ bool CCalibrationWidgetPower::state3I0() const
 {
     return ui->checkBox3U0->isChecked();
 }
+//--------------------------------------------
+float CCalibrationWidgetPower::valueUa() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorUA->text());
+}
+//--------------------------------------------
+float CCalibrationWidgetPower::valueUb() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorUB->text());
+}
+//--------------------------------------------
+float CCalibrationWidgetPower::valueUc() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorUC->text());
+}
+//---------------------------------------------
+float CCalibrationWidgetPower::valueUab() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorUAB->text());
+}
+//---------------------------------------------
+float CCalibrationWidgetPower::valueUbc() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorUBC->text());
+}
+//---------------------------------------------
+float CCalibrationWidgetPower::valueUca() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactorUCA->text());
+}
+//----------------------------------------------
+float CCalibrationWidgetPower::value3U0S() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactor3U0S->text());
+}
+//---------------------------------------------
+float CCalibrationWidgetPower::value3US() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactor3US->text());
+}
+//---------------------------------------------
+float CCalibrationWidgetPower::value3U0() const
+{
+    return QLocale::system().toFloat(ui->lineEditFactor3U0->text());
+}
 //---------------------------------------------------
 void CCalibrationWidgetPower::stateButton(bool state)
 {
@@ -127,6 +172,92 @@ void CCalibrationWidgetPower::saveCalibrationToFlash()
     }
     else
         qInfo() << tr("Отказ от сохранения калибровочных коэффициентов по напряжению во флеш.");
+}
+//-----------------------------------------------------------------------
+void CCalibrationWidgetPower::valueCurrentStandardChanged(const QString&)
+{
+    CLineEdit* le    = qobject_cast<CLineEdit*>(sender());
+    float      phase = QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
+    float      linear = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseLinear->text());
+    float      _3U   = QLocale::system().toFloat(ui->lineEditPowerStandard3U->text());
+
+    if(le == ui->lineEditPowerStandardPhase)
+    {
+        if((ui->checkBoxUA->isChecked() ||
+            ui->checkBoxUB->isChecked() ||
+            ui->checkBoxUC->isChecked()) && phase > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else if((ui->checkBoxUAB->isChecked() ||
+                 ui->checkBoxUBC->isChecked() ||
+                 ui->checkBoxUCA->isChecked()) && linear > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else if((ui->checkBox3U0S->isChecked() ||
+                 ui->checkBox3US->isChecked()  ||
+                 ui->checkBox3U0->isChecked()) && _3U > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else
+            ui->pushButtonCalibration->setDisabled(true);
+
+        return;
+    }
+    else if(le == ui->lineEditPowerStandardPhaseLinear)
+    {
+        if((ui->checkBoxUAB->isChecked() ||
+            ui->checkBoxUBC->isChecked() ||
+            ui->checkBoxUCA->isChecked()) && linear > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else if((ui->checkBoxUA->isChecked() ||
+                 ui->checkBoxUB->isChecked() ||
+                 ui->checkBoxUC->isChecked()) && phase > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else if((ui->checkBox3U0S->isChecked() ||
+                 ui->checkBox3US->isChecked()  ||
+                 ui->checkBox3U0->isChecked()) && _3U > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else
+            ui->pushButtonCalibration->setDisabled(true);
+
+        return;
+    }
+    else if(le == ui->lineEditPowerStandard3U)
+    {
+        if((ui->checkBox3U0S->isChecked() ||
+            ui->checkBox3US->isChecked()  ||
+            ui->checkBox3U0->isChecked()) && _3U > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else if((ui->checkBoxUA->isChecked() ||
+                 ui->checkBoxUB->isChecked() ||
+                 ui->checkBoxUC->isChecked()) && phase > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        if((ui->checkBoxUAB->isChecked() ||
+            ui->checkBoxUBC->isChecked() ||
+            ui->checkBoxUCA->isChecked()) && linear > 0)
+        {
+            ui->pushButtonCalibration->setEnabled(true);
+        }
+        else
+            ui->pushButtonCalibration->setDisabled(true);
+
+        return;
+    }
+
+    ui->pushButtonCalibration->setDisabled(true);
 }
 //-------------------------------------------------------
 void CCalibrationWidgetPower::calibrationParameterStart()
@@ -222,6 +353,132 @@ void CCalibrationWidgetPower::calibrationDataProcess(QVector<CModBusDataUnit> &d
 {
     if(data.isEmpty())
         return;
+}
+//-----------------------------------------------------
+void CCalibrationWidgetPower::calibrationWriteProcess()
+{
+    float Ua    = 0;
+    float Ub    = 0;
+    float Uc    = 0;
+    float Uab   = 0;
+    float Ubc   = 0;
+    float Uca   = 0;
+    float _3U0S = 0;
+    float _3US  = 0;
+    float _3U0  = 0;
+
+    if(ui->checkBoxUA->isChecked())
+        Ua = valueUa();
+    if(ui->checkBoxUB->isChecked())
+        Ub = valueUb();
+    if(ui->checkBoxUC->isChecked())
+        Uc = valueUc();
+    if(ui->checkBoxUAB->isChecked())
+        Uab = valueUab();
+    if(ui->checkBoxUBC->isChecked())
+        Ubc = valueUbc();
+    if(ui->checkBoxUCA->isChecked())
+        Uca = valueUca();
+    if(ui->checkBox3U0S->isChecked())
+        _3U0S = value3U0S();
+    if(ui->checkBox3US->isChecked())
+        _3US = value3US();
+    if(ui->checkBox3U0->isChecked())
+        _3U0 = value3U0();
+
+    if(Ua == 0.0f && Ub == 0.0f && Uc == 0.0f && Uab == 0.0f && Ubc == 0.0f && Uca == 0.0f && _3U0S == 0.0f && _3US == 0.0f && _3U0 == 0.0f)
+        return;
+
+    QString str;
+    QString textValue;
+
+    textValue += ((Ua != 0.0f)?QString("Ua = %1\n").arg(QLocale::system().toString(Ua, 'f', 6)):"");
+    textValue += ((Ub != 0.0f)?QString("Ub = %1\n").arg(QLocale::system().toString(Ub, 'f', 6)):"");
+    textValue += ((Uc != 0.0f)?QString("Uc = %1\n").arg(QLocale::system().toString(Uc, 'f', 6)):"");
+    textValue += ((Uab != 0.0f)?QString("Uab = %1\n").arg(QLocale::system().toString(Uab, 'f', 6)):"");
+    textValue += ((Ubc != 0.0f)?QString("Ubc = %1\n").arg(QLocale::system().toString(Ubc, 'f', 6)):"");
+    textValue += ((Uca != 0.0f)?QString("Uca = %1\n").arg(QLocale::system().toString(Uca, 'f', 6)):"");
+    textValue += ((_3U0S != 0.0f)?QString("3U0S = %1\n").arg(QLocale::system().toString(_3U0S, 'f', 6)):"");
+    textValue += ((_3US != 0.0f)?QString("3US = %1\n").arg(QLocale::system().toString(_3US, 'f', 6)):"");
+    textValue += ((_3U0 != 0.0f)?QString("3U0 = %1\n").arg(QLocale::system().toString(_3U0, 'f', 6)):"");
+
+    str = tr("Вы хотите сохранить новые калибровки?\n%1").arg(textValue);
+    int res = QMessageBox::question(this, tr("Запись калибровок по напряжению"), str);
+
+    qInfo() << tr("Запись новых калибровочных коэффициентов по напряжению:\n%1").arg(textValue);
+
+    if(res == QMessageBox::No)
+    {
+        qInfo() << tr("Отказ пользователя от записи калибровочных коэффициетов по напряжению");
+        return;
+    }
+
+    union
+    {
+        quint16 i[2];
+        float   f;
+    } value;
+
+    value.f = Ua;
+    CModBusDataUnit unit_Ua(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Ua.setProperty("KEY", "KUA");
+
+    value.f = Ub;
+    CModBusDataUnit unit_Ub(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Ub.setProperty("KEY", "KUB");
+
+    value.f = Uc;
+    CModBusDataUnit unit_Uc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Uc.setProperty("KEY", "KUC");
+
+    value.f = Uab;
+    CModBusDataUnit unit_Uab(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Uab.setProperty("KEY", "KUAB");
+
+    value.f = Ubc;
+    CModBusDataUnit unit_Ubc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Ubc.setProperty("KEY", "KUBC");
+
+    value.f = Uca;
+    CModBusDataUnit unit_Uca(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_Uca.setProperty("KEY", "KUCA");
+
+    value.f = _3U0S;
+    CModBusDataUnit unit_3U0S(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_3U0S.setProperty("KEY", "K3U0S");
+
+    value.f = _3US;
+    CModBusDataUnit unit_3US(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_3US.setProperty("KEY", "K3US");
+
+    value.f = _3U0;
+    CModBusDataUnit unit_3U0(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
+    unit_3U0.setProperty("KEY", "K3U0");
+
+    QVector<CModBusDataUnit> units;
+
+    if(Ua != 0.0f)
+        units << unit_Ua;
+    if(Ub != 0.0f)
+        units << unit_Ub;
+    if(Uc != 0.0f)
+        units << unit_Uc;
+    if(Uab != 0.0f)
+        units << unit_Uab;
+    if(Ubc != 0.0f)
+        units << unit_Ubc;
+    if(Uca != 0.0f)
+        units << unit_Uca;
+    if(_3U0S != 0.0f)
+        units << unit_3U0S;
+    if(_3US != 0.0f)
+        units << unit_3US;
+    if(_3U0 != 0.0f)
+        units << unit_3U0;
+
+    qInfo() << tr("Запись новых калибровочных коэффициентов по напряжению подтверждена");
+
+    emit calibrationWriteStart(units);
 }
 //----------------------------------------------------------
 void CCalibrationWidgetPower::paintEvent(QPaintEvent *event)

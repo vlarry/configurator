@@ -1210,7 +1210,7 @@
         </spacer>
        </item>
        <item row="1" column="0">
-        <widget class="CLineEdit" name="lineEditPowerStandardDC">
+        <widget class="CLineEdit" name="lineEditPowerStandard3U">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>

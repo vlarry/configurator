@@ -363,7 +363,7 @@ void CCalibrationWidgetOfCurrent::stateButton(bool state)
 //---------------------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::valueCurrentStandardChanged(const QString&)
 {
-    QLineEdit* le    = qobject_cast<QLineEdit*>(sender());
+    CLineEdit* le    = qobject_cast<CLineEdit*>(sender());
     float      phase = QLocale::system().toFloat(ui->lineEditCurrentStandardPhase->text());
     float      _3I0  = QLocale::system().toFloat(ui->lineEditCurrentStandard3I0->text());
 
