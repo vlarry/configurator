@@ -28,8 +28,8 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
     ui->progressBarDataSet->hide();
 
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibrationParameterStart);
-//    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::stateButton);
-//    connect(this, &CCalibrationWidgetPower::calibrationEnd, this, &CCalibrationWidgetPower::stateButton);
+    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::stateButton);
+    connect(this, &CCalibrationWidgetPower::calibrationEnd, this, &CCalibrationWidgetPower::stateButton);
 //    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibrationWriteProcess);
 //    connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
 //    connect(ui->lineEditPowerStandardPhaseLinear, &QLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
@@ -38,7 +38,7 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
 //    connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
 //    connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
 //    connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
-//    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetPower::saveCalibrationToFlash);
+    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetPower::saveCalibrationToFlash);
 //    connect(this, &CCalibrationWidgetPower::dataIncrement, this, &CCalibrationWidgetPower::progressBarIncrement);
 }
 //-------------------------------------------------
@@ -100,6 +100,33 @@ bool CCalibrationWidgetPower::state3US() const
 bool CCalibrationWidgetPower::state3I0() const
 {
     return ui->checkBox3U0->isChecked();
+}
+//---------------------------------------------------
+void CCalibrationWidgetPower::stateButton(bool state)
+{
+    ui->pushButtonCalibration->setEnabled(!state);
+    ui->pushButtonApply->setEnabled(!state);
+    ui->pushButtonSaveToFlash->setEnabled(!state);
+    ui->pushButtonCalibration->setChecked(state);
+    ui->progressBarDataSet->setVisible(state);
+
+    if(state)
+        ui->progressBarDataSet->setValue(0);
+}
+//----------------------------------------------------
+void CCalibrationWidgetPower::saveCalibrationToFlash()
+{
+    int answer = QMessageBox::question(this, tr("Запись калибровок по напряжению в устройство"),
+                                             tr("Вы действительно хотите сохранить "
+                                                "\nновые калибровочные коэффициенты "
+                                                "\nв память устройства?"));
+    if(answer == QMessageBox::Yes)
+    {
+        qInfo() << tr("Сохранение калибровочных коэффициентов по напряжению пользователем во флеш.");
+        emit saveToFlash();
+    }
+    else
+        qInfo() << tr("Отказ от сохранения калибровочных коэффициентов по напряжению во флеш.");
 }
 //-------------------------------------------------------
 void CCalibrationWidgetPower::calibrationParameterStart()

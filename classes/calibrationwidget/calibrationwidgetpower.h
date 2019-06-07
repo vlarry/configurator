@@ -66,6 +66,8 @@
             bool state3I0() const;
 
         public slots:
+            void stateButton(bool state = false);
+            void saveCalibrationToFlash();
             void calibrationParameterStart();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
 
