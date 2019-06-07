@@ -87,7 +87,7 @@ void CCalibrationController::calibrationProcessStart(QVector<CModBusDataUnit> &u
     else if(widget == m_widget_power)
         m_calibration_type = TYPE_POWER;
 
-    m_calibration = { m_widget_of_current->dataSetCount(), 0, m_widget_of_current->timePauseRequest(), unit_list, nullptr };
+    m_calibration = { m_widget_of_current->dataCount(), 0, m_widget_of_current->pauseRequest(), unit_list, nullptr };
     m_calibration_data = { 0, param_count*m_calibration.request_all, QVector<CModBusDataUnit>(0) };
 
     m_calibration.timer = new QTimer;

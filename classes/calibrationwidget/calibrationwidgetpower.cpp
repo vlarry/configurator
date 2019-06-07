@@ -13,7 +13,7 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
     validator->setNotation(QDoubleValidator::StandardNotation);
 
     ui->lineEditPowerStandardPhase->setValidator(validator);
-    ui->lineEditPowerStandardPhase_2->setValidator(validator);
+    ui->lineEditPowerStandardPhaseLinear->setValidator(validator);
     ui->lineEditPowerStandardDC->setValidator(validator); // эталонное значение постоянной состовляющей для 3U0S, 3US и 3U0
     ui->lineEditFactorUA->setValidator(validator);
     ui->lineEditFactorUB->setValidator(validator);
@@ -54,6 +54,51 @@ int CCalibrationWidgetPower::dataSetCount() const
 int CCalibrationWidgetPower::timePauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
+}
+//-------------------------------------------
+bool CCalibrationWidgetPower::stateUa() const
+{
+    return ui->checkBoxUA->isChecked();
+}
+//-------------------------------------------
+bool CCalibrationWidgetPower::stateUb() const
+{
+    return ui->checkBoxUB->isChecked();
+}
+//-------------------------------------------
+bool CCalibrationWidgetPower::stateUc() const
+{
+    return ui->checkBoxUC->isChecked();
+}
+//--------------------------------------------
+bool CCalibrationWidgetPower::stateUab() const
+{
+    return ui->checkBoxUAB->isChecked();
+}
+//--------------------------------------------
+bool CCalibrationWidgetPower::stateUbc() const
+{
+    return ui->checkBoxUBC->isChecked();
+}
+//--------------------------------------------
+bool CCalibrationWidgetPower::stateUca() const
+{
+    return ui->checkBoxUCA->isChecked();
+}
+//---------------------------------------------
+bool CCalibrationWidgetPower::state3U0S() const
+{
+    return ui->checkBox3U0S->isChecked();
+}
+//--------------------------------------------
+bool CCalibrationWidgetPower::state3US() const
+{
+    return ui->checkBox3US->isChecked();
+}
+//--------------------------------------------
+bool CCalibrationWidgetPower::state3I0() const
+{
+    return ui->checkBox3U0->isChecked();
 }
 //----------------------------------------------------------------------------------
 void CCalibrationWidgetPower::calibrationDataProcess(QVector<CModBusDataUnit> &data)

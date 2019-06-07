@@ -109,16 +109,6 @@ void CCalibrationWidgetOfCurrent::setPauseRequest(int pause)
 {
     ui->spinBoxPauseRequest->setValue(pause);
 }
-//---------------------------------------------------
-int CCalibrationWidgetOfCurrent::dataSetCount() const
-{
-    return ui->spinBoxSetDataCount->value();
-}
-//-------------------------------------------------------
-int CCalibrationWidgetOfCurrent::timePauseRequest() const
-{
-    return ui->spinBoxPauseRequest->value();
-}
 //------------------------------------------------------
 float CCalibrationWidgetOfCurrent::standardPhase() const
 {

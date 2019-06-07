@@ -45,9 +45,6 @@
             explicit CCalibrationWidgetOfCurrent(QWidget* parent = nullptr);
             ~CCalibrationWidgetOfCurrent();
 
-            int dataSetCount() const;
-            int timePauseRequest() const;
-
             bool stateIa() const;
             bool stateIb() const;
             bool stateIc() const;

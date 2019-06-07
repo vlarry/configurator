@@ -22,6 +22,18 @@
             int dataSetCount() const;
             int timePauseRequest() const;
 
+            bool stateUa() const;
+            bool stateUb() const;
+            bool stateUc() const;
+
+            bool stateUab() const;
+            bool stateUbc() const;
+            bool stateUca() const;
+
+            bool state3U0S() const;
+            bool state3US() const;
+            bool state3I0() const;
+
         public slots:
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
 

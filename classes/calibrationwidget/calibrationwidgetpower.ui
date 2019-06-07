@@ -754,7 +754,7 @@
         </spacer>
        </item>
        <item row="1" column="0">
-        <widget class="QLineEdit" name="lineEditPowerStandardPhase_2">
+        <widget class="QLineEdit" name="lineEditPowerStandardPhaseLinear">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1064,7 +1064,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QCheckBox" name="checkBoxUBC_2">
+        <widget class="QCheckBox" name="checkBox3US">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1248,7 +1248,7 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QCheckBox" name="checkBoxUAB_2">
+        <widget class="QCheckBox" name="checkBox3U0S">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1270,7 +1270,7 @@
         </widget>
        </item>
        <item row="2" column="2">
-        <widget class="QCheckBox" name="checkBoxUCA_2">
+        <widget class="QCheckBox" name="checkBox3U0">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
