@@ -74,7 +74,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QLineEdit" name="lineEditPowerStandardPhase">
+        <widget class="CLineEdit" name="lineEditPowerStandardPhase">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -185,7 +185,7 @@
         </widget>
        </item>
        <item row="2" column="9">
-        <widget class="QLineEdit" name="lineEditFactorUB">
+        <widget class="CLineEdit" name="lineEditFactorUB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -223,7 +223,7 @@
         </widget>
        </item>
        <item row="3" column="9">
-        <widget class="QLineEdit" name="lineEditFactorUC">
+        <widget class="CLineEdit" name="lineEditFactorUC">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -280,7 +280,7 @@
         </widget>
        </item>
        <item row="3" column="7">
-        <widget class="QLineEdit" name="lineEditDeviationUC">
+        <widget class="CLineEdit" name="lineEditDeviationUC">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -302,7 +302,7 @@
         </widget>
        </item>
        <item row="1" column="9">
-        <widget class="QLineEdit" name="lineEditFactorUA">
+        <widget class="CLineEdit" name="lineEditFactorUA">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -353,7 +353,7 @@
         </spacer>
        </item>
        <item row="3" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD12">
+        <widget class="CLineEdit" name="lineEditMeasuredD12">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -375,7 +375,7 @@
         </widget>
        </item>
        <item row="2" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD11">
+        <widget class="CLineEdit" name="lineEditMeasuredD11">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -454,7 +454,7 @@
         </widget>
        </item>
        <item row="1" column="7">
-        <widget class="QLineEdit" name="lineEditDeviationUA">
+        <widget class="CLineEdit" name="lineEditDeviationUA">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -476,7 +476,7 @@
         </widget>
        </item>
        <item row="1" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD10">
+        <widget class="CLineEdit" name="lineEditMeasuredD10">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -498,7 +498,7 @@
         </widget>
        </item>
        <item row="2" column="7">
-        <widget class="QLineEdit" name="lineEditDeviationUB">
+        <widget class="CLineEdit" name="lineEditDeviationUB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -577,7 +577,7 @@
         </widget>
        </item>
        <item row="2" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD43">
+        <widget class="CLineEdit" name="lineEditMeasuredD43">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -599,7 +599,7 @@
         </widget>
        </item>
        <item row="2" column="7">
-        <widget class="QLineEdit" name="lineEditDeviationUCA">
+        <widget class="CLineEdit" name="lineEditDeviationUCA">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -675,7 +675,7 @@
         </widget>
        </item>
        <item row="1" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD42">
+        <widget class="CLineEdit" name="lineEditMeasuredD42">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -716,7 +716,7 @@
         </widget>
        </item>
        <item row="1" column="7">
-        <widget class="QLineEdit" name="lineEditDeviationUBC">
+        <widget class="CLineEdit" name="lineEditDeviationUBC">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -754,7 +754,7 @@
         </spacer>
        </item>
        <item row="1" column="0">
-        <widget class="QLineEdit" name="lineEditPowerStandardPhaseLinear">
+        <widget class="CLineEdit" name="lineEditPowerStandardPhaseLinear">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -789,7 +789,7 @@
         </spacer>
        </item>
        <item row="0" column="7">
-        <widget class="QLineEdit" name="lineEditDeviationUAB">
+        <widget class="CLineEdit" name="lineEditDeviationUAB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -830,7 +830,7 @@
         </widget>
        </item>
        <item row="0" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD41">
+        <widget class="CLineEdit" name="lineEditMeasuredD41">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -874,7 +874,7 @@
         </widget>
        </item>
        <item row="0" column="9">
-        <widget class="QLineEdit" name="lineEditFactorUAB">
+        <widget class="CLineEdit" name="lineEditFactorUAB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -893,7 +893,7 @@
         </widget>
        </item>
        <item row="1" column="9">
-        <widget class="QLineEdit" name="lineEditFactorUBC">
+        <widget class="CLineEdit" name="lineEditFactorUBC">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -912,7 +912,7 @@
         </widget>
        </item>
        <item row="2" column="9">
-        <widget class="QLineEdit" name="lineEditFactorUCA">
+        <widget class="CLineEdit" name="lineEditFactorUCA">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -985,7 +985,7 @@
         <number>2</number>
        </property>
        <item row="2" column="7">
-        <widget class="QLineEdit" name="lineEditDeviation3U0">
+        <widget class="CLineEdit" name="lineEditDeviation3U0">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1042,7 +1042,7 @@
         </spacer>
        </item>
        <item row="0" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD14">
+        <widget class="CLineEdit" name="lineEditMeasuredD14">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1083,7 +1083,7 @@
         </widget>
        </item>
        <item row="2" column="9">
-        <widget class="QLineEdit" name="lineEditFactor3U0">
+        <widget class="CLineEdit" name="lineEditFactor3U0">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1102,7 +1102,7 @@
         </widget>
        </item>
        <item row="0" column="9">
-        <widget class="QLineEdit" name="lineEditFactor3U0S">
+        <widget class="CLineEdit" name="lineEditFactor3U0S">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1121,7 +1121,7 @@
         </widget>
        </item>
        <item row="1" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD48">
+        <widget class="CLineEdit" name="lineEditMeasuredD48">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1159,7 +1159,7 @@
         </spacer>
        </item>
        <item row="1" column="9">
-        <widget class="QLineEdit" name="lineEditFactor3US">
+        <widget class="CLineEdit" name="lineEditFactor3US">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1210,7 +1210,7 @@
         </spacer>
        </item>
        <item row="1" column="0">
-        <widget class="QLineEdit" name="lineEditPowerStandardDC">
+        <widget class="CLineEdit" name="lineEditPowerStandardDC">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1308,7 +1308,7 @@
         </widget>
        </item>
        <item row="2" column="5">
-        <widget class="QLineEdit" name="lineEditMeasuredD44">
+        <widget class="CLineEdit" name="lineEditMeasuredD44">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1330,7 +1330,7 @@
         </widget>
        </item>
        <item row="0" column="7">
-        <widget class="QLineEdit" name="lineEditDeviation3U0S">
+        <widget class="CLineEdit" name="lineEditDeviation3U0S">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1352,7 +1352,7 @@
         </widget>
        </item>
        <item row="1" column="7">
-        <widget class="QLineEdit" name="lineEditDeviation3US">
+        <widget class="CLineEdit" name="lineEditDeviation3US">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1560,6 +1560,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>clineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -27,31 +27,32 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
 
     ui->progressBarDataSet->hide();
 
-//    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibration);
+    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibrationParameterStart);
 //    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetPower::stateButton);
-//    connect(this, &CCalibrationWidgetOfCurrent::calibrationEnd, this, &CCalibrationWidgetPower::stateButton);
-//    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetPower::apply);
-//    connect(ui->lineEditCurrentStandardPhase, &QLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
-//    connect(ui->lineEditCurrentStandard3I0, &QLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
+//    connect(this, &CCalibrationWidgetPower::calibrationEnd, this, &CCalibrationWidgetPower::stateButton);
+//    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibrationWriteProcess);
+//    connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
+//    connect(ui->lineEditPowerStandardPhaseLinear, &QLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
+//    connect(ui->lineEditPowerStandardDC, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
 //    connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
 //    connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
 //    connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
 //    connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
 //    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetPower::saveCalibrationToFlash);
-//    connect(this, &CCalibrationWidgetOfCurrent::dataIncrement, this, &CCalibrationWidgetPower::progressBarIncrement);
+//    connect(this, &CCalibrationWidgetPower::dataIncrement, this, &CCalibrationWidgetPower::progressBarIncrement);
 }
 //-------------------------------------------------
 CCalibrationWidgetPower::~CCalibrationWidgetPower()
 {
     delete ui;
 }
-//-----------------------------------------------
-int CCalibrationWidgetPower::dataSetCount() const
+//--------------------------------------------
+int CCalibrationWidgetPower::dataCount() const
 {
     return ui->spinBoxSetDataCount->value();
 }
-//---------------------------------------------------
-int CCalibrationWidgetPower::timePauseRequest() const
+//-----------------------------------------------
+int CCalibrationWidgetPower::pauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
 }
@@ -99,6 +100,95 @@ bool CCalibrationWidgetPower::state3US() const
 bool CCalibrationWidgetPower::state3I0() const
 {
     return ui->checkBox3U0->isChecked();
+}
+//-------------------------------------------------------
+void CCalibrationWidgetPower::calibrationParameterStart()
+{
+    if(!ui->checkBoxUA->isChecked() &&
+       !ui->checkBoxUB->isChecked() &&
+       !ui->checkBoxUC->isChecked() &&
+       !ui->checkBoxUAB->isChecked() &&
+       !ui->checkBoxUBC->isChecked() &&
+       !ui->checkBoxUCA->isChecked() &&
+       !ui->checkBox3U0S->isChecked() &&
+       !ui->checkBox3US->isChecked() &&
+       !ui->checkBox3U0->isChecked())
+    {
+        QMessageBox::warning(this, tr("Калибровка по напряжению"), tr("Нет выбранных каналов для калибровки"));
+        return;
+    }
+
+    CModBusDataUnit unit_Ua(0, CModBusDataUnit::ReadInputRegisters, 80, 2);
+    CModBusDataUnit unit_Ub(0, CModBusDataUnit::ReadInputRegisters, 82, 2);
+    CModBusDataUnit unit_Uc(0, CModBusDataUnit::ReadInputRegisters, 84, 2);
+    CModBusDataUnit unit_Uab(0, CModBusDataUnit::ReadInputRegisters, 130, 2);
+    CModBusDataUnit unit_Ubc(0, CModBusDataUnit::ReadInputRegisters, 132, 2);
+    CModBusDataUnit unit_Uca(0, CModBusDataUnit::ReadInputRegisters, 134, 2);
+    CModBusDataUnit unit_3U0S(0, CModBusDataUnit::ReadInputRegisters, -1, 2);
+    CModBusDataUnit unit_3US(0, CModBusDataUnit::ReadInputRegisters, -1, 2);
+    CModBusDataUnit unit_3U0(0, CModBusDataUnit::ReadInputRegisters, -1, 2);
+
+    unit_Ua.setProperty("CHANNEL", CURRENT_UA);
+    unit_Ub.setProperty("CHANNEL", CURRENT_UB);
+    unit_Uc.setProperty("CHANNEL", CURRENT_UC);
+    unit_Uab.setProperty("CHANNEL", CURRENT_UAB);
+    unit_Ubc.setProperty("CHANNEL", CURRENT_UBC);
+    unit_Uca.setProperty("CHANNEL", CURRENT_UCA);
+    unit_3U0S.setProperty("CHANNEL", CURRENT_3U0S);
+    unit_3US.setProperty("CHANNEL", CURRENT_3US);
+    unit_3U0.setProperty("CHANNEL", CURRENT_3U0);
+
+    QVector<CModBusDataUnit> unit_list;
+    int param_count = 0;
+
+    if(ui->checkBoxUA->isChecked())
+    {
+        unit_list << unit_Ua;
+        param_count++;
+    }
+    if(ui->checkBoxUB->isChecked())
+    {
+        unit_list << unit_Ub;
+        param_count++;
+    }
+    if(ui->checkBoxUC->isChecked())
+    {
+        unit_list << unit_Uc;
+        param_count++;
+    }
+    if(ui->checkBoxUAB->isChecked())
+    {
+        unit_list << unit_Uab;
+        param_count++;
+    }
+    if(ui->checkBoxUBC->isChecked())
+    {
+        unit_list << unit_Ubc;
+        param_count++;
+    }
+    if(ui->checkBoxUCA->isChecked())
+    {
+        unit_list << unit_Uca;
+        param_count++;
+    }
+    if(ui->checkBox3U0S->isChecked())
+    {
+        unit_list << unit_3U0S;
+        param_count++;
+    }
+    if(ui->checkBox3US->isChecked())
+    {
+        unit_list << unit_3US;
+        param_count++;
+    }
+    if(ui->checkBox3U0->isChecked())
+    {
+        unit_list << unit_3U0;
+        param_count++;
+    }
+
+    emit calibrationFactorAllStart();
+    emit calibrationStart(unit_list, param_count);
 }
 //----------------------------------------------------------------------------------
 void CCalibrationWidgetPower::calibrationDataProcess(QVector<CModBusDataUnit> &data)

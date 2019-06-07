@@ -25,8 +25,8 @@ CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::stateButton);
     connect(this, &CCalibrationWidgetOfCurrent::calibrationEnd, this, &CCalibrationWidgetOfCurrent::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::calibrationWriteProcess);
-    connect(ui->lineEditCurrentStandardPhase, &QLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
-    connect(ui->lineEditCurrentStandard3I0, &QLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
+    connect(ui->lineEditCurrentStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
+    connect(ui->lineEditCurrentStandard3I0, &CLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
     connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
     connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
     connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
