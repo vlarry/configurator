@@ -32,12 +32,17 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
     connect(this, &CCalibrationWidgetPower::calibrationEnd, this, &CCalibrationWidgetPower::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetPower::calibrationWriteProcess);
     connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
-//    connect(ui->lineEditPowerStandardPhaseLinear, &QLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
-//    connect(ui->lineEditPowerStandardDC, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
-//    connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
-//    connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
-//    connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
-//    connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceCurrentChannelChanged);
+    connect(ui->lineEditPowerStandardPhaseLinear, &QLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
+    connect(ui->lineEditPowerStandard3U, &CLineEdit::textChanged, this, &CCalibrationWidgetPower::valueCurrentStandardChanged);
+    connect(ui->checkBoxUA, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
+    connect(ui->checkBoxUB, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
+    connect(ui->checkBoxUC, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
+    connect(ui->checkBoxUAB, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
+    connect(ui->checkBoxUBC, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
+    connect(ui->checkBoxUCA, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
+    connect(ui->checkBox3U0S, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
+    connect(ui->checkBox3US, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
+    connect(ui->checkBox3U0, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetPower::saveCalibrationToFlash);
 //    connect(this, &CCalibrationWidgetPower::dataIncrement, this, &CCalibrationWidgetPower::progressBarIncrement);
 }
@@ -176,84 +181,34 @@ void CCalibrationWidgetPower::saveCalibrationToFlash()
 //-----------------------------------------------------------------------
 void CCalibrationWidgetPower::valueCurrentStandardChanged(const QString&)
 {
-    CLineEdit* le    = qobject_cast<CLineEdit*>(sender());
-    float      phase = QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
-    float      linear = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseLinear->text());
-    float      _3U   = QLocale::system().toFloat(ui->lineEditPowerStandard3U->text());
+    stateChoiceChannelChanged(false); // аргумент не имеет значения, т.к. не используется
+}
+//-----------------------------------------------------------
+void CCalibrationWidgetPower::stateChoiceChannelChanged(bool)
+{
+    float phase  = QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
+    float linear = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseLinear->text());
+    float _3U    = QLocale::system().toFloat(ui->lineEditPowerStandard3U->text());
 
-    if(le == ui->lineEditPowerStandardPhase)
+    if((ui->checkBoxUA->isChecked() ||
+        ui->checkBoxUB->isChecked() ||
+        ui->checkBoxUC->isChecked()) && phase > 0)
     {
-        if((ui->checkBoxUA->isChecked() ||
-            ui->checkBoxUB->isChecked() ||
-            ui->checkBoxUC->isChecked()) && phase > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else if((ui->checkBoxUAB->isChecked() ||
-                 ui->checkBoxUBC->isChecked() ||
-                 ui->checkBoxUCA->isChecked()) && linear > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else if((ui->checkBox3U0S->isChecked() ||
-                 ui->checkBox3US->isChecked()  ||
-                 ui->checkBox3U0->isChecked()) && _3U > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else
-            ui->pushButtonCalibration->setDisabled(true);
-
+        ui->pushButtonCalibration->setEnabled(true);
         return;
     }
-    else if(le == ui->lineEditPowerStandardPhaseLinear)
+    else if((ui->checkBoxUAB->isChecked() ||
+             ui->checkBoxUBC->isChecked() ||
+             ui->checkBoxUCA->isChecked()) && linear > 0)
     {
-        if((ui->checkBoxUAB->isChecked() ||
-            ui->checkBoxUBC->isChecked() ||
-            ui->checkBoxUCA->isChecked()) && linear > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else if((ui->checkBoxUA->isChecked() ||
-                 ui->checkBoxUB->isChecked() ||
-                 ui->checkBoxUC->isChecked()) && phase > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else if((ui->checkBox3U0S->isChecked() ||
-                 ui->checkBox3US->isChecked()  ||
-                 ui->checkBox3U0->isChecked()) && _3U > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else
-            ui->pushButtonCalibration->setDisabled(true);
-
+        ui->pushButtonCalibration->setEnabled(true);
         return;
     }
-    else if(le == ui->lineEditPowerStandard3U)
+    else if((ui->checkBox3U0S->isChecked() ||
+             ui->checkBox3US->isChecked()  ||
+             ui->checkBox3U0->isChecked()) && _3U > 0)
     {
-        if((ui->checkBox3U0S->isChecked() ||
-            ui->checkBox3US->isChecked()  ||
-            ui->checkBox3U0->isChecked()) && _3U > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else if((ui->checkBoxUA->isChecked() ||
-                 ui->checkBoxUB->isChecked() ||
-                 ui->checkBoxUC->isChecked()) && phase > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        if((ui->checkBoxUAB->isChecked() ||
-            ui->checkBoxUBC->isChecked() ||
-            ui->checkBoxUCA->isChecked()) && linear > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else
-            ui->pushButtonCalibration->setDisabled(true);
-
+        ui->pushButtonCalibration->setEnabled(true);
         return;
     }
 

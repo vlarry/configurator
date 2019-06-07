@@ -99,8 +99,8 @@
         public slots:
             void display(const calibration_t &data);
             void stateButton(bool state = false);
-            void valueCurrentStandardChanged(const QString&);
-            void stateChoiceCurrentChannelChanged(bool);
+            void valueStandardChanged(const QString&);
+            void stateChoiceChannelChanged(bool);
             void saveCalibrationToFlash();
             void progressBarIncrement();
             void calibrationParameterStart();

@@ -25,12 +25,12 @@ CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::stateButton);
     connect(this, &CCalibrationWidgetOfCurrent::calibrationEnd, this, &CCalibrationWidgetOfCurrent::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::calibrationWriteProcess);
-    connect(ui->lineEditCurrentStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
-    connect(ui->lineEditCurrentStandard3I0, &CLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueCurrentStandardChanged);
-    connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
-    connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
-    connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
-    connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
+    connect(ui->lineEditCurrentStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueStandardChanged);
+    connect(ui->lineEditCurrentStandard3I0, &CLineEdit::textChanged, this, &CCalibrationWidgetOfCurrent::valueStandardChanged);
+    connect(ui->checkBoxIa, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceChannelChanged);
+    connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceChannelChanged);
+    connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceChannelChanged);
+    connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::saveCalibrationToFlash);
     connect(this, &CCalibrationWidgetOfCurrent::dataIncrement, this, &CCalibrationWidgetOfCurrent::progressBarIncrement);
 }
@@ -360,74 +360,27 @@ void CCalibrationWidgetOfCurrent::stateButton(bool state)
     if(state)
         ui->progressBarDataSet->setValue(0);
 }
-//---------------------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::valueCurrentStandardChanged(const QString&)
+//--------------------------------------------------------------------
+void CCalibrationWidgetOfCurrent::valueStandardChanged(const QString&)
 {
-    CLineEdit* le    = qobject_cast<CLineEdit*>(sender());
-    float      phase = QLocale::system().toFloat(ui->lineEditCurrentStandardPhase->text());
-    float      _3I0  = QLocale::system().toFloat(ui->lineEditCurrentStandard3I0->text());
-
-    if(le == ui->lineEditCurrentStandardPhase)
-    {
-        if((ui->checkBoxIa->isChecked() || ui->checkBoxIb->isChecked() || ui->checkBoxIc->isChecked()) && phase > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else if(ui->checkBox3I0->isChecked() && _3I0 > 0)
-            ui->pushButtonCalibration->setEnabled(true);
-        else
-            ui->pushButtonCalibration->setDisabled(true);
-
-        return;
-    }
-    else if(le == ui->lineEditCurrentStandard3I0)
-    {
-        if(ui->checkBox3I0->isChecked() && _3I0 > 0)
-            ui->pushButtonCalibration->setEnabled(true);
-        else if((ui->checkBoxIa->isChecked() || ui->checkBoxIb->isChecked() || ui->checkBoxIc->isChecked()) && phase > 0)
-            ui->pushButtonCalibration->setEnabled(true);
-        else
-            ui->pushButtonCalibration->setDisabled(true);
-
-        return;
-    }
-
-    ui->pushButtonCalibration->setDisabled(true);
+    stateChoiceChannelChanged(false); // агргумент не имеет значения, т.к. нигде не используется
 }
-//----------------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged(bool)
+//---------------------------------------------------------------
+void CCalibrationWidgetOfCurrent::stateChoiceChannelChanged(bool)
 {
     float phase = QLocale::system().toFloat(ui->lineEditCurrentStandardPhase->text());
     float _3I0  = QLocale::system().toFloat(ui->lineEditCurrentStandard3I0->text());
 
-    if(ui->checkBoxIa->isChecked() || ui->checkBoxIb->isChecked() || ui->checkBoxIc->isChecked())
+    if((ui->checkBoxIa->isChecked() ||
+        ui->checkBoxIb->isChecked() ||
+        ui->checkBoxIc->isChecked()) && phase > 0)
     {
-        if(phase > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else if(ui->checkBox3I0->isChecked() && _3I0 > 0)
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else
-            ui->pushButtonCalibration->setDisabled(true);
-
+        ui->pushButtonCalibration->setEnabled(true);
         return;
     }
-
-    if(ui->checkBox3I0->isChecked())
+    else if(ui->checkBox3I0->isChecked() && _3I0 > 0)
     {
-        if(_3I0 > 0)
-            ui->pushButtonCalibration->setEnabled(true);
-        else if((ui->checkBoxIa->isChecked() || ui->checkBoxIb->isChecked() || ui->checkBoxIc->isChecked()) &&
-                (phase > 0))
-        {
-            ui->pushButtonCalibration->setEnabled(true);
-        }
-        else
-            ui->pushButtonCalibration->setDisabled(true);
-
+        ui->pushButtonCalibration->setEnabled(true);
         return;
     }
 

@@ -79,6 +79,7 @@
             void stateButton(bool state = false);
             void saveCalibrationToFlash();
             void valueCurrentStandardChanged(const QString&);
+            void stateChoiceChannelChanged(bool);
             void calibrationParameterStart();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
             void calibrationWriteProcess();
