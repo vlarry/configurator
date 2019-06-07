@@ -45,44 +45,36 @@
             explicit CCalibrationWidgetOfCurrent(QWidget* parent = nullptr);
             ~CCalibrationWidgetOfCurrent();
 
-            QCheckBox* ctrlIa() const;
-            QCheckBox* ctrlIb() const;
-            QCheckBox* ctrlIc() const;
-            QCheckBox* ctrl3I0() const;
-
             int dataSetCount() const;
             int timePauseRequest() const;
 
-            void                         addCalibrationIa(float value);
-            void                         addCalibrationIb(float value);
-            void                         addCalibrationIc(float value);
-            void                         addCalibration3I0(float value);
-            float                        calibrationCurrentStandardPhase() const;
-            float                        calibrationCurrentStandard3I0() const;
-            float                        calibrationCurrentIa() const;
-            float                        calibrationCurrentIb() const;
-            float                        calibrationCurrentIc() const;
-            float                        calibrationCurrent3I0() const;
-            void                         calibrationCurrentClear();
-            bool                         calibrationCurrentIaState() const;
-            bool                         calibrationCurrentIbState() const;
-            bool                         calibrationCurrentIcState() const;
-            bool                         calibrationCurrent3I0State() const;
-            int                          calibrationCurrentDataCount() const;
-            int                          calibrationCurrentPauseRequest() const;
+            bool stateIa() const;
+            bool stateIb() const;
+            bool stateIc() const;
+            bool state3I0() const;
+
+            int dataCount() const;
+            int pauseRequest() const;
+
+            float standardPhase() const;
+            float standard3I0() const;
+            float valueIa() const;
+            float valueIb() const;
+            float valueIc() const;
+            float value3I0() const;
+
+            void setStandardPhase(float value);
+            void setStandard3I0(float value);
+            void setIaState(bool state);
+            void setIbState(bool state);
+            void setIcState(bool state);
+            void set3I0State(bool state);
+
+            void setDataCount(int count);
+            void setPauseRequest(int pause);
+
             float newCalibrationFactor(float standard, float cur_factor, const calibration_data_t &measure_list);
             QPointF standardDeviation(const calibration_data_t &data);
-
-            void setCurrentStandardPhase(float value);
-            void setCurrentStandard3I0(float value);
-
-            void setCurrentIaState(bool state);
-            void setCurrentIbState(bool state);
-            void setCurrentIcState(bool state);
-            void setCurrent3I0State(bool state);
-
-            void setCurrentDataCount(int count);
-            void setCurrentPauseRequest(int pause);
 
             void setFactorIa(float value);
             void setFactorIb(float value);
@@ -101,7 +93,7 @@
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);
-            void saveToFlash(int);
+            void saveToFlash();
             void calibrationStart(QVector<CModBusDataUnit>&, int);
             void calibrationFactorAllStart();
             void calibrationEnd(bool = false);

@@ -411,7 +411,7 @@
             void protectionBRURead();
             void protectionVacuumRead();
             void protectionControlGroupRead();
-            void amplitudeReadOfCurrent();
+//            void amplitudeReadOfCurrent();
             void automationSwitchRead();
             void automationSwitchTruckRead();
             void automationBlockRead();
@@ -527,8 +527,7 @@
             void expandItemTree(bool state);
             void versionSowftware();
             void sendCalculateRead(CModBusDataUnit& unit);
-            void sendSettingReadRequest(const QString& first, const QString& last,
-                                        CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index);
+            void sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index);
             void sendSettingReadRequest(const QStringList &key_list, CModBusDataUnit::FunctionType type, DeviceMenuItemType index);
             void sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index);
             void sendSettingControlWriteRequest(const QString& index, DeviceMenuItemType group_index);
@@ -538,14 +537,11 @@
             void sendPurposeDIReadRequest(int first_addr, int last_addr);
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             void sendPurposeInverseDIWriteRequest(int first_addr, int last_addr);
-            void sendProtectionWorkModeRequest(const QString& protection, RequestFunction function,
-                                               DeviceMenuItemType group_index);
+            void sendProtectionWorkModeRequest(const QString& protection, RequestFunction function, DeviceMenuItemType group_index);
             void sendMonitorPurposeK10_K11Request();
-            void sendRequestRead(int addr, int size, int request,
-                                 CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
+            void sendRequestRead(int addr, int size, int request, CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
-            void sendSettingReadRequestVariableState(const QString &key, const QString var, const QString &suffix,
-                                                     DeviceMenuItemType group_item, bool is_save = false);
+            void sendSettingReadRequestVariableState(const QString &key, const QString var, const QString &suffix, DeviceMenuItemType group_item, bool is_save = false);
             void sendSettingWriteRequestVariableState(quint16 value, int bit_pos, int address, QComboBox *comboBox);
             void sendRequestCalibration(CModBusDataUnit &unit);
             void sendRequestCalibrationWrite(QVector<CModBusDataUnit> &units);

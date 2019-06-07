@@ -19,8 +19,19 @@
             explicit CCalibrationWidgetPower(QWidget *parent = nullptr);
             ~CCalibrationWidgetPower();
 
+            int dataSetCount() const;
+            int timePauseRequest() const;
+
         public slots:
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
+
+        signals:
+            void calibrationWriteStart(QVector<CModBusDataUnit>&);
+            void saveToFlash();
+            void calibrationStart(QVector<CModBusDataUnit>&, int);
+            void calibrationFactorAllStart();
+            void calibrationEnd(bool = false);
+            void dataIncrement();
 
         protected:
             void paintEvent(QPaintEvent *event);

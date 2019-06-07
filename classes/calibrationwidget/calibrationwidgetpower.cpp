@@ -45,6 +45,16 @@ CCalibrationWidgetPower::~CCalibrationWidgetPower()
 {
     delete ui;
 }
+//-----------------------------------------------
+int CCalibrationWidgetPower::dataSetCount() const
+{
+    return ui->spinBoxSetDataCount->value();
+}
+//---------------------------------------------------
+int CCalibrationWidgetPower::timePauseRequest() const
+{
+    return ui->spinBoxPauseRequest->value();
+}
 //----------------------------------------------------------------------------------
 void CCalibrationWidgetPower::calibrationDataProcess(QVector<CModBusDataUnit> &data)
 {

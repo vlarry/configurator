@@ -9,6 +9,12 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
+    connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
+
+    connect(m_widget_power, &CCalibrationWidgetPower::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
+    connect(m_widget_power, &CCalibrationWidgetPower::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
+    connect(m_widget_power, &CCalibrationWidgetPower::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
+    connect(m_widget_power, &CCalibrationWidgetPower::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
 }
 //-----------------------------------------------
 CCalibrationController::~CCalibrationController()

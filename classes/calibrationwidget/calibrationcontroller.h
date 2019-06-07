@@ -50,6 +50,7 @@
             void calibration(CModBusDataUnit&);
             void calibrationFactorAllRead();
             void calibrationWrite(QVector<CModBusDataUnit>&);
+            void calibrationSaveToFlash();
 
         public slots:
             void dataIsReady(CModBusDataUnit &unit);

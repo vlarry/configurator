@@ -2008,17 +2008,17 @@ void ConfiguratorWindow::protectionControlGroupRead()
  *
  * Чтение амплитуд по фазам
  */
-void ConfiguratorWindow::amplitudeReadOfCurrent()
-{
-    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
-        sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
-    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-        sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
-    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-        sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
-    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-        sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
-}
+//void ConfiguratorWindow::amplitudeReadOfCurrent()
+//{
+//    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
+//        sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
+//    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
+//        sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
+//    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
+//        sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
+//    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
+//        sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
+//}
 /*!
  * \brief ConfiguratorWindow::automationSwitchRead
  *
@@ -6343,14 +6343,14 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent(QSqlDatabase *db)
     query.clear();
 
     if(!query.exec(QString("INSERT INTO deviceCalibrationCurrent (standardPhase, standard3I0, stateIa, stateIb, stateIc, state3I0, dataCount, pauseRequest)"
-                           " VALUES(%1, %2, %3, %4, %5, %6, %7, %8);").arg(static_cast<double>(ui->widgetCalibrationOfCurrent->calibrationCurrentStandardPhase())).
-                                                                       arg(static_cast<double>(ui->widgetCalibrationOfCurrent->calibrationCurrentStandard3I0())).
-                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIaState()).
-                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIbState()).
-                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentIcState()).
-                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrent3I0State()).
-                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentDataCount()).
-                                                                       arg(ui->widgetCalibrationOfCurrent->calibrationCurrentPauseRequest())))
+                           " VALUES(%1, %2, %3, %4, %5, %6, %7, %8);").arg(static_cast<double>(ui->widgetCalibrationOfCurrent->standardPhase())).
+                                                                       arg(static_cast<double>(ui->widgetCalibrationOfCurrent->standard3I0())).
+                                                                       arg(ui->widgetCalibrationOfCurrent->stateIa()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->stateIb()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->stateIc()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->state3I0()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->dataCount()).
+                                                                       arg(ui->widgetCalibrationOfCurrent->pauseRequest())))
     {
         outLogMessage(tr("Ошибка сохранения эталонных значений калибровок по току устройства: %1").arg(query.lastError().text()));
     }
@@ -6685,14 +6685,14 @@ void ConfiguratorWindow::loadDeviceCalibrationCurrent(QSqlDatabase *db)
     int dataCount = query.value("dataCount").toInt();
     int pauseRequest = query.value("pauseRequest").toInt();
 
-    ui->widgetCalibrationOfCurrent->setCurrentStandardPhase(QLocale::system().toFloat(standardPhase));
-    ui->widgetCalibrationOfCurrent->setCurrentStandard3I0(QLocale::system().toFloat(standard3I0));
-    ui->widgetCalibrationOfCurrent->setCurrentIaState(stateIa);
-    ui->widgetCalibrationOfCurrent->setCurrentIbState(stateIb);
-    ui->widgetCalibrationOfCurrent->setCurrentIcState(stateIc);
-    ui->widgetCalibrationOfCurrent->setCurrent3I0State(state3I0);
-    ui->widgetCalibrationOfCurrent->setCurrentDataCount(dataCount);
-    ui->widgetCalibrationOfCurrent->setCurrentPauseRequest(pauseRequest);
+    ui->widgetCalibrationOfCurrent->setStandardPhase(QLocale::system().toFloat(standardPhase));
+    ui->widgetCalibrationOfCurrent->setStandard3I0(QLocale::system().toFloat(standard3I0));
+    ui->widgetCalibrationOfCurrent->setIaState(stateIa);
+    ui->widgetCalibrationOfCurrent->setIbState(stateIb);
+    ui->widgetCalibrationOfCurrent->setIcState(stateIc);
+    ui->widgetCalibrationOfCurrent->set3I0State(state3I0);
+    ui->widgetCalibrationOfCurrent->setDataCount(dataCount);
+    ui->widgetCalibrationOfCurrent->setPauseRequest(pauseRequest);
 
     m_progressbar->increment(3);
 }
@@ -12633,7 +12633,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::authorization);
 
-//    connect(ui->widgetCalibrationOfCurrent, &CCalibrationWidgetOfCurrent::saveToFlash, this, &ConfiguratorWindow::sendDeviceCommand);
+    connect(m_calibration_controller, &CCalibrationController::calibrationSaveToFlash, this, &ConfiguratorWindow::saveDeviceSettings);
     connect(m_calibration_controller, &CCalibrationController::calibration, this, &ConfiguratorWindow::sendRequestCalibration);
     connect(this, &ConfiguratorWindow::calibrationDataIsReady, m_calibration_controller, &CCalibrationController::dataIsReady);
     connect(m_calibration_controller, &CCalibrationController::calibrationFactorAllRead, this, &ConfiguratorWindow::inputAnalogCalibrateRead);

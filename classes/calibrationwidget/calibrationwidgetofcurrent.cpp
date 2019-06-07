@@ -1,6 +1,6 @@
 #include "calibrationwidgetofcurrent.h"
 #include "ui_calibrationwidgetofcurrent.h"
-//------------------------------------------------------
+//------------------------------------------------------------------------
 CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
     QWidget(parent),
     ui(new Ui::CCalibrationWidgetOfCurrent)
@@ -31,7 +31,7 @@ CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
     connect(ui->checkBoxIb, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
     connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
     connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceCurrentChannelChanged);
-//    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::saveCalibrationToFlash);
+    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::saveCalibrationToFlash);
     connect(this, &CCalibrationWidgetOfCurrent::dataIncrement, this, &CCalibrationWidgetOfCurrent::progressBarIncrement);
 }
 //---------------------------------------------------------
@@ -39,25 +39,75 @@ CCalibrationWidgetOfCurrent::~CCalibrationWidgetOfCurrent()
 {
     delete ui;
 }
-//----------------------------------------------------
-QCheckBox* CCalibrationWidgetOfCurrent::ctrlIa() const
+//-----------------------------------------------
+bool CCalibrationWidgetOfCurrent::stateIa() const
 {
-    return ui->checkBoxIa;
+    return ui->checkBoxIa->isChecked();
 }
-//----------------------------------------------------
-QCheckBox* CCalibrationWidgetOfCurrent::ctrlIb() const
+//-----------------------------------------------
+bool CCalibrationWidgetOfCurrent::stateIb() const
 {
-    return ui->checkBoxIb;
+    return ui->checkBoxIb->isChecked();
 }
-//----------------------------------------------------
-QCheckBox* CCalibrationWidgetOfCurrent::ctrlIc() const
+//-----------------------------------------------
+bool CCalibrationWidgetOfCurrent::stateIc() const
 {
-    return ui->checkBoxIc;
+    return ui->checkBoxIc->isChecked();
 }
-//-----------------------------------------------------
-QCheckBox* CCalibrationWidgetOfCurrent::ctrl3I0() const
+//------------------------------------------------
+bool CCalibrationWidgetOfCurrent::state3I0() const
 {
-    return ui->checkBox3I0;
+    return ui->checkBox3I0->isChecked();
+}
+//------------------------------------------------
+int CCalibrationWidgetOfCurrent::dataCount() const
+{
+    return ui->spinBoxSetDataCount->value();
+}
+//---------------------------------------------------
+int CCalibrationWidgetOfCurrent::pauseRequest() const
+{
+    return ui->spinBoxPauseRequest->value();
+}
+//-------------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setStandardPhase(float value)
+{
+    ui->lineEditCurrentStandardPhase->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-----------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setStandard3I0(float value)
+{
+    ui->lineEditCurrentStandard3I0->setText(QLocale::system().toString(value, 'f', 6));
+}
+//------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setIaState(bool state)
+{
+    ui->checkBoxIa->setChecked(state);
+}
+//------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setIbState(bool state)
+{
+    ui->checkBoxIb->setChecked(state);
+}
+//------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setIcState(bool state)
+{
+    ui->checkBoxIc->setChecked(state);
+}
+//-------------------------------------------------------
+void CCalibrationWidgetOfCurrent::set3I0State(bool state)
+{
+    ui->checkBox3I0->setChecked(state);
+}
+//-------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setDataCount(int count)
+{
+    ui->spinBoxSetDataCount->setValue(count);
+}
+//----------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setPauseRequest(int pause)
+{
+    ui->spinBoxPauseRequest->setValue(pause);
 }
 //---------------------------------------------------
 int CCalibrationWidgetOfCurrent::dataSetCount() const
@@ -69,65 +119,35 @@ int CCalibrationWidgetOfCurrent::timePauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
 }
-//------------------------------------------------------------------------
-float CCalibrationWidgetOfCurrent::calibrationCurrentStandardPhase() const
+//------------------------------------------------------
+float CCalibrationWidgetOfCurrent::standardPhase() const
 {
     return QLocale::system().toFloat(ui->lineEditCurrentStandardPhase->text());
 }
-//----------------------------------------------------------------------
-float CCalibrationWidgetOfCurrent::calibrationCurrentStandard3I0() const
+//----------------------------------------------------
+float CCalibrationWidgetOfCurrent::standard3I0() const
 {
     return QLocale::system().toFloat(ui->lineEditCurrentStandard3I0->text());
 }
-//-------------------------------------------------------------
-float CCalibrationWidgetOfCurrent::calibrationCurrentIa() const
+//------------------------------------------------
+float CCalibrationWidgetOfCurrent::valueIa() const
 {
     return QLocale::system().toFloat(ui->lineEditFactorIa->text());
 }
-//-------------------------------------------------------------
-float CCalibrationWidgetOfCurrent::calibrationCurrentIb() const
+//------------------------------------------------
+float CCalibrationWidgetOfCurrent::valueIb() const
 {
     return QLocale::system().toFloat(ui->lineEditFactorIb->text());
 }
-//-------------------------------------------------------------
-float CCalibrationWidgetOfCurrent::calibrationCurrentIc() const
+//------------------------------------------------
+float CCalibrationWidgetOfCurrent::valueIc() const
 {
     return QLocale::system().toFloat(ui->lineEditFactorIc->text());
 }
-//--------------------------------------------------------------
-float CCalibrationWidgetOfCurrent::calibrationCurrent3I0() const
+//-------------------------------------------------
+float CCalibrationWidgetOfCurrent::value3I0() const
 {
     return QLocale::system().toFloat(ui->lineEditFactor3I0->text());
-}
-//------------------------------------------------------------------
-bool CCalibrationWidgetOfCurrent::calibrationCurrentIaState() const
-{
-    return ui->checkBoxIa->isChecked();
-}
-//-----------------------------------------------------------------
-bool CCalibrationWidgetOfCurrent::calibrationCurrentIbState() const
-{
-    return ui->checkBoxIb->isChecked();
-}
-//-----------------------------------------------------------------
-bool CCalibrationWidgetOfCurrent::calibrationCurrentIcState() const
-{
-    return ui->checkBoxIc->isChecked();
-}
-//------------------------------------------------------------------
-bool CCalibrationWidgetOfCurrent::calibrationCurrent3I0State() const
-{
-    return ui->checkBox3I0->isChecked();
-}
-//------------------------------------------------------------------
-int CCalibrationWidgetOfCurrent::calibrationCurrentDataCount() const
-{
-    return ui->spinBoxSetDataCount->value();
-}
-//---------------------------------------------------------------------
-int CCalibrationWidgetOfCurrent::calibrationCurrentPauseRequest() const
-{
-    return ui->spinBoxPauseRequest->value();
 }
 /*!
  * \brief CCalibrationWidgetOfCurrent::newCalibrationFactor
@@ -172,46 +192,6 @@ QPointF CCalibrationWidgetOfCurrent::standardDeviation(const CCalibrationWidgetO
     deviation = float(sqrt(double(double(deviation)/double(data.count()) - 1.0)));
 
     return QPointF(double(average), double(deviation));
-}
-//--------------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::setCurrentStandardPhase(float value)
-{
-    ui->lineEditCurrentStandardPhase->setText(QLocale::system().toString(value, 'f', 6));
-}
-//------------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::setCurrentStandard3I0(float value)
-{
-    ui->lineEditCurrentStandard3I0->setText(QLocale::system().toString(value, 'f', 6));
-}
-//-------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::setCurrentIaState(bool state)
-{
-    ui->checkBoxIa->setChecked(state);
-}
-//-------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::setCurrentIbState(bool state)
-{
-    ui->checkBoxIb->setChecked(state);
-}
-//-------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::setCurrentIcState(bool state)
-{
-    ui->checkBoxIc->setChecked(state);
-}
-//--------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::setCurrent3I0State(bool state)
-{
-    ui->checkBox3I0->setChecked(state);
-}
-//--------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::setCurrentDataCount(int count)
-{
-    ui->spinBoxSetDataCount->setValue(count);
-}
-//-----------------------------------------------------------------
-void CCalibrationWidgetOfCurrent::setCurrentPauseRequest(int pause)
-{
-    ui->spinBoxPauseRequest->setValue(pause);
 }
 //--------------------------------------------------------
 void CCalibrationWidgetOfCurrent::setFactorIa(float value)
@@ -307,7 +287,7 @@ void CCalibrationWidgetOfCurrent::display(const calibration_t &data)
 
     if(!data.Ib.isEmpty())
     {
-        float   standard   = calibrationCurrentStandardPhase();
+        float   standard   = standardPhase();
         float   cur_factor = QLocale::system().toFloat(ui->lineEditFactorIb->text());
         float   newFactor  = newCalibrationFactor(standard, cur_factor, data.Ib);
         QPointF deviation  = standardDeviation(data.Ib);
@@ -330,7 +310,7 @@ void CCalibrationWidgetOfCurrent::display(const calibration_t &data)
 
     if(!data.Ic.isEmpty())
     {
-        float   standard   = calibrationCurrentStandardPhase();
+        float   standard   = standardPhase();
         float   cur_factor = QLocale::system().toFloat(ui->lineEditFactorIc->text());
         float   newFactor  = newCalibrationFactor(standard, cur_factor, data.Ic);
         QPointF deviation  = standardDeviation(data.Ic);
@@ -354,7 +334,7 @@ void CCalibrationWidgetOfCurrent::display(const calibration_t &data)
 
     if(!data._3I0.isEmpty())
     {
-        float   standard   = calibrationCurrentStandard3I0();
+        float   standard   = standard3I0();
         float   cur_factor = QLocale::system().toFloat(ui->lineEditFactor3I0->text());
         float   newFactor  = newCalibrationFactor(standard, cur_factor, data._3I0);
         QPointF deviation  = standardDeviation(data._3I0);
@@ -473,7 +453,7 @@ void CCalibrationWidgetOfCurrent::saveCalibrationToFlash()
     if(answer == QMessageBox::Yes)
     {
         qInfo() << tr("Сохранение калибровочных коэффициентов по току пользователем во флеш.");
-        emit saveToFlash(2);
+        emit saveToFlash();
     }
     else
         qInfo() << tr("Отказ от сохранения калибровочных коэффициентов по току во флеш.");
@@ -579,13 +559,13 @@ void CCalibrationWidgetOfCurrent::calibrationWriteProcess()
     float _3I0 = 0;
 
     if(ui->checkBoxIa->isChecked())
-        Ia  = calibrationCurrentIa();
+        Ia  = valueIa();
     if(ui->checkBoxIb->isChecked())
-        Ib = calibrationCurrentIb();
+        Ib = valueIb();
     if(ui->checkBoxIc->isChecked())
-        Ic  = calibrationCurrentIc();
+        Ic  = valueIc();
     if(ui->checkBox3I0->isChecked())
-        _3I0 = calibrationCurrent3I0();
+        _3I0 = value3I0();
 
     if(Ia == 0.0f && Ib == 0.0f && Ic == 0.0f && _3I0 == 0.0f)
         return;
