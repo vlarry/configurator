@@ -569,6 +569,19 @@ void CCalibrationWidgetOfCurrent::calibrationWriteProcess()
 
     emit calibrationWriteStart(units);
 }
+//--------------------------------------------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setCalibrartionFactorActual(const QString &key, float value)
+{
+    qDebug() << QString("Калибровочный коэффициент: %1, значение: %2").arg(key).arg(value);
+    if(key == "KIA")
+        setFactorIa(value);
+    else if(key == "KIB")
+        setFactorIb(value);
+    else if(key == "KIC")
+        setFactorIc(value);
+    else if(key == "K3I0")
+        setFactor3I0(value);
+}
 //--------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::paintEvent(QPaintEvent* event)
 {

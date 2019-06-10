@@ -106,6 +106,7 @@
             void calibrationParameterStart();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
             void calibrationWriteProcess();
+            void setCalibrartionFactorActual(const QString &key, float value);
 
         protected:
             void paintEvent(QPaintEvent* event);
