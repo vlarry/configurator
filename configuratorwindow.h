@@ -528,7 +528,7 @@
             void versionSowftware();
             void sendCalculateRead(CModBusDataUnit& unit);
             void sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size, DeviceMenuItemType index);
-            void sendSettingReadRequest(const QStringList &key_list, CModBusDataUnit::FunctionType type, DeviceMenuItemType index);
+            void sendSettingReadRequest(const QStringList &key_list, CModBusDataUnit::FunctionType type, DeviceMenuItemType index, bool isCalibration = false);
             void sendSettingControlReadRequest(const QString& index, DeviceMenuItemType group_index);
             void sendSettingControlWriteRequest(const QString& index, DeviceMenuItemType group_index);
             void sendSettingWriteRequest(const QString& first, const QString& last, DeviceMenuItemType group_index, int size = 2);
@@ -749,6 +749,7 @@
         signals:
             void buttonReadJournalStateChanged(bool = false);
             void calibrationDataIsReady(CModBusDataUnit&);
+            void calibrationFactorIsReady(const QString&, float); // калибровочный коэффициент для модуля калибровок (QString - key, float - value)
 
         private:
             Ui::ConfiguratorWindow*          ui;

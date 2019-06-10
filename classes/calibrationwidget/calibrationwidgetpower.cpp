@@ -627,8 +627,6 @@ void CCalibrationWidgetPower::calibrationParameterStart()
         return;
     }
 
-    calibrationFactorActualRequest(); // запрос текущих калибровочных коэффициентов
-
     CModBusDataUnit unit_Ua(0, CModBusDataUnit::ReadInputRegisters, 80, 2); // чтение D10->Ua вх. бл.
     CModBusDataUnit unit_Ub(0, CModBusDataUnit::ReadInputRegisters, 82, 2); // чтение D11->Ub вх. бл.
     CModBusDataUnit unit_Uc(0, CModBusDataUnit::ReadInputRegisters, 84, 2); // чтение D12->Uc вх. бл.
@@ -826,15 +824,15 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
 
     value.f = Uab;
     CModBusDataUnit unit_Uab(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Uab.setProperty("KEY", "KUAB");
+    unit_Uab.setProperty("KEY", "KUABT");
 
     value.f = Ubc;
     CModBusDataUnit unit_Ubc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Ubc.setProperty("KEY", "KUBC");
+    unit_Ubc.setProperty("KEY", "KUBCT");
 
     value.f = Uca;
     CModBusDataUnit unit_Uca(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Uca.setProperty("KEY", "KUCA");
+    unit_Uca.setProperty("KEY", "KUCAT");
 
     value.f = _3U0S;
     CModBusDataUnit unit_3U0S(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
@@ -872,6 +870,29 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
     qInfo() << tr("Запись новых калибровочных коэффициентов по напряжению подтверждена");
 
     emit calibrationWriteStart(units);
+}
+//----------------------------------------------------------------------------------------
+void CCalibrationWidgetPower::setCalibrartionFactorActual(const QString &key, float value)
+{
+    qDebug() << QString("Калибровочный коэффициент: %1, значение: %2").arg(key).arg(value);
+    if(key == "KUA")
+        setFactorUa(value);
+    else if(key == "KUB")
+        setFactorUb(value);
+    else if(key == "KUC")
+        setFactorUc(value);
+    else if(key == "KUAB")
+        setFactorUab(value);
+    else if(key == "KUBC")
+        setFactorUbc(value);
+    else if(key == "KUCA")
+        setFactorUca(value);
+    else if(key == "K3U0R")
+        setFactor3U0S(value);
+    else if(key == "K3U0S")
+        setFactor3US(value);
+    else if(key == "K3U0T")
+        setFactor3U0(value);
 }
 //----------------------------------------------------------
 void CCalibrationWidgetPower::paintEvent(QPaintEvent *event)

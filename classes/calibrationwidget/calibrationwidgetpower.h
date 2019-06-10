@@ -128,6 +128,7 @@
             void calibrationParameterStart();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
             void calibrationWriteProcess();
+            void setCalibrartionFactorActual(const QString &key, float value);
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);

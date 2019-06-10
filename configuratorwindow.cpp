@@ -331,12 +331,12 @@ void ConfiguratorWindow::inputAnalogGeneralRead()
  */
 void ConfiguratorWindow::inputAnalogCalibrateRead()
 {
-    QStringList list = QStringList() << "K3I0" << "KIA" << "KIB" << "KIC" << "KUA" << "KUB" << "KUC" << "KUABT" << "KUBCT" <<
-                                        "KUCAT" << "K3U0R" << "K3U0S" << "K3U0T" << "KUADC" << "AUADC" << "KUBDC" << "AUBDC" <<
+    QStringList list = QStringList() << "K3I0" << "KIA" << "KIB" << "KIC" << "KUA" << "KUB" << "KUC" << "KUAB" << "KUBC" <<
+                                        "KUCA" << "K3U0R" << "K3U0S" << "K3U0T" << "KUADC" << "AUADC" << "KUBDC" << "AUBDC" <<
                                         "KUCDC" << "AUCDC" << "KUMDC" << "AUMDC" << "KRA" << "ARA" << "KRB" << "ARB" << "KRC" <<
                                         "ARC" << "KY01T" << "KY02T" << "KY03T" << "KY01R" << "KY02R" << "KY03R" << "KY04R" <<
                                         "KY04S" << "KY04T";
-    sendSettingReadRequest(list, CModBusDataUnit::ReadHoldingRegisters, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG);
+    sendSettingReadRequest(list, CModBusDataUnit::ReadHoldingRegisters, DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, true);
 }
 /*!
  * \brief ConfiguratorWindow::inputAnalogGroupRead
@@ -4515,6 +4515,7 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
     DeviceMenuItemType      group    = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
     QPoint                  indexKey = indexSettingKey(first, last);
     CDeviceMenuTableWidget* table    = groupMenuWidget(group);
+    bool                    isCalibration = unit.property("CALIBRATION").toBool();
 
     if(!table)
         return;
@@ -4567,7 +4568,12 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
             str = QString::number(unit[0]);
 
         if(!str.isEmpty())
+        {
             lineEdit->setText(str);
+
+            if(isCalibration)
+                emit calibrationFactorIsReady(first, value.f);
+        }
 
         qDebug() << QString("Отображение уставки: переменная->%1, значение = %2").arg(first).arg(str);
 
@@ -7156,7 +7162,7 @@ qDebug() << QString("Чтение уставки по ключу: %1 (адрес
 }
 //--------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QStringList &key_list, CModBusDataUnit::FunctionType type,
-                                                ConfiguratorWindow::DeviceMenuItemType index)
+                                                ConfiguratorWindow::DeviceMenuItemType index, bool isCalibration)
 {
     if(key_list.isEmpty())
         return;
@@ -7176,6 +7182,7 @@ void ConfiguratorWindow::sendSettingReadRequest(const QStringList &key_list, CMo
         unit.setProperty("GROUP", index);
         unit.setProperty("FIRST", key);
         unit.setProperty("LAST", key);
+        unit.setProperty("CALIBRATION", isCalibration); // калибровочный коэффициент для передачи его в модуль калибровок (тока, напряжения и т.д. и т.п.)
 qDebug() << QString("Чтение уставки по ключу: %1 (адрес: %2)").arg(key).arg(addr);
         m_modbus->sendData(unit);
     }
@@ -12638,6 +12645,7 @@ void ConfiguratorWindow::initConnect()
     connect(this, &ConfiguratorWindow::calibrationDataIsReady, m_calibration_controller, &CCalibrationController::dataIsReady);
     connect(m_calibration_controller, &CCalibrationController::calibrationFactorAllRead, this, &ConfiguratorWindow::inputAnalogCalibrateRead);
     connect(m_calibration_controller, &CCalibrationController::calibrationWrite, this, &ConfiguratorWindow::sendRequestCalibrationWrite);
+    connect(this, &ConfiguratorWindow::calibrationFactorIsReady, m_calibration_controller, &CCalibrationController::calibrationFactorActual);
 
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
