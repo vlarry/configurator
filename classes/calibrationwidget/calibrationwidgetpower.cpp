@@ -61,6 +61,21 @@ int CCalibrationWidgetPower::pauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
 }
+//--------------------------------------------------
+float CCalibrationWidgetPower::standardPhase() const
+{
+    return QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
+}
+//--------------------------------------------------------
+float CCalibrationWidgetPower::standardPhaseLinear() const
+{
+    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseLinear->text());
+}
+//-----------------------------------------------
+float CCalibrationWidgetPower::standard3U() const
+{
+    return QLocale::system().toFloat(ui->lineEditPowerStandard3U->text());
+}
 //-------------------------------------------
 bool CCalibrationWidgetPower::stateUa() const
 {
@@ -151,6 +166,387 @@ float CCalibrationWidgetPower::value3U0() const
 {
     return QLocale::system().toFloat(ui->lineEditFactor3U0->text());
 }
+//----------------------------------------------------
+void CCalibrationWidgetPower::setFactorUa(float value)
+{
+    ui->lineEditFactorUA->setText(QLocale::system().toString(value, 'f', 6));
+}
+//----------------------------------------------------
+void CCalibrationWidgetPower::setFactorUb(float value)
+{
+    ui->lineEditFactorUB->setText(QLocale::system().toString(value, 'f', 6));
+}
+//----------------------------------------------------
+void CCalibrationWidgetPower::setFactorUc(float value)
+{
+    ui->lineEditFactorUC->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-----------------------------------------------------
+void CCalibrationWidgetPower::setFactorUab(float value)
+{
+    ui->lineEditFactorUAB->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-----------------------------------------------------
+void CCalibrationWidgetPower::setFactorUbc(float value)
+{
+    ui->lineEditFactorUBC->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-----------------------------------------------------
+void CCalibrationWidgetPower::setFactorUca(float value)
+{
+    ui->lineEditFactorUCA->setText(QLocale::system().toString(value, 'f', 6));
+}
+//------------------------------------------------------
+void CCalibrationWidgetPower::setFactor3U0S(float value)
+{
+    ui->lineEditFactor3U0S->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-----------------------------------------------------
+void CCalibrationWidgetPower::setFactor3US(float value)
+{
+    ui->lineEditFactor3US->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-----------------------------------------------------
+void CCalibrationWidgetPower::setFactor3U0(float value)
+{
+    ui->lineEditFactor3U0->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------------------
+void CCalibrationWidgetPower::setMeasureUa(float average)
+{
+    ui->lineEditMeasuredD10->setText(QLocale::system().toString(average, 'f', 6));
+}
+//-------------------------------------------------------
+void CCalibrationWidgetPower::setMeasureUb(float average)
+{
+    ui->lineEditMeasuredD11->setText(QLocale::system().toString(average, 'f', 6));
+}
+//-------------------------------------------------------
+void CCalibrationWidgetPower::setMeasureUc(float average)
+{
+    ui->lineEditMeasuredD12->setText(QLocale::system().toString(average, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setMeasureUab(float average)
+{
+    ui->lineEditMeasuredD41->setText(QLocale::system().toString(average, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setMeasureUbc(float average)
+{
+    ui->lineEditMeasuredD42->setText(QLocale::system().toString(average, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setMeasureUca(float average)
+{
+    ui->lineEditMeasuredD43->setText(QLocale::system().toString(average, 'f', 6));
+}
+//---------------------------------------------------------
+void CCalibrationWidgetPower::setMeasure3U0S(float average)
+{
+    ui->lineEditMeasuredD14->setText(QLocale::system().toString(average, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setMeasure3US(float average)
+{
+    ui->lineEditMeasuredD48->setText(QLocale::system().toString(average, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setMeasure3U0(float average)
+{
+    ui->lineEditMeasuredD44->setText(QLocale::system().toString(average, 'f', 6));
+}
+//-------------------------------------------------------
+void CCalibrationWidgetPower::setDeviationUa(float value)
+{
+    ui->lineEditDeviationUA->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------------------
+void CCalibrationWidgetPower::setDeviationUb(float value)
+{
+    ui->lineEditDeviationUB->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------------------
+void CCalibrationWidgetPower::setDeviationUc(float value)
+{
+    ui->lineEditDeviationUC->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setDeviationUab(float value)
+{
+    ui->lineEditDeviationUAB->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setDeviationUbc(float value)
+{
+    ui->lineEditDeviationUBC->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setDeviationUca(float value)
+{
+    ui->lineEditDeviationUCA->setText(QLocale::system().toString(value, 'f', 6));
+}
+//---------------------------------------------------------
+void CCalibrationWidgetPower::setDeviation3U0S(float value)
+{
+    ui->lineEditDeviation3U0S->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setDeviation3US(float value)
+{
+    ui->lineEditDeviation3US->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------------------
+void CCalibrationWidgetPower::setDeviation3U0(float value)
+{
+    ui->lineEditDeviation3U0->setText(QLocale::system().toString(value, 'f', 6));
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+float CCalibrationWidgetPower::newCalibrationFactor(float standard, float power_factor, const CCalibrationWidgetPower::calibration_data_t &measure_list)
+{
+    float measure = 0;
+
+    if(measure_list.count() > 1)
+        standard *= measure_list.count();
+
+    for(float value: measure_list)
+        measure += value;
+
+    return (standard/measure)*power_factor;
+}
+//---------------------------------------------------------------------------------------------------------
+QPointF CCalibrationWidgetPower::standardDeviation(const CCalibrationWidgetPower::calibration_data_t &data)
+{
+    float average = 0;
+
+    for(float value: data)
+        average += value;
+
+    average /= data.count();
+
+    float deviation = 0;
+
+    for(float value: data)
+        deviation += (value - average)*(value - average);
+
+    deviation = float(sqrt(double(double(deviation)/double(data.count()) - 1.0)));
+
+    return QPointF(double(average), double(deviation));
+}
+//---------------------------------------------------------------------------------------
+void CCalibrationWidgetPower::display(const CCalibrationWidgetPower::calibration_t &data)
+{
+    qInfo() << tr("Калибровка по напряжению:");
+
+    if(!data.Ua.isEmpty())
+    {
+        float   standard     = standardPhase();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUA->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data.Ua);
+        QPointF deviation    = standardDeviation(data.Ua);
+
+        setFactorUa(newFactor);
+        setMeasureUa(float(deviation.x()));
+        setDeviationUa(float(deviation.y()));
+
+        qInfo() << tr("Калибровка UА");
+
+        for(float value: data.Ua)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    if(!data.Ub.isEmpty())
+    {
+        float   standard     = standardPhase();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUB->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data.Ub);
+        QPointF deviation    = standardDeviation(data.Ub);
+
+        setFactorUb(newFactor);
+        setMeasureUb(float(deviation.x()));
+        setDeviationUb(float(deviation.y()));
+
+        qInfo() << tr("Калибровка UB");
+
+        for(float value: data.Ub)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    if(!data.Uc.isEmpty())
+    {
+        float   standard     = standardPhase();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUC->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data.Uc);
+        QPointF deviation    = standardDeviation(data.Uc);
+
+        setFactorUc(newFactor);
+        setMeasureUc(float(deviation.x()));
+        setDeviationUc(float(deviation.y()));
+
+        qInfo() << tr("Калибровка UC");
+
+        for(float value: data.Uc)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    if(!data.Uab.isEmpty())
+    {
+        float   standard     = standardPhaseLinear();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUAB->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data.Uab);
+        QPointF deviation    = standardDeviation(data.Uab);
+
+        setFactorUab(newFactor);
+        setMeasureUab(float(deviation.x()));
+        setDeviationUab(float(deviation.y()));
+
+        qInfo() << tr("Калибровка UАB");
+
+        for(float value: data.Uab)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    if(!data.Ubc.isEmpty())
+    {
+        float   standard     = standardPhaseLinear();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUBC->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data.Ubc);
+        QPointF deviation    = standardDeviation(data.Ubc);
+
+        setFactorUbc(newFactor);
+        setMeasureUbc(float(deviation.x()));
+        setDeviationUbc(float(deviation.y()));
+
+        qInfo() << tr("Калибровка UBC");
+
+        for(float value: data.Ubc)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    if(!data.Uca.isEmpty())
+    {
+        float   standard     = standardPhaseLinear();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUCA->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data.Uca);
+        QPointF deviation    = standardDeviation(data.Uca);
+
+        setFactorUca(newFactor);
+        setMeasureUca(float(deviation.x()));
+        setDeviationUca(float(deviation.y()));
+
+        qInfo() << tr("Калибровка UАB");
+
+        for(float value: data.Uca)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    if(!data._3U0S.isEmpty())
+    {
+        float   standard     = standard3U();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactor3U0S->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data._3U0S);
+        QPointF deviation    = standardDeviation(data._3U0S);
+
+        setFactor3U0S(newFactor);
+        setMeasure3U0S(float(deviation.x()));
+        setDeviation3U0S(float(deviation.y()));
+
+        qInfo() << tr("Калибровка 3U0S");
+
+        for(float value: data._3U0S)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    if(!data._3US.isEmpty())
+    {
+        float   standard     = standard3U();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactor3US->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data._3US);
+        QPointF deviation    = standardDeviation(data._3US);
+
+        setFactor3US(newFactor);
+        setMeasure3US(float(deviation.x()));
+        setDeviation3US(float(deviation.y()));
+
+        qInfo() << tr("Калибровка 3US");
+
+        for(float value: data._3US)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    if(!data._3U0.isEmpty())
+    {
+        float   standard     = standard3U();
+        float   power_factor = QLocale::system().toFloat(ui->lineEditFactor3U0->text());
+        float   newFactor    = newCalibrationFactor(standard, power_factor, data._3U0);
+        QPointF deviation    = standardDeviation(data._3U0);
+
+        setFactor3U0(newFactor);
+        setMeasure3U0(float(deviation.x()));
+        setDeviation3U0(float(deviation.y()));
+
+        qInfo() << tr("Калибровка 3U0");
+
+        for(float value: data._3U0)
+            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+
+        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
+                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
+                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+
+        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
+        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+    }
+
+    emit calibrationEnd(false);
+}
 //---------------------------------------------------
 void CCalibrationWidgetPower::stateButton(bool state)
 {
@@ -231,25 +627,27 @@ void CCalibrationWidgetPower::calibrationParameterStart()
         return;
     }
 
-    CModBusDataUnit unit_Ua(0, CModBusDataUnit::ReadInputRegisters, 80, 2);
-    CModBusDataUnit unit_Ub(0, CModBusDataUnit::ReadInputRegisters, 82, 2);
-    CModBusDataUnit unit_Uc(0, CModBusDataUnit::ReadInputRegisters, 84, 2);
-    CModBusDataUnit unit_Uab(0, CModBusDataUnit::ReadInputRegisters, 130, 2);
-    CModBusDataUnit unit_Ubc(0, CModBusDataUnit::ReadInputRegisters, 132, 2);
-    CModBusDataUnit unit_Uca(0, CModBusDataUnit::ReadInputRegisters, 134, 2);
-    CModBusDataUnit unit_3U0S(0, CModBusDataUnit::ReadInputRegisters, -1, 2);
-    CModBusDataUnit unit_3US(0, CModBusDataUnit::ReadInputRegisters, -1, 2);
-    CModBusDataUnit unit_3U0(0, CModBusDataUnit::ReadInputRegisters, -1, 2);
+    calibrationFactorActualRequest(); // запрос текущих калибровочных коэффициентов
 
-    unit_Ua.setProperty("CHANNEL", CURRENT_UA);
-    unit_Ub.setProperty("CHANNEL", CURRENT_UB);
-    unit_Uc.setProperty("CHANNEL", CURRENT_UC);
-    unit_Uab.setProperty("CHANNEL", CURRENT_UAB);
-    unit_Ubc.setProperty("CHANNEL", CURRENT_UBC);
-    unit_Uca.setProperty("CHANNEL", CURRENT_UCA);
-    unit_3U0S.setProperty("CHANNEL", CURRENT_3U0S);
-    unit_3US.setProperty("CHANNEL", CURRENT_3US);
-    unit_3U0.setProperty("CHANNEL", CURRENT_3U0);
+    CModBusDataUnit unit_Ua(0, CModBusDataUnit::ReadInputRegisters, 80, 2); // чтение D10->Ua вх. бл.
+    CModBusDataUnit unit_Ub(0, CModBusDataUnit::ReadInputRegisters, 82, 2); // чтение D11->Ub вх. бл.
+    CModBusDataUnit unit_Uc(0, CModBusDataUnit::ReadInputRegisters, 84, 2); // чтение D12->Uc вх. бл.
+    CModBusDataUnit unit_Uab(0, CModBusDataUnit::ReadInputRegisters, 130, 2); // чтение D41->UabT
+    CModBusDataUnit unit_Ubc(0, CModBusDataUnit::ReadInputRegisters, 132, 2); // чтение D42->UbcT
+    CModBusDataUnit unit_Uca(0, CModBusDataUnit::ReadInputRegisters, 134, 2); // чтение D43->UcaT
+    CModBusDataUnit unit_3U0S(0, CModBusDataUnit::ReadInputRegisters, 88, 2); // чтение D14->3U0R
+    CModBusDataUnit unit_3US(0, CModBusDataUnit::ReadInputRegisters, 144, 2); // чтение D48->3U0S
+    CModBusDataUnit unit_3U0(0, CModBusDataUnit::ReadInputRegisters, 136, 2); // чтение D44->3U0T
+
+    unit_Ua.setProperty("CHANNEL", POWER_UA);
+    unit_Ub.setProperty("CHANNEL", POWER_UB);
+    unit_Uc.setProperty("CHANNEL", POWER_UC);
+    unit_Uab.setProperty("CHANNEL", POWER_UAB);
+    unit_Ubc.setProperty("CHANNEL", POWER_UBC);
+    unit_Uca.setProperty("CHANNEL", POWER_UCA);
+    unit_3U0S.setProperty("CHANNEL", POWER_3U0S);
+    unit_3US.setProperty("CHANNEL", POWER_3US);
+    unit_3U0.setProperty("CHANNEL", POWER_3U0);
 
     QVector<CModBusDataUnit> unit_list;
     int param_count = 0;
@@ -308,6 +706,46 @@ void CCalibrationWidgetPower::calibrationDataProcess(QVector<CModBusDataUnit> &d
 {
     if(data.isEmpty())
         return;
+
+    calibration_t calibration_data;
+
+    union
+    {
+        quint16 v[2];
+        float   f;
+    } value;
+qDebug() << QString("Разбор калибровочных данных: размер = %1").arg(data.count());
+    for(const CModBusDataUnit &unit: data)
+    {
+        if(unit.count() != 2)
+            continue;
+
+        ChannelType channel = static_cast<ChannelType>(unit.property("CHANNEL").toInt());
+
+        value.v[0] = unit[1];
+        value.v[1] = unit[0];
+
+        if(channel == POWER_UA)
+            calibration_data.Ua << value.f;
+        else if(channel == POWER_UB)
+            calibration_data.Ub << value.f;
+        else if(channel == POWER_UC)
+            calibration_data.Uc << value.f;
+        else if(channel == POWER_UAB)
+            calibration_data.Uab << value.f;
+        else if(channel == POWER_UBC)
+            calibration_data.Ubc << value.f;
+        else if(channel == POWER_UCA)
+            calibration_data.Uca << value.f;
+        else if(channel == POWER_3U0S)
+            calibration_data._3U0S << value.f;
+        else if(channel == POWER_3US)
+            calibration_data._3US << value.f;
+        else if(channel == POWER_3U0)
+            calibration_data._3U0 << value.f;
+    }
+
+    display(calibration_data);
 }
 //-----------------------------------------------------
 void CCalibrationWidgetPower::calibrationWriteProcess()
@@ -400,15 +838,15 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
 
     value.f = _3U0S;
     CModBusDataUnit unit_3U0S(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_3U0S.setProperty("KEY", "K3U0S");
+    unit_3U0S.setProperty("KEY", "K3U0R");
 
     value.f = _3US;
     CModBusDataUnit unit_3US(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_3US.setProperty("KEY", "K3US");
+    unit_3US.setProperty("KEY", "K3U0S");
 
     value.f = _3U0;
     CModBusDataUnit unit_3U0(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_3U0.setProperty("KEY", "K3U0");
+    unit_3U0.setProperty("KEY", "K3U0T");
 
     QVector<CModBusDataUnit> units;
 

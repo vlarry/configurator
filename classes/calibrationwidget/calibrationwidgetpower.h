@@ -7,6 +7,7 @@
     #include <QPainter>
     #include "modbusdataunit.h"
     #include "clineedit.h"
+    #include "math.h"
     //----------
     namespace Ui
     {
@@ -35,15 +36,15 @@
             //--------------
             enum ChannelType
             {
-                CURRENT_UA,
-                CURRENT_UB,
-                CURRENT_UC,
-                CURRENT_UAB,
-                CURRENT_UBC,
-                CURRENT_UCA,
-                CURRENT_3U0S,
-                CURRENT_3US,
-                CURRENT_3U0
+                POWER_UA,
+                POWER_UB,
+                POWER_UC,
+                POWER_UAB,
+                POWER_UBC,
+                POWER_UCA,
+                POWER_3U0S,
+                POWER_3US,
+                POWER_3U0
             };
 
         public:
@@ -52,6 +53,10 @@
 
             int dataCount() const;
             int pauseRequest() const;
+
+            float standardPhase() const;
+            float standardPhaseLinear() const;
+            float standard3U() const;
 
             bool stateUa() const;
             bool stateUb() const;
@@ -75,7 +80,47 @@
             float value3US() const;
             float value3U0() const;
 
+            void setFactorUa(float value);
+            void setFactorUb(float value);
+            void setFactorUc(float value);
+
+            void setFactorUab(float value);
+            void setFactorUbc(float value);
+            void setFactorUca(float value);
+
+            void setFactor3U0S(float value);
+            void setFactor3US(float value);
+            void setFactor3U0(float value);
+
+            void setMeasureUa(float average);
+            void setMeasureUb(float average);
+            void setMeasureUc(float average);
+
+            void setMeasureUab(float average);
+            void setMeasureUbc(float average);
+            void setMeasureUca(float average);
+
+            void setMeasure3U0S(float average);
+            void setMeasure3US(float average);
+            void setMeasure3U0(float average);
+
+            void setDeviationUa(float value);
+            void setDeviationUb(float value);
+            void setDeviationUc(float value);
+
+            void setDeviationUab(float value);
+            void setDeviationUbc(float value);
+            void setDeviationUca(float value);
+
+            void setDeviation3U0S(float value);
+            void setDeviation3US(float value);
+            void setDeviation3U0(float value);
+
+            float newCalibrationFactor(float standard, float power_factor, const calibration_data_t &measure_list);
+            QPointF standardDeviation(const calibration_data_t &data);
+
         public slots:
+            void display(const calibration_t &data);
             void stateButton(bool state = false);
             void saveCalibrationToFlash();
             void valueCurrentStandardChanged(const QString&);

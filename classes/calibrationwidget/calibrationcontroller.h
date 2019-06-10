@@ -48,9 +48,10 @@
 
         signals:
             void calibration(CModBusDataUnit&);
-            void calibrationFactorAllRead();
+            void calibrationFactorAllRead(); // получить все текущие калибровки
             void calibrationWrite(QVector<CModBusDataUnit>&);
             void calibrationSaveToFlash();
+            void calibrationFactorActual(); // получение значения теущего калибровочного коэффициента
 
         public slots:
             void dataIsReady(CModBusDataUnit &unit);
