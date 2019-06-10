@@ -1905,7 +1905,7 @@
                </widget>
                <widget class="QWidget" name="tabPowerCalibration">
                 <attribute name="title">
-                 <string>Напряжение</string>
+                 <string>Напряжение AC</string>
                 </attribute>
                 <layout class="QVBoxLayout" name="verticalLayout_9">
                  <item>
@@ -1942,6 +1942,21 @@
                   </spacer>
                  </item>
                 </layout>
+               </widget>
+               <widget class="QWidget" name="tabPowerDCCalibration">
+                <attribute name="title">
+                 <string>Напряжение DC</string>
+                </attribute>
+               </widget>
+               <widget class="QWidget" name="tabResistanceCalibration">
+                <attribute name="title">
+                 <string>Сопротивление</string>
+                </attribute>
+               </widget>
+               <widget class="QWidget" name="tabArcShiftPhase">
+                <attribute name="title">
+                 <string>Угол сдвига фаз</string>
+                </attribute>
                </widget>
               </widget>
              </item>

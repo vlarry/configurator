@@ -9315,6 +9315,7 @@ void ConfiguratorWindow::loadSettings()
             m_settings->beginGroup("central_widget");
                 calibrationRoll(m_settings->value("calibration_roll", false).toBool());
                 ui->checkboxCalibTimeout->setChecked(m_settings->value("calculate_check", false).toBool());
+                ui->tabWidgetCalibration->setCurrentIndex(m_settings->value("calibration_actual_index", 0).toInt());
             m_settings->endGroup();
         m_settings->endGroup();
     }
@@ -9371,6 +9372,7 @@ void ConfiguratorWindow::saveSettings()
             m_settings->beginGroup("central_widget");
                 m_settings->setValue("calibration_roll", ui->pushButtonCalibrationRoll->isChecked());
                 m_settings->setValue("calculate_check", ui->checkboxCalibTimeout->isChecked());
+                m_settings->setValue("calibration_actual_index", ui->tabWidgetCalibration->currentIndex());
             m_settings->endGroup();
         m_settings->endGroup();
     }
