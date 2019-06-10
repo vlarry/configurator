@@ -824,15 +824,15 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
 
     value.f = Uab;
     CModBusDataUnit unit_Uab(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Uab.setProperty("KEY", "KUABT");
+    unit_Uab.setProperty("KEY", "KUAB");
 
     value.f = Ubc;
     CModBusDataUnit unit_Ubc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Ubc.setProperty("KEY", "KUBCT");
+    unit_Ubc.setProperty("KEY", "KUBC");
 
     value.f = Uca;
     CModBusDataUnit unit_Uca(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Uca.setProperty("KEY", "KUCAT");
+    unit_Uca.setProperty("KEY", "KUCA");
 
     value.f = _3U0S;
     CModBusDataUnit unit_3U0S(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
