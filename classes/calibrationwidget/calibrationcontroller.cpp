@@ -43,7 +43,7 @@ qDebug() << QString("Получено сообщение №%1").arg(m_calibrati
     {
         if(m_calibration_type == TYPE_CURRENT)
             m_widget_of_current->calibrationDataProcess(m_calibration_data.data);
-        else if(m_calibration_type == TYPE_POWER)
+        else if(m_calibration_type == TYPE_POWER_AC)
             m_widget_power->calibrationDataProcess(m_calibration_data.data);
 qDebug() << QString("Калибровочные данные приняты в полном объеме: %1 из %2").arg(m_calibration_data.counter).arg(m_calibration.request_all);
         m_calibration_data = { 0, 0, QVector<CModBusDataUnit>(0) };
@@ -87,7 +87,7 @@ void CCalibrationController::calibrationProcessStart(QVector<CModBusDataUnit> &u
     if(widget == m_widget_of_current)
         m_calibration_type = TYPE_CURRENT;
     else if(widget == m_widget_power)
-        m_calibration_type = TYPE_POWER;
+        m_calibration_type = TYPE_POWER_AC;
 
     m_calibration = { m_widget_of_current->dataCount(), 0, m_widget_of_current->pauseRequest(), unit_list, nullptr };
     m_calibration_data = { 0, param_count*m_calibration.request_all, QVector<CModBusDataUnit>(0) };

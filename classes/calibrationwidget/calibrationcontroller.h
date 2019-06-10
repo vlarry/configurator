@@ -23,8 +23,11 @@
         enum CalibrationType
         {
             TYPE_NONE,
-            TYPE_CURRENT,
-            TYPE_POWER
+            TYPE_CURRENT, // калибровка тока
+            TYPE_POWER_AC, // калибровка напряжения AC
+            TYPE_POWER_DC, // калибровка напряжение DC
+            TYPE_RESISTANCE, // калибровка сопротивления
+            TYPE_ARC_SHIFT_PHASE // калиброка угла сдвига фазы
         };
 
         struct calibration_data_t
