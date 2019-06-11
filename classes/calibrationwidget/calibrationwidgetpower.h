@@ -51,6 +51,8 @@
             explicit CCalibrationWidgetPower(QWidget *parent = nullptr);
             ~CCalibrationWidgetPower();
 
+            CModBusDataUnit calculateValue(ChannelType channel);
+
             int dataCount() const;
             int pauseRequest() const;
 
@@ -79,6 +81,8 @@
             float value3U0S() const;
             float value3US() const;
             float value3U0() const;
+
+            bool stateCalculateUpdate() const;
 
             void setFactorUa(float value);
             void setFactorUb(float value);

@@ -42,6 +42,7 @@
         calibration_t                m_calibration;
         CalibrationType              m_calibration_type;
         calibration_data_t           m_calibration_data;
+        QTimer                      *m_timer_caluculate;
 
         public:
             CCalibrationController(CCalibrationWidgetOfCurrent *widget_of_current, CCalibrationWidgetPower *widget_power, QObject *parent = nullptr);

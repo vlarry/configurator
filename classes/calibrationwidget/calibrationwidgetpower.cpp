@@ -51,6 +51,61 @@ CCalibrationWidgetPower::~CCalibrationWidgetPower()
 {
     delete ui;
 }
+//---------------------------------------------------------------------------------------------------
+CModBusDataUnit CCalibrationWidgetPower::calculateValue(CCalibrationWidgetPower::ChannelType channel)
+{
+    CModBusDataUnit unit;
+
+    switch(channel)
+    {
+        case POWER_UA:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 80, 2); // чтение D10->Ua вх. бл.
+            unit.setProperty("CHANNEL", POWER_UA);
+        break;
+
+        case POWER_UB:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 82, 2); // чтение D11->Ub вх. бл.
+            unit.setProperty("CHANNEL", POWER_UB);
+        break;
+
+        case POWER_UC:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 84, 2); // чтение D12->Uc вх. бл.
+            unit.setProperty("CHANNEL", POWER_UC);
+        break;
+
+        case POWER_UAB:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 130, 2); // чтение D41->UabT
+            unit.setProperty("CHANNEL", POWER_UAB);
+        break;
+
+        case POWER_UBC:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 132, 2); // чтение D42->UbcT
+            unit.setProperty("CHANNEL", POWER_UBC);
+        break;
+
+        case POWER_UCA:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 134, 2); // чтение D43->UcaT
+            unit.setProperty("CHANNEL", POWER_UCA);
+        break;
+
+        case POWER_3U0S:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 88, 2); // чтение D14->3U0R
+            unit.setProperty("CHANNEL", POWER_3U0S);
+        break;
+
+        case POWER_3US:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 144, 2); // чтение D48->3U0S
+            unit.setProperty("CHANNEL", POWER_3US);
+        break;
+
+        case POWER_3U0:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 136, 2); // чтение D44->3U0T
+            unit.setProperty("CHANNEL", POWER_3U0);
+        break;
+    }
+
+    return unit;
+}
 //--------------------------------------------
 int CCalibrationWidgetPower::dataCount() const
 {
@@ -165,6 +220,11 @@ float CCalibrationWidgetPower::value3US() const
 float CCalibrationWidgetPower::value3U0() const
 {
     return QLocale::system().toFloat(ui->lineEditFactor3U0->text());
+}
+//--------------------------------------------------------
+bool CCalibrationWidgetPower::stateCalculateUpdate() const
+{
+    return ui->checkBoxCalculateValueUpdate->isChecked();
 }
 //----------------------------------------------------
 void CCalibrationWidgetPower::setFactorUa(float value)
@@ -627,72 +687,52 @@ void CCalibrationWidgetPower::calibrationParameterStart()
         return;
     }
 
-    CModBusDataUnit unit_Ua(0, CModBusDataUnit::ReadInputRegisters, 80, 2); // чтение D10->Ua вх. бл.
-    CModBusDataUnit unit_Ub(0, CModBusDataUnit::ReadInputRegisters, 82, 2); // чтение D11->Ub вх. бл.
-    CModBusDataUnit unit_Uc(0, CModBusDataUnit::ReadInputRegisters, 84, 2); // чтение D12->Uc вх. бл.
-    CModBusDataUnit unit_Uab(0, CModBusDataUnit::ReadInputRegisters, 130, 2); // чтение D41->UabT
-    CModBusDataUnit unit_Ubc(0, CModBusDataUnit::ReadInputRegisters, 132, 2); // чтение D42->UbcT
-    CModBusDataUnit unit_Uca(0, CModBusDataUnit::ReadInputRegisters, 134, 2); // чтение D43->UcaT
-    CModBusDataUnit unit_3U0S(0, CModBusDataUnit::ReadInputRegisters, 88, 2); // чтение D14->3U0R
-    CModBusDataUnit unit_3US(0, CModBusDataUnit::ReadInputRegisters, 144, 2); // чтение D48->3U0S
-    CModBusDataUnit unit_3U0(0, CModBusDataUnit::ReadInputRegisters, 136, 2); // чтение D44->3U0T
-
-    unit_Ua.setProperty("CHANNEL", POWER_UA);
-    unit_Ub.setProperty("CHANNEL", POWER_UB);
-    unit_Uc.setProperty("CHANNEL", POWER_UC);
-    unit_Uab.setProperty("CHANNEL", POWER_UAB);
-    unit_Ubc.setProperty("CHANNEL", POWER_UBC);
-    unit_Uca.setProperty("CHANNEL", POWER_UCA);
-    unit_3U0S.setProperty("CHANNEL", POWER_3U0S);
-    unit_3US.setProperty("CHANNEL", POWER_3US);
-    unit_3U0.setProperty("CHANNEL", POWER_3U0);
-
     QVector<CModBusDataUnit> unit_list;
     int param_count = 0;
 
     if(ui->checkBoxUA->isChecked())
     {
-        unit_list << unit_Ua;
+        unit_list << calculateValue(POWER_UA);
         param_count++;
     }
     if(ui->checkBoxUB->isChecked())
     {
-        unit_list << unit_Ub;
+        unit_list << calculateValue(POWER_UB);;
         param_count++;
     }
     if(ui->checkBoxUC->isChecked())
     {
-        unit_list << unit_Uc;
+        unit_list << calculateValue(POWER_UC);;
         param_count++;
     }
     if(ui->checkBoxUAB->isChecked())
     {
-        unit_list << unit_Uab;
+        unit_list << calculateValue(POWER_UAB);;
         param_count++;
     }
     if(ui->checkBoxUBC->isChecked())
     {
-        unit_list << unit_Ubc;
+        unit_list << calculateValue(POWER_UBC);;
         param_count++;
     }
     if(ui->checkBoxUCA->isChecked())
     {
-        unit_list << unit_Uca;
+        unit_list << calculateValue(POWER_UCA);;
         param_count++;
     }
     if(ui->checkBox3U0S->isChecked())
     {
-        unit_list << unit_3U0S;
+        unit_list << calculateValue(POWER_3U0S);;
         param_count++;
     }
     if(ui->checkBox3US->isChecked())
     {
-        unit_list << unit_3US;
+        unit_list << calculateValue(POWER_3US);;
         param_count++;
     }
     if(ui->checkBox3U0->isChecked())
     {
-        unit_list << unit_3U0;
+        unit_list << calculateValue(POWER_3U0);;
         param_count++;
     }
 

@@ -39,6 +39,36 @@ CCalibrationWidgetOfCurrent::~CCalibrationWidgetOfCurrent()
 {
     delete ui;
 }
+//------------------------------------------------------------------------------
+CModBusDataUnit CCalibrationWidgetOfCurrent::calculateValue(ChannelType channel)
+{
+    CModBusDataUnit unit;
+
+    switch(channel)
+    {
+        case CURRENT_IA:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 64, 2);
+            unit.setProperty("CHANNEL", CURRENT_IA);
+        break;
+
+        case CURRENT_IB:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 66, 2);
+            unit.setProperty("CHANNEL", CURRENT_IB);
+        break;
+
+        case CURRENT_IC:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 68, 2);
+            unit.setProperty("CHANNEL", CURRENT_IC);
+        break;
+
+        case CURRENT_3I0:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 70, 2);
+            unit.setProperty("CHANNEL", CURRENT_3I0);
+        break;
+    }
+
+    return unit;
+}
 //-----------------------------------------------
 bool CCalibrationWidgetOfCurrent::stateIa() const
 {
@@ -138,6 +168,11 @@ float CCalibrationWidgetOfCurrent::valueIc() const
 float CCalibrationWidgetOfCurrent::value3I0() const
 {
     return QLocale::system().toFloat(ui->lineEditFactor3I0->text());
+}
+//------------------------------------------------------------
+bool CCalibrationWidgetOfCurrent::stateCalculateUpdate() const
+{
+    return ui->checkBoxCalculateValueUpdate->isChecked();
 }
 /*!
  * \brief CCalibrationWidgetOfCurrent::newCalibrationFactor
@@ -420,37 +455,27 @@ void CCalibrationWidgetOfCurrent::calibrationParameterStart()
         return;
     }
 
-    CModBusDataUnit unit_Ia(0, CModBusDataUnit::ReadInputRegisters, 64, 2);
-    CModBusDataUnit unit_Ib(0, CModBusDataUnit::ReadInputRegisters, 66, 2);
-    CModBusDataUnit unit_Ic(0, CModBusDataUnit::ReadInputRegisters, 68, 2);
-    CModBusDataUnit unit_3I0(0, CModBusDataUnit::ReadInputRegisters, 70, 2);
-
-    unit_Ia.setProperty("CHANNEL", CURRENT_IA);
-    unit_Ib.setProperty("CHANNEL", CURRENT_IB);
-    unit_Ic.setProperty("CHANNEL", CURRENT_IC);
-    unit_3I0.setProperty("CHANNEL", CURRENT_3I0);
-
     QVector<CModBusDataUnit> unit_list;
     int param_count = 0;
 
     if(ui->checkBoxIa->isChecked())
     {
-        unit_list << unit_Ia;
+        unit_list << calculateValue(CURRENT_IA);
         param_count++;
     }
     if(ui->checkBoxIb->isChecked())
     {
-        unit_list << unit_Ib;
+        unit_list << calculateValue(CURRENT_IB);
         param_count++;
     }
     if(ui->checkBoxIc->isChecked())
     {
-        unit_list << unit_Ic;
+        unit_list << calculateValue(CURRENT_IC);
         param_count++;
     }
     if(ui->checkBox3I0->isChecked())
     {
-        unit_list << unit_3I0;
+        unit_list << calculateValue(CURRENT_3I0);
         param_count++;
     }
 

@@ -45,6 +45,8 @@
             explicit CCalibrationWidgetOfCurrent(QWidget* parent = nullptr);
             ~CCalibrationWidgetOfCurrent();
 
+            CModBusDataUnit calculateValue(ChannelType channel);
+
             bool stateIa() const;
             bool stateIb() const;
             bool stateIc() const;
@@ -59,6 +61,8 @@
             float valueIb() const;
             float valueIc() const;
             float value3I0() const;
+
+            bool stateCalculateUpdate() const;
 
             void setStandardPhase(float value);
             void setStandard3I0(float value);
