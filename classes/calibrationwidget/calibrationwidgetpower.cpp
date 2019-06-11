@@ -61,50 +61,76 @@ CModBusDataUnit CCalibrationWidgetPower::calculateValue(CCalibrationWidgetPower:
         case POWER_UA:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 80, 2); // чтение D10->Ua вх. бл.
             unit.setProperty("CHANNEL", POWER_UA);
+            unit.setProperty("KEY", "UA");
         break;
 
         case POWER_UB:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 82, 2); // чтение D11->Ub вх. бл.
             unit.setProperty("CHANNEL", POWER_UB);
+            unit.setProperty("KEY", "UB");
         break;
 
         case POWER_UC:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 84, 2); // чтение D12->Uc вх. бл.
             unit.setProperty("CHANNEL", POWER_UC);
+            unit.setProperty("KEY", "UC");
         break;
 
         case POWER_UAB:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 130, 2); // чтение D41->UabT
             unit.setProperty("CHANNEL", POWER_UAB);
+            unit.setProperty("KEY", "UAB");
         break;
 
         case POWER_UBC:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 132, 2); // чтение D42->UbcT
             unit.setProperty("CHANNEL", POWER_UBC);
+            unit.setProperty("KEY", "UBC");
         break;
 
         case POWER_UCA:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 134, 2); // чтение D43->UcaT
             unit.setProperty("CHANNEL", POWER_UCA);
+            unit.setProperty("KEY", "UCA");
         break;
 
         case POWER_3U0S:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 88, 2); // чтение D14->3U0R
             unit.setProperty("CHANNEL", POWER_3U0S);
+            unit.setProperty("KEY", "3U0S");
         break;
 
         case POWER_3US:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 144, 2); // чтение D48->3U0S
             unit.setProperty("CHANNEL", POWER_3US);
+            unit.setProperty("KEY", "3US");
         break;
 
         case POWER_3U0:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 136, 2); // чтение D44->3U0T
             unit.setProperty("CHANNEL", POWER_3U0);
+            unit.setProperty("KEY", "3U0");
         break;
     }
 
     return unit;
+}
+//--------------------------------------------------------------------
+QVector<CModBusDataUnit> CCalibrationWidgetPower::calculateValueList()
+{
+    QVector<CModBusDataUnit> list;
+
+    list << calculateValue(POWER_UA);
+    list << calculateValue(POWER_UB);
+    list << calculateValue(POWER_UC);
+    list << calculateValue(POWER_UAB);
+    list << calculateValue(POWER_UBC);
+    list << calculateValue(POWER_UCA);
+    list << calculateValue(POWER_3U0S);
+    list << calculateValue(POWER_3US);
+    list << calculateValue(POWER_3U0);
+
+    return list;
 }
 //--------------------------------------------
 int CCalibrationWidgetPower::dataCount() const
@@ -360,6 +386,11 @@ void CCalibrationWidgetPower::setDeviation3US(float value)
 void CCalibrationWidgetPower::setDeviation3U0(float value)
 {
     ui->lineEditDeviation3U0->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------------------------------
+void CCalibrationWidgetPower::showMessageError(const QString &message)
+{
+    QMessageBox::warning(this, tr("Калибровка по напряжению AC"), message);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 float CCalibrationWidgetPower::newCalibrationFactor(float standard, float power_factor, const CCalibrationWidgetPower::calibration_data_t &measure_list)
@@ -817,8 +848,13 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
     if(ui->checkBox3U0->isChecked())
         _3U0 = value3U0();
 
-    if(Ua == 0.0f && Ub == 0.0f && Uc == 0.0f && Uab == 0.0f && Ubc == 0.0f && Uca == 0.0f && _3U0S == 0.0f && _3US == 0.0f && _3U0 == 0.0f)
+    QString messageError = tr("Напряжение на входе не должно превышать или быть равно 20В");
+
+    if(Ua < 20.0f && Ub < 20.0f && Uc < 20.0f && Uab < 20.0f && Ubc < 20.0f && Uca < 20.0f && _3U0S < 20.0f && _3US < 20.0f && _3U0 < 20.0f)
+    {
+        showMessageError(messageError);
         return;
+    };
 
     QString str;
     QString textValue;
@@ -888,23 +924,23 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
 
     QVector<CModBusDataUnit> units;
 
-    if(Ua != 0.0f)
+    if(Ua >= 20.0f)
         units << unit_Ua;
-    if(Ub != 0.0f)
+    if(Ub >= 20.0f)
         units << unit_Ub;
-    if(Uc != 0.0f)
+    if(Uc >= 20.0f)
         units << unit_Uc;
-    if(Uab != 0.0f)
+    if(Uab >= 20.0f)
         units << unit_Uab;
-    if(Ubc != 0.0f)
+    if(Ubc >= 20.0f)
         units << unit_Ubc;
-    if(Uca != 0.0f)
+    if(Uca >= 20.0f)
         units << unit_Uca;
-    if(_3U0S != 0.0f)
+    if(_3U0S >= 20.0f)
         units << unit_3U0S;
-    if(_3US != 0.0f)
+    if(_3US >= 20.0f)
         units << unit_3US;
-    if(_3U0 != 0.0f)
+    if(_3U0 >= 20.0f)
         units << unit_3U0;
 
     qInfo() << tr("Запись новых калибровочных коэффициентов по напряжению подтверждена");
@@ -933,6 +969,39 @@ void CCalibrationWidgetPower::setCalibrartionFactorActual(const QString &key, fl
         setFactor3US(value);
     else if(key == "K3U0T")
         setFactor3U0(value);
+}
+//--------------------------------------------------------------------------
+void CCalibrationWidgetPower::setCalculateActualValue(CModBusDataUnit &unit)
+{
+    QString channel = unit.property("KEY").toString();
+
+    union
+    {
+        quint16 v[2];
+        float   f;
+    } value;
+
+    value.v[0] = unit[1];
+    value.v[1] = unit[0];
+
+    if(channel == "UA")
+        setMeasureUa(value.f);
+    else if(channel == "UB")
+        setMeasureUb(value.f);
+    else if(channel == "UC")
+        setMeasureUc(value.f);
+    else if(channel == "UAB")
+        setMeasureUab(value.f);
+    else if(channel == "UBC")
+        setMeasureUbc(value.f);
+    else if(channel == "UCA")
+        setMeasureUca(value.f);
+    else if(channel == "3U0S")
+        setMeasure3U0S(value.f);
+    else if(channel == "3US")
+        setMeasure3US(value.f);
+    else if(channel == "3U0")
+        setMeasure3U0(value.f);
 }
 //----------------------------------------------------------
 void CCalibrationWidgetPower::paintEvent(QPaintEvent *event)

@@ -52,6 +52,7 @@
             ~CCalibrationWidgetPower();
 
             CModBusDataUnit calculateValue(ChannelType channel);
+            QVector<CModBusDataUnit> calculateValueList();
 
             int dataCount() const;
             int pauseRequest() const;
@@ -120,6 +121,8 @@
             void setDeviation3US(float value);
             void setDeviation3U0(float value);
 
+            void showMessageError(const QString &message);
+
             float newCalibrationFactor(float standard, float power_factor, const calibration_data_t &measure_list);
             QPointF standardDeviation(const calibration_data_t &data);
 
@@ -133,6 +136,7 @@
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
             void calibrationWriteProcess();
             void setCalibrartionFactorActual(const QString &key, float value);
+            void setCalculateActualValue(CModBusDataUnit &unit);
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);

@@ -46,6 +46,7 @@
             ~CCalibrationWidgetOfCurrent();
 
             CModBusDataUnit calculateValue(ChannelType channel);
+            QVector<CModBusDataUnit> calculateValueList();
 
             bool stateIa() const;
             bool stateIb() const;
@@ -111,6 +112,7 @@
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
             void calibrationWriteProcess();
             void setCalibrartionFactorActual(const QString &key, float value);
+            void setCalculateActualValue(CModBusDataUnit &unit);
 
         protected:
             void paintEvent(QPaintEvent* event);

@@ -6,22 +6,29 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     m_widget_power(widget_power),
     m_calibration_type(TYPE_NONE)
 {
+    m_timer_caluculate = new QTimer(this);
+
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_of_current, &CCalibrationWidgetOfCurrent::setCalibrartionFactorActual);
+    connect(this, &CCalibrationController::calculateResponse, m_widget_of_current, &CCalibrationWidgetOfCurrent::setCalculateActualValue);
 
     connect(m_widget_power, &CCalibrationWidgetPower::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
     connect(m_widget_power, &CCalibrationWidgetPower::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
     connect(m_widget_power, &CCalibrationWidgetPower::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
     connect(m_widget_power, &CCalibrationWidgetPower::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_power, &CCalibrationWidgetPower::setCalibrartionFactorActual);
+    connect(this, &CCalibrationController::calculateResponse, m_widget_power, &CCalibrationWidgetPower::setCalculateActualValue);
+
+    connect(m_timer_caluculate, &QTimer::timeout, this, &CCalibrationController::calculateValueRead);
 }
 //-----------------------------------------------
 CCalibrationController::~CCalibrationController()
 {
-
+    if(m_timer_caluculate)
+        delete m_timer_caluculate;
 }
 //---------------------------------------------------------------------------------------------
 void CCalibrationController::setWidgetCalibrationOfCurrent(CCalibrationWidgetOfCurrent *widget)
@@ -48,6 +55,9 @@ qDebug() << QString("Получено сообщение №%1").arg(m_calibrati
 qDebug() << QString("Калибровочные данные приняты в полном объеме: %1 из %2").arg(m_calibration_data.counter).arg(m_calibration.request_all);
         m_calibration_data = { 0, 0, QVector<CModBusDataUnit>(0) };
         m_calibration_type = TYPE_NONE;
+
+        if(m_calculate_type != TYPE_NONE)
+            m_timer_caluculate->start(500);
     }
 }
 /*!
@@ -94,6 +104,36 @@ void CCalibrationController::calibrationProcessStart(QVector<CModBusDataUnit> &u
 
     m_calibration.timer = new QTimer;
 
+    m_timer_caluculate->stop(); // останавливаем таймер
     connect(m_calibration.timer, &QTimer::timeout, this, &CCalibrationController::calibrationProcess);
     calibrationProcess();
+}
+//-----------------------------------------------
+void CCalibrationController::calculateValueRead()
+{
+    QVector<CModBusDataUnit> list;
+
+    if(m_widget_of_current->stateCalculateUpdate() && m_calculate_type == TYPE_CURRENT)
+        list = m_widget_of_current->calculateValueList();
+    if(m_widget_power->stateCalculateUpdate() && m_calculate_type == TYPE_POWER_AC)
+        list = m_widget_power->calculateValueList();
+qDebug() << "Список расчетных величин для калибровок: " << list.count();
+    if(!list.isEmpty())
+        calculate(list);
+}
+//------------------------------------------------------------------------------------------
+void CCalibrationController::setCalculateState(bool state, CalibrationType type = TYPE_NONE)
+{
+    m_calculate_type = type;
+
+    if(state)
+    {
+        if(!m_timer_caluculate->isActive())
+            m_timer_caluculate->start(500);
+    }
+    else
+    {
+        if(m_timer_caluculate->isActive())
+            m_timer_caluculate->stop();
+    }
 }

@@ -49,25 +49,41 @@ CModBusDataUnit CCalibrationWidgetOfCurrent::calculateValue(ChannelType channel)
         case CURRENT_IA:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 64, 2);
             unit.setProperty("CHANNEL", CURRENT_IA);
+            unit.setProperty("KEY", "IA");
         break;
 
         case CURRENT_IB:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 66, 2);
             unit.setProperty("CHANNEL", CURRENT_IB);
+            unit.setProperty("KEY", "IB");
         break;
 
         case CURRENT_IC:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 68, 2);
             unit.setProperty("CHANNEL", CURRENT_IC);
+            unit.setProperty("KEY", "IC");
         break;
 
         case CURRENT_3I0:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 70, 2);
             unit.setProperty("CHANNEL", CURRENT_3I0);
+            unit.setProperty("KEY", "3I0");
         break;
     }
 
     return unit;
+}
+//------------------------------------------------------------------------
+QVector<CModBusDataUnit> CCalibrationWidgetOfCurrent::calculateValueList()
+{
+    QVector<CModBusDataUnit> list;
+
+    list << calculateValue(CURRENT_IA);
+    list << calculateValue(CURRENT_IB);
+    list << calculateValue(CURRENT_IC);
+    list << calculateValue(CURRENT_3I0);
+
+    return list;
 }
 //-----------------------------------------------
 bool CCalibrationWidgetOfCurrent::stateIa() const
@@ -606,6 +622,29 @@ void CCalibrationWidgetOfCurrent::setCalibrartionFactorActual(const QString &key
         setFactorIc(value);
     else if(key == "K3I0")
         setFactor3I0(value);
+}
+//------------------------------------------------------------------------------
+void CCalibrationWidgetOfCurrent::setCalculateActualValue(CModBusDataUnit &unit)
+{
+    QString channel = unit.property("KEY").toString();
+
+    union
+    {
+        quint16 v[2];
+        float   f;
+    } value;
+
+    value.v[0] = unit[1];
+    value.v[1] = unit[0];
+
+    if(channel == "IA")
+        setMeasureIa(value.f);
+    else if(channel == "IB")
+        setMeasureIb(value.f);
+    else if(channel == "IC")
+        setMeasureIc(value.f);
+    else if(channel == "3I0")
+        setMeasure3I0(value.f);
 }
 //--------------------------------------------------------------
 void CCalibrationWidgetOfCurrent::paintEvent(QPaintEvent* event)

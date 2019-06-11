@@ -146,6 +146,16 @@ void ConfiguratorWindow::stateChanged(bool state)
         ui->toolButtonConnect->setToolTip(tr("Отключение от БЗУ"));
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
         synchronization(true); // запускаем синхронизацию
+
+        DeviceMenuItemType item = menuIndex();
+
+        if(item == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
+           item == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB ||
+           item == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL)
+        {
+            CCalibrationController::CalibrationType type = static_cast<CCalibrationController::CalibrationType>(ui->tabWidgetCalibration->currentIndex());
+            m_calibration_controller->setCalculateState(true, type);
+        }
     }
     else
     {
@@ -166,6 +176,8 @@ void ConfiguratorWindow::stateChanged(bool state)
         endJournalRead(m_journal_crash);
         endJournalRead(m_journal_event);
         endJournalRead(m_journal_halfhour);
+
+        m_calibration_controller->setCalculateState(false, CCalibrationController::TYPE_NONE);
     }
 }
 //------------------------------------------
@@ -2552,6 +2564,13 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
         emit calibrationDataIsReady(unit);
     }
+    else if(type == CALIBRATION_CALCULATE_VALUE)
+    {
+        if(showErrorMessage(tr("Чтение расчетного значения калибровок"), unit))
+            return;
+
+        emit calibrationCalculateValue(unit);
+    }
     else if(type >= AMPLITUDE_READ_CH2 && type <= AMPLITUDE_READ_CH5)
     {
         if(showErrorMessage(tr("Чтение амплитуд по каналам"), unit))
@@ -2772,6 +2791,16 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
         readJournalCount(m_journal_crash);
         readJournalCount(m_journal_halfhour);
     }
+
+    if(type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
+       type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB ||
+       type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL) // управление чтением расчетных величин для калибровок
+    {
+        CCalibrationController::CalibrationType type = static_cast<CCalibrationController::CalibrationType>(ui->tabWidgetCalibration->currentIndex());
+        m_calibration_controller->setCalculateState(true, type);
+    }
+    else
+        m_calibration_controller->setCalculateState(false, CCalibrationController::TYPE_NONE);
 
     if(menu_item != -1)
     {
@@ -4260,6 +4289,11 @@ void ConfiguratorWindow::applicationCloseProcess()
     m_modbus = nullptr;
 
     close();
+}
+//--------------------------------------------------------
+void ConfiguratorWindow::calibrationTypeChanged(int index)
+{
+    m_calibration_controller->setCalculateState(true, static_cast<CCalibrationController::CalibrationType>(index));
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -7749,6 +7783,22 @@ void ConfiguratorWindow::sendRequestCalibrationWrite(QVector<CModBusDataUnit> &u
         unit.setID(quint8(m_serialPortSettings_window->deviceID()));
         unit.setAddress(addr);
 
+        m_modbus->sendData(unit);
+    }
+}
+/*!
+ * \brief ConfiguratorWindow::sendCalibrationCalculateValues
+ * \param units - список запросов расчетных величин для калибровок
+ */
+void ConfiguratorWindow::sendCalibrationCalculateValues(QVector<CModBusDataUnit> &units)
+{
+    if(units.isEmpty() || !m_modbus->isConnected())
+        return;
+
+    for(CModBusDataUnit &unit: units)
+    {
+        unit.setID(quint8(m_serialPortSettings_window->deviceID()));
+        unit.setProperty("REQUEST", CALIBRATION_CALCULATE_VALUE);
         m_modbus->sendData(unit);
     }
 }
@@ -12648,6 +12698,9 @@ void ConfiguratorWindow::initConnect()
     connect(m_calibration_controller, &CCalibrationController::calibrationFactorAllRead, this, &ConfiguratorWindow::inputAnalogCalibrateRead);
     connect(m_calibration_controller, &CCalibrationController::calibrationWrite, this, &ConfiguratorWindow::sendRequestCalibrationWrite);
     connect(this, &ConfiguratorWindow::calibrationFactorIsReady, m_calibration_controller, &CCalibrationController::calibrationFactorActual);
+    connect(m_calibration_controller, &CCalibrationController::calculate, this, &ConfiguratorWindow::sendCalibrationCalculateValues);
+    connect(this, &ConfiguratorWindow::calibrationCalculateValue, m_calibration_controller, &CCalibrationController::calculateResponse);
+    connect(ui->tabWidgetCalibration, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
 
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
