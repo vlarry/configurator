@@ -1848,7 +1848,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>2</number>
                </property>
                <widget class="QWidget" name="tabCurrentCalibration">
                 <property name="sizePolicy">
@@ -1943,54 +1943,9 @@
                  </item>
                 </layout>
                </widget>
-               <widget class="QWidget" name="tabPowerDCCalibration">
+               <widget class="QWidget" name="tabBRUCalibration">
                 <attribute name="title">
-                 <string>Напряжение DC</string>
-                </attribute>
-                <layout class="QVBoxLayout" name="verticalLayout_16">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_6">
-                   <item>
-                    <widget class="CCalibrationWidgetPowerDC" name="widgetCalibrationPowerDC" native="true"/>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_8">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <spacer name="verticalSpacer_3">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>53</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </widget>
-               <widget class="QWidget" name="tabResistanceCalibration">
-                <attribute name="title">
-                 <string>Сопротивление</string>
-                </attribute>
-               </widget>
-               <widget class="QWidget" name="tabArcShiftPhase">
-                <attribute name="title">
-                 <string>Угол сдвига фаз</string>
+                 <string>БРУ</string>
                 </attribute>
                </widget>
               </widget>
@@ -2804,12 +2759,6 @@
    <class>CCalibrationWidgetPower</class>
    <extends>QWidget</extends>
    <header>calibrationwidgetpower.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CCalibrationWidgetPowerDC</class>
-   <extends>QWidget</extends>
-   <header>calibrationwidgetpowerdc.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

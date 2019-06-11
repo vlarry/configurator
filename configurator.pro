@@ -28,7 +28,6 @@ SOURCES += \
         classes/calibrationwidget/calibrationcontroller.cpp \
         classes/calibrationwidget/calibrationwidgetofcurrent.cpp \
         classes/calibrationwidget/calibrationwidgetpower.cpp \
-        classes/calibrationwidget/calibrationwidgetpowerdc.cpp \
         main.cpp \
         configuratorwindow.cpp \
         qcell.cpp \
@@ -90,7 +89,6 @@ HEADERS += \
         classes/calibrationwidget/calibrationcontroller.h \
         classes/calibrationwidget/calibrationwidgetofcurrent.h \
         classes/calibrationwidget/calibrationwidgetpower.h \
-        classes/calibrationwidget/calibrationwidgetpowerdc.h \
         configuratorwindow.h \
         qcell.h \
         cterminal.h \
@@ -150,7 +148,6 @@ HEADERS += \
 FORMS += \
         classes/calibrationwidget/calibrationwidgetofcurrent.ui \
         classes/calibrationwidget/calibrationwidgetpower.ui \
-        classes/calibrationwidget/calibrationwidgetpowerdc.ui \
         configuratorwindow.ui \
         qcell.ui \
         cterminal.ui \
