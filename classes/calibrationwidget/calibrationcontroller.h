@@ -6,6 +6,7 @@
     #include "modbusdataunit.h"
     #include "calibrationwidgetofcurrent.h"
     #include "calibrationwidgetpower.h"
+    #include "calibrationwidgetbrupowerdc.h"
     //------------------------------------------
     class CCalibrationController: public QObject
     {
@@ -26,9 +27,8 @@
                 TYPE_NONE = 0xFF,
                 TYPE_CURRENT = 0, // калибровка тока
                 TYPE_POWER_AC, // калибровка напряжения AC
-                TYPE_POWER_DC, // калибровка напряжение DC
-                TYPE_RESISTANCE, // калибровка сопротивления
-                TYPE_ARC_SHIFT_PHASE // калиброка угла сдвига фазы
+                TYPE_BRU_POWER_DC, // калибровка напряжение DC
+                TYPE_BRU_RESISTANCE // калибровка сопротивления
             };
 
             struct calibration_data_t

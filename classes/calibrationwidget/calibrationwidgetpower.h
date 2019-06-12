@@ -83,6 +83,16 @@
             float value3US() const;
             float value3U0() const;
 
+            float measureUa() const;
+            float measureUb() const;
+            float measureUc() const;
+            float measureUab() const;
+            float measureUbc() const;
+            float measureUca() const;
+            float measure3U0S() const;
+            float measure3US() const;
+            float measure3U0() const;
+
             bool stateCalculateUpdate() const;
 
             void setFactorUa(float value);

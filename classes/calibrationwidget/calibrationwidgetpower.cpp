@@ -1,4 +1,4 @@
-#include "calibrationwidgetpower.h"
+﻿#include "calibrationwidgetpower.h"
 #include "ui_calibrationwidgetpower.h"
 //----------------------------------------------------------------
 CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
@@ -246,6 +246,51 @@ float CCalibrationWidgetPower::value3US() const
 float CCalibrationWidgetPower::value3U0() const
 {
     return QLocale::system().toFloat(ui->lineEditFactor3U0->text());
+}
+//----------------------------------------------
+float CCalibrationWidgetPower::measureUa() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD10->text());
+}
+//----------------------------------------------
+float CCalibrationWidgetPower::measureUb() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD11->text());
+}
+//----------------------------------------------
+float CCalibrationWidgetPower::measureUc() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD12->text());
+}
+//-----------------------------------------------
+float CCalibrationWidgetPower::measureUab() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD41->text());
+}
+//-----------------------------------------------
+float CCalibrationWidgetPower::measureUbc() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD42->text());
+}
+//-----------------------------------------------
+float CCalibrationWidgetPower::measureUca() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD43->text());
+}
+//------------------------------------------------
+float CCalibrationWidgetPower::measure3U0S() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD14->text());
+}
+//-----------------------------------------------
+float CCalibrationWidgetPower::measure3US() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD48->text());
+}
+//-----------------------------------------------
+float CCalibrationWidgetPower::measure3U0() const
+{
+    return QLocale::system().toFloat(ui->lineEditMeasuredD44->text());
 }
 //--------------------------------------------------------
 bool CCalibrationWidgetPower::stateCalculateUpdate() const
@@ -723,49 +768,97 @@ void CCalibrationWidgetPower::calibrationParameterStart()
 
     if(ui->checkBoxUA->isChecked())
     {
-        unit_list << calculateValue(POWER_UA);
-        param_count++;
+        if(measureUa() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_UA);
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения Ua (Ua < 20В)"));
     }
     if(ui->checkBoxUB->isChecked())
     {
-        unit_list << calculateValue(POWER_UB);;
-        param_count++;
+        if(measureUb() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_UB);;
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения Ub (Ub < 20В)"));
     }
     if(ui->checkBoxUC->isChecked())
     {
-        unit_list << calculateValue(POWER_UC);;
-        param_count++;
+        if(measureUc() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_UC);;
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения Uc (Uc < 20В)"));
     }
     if(ui->checkBoxUAB->isChecked())
     {
-        unit_list << calculateValue(POWER_UAB);;
-        param_count++;
+        if(measureUab() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_UAB);;
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения Uab (Uab < 20В)"));
     }
     if(ui->checkBoxUBC->isChecked())
     {
-        unit_list << calculateValue(POWER_UBC);;
-        param_count++;
+        if(measureUbc() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_UBC);;
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения Ubc (Ubc < 20В)"));
     }
     if(ui->checkBoxUCA->isChecked())
     {
-        unit_list << calculateValue(POWER_UCA);;
-        param_count++;
+        if(measureUca() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_UCA);;
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения Uca (Uca < 20В)"));
     }
     if(ui->checkBox3U0S->isChecked())
     {
-        unit_list << calculateValue(POWER_3U0S);;
-        param_count++;
+        if(measure3U0S() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_3U0S);;
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения 3U0S (3U0S < 20В)"));
     }
     if(ui->checkBox3US->isChecked())
     {
-        unit_list << calculateValue(POWER_3US);;
-        param_count++;
+        if(measure3US() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_3US);;
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения 3US (3US < 20В)"));
     }
     if(ui->checkBox3U0->isChecked())
     {
-        unit_list << calculateValue(POWER_3U0);;
-        param_count++;
+        if(measure3U0() >= 20.0f)
+        {
+            unit_list << calculateValue(POWER_3U0);;
+            param_count++;
+        }
+        else
+            showMessageError(tr("Нельзя произвести калибровку напряжения 3U0 (3U0 < 20В)"));
     }
+
+    if(unit_list.isEmpty())
+        return;
 
     emit calibrationFactorAllStart();
     emit calibrationStart(unit_list, param_count);
@@ -848,9 +941,9 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
     if(ui->checkBox3U0->isChecked())
         _3U0 = value3U0();
 
-    QString messageError = tr("Напряжение на входе не должно превышать или быть равно 20В");
+    QString messageError = tr("Напряжение на входе не должно быть меньше 20В");
 
-    if(Ua < 20.0f && Ub < 20.0f && Uc < 20.0f && Uab < 20.0f && Ubc < 20.0f && Uca < 20.0f && _3U0S < 20.0f && _3US < 20.0f && _3U0 < 20.0f)
+    if(Ua == 0.0f && Ub == 0.0f && Uc == 0.0f && Uab == 0.0f && Ubc == 0.0f && Uca == 0.0f && _3U0S == 0.0f && _3US == 0.0f && _3U0 == 0.0f)
     {
         showMessageError(messageError);
         return;
@@ -942,6 +1035,12 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
         units << unit_3US;
     if(_3U0 >= 20.0f)
         units << unit_3U0;
+
+    if(units.isEmpty())
+    {
+        showMessageError("Список калибровочных значений пуст.\nНапряжение на входе должно быть больше или равно 20В.");
+        return;
+    }
 
     qInfo() << tr("Запись новых калибровочных коэффициентов по напряжению подтверждена");
 

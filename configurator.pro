@@ -26,6 +26,7 @@ CONFIG += c++17
 
 SOURCES += \
         classes/calibrationwidget/calibrationcontroller.cpp \
+        classes/calibrationwidget/calibrationwidgetbrupowerdc.cpp \
         classes/calibrationwidget/calibrationwidgetofcurrent.cpp \
         classes/calibrationwidget/calibrationwidgetpower.cpp \
         main.cpp \
@@ -87,6 +88,7 @@ SOURCES += \
 
 HEADERS += \
         classes/calibrationwidget/calibrationcontroller.h \
+        classes/calibrationwidget/calibrationwidgetbrupowerdc.h \
         classes/calibrationwidget/calibrationwidgetofcurrent.h \
         classes/calibrationwidget/calibrationwidgetpower.h \
         configuratorwindow.h \
@@ -146,6 +148,7 @@ HEADERS += \
         classes/widget/ccheckboxinternalvariable.h
 
 FORMS += \
+        classes/calibrationwidget/calibrationwidgetbrupowerdc.ui \
         classes/calibrationwidget/calibrationwidgetofcurrent.ui \
         classes/calibrationwidget/calibrationwidgetpower.ui \
         configuratorwindow.ui \
