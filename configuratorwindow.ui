@@ -1947,6 +1947,41 @@
                 <attribute name="title">
                  <string>БРУ</string>
                 </attribute>
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_16">
+                   <item>
+                    <widget class="CCalibrationWidgetBRUPowerDC" name="widget" native="true"/>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_8">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>887</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </widget>
               </widget>
              </item>
@@ -2759,6 +2794,12 @@
    <class>CCalibrationWidgetPower</class>
    <extends>QWidget</extends>
    <header>calibrationwidgetpower.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CCalibrationWidgetBRUPowerDC</class>
+   <extends>QWidget</extends>
+   <header>calibrationwidgetbrupowerdc.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
