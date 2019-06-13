@@ -1,9 +1,11 @@
 #include "calibrationcontroller.h"
-//-----------------------------------------------------------------------------------------------------------------------------------------------------
-CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widget_of_current, CCalibrationWidgetPower *widget_power, QObject *parent):
+//-----------------------------------------------------------------------------------------------------------------------------------
+CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widget_of_current, CCalibrationWidgetPower *widget_power,
+                                               CCalibrationWidgetBRUPowerDC *widget_bru_power_dc, QObject *parent):
     QObject(parent),
     m_widget_of_current(widget_of_current),
     m_widget_power(widget_power),
+    m_widget_bru_power_dc(widget_bru_power_dc),
     m_calibration_type(TYPE_NONE)
 {
     m_timer_caluculate = new QTimer(this);
@@ -21,6 +23,13 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(m_widget_power, &CCalibrationWidgetPower::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_power, &CCalibrationWidgetPower::setCalibrartionFactorActual);
     connect(this, &CCalibrationController::calculateResponse, m_widget_power, &CCalibrationWidgetPower::setCalculateActualValue);
+
+    connect(m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
+    connect(m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
+    connect(m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
+    connect(m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
+    connect(this, &CCalibrationController::calibrationFactorActual, m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::setCalibrartionFactorActual);
+    connect(this, &CCalibrationController::calculateResponse, m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::setCalculateActualValue);
 
     connect(m_timer_caluculate, &QTimer::timeout, this, &CCalibrationController::calculateValueRead);
 }
@@ -40,6 +49,11 @@ void CCalibrationController::setWidgetCalibrationPower(CCalibrationWidgetPower *
 {
     m_widget_power = widget;
 }
+//-----------------------------------------------------------------------------------------------
+void CCalibrationController::setWidgetCalibrationBRUPowerDC(CCalibrationWidgetBRUPowerDC *widget)
+{
+    m_widget_bru_power_dc = widget;
+}
 //-------------------------------------------------------------
 void CCalibrationController::dataIsReady(CModBusDataUnit &unit)
 {
@@ -52,6 +66,8 @@ qDebug() << QString("Получено сообщение №%1").arg(m_calibrati
             m_widget_of_current->calibrationDataProcess(m_calibration_data.data);
         else if(m_calibration_type == TYPE_POWER_AC)
             m_widget_power->calibrationDataProcess(m_calibration_data.data);
+        else if(m_calibration_type == TYPE_BRU_POWER_DC)
+            m_widget_bru_power_dc->calibrationDataProcess(m_calibration_data.data);
 qDebug() << QString("Калибровочные данные приняты в полном объеме: %1 из %2").arg(m_calibration_data.counter).arg(m_calibration.request_all);
         m_calibration_data = { 0, 0, QVector<CModBusDataUnit>(0) };
         m_calibration_type = TYPE_NONE;
@@ -95,11 +111,22 @@ void CCalibrationController::calibrationProcessStart(QVector<CModBusDataUnit> &u
         return;
 
     if(widget == m_widget_of_current)
+    {
         m_calibration_type = TYPE_CURRENT;
+        m_calibration = { m_widget_of_current->dataCount(), 0, m_widget_of_current->pauseRequest(), unit_list, nullptr };
+    }
     else if(widget == m_widget_power)
+    {
         m_calibration_type = TYPE_POWER_AC;
+        m_calibration = { m_widget_power->dataCount(), 0, m_widget_power->pauseRequest(), unit_list, nullptr };
+    }
+    else if(widget == m_widget_bru_power_dc)
+    {
+        m_calibration_type = TYPE_BRU_POWER_DC;
+        m_calibration = { m_widget_bru_power_dc->dataCount(), 0, m_widget_bru_power_dc->pauseRequest(), unit_list, nullptr };
+    }
 
-    m_calibration = { m_widget_of_current->dataCount(), 0, m_widget_of_current->pauseRequest(), unit_list, nullptr };
+
     m_calibration_data = { 0, param_count*m_calibration.request_all, QVector<CModBusDataUnit>(0) };
 
     m_calibration.timer = new QTimer;
@@ -117,6 +144,8 @@ void CCalibrationController::calculateValueRead()
         list = m_widget_of_current->calculateValueList();
     if(m_widget_power->stateCalculateUpdate() && m_calculate_type == TYPE_POWER_AC)
         list = m_widget_power->calculateValueList();
+    if(m_widget_bru_power_dc->stateCalculateUpdate() && m_calculate_type == TYPE_BRU_POWER_DC)
+        list = m_widget_bru_power_dc->calculateValueList();
 qDebug() << "Список расчетных величин для калибровок: " << list.count();
     if(!list.isEmpty())
         calculate(list);
