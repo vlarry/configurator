@@ -598,7 +598,7 @@
         </widget>
        </item>
        <item row="5" column="0">
-        <widget class="CLineEdit" name="lineEditPowerStandardMultiplier">
+        <widget class="CLineEdit" name="lineEditPowerStandardMultiplierShift">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -784,7 +784,7 @@
         </spacer>
        </item>
        <item row="2" column="2">
-        <widget class="QCheckBox" name="checkBoxUIncline">
+        <widget class="QCheckBox" name="checkBoxUBIncline">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1287,7 +1287,7 @@
         </widget>
        </item>
        <item row="5" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUMultiplierShiftIncline">
+        <widget class="CLineEdit" name="lineEditDeviationUMultiplierIncline">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
