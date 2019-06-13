@@ -7,6 +7,7 @@
     #include "calibrationwidgetofcurrent.h"
     #include "calibrationwidgetpower.h"
     #include "calibrationwidgetbrupowerdc.h"
+    #include "calibrationwidgetbruresistance.h"
     //------------------------------------------
     class CCalibrationController: public QObject
     {
@@ -39,22 +40,25 @@
             };
 
         private:
-            CCalibrationWidgetOfCurrent  *m_widget_of_current;
-            CCalibrationWidgetPower      *m_widget_power;
-            CCalibrationWidgetBRUPowerDC *m_widget_bru_power_dc;
-            calibration_t                 m_calibration;
-            CalibrationType               m_calibration_type;
-            CalibrationType               m_calculate_type;
-            calibration_data_t            m_calibration_data;
-            QTimer                       *m_timer_caluculate;
+            CCalibrationWidgetOfCurrent     *m_widget_of_current;
+            CCalibrationWidgetPower         *m_widget_power;
+            CCalibrationWidgetBRUPowerDC    *m_widget_bru_power_dc;
+            CCalibrationWidgetBRUResistance *m_widget_bru_resistance;
+            calibration_t                    m_calibration;
+            CalibrationType                  m_calibration_type;
+            CalibrationType                  m_calculate_type;
+            calibration_data_t               m_calibration_data;
+            QTimer                          *m_timer_caluculate;
 
         public:
             CCalibrationController(CCalibrationWidgetOfCurrent *widget_of_current, CCalibrationWidgetPower *widget_power,
-                                   CCalibrationWidgetBRUPowerDC *widget_bru_power_dc, QObject *parent = nullptr);
+                                   CCalibrationWidgetBRUPowerDC *widget_bru_power_dc, CCalibrationWidgetBRUResistance *widget_bru_resistance,
+                                   QObject *parent = nullptr);
             ~CCalibrationController();
             void setWidgetCalibrationOfCurrent(CCalibrationWidgetOfCurrent *widget);
             void setWidgetCalibrationPower(CCalibrationWidgetPower *widget);
             void setWidgetCalibrationBRUPowerDC(CCalibrationWidgetBRUPowerDC *widget);
+            void setWidgetCalibrationBRUResistance(CCalibrationWidgetBRUResistance *widget);
 
         signals:
             void calibration(CModBusDataUnit&);

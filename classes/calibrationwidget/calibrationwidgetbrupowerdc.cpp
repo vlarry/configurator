@@ -957,15 +957,15 @@ void CCalibrationWidgetBRUPowerDC::setCalibrartionFactorActual(const QString &ke
     else if(key == "KUCDC")
         setFactorShiftUc(value);
     else if(key == "AUADC")
-        setFactorUab(value);
+        setFactorInclineUa(value);
     else if(key == "AUBDC")
-        setFactorUbc(value);
+        setFactorInclineUb(value);
     else if(key == "AUCDC")
-        setFactorUca(value);
+        setFactorInclineUc(value);
     else if(key == "KUMDC")
         setFactorShiftUMultiplier(value);
     else if(key == "AUMDC")
-        setFactor3US(value);
+        setFactorInclineUMultiplier(value);
 }
 //-------------------------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::setCalculateActualValue(CModBusDataUnit &unit)

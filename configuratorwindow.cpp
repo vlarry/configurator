@@ -56,7 +56,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_tim_debug_info            = new QTimer(this);
     m_timer_synchronization     = new QTimer(this);
     m_journal_timer             = new QTimer(this);
-    m_calibration_controller    = new CCalibrationController(ui->widgetCalibrationOfCurrent, ui->widgetCalibrationPower);
+    m_calibration_controller    = new CCalibrationController(ui->widgetCalibrationOfCurrent, ui->widgetCalibrationPower, ui->widgetCalibrationBRUPowerDC,
+                                                             ui->widgetCalibrationBRUResistance);
 
     statusBar()->addPermanentWidget(m_status_bar, 100);
 
