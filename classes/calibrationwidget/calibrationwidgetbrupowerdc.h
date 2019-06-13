@@ -23,15 +23,14 @@
             //------------------
             struct calibration_t
             {
-                calibration_data_t Ua;
-                calibration_data_t Ub;
-                calibration_data_t Uc;
-                calibration_data_t Uab;
-                calibration_data_t Ubc;
-                calibration_data_t Uca;
-                calibration_data_t _3U0S;
-                calibration_data_t _3US;
-                calibration_data_t _3U0;
+                calibration_data_t shiftUa;
+                calibration_data_t shiftUb;
+                calibration_data_t shiftUc;
+                calibration_data_t inclineUa;
+                calibration_data_t inclineUb;
+                calibration_data_t inclineUc;
+                calibration_data_t shiftMultiplier;
+                calibration_data_t inclineMultiplier;
             };
             //--------------
             enum ChannelType
@@ -131,9 +130,16 @@
             QPointF standardDeviation(const calibration_data_t &data);
 
         public slots:
+            void display(const calibration_t &data);
             void stateButton(bool state = false);
+            void saveCalibrationToFlash();
             void valueCurrentStandardChanged(const QString&);
             void stateChoiceChannelChanged(bool);
+            void calibrationParameterStart();
+            void calibrationDataProcess(QVector<CModBusDataUnit> &data);
+            void calibrationWriteProcess();
+            void setCalibrartionFactorActual(const QString &key, float value);
+            void setCalculateActualValue(CModBusDataUnit &unit);
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);
