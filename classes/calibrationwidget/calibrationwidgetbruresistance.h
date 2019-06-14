@@ -30,6 +30,13 @@
                 calibration_data_t inclineRb;
                 calibration_data_t inclineRc;
             };
+            //------------------
+            enum CalibrationType
+            {
+                CALIBRATION_NONE,
+                CALIBRATION_MIN,
+                CALIBRATION_MAX
+            };
             //--------------
             enum ChannelType
             {
@@ -39,6 +46,13 @@
                 RESISTANCE_INCLINE_RA,
                 RESISTANCE_INCLINE_RB,
                 RESISTANCE_INCLINE_RC
+            };
+            //--------------
+            struct RangeType
+            {
+                float shiftValue;
+                float inclineValue;
+                calibration_t data;
             };
 
         public:
@@ -108,7 +122,7 @@
             QPointF standardDeviation(const calibration_data_t &data);
 
         public slots:
-            void display(const calibration_t &data);
+            void display();
             void stateButton(bool state = false);
             void saveCalibrationToFlash();
             void valueCurrentStandardChanged(const QString&);
@@ -132,5 +146,8 @@
 
         private:
             Ui::CCalibrationWidgetBRUResistance *ui;
+            CalibrationType m_calibration_type;
+            RangeType m_calibration_min;
+            RangeType m_calibration_max;
     };
 #endif // CALIBRATIONWIDGETBRURESISTANCE_H

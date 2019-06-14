@@ -3,7 +3,10 @@
 //--------------------------------------------------------------------------------
 CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent):
     QWidget(parent),
-    ui(new Ui::CCalibrationWidgetBRUResistance)
+    ui(new Ui::CCalibrationWidgetBRUResistance),
+    m_calibration_type(CALIBRATION_NONE),
+    m_calibration_min({ 0.0f, 0.0f, calibration_t() }),
+    m_calibration_max({ 0.0f, 0.0f, calibration_t() })
 {
     ui->setupUi(this);
 
@@ -65,6 +68,24 @@ CModBusDataUnit CCalibrationWidgetBRUResistance::calculateValue(CCalibrationWidg
         case RESISTANCE_SHIFT_RC:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 128, 2); // чтение D40->Rc
             unit.setProperty("CHANNEL", RESISTANCE_SHIFT_RC);
+            unit.setProperty("KEY", "RC");
+        break;
+
+        case RESISTANCE_INCLINE_RA:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 124, 2); // чтение D38->Ra
+            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RA);
+            unit.setProperty("KEY", "RA");
+        break;
+
+        case RESISTANCE_INCLINE_RB:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 126, 2); // чтение D39->Rb
+            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RB);
+            unit.setProperty("KEY", "RB");
+        break;
+
+        case RESISTANCE_INCLINE_RC:
+            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 128, 2); // чтение D40->Rc
+            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RC);
             unit.setProperty("KEY", "RC");
         break;
 
@@ -327,147 +348,170 @@ QPointF CCalibrationWidgetBRUResistance::standardDeviation(const CCalibrationWid
 
     return QPointF(double(average), double(deviation));
 }
-//-------------------------------------------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::display(const CCalibrationWidgetBRUResistance::calibration_t &data)
+//---------------------------------------------
+void CCalibrationWidgetBRUResistance::display()
 {
     qInfo() << tr("Калибровка БРУ по сопротивлению:");
 
-    if(!data.shiftRa.isEmpty())
+    calibration_t data_min = m_calibration_min.data;
+    calibration_t data_max = m_calibration_max.data;
+
+    if(!data_min.shiftRa.isEmpty() && !data_max.shiftRa.isEmpty())
     {
-        float   standard     = standardPhaseShift();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorRAShift->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.shiftRa);
-        QPointF deviation    = standardDeviation(data.shiftRa);
+        float Xsrcmin = m_calibration_min.shiftValue;
+        float Xsrcmax = m_calibration_max.shiftValue;
 
-        setFactorShiftRa(newFactor);
-        setMeasureShiftRa(float(deviation.x()));
-        setDeviationShiftRa(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка свдига UА");
+        Xmeasmin = standardDeviation(data_min.shiftRa).x();
+        Xmeasmax = standardDeviation(data_max.shiftRa).x();
 
-        for(float value: data.shiftRa)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        float numerator = (Xmeasmax - Xmeasmin); // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+
+        if(denominator > 0)
+        {
+            float K = numerator/denominator;
+            setFactorShiftRa(K);
+            qDebug() << QString("Новый коэффициент сдвига KRA рассчитан: %1 ").arg(K);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KRA: Знаменатель равен нулю");
     }
 
-    if(!data.shiftRb.isEmpty())
+    if(!data_min.shiftRb.isEmpty() && !data_max.shiftRb.isEmpty())
     {
-        float   standard     = standardPhaseShift();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorRBShift->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.shiftRb);
-        QPointF deviation    = standardDeviation(data.shiftRb);
+        float Xsrcmin = m_calibration_min.shiftValue;
+        float Xsrcmax = m_calibration_max.shiftValue;
 
-        setFactorShiftRb(newFactor);
-        setMeasureShiftRb(float(deviation.x()));
-        setDeviationShiftRb(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка сдвига RB");
+        Xmeasmin = standardDeviation(data_min.shiftRb).x();
+        Xmeasmax = standardDeviation(data_max.shiftRb).x();
 
-        for(float value: data.shiftRb)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        float numerator = (Xmeasmax - Xmeasmin); // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
 
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        if(denominator > 0)
+        {
+            float K = numerator/denominator;
+            setFactorShiftRa(K);
+            qDebug() << QString("Новый коэффициент сдвига KRB рассчитан: %1 ").arg(K);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KRB: Знаменатель равен нулю");
     }
 
-    if(!data.shiftRc.isEmpty())
+    if(!data_min.shiftRc.isEmpty() && !data_max.shiftRc.isEmpty())
     {
-        float   standard     = standardPhaseShift();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorRCShift->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.shiftRc);
-        QPointF deviation    = standardDeviation(data.shiftRc);
+        float Xsrcmin = m_calibration_min.shiftValue;
+        float Xsrcmax = m_calibration_max.shiftValue;
 
-        setFactorShiftRc(newFactor);
-        setMeasureShiftRc(float(deviation.x()));
-        setDeviationShiftRc(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка сдвига RC");
+        Xmeasmin = standardDeviation(data_min.shiftRc).x();
+        Xmeasmax = standardDeviation(data_max.shiftRc).x();
 
-        for(float value: data.shiftRc)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        float numerator = (Xmeasmax - Xmeasmin); // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
 
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        if(denominator > 0)
+        {
+            float K = numerator/denominator;
+            setFactorShiftRa(K);
+            qDebug() << QString("Новый коэффициент сдвига KRC рассчитан: %1 ").arg(K);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KRC: Знаменатель равен нулю");
     }
 
-    if(!data.inclineRa.isEmpty())
+    if(!data_min.inclineRa.isEmpty() && !data_max.inclineRa.isEmpty())
     {
-        float   standard     = standardPhaseIncline();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorRAIncline->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.inclineRa);
-        QPointF deviation    = standardDeviation(data.inclineRa);
+        float Xsrcmin = m_calibration_min.inclineValue;
+        float Xsrcmax = m_calibration_max.inclineValue;
 
-        setFactorInclineRa(newFactor);
-        setMeasureInclineRa(float(deviation.x()));
-        setDeviationInclineRa(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка наклона RА");
+        Xmeasmin = standardDeviation(data_min.inclineRa).x();
+        Xmeasmax = standardDeviation(data_max.inclineRa).x();
 
-        for(float value: data.inclineRa)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+
+        float numerator = ps - rq; // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorShiftRa(A);
+            qDebug() << QString("Новый коэффициент наклона ARA рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KRA: Знаменатель равен нулю");
     }
 
-    if(!data.inclineRb.isEmpty())
+    if(!data_min.inclineRb.isEmpty() && !data_max.inclineRb.isEmpty())
     {
-        float   standard     = standardPhaseIncline();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorRBIncline->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.inclineRb);
-        QPointF deviation    = standardDeviation(data.inclineRb);
+        float Xsrcmin = m_calibration_min.inclineValue;
+        float Xsrcmax = m_calibration_max.inclineValue;
 
-        setFactorInclineRb(newFactor);
-        setMeasureInclineRb(float(deviation.x()));
-        setDeviationInclineRb(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка наклона RB");
+        Xmeasmin = standardDeviation(data_min.inclineRb).x();
+        Xmeasmax = standardDeviation(data_max.inclineRb).x();
 
-        for(float value: data.inclineRb)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+
+        float numerator = ps - rq; // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorShiftRa(A);
+            qDebug() << QString("Новый коэффициент наклона ARB рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KRB: Знаменатель равен нулю");
     }
 
-    if(!data.inclineRc.isEmpty())
+    if(!data_min.inclineRc.isEmpty() && !data_max.inclineRc.isEmpty())
     {
-        float   standard     = standardPhaseIncline();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorRCIncline->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.inclineRc);
-        QPointF deviation    = standardDeviation(data.inclineRc);
+        float Xsrcmin = m_calibration_min.inclineValue;
+        float Xsrcmax = m_calibration_max.inclineValue;
 
-        setFactorInclineRc(newFactor);
-        setMeasureInclineRc(float(deviation.x()));
-        setDeviationInclineRc(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка наклона RC");
+        Xmeasmin = standardDeviation(data_min.inclineRc).x();
+        Xmeasmax = standardDeviation(data_max.inclineRc).x();
 
-        for(float value: data.inclineRc)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+
+        float numerator = ps - rq; // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorShiftRa(A);
+            qDebug() << QString("Новый коэффициент наклона ARC рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KRC: Знаменатель равен нулю");
     }
 
-    emit calibrationEnd(false);
+    m_calibration_type = CALIBRATION_NONE;
+    m_calibration_min = { 0.0f, 0.0f, calibration_t() };
+    m_calibration_max = { 0.0f, 0.0f, calibration_t() };
 }
 //-----------------------------------------------------------
 void CCalibrationWidgetBRUResistance::stateButton(bool state)
@@ -524,7 +568,7 @@ void CCalibrationWidgetBRUResistance::stateChoiceChannelChanged(bool)
 
     ui->pushButtonCalibration->setDisabled(true);
 }
-
+//---------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::calibrationParameterStart()
 {
     if(!ui->checkBoxRAShift->isChecked() &&
@@ -538,74 +582,67 @@ void CCalibrationWidgetBRUResistance::calibrationParameterStart()
         return;
     }
 
+    int answer = QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("Сейчас будет произведена калибровка %1").
+                                          arg((m_calibration_type == CALIBRATION_NONE)?tr("минимума"):tr("максимума")), QMessageBox::Ok | QMessageBox::Cancel);
+
+    if(answer == QMessageBox::Cancel)
+    {
+        m_calibration_type = CALIBRATION_NONE;
+        return;
+    }
+
     QVector<CModBusDataUnit> unit_list;
     int param_count = 0;
 
     if(ui->checkBoxRAShift->isChecked())
     {
-        if(measureShiftRa() >= 20.0f)
-        {
-            unit_list << calculateValue(RESISTANCE_SHIFT_RA);
-            param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку сопротивления сдвига Ra (Ra < 20В)"));
+        unit_list << calculateValue(RESISTANCE_SHIFT_RA);
+        param_count++;
     }
     if(ui->checkBoxRBShift->isChecked())
     {
-        if(measureShiftRb() >= 20.0f)
-        {
-            unit_list << calculateValue(RESISTANCE_SHIFT_RB);
-            param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку сопротивления сдвига Rb (Rb < 20В)"));
+        unit_list << calculateValue(RESISTANCE_SHIFT_RB);
+        param_count++;
     }
     if(ui->checkBoxRCShift->isChecked())
     {
-        if(measureShiftRc() >= 20.0f)
-        {
-            unit_list << calculateValue(RESISTANCE_SHIFT_RC);
-            param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку сопротивления сдвига Rc (Rc < 20В)"));
+        unit_list << calculateValue(RESISTANCE_SHIFT_RC);
+        param_count++;
     }
     if(ui->checkBoxRAIncline->isChecked())
     {
-        if(measureInclineRa() >= 20.0f)
-        {
-            unit_list << calculateValue(RESISTANCE_INCLINE_RA);
-            param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку сопротивления наклона Ra (Ra < 20В)"));
+        unit_list << calculateValue(RESISTANCE_INCLINE_RA);
+        param_count++;
     }
     if(ui->checkBoxRBIncline->isChecked())
     {
-        if(measureInclineRb() >= 20.0f)
-        {
-            unit_list << calculateValue(RESISTANCE_INCLINE_RB);
-            param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку сопротивления наклона Rb (Rb < 20В)"));
+        unit_list << calculateValue(RESISTANCE_INCLINE_RB);
+        param_count++;
     }
     if(ui->checkBoxRCIncline->isChecked())
     {
-        if(measureInclineRc() >= 20.0f)
-        {
-            unit_list << calculateValue(RESISTANCE_INCLINE_RC);
-            param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку сопротивления наклона Rc (Rc < 20В)"));
+        unit_list << calculateValue(RESISTANCE_INCLINE_RC);
+        param_count++;
     }
 
     if(unit_list.isEmpty())
         return;
 
-    emit calibrationFactorAllStart();
+    if(m_calibration_type == CALIBRATION_NONE)
+    {
+        m_calibration_type = CALIBRATION_MIN;
+        m_calibration_min.shiftValue = standardPhaseShift();
+        m_calibration_min.inclineValue = standardPhaseIncline();
+
+        emit calibrationFactorAllStart();
+    }
+    else if(m_calibration_type == CALIBRATION_MIN)
+    {
+        m_calibration_type = CALIBRATION_MAX;
+        m_calibration_max.shiftValue = standardPhaseShift();
+        m_calibration_max.inclineValue = standardPhaseIncline();
+    }
+
     emit calibrationStart(unit_list, param_count);
 }
 //------------------------------------------------------------------------------------------
@@ -646,7 +683,15 @@ qDebug() << QString("Разбор калибровочных данных: ра�
             calibration_data.inclineRc << value.f;
     }
 
-    display(calibration_data);
+    if(m_calibration_type == CALIBRATION_MIN)
+        m_calibration_min.data = calibration_data;
+    else if(m_calibration_type == CALIBRATION_MAX)
+    {
+        m_calibration_max.data = calibration_data;
+        display();
+    }
+
+    emit calibrationEnd();
 }
 //-------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::calibrationWriteProcess()
