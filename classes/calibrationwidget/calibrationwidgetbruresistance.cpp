@@ -50,21 +50,21 @@ CModBusDataUnit CCalibrationWidgetBRUResistance::calculateValue(CCalibrationWidg
 
     switch(channel)
     {
-        case RESISTANCE_INCLINE_RA:
+        case RESISTANCE_SHIFT_RA:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 124, 2); // чтение D38->Ra
-            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RA);
+            unit.setProperty("CHANNEL", RESISTANCE_SHIFT_RA);
             unit.setProperty("KEY", "RA");
         break;
 
-        case RESISTANCE_INCLINE_RB:
+        case RESISTANCE_SHIFT_RB:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 126, 2); // чтение D39->Rb
-            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RB);
+            unit.setProperty("CHANNEL", RESISTANCE_SHIFT_RB);
             unit.setProperty("KEY", "RB");
         break;
 
-        case RESISTANCE_INCLINE_RC:
+        case RESISTANCE_SHIFT_RC:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 128, 2); // чтение D40->Rc
-            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RC);
+            unit.setProperty("CHANNEL", RESISTANCE_SHIFT_RC);
             unit.setProperty("KEY", "RC");
         break;
 
@@ -81,7 +81,7 @@ QVector<CModBusDataUnit> CCalibrationWidgetBRUResistance::calculateValueList()
     list << calculateValue(RESISTANCE_SHIFT_RA);
     list << calculateValue(RESISTANCE_SHIFT_RB);
     list << calculateValue(RESISTANCE_SHIFT_RC);
-
+qDebug() << QString("Создание списка расчетных величин: размер списка = %1->").arg(list.count());
     return list;
 }
 //----------------------------------------------------

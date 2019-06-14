@@ -28,8 +28,9 @@
                 TYPE_NONE = 0xFF,
                 TYPE_CURRENT = 0, // калибровка тока
                 TYPE_POWER_AC, // калибровка напряжения AC
-                TYPE_BRU_POWER_DC, // калибровка напряжение DC
-                TYPE_BRU_RESISTANCE // калибровка сопротивления
+                TYPE_BRU, // таб калибровок бру по напряжению и сопротивлению
+                TYPE_BRU_POWER_DC, // калибровка напряжение DC, находится на отдельном виджете
+                TYPE_BRU_RESISTANCE // калибровка сопротивления, находится на отдельном виджете
             };
 
             struct calibration_data_t

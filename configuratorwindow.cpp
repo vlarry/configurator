@@ -2798,6 +2798,10 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
        type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL) // управление чтением расчетных величин для калибровок
     {
         CCalibrationController::CalibrationType type = static_cast<CCalibrationController::CalibrationType>(ui->tabWidgetCalibration->currentIndex());
+
+        if(type == CCalibrationController::TYPE_BRU) // если выбраны калибровки БРУ
+            type = static_cast<CCalibrationController::CalibrationType>(ui->tabWidgetCalibrationBRU->currentIndex() + 3);
+
         m_calibration_controller->setCalculateState(true, type);
     }
     else
@@ -4294,7 +4298,27 @@ void ConfiguratorWindow::applicationCloseProcess()
 //--------------------------------------------------------
 void ConfiguratorWindow::calibrationTypeChanged(int index)
 {
-    m_calibration_controller->setCalculateState(true, static_cast<CCalibrationController::CalibrationType>(index));
+    QTabWidget *tabWidget = qobject_cast<QTabWidget*>(sender());
+
+    if(tabWidget)
+    {
+        CCalibrationController::CalibrationType type = CCalibrationController::TYPE_NONE;
+
+        if(tabWidget == ui->tabWidgetCalibration)
+        {
+            type = static_cast<CCalibrationController::CalibrationType>(index);
+
+            if(type == CCalibrationController::TYPE_BRU)
+                type = static_cast<CCalibrationController::CalibrationType>(ui->tabWidgetCalibrationBRU->currentIndex() + 3);
+        }
+        else if(tabWidget == ui->tabWidgetCalibrationBRU)
+        {
+            type = static_cast<CCalibrationController::CalibrationType>(ui->tabWidgetCalibrationBRU->currentIndex() + 3);
+        }
+
+        if(type != CCalibrationController::TYPE_NONE)
+            m_calibration_controller->setCalculateState(true, type);
+    }
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -12702,6 +12726,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_calibration_controller, &CCalibrationController::calculate, this, &ConfiguratorWindow::sendCalibrationCalculateValues);
     connect(this, &ConfiguratorWindow::calibrationCalculateValue, m_calibration_controller, &CCalibrationController::calculateResponse);
     connect(ui->tabWidgetCalibration, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
+    connect(ui->tabWidgetCalibrationBRU, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
 
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
