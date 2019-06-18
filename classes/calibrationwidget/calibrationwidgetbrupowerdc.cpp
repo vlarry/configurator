@@ -3,7 +3,10 @@
 //--------------------------------------------------------------------------
 CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     QWidget(parent),
-    ui(new Ui::CCalibrationWidgetBRUPowerDC)
+    ui(new Ui::CCalibrationWidgetBRUPowerDC),
+    m_calibration_type(CALIBRATION_NONE),
+    m_calibration_min({ 0.0f, 0.0f, 0.0f, 0.0f, calibration_t() }),
+    m_calibration_max({ 0.0f, 0.0f, 0.0f, 0.0f, calibration_t() })
 {
     ui->setupUi(this);
 
@@ -410,195 +413,221 @@ QPointF CCalibrationWidgetBRUPowerDC::standardDeviation(const CCalibrationWidget
 
     return QPointF(double(average), double(deviation));
 }
-//-------------------------------------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::display(const CCalibrationWidgetBRUPowerDC::calibration_t &data)
+//------------------------------------------
+void CCalibrationWidgetBRUPowerDC::display()
 {
     qInfo() << tr("Калибровка БРУ по напряжению DC:");
 
-    if(!data.shiftUa.isEmpty())
+    calibration_t data_min = m_calibration_min.data;
+    calibration_t data_max = m_calibration_max.data;
+
+    if(!data_min.shiftUa.isEmpty() && !data_max.shiftUa.isEmpty())
     {
-        float   standard     = standardPhaseShift();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUAShift->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.shiftUa);
-        QPointF deviation    = standardDeviation(data.shiftUa);
+        float Xsrcmin = m_calibration_min.shiftValue;
+        float Xsrcmax = m_calibration_max.shiftValue;
 
-        setFactorShiftUa(newFactor);
-        setMeasureShiftUa(float(deviation.x()));
-        setDeviationShiftUa(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка свдига UА");
+        Xmeasmin = standardDeviation(data_min.shiftUa).x();
+        Xmeasmax = standardDeviation(data_max.shiftUa).x();
 
-        for(float value: data.shiftUa)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        float numerator = (Xmeasmax - Xmeasmin); // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+
+        if(denominator > 0)
+        {
+            float K = numerator/denominator;
+            setFactorShiftUa(K);
+            qDebug() << QString("Новый коэффициент сдвига KUADC рассчитан: %1 ").arg(K);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KUADC: Знаменатель равен нулю");
     }
 
-    if(!data.shiftUb.isEmpty())
+    if(!data_min.shiftUb.isEmpty() && !data_max.shiftUb.isEmpty())
     {
-        float   standard     = standardPhaseShift();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUBShift->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.shiftUb);
-        QPointF deviation    = standardDeviation(data.shiftUb);
+        float Xsrcmin = m_calibration_min.shiftValue;
+        float Xsrcmax = m_calibration_max.shiftValue;
 
-        setFactorShiftUb(newFactor);
-        setMeasureShiftUb(float(deviation.x()));
-        setDeviationShiftUb(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка сдвига UB");
+        Xmeasmin = standardDeviation(data_min.shiftUb).x();
+        Xmeasmax = standardDeviation(data_max.shiftUb).x();
 
-        for(float value: data.shiftUb)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        float numerator = (Xmeasmax - Xmeasmin); // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
 
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        if(denominator > 0)
+        {
+            float K = numerator/denominator;
+            setFactorShiftUb(K);
+            qDebug() << QString("Новый коэффициент сдвига KUBDC рассчитан: %1 ").arg(K);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KUBDC: Знаменатель равен нулю");
     }
 
-    if(!data.shiftUc.isEmpty())
+    if(!data_min.shiftUc.isEmpty() && !data_max.shiftUc.isEmpty())
     {
-        float   standard     = standardPhaseShift();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUCShift->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.shiftUc);
-        QPointF deviation    = standardDeviation(data.shiftUc);
+        float Xsrcmin = m_calibration_min.shiftValue;
+        float Xsrcmax = m_calibration_max.shiftValue;
 
-        setFactorShiftUc(newFactor);
-        setMeasureShiftUc(float(deviation.x()));
-        setDeviationShiftUc(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка сдвига UC");
+        Xmeasmin = standardDeviation(data_min.shiftUc).x();
+        Xmeasmax = standardDeviation(data_max.shiftUc).x();
 
-        for(float value: data.shiftUc)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        float numerator = (Xmeasmax - Xmeasmin); // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
 
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
-
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        if(denominator > 0)
+        {
+            float K = numerator/denominator;
+            setFactorShiftUc(K);
+            qDebug() << QString("Новый коэффициент сдвига KUCDC рассчитан: %1 ").arg(K);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KUCDC: Знаменатель равен нулю");
     }
 
-    if(!data.inclineUa.isEmpty())
+    if(!data_min.shiftMultiplier.isEmpty() && !data_max.shiftMultiplier.isEmpty())
     {
-        float   standard     = standardPhaseIncline();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUAIncline->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.inclineUa);
-        QPointF deviation    = standardDeviation(data.inclineUa);
+        float Xsrcmin = m_calibration_min.shiftMultyplierValue;
+        float Xsrcmax = m_calibration_max.shiftMultyplierValue;
 
-        setFactorInclineUa(newFactor);
-        setMeasureInclineUa(float(deviation.x()));
-        setDeviationInclineUa(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка наклона UА");
+        Xmeasmin = standardDeviation(data_min.shiftMultiplier).x();
+        Xmeasmax = standardDeviation(data_max.shiftMultiplier).x();
 
-        for(float value: data.inclineUa)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        float numerator = (Xmeasmax - Xmeasmin); // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+
+        if(denominator > 0)
+        {
+            float K = numerator/denominator;
+            setFactorShiftUMultiplier(K);
+            qDebug() << QString("Новый коэффициент сдвига KUMDC рассчитан: %1 ").arg(K);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KUMDC: Знаменатель равен нулю");
     }
 
-    if(!data.inclineUb.isEmpty())
+    if(!data_min.inclineUa.isEmpty() && !data_max.inclineUa.isEmpty())
     {
-        float   standard     = standardPhaseIncline();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUBIncline->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.inclineUb);
-        QPointF deviation    = standardDeviation(data.inclineUb);
+        float Xsrcmin = m_calibration_min.inclineValue;
+        float Xsrcmax = m_calibration_max.inclineValue;
 
-        setFactorInclineUb(newFactor);
-        setMeasureInclineUb(float(deviation.x()));
-        setDeviationInclineUb(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка наклона UB");
+        Xmeasmin = standardDeviation(data_min.inclineUa).x();
+        Xmeasmax = standardDeviation(data_max.inclineUa).x();
 
-        for(float value: data.inclineUb)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+
+        float numerator = ps - rq; // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineUa(A);
+            qDebug() << QString("Новый коэффициент наклона AUADC рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KUADC: Знаменатель равен нулю");
     }
 
-    if(!data.inclineUc.isEmpty())
+    if(!data_min.inclineUb.isEmpty() && !data_max.inclineUb.isEmpty())
     {
-        float   standard     = standardPhaseIncline();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUCIncline->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.inclineUc);
-        QPointF deviation    = standardDeviation(data.inclineUc);
+        float Xsrcmin = m_calibration_min.inclineValue;
+        float Xsrcmax = m_calibration_max.inclineValue;
 
-        setFactorInclineUc(newFactor);
-        setMeasureInclineUc(float(deviation.x()));
-        setDeviationInclineUc(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка наклона UC");
+        Xmeasmin = standardDeviation(data_min.inclineUb).x();
+        Xmeasmax = standardDeviation(data_max.inclineUb).x();
 
-        for(float value: data.inclineUc)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                      arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                      arg(QLocale::system().toString(deviation.y(), 'f', 6));
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+
+        float numerator = ps - rq; // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineUb(A);
+            qDebug() << QString("Новый коэффициент наклона AUBDC рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента AUBDC: Знаменатель равен нулю");
     }
 
-    if(!data.shiftMultiplier.isEmpty())
+    if(!data_min.inclineUc.isEmpty() && !data_max.inclineUc.isEmpty())
     {
-        float   standard     = standardPhaseMultiplierShift();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUMultiplierShift->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.shiftMultiplier);
-        QPointF deviation    = standardDeviation(data.shiftMultiplier);
+        float Xsrcmin = m_calibration_min.inclineValue;
+        float Xsrcmax = m_calibration_max.inclineValue;
 
-        setFactorShiftUMultiplier(newFactor);
-        setMeasureShiftUMultiplier(float(deviation.x()));
-        setDeviationShiftUMultiplier(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка сдвига Uумн");
+        Xmeasmin = standardDeviation(data_min.inclineUc).x();
+        Xmeasmax = standardDeviation(data_max.inclineUc).x();
 
-        for(float value: data.shiftMultiplier)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
 
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        float numerator = ps - rq; // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
 
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineUc(A);
+            qDebug() << QString("Новый коэффициент наклона AUCDC рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента AUCDC: Знаменатель равен нулю");
     }
 
-    if(!data.inclineMultiplier.isEmpty())
+    if(!data_min.inclineMultiplier.isEmpty() && !data_max.inclineMultiplier.isEmpty())
     {
-        float   standard     = standardPhaseMultiplierIncline();
-        float   power_factor = QLocale::system().toFloat(ui->lineEditFactorUMultiplierIncline->text());
-        float   newFactor    = newCalibrationFactor(standard, power_factor, data.inclineMultiplier);
-        QPointF deviation    = standardDeviation(data.inclineMultiplier);
+        float Xsrcmin = m_calibration_min.inclineMultyplierValue;
+        float Xsrcmax = m_calibration_max.inclineMultyplierValue;
 
-        setFactorInclineUMultiplier(newFactor);
-        setMeasureInclineUMultiplier(float(deviation.x()));
-        setDeviationInclineMultiplier(float(deviation.y()));
+        float Xmeasmin = 0.0f;
+        float Xmeasmax = 0.0f;
 
-        qInfo() << tr("Калибровка наклона Uумн");
+        Xmeasmin = standardDeviation(data_min.inclineMultiplier).x();
+        Xmeasmax = standardDeviation(data_max.inclineMultiplier).x();
 
-        for(float value: data.inclineMultiplier)
-            qInfo() << QString("Значение: %1").arg(QLocale::system().toString(value, 'f', 6));
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
 
-        qInfo() << QString("Среднее арифметическое: %1 / Среднеквадратическое отклонение: %2").
-                   arg(QLocale::system().toString(deviation.x(), 'f', 6)).
-                   arg(QLocale::system().toString(deviation.y(), 'f', 6));
+        float numerator = ps - rq; // числитель
+        float denominator (Xsrcmax - Xsrcmin); // знаменатель
 
-        qInfo() << tr("Старое калибровочное значение: %1").arg(double(power_factor));
-        qInfo() << tr("Новое калибровочное значение: %1").arg(QLocale::system().toString(newFactor, 'f', 6));
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineUMultiplier(A);
+            qDebug() << QString("Новый коэффициент наклона AUMDC рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента AUMDC: Знаменатель равен нулю");
     }
 
-    emit calibrationEnd(false);
+    m_calibration_type = CALIBRATION_NONE;
+    m_calibration_min = { 0.0f, 0.0f, 0.0f, 0.0f, calibration_t() };
+    m_calibration_max = { 0.0f, 0.0f, 0.0f, 0.0f, calibration_t() };
 }
 //--------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::stateButton(bool state)
@@ -680,6 +709,15 @@ void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
        !ui->checkBoxUMultiplierIncline->isChecked())
     {
         QMessageBox::warning(this, tr("Калибровка БРУ по напряжению DC"), tr("Нет выбранных каналов для калибровки"));
+        return;
+    }
+
+    int answer = QMessageBox::information(this, tr("Калибровка БРУ по напряжению DC"), tr("Сейчас будет произведена калибровка %1").
+                                          arg((m_calibration_type == CALIBRATION_NONE)?tr("минимума"):tr("максимума")), QMessageBox::Ok | QMessageBox::Cancel);
+
+    if(answer == QMessageBox::Cancel)
+    {
+        m_calibration_type = CALIBRATION_NONE;
         return;
     }
 
@@ -770,7 +808,25 @@ void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
     if(unit_list.isEmpty())
         return;
 
-    emit calibrationFactorAllStart();
+    if(m_calibration_type == CALIBRATION_NONE)
+    {
+        m_calibration_type = CALIBRATION_MIN;
+        m_calibration_min.shiftValue = standardPhaseShift();
+        m_calibration_min.inclineValue = standardPhaseIncline();
+        m_calibration_min.shiftMultyplierValue = standardPhaseMultiplierShift();
+        m_calibration_min.inclineMultyplierValue = standardPhaseMultiplierIncline();
+
+        emit calibrationFactorAllStart();
+    }
+    else if(m_calibration_type == CALIBRATION_MIN)
+    {
+        m_calibration_type = CALIBRATION_MAX;
+        m_calibration_max.shiftValue = standardPhaseShift();
+        m_calibration_max.inclineValue = standardPhaseIncline();
+        m_calibration_max.shiftMultyplierValue = standardPhaseMultiplierShift();
+        m_calibration_max.inclineMultyplierValue = standardPhaseMultiplierIncline();
+    }
+
     emit calibrationStart(unit_list, param_count);
 }
 //---------------------------------------------------------------------------------------
@@ -815,7 +871,15 @@ qDebug() << QString("Разбор калибровочных данных: ра�
             calibration_data.inclineMultiplier << value.f;
     }
 
-    display(calibration_data);
+    if(m_calibration_type == CALIBRATION_MIN)
+        m_calibration_min.data = calibration_data;
+    else if(m_calibration_type == CALIBRATION_MAX)
+    {
+        m_calibration_max.data = calibration_data;
+        display();
+    }
+
+    emit calibrationEnd();
 }
 //----------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::calibrationWriteProcess()

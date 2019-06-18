@@ -44,6 +44,22 @@
                 POWER_SHIFT_MULTIPLIER,
                 POWER_INCLINE_MULTIPLIER
             };
+            //------------------
+            enum CalibrationType
+            {
+                CALIBRATION_NONE,
+                CALIBRATION_MIN,
+                CALIBRATION_MAX
+            };
+            //--------------
+            struct RangeType
+            {
+                float shiftValue;
+                float inclineValue;
+                float shiftMultyplierValue;
+                float inclineMultyplierValue;
+                calibration_t data;
+            };
 
         public:
             explicit CCalibrationWidgetBRUPowerDC(QWidget *parent = nullptr);
@@ -130,7 +146,7 @@
             QPointF standardDeviation(const calibration_data_t &data);
 
         public slots:
-            void display(const calibration_t &data);
+            void display();
             void stateButton(bool state = false);
             void saveCalibrationToFlash();
             void valueCurrentStandardChanged(const QString&);
@@ -154,5 +170,8 @@
 
         private:
             Ui::CCalibrationWidgetBRUPowerDC *ui;
+            CalibrationType m_calibration_type;
+            RangeType m_calibration_min;
+            RangeType m_calibration_max;
     };
 #endif // CALIBRATIONWIDGETBRUPOWERDC_H

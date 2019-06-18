@@ -396,7 +396,7 @@ void CCalibrationWidgetBRUResistance::display()
         if(denominator > 0)
         {
             float K = numerator/denominator;
-            setFactorShiftRa(K);
+            setFactorShiftRb(K);
             qDebug() << QString("Новый коэффициент сдвига KRB рассчитан: %1 ").arg(K);
         }
         else
@@ -420,7 +420,7 @@ void CCalibrationWidgetBRUResistance::display()
         if(denominator > 0)
         {
             float K = numerator/denominator;
-            setFactorShiftRa(K);
+            setFactorShiftRc(K);
             qDebug() << QString("Новый коэффициент сдвига KRC рассчитан: %1 ").arg(K);
         }
         else
@@ -447,11 +447,11 @@ void CCalibrationWidgetBRUResistance::display()
         if(denominator > 0)
         {
             float A = numerator/denominator;
-            setFactorShiftRa(A);
+            setFactorInclineRa(A);
             qDebug() << QString("Новый коэффициент наклона ARA рассчитан: %1 ").arg(A);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента KRA: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента ARA: Знаменатель равен нулю");
     }
 
     if(!data_min.inclineRb.isEmpty() && !data_max.inclineRb.isEmpty())
@@ -474,11 +474,11 @@ void CCalibrationWidgetBRUResistance::display()
         if(denominator > 0)
         {
             float A = numerator/denominator;
-            setFactorShiftRa(A);
+            setFactorInclineRb(A);
             qDebug() << QString("Новый коэффициент наклона ARB рассчитан: %1 ").arg(A);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента KRB: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента ARB: Знаменатель равен нулю");
     }
 
     if(!data_min.inclineRc.isEmpty() && !data_max.inclineRc.isEmpty())
@@ -501,11 +501,11 @@ void CCalibrationWidgetBRUResistance::display()
         if(denominator > 0)
         {
             float A = numerator/denominator;
-            setFactorShiftRa(A);
+            setFactorInclineRc(A);
             qDebug() << QString("Новый коэффициент наклона ARC рассчитан: %1 ").arg(A);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента KRC: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента ARC: Знаменатель равен нулю");
     }
 
     m_calibration_type = CALIBRATION_NONE;
