@@ -32,7 +32,6 @@ CCalibrationWidgetOfCurrent::CCalibrationWidgetOfCurrent(QWidget* parent):
     connect(ui->checkBoxIc, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceChannelChanged);
     connect(ui->checkBox3I0, &QCheckBox::clicked, this, &CCalibrationWidgetOfCurrent::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetOfCurrent::saveCalibrationToFlash);
-    connect(this, &CCalibrationWidgetOfCurrent::dataIncrement, this, &CCalibrationWidgetOfCurrent::progressBarIncrement);
 }
 //---------------------------------------------------------
 CCalibrationWidgetOfCurrent::~CCalibrationWidgetOfCurrent()

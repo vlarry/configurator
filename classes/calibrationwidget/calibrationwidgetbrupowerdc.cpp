@@ -44,7 +44,6 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     connect(ui->checkBoxUMultiplierShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
     connect(ui->checkBoxUMultiplierIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetBRUPowerDC::saveCalibrationToFlash);
-//    connect(this, &CCalibrationWidgetBRUPowerDC::dataIncrement, this, &CCalibrationWidgetBRUPowerDC::progressBarIncrement);
 }
 //-----------------------------------------------------------
 CCalibrationWidgetBRUPowerDC::~CCalibrationWidgetBRUPowerDC()
@@ -1001,6 +1000,13 @@ void CCalibrationWidgetBRUPowerDC::setCalculateActualValue(CModBusDataUnit &unit
         setMeasureShiftUMultiplier(value.f);
         setMeasureInclineUMultiplier(value.f);
     }
+}
+//-------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::progressBarIncrement()
+{
+    int count = ui->progressBarDataSet->value();
+    int step  = 100/ui->spinBoxSetDataCount->value();
+    ui->progressBarDataSet->setValue(count + step);
 }
 //---------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::paintEvent(QPaintEvent *event)

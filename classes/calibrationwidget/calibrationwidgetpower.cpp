@@ -44,7 +44,6 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
     connect(ui->checkBox3US, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
     connect(ui->checkBox3U0, &QCheckBox::clicked, this, &CCalibrationWidgetPower::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetPower::saveCalibrationToFlash);
-//    connect(this, &CCalibrationWidgetPower::dataIncrement, this, &CCalibrationWidgetPower::progressBarIncrement);
 }
 //-------------------------------------------------
 CCalibrationWidgetPower::~CCalibrationWidgetPower()
@@ -1101,6 +1100,13 @@ void CCalibrationWidgetPower::setCalculateActualValue(CModBusDataUnit &unit)
         setMeasure3US(value.f);
     else if(channel == "3U0")
         setMeasure3U0(value.f);
+}
+//--------------------------------------------------
+void CCalibrationWidgetPower::progressBarIncrement()
+{
+    int count = ui->progressBarDataSet->value();
+    int step  = 100/ui->spinBoxSetDataCount->value();
+    ui->progressBarDataSet->setValue(count + step);
 }
 //----------------------------------------------------------
 void CCalibrationWidgetPower::paintEvent(QPaintEvent *event)

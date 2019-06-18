@@ -69,6 +69,7 @@
             void calibrationFactorActual(const QString&, float); // получение значения теущего калибровочного коэффициента
             void calculate(QVector<CModBusDataUnit>&);
             void calculateResponse(CModBusDataUnit&);
+            void dataIncrement();
 
         public slots:
             void dataIsReady(CModBusDataUnit &unit);

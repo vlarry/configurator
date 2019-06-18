@@ -147,6 +147,7 @@
             void calibrationWriteProcess();
             void setCalibrartionFactorActual(const QString &key, float value);
             void setCalculateActualValue(CModBusDataUnit &unit);
+            void progressBarIncrement();
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);

@@ -39,7 +39,6 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     connect(ui->checkBoxRBIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->checkBoxRCIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::saveCalibrationToFlash);
-//    connect(this, &CCalibrationWidgetBRUPowerDC::dataIncrement, this, &CCalibrationWidgetBRUPowerDC::progressBarIncrement);
 }
 //-----------------------------------------------------------------
 CCalibrationWidgetBRUResistance::~CCalibrationWidgetBRUResistance()
@@ -840,6 +839,13 @@ void CCalibrationWidgetBRUResistance::setCalculateActualValue(CModBusDataUnit &u
         setMeasureShiftRc(value.f);
         setMeasureInclineRc(value.f);
     }
+}
+//----------------------------------------------------------
+void CCalibrationWidgetBRUResistance::progressBarIncrement()
+{
+    int count = ui->progressBarDataSet->value();
+    int step  = 100/ui->spinBoxSetDataCount->value();
+    ui->progressBarDataSet->setValue(count + step);
 }
 //------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::paintEvent(QPaintEvent *event)

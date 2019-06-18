@@ -18,6 +18,7 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(m_widget_of_current, &CCalibrationWidgetOfCurrent::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_of_current, &CCalibrationWidgetOfCurrent::setCalibrartionFactorActual);
     connect(this, &CCalibrationController::calculateResponse, m_widget_of_current, &CCalibrationWidgetOfCurrent::setCalculateActualValue);
+    connect(this, &CCalibrationController::dataIncrement, m_widget_of_current, &CCalibrationWidgetOfCurrent::progressBarIncrement);
 
     connect(m_widget_power, &CCalibrationWidgetPower::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
     connect(m_widget_power, &CCalibrationWidgetPower::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
@@ -25,6 +26,7 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(m_widget_power, &CCalibrationWidgetPower::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_power, &CCalibrationWidgetPower::setCalibrartionFactorActual);
     connect(this, &CCalibrationController::calculateResponse, m_widget_power, &CCalibrationWidgetPower::setCalculateActualValue);
+    connect(this, &CCalibrationController::dataIncrement, m_widget_power, &CCalibrationWidgetPower::progressBarIncrement);
 
     connect(m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
     connect(m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
@@ -32,6 +34,7 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::setCalibrartionFactorActual);
     connect(this, &CCalibrationController::calculateResponse, m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::setCalculateActualValue);
+    connect(this, &CCalibrationController::dataIncrement, m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::progressBarIncrement);
 
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
@@ -39,6 +42,7 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalibrartionFactorActual);
     connect(this, &CCalibrationController::calculateResponse, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalculateActualValue);
+    connect(this, &CCalibrationController::dataIncrement, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::progressBarIncrement);
 
     connect(m_timer_caluculate, &QTimer::timeout, this, &CCalibrationController::calculateValueRead);
 }
@@ -73,6 +77,9 @@ void CCalibrationController::dataIsReady(CModBusDataUnit &unit)
 {
     m_calibration_data.data << unit;
     m_calibration_data.counter++;
+
+    emit dataIncrement();
+
 qDebug() << QString("Получено сообщение №%1").arg(m_calibration_data.counter);
     if(m_calibration_data.counter == m_calibration_data.limit) // Приняты все данные по калибровке
     {

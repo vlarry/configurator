@@ -7388,6 +7388,8 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
         return;
     }
 
+    sendDeviceCommand(45); // установка ключа для записи уставок
+
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(addr), data);
 
     unit.setProperty(tr("FIRST"), first);
@@ -7636,6 +7638,7 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
     if(firstAddr == -1)
         qWarning() << tr("Переменной \'K10\' не назначен адрес.");
 
+    sendDeviceCommand(45); // отправка команды на установку ключа блокировки записи уставок
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(firstAddr),
                          QVector<quint16>() << 48);
 
