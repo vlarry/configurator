@@ -31,7 +31,7 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     ui->progressBarDataSet->hide();
 
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetBRUPowerDC::calibrationParameterStart);
-    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetBRUPowerDC::stateButton);
+    connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidgetBRUPowerDC::stateButton);
     connect(this, &CCalibrationWidgetBRUPowerDC::calibrationEnd, this, &CCalibrationWidgetBRUPowerDC::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUPowerDC::calibrationWriteProcess);
     connect(ui->lineEditPowerStandardPhaseShift, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
@@ -709,6 +709,24 @@ void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
        !ui->checkBoxUMultiplierIncline->isChecked())
     {
         QMessageBox::warning(this, tr("Калибровка БРУ по напряжению DC"), tr("Нет выбранных каналов для калибровки"));
+        return;
+    }
+
+    if(m_calibration_type == CALIBRATION_MIN &&
+      (((ui->checkBoxUAShift->isChecked() || ui->checkBoxUBShift->isChecked() || ui->checkBoxUCShift->isChecked()) &&
+       standardPhaseShift() <= m_calibration_min.shiftValue) ||
+       ((ui->checkBoxUAIncline->isChecked() || ui->checkBoxUBIncline->isChecked() || ui->checkBoxUCIncline->isChecked()) &&
+       standardPhaseIncline() <= m_calibration_min.inclineValue) ||
+       (ui->checkBoxUMultiplierShift->isChecked() && standardPhaseMultiplierShift() <= m_calibration_min.shiftMultyplierValue) ||
+       (ui->checkBoxUMultiplierIncline->isChecked() && standardPhaseMultiplierIncline() <= m_calibration_min.inclineMultyplierValue)))
+    {
+        m_calibration_type = CALIBRATION_NONE;
+        m_calibration_min = { 0.0f, 0.0f, 0.0f, 0.0f,calibration_t() };
+        m_calibration_max = { 0.0f, 0.0f, 0.0f, 0.0f,calibration_t() };
+
+        QMessageBox::warning(this, tr("Калибровка БРУ по напряжению"), tr("Эталонное значение для максимума меньше или равно значения минимума"));
+        emit calibrationEnd();
+
         return;
     }
 

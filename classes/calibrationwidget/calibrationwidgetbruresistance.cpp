@@ -27,7 +27,7 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     ui->progressBarDataSet->hide();
 
     connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::calibrationParameterStart);
-    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::stateButton);
+    connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidgetBRUResistance::stateButton);
     connect(this, &CCalibrationWidgetBRUResistance::calibrationEnd, this, &CCalibrationWidgetBRUResistance::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::calibrationWriteProcess);
     connect(ui->lineEditPowerStandardPhaseShift, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
@@ -578,6 +578,22 @@ void CCalibrationWidgetBRUResistance::calibrationParameterStart()
        !ui->checkBoxRCIncline->isChecked())
     {
         QMessageBox::warning(this, tr("Калибровка БРУ по сопротивлению"), tr("Нет выбранных каналов для калибровки"));
+        return;
+    }
+
+    if(m_calibration_type == CALIBRATION_MIN &&
+      (((ui->checkBoxRAShift->isChecked() || ui->checkBoxRBShift->isChecked() || ui->checkBoxRCShift->isChecked()) &&
+       standardPhaseShift() <= m_calibration_min.shiftValue) ||
+       ((ui->checkBoxRAIncline->isChecked() || ui->checkBoxRBIncline->isChecked() || ui->checkBoxRCIncline->isChecked()) &&
+        standardPhaseIncline() <= m_calibration_min.inclineValue)))
+    {
+        m_calibration_type = CALIBRATION_NONE;
+        m_calibration_min = { 0.0f, 0.0f, calibration_t() };
+        m_calibration_max = { 0.0f, 0.0f, calibration_t() };
+
+        QMessageBox::warning(this, tr("Калибровка БРУ по сопротивлению"), tr("Эталонное значение для максимума меньше или равно значения минимума"));
+        emit calibrationEnd();
+
         return;
     }
 
