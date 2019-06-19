@@ -968,35 +968,35 @@ void CCalibrationWidgetBRUPowerDC::calibrationWriteProcess()
 
     value.f = shiftUa;
     CModBusDataUnit unit_ShiftUa(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_ShiftUa.setProperty("KEY", "KUADC");
+    unit_ShiftUa.setProperty("KEY", "AUADC");
 
     value.f = shiftUb;
     CModBusDataUnit unit_ShiftUb(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_ShiftUb.setProperty("KEY", "KUBDC");
+    unit_ShiftUb.setProperty("KEY", "AUBDC");
 
     value.f = shiftUc;
     CModBusDataUnit unit_ShiftUc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_ShiftUc.setProperty("KEY", "KUCDC");
+    unit_ShiftUc.setProperty("KEY", "AUCDC");
 
     value.f = inclineUa;
     CModBusDataUnit unit_InclineUa(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_InclineUa.setProperty("KEY", "AUADC");
+    unit_InclineUa.setProperty("KEY", "KUADC");
 
     value.f = inclineUb;
     CModBusDataUnit unit_InclineUb(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_InclineUb.setProperty("KEY", "AUBDC");
+    unit_InclineUb.setProperty("KEY", "KUBDC");
 
     value.f = inclineUc;
     CModBusDataUnit unit_InclineUc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_InclineUc.setProperty("KEY", "AUCDC");
+    unit_InclineUc.setProperty("KEY", "KUCDC");
 
     value.f = shiftMultiplier;
     CModBusDataUnit unit_ShiftMultiplier(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_ShiftMultiplier.setProperty("KEY", "KUMDC");
+    unit_ShiftMultiplier.setProperty("KEY", "AUMDC");
 
     value.f = inclineMultiplier;
     CModBusDataUnit unit_InclineMultiplier(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_InclineMultiplier.setProperty("KEY", "AUMDC");
+    unit_InclineMultiplier.setProperty("KEY", "KUMDC");
 
     QVector<CModBusDataUnit> units;
 
@@ -1031,21 +1031,21 @@ void CCalibrationWidgetBRUPowerDC::calibrationWriteProcess()
 void CCalibrationWidgetBRUPowerDC::setCalibrartionFactorActual(const QString &key, float value)
 {
     qDebug() << QString("Калибровочный коэффициент: %1, значение: %2").arg(key).arg(value);
-    if(key == "KUADC")
+    if(key == "AUADC")
         setFactorShiftUa(value);
-    else if(key == "KUBDC")
-        setFactorShiftUb(value);
-    else if(key == "KUCDC")
-        setFactorShiftUc(value);
-    else if(key == "AUADC")
-        setFactorInclineUa(value);
     else if(key == "AUBDC")
-        setFactorInclineUb(value);
+        setFactorShiftUb(value);
     else if(key == "AUCDC")
+        setFactorShiftUc(value);
+    else if(key == "KUADC")
+        setFactorInclineUa(value);
+    else if(key == "KUBDC")
+        setFactorInclineUb(value);
+    else if(key == "KUCDC")
         setFactorInclineUc(value);
-    else if(key == "KUMDC")
-        setFactorShiftUMultiplier(value);
     else if(key == "AUMDC")
+        setFactorShiftUMultiplier(value);
+    else if(key == "KUMDC")
         setFactorInclineUMultiplier(value);
 }
 //-------------------------------------------------------------------------------

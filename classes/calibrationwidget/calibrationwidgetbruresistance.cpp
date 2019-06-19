@@ -373,10 +373,10 @@ void CCalibrationWidgetBRUResistance::display()
         {
             float K = numerator/denominator;
             setFactorShiftRa(K);
-            qDebug() << QString("Новый коэффициент сдвига KRA рассчитан: %1 ").arg(K);
+            qDebug() << QString("Новый коэффициент сдвига ARA рассчитан: %1 ").arg(K);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента KRA: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента ARA: Знаменатель равен нулю");
     }
 
     if(!data_min.shiftRb.isEmpty() && !data_max.shiftRb.isEmpty())
@@ -397,10 +397,10 @@ void CCalibrationWidgetBRUResistance::display()
         {
             float K = numerator/denominator;
             setFactorShiftRb(K);
-            qDebug() << QString("Новый коэффициент сдвига KRB рассчитан: %1 ").arg(K);
+            qDebug() << QString("Новый коэффициент сдвига ARB рассчитан: %1 ").arg(K);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента KRB: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента ARB: Знаменатель равен нулю");
     }
 
     if(!data_min.shiftRc.isEmpty() && !data_max.shiftRc.isEmpty())
@@ -421,10 +421,10 @@ void CCalibrationWidgetBRUResistance::display()
         {
             float K = numerator/denominator;
             setFactorShiftRc(K);
-            qDebug() << QString("Новый коэффициент сдвига KRC рассчитан: %1 ").arg(K);
+            qDebug() << QString("Новый коэффициент сдвига ARC рассчитан: %1 ").arg(K);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента KRC: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента ARC: Знаменатель равен нулю");
     }
 
     if(!data_min.inclineRa.isEmpty() && !data_max.inclineRa.isEmpty())
@@ -448,10 +448,10 @@ void CCalibrationWidgetBRUResistance::display()
         {
             float A = numerator/denominator;
             setFactorInclineRa(A);
-            qDebug() << QString("Новый коэффициент наклона ARA рассчитан: %1 ").arg(A);
+            qDebug() << QString("Новый коэффициент наклона KRA рассчитан: %1 ").arg(A);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента ARA: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента KRA: Знаменатель равен нулю");
     }
 
     if(!data_min.inclineRb.isEmpty() && !data_max.inclineRb.isEmpty())
@@ -475,10 +475,10 @@ void CCalibrationWidgetBRUResistance::display()
         {
             float A = numerator/denominator;
             setFactorInclineRb(A);
-            qDebug() << QString("Новый коэффициент наклона ARB рассчитан: %1 ").arg(A);
+            qDebug() << QString("Новый коэффициент наклона KRB рассчитан: %1 ").arg(A);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента ARB: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента KRB: Знаменатель равен нулю");
     }
 
     if(!data_min.inclineRc.isEmpty() && !data_max.inclineRc.isEmpty())
@@ -502,10 +502,10 @@ void CCalibrationWidgetBRUResistance::display()
         {
             float A = numerator/denominator;
             setFactorInclineRc(A);
-            qDebug() << QString("Новый коэффициент наклона ARC рассчитан: %1 ").arg(A);
+            qDebug() << QString("Новый коэффициент наклона KRC рассчитан: %1 ").arg(A);
         }
         else
-            qDebug() << QString("Ошибка при расчете коэффициента ARC: Знаменатель равен нулю");
+            qDebug() << QString("Ошибка при расчете коэффициента KRC: Знаменатель равен нулю");
     }
 
     m_calibration_type = CALIBRATION_NONE;
@@ -768,27 +768,27 @@ void CCalibrationWidgetBRUResistance::calibrationWriteProcess()
 
     value.f = shiftRa;
     CModBusDataUnit unit_ShiftRa(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_ShiftRa.setProperty("KEY", "KRA");
+    unit_ShiftRa.setProperty("KEY", "ARA");
 
     value.f = shiftRb;
     CModBusDataUnit unit_ShiftRb(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_ShiftRb.setProperty("KEY", "KRB");
+    unit_ShiftRb.setProperty("KEY", "ARB");
 
     value.f = shiftRc;
     CModBusDataUnit unit_ShiftRc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_ShiftRc.setProperty("KEY", "KRC");
+    unit_ShiftRc.setProperty("KEY", "ARC");
 
     value.f = inclineRa;
     CModBusDataUnit unit_InclineRa(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_InclineRa.setProperty("KEY", "ARA");
+    unit_InclineRa.setProperty("KEY", "KRA");
 
     value.f = inclineRb;
     CModBusDataUnit unit_InclineRb(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_InclineRb.setProperty("KEY", "ARB");
+    unit_InclineRb.setProperty("KEY", "KRB");
 
     value.f = inclineRc;
     CModBusDataUnit unit_InclineRc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_InclineRc.setProperty("KEY", "ARC");
+    unit_InclineRc.setProperty("KEY", "KRC");
 
     QVector<CModBusDataUnit> units;
 
@@ -814,17 +814,17 @@ void CCalibrationWidgetBRUResistance::setCalibrartionFactorActual(const QString 
 {
     qDebug() << QString("Калибровочный коэффициент: %1, значение: %2").arg(key).arg(value);
     if(key == "KRA")
-        setFactorShiftRa(value);
-    else if(key == "KRB")
-        setFactorShiftRb(value);
-    else if(key == "KRC")
-        setFactorShiftRc(value);
-    else if(key == "ARA")
         setFactorInclineRa(value);
-    else if(key == "ARB")
+    else if(key == "KRB")
         setFactorInclineRb(value);
-    else if(key == "ARC")
+    else if(key == "KRC")
         setFactorInclineRc(value);
+    else if(key == "ARA")
+        setFactorShiftRa(value);
+    else if(key == "ARB")
+        setFactorShiftRb(value);
+    else if(key == "ARC")
+        setFactorShiftRc(value);
 }
 //----------------------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::setCalculateActualValue(CModBusDataUnit &unit)
