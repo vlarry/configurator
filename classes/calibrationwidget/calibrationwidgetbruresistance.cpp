@@ -794,15 +794,15 @@ void CCalibrationWidgetBRUResistance::calibrationWriteProcess()
 
     if(shiftRa > 0.0f)
         units << unit_ShiftRa;
-    if(shiftRb >= 0.0f)
+    if(shiftRb > 0.0f)
         units << unit_ShiftRb;
-    if(shiftRc >= 0.0f)
+    if(shiftRc > 0.0f)
         units << unit_ShiftRc;
-    if(inclineRa >= 0.0f)
+    if(inclineRa > 0.0f)
         units << unit_InclineRa;
-    if(inclineRb >= 0.0f)
+    if(inclineRb > 0.0f)
         units << unit_InclineRb;
-    if(inclineRc >= 0.0f)
+    if(inclineRc > 0.0f)
         units << unit_InclineRc;
 
     qInfo() << tr("Запись новых калибровочных коэффициентов БРУ по сопротивлению подтверждена");
