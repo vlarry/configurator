@@ -767,93 +767,93 @@ void CCalibrationWidgetPower::calibrationParameterStart()
 
     if(ui->checkBoxUA->isChecked())
     {
-        if(measureUa() >= 20.0f)
-        {
+//        if(measureUa() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_UA);
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения Ua (Ua < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения Ua (Ua < 20В)"));
     }
     if(ui->checkBoxUB->isChecked())
     {
-        if(measureUb() >= 20.0f)
-        {
+//        if(measureUb() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_UB);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения Ub (Ub < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения Ub (Ub < 20В)"));
     }
     if(ui->checkBoxUC->isChecked())
     {
-        if(measureUc() >= 20.0f)
-        {
+//        if(measureUc() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_UC);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения Uc (Uc < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения Uc (Uc < 20В)"));
     }
     if(ui->checkBoxUAB->isChecked())
     {
-        if(measureUab() >= 20.0f)
-        {
+//        if(measureUab() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_UAB);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения Uab (Uab < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения Uab (Uab < 20В)"));
     }
     if(ui->checkBoxUBC->isChecked())
     {
-        if(measureUbc() >= 20.0f)
-        {
+//        if(measureUbc() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_UBC);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения Ubc (Ubc < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения Ubc (Ubc < 20В)"));
     }
     if(ui->checkBoxUCA->isChecked())
     {
-        if(measureUca() >= 20.0f)
-        {
+//        if(measureUca() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_UCA);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения Uca (Uca < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения Uca (Uca < 20В)"));
     }
     if(ui->checkBox3U0S->isChecked())
     {
-        if(measure3U0S() >= 20.0f)
-        {
+//        if(measure3U0S() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_3U0S);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения 3U0S (3U0S < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения 3U0S (3U0S < 20В)"));
     }
     if(ui->checkBox3US->isChecked())
     {
-        if(measure3US() >= 20.0f)
-        {
+//        if(measure3US() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_3US);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения 3US (3US < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения 3US (3US < 20В)"));
     }
     if(ui->checkBox3U0->isChecked())
     {
-        if(measure3U0() >= 20.0f)
-        {
+//        if(measure3U0() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_3U0);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения 3U0 (3U0 < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения 3U0 (3U0 < 20В)"));
     }
 
     if(unit_list.isEmpty())
@@ -1016,23 +1016,23 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
 
     QVector<CModBusDataUnit> units;
 
-    if(Ua >= 20.0f)
+    if(Ua >= 0.0f)
         units << unit_Ua;
-    if(Ub >= 20.0f)
+    if(Ub >= 0.0f)
         units << unit_Ub;
-    if(Uc >= 20.0f)
+    if(Uc >= 0.0f)
         units << unit_Uc;
-    if(Uab >= 20.0f)
+    if(Uab >= 0.0f)
         units << unit_Uab;
-    if(Ubc >= 20.0f)
+    if(Ubc >= 0.0f)
         units << unit_Ubc;
-    if(Uca >= 20.0f)
+    if(Uca >= 0.0f)
         units << unit_Uca;
-    if(_3U0S >= 20.0f)
+    if(_3U0S >= 0.0f)
         units << unit_3U0S;
-    if(_3US >= 20.0f)
+    if(_3US >= 0.0f)
         units << unit_3US;
-    if(_3U0 >= 20.0f)
+    if(_3U0 >= 0.0f)
         units << unit_3U0;
 
     if(units.isEmpty())

@@ -65,8 +65,7 @@
             int dataCount() const;
             int pauseRequest() const;
 
-            float standardPhaseShift() const;
-            float standardPhaseIncline() const;
+            float standardPhase() const;
 
             bool stateShiftRa() const;
             bool stateShiftRb() const;

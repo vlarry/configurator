@@ -15,8 +15,7 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     QDoubleValidator* validator = new QDoubleValidator(0.000001, 10000, 6, this);
     validator->setNotation(QDoubleValidator::StandardNotation);
 
-    ui->lineEditPowerStandardPhaseShift->setValidator(validator);
-    ui->lineEditPowerStandardPhaseIncline->setValidator(validator);
+    ui->lineEditPowerStandardPhase->setValidator(validator);
     ui->lineEditFactorRAShift->setValidator(validator);
     ui->lineEditFactorRBShift->setValidator(validator);
     ui->lineEditFactorRCShift->setValidator(validator);
@@ -30,8 +29,7 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidgetBRUResistance::stateButton);
     connect(this, &CCalibrationWidgetBRUResistance::calibrationEnd, this, &CCalibrationWidgetBRUResistance::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::calibrationWriteProcess);
-    connect(ui->lineEditPowerStandardPhaseShift, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
-    connect(ui->lineEditPowerStandardPhaseIncline, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
+    connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
     connect(ui->checkBoxRAShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->checkBoxRBShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->checkBoxRCShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
@@ -114,15 +112,10 @@ int CCalibrationWidgetBRUResistance::pauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
 }
-//---------------------------------------------------------------
-float CCalibrationWidgetBRUResistance::standardPhaseShift() const
+//----------------------------------------------------------
+float CCalibrationWidgetBRUResistance::standardPhase() const
 {
-    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseShift->text());
-}
-//-----------------------------------------------------------------
-float CCalibrationWidgetBRUResistance::standardPhaseIncline() const
-{
-    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseIncline->text());
+    return QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
 }
 //--------------------------------------------------------
 bool CCalibrationWidgetBRUResistance::stateShiftRa() const
@@ -547,19 +540,18 @@ void CCalibrationWidgetBRUResistance::valueCurrentStandardChanged(const QString&
 //-------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::stateChoiceChannelChanged(bool)
 {
-    float phaseShift = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseShift->text());
-    float phaseIncline = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseIncline->text());
+    float phase = QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
 
     if((ui->checkBoxRAShift->isChecked() ||
         ui->checkBoxRBShift->isChecked() ||
-        ui->checkBoxRCShift->isChecked()) && phaseShift > 0)
+        ui->checkBoxRCShift->isChecked()) && phase > 0)
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
     }
     else if((ui->checkBoxRAIncline->isChecked() ||
              ui->checkBoxRBIncline->isChecked() ||
-             ui->checkBoxRCIncline->isChecked()) && phaseIncline > 0)
+             ui->checkBoxRCIncline->isChecked()) && phase > 0)
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
@@ -583,9 +575,9 @@ void CCalibrationWidgetBRUResistance::calibrationParameterStart()
 
     if(m_calibration_type == CALIBRATION_MIN &&
       (((ui->checkBoxRAShift->isChecked() || ui->checkBoxRBShift->isChecked() || ui->checkBoxRCShift->isChecked()) &&
-       standardPhaseShift() <= m_calibration_min.shiftValue) ||
+       standardPhase() <= m_calibration_min.shiftValue) ||
        ((ui->checkBoxRAIncline->isChecked() || ui->checkBoxRBIncline->isChecked() || ui->checkBoxRCIncline->isChecked()) &&
-        standardPhaseIncline() <= m_calibration_min.inclineValue)))
+        standardPhase() <= m_calibration_min.inclineValue)))
     {
         m_calibration_type = CALIBRATION_NONE;
         m_calibration_min = { 0.0f, 0.0f, calibration_t() };
@@ -646,16 +638,16 @@ void CCalibrationWidgetBRUResistance::calibrationParameterStart()
     if(m_calibration_type == CALIBRATION_NONE)
     {
         m_calibration_type = CALIBRATION_MIN;
-        m_calibration_min.shiftValue = standardPhaseShift();
-        m_calibration_min.inclineValue = standardPhaseIncline();
+        m_calibration_min.shiftValue = standardPhase();
+        m_calibration_min.inclineValue = standardPhase();
 
         emit calibrationFactorAllStart();
     }
     else if(m_calibration_type == CALIBRATION_MIN)
     {
         m_calibration_type = CALIBRATION_MAX;
-        m_calibration_max.shiftValue = standardPhaseShift();
-        m_calibration_max.inclineValue = standardPhaseIncline();
+        m_calibration_max.shiftValue = standardPhase();
+        m_calibration_max.inclineValue = standardPhase();
     }
 
     emit calibrationStart(unit_list, param_count);

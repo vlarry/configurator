@@ -83,7 +83,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="CLineEdit" name="lineEditPowerStandardPhaseShift">
+        <widget class="CLineEdit" name="lineEditPowerStandardPhase">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -878,25 +878,6 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="CLineEdit" name="lineEditPowerStandardPhaseIncline">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Эталонное значение</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="5">
         <widget class="CLineEdit" name="lineEditMeasuredD40Incline">
          <property name="sizePolicy">
@@ -973,25 +954,6 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_17">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Поданное</string>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="9">
         <widget class="CLineEdit" name="lineEditFactorRBIncline">
          <property name="sizePolicy">
@@ -1042,6 +1004,19 @@
           <size>
            <width>37</width>
            <height>17</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0">
+        <spacer name="horizontalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
           </size>
          </property>
         </spacer>

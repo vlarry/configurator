@@ -15,10 +15,8 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     QDoubleValidator* validator = new QDoubleValidator(0.000001, 10000, 6, this);
     validator->setNotation(QDoubleValidator::StandardNotation);
 
-    ui->lineEditPowerStandardPhaseShift->setValidator(validator);
-    ui->lineEditPowerStandardPhaseIncline->setValidator(validator);
-    ui->lineEditPowerStandardMultiplierShift->setValidator(validator);
-    ui->lineEditPowerStandardMultiplierIncline->setValidator(validator);
+    ui->lineEditPowerStandardPhase->setValidator(validator);
+    ui->lineEditPowerStandardMultiplier->setValidator(validator);
     ui->lineEditFactorUAShift->setValidator(validator);
     ui->lineEditFactorUBShift->setValidator(validator);
     ui->lineEditFactorUCShift->setValidator(validator);
@@ -34,10 +32,8 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidgetBRUPowerDC::stateButton);
     connect(this, &CCalibrationWidgetBRUPowerDC::calibrationEnd, this, &CCalibrationWidgetBRUPowerDC::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUPowerDC::calibrationWriteProcess);
-    connect(ui->lineEditPowerStandardPhaseShift, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
-    connect(ui->lineEditPowerStandardPhaseIncline, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
-    connect(ui->lineEditPowerStandardMultiplierShift, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
-    connect(ui->lineEditPowerStandardMultiplierIncline, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
+    connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
+    connect(ui->lineEditPowerStandardMultiplier, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
     connect(ui->checkBoxUAShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
     connect(ui->checkBoxUBShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
     connect(ui->checkBoxUCShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
@@ -111,25 +107,15 @@ int CCalibrationWidgetBRUPowerDC::pauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
 }
-//------------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::standardPhaseShift() const
+//-------------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::standardPhase() const
 {
-    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseShift->text());
+    return QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
 }
-//--------------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::standardPhaseIncline() const
+//-----------------------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::standardPhaseMultiplier() const
 {
-    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseIncline->text());
-}
-//----------------------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::standardPhaseMultiplierShift() const
-{
-    return QLocale::system().toFloat(ui->lineEditPowerStandardMultiplierShift->text());
-}
-//------------------------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::standardPhaseMultiplierIncline() const
-{
-    return QLocale::system().toFloat(ui->lineEditPowerStandardMultiplierIncline->text());
+    return QLocale::system().toFloat(ui->lineEditPowerStandardMultiplier->text());
 }
 //-----------------------------------------------------
 bool CCalibrationWidgetBRUPowerDC::stateShiftUa() const
@@ -664,31 +650,29 @@ void CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged(const QString&)
 //----------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged(bool)
 {
-    float phaseShift = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseShift->text());
-    float phaseIncline = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseIncline->text());
-    float phaseMultiplierShift = QLocale::system().toFloat(ui->lineEditPowerStandardMultiplierShift->text());
-    float phaseMultiplierIncline = QLocale::system().toFloat(ui->lineEditPowerStandardMultiplierIncline->text());
+    float phase = QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
+    float phaseMultiplier = QLocale::system().toFloat(ui->lineEditPowerStandardMultiplier->text());
 
     if((ui->checkBoxUAShift->isChecked() ||
         ui->checkBoxUBShift->isChecked() ||
-        ui->checkBoxUCShift->isChecked()) && phaseShift > 0)
+        ui->checkBoxUCShift->isChecked()) && phase > 0)
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
     }
     else if((ui->checkBoxUAIncline->isChecked() ||
              ui->checkBoxUBIncline->isChecked() ||
-             ui->checkBoxUCIncline->isChecked()) && phaseIncline > 0)
+             ui->checkBoxUCIncline->isChecked()) && phase > 0)
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
     }
-    else if(ui->checkBoxUMultiplierShift->isChecked() && phaseMultiplierShift > 0)
+    else if(ui->checkBoxUMultiplierShift->isChecked() && phaseMultiplier > 0)
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
     }
-    else if(ui->checkBoxUMultiplierIncline->isChecked() && phaseMultiplierIncline > 0)
+    else if(ui->checkBoxUMultiplierIncline->isChecked() && phaseMultiplier > 0)
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
@@ -714,11 +698,11 @@ void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
 
     if(m_calibration_type == CALIBRATION_MIN &&
       (((ui->checkBoxUAShift->isChecked() || ui->checkBoxUBShift->isChecked() || ui->checkBoxUCShift->isChecked()) &&
-       standardPhaseShift() <= m_calibration_min.shiftValue) ||
+       standardPhase() <= m_calibration_min.shiftValue) ||
        ((ui->checkBoxUAIncline->isChecked() || ui->checkBoxUBIncline->isChecked() || ui->checkBoxUCIncline->isChecked()) &&
-       standardPhaseIncline() <= m_calibration_min.inclineValue) ||
-       (ui->checkBoxUMultiplierShift->isChecked() && standardPhaseMultiplierShift() <= m_calibration_min.shiftMultyplierValue) ||
-       (ui->checkBoxUMultiplierIncline->isChecked() && standardPhaseMultiplierIncline() <= m_calibration_min.inclineMultyplierValue)))
+       standardPhase() <= m_calibration_min.inclineValue) ||
+       (ui->checkBoxUMultiplierShift->isChecked() && standardPhaseMultiplier() <= m_calibration_min.shiftMultyplierValue) ||
+       (ui->checkBoxUMultiplierIncline->isChecked() && standardPhaseMultiplier() <= m_calibration_min.inclineMultyplierValue)))
     {
         m_calibration_type = CALIBRATION_NONE;
         m_calibration_min = { 0.0f, 0.0f, 0.0f, 0.0f,calibration_t() };
@@ -744,83 +728,83 @@ void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
 
     if(ui->checkBoxUAShift->isChecked())
     {
-        if(measureShiftUa() >= 20.0f)
-        {
+//        if(measureShiftUa() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_SHIFT_UA);
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Ua (Ua < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Ua (Ua < 20В)"));
     }
     if(ui->checkBoxUBShift->isChecked())
     {
-        if(measureShiftUb() >= 20.0f)
-        {
+//        if(measureShiftUb() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_SHIFT_UB);
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Ub (Ub < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Ub (Ub < 20В)"));
     }
     if(ui->checkBoxUCShift->isChecked())
     {
-        if(measureShiftUc() >= 20.0f)
-        {
+//        if(measureShiftUc() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_SHIFT_UC);
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Uc (Uc < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Uc (Uc < 20В)"));
     }
     if(ui->checkBoxUAIncline->isChecked())
     {
-        if(measureInclineUa() >= 20.0f)
-        {
+//        if(measureInclineUa() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_INCLINE_UA);
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Ua (Uab < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Ua (Uab < 20В)"));
     }
     if(ui->checkBoxUBIncline->isChecked())
     {
-        if(measureInclineUb() >= 20.0f)
-        {
+//        if(measureInclineUb() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_INCLINE_UB);
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Ub (Ub < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Ub (Ub < 20В)"));
     }
     if(ui->checkBoxUCIncline->isChecked())
     {
-        if(measureInclineUc() >= 20.0f)
-        {
+//        if(measureInclineUc() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_INCLINE_UC);
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Uc (Uc < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Uc (Uc < 20В)"));
     }
     if(ui->checkBoxUMultiplierShift->isChecked())
     {
-        if(measureShiftUMultiplier() >= 20.0f)
-        {
+//        if(measureShiftUMultiplier() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_SHIFT_MULTIPLIER);
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига умножителя (UU < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига умножителя (UU < 20В)"));
     }
     if(ui->checkBoxUMultiplierIncline->isChecked())
     {
-        if(measureInclineUMultiplier() >= 20.0f)
-        {
+//        if(measureInclineUMultiplier() >= 20.0f)
+//        {
             unit_list << calculateValue(POWER_INCLINE_MULTIPLIER);;
             param_count++;
-        }
-        else
-            showMessageError(tr("Нельзя произвести калибровку напряжения наклона умножителя (UU < 20В)"));
+//        }
+//        else
+//            showMessageError(tr("Нельзя произвести калибровку напряжения наклона умножителя (UU < 20В)"));
     }
 
     if(unit_list.isEmpty())
@@ -829,20 +813,20 @@ void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
     if(m_calibration_type == CALIBRATION_NONE)
     {
         m_calibration_type = CALIBRATION_MIN;
-        m_calibration_min.shiftValue = standardPhaseShift();
-        m_calibration_min.inclineValue = standardPhaseIncline();
-        m_calibration_min.shiftMultyplierValue = standardPhaseMultiplierShift();
-        m_calibration_min.inclineMultyplierValue = standardPhaseMultiplierIncline();
+        m_calibration_min.shiftValue = standardPhase();
+        m_calibration_min.inclineValue = standardPhase();
+        m_calibration_min.shiftMultyplierValue = standardPhaseMultiplier();
+        m_calibration_min.inclineMultyplierValue = standardPhaseMultiplier();
 
         emit calibrationFactorAllStart();
     }
     else if(m_calibration_type == CALIBRATION_MIN)
     {
         m_calibration_type = CALIBRATION_MAX;
-        m_calibration_max.shiftValue = standardPhaseShift();
-        m_calibration_max.inclineValue = standardPhaseIncline();
-        m_calibration_max.shiftMultyplierValue = standardPhaseMultiplierShift();
-        m_calibration_max.inclineMultyplierValue = standardPhaseMultiplierIncline();
+        m_calibration_max.shiftValue = standardPhase();
+        m_calibration_max.inclineValue = standardPhase();
+        m_calibration_max.shiftMultyplierValue = standardPhaseMultiplier();
+        m_calibration_max.inclineMultyplierValue = standardPhaseMultiplier();
     }
 
     emit calibrationStart(unit_list, param_count);
@@ -1005,21 +989,21 @@ void CCalibrationWidgetBRUPowerDC::calibrationWriteProcess()
 
     QVector<CModBusDataUnit> units;
 
-    if(shiftUa >= 20.0f)
+    if(shiftUa >= 0.0f)
         units << unit_ShiftUa;
-    if(shiftUb >= 20.0f)
+    if(shiftUb >= 0.0f)
         units << unit_ShiftUb;
-    if(shiftUc >= 20.0f)
+    if(shiftUc >= 0.0f)
         units << unit_ShiftUc;
-    if(inclineUa >= 20.0f)
+    if(inclineUa >= 0.0f)
         units << unit_InclineUa;
-    if(inclineUb >= 20.0f)
+    if(inclineUb >= 0.0f)
         units << unit_InclineUb;
-    if(inclineUc >= 20.0f)
+    if(inclineUc >= 0.0f)
         units << unit_InclineUc;
-    if(shiftMultiplier >= 20.0f)
+    if(shiftMultiplier >= 0.0f)
         units << unit_ShiftMultiplier;
-    if(inclineMultiplier >= 20.0f)
+    if(inclineMultiplier >= 0.0f)
         units << unit_InclineMultiplier;
 
     if(units.isEmpty())
