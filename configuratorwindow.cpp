@@ -3382,16 +3382,16 @@ void ConfiguratorWindow::initMenuPanel()
     }
 
     // Объединение ячеек Управление Уроверь1 с Управлением Уровень2
-    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
-                                                                         QString("comboBoxM77"), 1));
-    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
-                                                                         QString("comboBoxM77_1"), 1));
+//    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
+//                                                                         QString("comboBoxM77"), 1));
+//    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
+//                                                                         QString("comboBoxM77_1"), 1));
 
-    if(cboxLevel1 && cboxLevel2)
-    {
-        connect(cboxLevel1, SIGNAL(currentIndexChanged(int)), cboxLevel2, SLOT(setCurrentIndex(int)));
-        connect(cboxLevel2, SIGNAL(currentIndexChanged(int)), cboxLevel1, SLOT(setCurrentIndex(int)));
-    }
+//    if(cboxLevel1 && cboxLevel2)
+//    {
+//        connect(cboxLevel1, SIGNAL(currentIndexChanged(int)), cboxLevel2, SLOT(setCurrentIndex(int)));
+//        connect(cboxLevel2, SIGNAL(currentIndexChanged(int)), cboxLevel1, SLOT(setCurrentIndex(int)));
+//    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
