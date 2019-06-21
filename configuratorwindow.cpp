@@ -1044,7 +1044,7 @@ void ConfiguratorWindow::protectionBRUWrite()
     sendSettingControlWriteRequest("M93", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingControlWriteRequest("M95", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingControlWriteRequest("M99a", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("BRU", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("BRU", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumWrite
@@ -1059,7 +1059,7 @@ void ConfiguratorWindow::protectionVacuumWrite()
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 
     sendSettingControlWriteRequest("M90", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("VACUUM", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("VACUUM", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlGroupWrite
@@ -1988,8 +1988,8 @@ void ConfiguratorWindow::protectionBRURead()
 
     sendSettingControlReadRequest("M93", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
     sendSettingControlReadRequest("M95", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendSettingControlReadRequest("M99a", DEVICE_MENU_PROTECT_ITEM_CONTROL);
-    sendProtectionWorkModeRequest("BRU", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendSettingControlReadRequest("M99a", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("BRU", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumRead
@@ -2004,7 +2004,7 @@ void ConfiguratorWindow::protectionVacuumRead()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 
     sendSettingControlReadRequest("M90", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("VACUUM", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CONTROL);
+    sendProtectionWorkModeRequest("VACUUM", FUN_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlRead
