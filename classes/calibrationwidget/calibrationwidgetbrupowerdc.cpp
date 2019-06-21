@@ -890,10 +890,15 @@ qDebug() << QString("Разбор калибровочных данных: ра�
     }
 
     if(m_calibration_type == CALIBRATION_MIN)
+    {
         m_calibration_min.data = calibration_data;
+        QMessageBox::information(this, tr("Калибровка БРУ по напряжению DC"), tr("Калибровка минимума окончена.\n"
+                                                                                 "Произведите калибровку максимума."));
+    }
     else if(m_calibration_type == CALIBRATION_MAX)
     {
         m_calibration_max.data = calibration_data;
+        QMessageBox::information(this, tr("Калибровка БРУ по напряжению DC"), tr("Калибровка максимума окончена."));
         display();
     }
 

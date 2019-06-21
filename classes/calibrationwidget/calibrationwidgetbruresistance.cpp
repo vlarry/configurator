@@ -699,10 +699,15 @@ qDebug() << QString("Разбор калибровочных данных: ра�
     }
 
     if(m_calibration_type == CALIBRATION_MIN)
+    {
         m_calibration_min.data = calibration_data;
+        QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("Калибровка минимума окончена.\n"
+                                                                                 "Произведите калибровку максимума."));
+    }
     else if(m_calibration_type == CALIBRATION_MAX)
     {
         m_calibration_max.data = calibration_data;
+        QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("Калибровка максимума окончена."));
         display();
     }
 
@@ -711,12 +716,12 @@ qDebug() << QString("Разбор калибровочных данных: ра�
 //-------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::calibrationWriteProcess()
 {
-    float shiftRa    = 0;
-    float shiftRb    = 0;
-    float shiftRc    = 0;
-    float inclineRa   = 0;
-    float inclineRb   = 0;
-    float inclineRc   = 0;
+    float shiftRa   = 0;
+    float shiftRb   = 0;
+    float shiftRc   = 0;
+    float inclineRa = 0;
+    float inclineRb = 0;
+    float inclineRc = 0;
 
     if(ui->checkBoxRAShift->isChecked())
         shiftRa = valueShiftRa();

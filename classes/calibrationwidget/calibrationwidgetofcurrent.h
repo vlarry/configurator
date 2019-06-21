@@ -17,7 +17,7 @@
     {
         class CCalibrationWidgetOfCurrent;
     }
-    //--------------------------------------
+    //-----------------------------------------------
     class CCalibrationWidgetOfCurrent: public QWidget
     {
         Q_OBJECT
