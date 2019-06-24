@@ -36,7 +36,7 @@ bool CLineEdit::isValidateText(const QString& text) const
         }
     }
 
-    if(isNumber && (value + 0.000001) >= static_cast<double>(bottom) && (value - 0.000001) <= static_cast<double>(top)) // 0.000001 из-за округления (0.1 представляется как 0.09)
+    if(isNumber && ((value + 0.000001) >= static_cast<double>(bottom) && (value - 0.000001) <= static_cast<double>(top))) // 0.000001 из-за округления (0.1 представляется как 0.09)
     {
         return true;
     }

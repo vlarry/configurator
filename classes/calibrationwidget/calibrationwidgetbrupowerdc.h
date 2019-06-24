@@ -23,26 +23,18 @@
             //------------------
             struct calibration_t
             {
-                calibration_data_t shiftUa;
-                calibration_data_t shiftUb;
-                calibration_data_t shiftUc;
-                calibration_data_t inclineUa;
-                calibration_data_t inclineUb;
-                calibration_data_t inclineUc;
-                calibration_data_t shiftMultiplier;
-                calibration_data_t inclineMultiplier;
+                calibration_data_t ua;
+                calibration_data_t ub;
+                calibration_data_t uc;
+                calibration_data_t multiplier;
             };
             //--------------
             enum ChannelType
             {
-                POWER_SHIFT_UA,
-                POWER_SHIFT_UB,
-                POWER_SHIFT_UC,
-                POWER_INCLINE_UA,
-                POWER_INCLINE_UB,
-                POWER_INCLINE_UC,
-                POWER_SHIFT_MULTIPLIER,
-                POWER_INCLINE_MULTIPLIER
+                POWER_UA,
+                POWER_UB,
+                POWER_UC,
+                POWER_MULTIPLIER
             };
             //------------------
             enum CalibrationType
@@ -54,10 +46,8 @@
             //--------------
             struct RangeType
             {
-                float shiftValue;
-                float inclineValue;
-                float shiftMultyplierValue;
-                float inclineMultyplierValue;
+                float value;
+                float multyplierValue;
                 calibration_t data;
             };
 
@@ -71,19 +61,16 @@
             int dataCount() const;
             int pauseRequest() const;
 
-            float standardPhase() const;
-            float standardPhaseMultiplier() const;
+            float standardPhaseMin() const;
+            float standardPhaseMax() const;
+            float standardPhaseMultiplierMin() const;
+            float standardPhaseMultiplierMax() const;
 
-            bool stateShiftUa() const;
-            bool stateShiftUb() const;
-            bool stateShiftUc() const;
+            bool stateUa() const;
+            bool stateUb() const;
+            bool stateUc() const;
 
-            bool stateInclineUa() const;
-            bool stateInclineUb() const;
-            bool stateInclineUc() const;
-
-            bool stateUMultiplierShift() const;
-            bool stateUMultiplierIncline() const;
+            bool stateUMultiplier() const;
 
             float valueShiftUa() const;
             float valueShiftUb() const;
@@ -94,14 +81,10 @@
             float valueShiftUMultiplier() const;
             float valueInclineUMultiplier() const;
 
-            float measureShiftUa() const;
-            float measureShiftUb() const;
-            float measureShiftUc() const;
-            float measureInclineUa() const;
-            float measureInclineUb() const;
-            float measureInclineUc() const;
-            float measureShiftUMultiplier() const;
-            float measureInclineUMultiplier() const;
+            float measureUa() const;
+            float measureUb() const;
+            float measureUc() const;
+            float measureUMultiplier() const;
 
             bool stateCalculateUpdate() const;
 
@@ -116,27 +99,15 @@
             void setFactorShiftUMultiplier(float value);
             void setFactorInclineUMultiplier(float value);
 
-            void setMeasureShiftUa(float average);
-            void setMeasureShiftUb(float average);
-            void setMeasureShiftUc(float average);
+            void setMeasureUa(float average);
+            void setMeasureUb(float average);
+            void setMeasureUc(float average);
+            void setMeasureUMultiplier(float average);
 
-            void setMeasureInclineUa(float average);
-            void setMeasureInclineUb(float average);
-            void setMeasureInclineUc(float average);
-
-            void setMeasureShiftUMultiplier(float average);
-            void setMeasureInclineUMultiplier(float average);
-
-            void setDeviationShiftUa(float value);
-            void setDeviationShiftUb(float value);
-            void setDeviationShiftUc(float value);
-
-            void setDeviationInclineUa(float value);
-            void setDeviationInclineUb(float value);
-            void setDeviationInclineUc(float value);
-
-            void setDeviationShiftUMultiplier(float value);
-            void setDeviationInclineMultiplier(float value);
+            void setDeviationUa(float min, float max);
+            void setDeviationUb(float min, float max);
+            void setDeviationUc(float min, float max);
+            void setDeviationUMultiplier(float min, float max);
 
             void showMessageError(const QString &message);
 
@@ -147,7 +118,6 @@
             void display();
             void stateButton(bool state = false);
             void saveCalibrationToFlash();
-            void valueCurrentStandardChanged(const QString&);
             void stateChoiceChannelChanged(bool);
             void calibrationParameterStart();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);

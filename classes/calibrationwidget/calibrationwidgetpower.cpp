@@ -15,6 +15,27 @@ CCalibrationWidgetPower::CCalibrationWidgetPower(QWidget *parent):
     ui->lineEditPowerStandardPhase->setValidator(validator);
     ui->lineEditPowerStandardPhaseLinear->setValidator(validator);
     ui->lineEditPowerStandard3U->setValidator(validator); // эталонное значение постоянной состовляющей для 3U0S, 3US и 3U0
+
+    ui->lineEditMeasuredD10->setValidator(validator);
+    ui->lineEditMeasuredD11->setValidator(validator);
+    ui->lineEditMeasuredD12->setValidator(validator);
+    ui->lineEditMeasuredD41->setValidator(validator);
+    ui->lineEditMeasuredD42->setValidator(validator);
+    ui->lineEditMeasuredD43->setValidator(validator);
+    ui->lineEditMeasuredD14->setValidator(validator);
+    ui->lineEditMeasuredD48->setValidator(validator);
+    ui->lineEditMeasuredD44->setValidator(validator);
+
+    ui->lineEditDeviationUA->setValidator(validator);
+    ui->lineEditDeviationUB->setValidator(validator);
+    ui->lineEditDeviationUC->setValidator(validator);
+    ui->lineEditDeviationUAB->setValidator(validator);
+    ui->lineEditDeviationUBC->setValidator(validator);
+    ui->lineEditDeviationUCA->setValidator(validator);
+    ui->lineEditDeviation3U0S->setValidator(validator);
+    ui->lineEditDeviation3US->setValidator(validator);
+    ui->lineEditDeviation3U0->setValidator(validator);
+
     ui->lineEditFactorUA->setValidator(validator);
     ui->lineEditFactorUB->setValidator(validator);
     ui->lineEditFactorUC->setValidator(validator);

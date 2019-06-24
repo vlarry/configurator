@@ -5,18 +5,31 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     QWidget(parent),
     ui(new Ui::CCalibrationWidgetBRUPowerDC),
     m_calibration_type(CALIBRATION_NONE),
-    m_calibration_min({ 0.0f, 0.0f, 0.0f, 0.0f, calibration_t() }),
-    m_calibration_max({ 0.0f, 0.0f, 0.0f, 0.0f, calibration_t() })
+    m_calibration_min({ 0.0f, 0.0f, calibration_t() }),
+    m_calibration_max({ 0.0f, 0.0f, calibration_t() })
 {
     ui->setupUi(this);
 
     ui->pushButtonCalibration->setDisabled(true);
 
-    QDoubleValidator* validator = new QDoubleValidator(0.000001, 10000, 6, this);
+    QDoubleValidator* validator = new QDoubleValidator(-1.0f, 10000, 6, this);
     validator->setNotation(QDoubleValidator::StandardNotation);
 
-    ui->lineEditPowerStandardPhase->setValidator(validator);
-    ui->lineEditPowerStandardMultiplier->setValidator(validator);
+    ui->lineEditPowerStandardPhaseMin->setValidator(validator);
+    ui->lineEditPowerStandardPhaseMax->setValidator(validator);
+    ui->lineEditPowerStandardMultiplierMin->setValidator(validator);
+    ui->lineEditPowerStandardMultiplierMax->setValidator(validator);
+
+    ui->lineEditMeasuredD34->setValidator(validator);
+    ui->lineEditMeasuredD35->setValidator(validator);
+    ui->lineEditMeasuredD36->setValidator(validator);
+    ui->lineEditMeasuredD37->setValidator(validator);
+
+    ui->lineEditDeviationUAShift->setValidator(validator);
+    ui->lineEditDeviationUBShift->setValidator(validator);
+    ui->lineEditDeviationUCShift->setValidator(validator);
+    ui->lineEditDeviationUMultiplierShift->setValidator(validator);
+
     ui->lineEditFactorUAShift->setValidator(validator);
     ui->lineEditFactorUBShift->setValidator(validator);
     ui->lineEditFactorUCShift->setValidator(validator);
@@ -32,16 +45,10 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidgetBRUPowerDC::stateButton);
     connect(this, &CCalibrationWidgetBRUPowerDC::calibrationEnd, this, &CCalibrationWidgetBRUPowerDC::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUPowerDC::calibrationWriteProcess);
-    connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
-    connect(ui->lineEditPowerStandardMultiplier, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
-    connect(ui->checkBoxUAShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
-    connect(ui->checkBoxUBShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
-    connect(ui->checkBoxUCShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
-    connect(ui->checkBoxUAIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
-    connect(ui->checkBoxUBIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
-    connect(ui->checkBoxUCIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
-    connect(ui->checkBoxUMultiplierShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
-    connect(ui->checkBoxUMultiplierIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
+    connect(ui->checkBoxUA, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
+    connect(ui->checkBoxUB, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
+    connect(ui->checkBoxUC, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
+    connect(ui->checkBoxUMultiplier, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetBRUPowerDC::saveCalibrationToFlash);
 }
 //-----------------------------------------------------------
@@ -56,27 +63,27 @@ CModBusDataUnit CCalibrationWidgetBRUPowerDC::calculateValue(CCalibrationWidgetB
 
     switch(channel)
     {
-        case POWER_SHIFT_UA:
+        case POWER_UA:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 118, 2); // чтение D35->Ua dc
-            unit.setProperty("CHANNEL", POWER_SHIFT_UA);
+            unit.setProperty("CHANNEL", POWER_UA);
             unit.setProperty("KEY", "UA");
         break;
 
-        case POWER_SHIFT_UB:
+        case POWER_UB:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 120, 2); // чтение D36->Ub dc
-            unit.setProperty("CHANNEL", POWER_SHIFT_UB);
+            unit.setProperty("CHANNEL", POWER_UB);
             unit.setProperty("KEY", "UB");
         break;
 
-        case POWER_SHIFT_UC:
+        case POWER_UC:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 122, 2); // чтение D37->Uc dc
-            unit.setProperty("CHANNEL", POWER_SHIFT_UC);
+            unit.setProperty("CHANNEL", POWER_UC);
             unit.setProperty("KEY", "UC");
         break;
 
-        case POWER_SHIFT_MULTIPLIER:
+        case POWER_MULTIPLIER:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 116, 2); // чтение D34->Uумн
-            unit.setProperty("CHANNEL", POWER_SHIFT_MULTIPLIER);
+            unit.setProperty("CHANNEL", POWER_MULTIPLIER);
             unit.setProperty("KEY", "UMULTIPLIER");
         break;
 
@@ -90,10 +97,10 @@ QVector<CModBusDataUnit> CCalibrationWidgetBRUPowerDC::calculateValueList()
 {
     QVector<CModBusDataUnit> list;
 
-    list << calculateValue(POWER_SHIFT_UA);
-    list << calculateValue(POWER_SHIFT_UB);
-    list << calculateValue(POWER_SHIFT_UC);
-    list << calculateValue(POWER_SHIFT_MULTIPLIER);
+    list << calculateValue(POWER_UA);
+    list << calculateValue(POWER_UB);
+    list << calculateValue(POWER_UC);
+    list << calculateValue(POWER_MULTIPLIER);
 
     return list;
 }
@@ -107,55 +114,45 @@ int CCalibrationWidgetBRUPowerDC::pauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
 }
-//-------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::standardPhase() const
+//----------------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::standardPhaseMin() const
 {
-    return QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
+    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMin->text());
 }
-//-----------------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::standardPhaseMultiplier() const
+//----------------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::standardPhaseMax() const
 {
-    return QLocale::system().toFloat(ui->lineEditPowerStandardMultiplier->text());
+    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMax->text());
 }
-//-----------------------------------------------------
-bool CCalibrationWidgetBRUPowerDC::stateShiftUa() const
+//--------------------------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::standardPhaseMultiplierMin() const
 {
-    return ui->checkBoxUAShift->isChecked();
+    return QLocale::system().toFloat(ui->lineEditPowerStandardMultiplierMin->text());
 }
-//-----------------------------------------------------
-bool CCalibrationWidgetBRUPowerDC::stateShiftUb() const
+//--------------------------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::standardPhaseMultiplierMax() const
 {
-    return ui->checkBoxUBShift->isChecked();
+    return QLocale::system().toFloat(ui->lineEditPowerStandardMultiplierMax->text());
 }
-//-----------------------------------------------------
-bool CCalibrationWidgetBRUPowerDC::stateShiftUc() const
+//------------------------------------------------
+bool CCalibrationWidgetBRUPowerDC::stateUa() const
 {
-    return ui->checkBoxUCShift->isChecked();
+    return ui->checkBoxUA->isChecked();
 }
-//-------------------------------------------------------
-bool CCalibrationWidgetBRUPowerDC::stateInclineUa() const
+//------------------------------------------------
+bool CCalibrationWidgetBRUPowerDC::stateUb() const
 {
-    return ui->checkBoxUAIncline->isChecked();
+    return ui->checkBoxUB->isChecked();
 }
-//-------------------------------------------------------
-bool CCalibrationWidgetBRUPowerDC::stateInclineUb() const
+//------------------------------------------------
+bool CCalibrationWidgetBRUPowerDC::stateUc() const
 {
-    return ui->checkBoxUBIncline->isChecked();
+    return ui->checkBoxUC->isChecked();
 }
-//-------------------------------------------------------
-bool CCalibrationWidgetBRUPowerDC::stateInclineUc() const
+//---------------------------------------------------------
+bool CCalibrationWidgetBRUPowerDC::stateUMultiplier() const
 {
-    return ui->checkBoxUCIncline->isChecked();
-}
-//--------------------------------------------------------------
-bool CCalibrationWidgetBRUPowerDC::stateUMultiplierShift() const
-{
-    return ui->checkBoxUMultiplierShift->isChecked();
-}
-//----------------------------------------------------------------
-bool CCalibrationWidgetBRUPowerDC::stateUMultiplierIncline() const
-{
-    return ui->checkBoxUMultiplierIncline->isChecked();
+    return ui->checkBoxUMultiplier->isChecked();
 }
 //------------------------------------------------------
 float CCalibrationWidgetBRUPowerDC::valueShiftUa() const
@@ -197,45 +194,25 @@ float CCalibrationWidgetBRUPowerDC::valueInclineUMultiplier() const
 {
     return QLocale::system().toFloat(ui->lineEditFactorUMultiplierIncline->text());
 }
-//--------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::measureShiftUa() const
+//---------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::measureUa() const
 {
-    return QLocale::system().toFloat(ui->lineEditMeasuredD35Shift->text());
+    return QLocale::system().toFloat(ui->lineEditMeasuredD35->text());
 }
-//--------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::measureShiftUb() const
+//---------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::measureUb() const
 {
-    return QLocale::system().toFloat(ui->lineEditMeasuredD36Shift->text());
+    return QLocale::system().toFloat(ui->lineEditMeasuredD36->text());
 }
-//--------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::measureShiftUc() const
+//---------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::measureUc() const
 {
-    return QLocale::system().toFloat(ui->lineEditMeasuredD37Shift->text());
+    return QLocale::system().toFloat(ui->lineEditMeasuredD37->text());
 }
-//----------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::measureInclineUa() const
+//------------------------------------------------------------
+float CCalibrationWidgetBRUPowerDC::measureUMultiplier() const
 {
-    return QLocale::system().toFloat(ui->lineEditMeasuredD35Incline->text());
-}
-//----------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::measureInclineUb() const
-{
-    return QLocale::system().toFloat(ui->lineEditMeasuredD36Incline->text());
-}
-//----------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::measureInclineUc() const
-{
-    return QLocale::system().toFloat(ui->lineEditMeasuredD37Incline->text());
-}
-//-----------------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::measureShiftUMultiplier() const
-{
-    return QLocale::system().toFloat(ui->lineEditMeasuredD34Shift->text());
-}
-//-------------------------------------------------------------------
-float CCalibrationWidgetBRUPowerDC::measureInclineUMultiplier() const
-{
-    return QLocale::system().toFloat(ui->lineEditMeasuredD34Incline->text());
+    return QLocale::system().toFloat(ui->lineEditMeasuredD34->text());
 }
 //-------------------------------------------------------------
 bool CCalibrationWidgetBRUPowerDC::stateCalculateUpdate() const
@@ -282,85 +259,45 @@ void CCalibrationWidgetBRUPowerDC::setFactorInclineUMultiplier(float value)
 {
     ui->lineEditFactorUMultiplierIncline->setText(QLocale::system().toString(value, 'f', 6));
 }
-//-----------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setMeasureShiftUa(float average)
+//------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setMeasureUa(float average)
 {
-    ui->lineEditMeasuredD35Shift->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditMeasuredD35->setText(QLocale::system().toString(average, 'f', 6));
 }
-//-----------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setMeasureShiftUb(float average)
+//------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setMeasureUb(float average)
 {
-    ui->lineEditMeasuredD36Shift->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditMeasuredD36->setText(QLocale::system().toString(average, 'f', 6));
 }
-//-----------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setMeasureShiftUc(float average)
+//------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setMeasureUc(float average)
 {
-    ui->lineEditMeasuredD37Shift->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditMeasuredD37->setText(QLocale::system().toString(average, 'f', 6));
 }
-//-------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setMeasureInclineUa(float average)
+//---------------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setMeasureUMultiplier(float average)
 {
-    ui->lineEditMeasuredD35Incline->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditMeasuredD34->setText(QLocale::system().toString(average, 'f', 6));
 }
-//-------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setMeasureInclineUb(float average)
+//---------------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setDeviationUa(float min, float max)
 {
-    ui->lineEditMeasuredD36Incline->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditDeviationUAShift->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
-//-------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setMeasureInclineUc(float average)
+//---------------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setDeviationUb(float min, float max)
 {
-    ui->lineEditMeasuredD37Incline->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditDeviationUBShift->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
-//--------------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setMeasureShiftUMultiplier(float average)
+//---------------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setDeviationUc(float min, float max)
 {
-    ui->lineEditMeasuredD34Shift->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditDeviationUCShift->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
-//----------------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setMeasureInclineUMultiplier(float average)
+//------------------------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setDeviationUMultiplier(float min, float max)
 {
-    ui->lineEditMeasuredD34Incline->setText(QLocale::system().toString(average, 'f', 6));
-}
-//-----------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setDeviationShiftUa(float value)
-{
-    ui->lineEditDeviationUAShift->setText(QLocale::system().toString(value, 'f', 6));
-}
-//-----------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setDeviationShiftUb(float value)
-{
-    ui->lineEditDeviationUBShift->setText(QLocale::system().toString(value, 'f', 6));
-}
-//-----------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setDeviationShiftUc(float value)
-{
-    ui->lineEditDeviationUCShift->setText(QLocale::system().toString(value, 'f', 6));
-}
-//-------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setDeviationInclineUa(float value)
-{
-    ui->lineEditDeviationUAIncline->setText(QLocale::system().toString(value, 'f', 6));
-}
-//-------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setDeviationInclineUb(float value)
-{
-    ui->lineEditDeviationUBIncline->setText(QLocale::system().toString(value, 'f', 6));
-}
-//-------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setDeviationInclineUc(float value)
-{
-    ui->lineEditDeviationUCIncline->setText(QLocale::system().toString(value, 'f', 6));
-}
-//--------------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setDeviationShiftUMultiplier(float value)
-{
-    ui->lineEditDeviationUMultiplierShift->setText(QLocale::system().toString(value, 'f', 6));
-}
-//---------------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::setDeviationInclineMultiplier(float value)
-{
-    ui->lineEditDeviationUMultiplierIncline->setText(QLocale::system().toString(value, 'f', 6));
+    ui->lineEditDeviationUMultiplierShift->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
 //-------------------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::showMessageError(const QString &message)
@@ -407,16 +344,21 @@ void CCalibrationWidgetBRUPowerDC::display()
     calibration_t data_min = m_calibration_min.data;
     calibration_t data_max = m_calibration_max.data;
 
-    if(!data_min.shiftUa.isEmpty() && !data_max.shiftUa.isEmpty())
+    if(!data_min.ua.isEmpty() && !data_max.ua.isEmpty())
     {
-        float Xsrcmin = m_calibration_min.shiftValue;
-        float Xsrcmax = m_calibration_max.shiftValue;
+        float Xsrcmin = m_calibration_min.value;
+        float Xsrcmax = m_calibration_max.value;
 
         float Xmeasmin = 0.0f;
         float Xmeasmax = 0.0f;
 
-        Xmeasmin = standardDeviation(data_min.shiftUa).x();
-        Xmeasmax = standardDeviation(data_max.shiftUa).x();
+        QPointF deviationMin = standardDeviation(data_min.ua);
+        QPointF deviationMax = standardDeviation(data_max.ua);
+
+        Xmeasmin = deviationMin.x();
+        Xmeasmax = deviationMax.x();
+
+        setDeviationUa(deviationMin.y(), deviationMax.y());
 
         float numerator = (Xmeasmax - Xmeasmin); // числитель
         float denominator (Xsrcmax - Xsrcmin); // знаменатель
@@ -429,18 +371,32 @@ void CCalibrationWidgetBRUPowerDC::display()
         }
         else
             qDebug() << QString("Ошибка при расчете коэффициента KUADC: Знаменатель равен нулю");
+
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+
+        numerator = ps - rq; // числитель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineUa(A);
+            qDebug() << QString("Новый коэффициент наклона AUADC рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KUADC: Знаменатель равен нулю");
     }
 
-    if(!data_min.shiftUb.isEmpty() && !data_max.shiftUb.isEmpty())
+    if(!data_min.ub.isEmpty() && !data_max.ub.isEmpty())
     {
-        float Xsrcmin = m_calibration_min.shiftValue;
-        float Xsrcmax = m_calibration_max.shiftValue;
+        float Xsrcmin = m_calibration_min.value;
+        float Xsrcmax = m_calibration_max.value;
 
         float Xmeasmin = 0.0f;
         float Xmeasmax = 0.0f;
 
-        Xmeasmin = standardDeviation(data_min.shiftUb).x();
-        Xmeasmax = standardDeviation(data_max.shiftUb).x();
+        Xmeasmin = standardDeviation(data_min.ub).x();
+        Xmeasmax = standardDeviation(data_max.ub).x();
 
         float numerator = (Xmeasmax - Xmeasmin); // числитель
         float denominator (Xsrcmax - Xsrcmin); // знаменатель
@@ -453,18 +409,32 @@ void CCalibrationWidgetBRUPowerDC::display()
         }
         else
             qDebug() << QString("Ошибка при расчете коэффициента KUBDC: Знаменатель равен нулю");
+
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+
+        numerator = ps - rq; // числитель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineUb(A);
+            qDebug() << QString("Новый коэффициент наклона AUBDC рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента AUBDC: Знаменатель равен нулю");
     }
 
-    if(!data_min.shiftUc.isEmpty() && !data_max.shiftUc.isEmpty())
+    if(!data_min.uc.isEmpty() && !data_max.uc.isEmpty())
     {
-        float Xsrcmin = m_calibration_min.shiftValue;
-        float Xsrcmax = m_calibration_max.shiftValue;
+        float Xsrcmin = m_calibration_min.value;
+        float Xsrcmax = m_calibration_max.value;
 
         float Xmeasmin = 0.0f;
         float Xmeasmax = 0.0f;
 
-        Xmeasmin = standardDeviation(data_min.shiftUc).x();
-        Xmeasmax = standardDeviation(data_max.shiftUc).x();
+        Xmeasmin = standardDeviation(data_min.uc).x();
+        Xmeasmax = standardDeviation(data_max.uc).x();
 
         float numerator = (Xmeasmax - Xmeasmin); // числитель
         float denominator (Xsrcmax - Xsrcmin); // знаменатель
@@ -477,18 +447,32 @@ void CCalibrationWidgetBRUPowerDC::display()
         }
         else
             qDebug() << QString("Ошибка при расчете коэффициента KUCDC: Знаменатель равен нулю");
+
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+
+        numerator = ps - rq; // числитель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineUc(A);
+            qDebug() << QString("Новый коэффициент наклона AUCDC рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента AUCDC: Знаменатель равен нулю");
     }
 
-    if(!data_min.shiftMultiplier.isEmpty() && !data_max.shiftMultiplier.isEmpty())
+    if(!data_min.multiplier.isEmpty() && !data_max.multiplier.isEmpty())
     {
-        float Xsrcmin = m_calibration_min.shiftMultyplierValue;
-        float Xsrcmax = m_calibration_max.shiftMultyplierValue;
+        float Xsrcmin = m_calibration_min.multyplierValue;
+        float Xsrcmax = m_calibration_max.multyplierValue;
 
         float Xmeasmin = 0.0f;
         float Xmeasmax = 0.0f;
 
-        Xmeasmin = standardDeviation(data_min.shiftMultiplier).x();
-        Xmeasmax = standardDeviation(data_max.shiftMultiplier).x();
+        Xmeasmin = standardDeviation(data_min.multiplier).x();
+        Xmeasmax = standardDeviation(data_max.multiplier).x();
 
         float numerator = (Xmeasmax - Xmeasmin); // числитель
         float denominator (Xsrcmax - Xsrcmin); // знаменатель
@@ -501,105 +485,11 @@ void CCalibrationWidgetBRUPowerDC::display()
         }
         else
             qDebug() << QString("Ошибка при расчете коэффициента KUMDC: Знаменатель равен нулю");
-    }
-
-    if(!data_min.inclineUa.isEmpty() && !data_max.inclineUa.isEmpty())
-    {
-        float Xsrcmin = m_calibration_min.inclineValue;
-        float Xsrcmax = m_calibration_max.inclineValue;
-
-        float Xmeasmin = 0.0f;
-        float Xmeasmax = 0.0f;
-
-        Xmeasmin = standardDeviation(data_min.inclineUa).x();
-        Xmeasmax = standardDeviation(data_max.inclineUa).x();
 
         float ps = Xsrcmax*Xmeasmin;
         float rq = Xsrcmin*Xmeasmax;
 
-        float numerator = ps - rq; // числитель
-        float denominator (Xsrcmax - Xsrcmin); // знаменатель
-
-        if(denominator > 0)
-        {
-            float A = numerator/denominator;
-            setFactorInclineUa(A);
-            qDebug() << QString("Новый коэффициент наклона AUADC рассчитан: %1 ").arg(A);
-        }
-        else
-            qDebug() << QString("Ошибка при расчете коэффициента KUADC: Знаменатель равен нулю");
-    }
-
-    if(!data_min.inclineUb.isEmpty() && !data_max.inclineUb.isEmpty())
-    {
-        float Xsrcmin = m_calibration_min.inclineValue;
-        float Xsrcmax = m_calibration_max.inclineValue;
-
-        float Xmeasmin = 0.0f;
-        float Xmeasmax = 0.0f;
-
-        Xmeasmin = standardDeviation(data_min.inclineUb).x();
-        Xmeasmax = standardDeviation(data_max.inclineUb).x();
-
-        float ps = Xsrcmax*Xmeasmin;
-        float rq = Xsrcmin*Xmeasmax;
-
-        float numerator = ps - rq; // числитель
-        float denominator (Xsrcmax - Xsrcmin); // знаменатель
-
-        if(denominator > 0)
-        {
-            float A = numerator/denominator;
-            setFactorInclineUb(A);
-            qDebug() << QString("Новый коэффициент наклона AUBDC рассчитан: %1 ").arg(A);
-        }
-        else
-            qDebug() << QString("Ошибка при расчете коэффициента AUBDC: Знаменатель равен нулю");
-    }
-
-    if(!data_min.inclineUc.isEmpty() && !data_max.inclineUc.isEmpty())
-    {
-        float Xsrcmin = m_calibration_min.inclineValue;
-        float Xsrcmax = m_calibration_max.inclineValue;
-
-        float Xmeasmin = 0.0f;
-        float Xmeasmax = 0.0f;
-
-        Xmeasmin = standardDeviation(data_min.inclineUc).x();
-        Xmeasmax = standardDeviation(data_max.inclineUc).x();
-
-        float ps = Xsrcmax*Xmeasmin;
-        float rq = Xsrcmin*Xmeasmax;
-
-        float numerator = ps - rq; // числитель
-        float denominator (Xsrcmax - Xsrcmin); // знаменатель
-
-        if(denominator > 0)
-        {
-            float A = numerator/denominator;
-            setFactorInclineUc(A);
-            qDebug() << QString("Новый коэффициент наклона AUCDC рассчитан: %1 ").arg(A);
-        }
-        else
-            qDebug() << QString("Ошибка при расчете коэффициента AUCDC: Знаменатель равен нулю");
-    }
-
-    if(!data_min.inclineMultiplier.isEmpty() && !data_max.inclineMultiplier.isEmpty())
-    {
-        float Xsrcmin = m_calibration_min.inclineMultyplierValue;
-        float Xsrcmax = m_calibration_max.inclineMultyplierValue;
-
-        float Xmeasmin = 0.0f;
-        float Xmeasmax = 0.0f;
-
-        Xmeasmin = standardDeviation(data_min.inclineMultiplier).x();
-        Xmeasmax = standardDeviation(data_max.inclineMultiplier).x();
-
-        float ps = Xsrcmax*Xmeasmin;
-        float rq = Xsrcmin*Xmeasmax;
-
-        float numerator = ps - rq; // числитель
-        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+        numerator = ps - rq; // числитель
 
         if(denominator > 0)
         {
@@ -612,8 +502,8 @@ void CCalibrationWidgetBRUPowerDC::display()
     }
 
     m_calibration_type = CALIBRATION_NONE;
-    m_calibration_min = { 0.0f, 0.0f, 0.0f, 0.0f, calibration_t() };
-    m_calibration_max = { 0.0f, 0.0f, 0.0f, 0.0f, calibration_t() };
+    m_calibration_min = { 0.0f, 0.0f, calibration_t() };
+    m_calibration_max = { 0.0f, 0.0f, calibration_t() };
 }
 //--------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::stateButton(bool state)
@@ -642,37 +532,20 @@ void CCalibrationWidgetBRUPowerDC::saveCalibrationToFlash()
     else
         qInfo() << tr("Отказ от сохранения калибровочных коэффициентов БРУ по напряжению DC во флеш.");
 }
-//----------------------------------------------------------------------------
-void CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged(const QString&)
-{
-    stateChoiceChannelChanged(false); // аргумент не имеет значения, т.к. не используется
-}
 //----------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged(bool)
 {
-    float phase = QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
-    float phaseMultiplier = QLocale::system().toFloat(ui->lineEditPowerStandardMultiplier->text());
+    float phaseMin = standardPhaseMin();
+    float phaseMax = standardPhaseMax();
+    float phaseMultiplierMin = standardPhaseMultiplierMin();
+    float phaseMultiplierMax = standardPhaseMultiplierMin();
 
-    if((ui->checkBoxUAShift->isChecked() ||
-        ui->checkBoxUBShift->isChecked() ||
-        ui->checkBoxUCShift->isChecked()) && phase > 0)
+    if((stateUa() || stateUb() || stateUc()) && (phaseMin > 0 || phaseMax > 0))
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
     }
-    else if((ui->checkBoxUAIncline->isChecked() ||
-             ui->checkBoxUBIncline->isChecked() ||
-             ui->checkBoxUCIncline->isChecked()) && phase > 0)
-    {
-        ui->pushButtonCalibration->setEnabled(true);
-        return;
-    }
-    else if(ui->checkBoxUMultiplierShift->isChecked() && phaseMultiplier > 0)
-    {
-        ui->pushButtonCalibration->setEnabled(true);
-        return;
-    }
-    else if(ui->checkBoxUMultiplierIncline->isChecked() && phaseMultiplier > 0)
+    else if(stateUMultiplier() && (phaseMultiplierMin > 0 || phaseMultiplierMax > 0))
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
@@ -683,30 +556,19 @@ void CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged(bool)
 //------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
 {
-    if(!ui->checkBoxUAShift->isChecked() &&
-       !ui->checkBoxUBShift->isChecked() &&
-       !ui->checkBoxUCShift->isChecked() &&
-       !ui->checkBoxUAIncline->isChecked() &&
-       !ui->checkBoxUBIncline->isChecked() &&
-       !ui->checkBoxUCIncline->isChecked() &&
-       !ui->checkBoxUMultiplierShift->isChecked() &&
-       !ui->checkBoxUMultiplierIncline->isChecked())
+    if(!stateUa() && !stateUb() && !stateUc() && !stateUMultiplier())
     {
         QMessageBox::warning(this, tr("Калибровка БРУ по напряжению DC"), tr("Нет выбранных каналов для калибровки"));
         return;
     }
 
     if(m_calibration_type == CALIBRATION_MIN &&
-      (((ui->checkBoxUAShift->isChecked() || ui->checkBoxUBShift->isChecked() || ui->checkBoxUCShift->isChecked()) &&
-       standardPhase() <= m_calibration_min.shiftValue) ||
-       ((ui->checkBoxUAIncline->isChecked() || ui->checkBoxUBIncline->isChecked() || ui->checkBoxUCIncline->isChecked()) &&
-       standardPhase() <= m_calibration_min.inclineValue) ||
-       (ui->checkBoxUMultiplierShift->isChecked() && standardPhaseMultiplier() <= m_calibration_min.shiftMultyplierValue) ||
-       (ui->checkBoxUMultiplierIncline->isChecked() && standardPhaseMultiplier() <= m_calibration_min.inclineMultyplierValue)))
+      (((stateUa() || stateUb() || stateUc()) && standardPhaseMin() <= m_calibration_min.value) ||
+      (stateUMultiplier() && standardPhaseMultiplierMin() <= m_calibration_min.multyplierValue)))
     {
         m_calibration_type = CALIBRATION_NONE;
-        m_calibration_min = { 0.0f, 0.0f, 0.0f, 0.0f,calibration_t() };
-        m_calibration_max = { 0.0f, 0.0f, 0.0f, 0.0f,calibration_t() };
+        m_calibration_min = { 0.0f, 0.0f, calibration_t() };
+        m_calibration_max = { 0.0f, 0.0f, calibration_t() };
 
         QMessageBox::warning(this, tr("Калибровка БРУ по напряжению"), tr("Эталонное значение для максимума меньше или равно значения минимума"));
         emit calibrationEnd();
@@ -726,85 +588,25 @@ void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
     QVector<CModBusDataUnit> unit_list;
     int param_count = 0;
 
-    if(ui->checkBoxUAShift->isChecked())
+    if(stateUa())
     {
-//        if(measureShiftUa() >= 20.0f)
-//        {
-            unit_list << calculateValue(POWER_SHIFT_UA);
-            param_count++;
-//        }
-//        else
-//            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Ua (Ua < 20В)"));
+        unit_list << calculateValue(POWER_UA);
+        param_count++;
     }
-    if(ui->checkBoxUBShift->isChecked())
+    if(stateUb())
     {
-//        if(measureShiftUb() >= 20.0f)
-//        {
-            unit_list << calculateValue(POWER_SHIFT_UB);
-            param_count++;
-//        }
-//        else
-//            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Ub (Ub < 20В)"));
+        unit_list << calculateValue(POWER_UB);
+        param_count++;
     }
-    if(ui->checkBoxUCShift->isChecked())
+    if(stateUc())
     {
-//        if(measureShiftUc() >= 20.0f)
-//        {
-            unit_list << calculateValue(POWER_SHIFT_UC);
-            param_count++;
-//        }
-//        else
-//            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига Uc (Uc < 20В)"));
+        unit_list << calculateValue(POWER_UC);
+        param_count++;
     }
-    if(ui->checkBoxUAIncline->isChecked())
+    if(stateUMultiplier())
     {
-//        if(measureInclineUa() >= 20.0f)
-//        {
-            unit_list << calculateValue(POWER_INCLINE_UA);
-            param_count++;
-//        }
-//        else
-//            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Ua (Uab < 20В)"));
-    }
-    if(ui->checkBoxUBIncline->isChecked())
-    {
-//        if(measureInclineUb() >= 20.0f)
-//        {
-            unit_list << calculateValue(POWER_INCLINE_UB);
-            param_count++;
-//        }
-//        else
-//            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Ub (Ub < 20В)"));
-    }
-    if(ui->checkBoxUCIncline->isChecked())
-    {
-//        if(measureInclineUc() >= 20.0f)
-//        {
-            unit_list << calculateValue(POWER_INCLINE_UC);
-            param_count++;
-//        }
-//        else
-//            showMessageError(tr("Нельзя произвести калибровку напряжения наклона Uc (Uc < 20В)"));
-    }
-    if(ui->checkBoxUMultiplierShift->isChecked())
-    {
-//        if(measureShiftUMultiplier() >= 20.0f)
-//        {
-            unit_list << calculateValue(POWER_SHIFT_MULTIPLIER);
-            param_count++;
-//        }
-//        else
-//            showMessageError(tr("Нельзя произвести калибровку напряжения сдвига умножителя (UU < 20В)"));
-    }
-    if(ui->checkBoxUMultiplierIncline->isChecked())
-    {
-//        if(measureInclineUMultiplier() >= 20.0f)
-//        {
-            unit_list << calculateValue(POWER_INCLINE_MULTIPLIER);;
-            param_count++;
-//        }
-//        else
-//            showMessageError(tr("Нельзя произвести калибровку напряжения наклона умножителя (UU < 20В)"));
+        unit_list << calculateValue(POWER_MULTIPLIER);
+        param_count++;
     }
 
     if(unit_list.isEmpty())
@@ -813,20 +615,16 @@ void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
     if(m_calibration_type == CALIBRATION_NONE)
     {
         m_calibration_type = CALIBRATION_MIN;
-        m_calibration_min.shiftValue = standardPhase();
-        m_calibration_min.inclineValue = standardPhase();
-        m_calibration_min.shiftMultyplierValue = standardPhaseMultiplier();
-        m_calibration_min.inclineMultyplierValue = standardPhaseMultiplier();
+        m_calibration_min.value = standardPhaseMin();
+        m_calibration_min.multyplierValue = standardPhaseMultiplierMin();
 
         emit calibrationFactorAllStart();
     }
     else if(m_calibration_type == CALIBRATION_MIN)
     {
         m_calibration_type = CALIBRATION_MAX;
-        m_calibration_max.shiftValue = standardPhase();
-        m_calibration_max.inclineValue = standardPhase();
-        m_calibration_max.shiftMultyplierValue = standardPhaseMultiplier();
-        m_calibration_max.inclineMultyplierValue = standardPhaseMultiplier();
+        m_calibration_max.value = standardPhaseMax();
+        m_calibration_max.multyplierValue = standardPhaseMultiplierMax();
     }
 
     emit calibrationStart(unit_list, param_count);
@@ -855,22 +653,14 @@ qDebug() << QString("Разбор калибровочных данных: ра�
         value.v[0] = unit[1];
         value.v[1] = unit[0];
 
-        if(channel == POWER_SHIFT_UA)
-            calibration_data.shiftUa << value.f;
-        else if(channel == POWER_SHIFT_UB)
-            calibration_data.shiftUb << value.f;
-        else if(channel == POWER_SHIFT_UC)
-            calibration_data.shiftUc << value.f;
-        else if(channel == POWER_INCLINE_UA)
-            calibration_data.inclineUa << value.f;
-        else if(channel == POWER_INCLINE_UB)
-            calibration_data.inclineUb << value.f;
-        else if(channel == POWER_INCLINE_UC)
-            calibration_data.inclineUc << value.f;
-        else if(channel == POWER_SHIFT_MULTIPLIER)
-            calibration_data.shiftMultiplier << value.f;
-        else if(channel == POWER_INCLINE_MULTIPLIER)
-            calibration_data.inclineMultiplier << value.f;
+        if(channel == POWER_UA)
+            calibration_data.ua << value.f;
+        else if(channel == POWER_UB)
+            calibration_data.ub << value.f;
+        else if(channel == POWER_UC)
+            calibration_data.uc << value.f;
+        else if(channel == POWER_MULTIPLIER)
+            calibration_data.multiplier << value.f;
     }
 
     if(m_calibration_type == CALIBRATION_MIN)
@@ -891,52 +681,48 @@ qDebug() << QString("Разбор калибровочных данных: ра�
 //----------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::calibrationWriteProcess()
 {
-    float shiftUa    = 0;
-    float shiftUb    = 0;
-    float shiftUc    = 0;
-    float inclineUa   = 0;
-    float inclineUb   = 0;
-    float inclineUc   = 0;
-    float shiftMultiplier = 0;
-    float inclineMultiplier  = 0;
+    float shift_ua           = 0.0f;
+    float shift_ub           = 0.0f;
+    float shift_uc           = 0.0f;
+    float incline_ua         = 0.0f;
+    float incline_ub         = 0.0f;
+    float incline_uc         = 0.0f;
+    float shift_multiplier   = 0.0f;
+    float incline_multiplier = 0.0f;
 
-    if(ui->checkBoxUAShift->isChecked())
-        shiftUa = valueShiftUa();
-    if(ui->checkBoxUBShift->isChecked())
-        shiftUb = valueShiftUb();
-    if(ui->checkBoxUCShift->isChecked())
-        shiftUc = valueShiftUc();
-    if(ui->checkBoxUAIncline->isChecked())
-        inclineUa = valueInclineUa();
-    if(ui->checkBoxUBIncline->isChecked())
-        inclineUb = valueInclineUb();
-    if(ui->checkBoxUCIncline->isChecked())
-        inclineUc = valueInclineUc();
-    if(ui->checkBoxUMultiplierShift->isChecked())
-        shiftMultiplier = valueShiftUMultiplier();
-    if(ui->checkBoxUMultiplierIncline->isChecked())
-        inclineMultiplier = valueInclineUMultiplier();
 
-    QString messageError = tr("Напряжение на входе не должно быть меньше 20В");
-
-    if(shiftUa == 0.0f && shiftUb == 0.0f && shiftUc == 0.0f && inclineUa == 0.0f && inclineUb == 0.0f && inclineUc == 0.0f &&
-       shiftMultiplier == 0.0f && inclineMultiplier == 0.0f)
+    if(stateUa())
     {
-        showMessageError(messageError);
-        return;
-    };
+        shift_ua = valueShiftUa();
+        incline_ua = valueInclineUa();
+    }
+    if(stateUb())
+    {
+        shift_ub = valueShiftUb();
+        incline_ub = valueInclineUb();
+    }
+    if(stateUc())
+    {
+        shift_uc = valueShiftUc();
+        incline_uc = valueShiftUc();
+    }
+    if(stateUMultiplier())
+    {
+        shift_multiplier = valueShiftUMultiplier();
+        incline_multiplier = valueInclineUMultiplier();
+    }
 
     QString str;
     QString textValue;
 
-    textValue += ((shiftUa != 0.0f)?QString("Ua сдвига = %1\n").arg(QLocale::system().toString(shiftUa, 'f', 6)):"");
-    textValue += ((shiftUb != 0.0f)?QString("Ub сдвига = %1\n").arg(QLocale::system().toString(shiftUb, 'f', 6)):"");
-    textValue += ((shiftUc != 0.0f)?QString("Uc сдвига = %1\n").arg(QLocale::system().toString(shiftUc, 'f', 6)):"");
-    textValue += ((inclineUa != 0.0f)?QString("Ua наклона = %1\n").arg(QLocale::system().toString(inclineUa, 'f', 6)):"");
-    textValue += ((inclineUb != 0.0f)?QString("Ub наклона = %1\n").arg(QLocale::system().toString(inclineUb, 'f', 6)):"");
-    textValue += ((inclineUc != 0.0f)?QString("Uc наклона = %1\n").arg(QLocale::system().toString(inclineUc, 'f', 6)):"");
-    textValue += ((shiftMultiplier != 0.0f)?QString("Uумн сдвига = %1\n").arg(QLocale::system().toString(shiftMultiplier, 'f', 6)):"");
-    textValue += ((inclineMultiplier != 0.0f)?QString("Uумн наклона = %1\n").arg(QLocale::system().toString(inclineMultiplier, 'f', 6)):"");
+    textValue += ((shift_ua != 0.0f)?QString("Ua сдвига = %1\n").arg(QLocale::system().toString(shift_ua, 'f', 6)):"");
+    textValue += ((shift_ub != 0.0f)?QString("Ub сдвига = %1\n").arg(QLocale::system().toString(shift_ub, 'f', 6)):"");
+    textValue += ((shift_uc != 0.0f)?QString("Uc сдвига = %1\n").arg(QLocale::system().toString(shift_uc, 'f', 6)):"");
+    textValue += ((incline_ua != 0.0f)?QString("Ua наклона = %1\n").arg(QLocale::system().toString(incline_ua, 'f', 6)):"");
+    textValue += ((incline_ub != 0.0f)?QString("Ub наклона = %1\n").arg(QLocale::system().toString(incline_ub, 'f', 6)):"");
+    textValue += ((incline_uc != 0.0f)?QString("Uc наклона = %1\n").arg(QLocale::system().toString(incline_uc, 'f', 6)):"");
+    textValue += ((shift_multiplier != 0.0f)?QString("Uумн сдвига = %1\n").arg(QLocale::system().toString(shift_multiplier, 'f', 6)):"");
+    textValue += ((incline_multiplier != 0.0f)?QString("Uумн наклона = %1\n").arg(QLocale::system().toString(incline_multiplier, 'f', 6)):"");
 
     str = tr("Вы хотите сохранить новые калибровки?\n%1").arg(textValue);
     int res = QMessageBox::question(this, tr("Запись калибровок БРУ по напряжению DC"), str);
@@ -955,55 +741,55 @@ void CCalibrationWidgetBRUPowerDC::calibrationWriteProcess()
         float   f;
     } value;
 
-    value.f = shiftUa;
+    value.f = shift_ua;
     CModBusDataUnit unit_ShiftUa(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
     unit_ShiftUa.setProperty("KEY", "AUADC");
 
-    value.f = shiftUb;
+    value.f = shift_ub;
     CModBusDataUnit unit_ShiftUb(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
     unit_ShiftUb.setProperty("KEY", "AUBDC");
 
-    value.f = shiftUc;
+    value.f = shift_uc;
     CModBusDataUnit unit_ShiftUc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
     unit_ShiftUc.setProperty("KEY", "AUCDC");
 
-    value.f = inclineUa;
+    value.f = incline_ua;
     CModBusDataUnit unit_InclineUa(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
     unit_InclineUa.setProperty("KEY", "KUADC");
 
-    value.f = inclineUb;
+    value.f = incline_ub;
     CModBusDataUnit unit_InclineUb(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
     unit_InclineUb.setProperty("KEY", "KUBDC");
 
-    value.f = inclineUc;
+    value.f = incline_uc;
     CModBusDataUnit unit_InclineUc(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
     unit_InclineUc.setProperty("KEY", "KUCDC");
 
-    value.f = shiftMultiplier;
+    value.f = shift_multiplier;
     CModBusDataUnit unit_ShiftMultiplier(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
     unit_ShiftMultiplier.setProperty("KEY", "AUMDC");
 
-    value.f = inclineMultiplier;
+    value.f = incline_multiplier;
     CModBusDataUnit unit_InclineMultiplier(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
     unit_InclineMultiplier.setProperty("KEY", "KUMDC");
 
     QVector<CModBusDataUnit> units;
 
-    if(shiftUa >= 0.0f)
+    if(shift_ua >= 0.0f)
         units << unit_ShiftUa;
-    if(shiftUb >= 0.0f)
+    if(shift_ub >= 0.0f)
         units << unit_ShiftUb;
-    if(shiftUc >= 0.0f)
+    if(shift_uc >= 0.0f)
         units << unit_ShiftUc;
-    if(inclineUa >= 0.0f)
+    if(incline_ua >= 0.0f)
         units << unit_InclineUa;
-    if(inclineUb >= 0.0f)
+    if(incline_ub >= 0.0f)
         units << unit_InclineUb;
-    if(inclineUc >= 0.0f)
+    if(incline_uc >= 0.0f)
         units << unit_InclineUc;
-    if(shiftMultiplier >= 0.0f)
+    if(shift_multiplier >= 0.0f)
         units << unit_ShiftMultiplier;
-    if(inclineMultiplier >= 0.0f)
+    if(incline_multiplier >= 0.0f)
         units << unit_InclineMultiplier;
 
     if(units.isEmpty())
@@ -1053,23 +839,19 @@ void CCalibrationWidgetBRUPowerDC::setCalculateActualValue(CModBusDataUnit &unit
 
     if(channel == "UA")
     {
-        setMeasureShiftUa(value.f);
-        setMeasureInclineUa(value.f);
+        setMeasureUa(value.f);
     }
     else if(channel == "UB")
     {
-        setMeasureShiftUb(value.f);
-        setMeasureInclineUb(value.f);
+        setMeasureUb(value.f);
     }
     else if(channel == "UC")
     {
-        setMeasureShiftUc(value.f);
-        setMeasureInclineUc(value.f);
+        setMeasureUc(value.f);
     }
     else if(channel == "UMULTIPLIER")
     {
-        setMeasureShiftUMultiplier(value.f);
-        setMeasureInclineUMultiplier(value.f);
+        setMeasureUMultiplier(value.f);
     }
 }
 //-------------------------------------------------------
@@ -1086,42 +868,43 @@ void CCalibrationWidgetBRUPowerDC::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     // Рисование отрезков перед фазами UA, UB, UC и U умножителя напряжения смещения
-    QRect r = ui->gridLayoutShift->cellRect(1, 1);
-    QPoint topCenter = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
-    QPoint topRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutShift->cellRect(2, 1);
-    QPoint centerLeft = QPoint(r.left(), r.top() + r.height()/2);
-    QPoint centerRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutShift->cellRect(3, 1);
-    QPoint bottomCenter = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
-    QPoint bottomRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutShift->cellRect(5, 1);
-    QPoint leftCenter = QPoint(r.left(), r.top() + r.height()/2);
-    QPoint rightCenter = QPoint(r.right(), r.top() + r.height()/2);
-    painter.drawLine(topCenter, bottomCenter);
-    painter.drawLine(topCenter, topRight);
-    painter.drawLine(bottomCenter, bottomRight);
-    painter.drawLine(centerLeft, centerRight);
-    painter.drawLine(leftCenter, rightCenter);
+    QRect r = ui->gridLayoutTable->cellRect(1, 1);
+    QPoint topCenterPowerPhase = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint leftTopMin = QPoint(r.left(), topCenterPowerPhase.y());
+    r = ui->gridLayoutTable->cellRect(6, 1);
+    QPoint bottomCenterPowerPhase = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    r = ui->gridLayoutTable->cellRect(3, 1);
+    QPoint leftBottomCenterMin = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint leftBottomMin = QPoint(r.left(), leftBottomCenterMin.y());
+    r = ui->gridLayoutTable->cellRect(4, 1);
+    QPoint centerPowerUa = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint rightCenterPowerUa = QPoint(r.right(), centerPowerUa.y());
+    r = ui->gridLayoutTable->cellRect(5, 1);
+    QPoint centerPowerUb = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint rightCenterPowerUb = QPoint(r.right(), centerPowerUb.y());
+    r = ui->gridLayoutTable->cellRect(6, 1);
+    QPoint centerPowerUc = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint rightCenterPowerUc = QPoint(r.right(), centerPowerUc.y());
+    r = ui->gridLayoutTable->cellRect(7, 1);
+    QPoint topCenterPowerMultiplier = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint rightCenterMultiplier = QPoint(r.right(), topCenterPowerMultiplier.y());
+    r = ui->gridLayoutTable->cellRect(8, 1);
+    QPoint centerPowerMultiplierMin = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint leftCenterPowerMultiplierMin = QPoint(r.left(), centerPowerMultiplierMin.y());
+    r = ui->gridLayoutTable->cellRect(10, 1);
+    QPoint bottomCenterPowerMultiplier = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint leftCenterPowerMultiplier = QPoint(r.left(), bottomCenterPowerMultiplier.y());
 
-    // Рисование отрезков перед фазами UA, UB, UC и U умножителя напряжения наклона
-    r = ui->gridLayoutIncline->cellRect(1, 1);
-    topCenter = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
-    topRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutIncline->cellRect(2, 1);
-    centerLeft = QPoint(r.left(), r.top() + r.height()/2);
-    centerRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutIncline->cellRect(3, 1);
-    bottomCenter = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
-    bottomRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutIncline->cellRect(5, 1);
-    leftCenter = QPoint(r.left(), r.top() + r.height()/2);
-    rightCenter = QPoint(r.right(), r.top() + r.height()/2);
-    painter.drawLine(topCenter, bottomCenter);
-    painter.drawLine(topCenter, topRight);
-    painter.drawLine(bottomCenter, bottomRight);
-    painter.drawLine(centerLeft, centerRight);
-    painter.drawLine(leftCenter, rightCenter);
+    painter.drawLine(topCenterPowerPhase, bottomCenterPowerPhase);
+    painter.drawLine(leftTopMin, topCenterPowerPhase);
+    painter.drawLine(leftBottomMin, leftBottomCenterMin);
+    painter.drawLine(centerPowerUa, rightCenterPowerUa);
+    painter.drawLine(centerPowerUb, rightCenterPowerUb);
+    painter.drawLine(centerPowerUc, rightCenterPowerUc);
+    painter.drawLine(topCenterPowerMultiplier, bottomCenterPowerMultiplier);
+    painter.drawLine(topCenterPowerMultiplier, rightCenterMultiplier);
+    painter.drawLine(leftCenterPowerMultiplierMin, centerPowerMultiplierMin);
+    painter.drawLine(leftCenterPowerMultiplier, bottomCenterPowerMultiplier);
 
     painter.drawRect(ui->verticalLayoutCentral->geometry());
 }
