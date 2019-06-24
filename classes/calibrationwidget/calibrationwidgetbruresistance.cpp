@@ -336,7 +336,7 @@ QPointF CCalibrationWidgetBRUResistance::standardDeviation(const CCalibrationWid
     for(float value: data)
         deviation += (value - average)*(value - average);
 
-    deviation = float(sqrt(double(double(deviation)/double(data.count()) - 1.0)));
+    deviation = float(sqrt(double(double(deviation)/double(data.count()))));
 
     return QPointF(double(average), double(deviation));
 }
