@@ -23,12 +23,9 @@
             //------------------
             struct calibration_t
             {
-                calibration_data_t shiftRa;
-                calibration_data_t shiftRb;
-                calibration_data_t shiftRc;
-                calibration_data_t inclineRa;
-                calibration_data_t inclineRb;
-                calibration_data_t inclineRc;
+                calibration_data_t ra;
+                calibration_data_t rb;
+                calibration_data_t rc;
             };
             //------------------
             enum CalibrationType
@@ -40,18 +37,14 @@
             //--------------
             enum ChannelType
             {
-                RESISTANCE_SHIFT_RA,
-                RESISTANCE_SHIFT_RB,
-                RESISTANCE_SHIFT_RC,
-                RESISTANCE_INCLINE_RA,
-                RESISTANCE_INCLINE_RB,
-                RESISTANCE_INCLINE_RC
+                RESISTANCE_RA,
+                RESISTANCE_RB,
+                RESISTANCE_RC
             };
             //--------------
             struct RangeType
             {
-                float shiftValue;
-                float inclineValue;
+                float value;
                 calibration_t data;
             };
 
@@ -65,15 +58,12 @@
             int dataCount() const;
             int pauseRequest() const;
 
-            float standardPhase() const;
+            float standardPhaseMin() const;
+            float standardPhaseMax() const;
 
-            bool stateShiftRa() const;
-            bool stateShiftRb() const;
-            bool stateShiftRc() const;
-
-            bool stateInclineRa() const;
-            bool stateInclineRb() const;
-            bool stateInclineRc() const;
+            bool stateRa() const;
+            bool stateRb() const;
+            bool stateRc() const;
 
             float valueShiftRa() const;
             float valueShiftRb() const;
@@ -82,12 +72,9 @@
             float valueInclineRb() const;
             float valueInclineRc() const;
 
-            float measureShiftRa() const;
-            float measureShiftRb() const;
-            float measureShiftRc() const;
-            float measureInclineRa() const;
-            float measureInclineRb() const;
-            float measureInclineRc() const;
+            float measureRa() const;
+            float measureRb() const;
+            float measureRc() const;
 
             bool stateCalculateUpdate() const;
 
@@ -99,21 +86,13 @@
             void setFactorInclineRb(float value);
             void setFactorInclineRc(float value);
 
-            void setMeasureShiftRa(float average);
-            void setMeasureShiftRb(float average);
-            void setMeasureShiftRc(float average);
+            void setMeasureRa(float average);
+            void setMeasureRb(float average);
+            void setMeasureRc(float average);
 
-            void setMeasureInclineRa(float average);
-            void setMeasureInclineRb(float average);
-            void setMeasureInclineRc(float average);
-
-            void setDeviationShiftRa(float value);
-            void setDeviationShiftRb(float value);
-            void setDeviationShiftRc(float value);
-
-            void setDeviationInclineRa(float value);
-            void setDeviationInclineRb(float value);
-            void setDeviationInclineRc(float value);
+            void setDeviationRa(float min, float max);
+            void setDeviationRb(float min, float max);
+            void setDeviationRc(float min, float max);
 
             void showMessageError(const QString &message);
 

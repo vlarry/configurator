@@ -382,7 +382,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Коэффициент Наклон</string>
+          <string>Коэффициент Наклона</string>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -578,7 +578,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Коэффициент Сдвиг</string>
+          <string>Коэффициент Сдвига</string>
          </property>
          <property name="scaledContents">
           <bool>true</bool>

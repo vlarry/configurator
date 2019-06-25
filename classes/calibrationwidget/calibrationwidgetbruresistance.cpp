@@ -5,8 +5,8 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     QWidget(parent),
     ui(new Ui::CCalibrationWidgetBRUResistance),
     m_calibration_type(CALIBRATION_NONE),
-    m_calibration_min({ 0.0f, 0.0f, calibration_t() }),
-    m_calibration_max({ 0.0f, 0.0f, calibration_t() })
+    m_calibration_min({ 0.0f, calibration_t() }),
+    m_calibration_max({ 0.0f, calibration_t() })
 {
     ui->setupUi(this);
 
@@ -15,7 +15,13 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     QDoubleValidator* validator = new QDoubleValidator(0.000001, 10000, 6, this);
     validator->setNotation(QDoubleValidator::StandardNotation);
 
-    ui->lineEditPowerStandardPhase->setValidator(validator);
+    ui->lineEditPowerStandardPhaseMin->setValidator(validator);
+    ui->lineEditPowerStandardPhaseMax->setValidator(validator);
+
+    ui->lineEditMeasuredD38->setValidator(validator);
+    ui->lineEditMeasuredD39->setValidator(validator);
+    ui->lineEditMeasuredD40->setValidator(validator);
+
     ui->lineEditFactorRAShift->setValidator(validator);
     ui->lineEditFactorRBShift->setValidator(validator);
     ui->lineEditFactorRCShift->setValidator(validator);
@@ -29,13 +35,11 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidgetBRUResistance::stateButton);
     connect(this, &CCalibrationWidgetBRUResistance::calibrationEnd, this, &CCalibrationWidgetBRUResistance::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::calibrationWriteProcess);
-    connect(ui->lineEditPowerStandardPhase, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
-    connect(ui->checkBoxRAShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
-    connect(ui->checkBoxRBShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
-    connect(ui->checkBoxRCShift, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
-    connect(ui->checkBoxRAIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
-    connect(ui->checkBoxRBIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
-    connect(ui->checkBoxRCIncline, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
+    connect(ui->lineEditPowerStandardPhaseMin, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
+    connect(ui->lineEditPowerStandardPhaseMax, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
+    connect(ui->checkBoxRA, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
+    connect(ui->checkBoxRB, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
+    connect(ui->checkBoxRC, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::saveCalibrationToFlash);
 }
 //-----------------------------------------------------------------
@@ -50,39 +54,21 @@ CModBusDataUnit CCalibrationWidgetBRUResistance::calculateValue(CCalibrationWidg
 
     switch(channel)
     {
-        case RESISTANCE_SHIFT_RA:
+        case RESISTANCE_RA:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 124, 2); // чтение D38->Ra
-            unit.setProperty("CHANNEL", RESISTANCE_SHIFT_RA);
+            unit.setProperty("CHANNEL", RESISTANCE_RA);
             unit.setProperty("KEY", "RA");
         break;
 
-        case RESISTANCE_SHIFT_RB:
+        case RESISTANCE_RB:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 126, 2); // чтение D39->Rb
-            unit.setProperty("CHANNEL", RESISTANCE_SHIFT_RB);
+            unit.setProperty("CHANNEL", RESISTANCE_RB);
             unit.setProperty("KEY", "RB");
         break;
 
-        case RESISTANCE_SHIFT_RC:
+        case RESISTANCE_RC:
             unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 128, 2); // чтение D40->Rc
-            unit.setProperty("CHANNEL", RESISTANCE_SHIFT_RC);
-            unit.setProperty("KEY", "RC");
-        break;
-
-        case RESISTANCE_INCLINE_RA:
-            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 124, 2); // чтение D38->Ra
-            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RA);
-            unit.setProperty("KEY", "RA");
-        break;
-
-        case RESISTANCE_INCLINE_RB:
-            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 126, 2); // чтение D39->Rb
-            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RB);
-            unit.setProperty("KEY", "RB");
-        break;
-
-        case RESISTANCE_INCLINE_RC:
-            unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 128, 2); // чтение D40->Rc
-            unit.setProperty("CHANNEL", RESISTANCE_INCLINE_RC);
+            unit.setProperty("CHANNEL", RESISTANCE_RC);
             unit.setProperty("KEY", "RC");
         break;
 
@@ -96,9 +82,9 @@ QVector<CModBusDataUnit> CCalibrationWidgetBRUResistance::calculateValueList()
 {
     QVector<CModBusDataUnit> list;
 
-    list << calculateValue(RESISTANCE_SHIFT_RA);
-    list << calculateValue(RESISTANCE_SHIFT_RB);
-    list << calculateValue(RESISTANCE_SHIFT_RC);
+    list << calculateValue(RESISTANCE_RA);
+    list << calculateValue(RESISTANCE_RB);
+    list << calculateValue(RESISTANCE_RC);
 qDebug() << QString("Создание списка расчетных величин: размер списка = %1->").arg(list.count());
     return list;
 }
@@ -112,40 +98,30 @@ int CCalibrationWidgetBRUResistance::pauseRequest() const
 {
     return ui->spinBoxPauseRequest->value();
 }
-//----------------------------------------------------------
-float CCalibrationWidgetBRUResistance::standardPhase() const
+//-------------------------------------------------------------
+float CCalibrationWidgetBRUResistance::standardPhaseMin() const
 {
-    return QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
+    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMin->text());
 }
-//--------------------------------------------------------
-bool CCalibrationWidgetBRUResistance::stateShiftRa() const
+//-------------------------------------------------------------
+float CCalibrationWidgetBRUResistance::standardPhaseMax() const
 {
-    return ui->checkBoxRAShift->isChecked();
+    return QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMax->text());
 }
-//--------------------------------------------------------
-bool CCalibrationWidgetBRUResistance::stateShiftRb() const
+//---------------------------------------------------
+bool CCalibrationWidgetBRUResistance::stateRa() const
 {
-    return ui->checkBoxRBShift->isChecked();
+    return ui->checkBoxRA->isChecked();
 }
-//--------------------------------------------------------
-bool CCalibrationWidgetBRUResistance::stateShiftRc() const
+//---------------------------------------------------
+bool CCalibrationWidgetBRUResistance::stateRb() const
 {
-    return ui->checkBoxRCShift->isChecked();
+    return ui->checkBoxRB->isChecked();
 }
-//----------------------------------------------------------
-bool CCalibrationWidgetBRUResistance::stateInclineRa() const
+//---------------------------------------------------
+bool CCalibrationWidgetBRUResistance::stateRc() const
 {
-    return ui->checkBoxRAIncline->isChecked();
-}
-//----------------------------------------------------------
-bool CCalibrationWidgetBRUResistance::stateInclineRb() const
-{
-    return ui->checkBoxRBIncline->isChecked();
-}
-//----------------------------------------------------------
-bool CCalibrationWidgetBRUResistance::stateInclineRc() const
-{
-    return ui->checkBoxRCIncline->isChecked();
+    return ui->checkBoxRC->isChecked();
 }
 //---------------------------------------------------------
 float CCalibrationWidgetBRUResistance::valueShiftRa() const
@@ -177,35 +153,20 @@ float CCalibrationWidgetBRUResistance::valueInclineRc() const
 {
     return QLocale::system().toFloat(ui->lineEditFactorRCIncline->text());
 }
-//-----------------------------------------------------------
-float CCalibrationWidgetBRUResistance::measureShiftRa() const
+//------------------------------------------------------
+float CCalibrationWidgetBRUResistance::measureRa() const
 {
-    return QLocale::system().toFloat(ui->lineEditMeasuredD38Shift->text());
+    return QLocale::system().toFloat(ui->lineEditMeasuredD38->text());
 }
-//-----------------------------------------------------------
-float CCalibrationWidgetBRUResistance::measureShiftRb() const
+//------------------------------------------------------
+float CCalibrationWidgetBRUResistance::measureRb() const
 {
-    return QLocale::system().toFloat(ui->lineEditMeasuredD39Shift->text());
+    return QLocale::system().toFloat(ui->lineEditMeasuredD39->text());
 }
-//-----------------------------------------------------------
-float CCalibrationWidgetBRUResistance::measureShiftRc() const
+//------------------------------------------------------
+float CCalibrationWidgetBRUResistance::measureRc() const
 {
-    return QLocale::system().toFloat(ui->lineEditMeasuredD40Shift->text());
-}
-//-------------------------------------------------------------
-float CCalibrationWidgetBRUResistance::measureInclineRa() const
-{
-    return QLocale::system().toFloat(ui->lineEditMeasuredD38Incline->text());
-}
-//-------------------------------------------------------------
-float CCalibrationWidgetBRUResistance::measureInclineRb() const
-{
-    return QLocale::system().toFloat(ui->lineEditMeasuredD39Incline->text());
-}
-//-------------------------------------------------------------
-float CCalibrationWidgetBRUResistance::measureInclineRc() const
-{
-    return QLocale::system().toFloat(ui->lineEditMeasuredD40Incline->text());
+    return QLocale::system().toFloat(ui->lineEditMeasuredD40->text());
 }
 //----------------------------------------------------------------
 bool CCalibrationWidgetBRUResistance::stateCalculateUpdate() const
@@ -242,65 +203,35 @@ void CCalibrationWidgetBRUResistance::setFactorInclineRc(float value)
 {
     ui->lineEditFactorRCIncline->setText(QLocale::system().toString(value, 'f', 6));
 }
-//--------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setMeasureShiftRa(float average)
+//---------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setMeasureRa(float average)
 {
-    ui->lineEditMeasuredD38Shift->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditMeasuredD38->setText(QLocale::system().toString(average, 'f', 6));
 }
-//--------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setMeasureShiftRb(float average)
+//---------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setMeasureRb(float average)
 {
-    ui->lineEditMeasuredD39Shift->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditMeasuredD39->setText(QLocale::system().toString(average, 'f', 6));
 }
-//--------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setMeasureShiftRc(float average)
+//---------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setMeasureRc(float average)
 {
-    ui->lineEditMeasuredD40Shift->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditMeasuredD40->setText(QLocale::system().toString(average, 'f', 6));
 }
-//----------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setMeasureInclineRa(float average)
+//------------------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setDeviationRa(float min, float max)
 {
-    ui->lineEditMeasuredD38Incline->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditDeviationRA->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
-//----------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setMeasureInclineRb(float average)
+//------------------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setDeviationRb(float min, float max)
 {
-    ui->lineEditMeasuredD39Incline->setText(QLocale::system().toString(average, 'f', 6));
+    ui->lineEditDeviationRB->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
-//----------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setMeasureInclineRc(float average)
+//------------------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setDeviationRc(float min, float max)
 {
-    ui->lineEditMeasuredD40Incline->setText(QLocale::system().toString(average, 'f', 6));
-}
-//--------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setDeviationShiftRa(float value)
-{
-    ui->lineEditDeviationRAShift->setText(QLocale::system().toString(value, 'f', 6));
-}
-//--------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setDeviationShiftRb(float value)
-{
-    ui->lineEditDeviationRBShift->setText(QLocale::system().toString(value, 'f', 6));
-}
-//--------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setDeviationShiftRc(float value)
-{
-    ui->lineEditDeviationRCShift->setText(QLocale::system().toString(value, 'f', 6));
-}
-//----------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setDeviationInclineRa(float value)
-{
-    ui->lineEditDeviationRAIncline->setText(QLocale::system().toString(value, 'f', 6));
-}
-//----------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setDeviationInclineRb(float value)
-{
-    ui->lineEditDeviationRBIncline->setText(QLocale::system().toString(value, 'f', 6));
-}
-//----------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::setDeviationInclineRc(float value)
-{
-    ui->lineEditDeviationRCIncline->setText(QLocale::system().toString(value, 'f', 6));
+    ui->lineEditDeviationRC->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
 //----------------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::showMessageError(const QString &message)
@@ -348,16 +279,21 @@ void CCalibrationWidgetBRUResistance::display()
     calibration_t data_min = m_calibration_min.data;
     calibration_t data_max = m_calibration_max.data;
 
-    if(!data_min.shiftRa.isEmpty() && !data_max.shiftRa.isEmpty())
+    if(!data_min.ra.isEmpty() && !data_max.ra.isEmpty())
     {
-        float Xsrcmin = m_calibration_min.shiftValue;
-        float Xsrcmax = m_calibration_max.shiftValue;
+        float Xsrcmin = m_calibration_min.value;
+        float Xsrcmax = m_calibration_max.value;
 
         float Xmeasmin = 0.0f;
         float Xmeasmax = 0.0f;
 
-        Xmeasmin = standardDeviation(data_min.shiftRa).x();
-        Xmeasmax = standardDeviation(data_max.shiftRa).x();
+        QPointF deviationMin = standardDeviation(data_min.ra);
+        QPointF deviationMax = standardDeviation(data_max.ra);
+
+        Xmeasmin = deviationMin.x();
+        Xmeasmax = deviationMax.x();
+
+        setDeviationRa(deviationMin.y(), deviationMax.y());
 
         float numerator = (Xmeasmax - Xmeasmin); // числитель
         float denominator (Xsrcmax - Xsrcmin); // знаменатель
@@ -370,18 +306,36 @@ void CCalibrationWidgetBRUResistance::display()
         }
         else
             qDebug() << QString("Ошибка при расчете коэффициента ARA: Знаменатель равен нулю");
+
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+        numerator = ps - rq; // числитель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineRa(A);
+            qDebug() << QString("Новый коэффициент наклона KRA рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KRA: Знаменатель равен нулю");
     }
 
-    if(!data_min.shiftRb.isEmpty() && !data_max.shiftRb.isEmpty())
+    if(!data_min.rb.isEmpty() && !data_max.rb.isEmpty())
     {
-        float Xsrcmin = m_calibration_min.shiftValue;
-        float Xsrcmax = m_calibration_max.shiftValue;
+        float Xsrcmin = m_calibration_min.value;
+        float Xsrcmax = m_calibration_max.value;
 
         float Xmeasmin = 0.0f;
         float Xmeasmax = 0.0f;
 
-        Xmeasmin = standardDeviation(data_min.shiftRb).x();
-        Xmeasmax = standardDeviation(data_max.shiftRb).x();
+        QPointF deviationMin = standardDeviation(data_min.rb);
+        QPointF deviationMax = standardDeviation(data_max.rb);
+
+        Xmeasmin = deviationMin.x();
+        Xmeasmax = deviationMax.x();
+
+        setDeviationRb(deviationMin.y(), deviationMax.y());
 
         float numerator = (Xmeasmax - Xmeasmin); // числитель
         float denominator (Xsrcmax - Xsrcmin); // знаменатель
@@ -394,18 +348,36 @@ void CCalibrationWidgetBRUResistance::display()
         }
         else
             qDebug() << QString("Ошибка при расчете коэффициента ARB: Знаменатель равен нулю");
+
+        float ps = Xsrcmax*Xmeasmin;
+        float rq = Xsrcmin*Xmeasmax;
+        numerator = ps - rq; // числитель
+
+        if(denominator > 0)
+        {
+            float A = numerator/denominator;
+            setFactorInclineRb(A);
+            qDebug() << QString("Новый коэффициент наклона KRB рассчитан: %1 ").arg(A);
+        }
+        else
+            qDebug() << QString("Ошибка при расчете коэффициента KRB: Знаменатель равен нулю");
     }
 
-    if(!data_min.shiftRc.isEmpty() && !data_max.shiftRc.isEmpty())
+    if(!data_min.rc.isEmpty() && !data_max.rc.isEmpty())
     {
-        float Xsrcmin = m_calibration_min.shiftValue;
-        float Xsrcmax = m_calibration_max.shiftValue;
+        float Xsrcmin = m_calibration_min.value;
+        float Xsrcmax = m_calibration_max.value;
 
         float Xmeasmin = 0.0f;
         float Xmeasmax = 0.0f;
 
-        Xmeasmin = standardDeviation(data_min.shiftRc).x();
-        Xmeasmax = standardDeviation(data_max.shiftRc).x();
+        QPointF deviationMin = standardDeviation(data_min.rc);
+        QPointF deviationMax = standardDeviation(data_max.rc);
+
+        Xmeasmin = deviationMin.x();
+        Xmeasmax = deviationMax.x();
+
+        setDeviationRc(deviationMin.y(), deviationMax.y());
 
         float numerator = (Xmeasmax - Xmeasmin); // числитель
         float denominator (Xsrcmax - Xsrcmin); // знаменатель
@@ -418,78 +390,10 @@ void CCalibrationWidgetBRUResistance::display()
         }
         else
             qDebug() << QString("Ошибка при расчете коэффициента ARC: Знаменатель равен нулю");
-    }
-
-    if(!data_min.inclineRa.isEmpty() && !data_max.inclineRa.isEmpty())
-    {
-        float Xsrcmin = m_calibration_min.inclineValue;
-        float Xsrcmax = m_calibration_max.inclineValue;
-
-        float Xmeasmin = 0.0f;
-        float Xmeasmax = 0.0f;
-
-        Xmeasmin = standardDeviation(data_min.inclineRa).x();
-        Xmeasmax = standardDeviation(data_max.inclineRa).x();
 
         float ps = Xsrcmax*Xmeasmin;
         float rq = Xsrcmin*Xmeasmax;
-
-        float numerator = ps - rq; // числитель
-        float denominator (Xsrcmax - Xsrcmin); // знаменатель
-
-        if(denominator > 0)
-        {
-            float A = numerator/denominator;
-            setFactorInclineRa(A);
-            qDebug() << QString("Новый коэффициент наклона KRA рассчитан: %1 ").arg(A);
-        }
-        else
-            qDebug() << QString("Ошибка при расчете коэффициента KRA: Знаменатель равен нулю");
-    }
-
-    if(!data_min.inclineRb.isEmpty() && !data_max.inclineRb.isEmpty())
-    {
-        float Xsrcmin = m_calibration_min.inclineValue;
-        float Xsrcmax = m_calibration_max.inclineValue;
-
-        float Xmeasmin = 0.0f;
-        float Xmeasmax = 0.0f;
-
-        Xmeasmin = standardDeviation(data_min.inclineRb).x();
-        Xmeasmax = standardDeviation(data_max.inclineRb).x();
-
-        float ps = Xsrcmax*Xmeasmin;
-        float rq = Xsrcmin*Xmeasmax;
-
-        float numerator = ps - rq; // числитель
-        float denominator (Xsrcmax - Xsrcmin); // знаменатель
-
-        if(denominator > 0)
-        {
-            float A = numerator/denominator;
-            setFactorInclineRb(A);
-            qDebug() << QString("Новый коэффициент наклона KRB рассчитан: %1 ").arg(A);
-        }
-        else
-            qDebug() << QString("Ошибка при расчете коэффициента KRB: Знаменатель равен нулю");
-    }
-
-    if(!data_min.inclineRc.isEmpty() && !data_max.inclineRc.isEmpty())
-    {
-        float Xsrcmin = m_calibration_min.inclineValue;
-        float Xsrcmax = m_calibration_max.inclineValue;
-
-        float Xmeasmin = 0.0f;
-        float Xmeasmax = 0.0f;
-
-        Xmeasmin = standardDeviation(data_min.inclineRc).x();
-        Xmeasmax = standardDeviation(data_max.inclineRc).x();
-
-        float ps = Xsrcmax*Xmeasmin;
-        float rq = Xsrcmin*Xmeasmax;
-
-        float numerator = ps - rq; // числитель
-        float denominator (Xsrcmax - Xsrcmin); // знаменатель
+        numerator = ps - rq; // числитель
 
         if(denominator > 0)
         {
@@ -502,8 +406,8 @@ void CCalibrationWidgetBRUResistance::display()
     }
 
     m_calibration_type = CALIBRATION_NONE;
-    m_calibration_min = { 0.0f, 0.0f, calibration_t() };
-    m_calibration_max = { 0.0f, 0.0f, calibration_t() };
+    m_calibration_min = { 0.0f, calibration_t() };
+    m_calibration_max = { 0.0f, calibration_t() };
 }
 //-----------------------------------------------------------
 void CCalibrationWidgetBRUResistance::stateButton(bool state)
@@ -540,18 +444,10 @@ void CCalibrationWidgetBRUResistance::valueCurrentStandardChanged(const QString&
 //-------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::stateChoiceChannelChanged(bool)
 {
-    float phase = QLocale::system().toFloat(ui->lineEditPowerStandardPhase->text());
+    float phaseMin = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMin->text());
+    float phaseMax = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMax->text());
 
-    if((ui->checkBoxRAShift->isChecked() ||
-        ui->checkBoxRBShift->isChecked() ||
-        ui->checkBoxRCShift->isChecked()) && phase > 0)
-    {
-        ui->pushButtonCalibration->setEnabled(true);
-        return;
-    }
-    else if((ui->checkBoxRAIncline->isChecked() ||
-             ui->checkBoxRBIncline->isChecked() ||
-             ui->checkBoxRCIncline->isChecked()) && phase > 0)
+    if((stateRa() || stateRb() || stateRc()) && (phaseMin > 0 && phaseMax > 0) && (phaseMin < phaseMax))
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
@@ -562,26 +458,25 @@ void CCalibrationWidgetBRUResistance::stateChoiceChannelChanged(bool)
 //---------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::calibrationParameterStart()
 {
-    if(!ui->checkBoxRAShift->isChecked() &&
-       !ui->checkBoxRBShift->isChecked() &&
-       !ui->checkBoxRCShift->isChecked() &&
-       !ui->checkBoxRAIncline->isChecked() &&
-       !ui->checkBoxRBIncline->isChecked() &&
-       !ui->checkBoxRCIncline->isChecked())
+    if((!stateRa() && !stateRb() && !stateRc()) ||
+       (standardPhaseMin() == 0 || standardPhaseMax() == 0))
     {
+        m_calibration_type = CALIBRATION_NONE;
+        m_calibration_min = { 0.0f, calibration_t() };
+        m_calibration_max = { 0.0f, calibration_t() };
+
         QMessageBox::warning(this, tr("Калибровка БРУ по сопротивлению"), tr("Нет выбранных каналов для калибровки"));
+        emit calibrationEnd();
+
         return;
     }
 
     if(m_calibration_type == CALIBRATION_MIN &&
-      (((ui->checkBoxRAShift->isChecked() || ui->checkBoxRBShift->isChecked() || ui->checkBoxRCShift->isChecked()) &&
-       standardPhase() <= m_calibration_min.shiftValue) ||
-       ((ui->checkBoxRAIncline->isChecked() || ui->checkBoxRBIncline->isChecked() || ui->checkBoxRCIncline->isChecked()) &&
-        standardPhase() <= m_calibration_min.inclineValue)))
+      ((stateRa() || stateRb() || stateRc()) && standardPhaseMin() >= standardPhaseMax()))
     {
         m_calibration_type = CALIBRATION_NONE;
-        m_calibration_min = { 0.0f, 0.0f, calibration_t() };
-        m_calibration_max = { 0.0f, 0.0f, calibration_t() };
+        m_calibration_min = { 0.0f, calibration_t() };
+        m_calibration_max = { 0.0f, calibration_t() };
 
         QMessageBox::warning(this, tr("Калибровка БРУ по сопротивлению"), tr("Эталонное значение для максимума меньше или равно значения минимума"));
         emit calibrationEnd();
@@ -601,34 +496,19 @@ void CCalibrationWidgetBRUResistance::calibrationParameterStart()
     QVector<CModBusDataUnit> unit_list;
     int param_count = 0;
 
-    if(ui->checkBoxRAShift->isChecked())
+    if(stateRa())
     {
-        unit_list << calculateValue(RESISTANCE_SHIFT_RA);
+        unit_list << calculateValue(RESISTANCE_RA);
         param_count++;
     }
-    if(ui->checkBoxRBShift->isChecked())
+    if(stateRb())
     {
-        unit_list << calculateValue(RESISTANCE_SHIFT_RB);
+        unit_list << calculateValue(RESISTANCE_RB);
         param_count++;
     }
-    if(ui->checkBoxRCShift->isChecked())
+    if(stateRc())
     {
-        unit_list << calculateValue(RESISTANCE_SHIFT_RC);
-        param_count++;
-    }
-    if(ui->checkBoxRAIncline->isChecked())
-    {
-        unit_list << calculateValue(RESISTANCE_INCLINE_RA);
-        param_count++;
-    }
-    if(ui->checkBoxRBIncline->isChecked())
-    {
-        unit_list << calculateValue(RESISTANCE_INCLINE_RB);
-        param_count++;
-    }
-    if(ui->checkBoxRCIncline->isChecked())
-    {
-        unit_list << calculateValue(RESISTANCE_INCLINE_RC);
+        unit_list << calculateValue(RESISTANCE_RC);
         param_count++;
     }
 
@@ -638,16 +518,14 @@ void CCalibrationWidgetBRUResistance::calibrationParameterStart()
     if(m_calibration_type == CALIBRATION_NONE)
     {
         m_calibration_type = CALIBRATION_MIN;
-        m_calibration_min.shiftValue = standardPhase();
-        m_calibration_min.inclineValue = standardPhase();
+        m_calibration_min.value = standardPhaseMin();
 
         emit calibrationFactorAllStart();
     }
     else if(m_calibration_type == CALIBRATION_MIN)
     {
         m_calibration_type = CALIBRATION_MAX;
-        m_calibration_max.shiftValue = standardPhase();
-        m_calibration_max.inclineValue = standardPhase();
+        m_calibration_max.value = standardPhaseMax();
     }
 
     emit calibrationStart(unit_list, param_count);
@@ -676,18 +554,12 @@ qDebug() << QString("Разбор калибровочных данных: ра�
         value.v[0] = unit[1];
         value.v[1] = unit[0];
 
-        if(channel == RESISTANCE_SHIFT_RA)
-            calibration_data.shiftRa << value.f;
-        else if(channel == RESISTANCE_SHIFT_RB)
-            calibration_data.shiftRb << value.f;
-        else if(channel == RESISTANCE_SHIFT_RC)
-            calibration_data.shiftRc << value.f;
-        else if(channel == RESISTANCE_INCLINE_RA)
-            calibration_data.inclineRa << value.f;
-        else if(channel == RESISTANCE_INCLINE_RB)
-            calibration_data.inclineRb << value.f;
-        else if(channel == RESISTANCE_INCLINE_RC)
-            calibration_data.inclineRc << value.f;
+        if(channel == RESISTANCE_RA)
+            calibration_data.ra << value.f;
+        else if(channel == RESISTANCE_RB)
+            calibration_data.rb << value.f;
+        else if(channel == RESISTANCE_RC)
+            calibration_data.rc << value.f;
     }
 
     if(m_calibration_type == CALIBRATION_MIN)
@@ -708,31 +580,31 @@ qDebug() << QString("Разбор калибровочных данных: ра�
 //-------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::calibrationWriteProcess()
 {
-    float shiftRa   = 0;
-    float shiftRb   = 0;
-    float shiftRc   = 0;
-    float inclineRa = 0;
-    float inclineRb = 0;
-    float inclineRc = 0;
+    float shiftRa   = 0.0f;
+    float shiftRb   = 0.0f;
+    float shiftRc   = 0.0f;
+    float inclineRa = 0.0f;
+    float inclineRb = 0.0f;
+    float inclineRc = 0.0f;
 
-    if(ui->checkBoxRAShift->isChecked())
+    if(stateRa())
+    {
         shiftRa = valueShiftRa();
-    if(ui->checkBoxRBShift->isChecked())
-        shiftRb = valueShiftRb();
-    if(ui->checkBoxRCShift->isChecked())
-        shiftRc = valueShiftRc();
-    if(ui->checkBoxRAIncline->isChecked())
         inclineRa = valueInclineRa();
-    if(ui->checkBoxRBIncline->isChecked())
+    }
+    if(stateRb())
+    {
+        shiftRb = valueShiftRb();
         inclineRb = valueInclineRb();
-    if(ui->checkBoxRCIncline->isChecked())
+    }
+    if(stateRc())
+    {
+        shiftRc = valueShiftRc();
         inclineRc = valueInclineRc();
-
-//    QString messageError = tr("Напряжение на входе не должно быть меньше 20В");
+    }
 
     if(shiftRa == 0.0f && shiftRb == 0.0f && shiftRc == 0.0f && inclineRa == 0.0f && inclineRb == 0.0f && inclineRc == 0.0f)
     {
-//        showMessageError(messageError);
         return;
     };
 
@@ -839,18 +711,15 @@ void CCalibrationWidgetBRUResistance::setCalculateActualValue(CModBusDataUnit &u
 
     if(channel == "RA")
     {
-        setMeasureShiftRa(value.f);
-        setMeasureInclineRa(value.f);
+        setMeasureRa(value.f);
     }
     else if(channel == "RB")
     {
-        setMeasureShiftRb(value.f);
-        setMeasureInclineRb(value.f);
+        setMeasureRb(value.f);
     }
     else if(channel == "RC")
     {
-        setMeasureShiftRc(value.f);
-        setMeasureInclineRc(value.f);
+        setMeasureRc(value.f);
     }
 }
 //----------------------------------------------------------
@@ -866,35 +735,23 @@ void CCalibrationWidgetBRUResistance::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
     QPainter painter(this);
 
-    // Рисование отрезков перед фазами UA, UB, UC и U умножителя напряжения смещения
-    QRect r = ui->gridLayoutShift->cellRect(1, 1);
-    QPoint topCenter = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
-    QPoint topRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutShift->cellRect(2, 1);
-    QPoint centerLeft = QPoint(r.left(), r.top() + r.height()/2);
-    QPoint centerRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutShift->cellRect(3, 1);
-    QPoint bottomCenter = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
-    QPoint bottomRight = QPoint(r.right(), r.top() + r.height()/2);
-    painter.drawLine(topCenter, bottomCenter);
-    painter.drawLine(topCenter, topRight);
-    painter.drawLine(bottomCenter, bottomRight);
-    painter.drawLine(centerLeft, centerRight);
+    // Рисование отрезков перед сопротивлениями RA, RB, и RC
+    QRect r = ui->gridLayoutTable->cellRect(3, 1);
+    QPoint topCenterLine = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint leftCenterTop = QPoint(r.left(), topCenterLine.y());
+    QPoint rightCenterTop = QPoint(r.right(), topCenterLine.y());
+    r = ui->gridLayoutTable->cellRect(4, 1);
+    QPoint middleCenterLine = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint rightCenterMiddle = QPoint(r.right(), middleCenterLine.y());
+    r = ui->gridLayoutTable->cellRect(5, 1);
+    QPoint bottomCenterLine = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
+    QPoint leftCenterBottom = QPoint(r.left(), bottomCenterLine.y());
+    QPoint rightCenterBottom = QPoint(r.right(), bottomCenterLine.y());
 
-    // Рисование отрезков перед фазами UA, UB, UC и U умножителя напряжения наклона
-    r = ui->gridLayoutIncline->cellRect(1, 1);
-    topCenter = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
-    topRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutIncline->cellRect(2, 1);
-    centerLeft = QPoint(r.left(), r.top() + r.height()/2);
-    centerRight = QPoint(r.right(), r.top() + r.height()/2);
-    r = ui->gridLayoutIncline->cellRect(3, 1);
-    bottomCenter = QPoint(r.left() + r.width()/2, r.top() + r.height()/2);
-    bottomRight = QPoint(r.right(), r.top() + r.height()/2);
-    painter.drawLine(topCenter, bottomCenter);
-    painter.drawLine(topCenter, topRight);
-    painter.drawLine(bottomCenter, bottomRight);
-    painter.drawLine(centerLeft, centerRight);
+    painter.drawLine(topCenterLine, bottomCenterLine);
+    painter.drawLine(leftCenterTop, rightCenterTop);
+    painter.drawLine(middleCenterLine, rightCenterMiddle);
+    painter.drawLine(leftCenterBottom, rightCenterBottom);
 
     painter.drawRect(ui->verticalLayoutCentral->geometry());
 }
