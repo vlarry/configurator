@@ -70,28 +70,6 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUBShift">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Среднеквадратическое значение фазы В</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="5" column="5">
         <widget class="CLineEdit" name="lineEditMeasuredD36">
          <property name="sizePolicy">
@@ -130,28 +108,6 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUBIncline">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Среднеквадратическое значение фазы В</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -221,28 +177,6 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUCShift">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Среднеквадратическое значение фазы С</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="7" column="4">
         <widget class="QLabel" name="label_11">
          <property name="sizePolicy">
@@ -278,25 +212,6 @@
          </property>
          <property name="text">
           <string>UU</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="7">
-        <widget class="QLabel" name="label_16">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Отклонение Наклон (Min/Max)</string>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -382,28 +297,6 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUCIncline">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Среднеквадратическое значение фазы С</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -499,28 +392,6 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUMultiplierShift">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Среднеквадратическое значение фазы С</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_15">
          <property name="sizePolicy">
@@ -556,50 +427,6 @@
          </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Среднее арифметическое значение фазы С&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUAShift">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Среднеквадратическое значение фазы А</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUAIncline">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Среднеквадратическое значение фазы А</string>
          </property>
          <property name="text">
           <string>0,0000</string>
@@ -875,28 +702,6 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="7">
-        <widget class="CLineEdit" name="lineEditDeviationUMultiplierIncline">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Среднеквадратическое значение фазы С</string>
-         </property>
-         <property name="text">
-          <string>0,0000</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="9" column="0">
         <widget class="QLabel" name="label_22">
          <property name="sizePolicy">
@@ -947,13 +752,101 @@
           </font>
          </property>
          <property name="text">
-          <string>Отклонение Сдвиг (Min/Max)</string>
+          <string>Отклонение Min/Max</string>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="7">
+        <widget class="CLineEdit" name="lineEditDeviationUMultiplier">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Среднеквадратическое значение фазы С</string>
+         </property>
+         <property name="text">
+          <string>0,0000</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="7">
+        <widget class="CLineEdit" name="lineEditDeviationUC">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Среднеквадратическое значение фазы С</string>
+         </property>
+         <property name="text">
+          <string>0,0000</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="7">
+        <widget class="CLineEdit" name="lineEditDeviationUB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Среднеквадратическое значение фазы В</string>
+         </property>
+         <property name="text">
+          <string>0,0000</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="7">
+        <widget class="CLineEdit" name="lineEditDeviationUA">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Среднеквадратическое значение фазы А</string>
+         </property>
+         <property name="text">
+          <string>0,0000</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

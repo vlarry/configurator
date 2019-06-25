@@ -12,7 +12,7 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
 
     ui->pushButtonCalibration->setDisabled(true);
 
-    QDoubleValidator* validator = new QDoubleValidator(-1.0f, 10000, 6, this);
+    QDoubleValidator* validator = new QDoubleValidator(0.0f, 10000, 6, this);
     validator->setNotation(QDoubleValidator::StandardNotation);
 
     ui->lineEditPowerStandardPhaseMin->setValidator(validator);
@@ -24,11 +24,6 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     ui->lineEditMeasuredD35->setValidator(validator);
     ui->lineEditMeasuredD36->setValidator(validator);
     ui->lineEditMeasuredD37->setValidator(validator);
-
-    ui->lineEditDeviationUAShift->setValidator(validator);
-    ui->lineEditDeviationUBShift->setValidator(validator);
-    ui->lineEditDeviationUCShift->setValidator(validator);
-    ui->lineEditDeviationUMultiplierShift->setValidator(validator);
 
     ui->lineEditFactorUAShift->setValidator(validator);
     ui->lineEditFactorUBShift->setValidator(validator);
@@ -45,6 +40,12 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
     connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidgetBRUPowerDC::stateButton);
     connect(this, &CCalibrationWidgetBRUPowerDC::calibrationEnd, this, &CCalibrationWidgetBRUPowerDC::stateButton);
     connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUPowerDC::calibrationWriteProcess);
+
+    connect(ui->lineEditPowerStandardPhaseMin, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
+    connect(ui->lineEditPowerStandardPhaseMax, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
+    connect(ui->lineEditPowerStandardMultiplierMin, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
+    connect(ui->lineEditPowerStandardMultiplierMax, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged);
+
     connect(ui->checkBoxUA, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
     connect(ui->checkBoxUB, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
     connect(ui->checkBoxUC, &QCheckBox::clicked, this, &CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged);
@@ -282,22 +283,22 @@ void CCalibrationWidgetBRUPowerDC::setMeasureUMultiplier(float average)
 //---------------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::setDeviationUa(float min, float max)
 {
-    ui->lineEditDeviationUAShift->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
+    ui->lineEditDeviationUA->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
 //---------------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::setDeviationUb(float min, float max)
 {
-    ui->lineEditDeviationUBShift->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
+    ui->lineEditDeviationUB->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
 //---------------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::setDeviationUc(float min, float max)
 {
-    ui->lineEditDeviationUCShift->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
+    ui->lineEditDeviationUC->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
 //------------------------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::setDeviationUMultiplier(float min, float max)
 {
-    ui->lineEditDeviationUMultiplierShift->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
+    ui->lineEditDeviationUMultiplier->setText(QString("%1 / %2").arg(QLocale::system().toString(min, 'f', 6)).arg(QLocale::system().toString(max, 'f', 6)));
 }
 //-------------------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::showMessageError(const QString &message)
@@ -532,6 +533,11 @@ void CCalibrationWidgetBRUPowerDC::saveCalibrationToFlash()
     else
         qInfo() << tr("Отказ от сохранения калибровочных коэффициентов БРУ по напряжению DC во флеш.");
 }
+//----------------------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::valueCurrentStandardChanged(const QString&)
+{
+    stateChoiceChannelChanged(false); // аргумент не имеет значения, т.к. не используется
+}
 //----------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged(bool)
 {
@@ -540,12 +546,12 @@ void CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged(bool)
     float phaseMultiplierMin = standardPhaseMultiplierMin();
     float phaseMultiplierMax = standardPhaseMultiplierMin();
 
-    if((stateUa() || stateUb() || stateUc()) && (phaseMin > 0 || phaseMax > 0))
+    if((stateUa() || stateUb() || stateUc()) && ((phaseMin > 0 && phaseMax > 0) && (phaseMin < phaseMax)))
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
     }
-    else if(stateUMultiplier() && (phaseMultiplierMin > 0 || phaseMultiplierMax > 0))
+    else if(stateUMultiplier() && ((phaseMultiplierMin > 0 && phaseMultiplierMax > 0) && (phaseMultiplierMin < phaseMultiplierMax)))
     {
         ui->pushButtonCalibration->setEnabled(true);
         return;
@@ -556,15 +562,22 @@ void CCalibrationWidgetBRUPowerDC::stateChoiceChannelChanged(bool)
 //------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::calibrationParameterStart()
 {
-    if(!stateUa() && !stateUb() && !stateUc() && !stateUMultiplier())
+    if(((!stateUa() && !stateUb() && !stateUc()) || (standardPhaseMin() == 0 || standardPhaseMax() == 0)) &&
+            (!stateUMultiplier() || (standardPhaseMultiplierMin() == 0 || standardPhaseMultiplierMax() == 0)))
     {
+        m_calibration_type = CALIBRATION_NONE;
+        m_calibration_min = { 0.0f, 0.0f, calibration_t() };
+        m_calibration_max = { 0.0f, 0.0f, calibration_t() };
+
         QMessageBox::warning(this, tr("Калибровка БРУ по напряжению DC"), tr("Нет выбранных каналов для калибровки"));
+        emit calibrationEnd();
+
         return;
     }
 
     if(m_calibration_type == CALIBRATION_MIN &&
-      (((stateUa() || stateUb() || stateUc()) && standardPhaseMin() <= m_calibration_min.value) ||
-      (stateUMultiplier() && standardPhaseMultiplierMin() <= m_calibration_min.multyplierValue)))
+      (((stateUa() || stateUb() || stateUc()) && standardPhaseMin() >= standardPhaseMax()) ||
+      (stateUMultiplier() && standardPhaseMultiplierMin() >= standardPhaseMultiplierMax())))
     {
         m_calibration_type = CALIBRATION_NONE;
         m_calibration_min = { 0.0f, 0.0f, calibration_t() };
