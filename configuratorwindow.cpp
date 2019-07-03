@@ -177,6 +177,7 @@ void ConfiguratorWindow::stateChanged(bool state)
         endJournalRead(m_journal_crash);
         endJournalRead(m_journal_event);
         endJournalRead(m_journal_halfhour);
+        endJournalRead(m_journal_isolation);
 
         m_calibration_controller->setCalculateState(false, CCalibrationController::TYPE_NONE);
     }
@@ -308,7 +309,7 @@ void ConfiguratorWindow::debugInfoRead()
  */
 void ConfiguratorWindow::journalRead(JournalPtr journal)
 {
-    if(!journal)
+    if(!journal || (journal && journal->msgCount() == 0))
         return;
 
     if(journal->isReadState())
@@ -2301,6 +2302,16 @@ void ConfiguratorWindow::processReadJournals(bool state)
     {
         if(state)
         {
+            if(journal->msgCount() == 0)
+            {
+                m_popup->setPopupText(tr("Записей в устройстве для чтения нет"));
+                m_popup->show();
+
+                ui->pushButtonJournalRead->setChecked(false);
+
+                return;
+            }
+
             if(m_modbus->isConnected())
             {
                 journal->initRead();
@@ -2791,6 +2802,7 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
         readJournalCount(m_journal_event);
         readJournalCount(m_journal_crash);
         readJournalCount(m_journal_halfhour);
+        readJournalCount(m_journal_isolation);
     }
 
     if(type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
@@ -4289,6 +4301,12 @@ void ConfiguratorWindow::applicationCloseProcess()
     {
         delete m_journal_halfhour;
         m_journal_halfhour = nullptr;
+    }
+
+    if(m_journal_isolation)
+    {
+        delete m_journal_isolation;
+        m_journal_isolation = nullptr;
     }
 
     delete m_modbus;
@@ -6916,6 +6934,10 @@ JournalPtr ConfiguratorWindow::currentJournalWidget()
             journal = m_journal_halfhour;
         break;
 
+        case DEVICE_MENU_ITEM_JOURNALS_ISOLATION:
+            journal = m_journal_isolation;
+        break;
+
         default:
             journal = nullptr;
         break;
@@ -6996,7 +7018,7 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
         QString msg;
         QString journal_type = journal->widget()->property("TYPE").toString();
         QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
-                                                                                                    tr("Получасовок"):tr("Неизвестный");
+                                                         tr("Получасовок"):(journal_type == "ISOLATION")?tr("Изоляций"):tr("Неизвестный");
 
         if(m_journal_progress)
         {
@@ -7047,7 +7069,7 @@ QString ConfiguratorWindow::journalName(JournalPtr journal)
 
     QString journal_type = journal->widget()->property("TYPE").toString();
     QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?tr("Получасовок"):
-                                                     tr("Неизвестный");
+                           (journal_type == "ISOLATION")?tr("Изоляций"):tr("Неизвестный");
 
     return journal_name;
 }
@@ -7066,7 +7088,7 @@ JournalPtr ConfiguratorWindow::journalWidgetByType(const QString &type)
     else if(type == "HALFHOUR")
         journal = m_journal_halfhour;
     else if(type == "ISOLATION")
-        journal = nullptr;
+        journal = m_journal_isolation;
     else
         journal = nullptr;
 
@@ -10156,6 +10178,10 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
             case DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS:
                 readJournalCount(m_journal_halfhour);
+            break;
+
+            case DEVICE_MENU_ITEM_JOURNALS_ISOLATION:
+                readJournalCount(m_journal_isolation);
             break;
 
             default: break;

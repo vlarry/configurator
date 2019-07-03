@@ -95,6 +95,10 @@ void CJournalWidget::print(const QVector<quint16>& data) const
     {
         printHalfHour(bytes);
     }
+    else if(journal_type == "ISOLATION")
+    {
+        printIsolation(bytes);
+    }
 }
 //----------------------------------------------------------------------------------------------------------
 void CJournalWidget::setTableHeaders(CJournalWidget::PropertyType property_type, const QStringList& headers)
@@ -586,6 +590,69 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
 
                 ui->tableWidgetJournal->setRowData(row, QVariant::fromValue(halfhour));
             }
+        }
+    }
+
+    emit printFinished();
+}
+//--------------------------------------------------------------------
+void CJournalWidget::printIsolation(const QVector<quint8> &data) const
+{
+    QVector<QString> type_list = QVector<QString>() << "D0" << "D1" << "D2" << "D3" << "D4" << "D5" << "D6" << "D7";
+
+    for(int i = 0; i < data.count(); i += 64)
+    {
+        quint16   id = static_cast<quint16>((data[i + 1] << 8) | data[i]);
+        QDateTime dt = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
+        quint8    type = data[i + 7];
+        int       row  = ui->tableWidgetJournal->rowCount();
+
+        ui->tableWidgetJournal->insertRow(row);
+
+        ui->tableWidgetJournal->setItem(row, 0, new CTableWidgetItem(QString("%1").arg(row + m_row_start)));
+        ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(QString("%1").arg(id)));
+        ui->tableWidgetJournal->setItem(row, 2, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+        ui->tableWidgetJournal->setItem(row, 3, new CTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+
+        ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
+
+        if(type < type_list.count())
+        {
+            ui->tableWidgetJournal->setItem(row, 4, new CTableWidgetItem(QString("%1").arg(type_list[type])));
+            ui->tableWidgetJournal->item(row, 4)->setTextAlignment(Qt::AlignCenter);
+
+            union
+            {
+                quint8 buf[4];
+                float  _float;
+            } value;
+
+            value.buf[0] = data[8];
+            value.buf[1] = data[9];
+            value.buf[2] = data[10];
+            value.buf[3] = data[11];
+
+            ui->tableWidgetJournal->setItem(row, 5, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value._float, 'f', 2))));
+            ui->tableWidgetJournal->item(row, 5)->setTextAlignment(Qt::AlignCenter);
+
+            value.buf[0] = data[12];
+            value.buf[1] = data[13];
+            value.buf[2] = data[14];
+            value.buf[3] = data[15];
+
+            ui->tableWidgetJournal->setItem(row, 6, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value._float, 'f', 2))));
+            ui->tableWidgetJournal->item(row, 6)->setTextAlignment(Qt::AlignCenter);
+
+            value.buf[0] = data[16];
+            value.buf[1] = data[17];
+            value.buf[2] = data[18];
+            value.buf[3] = data[19];
+
+            ui->tableWidgetJournal->setItem(row, 7, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value._float, 'f', 2))));
+            ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignCenter);
         }
     }
 

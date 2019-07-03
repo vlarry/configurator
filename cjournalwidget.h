@@ -205,9 +205,10 @@
             static date_t    secsToDate(quint32 secs);
 
         protected:
-            void printCrash(const QVector<quint8>& data) const;
-            void printEvent(const QVector<quint8>& data) const;
+            void printCrash(const QVector<quint8> &data) const;
+            void printEvent(const QVector<quint8> &data) const;
             void printHalfHour(const QVector<quint8> &data) const;
+            void printIsolation(const QVector<quint8> &data) const;
 
         signals:
             void clickedButtonRead(bool = false);
