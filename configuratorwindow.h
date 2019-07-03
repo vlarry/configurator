@@ -811,6 +811,7 @@
             JournalPtr                       m_journal_crash; // журнал аварий
             JournalPtr                       m_journal_event; // журнал событий
             JournalPtr                       m_journal_halfhour; // журнал получасовок
+            JournalPtr                       m_journal_isolation; // журнал изоляции
             JournalProgress                 *m_journal_progress; // прогресбар для чтения журнала
             QString                          m_project_cur_path; // путь к текущему проекту
             QString                          m_serial_port_name; // имя com-порта по умолчанию

@@ -3791,10 +3791,12 @@ void ConfiguratorWindow::initDeviceCode()
 //-------------------------------------
 void ConfiguratorWindow::initJournals()
 {
-    QStringList eventJournalHeaders     = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Параметр") << tr("Категория") << tr("Тип");
+    QStringList eventJournalHeaders     = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Параметр") << tr("Категория") <<
+                                                           tr("Тип");
     QStringList crashJournalHeaders     = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Защита");
     QStringList halfHourJournalHeaders  = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Тип записи") << tr("Время учета, сек");
-    QStringList isolationJournalHeaders = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время");
+    QStringList isolationJournalHeaders = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Тип измерения") << tr("Ra, кОм") <<
+                                                           tr("Rb, кОм") << tr("Rc, кОм");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
@@ -3811,12 +3813,10 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalHalfHour->setTableHeaders(CJournalWidget::HALFHOUR_PROPERTY, halfHourJournalHeaders);
     ui->widgetJournalIsolation->setTableHeaders(CJournalWidget::ISOLATION_PROPERTY, isolationJournalHeaders);
 
-    QVector<int> length_list = QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300;
-
     ui->widgetJournalCrash->setTableColumnWidth(QVector<int>() << 75 << 100 << 100 << 175);
-    ui->widgetJournalEvent->setTableColumnWidth(length_list);
-    ui->widgetJournalHalfHour->setTableColumnWidth(length_list);
-    ui->widgetJournalIsolation->setTableColumnWidth(length_list);
+    ui->widgetJournalEvent->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300 << 100);
+    ui->widgetJournalHalfHour->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300);
+//    ui->widgetJournalIsolation->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 200 << 200 << 200 << 200 << 200);
 
     ui->widgetJournalCrash->setVisibleProperty(CJournalWidget::CRASH_PROPERTY, true);
     ui->widgetJournalHalfHour->setVisibleProperty(CJournalWidget::HALFHOUR_PROPERTY , true);
@@ -3824,6 +3824,7 @@ void ConfiguratorWindow::initJournals()
     m_journal_event = new CJournal(0x08, 0x22, 0x300C, 0x1000, ui->widgetJournalEvent);
     m_journal_crash = new CJournal(0x80, 0x26, 0x3011, 0x2000, ui->widgetJournalCrash);
     m_journal_halfhour = new CJournal(0x20, 0x2A, 0x3016, 0x5000, ui->widgetJournalHalfHour);
+    m_journal_isolation = new CJournal(0x10, 0x2E, 0x301B, 0x6000, ui->widgetJournalIsolation);
 }
 //-------------------------------------------
 void ConfiguratorWindow::initProtectionList()
