@@ -442,7 +442,7 @@ void ConfiguratorWindow::protectionMTZ2Write()
  */
 void ConfiguratorWindow::protectionMTZ3Write()
 {
-    QStringList list = QStringList() << "M14" << "X04" << "K22" << "TZ1" << "TZ2" << "TZ3" << "TZ4" << "TZ5" << "TZ6";
+    QStringList list = QStringList() << "M14" << "X04" << "K22" << "TZ1" << "TZ2" << "TZ3" << "TZ4" << "TZ5" << "TZ6" << "TZ7";
 
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
@@ -688,7 +688,7 @@ void ConfiguratorWindow::protectionOZZ2Write()
  */
 void ConfiguratorWindow::protectionNZZ1Write()
 {
-    QStringList list = QStringList() << "M26" << "X08" << "M27" << "X09" << "K21" << "M28" << "M26C" << "M27C" << "K21C" << "M28C";
+    QStringList list = QStringList() << "M26" << "X08" << "M27" << "X09" << "K21" << "M54" << "M28" << "M26C" << "M27C" << "K21C" << "X16" << "M28C";
 
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
@@ -703,7 +703,7 @@ void ConfiguratorWindow::protectionNZZ1Write()
  */
 void ConfiguratorWindow::protectionNZZ2Write()
 {
-    QStringList list = QStringList() << "K27" << "X08a" << "K28" << "X09a" << "K29" << "K30" << "K27C" << "K28C" << "K29C" << "K30C";
+    QStringList list = QStringList() << "K27" << "X08a" << "K28" << "X09a" << "K29" << "M58" << "K30" << "K27C" << "K28C" << "K29C" << "X17" << "K30C";
 
     for(QString key: list)
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
@@ -1206,7 +1206,9 @@ void ConfiguratorWindow::automationAPVWrite()
                                         "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
 
     for(QString var: list)
+    {
         sendSettingReadRequestVariableState("I69", var, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV, true);
+    }
 }
 /*!
  * \brief ConfiguratorWindow::automationKCNWrite
@@ -1688,7 +1690,7 @@ void ConfiguratorWindow::protectionOZZ2Read()
  */
 void ConfiguratorWindow::protectionNZZ1Read()
 {
-    QStringList list = QStringList() << "M26" << "X08" << "M27" << "X09" << "K21" << "M28" << "M26C" << "M27C" << "K21C" << "M28C";
+    QStringList list = QStringList() << "M26" << "X08" << "M27" << "X09" << "K21" << "M54" << "M28" << "M26C" << "M27C" << "K21C" << "X16" << "M28C";
 
     for(QString key: list)
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
@@ -1703,7 +1705,7 @@ void ConfiguratorWindow::protectionNZZ1Read()
  */
 void ConfiguratorWindow::protectionNZZ2Read()
 {
-    QStringList list = QStringList() << "K27" << "X08a" << "K28" << "X09a" << "K29" << "K30" << "K27C" << "K28C" << "K29C" << "K30C";
+    QStringList list = QStringList() << "K27" << "X08a" << "K28" << "X09a" << "K29" << "M58" << "K30" << "K27C" << "K28C" << "K29C" << "X17" << "K30C";
 
     for(QString key: list)
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
@@ -7787,7 +7789,7 @@ void ConfiguratorWindow::sendSettingWriteRequestVariableState(quint16 value, int
     value &= ~(1 << bit_pos); // очищаем бит состояния переменной
     value |= var_state << bit_pos; // устанавливаем новое состояние переменной
 qDebug() << QString("Запись состояния внутренной переменной: адрес = %1, значение = %2, позиция бита: %3").arg(address).arg(value).
-                                                                                                          arg(bit_pos);
+                                                                                                           arg(bit_pos);
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, address, value);
     m_modbus->sendData(unit);
 }

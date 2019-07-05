@@ -241,8 +241,17 @@ qInfo() << QString("Создание итема меню устройства: %
 
     QWidget*     wgt_limit    = new QWidget;
     QHBoxLayout* layout_limit = new QHBoxLayout;
-    QLabel*      label_limit  = new QLabel(QString("%1...%2").arg(QLocale::system().toString(item.unit.min, 'f', 6)).
-                                                              arg(QLocale::system().toString(item.unit.max, 'f', 6)), wgt_limit);
+
+    QString limit_str = "";
+
+    if(item.type.toUpper() == "INT")
+    {
+        limit_str = QString("%1...%2").arg(item.unit.min).arg(item.unit.max);
+    }
+    else
+        limit_str = QString("%1...%2").arg(QLocale::system().toString(item.unit.min, 'f', 6)).arg(QLocale::system().toString(item.unit.max, 'f', 6));
+
+    QLabel*      label_limit  = new QLabel(limit_str, wgt_limit);
 
     QWidget*     wgt_unit    = new QWidget;
     QHBoxLayout* layout_unit = new QHBoxLayout;
