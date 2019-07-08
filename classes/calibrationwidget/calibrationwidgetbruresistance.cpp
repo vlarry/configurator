@@ -661,18 +661,12 @@ void CCalibrationWidgetBRUResistance::calibrationWriteProcess()
 
     QVector<CModBusDataUnit> units;
 
-    if(shiftRa > 0.0f)
-        units << unit_ShiftRa;
-    if(shiftRb > 0.0f)
-        units << unit_ShiftRb;
-    if(shiftRc > 0.0f)
-        units << unit_ShiftRc;
-    if(inclineRa > 0.0f)
-        units << unit_InclineRa;
-    if(inclineRb > 0.0f)
-        units << unit_InclineRb;
-    if(inclineRc > 0.0f)
-        units << unit_InclineRc;
+    if(stateRa())
+        units << unit_ShiftRa << unit_InclineRa;
+    if(stateRb())
+        units << unit_ShiftRb << unit_InclineRb;
+    if(stateRc())
+        units << unit_ShiftRc << unit_InclineRc;
 
     qInfo() << tr("Запись новых калибровочных коэффициентов БРУ по сопротивлению подтверждена");
 

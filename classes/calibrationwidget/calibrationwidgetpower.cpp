@@ -218,7 +218,7 @@ bool CCalibrationWidgetPower::state3US() const
     return ui->checkBox3US->isChecked();
 }
 //--------------------------------------------
-bool CCalibrationWidgetPower::state3I0() const
+bool CCalibrationWidgetPower::state3U0() const
 {
     return ui->checkBox3U0->isChecked();
 }
@@ -1037,23 +1037,23 @@ void CCalibrationWidgetPower::calibrationWriteProcess()
 
     QVector<CModBusDataUnit> units;
 
-    if(Ua >= 0.0f)
+    if(stateUa())
         units << unit_Ua;
-    if(Ub >= 0.0f)
+    if(stateUb())
         units << unit_Ub;
-    if(Uc >= 0.0f)
+    if(stateUc())
         units << unit_Uc;
-    if(Uab >= 0.0f)
+    if(stateUab())
         units << unit_Uab;
-    if(Ubc >= 0.0f)
+    if(stateUbc())
         units << unit_Ubc;
-    if(Uca >= 0.0f)
+    if(stateUca())
         units << unit_Uca;
-    if(_3U0S >= 0.0f)
+    if(state3U0S())
         units << unit_3U0S;
-    if(_3US >= 0.0f)
+    if(state3US())
         units << unit_3US;
-    if(_3U0 >= 0.0f)
+    if(state3U0())
         units << unit_3U0;
 
     if(units.isEmpty())

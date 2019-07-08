@@ -71,7 +71,7 @@
 
             bool state3U0S() const;
             bool state3US() const;
-            bool state3I0() const;
+            bool state3U0() const;
 
             float valueUa() const;
             float valueUb() const;

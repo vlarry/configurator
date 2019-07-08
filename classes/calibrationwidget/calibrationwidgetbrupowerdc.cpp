@@ -788,22 +788,14 @@ void CCalibrationWidgetBRUPowerDC::calibrationWriteProcess()
 
     QVector<CModBusDataUnit> units;
 
-    if(shift_ua >= 0.0f)
-        units << unit_ShiftUa;
-    if(shift_ub >= 0.0f)
-        units << unit_ShiftUb;
-    if(shift_uc >= 0.0f)
-        units << unit_ShiftUc;
-    if(incline_ua >= 0.0f)
-        units << unit_InclineUa;
-    if(incline_ub >= 0.0f)
-        units << unit_InclineUb;
-    if(incline_uc >= 0.0f)
-        units << unit_InclineUc;
-    if(shift_multiplier >= 0.0f)
-        units << unit_ShiftMultiplier;
-    if(incline_multiplier >= 0.0f)
-        units << unit_InclineMultiplier;
+    if(stateUa())
+        units << unit_ShiftUa << unit_InclineUa;
+    if(stateUb())
+        units << unit_ShiftUb << unit_InclineUb;
+    if(stateUc())
+        units << unit_ShiftUc << unit_InclineUc;
+    if(stateUMultiplier())
+        units << unit_ShiftMultiplier << unit_InclineMultiplier;
 
     if(units.isEmpty())
     {
