@@ -584,15 +584,15 @@ void CCalibrationWidgetOfCurrent::calibrationWriteProcess()
 
     value.f = Ib;
     CModBusDataUnit unit_Ib(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Ia.setProperty("KEY", "KIB");
+    unit_Ib.setProperty("KEY", "KIB");
 
     value.f = Ic;
     CModBusDataUnit unit_Ic(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Ia.setProperty("KEY", "KIC");
+    unit_Ic.setProperty("KEY", "KIC");
 
     value.f = _3I0;
     CModBusDataUnit unit_3I0(0, CModBusDataUnit::WriteMultipleRegisters, 0, QVector<quint16>() << value.i[1] << value.i[0]);
-    unit_Ia.setProperty("KEY", "K3I0");
+    unit_3I0.setProperty("KEY", "K3I0");
 
     QVector<CModBusDataUnit> units;
 
@@ -602,7 +602,7 @@ void CCalibrationWidgetOfCurrent::calibrationWriteProcess()
         units << unit_Ib;
     if(Ic != 0.0f)
         units << unit_Ic;
-    if(_3I0!= 0.0f)
+    if(_3I0 != 0.0f)
         units << unit_3I0;
 
     qInfo() << tr("Запись новых калибровочных коэффициентов по току подтверждена");

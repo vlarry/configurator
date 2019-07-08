@@ -599,8 +599,7 @@ void ConfiguratorWindow::protectionUmin1Write()
     sendSettingControlWriteRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 
-    sendSettingReadRequestVariableState("N98", "V09", "_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
-    sendSettingReadRequestVariableState("N98", "V15", "_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
+    sendSettingReadRequestVariableState("N98", "V09,V15", "_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Write
@@ -618,8 +617,7 @@ void ConfiguratorWindow::protectionUmin2Write()
     sendSettingControlWriteRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
 
-    sendSettingReadRequestVariableState("N99", "V09", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
-    sendSettingReadRequestVariableState("N99", "V15", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
+    sendSettingReadRequestVariableState("N99", "V09,V15", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Write
@@ -938,10 +936,7 @@ void ConfiguratorWindow::protectionLevel1Write()
     sendSettingWriteRequest("M78", "M78", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 
-    sendSettingReadRequestVariableState("I67", "I50", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
-    sendSettingReadRequestVariableState("I67", "I15", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
-    sendSettingReadRequestVariableState("I67", "I66", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
-    sendSettingReadRequestVariableState("I67", "N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+    sendSettingReadRequestVariableState("I67", "I50,I15,I66,N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Write
@@ -954,10 +949,7 @@ void ConfiguratorWindow::protectionLevel2Write()
     sendSettingWriteRequest("M79", "M79", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 
-    sendSettingReadRequestVariableState("I68", "I50", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
-    sendSettingReadRequestVariableState("I68", "I15", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
-    sendSettingReadRequestVariableState("I68", "I66", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
-    sendSettingReadRequestVariableState("I68", "N55", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+    sendSettingReadRequestVariableState("I68", "I50,I15,I66,N55", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartWrite
@@ -1202,13 +1194,8 @@ void ConfiguratorWindow::automationAPVWrite()
     sendSettingWriteRequest("M88", "M88", DEVICE_MENU_ITEM_AUTOMATION_APV);
     sendSettingWriteRequest("M89", "M89", DEVICE_MENU_ITEM_AUTOMATION_APV);
 
-    QStringList list = QStringList() << "V04" << "V07" << "V10" << "V13" << "V19" << "N64" << "V22" << "N67" << "V44" <<
-                                        "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
-
-    for(QString var: list)
-    {
-        sendSettingReadRequestVariableState("I69", var, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV, true);
-    }
+    QString list = "V04,V07,V10,V13,V19,N64,V22,N67,V44,V62,V65,V68,V81,V86,V90";
+    sendSettingReadRequestVariableState("I69", list, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV, true);
 }
 /*!
  * \brief ConfiguratorWindow::automationKCNWrite
@@ -1603,8 +1590,7 @@ void ConfiguratorWindow::protectionUmin1Read()
 
     sendSettingControlReadRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequestVariableState("N98", "V09", "_1", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequestVariableState("N98", "V15", "_1", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequestVariableState("N98", "V09,V15", "_1", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1621,8 +1607,7 @@ void ConfiguratorWindow::protectionUmin2Read()
 
     sendSettingControlReadRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequestVariableState("N99", "V09", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendSettingReadRequestVariableState("N99", "V15", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER);
+    sendSettingReadRequestVariableState("N99", "V09,V15", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendProtectionWorkModeRequest("UMIN2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
@@ -1930,10 +1915,7 @@ void ConfiguratorWindow::protectionLevel1Read()
 {
     sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequest("M78", "M78", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendSettingReadRequestVariableState("I67", "I50", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendSettingReadRequestVariableState("I67", "I15", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendSettingReadRequestVariableState("I67", "I66", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendSettingReadRequestVariableState("I67", "N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I67", "I50,I15,I66,N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
@@ -1945,10 +1927,7 @@ void ConfiguratorWindow::protectionLevel2Read()
 {
     sendSettingControlReadRequest("K11", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequest("M79", "M79", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendSettingReadRequestVariableState("I68", "I50", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendSettingReadRequestVariableState("I68", "I15", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendSettingReadRequestVariableState("I68", "I66", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendSettingReadRequestVariableState("I68", "N55", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingReadRequestVariableState("I68", "I50,I15,I66,N55", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendProtectionWorkModeRequest("LEVEL2", FUN_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
@@ -2186,11 +2165,9 @@ void ConfiguratorWindow::automationAPVRead()
     sendSettingReadRequest("M88", "M88", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_APV);
     sendSettingReadRequest("M89", "M89", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_APV);
 
-    QStringList list = QStringList() << "V04" << "V07" << "V10" << "V13" << "V19" << "N64" << "V22" << "N67" << "V44" <<
-                                        "V62" << "V65" << "V68" << "V81" << "V86" << "V90";
+    QString list = "V04,V07,V10,V13,V19,N64,V22,N67,V44,V62,V65,V68,V81,V86,V90";
 
-    for(QString key: list)
-        sendSettingReadRequestVariableState("I69", key, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV);
+    sendSettingReadRequestVariableState("I69", list, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV);
 }
 /*!
  * \brief ConfiguratorWindow::automationGroupRead
@@ -4669,16 +4646,21 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
  */
 void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
 {
-    if(unit.count() != 1)
+    if(unit.count() != 20)
         return;
 
+    QString key = unit.property("KEY").toString();
     QString var = unit.property("VARIABLE").toString();
 
-    if(var.isEmpty())
+    if(key.isEmpty() || var.isEmpty())
+        return;
+
+    int addr = addressSettingKey(key);
+
+    if(addr == -1)
         return;
 
     DeviceMenuItemType group = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
-
     CDeviceMenuTableWidget* table = groupMenuWidget(group);
 
     if(!table)
@@ -4686,40 +4668,57 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
         return;
     }
 
-    int var_bit = bitByVariableName(var);
+    QStringList var_list = var.split(',');
 
-    if(var_bit == -1)
+    if(var_list.isEmpty())
         return;
 
-    QString nameWgt = QString("comboBox%1").arg(var);
-    QString nameSuffix = unit.property("SUFFIX").toString();
+    QVector<quint32> values;
 
-    if(!nameSuffix.isEmpty())
-        nameWgt += nameSuffix;
-
-    if(nameWgt.isEmpty())
-        return;
-
-    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
-
-    if(!comboBox)
-        return;
-
-    quint16 value = unit[0];
-    int bit_pos = var_bit%16;
+    for(int i = 0; i < unit.count() - 1; i += 2)
+    {
+        values << ((unit[i] << 16) | unit[i + 1]);
+    }
 
     bool is_save = unit.property("READ_STATE").toBool();
 
     if(is_save)
     {
-        sendSettingWriteRequestVariableState(value, bit_pos, unit.address(), comboBox);
+        sendSettingWriteRequestVariableState(addr, var_list, unit.property("SUFFIX").toString(), values, table);
         return;
     }
 
-    int state = (value >> bit_pos) & 0x00000001;
-qDebug() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (номер бита = %3)").
-            arg(var).arg(state).arg(bit_pos);
-    comboBox->setCurrentIndex(state);
+    for(const QString &v: var_list)
+    {
+        int var_bit = bitByVariableName(v);
+
+        if(var_bit == -1)
+            return;
+
+        QString nameWgt = QString("comboBox%1").arg(v);
+        QString nameSuffix = unit.property("SUFFIX").toString();
+
+        if(!nameSuffix.isEmpty())
+            nameWgt += nameSuffix;
+
+        if(nameWgt.isEmpty())
+            return;
+
+        QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
+
+        if(!comboBox)
+            return;
+
+        int var_pos = var_bit/32;
+        int bit_pos = var_bit%32;
+
+        quint32 value = values[var_pos];
+
+        int state = (value >> bit_pos) & 0x00000001;
+        qDebug() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (номер бита = %3)").
+                    arg(v).arg(state).arg(bit_pos);
+        comboBox->setCurrentIndex(state);
+    }
 }
 /*!
  * \brief ConfiguratorWindow::statusInfo
@@ -7746,21 +7745,8 @@ void ConfiguratorWindow::sendSettingReadRequestVariableState(const QString &key,
     if(addr == -1)
         return;
 
-    int bit_pos = bitByVariableName(var);
-
-    if(bit_pos == -1)
-        return;
-
-    int addr_offset = bit_pos/16;
-
-    if(addr_offset%2 != 0) // адреса ячеек переменных начинаются с четных адресов, поэтому если четный адрес,
-        addr_offset--;     // смещаемся на ячейку назад
-    else
-        addr_offset++; // иначе сдвигаемся на ячейку вперед
-
-    int addr_request = addr + addr_offset;
-
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, addr_request, 1);
+    // Запрашиваем строку матрицы (10 столбцов по 32 бита) по ключу key
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, addr, 20);
 
     unit.setProperty("REQUEST", GENERAL_TYPE);
     unit.setProperty("GROUP", group_item);
@@ -7775,22 +7761,53 @@ void ConfiguratorWindow::sendSettingReadRequestVariableState(const QString &key,
 }
 /*!
  * \brief ConfiguratorWindow::sendSettingWriteRequestVariableState
- * \param value прочитанное значение из памяти устройства
- * \param bit_pos позиция изменяемого бита
- * \param address адрес записи переменной
+ * \param unit исходный запрос с прочитанными данными по набору переменных
  */
-void ConfiguratorWindow::sendSettingWriteRequestVariableState(quint16 value, int bit_pos, int address, QComboBox *comboBox)
+void ConfiguratorWindow::sendSettingWriteRequestVariableState(int addr, const QStringList &var_list, const QString &var_suffix, QVector<quint32> &values, CDeviceMenuTableWidget *table)
 {
-    if(!comboBox)
+    if(values.count() != 10 || !table)
         return;
 
-    int var_state = comboBox->currentIndex();
+    for(const QString &v: var_list)
+    {
+        int var_bit = bitByVariableName(v);
 
-    value &= ~(1 << bit_pos); // очищаем бит состояния переменной
-    value |= var_state << bit_pos; // устанавливаем новое состояние переменной
-qDebug() << QString("Запись состояния внутренной переменной: адрес = %1, значение = %2, позиция бита: %3").arg(address).arg(value).
-                                                                                                           arg(bit_pos);
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, address, value);
+        if(var_bit == -1)
+            return;
+
+        QString nameWgt = QString("comboBox%1").arg(v);
+
+        if(!var_suffix.isEmpty())
+            nameWgt += var_suffix;
+
+        if(nameWgt.isEmpty())
+            return;
+
+        QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
+
+        if(!comboBox)
+            return;
+
+        int var_state = comboBox->currentIndex();
+        int var_pos = var_bit/32;
+        int bit_pos = var_bit%32;
+
+        quint32& value = values[var_pos];
+
+        value &= ~(1 << bit_pos); // очищаем бит состояния переменной
+        value |= var_state << bit_pos; // устанавливаем новое состояние переменной
+
+        qDebug() << QString("Запись состояния внутренной переменной <%1>: значение = %2, позиция переменной: %3, позиция бита: %4").arg(v).arg(value).
+                    arg(var_pos).arg(bit_pos);
+    }
+
+    CModBusDataUnit::vlist_t data;
+
+    // перевод 32 битных данных к 16 битным и переворот страшего и младшего полуслова
+    for(int i = 0; i < values.count(); i++)
+        data << quint16((values[i] >> 16)&0x0000FFFF) << quint16(values[i]&0x0000FFFF);
+
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters, addr, data);
     m_modbus->sendData(unit);
 }
 /*!

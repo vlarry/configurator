@@ -544,7 +544,7 @@
             void sendRequestRead(int addr, int size, int request, CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
             void sendSettingReadRequestVariableState(const QString &key, const QString var, const QString &suffix, DeviceMenuItemType group_item, bool is_save = false);
-            void sendSettingWriteRequestVariableState(quint16 value, int bit_pos, int address, QComboBox *comboBox);
+            void sendSettingWriteRequestVariableState(int addr, const QStringList &var_list, const QString &var_suffix, QVector<quint32> &values, CDeviceMenuTableWidget *table);
             void sendRequestCalibration(CModBusDataUnit &unit);
             void sendRequestCalibrationWrite(QVector<CModBusDataUnit> &units);
             void sendCalibrationCalculateValues(QVector<CModBusDataUnit> &units);
