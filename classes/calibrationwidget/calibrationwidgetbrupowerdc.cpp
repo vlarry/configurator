@@ -12,7 +12,7 @@ CCalibrationWidgetBRUPowerDC::CCalibrationWidgetBRUPowerDC(QWidget *parent):
 
     ui->pushButtonCalibration->setDisabled(true);
 
-    QDoubleValidator* validator = new QDoubleValidator(0.0f, 10000, 6, this);
+    QDoubleValidator* validator = new QDoubleValidator(0.0f, 65535, 6, this);
     validator->setNotation(QDoubleValidator::StandardNotation);
 
     ui->lineEditPowerStandardPhaseMin->setValidator(validator);
