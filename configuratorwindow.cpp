@@ -7852,7 +7852,7 @@ void ConfiguratorWindow::sendRequestCalibrationWrite(QVector<CModBusDataUnit> &u
 
         unit.setID(quint8(m_serialPortSettings_window->deviceID()));
         unit.setAddress(addr);
-
+qDebug() << QString("Запись калибровочного коэффициента \"%1\": адрес = %2").arg(key).arg(addr);
         m_modbus->sendData(unit);
     }
 }
