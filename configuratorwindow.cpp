@@ -309,7 +309,7 @@ void ConfiguratorWindow::debugInfoRead()
  */
 void ConfiguratorWindow::journalRead(JournalPtr journal)
 {
-    if(!journal || (journal && journal->msgCount() == 0))
+    if(!journal)
         return;
 
     if(journal->isReadState())
@@ -2281,7 +2281,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
     {
         if(state)
         {
-            if(journal->msgCount() == 0)
+            if(journal->filter().limitUpperValue() == 0)
             {
                 m_popup->setPopupText(tr("Записей в устройстве для чтения нет"));
                 m_popup->show();
