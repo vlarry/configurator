@@ -219,6 +219,8 @@ void CModBus::request(CModBusDataUnit& unit)
 
     block();
 
+    qDebug() << QString("Отправка запроса устройству: %1").arg(unit.toString());
+
     QByteArray ba;
 
     ba.append(static_cast<char>(unit.id()));

@@ -402,8 +402,6 @@ void ConfiguratorWindow::inputAnalogGroupWrite()
 {
     inputAnalogGeneralWrite();
     inputAnalogCalibrateWrite();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Write
@@ -412,12 +410,12 @@ void ConfiguratorWindow::inputAnalogGroupWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Write()
 {
-    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
+//    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
 
-    for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    for(QString key: list)
+//        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
-    sendSettingControlWriteRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingControlWriteRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -546,12 +544,10 @@ void ConfiguratorWindow::protectionMTZ4Write()
 void ConfiguratorWindow::protectionMTZGroupWrite()
 {
     protectionMTZ1Write();
-    protectionMTZ2Write();
-    protectionMTZ3Write();
-    protectionMTZ4Write();
-    protectionMotorGroupWrite();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
+//    protectionMTZ2Write();
+//    protectionMTZ3Write();
+//    protectionMTZ4Write();
+//    protectionMotorGroupWrite();
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Write
@@ -646,8 +642,6 @@ void ConfiguratorWindow::protectionPowerGroupWrite()
     protectionUmin1Write();
     protectionUmin2Write();
     protection3U0Write();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionOZZ1Write
@@ -722,8 +716,6 @@ void ConfiguratorWindow::protectionDirectedGroupWrite()
     protectionNZZ2Write();
     protectionBRUWrite();
     protectionVacuumWrite();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr1Write
@@ -780,8 +772,6 @@ void ConfiguratorWindow::protectionFrequencyGroupWrite()
     protectionAchr1Write();
     protectionAchr2Write();
     protectionAchr3Write();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionArcWrite
@@ -840,8 +830,6 @@ void ConfiguratorWindow::protectionExternalGroupWrite()
     protectionExt1Write();
     protectionExt2Write();
     protectionExt3Write();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionStartingWrite
@@ -882,8 +870,6 @@ void ConfiguratorWindow::protectionMotorGroupWrite()
 {
     protectionStartingWrite();
     protectionIminWrite();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp1Write
@@ -922,8 +908,6 @@ void ConfiguratorWindow::protectionTemperatureGroupWrite()
 {
     protectionTemp1Write();
     protectionTemp2Write();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel1Write
@@ -1019,8 +1003,6 @@ void ConfiguratorWindow::protectionReserveGroupWrite()
 {
     protectionLevel1Write();
     protectionLevel2Write();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::protectionBRUWrite
@@ -1063,8 +1045,6 @@ void ConfiguratorWindow::protectionControlGroupWrite()
 {
     protectionBRUWrite();
     protectionVacuumWrite();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchWrite
@@ -1160,8 +1140,6 @@ void ConfiguratorWindow::automationDisconnectorsGroupWrite()
     automationBusWrite();
     automationLineWrite();
     automationEarthWrite();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 /*!
  * \brief ConfiguratorWindow::automationCtrlTNWrite
@@ -1407,12 +1385,12 @@ void ConfiguratorWindow::settingCommunicationsWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Read()
 {
-    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
+//    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
 
-    for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    for(QString key: list)
+//        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
-    sendSettingControlReadRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+//    sendSettingControlReadRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -1541,10 +1519,10 @@ void ConfiguratorWindow::protectionMTZ4Read()
 void ConfiguratorWindow::protectionMTZGroupRead()
 {
     protectionMTZ1Read();
-    protectionMTZ2Read();
-    protectionMTZ3Read();
-    protectionMTZ4Read();
-    protectionMotorGroupRead();
+//    protectionMTZ2Read();
+//    protectionMTZ3Read();
+//    protectionMTZ4Read();
+//    protectionMotorGroupRead();
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Read
@@ -2192,8 +2170,6 @@ void ConfiguratorWindow::automationGroupWrite()
     automationAPVWrite();
     automationAVRWrite();
     automationKCNWrite();
-
-    sendDeviceCommand(2); // подтверждение записи в память флеш прибора
 }
 //----------------------------------------
 void ConfiguratorWindow::purposeLedsRead()
@@ -5125,7 +5101,7 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
 //-----------------------------------------------------------------------
 void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 {
-    if(unit.count() != 40)
+    if(unit.count() != 40) // 20 32-битных ячеек - это 2 строки, т.к. ширина матрицы 10 32-битных ячеек
         return;
 
     QString tprotect = unit.property("PROTECTION").toString();
@@ -5163,22 +5139,24 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
     if(bitNumber == -1)
         return;
 
-    int k10_pos = bitNumber/16;
-    int k11_pos = k10_pos + 20;
+    int i11_pos = bitNumber/16;
+    int i17_pos = i11_pos + 20;
     int bit     = bitNumber%16;
 
-    int k10_state = -1;
-    int k11_state = -1;
+    int i11_state = -1;
+    int i17_state = -1;
 
     if(function == FUN_READ)
     {
-        k10_state = ((unit[k10_pos]&(1 << bit)) >> bit);
-        k11_state = ((unit[k11_pos]&(1 << bit)) >> bit);
+        i11_state = ((unit[i11_pos]&(1 << bit)) >> bit);
+        i17_state = ((unit[i17_pos]&(1 << bit)) >> bit);
 
-        int row = k10_state << 1 | k11_state;
+        int row = i11_state << 1 | i17_state;
 
         if(row < comboBox->count())
             comboBox->setCurrentIndex(row);
+
+        qDebug() << "Отображение режима работы защиты " << tprotect << ": данные-> " << unit.values();
     }
     else if(function == FUN_SAVE)
     {
@@ -5187,37 +5165,45 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         switch(state)
         {
             case 0:
-                k10_state = 0;
-                k11_state = 0;
+                i11_state = 0;
+                i17_state = 0;
             break;
 
             case 1:
-                k10_state = 0;
-                k11_state = 1;
+                i11_state = 0;
+                i17_state = 1;
             break;
 
             case 2:
-                k10_state = 1;
-                k11_state = 0;
+                i11_state = 1;
+                i17_state = 0;
             break;
 
             default: return;
         }
 
-        if(k10_state == -1 || k11_state == -1)
+        if(i11_state == -1 || i17_state == -1)
             return;
 
         QVector<quint16> values = unit.values();
 
-        values[k10_pos] &= (~quint16(1 << bit)); // очищаем бит k10
-        values[k10_pos] |= quint16(k10_state << bit); // устанавливаем бит k10
-        values[k11_pos] &= (~quint16(1 << bit)); // очищаем бит k11
-        values[k11_pos] |= quint16(k11_state << bit); // устанавливаем бит k11
+        qDebug() << "Запись режима работы защиты " << tprotect << " (принятые данные): " << values;
 
-        int addr = addressSettingKey("K10");
+        values[i11_pos] &= (~quint16(1 << bit)); // очищаем бит I11
+        values[i11_pos] |= quint16(i11_state << bit); // устанавливаем бит I11
+        values[i17_pos] &= (~quint16(1 << bit)); // очищаем бит I17
+        values[i17_pos] |= quint16(i17_state << bit); // устанавливаем бит I17
+
+        qDebug() << "Запись режима работы защиты " << tprotect << " (модифицированные данные): " << values;
+
+        int addr = addressSettingKey("I11");
 
         if(addr == -1)
             return;
+
+        qDebug() << QString("Запись режима работы защиты %1 по адресу %2").arg(addr);
+
+        sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
 
         CModBusDataUnit new_unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
                                  static_cast<quint16>(addr), values);
@@ -7657,29 +7643,32 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
 void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection, RequestFunction function,
                                                        DeviceMenuItemType group_index)
 {
-    int firstAddr = addressSettingKey("K10");
+    int addr = addressSettingKey("I11");
 
-    if(firstAddr == -1)
-        qWarning() << tr("Переменной \'K10\' не назначен адрес.");
+    if(addr == -1)
+        qWarning() << tr("Переменной \'I11\' не назначен адрес.");
 
-    sendDeviceCommand(45); // отправка команды на установку ключа блокировки записи уставок
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(firstAddr),
-                         QVector<quint16>() << 48);
+//    sendDeviceCommand(45); // отправка команды на установку ключа блокировки записи уставок
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(addr),
+                         QVector<quint16>() << 40); // запрашиваем 2 32-битных строки сразу, т.к. за I11 идет I17, в которой нам тоже необходим бит состояния
 
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
     unit.setProperty("PROTECTION", protection);
     unit.setProperty("REQUEST_FUNCTION", function);
     unit.setProperty("GROUP", group_index);
 
+    if(function == RequestFunction::FUN_SAVE)
+        qDebug() << QString("Запись режима работы блокировки защиты %1 по адресу %2").arg(protection).arg(addr);
+
     m_modbus->sendData(unit);
 }
 //---------------------------------------------------------
 void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
 {
-    int firstAddr = addressSettingKey("K10");
+    int addr = addressSettingKey("K10");
 
-    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(firstAddr),
-                         QVector<quint16>() << 48);
+    CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(addr),
+                         QVector<quint16>() << 40);
 
     unit.setProperty("REQUEST", MONITOR_PURPOSE_K10_K11_TYPE);
 

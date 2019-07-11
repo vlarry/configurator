@@ -179,10 +179,22 @@ void CModBusDataUnit::setValues(CModBusDataUnit::vlist_t& values)
 //---------------------------------------
 QString CModBusDataUnit::toString() const
 {
-    return QString("slaveID: %1, function: %2, address: %3, data size: %4").arg(m_id).
-                                                                            arg(m_function_description[m_function]).
-                                                                            arg(m_address).
-                                                                            arg(m_values.count());
+    QString property_str;
+
+    for(const QString &key: m_property.keys())
+    {
+        property_str += QString("Key: %1, Value: %2    ").arg(key).arg(m_property[key].toString());
+    }
+
+    QString data_str = "{    ";
+
+    for(quint16 val: m_values)
+        data_str += QString("%1    ").arg(val);
+
+    data_str += "}";
+
+    return QString("slaveID: %1, function: %2, address: %3, data size: %4, data value: %5, PROPERTIES: %6").
+            arg(m_id).arg(m_function_description[m_function]).arg(m_address).arg(m_values.count()).arg(data_str).arg(property_str);
 }
 //-------------------------------------------------------------
 const CModBusDataUnit::vlist_t& CModBusDataUnit::values() const
