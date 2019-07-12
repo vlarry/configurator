@@ -617,6 +617,7 @@
             void applicationCloseProcess();
             void calibrationTypeChanged(int index); // отслеживание переключения вкладки виджета калибровок для вывода расчетных величин
             void processBruRequest(CModBusDataUnit &unit); // запрос от калибровок БРУ (проверка готовности модуля)
+            void bruResistanceMeasureStart(); // старт измерения БРУ по сопртотивлению
 
         protected:
             void keyPressEvent(QKeyEvent* event);

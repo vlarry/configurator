@@ -41,6 +41,7 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::checkReady, this, &CCalibrationController::bruResistanceRequest);
+    connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::measureStart, this, &CCalibrationController::bruMeasureStart);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalibrartionFactorActual);
     connect(this, &CCalibrationController::calculateResponse, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalculateActualValue);
     connect(this, &CCalibrationController::dataIncrement, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::progressBarIncrement);

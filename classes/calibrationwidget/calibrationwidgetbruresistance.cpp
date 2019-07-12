@@ -7,7 +7,8 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     m_calibration_type(CALIBRATION_NONE),
     m_calibration_min({ 0.0f, calibration_t() }),
     m_calibration_max({ 0.0f, calibration_t() }),
-    m_is_ready(false)
+    m_is_ready(false),
+    m_measureTimer(nullptr)
 {
     ui->setupUi(this);
 
@@ -421,7 +422,15 @@ void CCalibrationWidgetBRUResistance::stateButton(bool state)
     ui->progressBarDataSet->setVisible(state);
 
     if(state)
+    {
         ui->progressBarDataSet->setValue(0);
+        if(m_calibration_type == CALIBRATION_NONE)
+            ui->labelTypeCalibration->setText(tr("Калибровка минимума"));
+        else
+            ui->labelTypeCalibration->setText(tr("Калибровка максимума"));
+    }
+    else
+        ui->labelTypeCalibration->clear();
 }
 //------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::saveCalibrationToFlash()
@@ -486,15 +495,6 @@ void CCalibrationWidgetBRUResistance::calibrationParameterStart()
         QMessageBox::warning(this, tr("Калибровка БРУ по сопротивлению"), tr("Эталонное значение для максимума меньше или равно значения минимума"));
         emit calibrationEnd();
 
-        return;
-    }
-
-    int answer = QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("Сейчас будет произведена калибровка %1").
-                                          arg((m_calibration_type == CALIBRATION_NONE)?tr("минимума"):tr("максимума")), QMessageBox::Ok | QMessageBox::Cancel);
-
-    if(answer == QMessageBox::Cancel)
-    {
-        m_calibration_type = CALIBRATION_NONE;
         return;
     }
 
@@ -571,12 +571,13 @@ qDebug() << QString("Разбор калибровочных данных: ра�
     {
         m_calibration_min.data = calibration_data;
         QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("Калибровка минимума окончена.\n"
-                                                                                 "Произведите калибровку максимума."));
+                                                                                 "Введите максимальное значение и нажмите кнопку \"Выполнить\"."));
     }
     else if(m_calibration_type == CALIBRATION_MAX)
     {
         m_calibration_max.data = calibration_data;
         QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("Калибровка максимума окончена."));
+        ui->labelTypeCalibration->clear();
         display();
     }
 
@@ -728,12 +729,22 @@ void CCalibrationWidgetBRUResistance::progressBarIncrement()
     int step  = 100/ui->spinBoxSetDataCount->value();
     ui->progressBarDataSet->setValue(count + step);
 }
-//-----------------------------------------------------------
-void CCalibrationWidgetBRUResistance::checkCalibrationReady()
+//-------------------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::checkCalibrationReady(bool isMeasure)
 {
-    // Запрос на проверку готовности. Готовность проверяется состоянием 15го бита переменной I16 (адрес 173) "БРУ: линия разряжена"
-    // 0 - готов, 1 - заблокирован
-    CModBusDataUnit unit(0, CModBusDataUnit::ReadInputRegisters, 173, 1);
+    CModBusDataUnit unit;
+    if(!isMeasure)
+    {
+        // Запрос на проверку готовности. Готовность проверяется состоянием 15го бита переменной I16 (адрес 173) "БРУ: линия разряжена"
+        // 0 - готов, 1 - заблокирован
+        unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 173, 1);
+    }
+    else
+    {
+        // Запрос на окончание измерения (состояние переменной N56, 0 - значит измерения готовы и можно читать)
+        unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 181, 1);
+    }
+
     emit checkReady(unit);
 }
 //---------------------------------------------------------------------------------------
@@ -742,22 +753,46 @@ void CCalibrationWidgetBRUResistance::processCheckCalibrationReady(CModBusDataUn
     if(!unit.isValid() || unit.count() != 1)
         return;
 
-    bool state = (unit[0]&0x8000);
-
-    if(state)
+    if(unit.address() == 173) // адрес переменной I16 - проверка готовности к калибровке
     {
-        QMessageBox::warning(this, tr("Проверка готовности калибровки"), tr("Ошибка: \"Линия разряжена\"\n"
-                                                                            "Устраните проблему и попробуйте еще раз!"));
-        m_calibration_type = CALIBRATION_NONE;
-        m_calibration_min = { 0.0f, calibration_t() };
-        m_calibration_max = { 0.0f, calibration_t() };
-        m_is_ready = false;
+        bool state = (unit[0]&0x8000);
 
-        return;
+        if(state)
+        {
+            QMessageBox::warning(this, tr("Проверка готовности калибровки"), tr("Ошибка: \"Линия разряжена\"\n"
+                                                                                "Устраните проблему и попробуйте еще раз!"));
+            m_calibration_type = CALIBRATION_NONE;
+            m_calibration_min = { 0.0f, calibration_t() };
+            m_calibration_max = { 0.0f, calibration_t() };
+            m_is_ready = false;
+
+            return;
+        }
+
+        m_is_ready = true;
+        stateChoiceChannelChanged();
+
+        QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("БРУ готов к калибровке по сопротивлению.\n"
+                                                                                 "Введите минимальное значение и нажмите кнопку \"Выполнить\"."));
+        emit measureStart(); // подача команды 43 на измерение. Окончание измерения проверяется состоянием переменной N56 (0 - измерение окончено)
+
+        QTimer::singleShot(1000, [this]()
+        {
+            processMeasure();
+        });
     }
+    else if(unit.address() == 181) // адрес переменной N56 - проверка окончания измерений
+    {
+        bool state = (unit[0]&0x4000);
 
-    m_is_ready = true;
-    stateChoiceChannelChanged();
+        if(state)
+            processMeasure();
+    }
+}
+//----------------------------------------------------
+void CCalibrationWidgetBRUResistance::processMeasure()
+{
+    checkCalibrationReady(true); // запрос на чтение состояния измерения
 }
 //------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::paintEvent(QPaintEvent *event)

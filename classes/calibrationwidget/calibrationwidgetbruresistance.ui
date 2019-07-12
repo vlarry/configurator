@@ -878,6 +878,16 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="labelTypeCalibration">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QProgressBar" name="progressBarDataSet">
        <property name="value">
         <number>0</number>

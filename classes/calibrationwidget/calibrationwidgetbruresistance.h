@@ -5,6 +5,7 @@
     #include <QPaintEvent>
     #include <QMessageBox>
     #include <QPainter>
+    #include <QTimer>
     #include "modbusdataunit.h"
     #include "clineedit.h"
     #include "math.h"
@@ -111,8 +112,9 @@
             void setCalibrartionFactorActual(const QString &key, float value);
             void setCalculateActualValue(CModBusDataUnit &unit);
             void progressBarIncrement();
-            void checkCalibrationReady();
+            void checkCalibrationReady(bool isMeasure = false);
             void processCheckCalibrationReady(CModBusDataUnit &unit);
+            void processMeasure();
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);
@@ -121,6 +123,7 @@
             void calibrationFactorAllStart();
             void calibrationEnd(bool = false);
             void checkReady(CModBusDataUnit&);
+            void measureStart();
 
         protected:
             void paintEvent(QPaintEvent *event);
@@ -131,5 +134,6 @@
             RangeType m_calibration_min;
             RangeType m_calibration_max;
             bool m_is_ready;
+            QTimer *m_measureTimer;
     };
 #endif // CALIBRATIONWIDGETBRURESISTANCE_H

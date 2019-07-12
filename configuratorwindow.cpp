@@ -2542,7 +2542,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     {
         if(showErrorMessage(tr("Чтение состояния линии БРУ"), unit))
             return;
-
+unit.setValues(QVector<quint16>() << 0);
         emit calibrationBruResistance(unit);
     }
     else if(type >= AMPLITUDE_READ_CH2 && type <= AMPLITUDE_READ_CH5)
@@ -4309,6 +4309,11 @@ void ConfiguratorWindow::processBruRequest(CModBusDataUnit &unit)
 
     if(m_modbus->isConnected())
         m_modbus->sendData(unit);
+}
+//--------------------------------------------------
+void ConfiguratorWindow::bruResistanceMeasureStart()
+{
+    sendDeviceCommand(43); // Установка сигнала Измерение БРУ (I98=1)
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -12781,6 +12786,7 @@ void ConfiguratorWindow::initConnect()
     connect(this, &ConfiguratorWindow::calibrationCalculateValue, m_calibration_controller, &CCalibrationController::calculateResponse);
     connect(m_calibration_controller, &CCalibrationController::bruResistanceRequest, this, &ConfiguratorWindow::processBruRequest);
     connect(this, &ConfiguratorWindow::calibrationBruResistance, m_calibration_controller, &CCalibrationController::bruRequestIsReady);
+    connect(m_calibration_controller, &CCalibrationController::bruMeasureStart, this, &ConfiguratorWindow::bruResistanceMeasureStart);
     connect(ui->tabWidgetCalibration, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
     connect(ui->tabWidgetCalibrationBRU, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
 
