@@ -2538,6 +2538,13 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
         emit calibrationCalculateValue(unit);
     }
+    else if(type == CALIBRATION_BRU_RESISTANCE)
+    {
+        if(showErrorMessage(tr("Чтение состояния линии БРУ"), unit))
+            return;
+
+        emit calibrationBruResistance(unit);
+    }
     else if(type >= AMPLITUDE_READ_CH2 && type <= AMPLITUDE_READ_CH5)
     {
         if(showErrorMessage(tr("Чтение амплитуд по каналам"), unit))
@@ -4293,6 +4300,15 @@ void ConfiguratorWindow::calibrationTypeChanged(int index)
         if(type != CCalibrationController::TYPE_NONE)
             m_calibration_controller->setCalculateState(true, type);
     }
+}
+//---------------------------------------------------------------
+void ConfiguratorWindow::processBruRequest(CModBusDataUnit &unit)
+{
+    unit.setID(quint8(m_serialPortSettings_window->deviceID()));
+    unit.setProperty("REQUEST", CALIBRATION_BRU_RESISTANCE);
+
+    if(m_modbus->isConnected())
+        m_modbus->sendData(unit);
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -12763,6 +12779,8 @@ void ConfiguratorWindow::initConnect()
     connect(this, &ConfiguratorWindow::calibrationFactorIsReady, m_calibration_controller, &CCalibrationController::calibrationFactorActual);
     connect(m_calibration_controller, &CCalibrationController::calculate, this, &ConfiguratorWindow::sendCalibrationCalculateValues);
     connect(this, &ConfiguratorWindow::calibrationCalculateValue, m_calibration_controller, &CCalibrationController::calculateResponse);
+    connect(m_calibration_controller, &CCalibrationController::bruResistanceRequest, this, &ConfiguratorWindow::processBruRequest);
+    connect(this, &ConfiguratorWindow::calibrationBruResistance, m_calibration_controller, &CCalibrationController::bruRequestIsReady);
     connect(ui->tabWidgetCalibration, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
     connect(ui->tabWidgetCalibrationBRU, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
 

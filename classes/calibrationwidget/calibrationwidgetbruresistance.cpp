@@ -6,7 +6,8 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     ui(new Ui::CCalibrationWidgetBRUResistance),
     m_calibration_type(CALIBRATION_NONE),
     m_calibration_min({ 0.0f, calibration_t() }),
-    m_calibration_max({ 0.0f, calibration_t() })
+    m_calibration_max({ 0.0f, calibration_t() }),
+    m_is_ready(false)
 {
     ui->setupUi(this);
 
@@ -41,6 +42,7 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     connect(ui->checkBoxRB, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->checkBoxRC, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::saveCalibrationToFlash);
+    connect(ui->pushButtonIsReady, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::checkCalibrationReady);
 }
 //-----------------------------------------------------------------
 CCalibrationWidgetBRUResistance::~CCalibrationWidgetBRUResistance()
@@ -444,6 +446,9 @@ void CCalibrationWidgetBRUResistance::valueCurrentStandardChanged(const QString&
 //-------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::stateChoiceChannelChanged(bool)
 {
+    if(!m_is_ready)
+        return;
+
     float phaseMin = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMin->text());
     float phaseMax = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMax->text());
 
@@ -722,6 +727,37 @@ void CCalibrationWidgetBRUResistance::progressBarIncrement()
     int count = ui->progressBarDataSet->value();
     int step  = 100/ui->spinBoxSetDataCount->value();
     ui->progressBarDataSet->setValue(count + step);
+}
+//-----------------------------------------------------------
+void CCalibrationWidgetBRUResistance::checkCalibrationReady()
+{
+    // Запрос на проверку готовности. Готовность проверяется состоянием 15го бита переменной I16 (адрес 173) "БРУ: линия разряжена"
+    // 0 - готов, 1 - заблокирован
+    CModBusDataUnit unit(0, CModBusDataUnit::ReadInputRegisters, 173, 1);
+    emit checkReady(unit);
+}
+//---------------------------------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::processCheckCalibrationReady(CModBusDataUnit &unit)
+{
+    if(!unit.isValid() || unit.count() != 1)
+        return;
+
+    bool state = (unit[0]&0x8000);
+
+    if(state)
+    {
+        QMessageBox::warning(this, tr("Проверка готовности калибровки"), tr("Ошибка: \"Линия разряжена\"\n"
+                                                                            "Устраните проблему и попробуйте еще раз!"));
+        m_calibration_type = CALIBRATION_NONE;
+        m_calibration_min = { 0.0f, calibration_t() };
+        m_calibration_max = { 0.0f, calibration_t() };
+        m_is_ready = false;
+
+        return;
+    }
+
+    m_is_ready = true;
+    stateChoiceChannelChanged();
 }
 //------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::paintEvent(QPaintEvent *event)

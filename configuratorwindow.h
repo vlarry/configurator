@@ -133,6 +133,7 @@
                 COMMUNICATIONS_MODBUS_TIM_SPEED,
                 CALIBRATION_PARAMETER, // калибровка (ток, напряжение и т.д. и т.п.)
                 CALIBRATION_CALCULATE_VALUE, // расчетное текущее значение для калибровки
+                CALIBRATION_BRU_RESISTANCE, // калибровка БРУ по сопротивлению
                 AMPLITUDE_READ_CH2, // амплитуда канала №2
                 AMPLITUDE_READ_CH3, // амплитуда канала №3
                 AMPLITUDE_READ_CH4, // амплитуда канала №4
@@ -615,6 +616,7 @@
             void calibrationRoll(bool state);
             void applicationCloseProcess();
             void calibrationTypeChanged(int index); // отслеживание переключения вкладки виджета калибровок для вывода расчетных величин
+            void processBruRequest(CModBusDataUnit &unit); // запрос от калибровок БРУ (проверка готовности модуля)
 
         protected:
             void keyPressEvent(QKeyEvent* event);
@@ -755,6 +757,7 @@
             void calibrationDataIsReady(CModBusDataUnit&);
             void calibrationFactorIsReady(const QString&, float); // калибровочный коэффициент для модуля калибровок (QString - key, float - value)
             void calibrationCalculateValue(CModBusDataUnit&); // текущее расчетное значение для калибровок
+            void calibrationBruResistance(CModBusDataUnit&); // сигнал для модуля калибровок БРУ по сопротивлению
 
         private:
             Ui::ConfiguratorWindow*          ui;

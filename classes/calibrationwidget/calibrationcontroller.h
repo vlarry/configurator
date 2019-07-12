@@ -70,6 +70,8 @@
             void calculate(QVector<CModBusDataUnit>&);
             void calculateResponse(CModBusDataUnit&);
             void dataIncrement();
+            void bruResistanceRequest(CModBusDataUnit&);
+            void bruRequestIsReady(CModBusDataUnit&);
 
         public slots:
             void dataIsReady(CModBusDataUnit &unit);
