@@ -410,12 +410,12 @@ void ConfiguratorWindow::inputAnalogGroupWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Write()
 {
-//    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
+    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
 
-//    for(QString key: list)
-//        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
-//    sendSettingControlWriteRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingControlWriteRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -544,10 +544,10 @@ void ConfiguratorWindow::protectionMTZ4Write()
 void ConfiguratorWindow::protectionMTZGroupWrite()
 {
     protectionMTZ1Write();
-//    protectionMTZ2Write();
-//    protectionMTZ3Write();
-//    protectionMTZ4Write();
-//    protectionMotorGroupWrite();
+    protectionMTZ2Write();
+    protectionMTZ3Write();
+    protectionMTZ4Write();
+    protectionMotorGroupWrite();
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Write
@@ -1385,12 +1385,12 @@ void ConfiguratorWindow::settingCommunicationsWrite()
  */
 void ConfiguratorWindow::protectionMTZ1Read()
 {
-//    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
+    QStringList list = QStringList() << "M06" << "X01" << "M08" << "K31";
 
-//    for(QString key: list)
-//        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
-//    sendSettingControlReadRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingControlReadRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendProtectionWorkModeRequest("MTZ1", FUN_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
@@ -1431,7 +1431,7 @@ void ConfiguratorWindow::protectionMTZ3Read()
  */
 void ConfiguratorWindow::protectionMTZ3SetCharRead()
 {
-//    sendSettingReadRequest("TZ1", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 14, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendSettingReadRequest("TZ1", "TZ7", CModBusDataUnit::ReadHoldingRegisters, 14, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3ProperySteepRead
@@ -1519,10 +1519,10 @@ void ConfiguratorWindow::protectionMTZ4Read()
 void ConfiguratorWindow::protectionMTZGroupRead()
 {
     protectionMTZ1Read();
-//    protectionMTZ2Read();
-//    protectionMTZ3Read();
-//    protectionMTZ4Read();
-//    protectionMotorGroupRead();
+    protectionMTZ2Read();
+    protectionMTZ3Read();
+    protectionMTZ4Read();
+    protectionMotorGroupRead();
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Read
