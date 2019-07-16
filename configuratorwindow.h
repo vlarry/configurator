@@ -143,8 +143,8 @@
             //------------------
             enum RequestFunction
             {
-                FUN_READ,
-                FUN_SAVE
+                FUNCTION_READ,
+                FUNCTION_SAVE
             };
             //-------------
             enum WidgetType
