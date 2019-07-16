@@ -416,7 +416,6 @@ void ConfiguratorWindow::protectionMTZ1Write()
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     sendSettingControlWriteRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ1", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Write
@@ -431,7 +430,6 @@ void ConfiguratorWindow::protectionMTZ2Write()
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     sendSettingControlWriteRequest("M09", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ2", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Write
@@ -447,7 +445,6 @@ void ConfiguratorWindow::protectionMTZ3Write()
 
     sendSettingControlWriteRequest("M13", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingControlWriteRequest("TZ", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ3", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3SetCharWrite
@@ -534,7 +531,6 @@ void ConfiguratorWindow::protectionMTZ4Write()
         sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     sendSettingControlWriteRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ4", FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupWrite
@@ -548,6 +544,9 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
     protectionMTZ3Write();
     protectionMTZ4Write();
     protectionMotorGroupWrite();
+
+    QString protection = "MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN";
+    sendProtectionWorkModeRequest(protection, FUN_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Write
@@ -5125,6 +5124,14 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
     if(unit.count() != 40) // 20 32-битных ячеек - это 2 строки, т.к. ширина матрицы 10 32-битных ячеек
         return;
 
+    RequestFunction function = RequestFunction(unit.property("REQUEST_FUNCTION").toInt());
+
+    if(function == FUN_SAVE)
+    {
+        protectionWorkModeWrite(unit);
+        return;
+    }
+
     QString tprotect = unit.property("PROTECTION").toString();
 
     if(tprotect.isEmpty())
@@ -5141,8 +5148,6 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 
     if(!comboBox)
         return;
-
-    RequestFunction function = RequestFunction(unit.property("REQUEST_FUNCTION").toInt());
 
     QString var;
 
@@ -5164,23 +5169,66 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
     int i17_pos = i11_pos + 20;
     int bit     = bitNumber%16;
 
-    int i11_state = -1;
-    int i17_state = -1;
+    int i11_state = ((unit[i11_pos]&(1 << bit)) >> bit);
+    int i17_state = ((unit[i17_pos]&(1 << bit)) >> bit);
 
-    if(function == FUN_READ)
+    int row = i11_state << 1 | i17_state;
+
+    if(row < comboBox->count())
+        comboBox->setCurrentIndex(row);
+
+    qDebug() << "Отображение режима работы защиты " << tprotect << ": данные-> " << unit.values();
+}
+//---------------------------------------------------------------------
+void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
+{
+    QString tprotect = unit.property("PROTECTION").toString();
+
+    if(tprotect.isEmpty())
+        return;
+
+    DeviceMenuItemType      group = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
+    CDeviceMenuTableWidget* table = groupMenuWidget(group);
+
+    if(!table)
+        return;
+
+    QStringList protectList = tprotect.split(',');
+    QVector<quint16> values = unit.values();
+
+    qDebug() << "Запись режима работы защит " << tprotect << " (принятые данные): " << values;
+
+    for(const QString &protect_name: protectList)
     {
-        i11_state = ((unit[i11_pos]&(1 << bit)) >> bit);
-        i17_state = ((unit[i17_pos]&(1 << bit)) >> bit);
+        QString    wgtName  = QString("comboBox%1").arg(protect_name);
+        QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
 
-        int row = i11_state << 1 | i17_state;
+        if(!comboBox)
+            return;
 
-        if(row < comboBox->count())
-            comboBox->setCurrentIndex(row);
+        QString var;
 
-        qDebug() << "Отображение режима работы защиты " << tprotect << ": данные-> " << unit.values();
-    }
-    else if(function == FUN_SAVE)
-    {
+        if(m_protections.find(protect_name) != m_protections.end())
+            var = m_protections[protect_name].var_name;
+
+        if(var.isEmpty())
+            return;
+
+        int bitNumber = -1;
+
+        if(m_variable_bits.find(var) != m_variable_bits.end())
+            bitNumber = m_variable_bits[var];
+
+        if(bitNumber == -1)
+            return;
+
+        int i11_pos = bitNumber/16;
+        int i17_pos = i11_pos + 20;
+        int bit     = bitNumber%16;
+
+        int i11_state = -1;
+        int i17_state = -1;
+
         int state = comboBox->currentIndex();
 
         switch(state)
@@ -5206,23 +5254,22 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         if(i11_state == -1 || i17_state == -1)
             return;
 
-        QVector<quint16> values = unit.values();
-
-        qDebug() << "Запись режима работы защиты " << tprotect << " (принятые данные): " << values;
-
         values[i11_pos] &= (~quint16(1 << bit)); // очищаем бит I11
         values[i11_pos] |= quint16(i11_state << bit); // устанавливаем бит I11
         values[i17_pos] &= (~quint16(1 << bit)); // очищаем бит I17
         values[i17_pos] |= quint16(i17_state << bit); // устанавливаем бит I17
+    }
 
-        qDebug() << "Запись режима работы защиты " << tprotect << " (модифицированные данные): " << values;
+    qDebug() << "Запись режима работы защит " << tprotect << " (модифицированные данные): " << values;
 
+    if(m_modbus->isConnected())
+    {
         int addr = addressSettingKey("I11");
 
         if(addr == -1)
             return;
 
-        qDebug() << QString("Запись режима работы защиты %1 по адресу %2").arg(addr);
+        qDebug() << QString("Запись режима работы защит %1 по адресу %2").arg(addr);
 
         sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
 
@@ -7671,7 +7718,7 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
 
 //    sendDeviceCommand(45); // отправка команды на установку ключа блокировки записи уставок
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(addr),
-                         QVector<quint16>() << 40); // запрашиваем 2 32-битных строки сразу, т.к. за I11 идет I17, в которой нам тоже необходим бит состояния
+                         QVector<quint16>() << 40); // запрашиваем 2 32-битных строки сразу, т.к. за I11 идет I17, из которой нам тоже необходим бит состояния
 
     unit.setProperty("REQUEST", PROTECTION_WORK_MODE_TYPE);
     unit.setProperty("PROTECTION", protection);
