@@ -112,9 +112,6 @@
             void setCalibrartionFactorActual(const QString &key, float value);
             void setCalculateActualValue(CModBusDataUnit &unit);
             void progressBarIncrement();
-            void checkCalibrationReady(bool isMeasure = false);
-            void processCheckCalibrationReady(CModBusDataUnit &unit);
-            void processMeasure();
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);
@@ -122,8 +119,6 @@
             void calibrationStart(QVector<CModBusDataUnit>&, int);
             void calibrationFactorAllStart();
             void calibrationEnd(bool = false);
-            void checkReady(CModBusDataUnit&);
-            void measureStart();
 
         protected:
             void paintEvent(QPaintEvent *event);

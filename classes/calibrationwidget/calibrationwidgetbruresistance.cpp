@@ -43,7 +43,6 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     connect(ui->checkBoxRB, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->checkBoxRC, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::saveCalibrationToFlash);
-    connect(ui->pushButtonIsReady, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::checkCalibrationReady);
 }
 //-----------------------------------------------------------------
 CCalibrationWidgetBRUResistance::~CCalibrationWidgetBRUResistance()
@@ -728,71 +727,6 @@ void CCalibrationWidgetBRUResistance::progressBarIncrement()
     int count = ui->progressBarDataSet->value();
     int step  = 100/ui->spinBoxSetDataCount->value();
     ui->progressBarDataSet->setValue(count + step);
-}
-//-------------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::checkCalibrationReady(bool isMeasure)
-{
-    CModBusDataUnit unit;
-    if(!isMeasure)
-    {
-        // Запрос на проверку готовности. Готовность проверяется состоянием 15го бита переменной I16 (адрес 173) "БРУ: линия разряжена"
-        // 0 - готов, 1 - заблокирован
-        unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 173, 1);
-    }
-    else
-    {
-        // Запрос на окончание измерения (состояние переменной N56, 0 - значит измерения готовы и можно читать)
-        unit = CModBusDataUnit(0, CModBusDataUnit::ReadInputRegisters, 181, 1);
-    }
-
-    emit checkReady(unit);
-}
-//---------------------------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::processCheckCalibrationReady(CModBusDataUnit &unit)
-{
-    if(!unit.isValid() || unit.count() != 1)
-        return;
-
-    if(unit.address() == 173) // адрес переменной I16 - проверка готовности к калибровке
-    {
-        bool state = (unit[0]&0x8000);
-
-        if(state)
-        {
-            QMessageBox::warning(this, tr("Проверка готовности калибровки"), tr("Ошибка: \"Линия разряжена\"\n"
-                                                                                "Устраните проблему и попробуйте еще раз!"));
-            m_calibration_type = CALIBRATION_NONE;
-            m_calibration_min = { 0.0f, calibration_t() };
-            m_calibration_max = { 0.0f, calibration_t() };
-            m_is_ready = false;
-
-            return;
-        }
-
-        m_is_ready = true;
-        stateChoiceChannelChanged();
-
-        QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("БРУ готов к калибровке по сопротивлению.\n"
-                                                                                 "Введите минимальное значение и нажмите кнопку \"Выполнить\"."));
-        emit measureStart(); // подача команды 43 на измерение. Окончание измерения проверяется состоянием переменной N56 (0 - измерение окончено)
-
-        QTimer::singleShot(1000, [this]()
-        {
-            processMeasure();
-        });
-    }
-    else if(unit.address() == 181) // адрес переменной N56 - проверка окончания измерений
-    {
-        bool state = (unit[0]&0x4000);
-
-        if(state)
-            processMeasure();
-    }
-}
-//----------------------------------------------------
-void CCalibrationWidgetBRUResistance::processMeasure()
-{
-    checkCalibrationReady(true); // запрос на чтение состояния измерения
 }
 //------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::paintEvent(QPaintEvent *event)

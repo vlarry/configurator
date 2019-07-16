@@ -40,12 +40,9 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
-    connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::checkReady, this, &CCalibrationController::bruResistanceRequest);
-    connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::measureStart, this, &CCalibrationController::bruMeasureStart);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalibrartionFactorActual);
     connect(this, &CCalibrationController::calculateResponse, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalculateActualValue);
     connect(this, &CCalibrationController::dataIncrement, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::progressBarIncrement);
-    connect(this, &CCalibrationController::bruRequestIsReady, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::processCheckCalibrationReady);
 
     connect(m_timer_caluculate, &QTimer::timeout, this, &CCalibrationController::calculateValueRead);
 }

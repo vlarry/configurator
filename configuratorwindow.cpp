@@ -12784,9 +12784,6 @@ void ConfiguratorWindow::initConnect()
     connect(this, &ConfiguratorWindow::calibrationFactorIsReady, m_calibration_controller, &CCalibrationController::calibrationFactorActual);
     connect(m_calibration_controller, &CCalibrationController::calculate, this, &ConfiguratorWindow::sendCalibrationCalculateValues);
     connect(this, &ConfiguratorWindow::calibrationCalculateValue, m_calibration_controller, &CCalibrationController::calculateResponse);
-    connect(m_calibration_controller, &CCalibrationController::bruResistanceRequest, this, &ConfiguratorWindow::processBruRequest);
-    connect(this, &ConfiguratorWindow::calibrationBruResistance, m_calibration_controller, &CCalibrationController::bruRequestIsReady);
-    connect(m_calibration_controller, &CCalibrationController::bruMeasureStart, this, &ConfiguratorWindow::bruResistanceMeasureStart);
     connect(ui->tabWidgetCalibration, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
     connect(ui->tabWidgetCalibrationBRU, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
 
