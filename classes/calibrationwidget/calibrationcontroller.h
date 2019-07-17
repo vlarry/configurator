@@ -70,6 +70,9 @@
             void calculate(QVector<CModBusDataUnit>&);
             void calculateResponse(CModBusDataUnit&);
             void dataIncrement();
+            // Individual signals for resistance calibration BRU
+            void bruResistanceStateVariable(CModBusDataUnit&); // сигнал на запрос чтения состояния переменной для БРУ по сопротивлению
+            void bruResistanceStateVariableIsReady(CModBusDataUnit&); // сигнал готовности данных состояния переменной для БРУ по сопротивлению
 
         public slots:
             void dataIsReady(CModBusDataUnit &unit);

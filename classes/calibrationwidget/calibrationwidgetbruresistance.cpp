@@ -7,8 +7,7 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
     m_calibration_type(CALIBRATION_NONE),
     m_calibration_min({ 0.0f, calibration_t() }),
     m_calibration_max({ 0.0f, calibration_t() }),
-    m_is_ready(false),
-    m_measureTimer(nullptr)
+    m_is_ready(false)
 {
     ui->setupUi(this);
 
@@ -33,16 +32,18 @@ CCalibrationWidgetBRUResistance::CCalibrationWidgetBRUResistance(QWidget *parent
 
     ui->progressBarDataSet->hide();
 
-    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::calibrationParameterStart);
+    connect(ui->pushButtonCalibration, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::clickButton);
+    connect(ui->pushButtonIsReady, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::clickButton);
+
     connect(ui->pushButtonCalibration, &QPushButton::toggled, this, &CCalibrationWidgetBRUResistance::stateButton);
     connect(this, &CCalibrationWidgetBRUResistance::calibrationEnd, this, &CCalibrationWidgetBRUResistance::stateButton);
-    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::calibrationWriteProcess);
+//    connect(ui->pushButtonApply, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::calibrationWriteProcess);
     connect(ui->lineEditPowerStandardPhaseMin, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
     connect(ui->lineEditPowerStandardPhaseMax, &CLineEdit::textChanged, this, &CCalibrationWidgetBRUResistance::valueCurrentStandardChanged);
     connect(ui->checkBoxRA, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->checkBoxRB, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
     connect(ui->checkBoxRC, &QCheckBox::clicked, this, &CCalibrationWidgetBRUResistance::stateChoiceChannelChanged);
-    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::saveCalibrationToFlash);
+//    connect(ui->pushButtonSaveToFlash, &QPushButton::clicked, this, &CCalibrationWidgetBRUResistance::saveCalibrationToFlash);
 }
 //-----------------------------------------------------------------
 CCalibrationWidgetBRUResistance::~CCalibrationWidgetBRUResistance()
@@ -429,7 +430,10 @@ void CCalibrationWidgetBRUResistance::stateButton(bool state)
             ui->labelTypeCalibration->setText(tr("Калибровка максимума"));
     }
     else
+    {
         ui->labelTypeCalibration->clear();
+        ui->pushButtonCalibration->setChecked(false);
+    }
 }
 //------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::saveCalibrationToFlash()
@@ -452,21 +456,24 @@ void CCalibrationWidgetBRUResistance::valueCurrentStandardChanged(const QString&
     stateChoiceChannelChanged(false); // аргумент не имеет значения, т.к. не используется
 }
 //-------------------------------------------------------------------
-void CCalibrationWidgetBRUResistance::stateChoiceChannelChanged(bool)
+bool CCalibrationWidgetBRUResistance::stateChoiceChannelChanged(bool)
 {
     if(!m_is_ready)
-        return;
+        return false;
 
     float phaseMin = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMin->text());
     float phaseMax = QLocale::system().toFloat(ui->lineEditPowerStandardPhaseMax->text());
 
-    if((stateRa() || stateRb() || stateRc()) && (phaseMin > 0 && phaseMax > 0) && (phaseMin < phaseMax))
+    if((stateRa() || stateRb() || stateRc()) && ((m_calibration_type == CALIBRATION_NONE && phaseMin > 0) ||
+                                                 (m_calibration_type == CALIBRATION_MIN && (phaseMax > 0 && phaseMax > phaseMin))))
     {
         ui->pushButtonCalibration->setEnabled(true);
-        return;
+        return true;
     }
 
     ui->pushButtonCalibration->setDisabled(true);
+    ui->pushButtonCalibration->setChecked(false);
+    return false;
 }
 //---------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::calibrationParameterStart()
@@ -727,6 +734,87 @@ void CCalibrationWidgetBRUResistance::progressBarIncrement()
     int count = ui->progressBarDataSet->value();
     int step  = 100/ui->spinBoxSetDataCount->value();
     ui->progressBarDataSet->setValue(count + step);
+}
+//-------------------------------------------------
+void CCalibrationWidgetBRUResistance::clickButton()
+{
+    QPushButton *button = qobject_cast<QPushButton*>(sender());
+
+    if(button)
+    {
+        if(button == ui->pushButtonIsReady) // нажата кнопка проверки состояния БРУ
+        {
+            CModBusDataUnit unit(0, CModBusDataUnit::ReadInputRegisters, 173, 1); // запос на чтение переменной I16 (готовность БРУ)
+            emit stateVariable(unit);
+        }
+        else if(button == ui->pushButtonCalibration && m_is_ready) // нажата кнопка "Выполнить" и БРУ разблокировано
+        {
+            if(!stateChoiceChannelChanged())
+                return;
+
+            if(m_calibration_type == CALIBRATION_NONE)
+                m_calibration_type = CALIBRATION_MIN;
+            else if(m_calibration_type == CALIBRATION_MIN)
+            {
+                m_calibration_type = CALIBRATION_MAX;
+            }
+
+            emit sendCommand(43); // отправка команды 43 на измерение (контроль по состоянию переменной N56, 0 - измерения готовы
+            {
+                QTimer::singleShot(1000, [this]() // задержка в одну секунду перед проверкой переменной N56, т.к. изначально она сброшена (значение 0)
+                {
+                    CModBusDataUnit unit(0, CModBusDataUnit::ReadInputRegisters, 181, 1); // запрос на чтение состояния переменной N56 (готовность измерений)
+                    emit stateVariable(unit);
+                });
+            }
+        }
+    }
+}
+//-------------------------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::processStateVariable(CModBusDataUnit &unit)
+{
+    if(unit.address() == 173) // ответ на запрос состояния БРУ (значение переменной I16)
+    {
+        m_is_ready = !(unit[0]&0x8000); // переменная I16 это бит №16
+
+        if(m_is_ready)
+        {
+            // сбрасываем в значения по умолчанию все переменные для нового замера
+            m_calibration_type = CALIBRATION_NONE;
+            m_calibration_min = { 0.0f, calibration_t() };
+            m_calibration_max = { 0.0f, calibration_t() };
+
+            stateChoiceChannelChanged();
+
+            QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("БРУ к калибровке по сопротивлению готов!\n"
+                                                                                     "Введите минимальное значение и нажмите кнопку \"Выполнить\"."));
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("Калибровка БРУ по сопротивлению"), tr("Калибровка БРУ по сопротивлению заблокирована!\n"
+                                                                                 "Устраните проблему и попробуйте еще раз."));
+        }
+    }
+    else if(unit.address() == 181) // ответ на запрос готовности измерения (значение переменной N56)
+    {
+        bool state = !(unit[0]&0x4000); // переменная N56 это бит 15
+
+        if(state)
+        {
+            if(m_calibration_type == CALIBRATION_MIN)
+            {
+                QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("Калибровка минимума окончена.\n"
+                                                                                         "Введите максимальное значение и нажмите кнопку \"Выполнить\"."));
+                ui->pushButtonCalibration->setChecked(false);
+            }
+            else if(m_calibration_type == CALIBRATION_MAX)
+            {
+                QMessageBox::information(this, tr("Калибровка БРУ по сопротивлению"), tr("Калибровка максимума окончена."));
+                m_is_ready = false;
+                stateButton();
+            }
+        }
+    }
 }
 //------------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::paintEvent(QPaintEvent *event)

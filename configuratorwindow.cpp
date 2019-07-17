@@ -2523,12 +2523,15 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 
         emit calibrationCalculateValue(unit);
     }
-    else if(type == CALIBRATION_BRU_RESISTANCE)
+    else if(type == CALIBRATION_BRU_RESISTANCE_STATE_VARIABLE)
     {
-        if(showErrorMessage(tr("Чтение состояния линии БРУ"), unit))
+        if(showErrorMessage(tr("Чтение состояния переменной БРУ по сопротивлению"), unit))
             return;
-unit.setValues(QVector<quint16>() << 0);
-        emit calibrationBruResistance(unit);
+
+        if(unit.address() == 173)
+            unit.setValues(QVector<quint16>() << 0);
+
+        emit bruResistanceStateVariableRead(unit);
     }
     else if(type >= AMPLITUDE_READ_CH2 && type <= AMPLITUDE_READ_CH5)
     {
@@ -4286,19 +4289,14 @@ void ConfiguratorWindow::calibrationTypeChanged(int index)
             m_calibration_controller->setCalculateState(true, type);
     }
 }
-//---------------------------------------------------------------
-void ConfiguratorWindow::processBruRequest(CModBusDataUnit &unit)
+//----------------------------------------------------------------------------
+void ConfiguratorWindow::bruResistanceStateVariableSend(CModBusDataUnit &unit)
 {
     unit.setID(quint8(m_serialPortSettings_window->deviceID()));
-    unit.setProperty("REQUEST", CALIBRATION_BRU_RESISTANCE);
+    unit.setProperty("REQUEST", CALIBRATION_BRU_RESISTANCE_STATE_VARIABLE);
 
     if(m_modbus->isConnected())
         m_modbus->sendData(unit);
-}
-//--------------------------------------------------
-void ConfiguratorWindow::bruResistanceMeasureStart()
-{
-    sendDeviceCommand(43); // Установка сигнала Измерение БРУ (I98=1)
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -12817,6 +12815,10 @@ void ConfiguratorWindow::initConnect()
     connect(this, &ConfiguratorWindow::calibrationFactorIsReady, m_calibration_controller, &CCalibrationController::calibrationFactorActual);
     connect(m_calibration_controller, &CCalibrationController::calculate, this, &ConfiguratorWindow::sendCalibrationCalculateValues);
     connect(this, &ConfiguratorWindow::calibrationCalculateValue, m_calibration_controller, &CCalibrationController::calculateResponse);
+
+    connect(m_calibration_controller, &CCalibrationController::bruResistanceStateVariable, this, &ConfiguratorWindow::bruResistanceStateVariableSend);
+    connect(this, &ConfiguratorWindow::bruResistanceStateVariableRead, m_calibration_controller, &CCalibrationController::bruResistanceStateVariableIsReady);
+
     connect(ui->tabWidgetCalibration, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
     connect(ui->tabWidgetCalibrationBRU, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
 

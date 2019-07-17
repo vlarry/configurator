@@ -105,13 +105,16 @@
             void stateButton(bool state = false);
             void saveCalibrationToFlash();
             void valueCurrentStandardChanged(const QString&);
-            void stateChoiceChannelChanged(bool = false);
+            bool stateChoiceChannelChanged(bool = false);
             void calibrationParameterStart();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
             void calibrationWriteProcess();
             void setCalibrartionFactorActual(const QString &key, float value);
             void setCalculateActualValue(CModBusDataUnit &unit);
             void progressBarIncrement();
+            // new slots
+            void clickButton();
+            void processStateVariable(CModBusDataUnit &unit);
 
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);
@@ -119,6 +122,9 @@
             void calibrationStart(QVector<CModBusDataUnit>&, int);
             void calibrationFactorAllStart();
             void calibrationEnd(bool = false);
+            // new signals
+            void stateVariable(CModBusDataUnit&);
+            void sendCommand(int);
 
         protected:
             void paintEvent(QPaintEvent *event);
@@ -129,6 +135,5 @@
             RangeType m_calibration_min;
             RangeType m_calibration_max;
             bool m_is_ready;
-            QTimer *m_measureTimer;
     };
 #endif // CALIBRATIONWIDGETBRURESISTANCE_H

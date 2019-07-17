@@ -44,6 +44,9 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(this, &CCalibrationController::calculateResponse, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalculateActualValue);
     connect(this, &CCalibrationController::dataIncrement, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::progressBarIncrement);
 
+    connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::stateVariable, this, &CCalibrationController::bruResistanceStateVariable);
+    connect(this, &CCalibrationController::bruResistanceStateVariableIsReady, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::processStateVariable);
+
     connect(m_timer_caluculate, &QTimer::timeout, this, &CCalibrationController::calculateValueRead);
 }
 //-----------------------------------------------
