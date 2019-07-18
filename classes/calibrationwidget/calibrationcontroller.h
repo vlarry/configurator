@@ -73,6 +73,9 @@
             // Individual signals for resistance calibration BRU
             void bruResistanceStateVariable(CModBusDataUnit&); // сигнал на запрос чтения состояния переменной для БРУ по сопротивлению
             void bruResistanceStateVariableIsReady(CModBusDataUnit&); // сигнал готовности данных состояния переменной для БРУ по сопротивлению
+            void bruResistanceMeasureRead(QVector<CModBusDataUnit>&); // сигнал на запрос чтения результатов измерений
+            void bruResistanceMeasureReadIsReady(CModBusDataUnit&); // сигнал готовности чтения измерений
+            void bruResistanceSendCommand(int); // отправка команды
 
         public slots:
             void dataIsReady(CModBusDataUnit &unit);

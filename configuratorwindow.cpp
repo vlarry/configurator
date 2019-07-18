@@ -2528,8 +2528,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         if(showErrorMessage(tr("Чтение состояния переменной БРУ по сопротивлению"), unit))
             return;
 
-        if(unit.address() == 173)
-            unit.setValues(QVector<quint16>() << 0);
+//        if(unit.address() == 173) // Только для теста
+//            unit.setValues(QVector<quint16>() << 0);
 
         emit bruResistanceStateVariableRead(unit);
     }
@@ -12818,6 +12818,7 @@ void ConfiguratorWindow::initConnect()
 
     connect(m_calibration_controller, &CCalibrationController::bruResistanceStateVariable, this, &ConfiguratorWindow::bruResistanceStateVariableSend);
     connect(this, &ConfiguratorWindow::bruResistanceStateVariableRead, m_calibration_controller, &CCalibrationController::bruResistanceStateVariableIsReady);
+    connect(m_calibration_controller, &CCalibrationController::bruResistanceSendCommand, this, &ConfiguratorWindow::sendDeviceCommand);
 
     connect(ui->tabWidgetCalibration, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);
     connect(ui->tabWidgetCalibrationBRU, &QTabWidget::currentChanged, this, &ConfiguratorWindow::calibrationTypeChanged);

@@ -746,6 +746,9 @@
        </item>
        <item>
         <widget class="QSpinBox" name="spinBoxSetDataCount">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
@@ -756,7 +759,7 @@
           <number>100</number>
          </property>
          <property name="value">
-          <number>10</number>
+          <number>1</number>
          </property>
         </widget>
        </item>
@@ -782,6 +785,9 @@
        </item>
        <item>
         <widget class="QSpinBox" name="spinBoxPauseRequest">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>

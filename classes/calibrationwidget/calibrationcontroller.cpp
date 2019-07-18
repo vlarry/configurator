@@ -36,13 +36,14 @@ CCalibrationController::CCalibrationController(CCalibrationWidgetOfCurrent *widg
     connect(this, &CCalibrationController::calculateResponse, m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::setCalculateActualValue);
     connect(this, &CCalibrationController::dataIncrement, m_widget_bru_power_dc, &CCalibrationWidgetBRUPowerDC::progressBarIncrement);
 
-    connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationStart, this, &CCalibrationController::calibrationProcessStart);
+    connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationMeasureRead, this, &CCalibrationController::calibrationProcessStart);
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationFactorAllStart, this, &CCalibrationController::calibrationFactorAllRead);
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::calibrationWriteStart, this, &CCalibrationController::calibrationWrite);
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::saveToFlash, this, &CCalibrationController::calibrationSaveToFlash);
+    connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::sendCommand, this, &CCalibrationController::bruResistanceSendCommand);
     connect(this, &CCalibrationController::calibrationFactorActual, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalibrartionFactorActual);
     connect(this, &CCalibrationController::calculateResponse, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::setCalculateActualValue);
-    connect(this, &CCalibrationController::dataIncrement, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::progressBarIncrement);
+//    connect(this, &CCalibrationController::dataIncrement, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::progressBarIncrement);
 
     connect(m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::stateVariable, this, &CCalibrationController::bruResistanceStateVariable);
     connect(this, &CCalibrationController::bruResistanceStateVariableIsReady, m_widget_bru_resistance, &CCalibrationWidgetBRUResistance::processStateVariable);

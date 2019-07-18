@@ -106,7 +106,7 @@
             void saveCalibrationToFlash();
             void valueCurrentStandardChanged(const QString&);
             bool stateChoiceChannelChanged(bool = false);
-            void calibrationParameterStart();
+            void processCalibrationMeasureRead();
             void calibrationDataProcess(QVector<CModBusDataUnit> &data);
             void calibrationWriteProcess();
             void setCalibrartionFactorActual(const QString &key, float value);
@@ -119,7 +119,7 @@
         signals:
             void calibrationWriteStart(QVector<CModBusDataUnit>&);
             void saveToFlash();
-            void calibrationStart(QVector<CModBusDataUnit>&, int);
+            void calibrationMeasureRead(QVector<CModBusDataUnit>&, int);
             void calibrationFactorAllStart();
             void calibrationEnd(bool = false);
             // new signals
@@ -135,5 +135,6 @@
             RangeType m_calibration_min;
             RangeType m_calibration_max;
             bool m_is_ready;
+            QTimer m_progressbar_timer;
     };
 #endif // CALIBRATIONWIDGETBRURESISTANCE_H
