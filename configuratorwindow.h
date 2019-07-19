@@ -113,7 +113,7 @@
                 PURPOSE_INPUT_TYPE, // матрица привязок входов
                 PURPOSE_INPUT_INVERSE_TYPE, // матрица привязок инверсий входов
                 PROTECTION_WORK_MODE_TYPE, // чтение режима работы защит
-                MONITOR_PURPOSE_K10_K11_TYPE, // чтение привязок для внутренних переменных К10-К11
+                MONITOR_PURPOSE_I11_I17_TYPE, // чтение привязок для внутренних переменных К10-К11
                 READ_OUTPUT_ALL, // чтение состояний всех выходов
                 READ_INPUTS, // чтение состояний входов
                 READ_JOURNAL_EVENT, // чтение журнала событий
@@ -518,7 +518,7 @@
             void errorDevice(const QString& errorConnect);
             void errorConnect(const QString& errorConnect);
             void indicatorVisiblity(bool state);
-            void monitorK10K11Visiblity(bool state);
+            void monitorI11I17Visiblity(bool state);
             void outputAllVisiblity(bool state);
             void inputVisiblity(bool state);
             void debugInfoVisiblity(bool state);
@@ -542,7 +542,7 @@
             void sendPurposeDIWriteRequest(int first_addr, int last_addr);
             void sendPurposeInverseDIWriteRequest(int first_addr, int last_addr);
             void sendProtectionWorkModeRequest(const QString& protection, RequestFunction function, DeviceMenuItemType group_index);
-            void sendMonitorPurposeK10_K11Request();
+            void sendMonitorPurposeI11_I17Request();
             void sendRequestRead(int addr, int size, int request, CModBusDataUnit::FunctionType functionType = CModBusDataUnit::ReadHoldingRegisters);
             void sendRequestWrite(int addr, QVector<quint16>& values, int request);
             void sendSettingReadRequestVariableState(const QString &key, const QString var, const QString &suffix, DeviceMenuItemType group_item, bool is_save = false);
@@ -666,7 +666,7 @@
             void displayCommunicationTimeoutSpeed(const QVector<quint16>& data);
             void displayCommunicationAddress(const QVector<quint16>& data);
             void displayProtectionWorkMode(CModBusDataUnit& unit);
-            void displayMonitorK10_K11(CModBusDataUnit& unit);
+            void displayMonitorI11_I17(CModBusDataUnit& unit);
             void displayOutputAllRead(CModBusDataUnit& unit);
             void displayInputsRead(const QVector<quint16>& data);
             void displayBlockProtectionRead(const QVector<quint16>& data);
@@ -771,7 +771,7 @@
             CContainerWidget*                m_containerWidgetVariable;
             CContainerWidget*                m_containerWidgetDeviceMenu;
             CContainerWidget*                m_containerIndicatorState;
-            CContainerWidget*                m_containerMonitorK10K11;
+            CContainerWidget*                m_containerMonitorI11I17;
             CContainerWidget*                m_containerOutputAll;
             CContainerWidget*                m_containerInputs;
             CContainerWidget*                m_containerDebugInfo;
@@ -812,7 +812,7 @@
             limit_unit_t                     m_limits; // лимиты редактируемых величин
             block_protection_list_t          m_block_list; // список блокировок для таблицы Управление защитами
             QTimer*                          m_journal_timer; // проверка на обрыв чтения журнала
-            QMap<int, unit_t>                m_monitor_K10_K11_field; // ключ - номер строки, unit - описание полей (привязки для мониторинга К10 и К11
+            QMap<int, unit_t>                m_monitor_I11_I17_field; // ключ - номер строки, unit - описание полей (привязки для мониторинга К10 и К11
             QMap<int, CCheckBoxInternalVariable*> m_internal_variable_list; // список переменных (ключ - бит переменной)
             JournalPtr                       m_journal_crash; // журнал аварий
             JournalPtr                       m_journal_event; // журнал событий

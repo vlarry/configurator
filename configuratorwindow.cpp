@@ -11,7 +11,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_containerWidgetVariable(nullptr),
     m_containerWidgetDeviceMenu(nullptr),
     m_containerIndicatorState(nullptr),
-    m_containerMonitorK10K11(nullptr),
+    m_containerMonitorI11I17(nullptr),
     m_containerOutputAll(nullptr),
     m_containerInputs(nullptr),
     m_containerDebugInfo(nullptr),
@@ -2476,10 +2476,10 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
     {
         displayProtectionWorkMode(unit);
     }
-    else if(type == MONITOR_PURPOSE_K10_K11_TYPE)
+    else if(type == MONITOR_PURPOSE_I11_I17_TYPE)
     {
         if(!showErrorMessage(tr("Мониторинг привязок К10/К11"), unit))
-            displayMonitorK10_K11(unit);
+            displayMonitorI11_I17(unit);
     }
     else if(type == READ_OUTPUT_ALL)
     {
@@ -2677,17 +2677,17 @@ void ConfiguratorWindow::indicatorVisiblity(bool state)
     }
 }
 //---------------------------------------------------------
-void ConfiguratorWindow::monitorK10K11Visiblity(bool state)
+void ConfiguratorWindow::monitorI11I17Visiblity(bool state)
 {
     if(state)
     {
-        sendMonitorPurposeK10_K11Request();
-        m_containerMonitorK10K11->show();
+        sendMonitorPurposeI11_I17Request();
+        m_containerMonitorI11I17->show();
     }
     else
-        m_containerMonitorK10K11->hide();
+        m_containerMonitorI11I17->hide();
 
-    ui->pushButtonMonitorK10_K11->setChecked(state);
+    ui->pushButtonMonitorI11_I17->setChecked(state);
 }
 //-----------------------------------------------------
 void ConfiguratorWindow::outputAllVisiblity(bool state)
@@ -3810,35 +3810,40 @@ void ConfiguratorWindow::initProtectionList()
 void ConfiguratorWindow::initMonitorPurpose()
 {
     QSqlQuery query(m_system_db);
-    QStringList rows, columns;
 
-    if(query.exec("SELECT * FROM variable;"))
+    if(query.exec("SELECT * FROM variable WHERE type_function=\"OFF\";"))
     {
         while(query.next())
         {
-            QString type_function = query.value("type_function").toString();
-            int     type_sort     = query.value("type_sort").toInt();
+            int type_sort = query.value("type_sort").toInt();
 
-            if(type_function.toUpper() == "OFF")
+            unit_t unit =
             {
-                unit_t unit;
+                query.value("key").toString(),
+                query.value("name").toString(),
+                query.value("description").toString(),
+                query.value("bit").toInt(),
+                UNCHECKED
+            };
 
-                unit.key         = query.value("key").toString();
-                unit.name        = query.value("name").toString();
-                unit.position    = query.value("bit").toInt();
-                unit.description = query.value("description").toString();
-
-                m_monitor_K10_K11_field[type_sort] = unit;
-            }
+            m_monitor_I11_I17_field[type_sort] = unit;
         }
     }
-
-    for(int key: m_monitor_K10_K11_field.keys())
+qDebug() << QString("Загрузка привязок по I11, I17: %1").arg(m_monitor_I11_I17_field.count());
+    if(m_monitor_I11_I17_field.isEmpty())
     {
-        unit_t  unit = m_monitor_K10_K11_field[key];
+        outLogMessage(tr("Невозможно создать список привязок для переменных I11 и I17."));
+        return;
+    }
+
+    QStringList rows, columns;
+
+    for(int key: m_monitor_I11_I17_field.keys())
+    {
+        unit_t  unit = m_monitor_I11_I17_field[key];
         QString str  = QString("%1 (%2)").arg(unit.key).arg(unit.name);
 
-        if(unit.key.toUpper() == "K10" || unit.key.toUpper() == "K11")
+        if(unit.key.toUpper() == "I11" || unit.key.toUpper() == "I17")
             rows << str;
 
         if(str.count() > 22)
@@ -4463,7 +4468,7 @@ void ConfiguratorWindow::initIndicatorStates()
 void ConfiguratorWindow::initSubWindow()
 {
     m_output_window          = new CIndicatorState(this);
-    m_monitor_purpose_window = new CMonitorPurpose(tr("Монитор привязок по К10/К11"), this);
+    m_monitor_purpose_window = new CMonitorPurpose(tr("Монитор привязок по I11/I17"), this);
     m_outputall_window       = new COutputAll(tr("Все выходы"), this);
     m_inputs_window          = new COutputAll(tr("Входы"), this);
     m_debuginfo_window       = new CDebugInfo(tr("Отладочная информация"), this);
@@ -4475,11 +4480,11 @@ void ConfiguratorWindow::initSubWindow()
     m_containerIndicatorState->setHeaderBackground(QColor(190, 190, 190));
     m_containerIndicatorState->hide();
 
-    m_containerMonitorK10K11 = new CContainerWidget(tr("Монитор привязок по К10/К11"), m_monitor_purpose_window,
+    m_containerMonitorI11I17 = new CContainerWidget(tr("Монитор привязок по I11/I17"), m_monitor_purpose_window,
                                                     CContainerWidget::AnchorType::AnchorFree, this);
-    m_containerMonitorK10K11->setSuperParent(this);
-    m_containerMonitorK10K11->setHeaderBackground(QColor(190, 190, 190));
-    m_containerMonitorK10K11->hide();
+    m_containerMonitorI11I17->setSuperParent(this);
+    m_containerMonitorI11I17->setHeaderBackground(QColor(190, 190, 190));
+    m_containerMonitorI11I17->hide();
 
     m_containerOutputAll = new CContainerWidget(tr("Все выходы"), m_outputall_window, CContainerWidget::AnchorType::AnchorFree, this);
     m_containerOutputAll->setSuperParent(this);
@@ -5264,7 +5269,7 @@ void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
     }
 }
 //-------------------------------------------------------------------
-void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
+void ConfiguratorWindow::displayMonitorI11_I17(CModBusDataUnit& unit)
 {
     if(unit.count() != 40)
         return;
@@ -5287,10 +5292,10 @@ void ConfiguratorWindow::displayMonitorK10_K11(CModBusDataUnit& unit)
 
         for(int row = 0; row < matrix.rowCount(); row++)
         {
-            if(m_monitor_K10_K11_field.find(row) == m_monitor_K10_K11_field.end())
+            if(m_monitor_I11_I17_field.find(row) == m_monitor_I11_I17_field.end())
                 continue;
 
-            unit_t unit_row = m_monitor_K10_K11_field[row];
+            unit_t unit_row = m_monitor_I11_I17_field[row];
             int    val      = unit_row.position/16;
             int    bit      = unit_row.position%16;
             int    index    = offset + val;
@@ -7201,7 +7206,7 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     loadContainerSettings(m_containerWidgetVariable, db);
     loadContainerSettings(m_containerWidgetDeviceMenu, db);
     loadContainerSettings(m_containerIndicatorState, db);
-    loadContainerSettings(m_containerMonitorK10K11, db);
+    loadContainerSettings(m_containerMonitorI11I17, db);
     loadContainerSettings(m_containerOutputAll, db);
     loadContainerSettings(m_containerInputs, db);
     loadContainerSettings(m_containerDebugInfo, db);
@@ -7715,14 +7720,14 @@ void ConfiguratorWindow::sendProtectionWorkModeRequest(const QString& protection
     m_modbus->sendData(unit);
 }
 //---------------------------------------------------------
-void ConfiguratorWindow::sendMonitorPurposeK10_K11Request()
+void ConfiguratorWindow::sendMonitorPurposeI11_I17Request()
 {
-    int addr = addressSettingKey("K10");
+    int addr = addressSettingKey("I11");
 
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::ReadHoldingRegisters, quint16(addr),
                          QVector<quint16>() << 40);
 
-    unit.setProperty("REQUEST", MONITOR_PURPOSE_K10_K11_TYPE);
+    unit.setProperty("REQUEST", MONITOR_PURPOSE_I11_I17_TYPE);
 
     m_modbus->sendData(unit);
 }
@@ -8955,7 +8960,7 @@ void ConfiguratorWindow::saveProject()
     saveContainerSettings(m_containerWidgetVariable, db);
     saveContainerSettings(m_containerWidgetDeviceMenu, db);
     saveContainerSettings(m_containerIndicatorState, db);
-    saveContainerSettings(m_containerMonitorK10K11, db);
+    saveContainerSettings(m_containerMonitorI11I17, db);
     saveContainerSettings(m_containerOutputAll, db);
     saveContainerSettings(m_containerInputs, db);
     saveContainerSettings(m_containerDebugInfo, db);
@@ -9665,7 +9670,7 @@ void ConfiguratorWindow::initApplication()
         m_containerTerminalModbus->setName("TERMINAL");
 
         m_containerIndicatorState->setName("INDICATOR_STATE");
-        m_containerMonitorK10K11->setName("MONITOR_K10_K11");
+        m_containerMonitorI11I17->setName("MONITOR_I11_I17");
         m_containerOutputAll->setName("OUTPUT_ALL");
         m_containerInputs->setName("INPUTS");
         m_containerDebugInfo->setName("DEBUG_INFO");
@@ -12719,8 +12724,8 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
     connect(m_containerIndicatorState, &CContainerWidget::containerClose, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
     connect(m_containerIndicatorState, &CContainerWidget::containerClose, this, &ConfiguratorWindow::indicatorVisiblity);
-    connect(ui->pushButtonMonitorK10_K11, &QPushButton::clicked, this, &ConfiguratorWindow::monitorK10K11Visiblity);
-    connect(m_containerMonitorK10K11, &CContainerWidget::containerClose, ui->pushButtonMonitorK10_K11, &QPushButton::setChecked);
+    connect(ui->pushButtonMonitorI11_I17, &QPushButton::clicked, this, &ConfiguratorWindow::monitorI11I17Visiblity);
+    connect(m_containerMonitorI11I17, &CContainerWidget::containerClose, ui->pushButtonMonitorI11_I17, &QPushButton::setChecked);
     connect(ui->pushButtonOutputAll, &QPushButton::clicked, this, &ConfiguratorWindow::outputAllVisiblity);
     connect(m_containerOutputAll, &CContainerWidget::containerClose, ui->pushButtonOutputAll, &QPushButton::setChecked);
     connect(ui->pushButtonInputs, &QPushButton::clicked, this, &ConfiguratorWindow::inputVisiblity);
@@ -12763,7 +12768,7 @@ void ConfiguratorWindow::initConnect()
     if(ui->dockWidgetVariable->control())
         connect(ui->dockWidgetVariable->control(), &CDockPanelItemCtrl::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
     connect(ui->pushButtonPanelMessage, &QPushButton::clicked, this, &ConfiguratorWindow::panelButtonCtrlPress);
-    connect(m_monitor_purpose_window, &CMonitorPurpose::buttonUpdate, this, &ConfiguratorWindow::sendMonitorPurposeK10_K11Request);
+    connect(m_monitor_purpose_window, &CMonitorPurpose::buttonUpdate, this, &ConfiguratorWindow::sendMonitorPurposeI11_I17Request);
     connect(m_outputall_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_inputs_window, &COutputAll::buttonUpdate, this, &ConfiguratorWindow::sendInputStatesRequest);
     connect(ui->pushButtonSyncDateTime, &QPushButton::clicked, this, &ConfiguratorWindow::synchronizationDateTime);
