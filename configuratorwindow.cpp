@@ -3054,7 +3054,61 @@ void ConfiguratorWindow::writeSetCurrent()
  */
 void ConfiguratorWindow::writeSetEditItem()
 {
+    DeviceMenuItemType group = menuIndex();
 
+    if(group == DEVICE_MENU_ITEM_NONE)
+        return;
+
+    CDeviceMenuTableWidget *table = groupMenuWidget(group);
+
+    bool isEdit = false;
+
+    for(int i = 0; i < table->rowCount(); i++)
+    {
+        QWidget* wgt = table->cellWidget(i, 1);
+
+        if(!wgt)
+            continue;
+
+        QObjectList obj_list = wgt->children();
+
+        for(QObject* obj: obj_list)
+        {
+            QString key;
+
+            if(obj->isWidgetType())
+            {
+                if(obj->objectName().toUpper().contains("COMBOBOX"))
+                {
+                    CMenuComboBox *combobox = qobject_cast<CMenuComboBox*>(obj);
+
+                    if(combobox && combobox->isEdit())
+                    {
+                        key = combobox->property("ITEM_KEY").toString();
+                        sendSettingControlWriteRequest(key, group);
+                        combobox->resetIsEdit();
+                        isEdit = true;
+                    }
+                }
+                else if(obj->objectName().toUpper().contains("LINEEDIT"))
+                {
+                    CLineEdit *lineedit = qobject_cast<CLineEdit*>(obj);
+
+                    if(lineedit && lineedit->isEdit())
+                    {
+                        key = lineedit->property("ITEM_KEY").toString();
+                        isEdit = true;
+                        sendSettingWriteRequest(key, key, group);
+                        lineedit->resetIsEdit();
+                    }
+                }
+            }
+        }
+    }
+
+    if(!isEdit)
+        QMessageBox::information(this, tr("Запись уставок"), tr("Ни одна из настроек не была изменена!\n"
+                                                                "Отмена записи"));
 }
 /*!
  * \brief ConfiguratorWindow::expandItemTree
@@ -4609,6 +4663,7 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
         if(!str.isEmpty())
         {
             lineEdit->setText(str);
+            lineEdit->resetIsEdit();
 
             if(isCalibration)
                 emit calibrationFactorIsReady(first, value.f);
@@ -4700,6 +4755,7 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
         qDebug() << QString("Отображение уставки (внутренняя переменная): переменная->%1, значение = %2 (номер бита = %3)").
                     arg(v).arg(state).arg(bit_pos);
         comboBox->setCurrentIndex(state);
+        comboBox->resetIsEdit();
     }
 }
 /*!
@@ -4866,6 +4922,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
         i--;
 qDebug() << QString("Отображение уставки: переменная->%1, значение = %2").arg(indexName).arg(i);
     comboBox->setCurrentIndex(i);
+    comboBox->resetIsEdit();
 }
 //------------------------------------------------------------------
 void ConfiguratorWindow::displayPurposeOutput(CModBusDataUnit& unit)
@@ -5101,6 +5158,8 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
 
             if(item_pos < combobox->count())
                 combobox->setCurrentIndex(item_pos);
+
+            combobox->resetIsEdit();
         }
     }
 }
@@ -5162,6 +5221,8 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
 
     if(row < comboBox->count())
         comboBox->setCurrentIndex(row);
+
+    comboBox->resetIsEdit();
 
     qDebug() << "Отображение режима работы защиты " << tprotect << ": данные-> " << unit.values();
 }
@@ -5561,6 +5622,8 @@ int ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const CDeviceMen
 
                 if(isOk)
                     combobox->setCurrentIndex(index - 1);
+
+                combobox->resetIsEdit();
             }
         }
         else if(wgt_name.toUpper() == "CLINEEDIT")
@@ -5573,6 +5636,8 @@ int ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const CDeviceMen
 
                 if(!text.isEmpty())
                     lineedit->setText(text);
+
+                lineedit->resetIsEdit();
             }
         }
     }
@@ -6736,6 +6801,8 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
                 if(i < comboBox->count())
                     comboBox->setCurrentIndex(i);
+
+                comboBox->resetIsEdit();
             }
         }
         else if(type.toUpper() == "LINEEDIT")
@@ -6744,6 +6811,8 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
             if(lineEdit)
                 lineEdit->setText(val);
+
+            lineEdit->resetIsEdit();
         }
     }
 
