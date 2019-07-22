@@ -176,7 +176,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
 
     if(item.type.toUpper() == "LIST") // Тип равен СПИСОК, значит это комбобокс
     {
-        QComboBox* cb = new QComboBox(wgt);
+        CMenuComboBox* cb = new CMenuComboBox(wgt);
 
         cb->setObjectName(QString("comboBox%1%2").arg(item.key).arg(index_str));
 
@@ -226,6 +226,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
 
     if(widget)
     {
+        widget->setProperty("ITEM_KEY", item.key);
         widget->setMinimumWidth(200);
         widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
         wgt_layout->setObjectName(QString("layoutWidget%1%2").arg(item.key).arg(index_str));

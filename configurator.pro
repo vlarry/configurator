@@ -32,6 +32,7 @@ SOURCES += \
         classes/calibrationwidget/calibrationwidgetpower.cpp \
         main.cpp \
         configuratorwindow.cpp \
+        menucombobox.cpp \
         qcell.cpp \
         cterminal.cpp \
         qcustomplot.cpp \
@@ -94,6 +95,7 @@ HEADERS += \
         classes/calibrationwidget/calibrationwidgetofcurrent.h \
         classes/calibrationwidget/calibrationwidgetpower.h \
         configuratorwindow.h \
+        menucombobox.h \
         qcell.h \
         cterminal.h \
         qcustomplot.h \

@@ -528,6 +528,7 @@
             void readSetCurrent();
             void writeSettings();
             void writeSetCurrent();
+            void writeSetEditItem();
             void expandItemTree(bool state);
             void versionSowftware();
             void sendCalculateRead(CModBusDataUnit& unit);

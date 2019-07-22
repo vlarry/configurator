@@ -14,6 +14,7 @@
     #include <QPushButton>
     #include <QLinearGradient>
     #include "clineedit.h"
+    #include "menucombobox.h"
     //-----------------------------------------------
     class CDeviceMenuTableWidget: public QTableWidget
     {

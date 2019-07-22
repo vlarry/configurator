@@ -25,6 +25,8 @@
             bool isValidateText(const QString& text) const;
             void setValidatorType(ValidatorType type);
             ValidatorType validatorType() const;
+            bool isEdit() const;
+            void resetIsEdit();
 
         protected:
             void mouseReleaseEvent(QMouseEvent* event);
@@ -37,5 +39,6 @@
         private:
             bool          m_focus;
             ValidatorType m_validator_type;
+            bool          m_is_edit; // было редактирование ячейки?
     };
 #endif // CLINEEDIT_H

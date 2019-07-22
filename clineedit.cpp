@@ -3,7 +3,8 @@
 CLineEdit::CLineEdit(QWidget* parent):
     QLineEdit(parent),
     m_focus(false),
-    m_validator_type(FLOAT)
+    m_validator_type(FLOAT),
+    m_is_edit(false)
 {
     connect(this, &CLineEdit::textChanged, this, &CLineEdit::validateTextChanged);
 }
@@ -55,6 +56,16 @@ CLineEdit::ValidatorType CLineEdit::validatorType() const
 {
     return m_validator_type;
 }
+//----------------------------
+bool CLineEdit::isEdit() const
+{
+    return m_is_edit;
+}
+//---------------------------
+void CLineEdit::resetIsEdit()
+{
+    m_is_edit = false;
+}
 //---------------------------------------------------
 void CLineEdit::mouseReleaseEvent(QMouseEvent* event)
 {
@@ -97,9 +108,13 @@ void CLineEdit::validateTextChanged(const QString& text)
     if(isValidateText(text))
     {
         t_palette.setColor(QPalette::Text, QColor(Qt::black));
+        m_is_edit = true;
     }
     else
+    {
+        m_is_edit = false;
         t_palette.setColor(QPalette::Text, QColor(Qt::red));
+    }
 
     setPalette(t_palette);
 }

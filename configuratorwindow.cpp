@@ -938,10 +938,10 @@ void ConfiguratorWindow::protectionSignalStartWrite()
         if(!widget)
             continue;
 
-        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+        if(QString(widget->metaObject()->className()).toUpper() != "CMENUCOMBOBOX")
             continue;
 
-        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+        CMenuComboBox* combobox = qobject_cast<CMenuComboBox*>(widget);
 
         if(!combobox)
             continue;
@@ -3048,6 +3048,15 @@ void ConfiguratorWindow::writeSetCurrent()
     sendDeviceCommand(2);
 }
 /*!
+ * \brief ConfiguratorWindow::writeSetEditItem
+ *
+ * Записывает только настройки измененных пунктов меню
+ */
+void ConfiguratorWindow::writeSetEditItem()
+{
+
+}
+/*!
  * \brief ConfiguratorWindow::expandItemTree
  * \param state Состояние кнопки разворачивания
  *
@@ -3322,14 +3331,14 @@ void ConfiguratorWindow::initMenuPanel()
 
     // формирование связей между отдельными ячейками
     // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2
-    QComboBox* cboxTemp1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
-                                                                        QString("comboBoxM65"), 1));
-    QComboBox* cboxTemp2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
-                                                                        QString("comboBoxM66"), 1));
-    QComboBox* cboxTemp1_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
-                                                                          QString("comboBoxM65_1"), 1));
-    QComboBox* cboxTemp2_1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
-                                                                          QString("comboBoxM66_1"), 1));
+    CMenuComboBox* cboxTemp1 = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
+                                                            QString("comboBoxM65"), 1));
+    CMenuComboBox* cboxTemp2 = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
+                                                            QString("comboBoxM66"), 1));
+    CMenuComboBox* cboxTemp1_1 = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
+                                                              QString("comboBoxM65_1"), 1));
+    CMenuComboBox* cboxTemp2_1 = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupTemperature,
+                                                              QString("comboBoxM66_1"), 1));
 
     if(cboxTemp1 && cboxTemp1_1)
     {
@@ -3342,18 +3351,6 @@ void ConfiguratorWindow::initMenuPanel()
         connect(cboxTemp2, SIGNAL(currentIndexChanged(int)), cboxTemp2_1, SLOT(setCurrentIndex(int)));
         connect(cboxTemp2_1, SIGNAL(currentIndexChanged(int)), cboxTemp2, SLOT(setCurrentIndex(int)));
     }
-
-    // Объединение ячеек Управление Уроверь1 с Управлением Уровень2
-//    QComboBox* cboxLevel1 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
-//                                                                         QString("comboBoxM77"), 1));
-//    QComboBox* cboxLevel2 = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(ui->tableWidgetProtectionGroupReserve,
-//                                                                         QString("comboBoxM77_1"), 1));
-
-//    if(cboxLevel1 && cboxLevel2)
-//    {
-//        connect(cboxLevel1, SIGNAL(currentIndexChanged(int)), cboxLevel2, SLOT(setCurrentIndex(int)));
-//        connect(cboxLevel2, SIGNAL(currentIndexChanged(int)), cboxLevel1, SLOT(setCurrentIndex(int)));
-//    }
 }
 //-------------------------------------
 void ConfiguratorWindow::initCellBind()
@@ -4689,7 +4686,7 @@ void ConfiguratorWindow::displaySettingVariableResponse(CModBusDataUnit &unit)
         if(nameWgt.isEmpty())
             return;
 
-        QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
+        CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
         if(!comboBox)
             return;
@@ -4858,7 +4855,7 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
     if(nameWgt.isEmpty())
         return;
 
-    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
+    CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
     if(!comboBox)
         return;
@@ -5081,10 +5078,10 @@ void ConfiguratorWindow::displayProtectReserveSignalStart(const QVector<quint16>
         if(!widget)
             continue;
 
-        if(QString(widget->metaObject()->className()).toUpper() != "QCOMBOBOX")
+        if(QString(widget->metaObject()->className()).toUpper() != "CMENUCOMBOBOX")
             continue;
 
-        QComboBox* combobox = qobject_cast<QComboBox*>(widget);
+        CMenuComboBox* combobox = qobject_cast<CMenuComboBox*>(widget);
 
         if(!combobox)
             continue;
@@ -5133,7 +5130,7 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         return;
 
     QString    wgtName  = QString("comboBox%1").arg(tprotect);
-    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
+    CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
 
     if(!comboBox)
         return;
@@ -5190,7 +5187,7 @@ void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
     for(const QString &protect_name: protectList)
     {
         QString    wgtName  = QString("comboBox%1").arg(protect_name);
-        QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
+        CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
 
         if(!comboBox)
             return;
@@ -5553,9 +5550,9 @@ int ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const CDeviceMen
 
         QString wgt_name = wgt->metaObject()->className();
 
-        if(wgt_name.toUpper() == "QCOMBOBOX")
+        if(wgt_name.toUpper() == "CMENUCOMBOBOX")
         {
-            QComboBox* combobox = qobject_cast<QComboBox*>(wgt);
+            CMenuComboBox* combobox = qobject_cast<CMenuComboBox*>(wgt);
 
             if(combobox)
             {
@@ -6386,9 +6383,9 @@ void ConfiguratorWindow::saveDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
         QString value;
         QString type;
 
-        if(QString(widget->metaObject()->className()).toUpper() == "QCOMBOBOX")
+        if(QString(widget->metaObject()->className()).toUpper() == "CMENUCOMBOBOX")
         {
-            QComboBox* comboBox = static_cast<QComboBox*>(widget);
+            CMenuComboBox* comboBox = static_cast<CMenuComboBox*>(widget);
 
             if(comboBox)
             {
@@ -6731,7 +6728,7 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
         if(type.toUpper() == "COMBOBOX")
         {
-            QComboBox* comboBox = static_cast<QComboBox*>(widget);
+            CMenuComboBox* comboBox = static_cast<CMenuComboBox*>(widget);
 
             if(comboBox)
             {
@@ -7355,7 +7352,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     if(nameWgt.isEmpty())
         return;
 
-    QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
+    CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
     if(!comboBox)
         return;
@@ -7829,7 +7826,7 @@ void ConfiguratorWindow::sendSettingWriteRequestVariableState(int addr, const QS
         if(nameWgt.isEmpty())
             return;
 
-        QComboBox* comboBox = qobject_cast<QComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
+        CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, nameWgt, 1));
 
         if(!comboBox)
             return;
@@ -12660,7 +12657,7 @@ int ConfiguratorWindow::writeDataToExcel(QXlsx::Document& doc, const CDeviceMenu
 
         if(wgt_value->objectName().toUpper().contains("COMBOBOX"))
         {
-            QComboBox* cb = qobject_cast<QComboBox*>(wgt_value);
+            CMenuComboBox* cb = qobject_cast<CMenuComboBox*>(wgt_value);
 
             if(cb)
             {
@@ -12738,6 +12735,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnWriteAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSettings);
     connect(ui->pbtnReadCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSetCurrent);
     connect(ui->pbtnWriteCurrentBlock, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetCurrent);
+    connect(ui->pushButtonWriteEditItem, &QPushButton::clicked, this, &ConfiguratorWindow::writeSetEditItem);
     connect(ui->pbtnVersionSoftware, &QPushButton::clicked, this, &ConfiguratorWindow::versionSowftware);
     connect(ui->toolButtonConnectSettings, &QPushButton::clicked, this, &ConfiguratorWindow::serialPortSettings);
     connect(ui->pbtnClearLedOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
