@@ -3063,6 +3063,13 @@ void ConfiguratorWindow::writeSetEditItem()
 
     bool isEdit = false;
 
+    QStringList workmode_list =
+    {
+        "MTZ1", "MTZ2", "MTZ3", "MTZ4", "UMAX1", "UMAX2", "UMIN1", "UMIN2", "3U0", "OZZ1", "OZZ2",
+        "NZZ1", "NZZ2", "ACHR1", "ACHR2", "ACHR3", "ITEMARC", "EXT1", "EXT2", "EXT3", "STARTING",
+        "IMIN", "TEMP1", "TEMP2", "LEVEL1", "LEVEL2", "BRU", "VACUUM"
+    }; // Список ключей, которые отвечают за режим работы защиты
+
     for(int i = 0; i < table->rowCount(); i++)
     {
         QWidget* wgt = table->cellWidget(i, 1);
@@ -3085,7 +3092,12 @@ void ConfiguratorWindow::writeSetEditItem()
                     if(combobox && combobox->isEdit())
                     {
                         key = combobox->property("ITEM_KEY").toString();
-                        sendSettingControlWriteRequest(key, group);
+
+                        if(workmode_list.contains(key)) // если ключ имеется в списке ключей режимов работы, то читаем
+                            sendProtectionWorkModeRequest(key, FUNCTION_SAVE, group); // режим работы защиты
+                        else // иначе читаем уставку "Управление"
+                            sendSettingControlWriteRequest(key, group);
+
                         combobox->resetIsEdit();
                         isEdit = true;
                     }
