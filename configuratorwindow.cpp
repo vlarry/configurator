@@ -4627,6 +4627,13 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
     CDeviceMenuTableWidget* table    = groupMenuWidget(group);
     bool                    isCalibration = unit.property("CALIBRATION").toBool();
 
+    QStringList listCalibrationKey = QStringList() << "K3I0" << "KIA" << "KIB" << "KIC" << "KUA" << "KUB" << "KUC" <<
+                                                      "KUAB" << "KUBC" << "KUCA" << "K3U0R" << "K3U0S" << "K3U0T" <<
+                                                      "KUADC" << "AUADC" << "KUBDC" << "AUBDC" << "KUCDC" << "AUCDC" <<
+                                                      "KUMDC" << "AUMDC" << "KRA" << "ARA" << "KRB" << "ARB" <<
+                                                      "KRC" << "ARC" << "KY01T" << "KY02T" << "KY03T" << "KY01R" <<
+                                                      "KY02R" << "KY03R" << "KY04R" << "KY04S" << "KY04T";
+
     if(!table)
         return;
 
@@ -4672,7 +4679,12 @@ void ConfiguratorWindow::displaySettingResponse(CModBusDataUnit& unit)
             value.w[0] = val1;
             value.w[1] = val2;
 
-            str = QLocale::system().toString(value.f, 'f', 6);
+            int zero_num = 2;
+
+            if(listCalibrationKey.contains(first))
+                zero_num = 6;
+
+            str = QLocale::system().toString(value.f, 'f', zero_num);
         }
         else
             str = QString::number(unit[0]);
@@ -12152,7 +12164,7 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
         doubleVal->setNotation(QDoubleValidator::StandardNotation);
         doubleVal->setLocale(QLocale::C);
         lineEdit->setValidator(doubleVal);
-        lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
+        lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 2)));
     }
     else
     {
@@ -12160,7 +12172,7 @@ void ConfiguratorWindow::setLineEditValidator(QObject* object)
         doubleVal->setNotation(QDoubleValidator::StandardNotation);
         doubleVal->setLocale(QLocale::C);
         lineEdit->setValidator(doubleVal);
-        lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 6)));
+        lineEdit->setText(QString("%1").arg(QLocale::system().toString(0.0f, 'f', 2)));
     }
 }
 //--------------------------------------------------------

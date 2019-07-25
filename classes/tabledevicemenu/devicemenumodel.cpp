@@ -154,6 +154,13 @@ void CDeviceMenuTableWidget::insertHeader(int row, const QString& name, RowType 
 //-----------------------------------------------------------------------------------------------------
 void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::item_t& item, int index)
 {
+    QStringList listCalibrationKey = QStringList() << "K3I0" << "KIA" << "KIB" << "KIC" << "KUA" << "KUB" << "KUC" <<
+                                                      "KUAB" << "KUBC" << "KUCA" << "K3U0R" << "K3U0S" << "K3U0T" <<
+                                                      "KUADC" << "AUADC" << "KUBDC" << "AUBDC" << "KUCDC" << "AUCDC" <<
+                                                      "KUMDC" << "AUMDC" << "KRA" << "ARA" << "KRB" << "ARB" <<
+                                                      "KRC" << "ARC" << "KY01T" << "KY02T" << "KY03T" << "KY01R" <<
+                                                      "KY02R" << "KY03R" << "KY04R" << "KY04S" << "KY04T";
+
     QWidget*     label_name  = new QWidget;
     QHBoxLayout* layout_name = new QHBoxLayout;
     QLabel*      unit        = new QLabel(item.name, label_name);
@@ -218,7 +225,13 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
             doubleValidator->setNotation(QDoubleValidator::StandardNotation);
             le->setValidator(doubleValidator);
             le->setValidatorType(CLineEdit::FLOAT);
-            le->setText(QLocale::system().toString(static_cast<double>(val_default), 'f', 6));
+
+            int zero_num = 2;
+
+            if(listCalibrationKey.contains(item.key))
+                zero_num = 6;
+
+            le->setText(QLocale::system().toString(static_cast<double>(val_default), 'f', zero_num));
         }
 
         widget = le;
@@ -250,7 +263,7 @@ qInfo() << QString("Создание итема меню устройства: %
         limit_str = QString("%1...%2").arg(item.unit.min).arg(item.unit.max);
     }
     else
-        limit_str = QString("%1...%2").arg(QLocale::system().toString(item.unit.min, 'f', 6)).arg(QLocale::system().toString(item.unit.max, 'f', 6));
+        limit_str = QString("%1...%2").arg(QLocale::system().toString(item.unit.min, 'f', 2)).arg(QLocale::system().toString(item.unit.max, 'f', 2));
 
     QLabel*      label_limit  = new QLabel(limit_str, wgt_limit);
 
