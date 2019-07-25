@@ -393,8 +393,8 @@ void CWidgetMenu::initMenu()
     QAction *actionExportProject = new QAction(QIcon(":/images/resource/images/export.png"), tr("Экспорт"), this);
     QAction *actionImportProject = new QAction(QIcon(":/images/resource/images/import.png"), tr("Импорт"), this);
     QAction *actionSettinsProject = new QAction(QIcon(":/images/resource/images/settings.png"), tr("Настройки"), this);
-    QAction *actionClosedProject = new QAction(QIcon(":/images/resource/images/close_button.png"), tr("Закрыть"), this);
-    QAction *actionExit = new QAction(QIcon(":/images/resource/images/exit.png"), tr("Выход"), this);
+    QAction *actionClosedProject = new QAction(QIcon(":/images/resource/images/close_button.png"), tr("Закрыть проект"), this);
+    QAction *actionExit = new QAction(QIcon(":/images/resource/images/exit.png"), tr("Закрыть программу"), this);
 
     ui->toolButtonNewProject->setDefaultAction(actionNewProject);
     ui->toolButtonOpenProject->setDefaultAction(actionOpenProject);
@@ -419,6 +419,7 @@ void CWidgetMenu::initMenu()
     connect(ui->toolButtonSaveProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonSaveAsProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonCloseProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
+    connect(ui->toolButtonExit, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonExportProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonImportProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonSettings, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);

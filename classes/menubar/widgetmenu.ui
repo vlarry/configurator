@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>765</width>
-    <height>448</height>
+    <height>395</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -188,6 +188,65 @@
         </widget>
        </item>
        <item>
+        <widget class="CToolButton" name="toolButtonCloseProject">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string>Закрывает проект</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="CToolButton" name="toolButtonExit">
+         <property name="toolTip">
+          <string>Выход из приложения</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="CToolButton" name="toolButtonExportProject">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -301,46 +360,6 @@
          </property>
          <property name="popupMode">
           <enum>QToolButton::DelayedPopup</enum>
-         </property>
-         <property name="toolButtonStyle">
-          <enum>Qt::ToolButtonTextBesideIcon</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="CToolButton" name="toolButtonCloseProject">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="mouseTracking">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string>Закрывает проект</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
          </property>
          <property name="toolButtonStyle">
           <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -1747,7 +1766,7 @@
               <string>Отладка</string>
              </property>
              <property name="icon">
-              <iconset resource="resource.qrc">
+              <iconset resource="../../resource.qrc">
                <normaloff>:/images/resource/images/debug.png</normaloff>:/images/resource/images/debug.png</iconset>
              </property>
              <property name="iconSize">
@@ -1796,62 +1815,10 @@
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line_2">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
       <number>0</number>
      </property>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="CToolButton" name="toolButtonExit">
-       <property name="toolTip">
-        <string>Выход из приложения</string>
-       </property>
-       <property name="text">
-        <string>Выйти</string>
-       </property>
-       <property name="icon">
-        <iconset resource="resource.qrc">
-         <normaloff>:/images/resource/images/exit.png</normaloff>:/images/resource/images/exit.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
@@ -1864,7 +1831,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resource.qrc"/>
+  <include location="../../resource.qrc"/>
  </resources>
  <connections/>
 </ui>
