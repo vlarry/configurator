@@ -81,6 +81,9 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     initWordStatus();
 
     setWindowFlag(Qt::FramelessWindowHint);
+
+    // удаление вкладки Экран
+    ui->tabwgtMenu->removeTab(TAB_SCREEN_INDEX);
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -9557,7 +9560,7 @@ void ConfiguratorWindow::loadSettings()
             m_settings->endGroup();
             ui->framePanelMessage->setProperty("HEIGHT", m_settings->value("panel_message_height", 100).toInt());
             m_settings->beginGroup("central_widget");
-                calibrationRoll(m_settings->value("calibration_roll", false).toBool());
+//                calibrationRoll(m_settings->value("calibration_roll", false).toBool());
                 ui->checkboxCalibTimeout->setChecked(m_settings->value("calculate_check", false).toBool());
                 ui->tabWidgetCalibration->setCurrentIndex(m_settings->value("calibration_actual_index", 0).toInt());
             m_settings->endGroup();
@@ -9614,7 +9617,7 @@ void ConfiguratorWindow::saveSettings()
             m_settings->endGroup();
             m_settings->setValue("panel_message_height", ui->framePanelMessage->property("HEIGHT").toInt());
             m_settings->beginGroup("central_widget");
-                m_settings->setValue("calibration_roll", ui->pushButtonCalibrationRoll->isChecked());
+//                m_settings->setValue("calibration_roll", ui->pushButtonCalibrationRoll->isChecked());
                 m_settings->setValue("calculate_check", ui->checkboxCalibTimeout->isChecked());
                 m_settings->setValue("calibration_actual_index", ui->tabWidgetCalibration->currentIndex());
             m_settings->endGroup();
@@ -9776,6 +9779,9 @@ void ConfiguratorWindow::initApplication()
         panelVisibleCtrl(ui->framePanelMessage);
 
         ui->tabWidgetMessage->setSuperParent(this);
+
+        // сворачивание панели калибровок
+        calibrationRoll(false);
 
         refreshSerialPort();
 
