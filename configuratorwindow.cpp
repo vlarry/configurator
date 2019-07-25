@@ -9379,6 +9379,52 @@ bool ConfiguratorWindow::eventFilter(QObject* object, QEvent* event)
 
     return false;
 }
+//------------------------------------------
+bool ConfiguratorWindow::accessCalibration()
+{
+    QStringList logins = loadLoginList();
+
+    if(logins.isEmpty())
+        return false;
+
+    CUserDialog* userDialog = new CUserDialog(logins, this);
+
+    userDialog->setWindowTitle(tr("Доступ к калибровкам"));
+
+    int answer = userDialog->exec();
+
+    if(answer == QDialog::Accepted)
+    {
+        CUserDialog::user_t usr = userDialog->user();
+
+        if(!usr.password.isEmpty())
+        {
+            QString pass = loadUserPassword(usr.login);
+
+            if(usr.password.toUpper() == pass.toUpper())
+            {
+                return true;
+            }
+            else
+            {
+                m_popup->setPopupText(tr("Ошибка: пароль неправильный!"));
+                outLogMessage(tr("Ошибка: пароль неправильный!"));
+                m_popup->show();
+            }
+        }
+        else
+        {
+            m_popup->setPopupText(tr("Ошибка: пароль не может быть пустым."));
+            outLogMessage(tr("Ошибка: пароль не может быть пустым."));
+            m_popup->show();
+        }
+    }
+
+    delete userDialog;
+    userDialog = nullptr;
+
+    return false;
+}
 /*!
  * \brief ConfiguratorWindow::createJournalTable
  * \param isFull Создание полной карты таблиц (служебная информация - необходима только для экспорта/импорта в отдельный файл)
@@ -10328,6 +10374,8 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     ui->pbtnWriteAllBlock->setVisible(true);
     ui->pushButtonWriteEditItem->setVisible(true);
 
+    ui->tableWidgetSettingsAnalogGroupGeneral->setDisabled(true); // перекрываем доступ к калибровкам
+
     if(ui->tabwgtMenu->currentIndex() == TAB_HELP_INDEX)
     {
         ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
@@ -10379,8 +10427,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
     }
-    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
-            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME ||
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION)
     {
@@ -10414,6 +10461,15 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     {
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
+    }
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG) // выбраны калибровки
+    {
+        if(accessCalibration())
+        {
+            ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+            ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
+            ui->tableWidgetSettingsAnalogGroupGeneral->setEnabled(true); // открываем доступ к калибровкам
+        }
     }
 }
 //-------------------------------------------------------------
@@ -12872,7 +12928,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pushButtonImport, &QPushButton::clicked, this, &ConfiguratorWindow::processImport);
     connect(ui->widgetMenuBar, &CMenuBar::exportToDataBaseAction, this, &ConfiguratorWindow::processExport);
     connect(ui->widgetMenuBar, &CMenuBar::importFromDataBaseAction, this, &ConfiguratorWindow::processImport);
-    connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
+//    connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(m_timer_synchronization, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSynchronization);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
     connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);

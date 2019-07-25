@@ -626,6 +626,7 @@
             bool eventFilter(QObject* object, QEvent* event);
 
         private:
+            bool accessCalibration(); // доступ к калибровкам
             bool createJournalTable(QSqlDatabase* db, const QString& journal_type, bool isFull = true);
             bool currentJournal(const CJournalWidget*& widget);
             void loadSettings();
