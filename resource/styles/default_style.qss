@@ -3,6 +3,11 @@ QMainWindow
 	background-color: #E0E0E0;
 }
 
+QToolButton#toolButtonMenuIcon
+{
+	background-color: #C0C0C0;
+}
+
 QTreeWidget::branch:has-siblings:!adjoins-item 
 {
     border-image: url(:/images/resource/images/stylesheet-vline.png) 0;

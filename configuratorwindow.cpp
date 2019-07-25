@@ -82,8 +82,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
 
     setWindowFlag(Qt::FramelessWindowHint);
 
-    // удаление вкладки Экран
-    ui->tabwgtMenu->removeTab(TAB_SCREEN_INDEX);
+    // удаление вкладки Экран (также закоментирован индекс вкладки в хедере)
+    ui->tabwgtMenu->removeTab(3); // индекс вкладки "Экран" - 3
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -6961,7 +6961,7 @@ void ConfiguratorWindow::blockInterface()
     ui->tabwgtMenu->setCurrentIndex(TAB_FILE_INDEX);
     ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, false);
-    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, false);
+//    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
@@ -6982,7 +6982,7 @@ void ConfiguratorWindow::unblockInterface()
     ui->splitterCentralWidget->setEnabled(true);
     ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, true);
     ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, true);
-    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, true);
+//    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, true);
     ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, true);
     ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
     ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
@@ -10310,6 +10310,12 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     ui->pushButtonJournalClear->setVisible(false);
     ui->pushButtonDefaultSettings->setVisible(false);
 
+    ui->pbtnReadCurrentBlock->setVisible(true);
+    ui->pbtnReadAllBlock->setVisible(true);
+    ui->pbtnWriteCurrentBlock->setVisible(true);
+    ui->pbtnWriteAllBlock->setVisible(true);
+    ui->pushButtonWriteEditItem->setVisible(true);
+
     if(ui->tabwgtMenu->currentIndex() == TAB_HELP_INDEX)
     {
         ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
@@ -10351,6 +10357,12 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
+
+        ui->pbtnReadCurrentBlock->setVisible(false);
+        ui->pbtnReadAllBlock->setVisible(false);
+        ui->pbtnWriteCurrentBlock->setVisible(false);
+        ui->pbtnWriteAllBlock->setVisible(false);
+        ui->pushButtonWriteEditItem->setVisible(false);
 
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
