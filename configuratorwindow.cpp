@@ -2298,7 +2298,7 @@ void ConfiguratorWindow::processExport()
 
     if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
         exportJournalToDb();
-    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY)
     {
@@ -2316,7 +2316,7 @@ void ConfiguratorWindow::processImport()
 
     if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
         importJournalToTable();
-    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY)
     {
@@ -3243,12 +3243,10 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]                = 5;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE]             = 6;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_RESERVE]                 = 7;
-    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]                 = 8;
     m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_SWITCH]               = 8;
     m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_APV]                  = 9;
     m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_AVR]                  = 10;
     m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_KCN]                  = 11;
-    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ROOT]                   = 12;
     m_menu_items[DEVICE_MENU_ITEM_JOURNALS_CRASHES]                = 12;
     m_menu_items[DEVICE_MENU_ITEM_JOURNALS_EVENTS]                 = 13;
     m_menu_items[DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS]             = 14;
@@ -3256,12 +3254,16 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_MEASURES_INPUTS]                 = 16;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS]    = 17;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_DATETIME]          = 18;
-//    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD]          = 19;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS]              = 20;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS]  = 21;
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY]   = 22;
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN]   = 23; // вывод окна приветствия
+    m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT]                 = 23; // вывод окна приветствия
+    m_menu_items[DEVICE_MENU_ITEM_AUTOMATION_ROOT]                 = 23; // вывод окна приветствия
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_ROOT]                   = 23; // вывод окна приветствия
+    m_menu_items[DEVICE_MENU_ITEM_MEASURES_ROOT]                   = 23; // вывод окна приветствия
+    m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ROOT]                   = 23; // вывод окна приветствия
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 24;
-    m_menu_items[DEVICE_MENU_ITEM_PROTECTION_ROOT]                 = 1; // при открытии меню Защиты открывается группа МТЗ
 
     QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел") << tr("Ед. изм.");
 
@@ -8077,7 +8079,7 @@ void ConfiguratorWindow::clearIOTable()
             table = ui->tablewgtRelayPurpose;
         break;
 
-        case DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD:
+        case DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN:
 
         break;
 
@@ -9636,7 +9638,6 @@ void ConfiguratorWindow::initApplication()
         setWindowState(Qt::WindowMaximized);
 
         ui->tabWidgetMessage->setCurrentIndex(0);
-        ui->stwgtMain->setCurrentIndex(0);
 
         m_version_window = new CVersionSoftware(this);
         versionParser();
@@ -9782,6 +9783,9 @@ void ConfiguratorWindow::initApplication()
 
         // сворачивание панели калибровок
         calibrationRoll(false);
+
+        int index_screen = m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN];
+        ui->stwgtMain->setCurrentIndex(index_screen); // экран приветствия
 
         refreshSerialPort();
 
@@ -10361,8 +10365,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||
-            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
-            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_KEYBOARD)
+            index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY)
     {
         if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS)
         {
@@ -10377,7 +10380,13 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         resizeColumns();
     }
-    else if(index >= DEVICE_MENU_PROTECT_ITEM_CURRENT && index <= DEVICE_MENU_ITEM_AUTOMATION_APV)
+    else if((index >= DEVICE_MENU_PROTECT_ITEM_CURRENT && index <= DEVICE_MENU_ITEM_AUTOMATION_APV) && (
+                index != DEVICE_MENU_ITEM_PROTECTION_ROOT &&
+                index != DEVICE_MENU_ITEM_AUTOMATION_ROOT &&
+                index != DEVICE_MENU_ITEM_JOURNALS_ROOT &&
+                index != DEVICE_MENU_ITEM_MEASURES_ROOT &&
+                index != DEVICE_MENU_ITEM_SETTINGS_ROOT &&
+                index != DEVICE_MENU_ITEM_NONE))
     {
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
@@ -12828,7 +12837,6 @@ void ConfiguratorWindow::initConnect()
     connect(ui->pbtnClearLedOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearDiscreteInput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearRelayOutput, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
-    connect(ui->pbtnClearKeyboardPurpose, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pbtnClearKeyboardProtectionCtrl, &QPushButton::clicked, this, &ConfiguratorWindow::clearIOTable);
     connect(ui->pushButtonJournalRead, &QPushButton::clicked, this, &ConfiguratorWindow::processReadJournals);
     connect(ui->pushButtonJournalClear, &QPushButton::clicked, this, &ConfiguratorWindow::clearJournal);

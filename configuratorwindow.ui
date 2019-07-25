@@ -1852,7 +1852,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>25</number>
+            <number>23</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2684,34 +2684,14 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="pageSetKeyboardPurpose">
-            <layout class="QVBoxLayout" name="verticalLayout_119">
+           <widget class="QWidget" name="pageWellcomeScreen">
+            <layout class="QVBoxLayout" name="verticalLayout_19">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_109">
-               <item>
-                <widget class="QPushButton" name="pbtnClearKeyboardPurpose">
-                 <property name="text">
-                  <string>Очистить</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_51">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="CPurposeTableView" name="tablewgtKeyboardPurpose"/>
+              <widget class="QLabel" name="labelWellcomScreen">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Конфигуратор БЗУ-2-16&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Для начала работы с блоком необходимо создать или загрузить проект.&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Разработчик: &amp;quot;Научно-производственное &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;предприятие Рудпромавтоматика&amp;quot;&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Сайт предприятия: &lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#5500ff;&quot;&gt;rpa.ua&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2922,8 +2902,6 @@
   <tabstop>tablewgtDiscreteInputPurpose</tabstop>
   <tabstop>pbtnClearRelayOutput</tabstop>
   <tabstop>tablewgtRelayPurpose</tabstop>
-  <tabstop>pbtnClearKeyboardPurpose</tabstop>
-  <tabstop>tablewgtKeyboardPurpose</tabstop>
   <tabstop>pbtnClearKeyboardProtectionCtrl</tabstop>
   <tabstop>tablewgtProtectionCtrl</tabstop>
   <tabstop>pbtnMenuReference</tabstop>

@@ -77,8 +77,8 @@ void CWidgetMenu::showEvent(QShowEvent *event)
 void CWidgetMenu::leaveEvent(QEvent *event)
 {
     QWidget::leaveEvent(event);
-    ui->stackedWidgetMenuLevel1->setCurrentIndex(0);
-    m_operation = OperationType({ BUTTON_NONE, BUTTON_NONE });
+//    ui->stackedWidgetMenuLevel1->setCurrentIndex(0);
+//    m_operation = OperationType({ BUTTON_NONE, BUTTON_NONE });
 }
 //----------------------------------
 void CWidgetMenu::exportProtection()

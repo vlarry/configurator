@@ -84,7 +84,7 @@ void CToolButton::paintEvent(QPaintEvent *event)
         if(m_menu.level > 0)
         {
             if(m_button_level[m_menu.level - 1] == m_id)
-                painter.fillRect(r, QBrush(QColor(0, 255, 0, 64)));
+                painter.fillRect(r, QBrush(QColor(0, 0, 0, 64)));
         }
     }
 }
