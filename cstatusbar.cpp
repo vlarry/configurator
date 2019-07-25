@@ -27,6 +27,7 @@ void CStatusBar::connectStateChanged(bool state)
     else
     {
         ui->lblDeviceStatus->setPixmap(QPixmap(":/images/resource/images/disconnect.png"));
+        ui->lblDeviceSerialNumber->setText(tr("Нет соединения"));
     }
 
     ui->lblDeviceStatus->setProperty("STATE", state);
