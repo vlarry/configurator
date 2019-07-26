@@ -6979,6 +6979,9 @@ void ConfiguratorWindow::blockInterface()
     ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
     ui->pbtnMenuSaveProject->setDisabled(true);
     ui->pbtnMenuSaveAsProject->setDisabled(true);
+    ui->dockWidgetMenuDevice->hide();
+    ui->dockWidgetVariable->hide();
+    ui->framePanelMessage->hide();
     emit ui->widgetMenuBar->deactivateButtons();
     m_project_cur_path = "";
 }
@@ -7001,6 +7004,9 @@ void ConfiguratorWindow::unblockInterface()
     ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
     ui->pbtnMenuSaveProject->setEnabled(true);
     ui->pbtnMenuSaveAsProject->setEnabled(true);
+    ui->dockWidgetMenuDevice->show();
+    ui->dockWidgetVariable->show();
+    ui->framePanelMessage->show();
     emit ui->widgetMenuBar->activateButtons();
 }
 /*!
