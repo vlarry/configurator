@@ -7315,14 +7315,14 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     loadContainerSettings(m_containerTerminalEvent, db);
     loadContainerSettings(m_containerTerminalModbus, db);
 
+    disconnectDb(db);
+
     unblockInterface();
+    outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
     m_progressbar->progressStop();
 
     m_project_cur_path = projectPathName;
-    emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
-
-    outLogMessage(tr("Файл проекта успешно загружен: %1").arg(projectPathName));
-    disconnectDb(db);
+    emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(projectPathName);
 }
 //--------------------------------------------------------------------------------
 int ConfiguratorWindow::rowSheetExcel(QXlsx::Document &xlsx, QStringList &columns)
