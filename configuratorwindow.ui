@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1349</width>
-    <height>906</height>
+    <height>754</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,6 +18,9 @@
   </property>
   <property name="windowTitle">
    <string>Конфигуратор БЗУ-2-16</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -39,7 +42,7 @@
     <item>
      <widget class="CMenuBar" name="widgetMenuBar" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -1785,7 +1788,14 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="CDockWidget" name="dockWidgetMenuDevice" native="true"/>
+      <widget class="CDockWidget" name="dockWidgetMenuDevice" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
       <widget class="QWidget" name="centralWgt" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1824,7 +1834,7 @@
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
+           <enum>QFrame::Box</enum>
           </property>
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -1845,19 +1855,26 @@
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>500</height>
+             <height>0</height>
             </size>
            </property>
            <property name="frameShape">
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>25</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetSettingsAnalogGroupGeneral"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetSettingsAnalogGroupGeneral">
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -2091,77 +2108,121 @@
            <widget class="QWidget" name="pageMTZGroup">
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupMTZ"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupMTZ">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageGroupPower">
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupPower"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupPower">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageGroupDirect">
             <layout class="QVBoxLayout" name="verticalLayout_11">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupDirect"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupDirect">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageGroupFrequency">
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupFrequency"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupFrequency">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageGroupExternal">
             <layout class="QVBoxLayout" name="verticalLayout_12">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupExternal"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupExternal">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageGroupTemperature">
             <layout class="QVBoxLayout" name="verticalLayout_14">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupTemperature"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupTemperature">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageGroupReserve">
             <layout class="QVBoxLayout" name="verticalLayout_15">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupReserve"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetProtectionGroupReserve">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageAutomationSwitch">
             <layout class="QVBoxLayout" name="verticalLayout_18">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationSwitch"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationSwitch">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageAutomationAPV">
             <layout class="QVBoxLayout" name="verticalLayout_20">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationAPV"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationAPV">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageAutomationAVR">
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationAVR"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationAVR">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="pageAutomationKCN">
             <layout class="QVBoxLayout" name="verticalLayout_8">
              <item>
-              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationKCN"/>
+              <widget class="CDeviceMenuTableWidget" name="tableWidgetAutomationKCN">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2529,7 +2590,11 @@
               </layout>
              </item>
              <item>
-              <widget class="CPurposeTableView" name="tablewgtLedPurpose"/>
+              <widget class="CPurposeTableView" name="tablewgtLedPurpose">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2649,7 +2714,11 @@
               </layout>
              </item>
              <item>
-              <widget class="CPurposeTableView" name="tablewgtDiscreteInputPurpose"/>
+              <widget class="CPurposeTableView" name="tablewgtDiscreteInputPurpose">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2680,7 +2749,11 @@
               </layout>
              </item>
              <item>
-              <widget class="CPurposeTableView" name="tablewgtRelayPurpose"/>
+              <widget class="CPurposeTableView" name="tablewgtRelayPurpose">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2722,7 +2795,11 @@
               </layout>
              </item>
              <item>
-              <widget class="CPurposeTableView" name="tablewgtProtectionCtrl"/>
+              <widget class="CPurposeTableView" name="tablewgtProtectionCtrl">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2730,7 +2807,7 @@
           </widget>
           <widget class="QFrame" name="framePanelMessage">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -2790,6 +2867,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>50</height>
+               </size>
+              </property>
               <property name="mouseTracking">
                <bool>true</bool>
               </property>
@@ -2822,7 +2905,20 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>50</height>
+    </size>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
