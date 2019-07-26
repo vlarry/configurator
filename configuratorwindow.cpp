@@ -6969,7 +6969,7 @@ void ConfiguratorWindow::blockInterface()
 {
     m_isProject = false;
 
-    ui->splitterCentralWidget->setDisabled(true);
+//    ui->splitterCentralWidget->setDisabled(true);
     ui->tabwgtMenu->setCurrentIndex(TAB_FILE_INDEX);
     ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, false);
@@ -6994,7 +6994,7 @@ void ConfiguratorWindow::unblockInterface()
 {
     m_isProject = true;
 
-    ui->splitterCentralWidget->setEnabled(true);
+//    ui->splitterCentralWidget->setEnabled(true);
     ui->tabwgtMenu->setTabEnabled(TAB_IMPORT_EXPORT_INDEX, true);
     ui->tabwgtMenu->setTabEnabled(TAB_VIEW_INDEX, true);
 //    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, true);
@@ -8606,9 +8606,13 @@ void ConfiguratorWindow::expandedWindow()
     Qt::WindowStates states = windowState();
 
     if(!(states & Qt::WindowMaximized))
+    {
         showMaximized();
+    }
     else
     {
+        QRect r = normalGeometry();
+        SetCursorPos(r.left(), r.top());
         showNormal();
     }
 }
