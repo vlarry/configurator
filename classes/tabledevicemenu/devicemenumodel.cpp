@@ -9,6 +9,15 @@ CDeviceMenuTableWidget::CDeviceMenuTableWidget(QWidget* parent):
     verticalHeader()->hide();
     setEditTriggers(QTableWidget::NoEditTriggers);
 
+    QFont f = font();
+
+    f.setFamily("Arial");
+    f.setPointSize(10);
+
+    setFont(f);
+
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
     connect(this, &CDeviceMenuTableWidget::itemClicked, this, &CDeviceMenuTableWidget::rowClicked);
 }
 //-----------------------------------------------------------------
@@ -66,7 +75,7 @@ void CDeviceMenuTableWidget::showEvent(QShowEvent* event)
 
     for(int i = 0; i < columnCount(); i++)
     {
-        setColumnWidth(i, (i == 3)?50:(i == 2)?150:(i == 0)?400:300);
+        setColumnWidth(i, (i == 0)?175:(i == 1)?200:(i == 2)?100:75);
     }
 }
 //-----------------------------------------------------------------
@@ -240,12 +249,12 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
     if(widget)
     {
         widget->setProperty("ITEM_KEY", item.key);
-        widget->setMinimumWidth(200);
-        widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        widget->setFixedWidth(190);
+        widget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         wgt_layout->setObjectName(QString("layoutWidget%1%2").arg(item.key).arg(index_str));
         wgt_layout->addWidget(widget);
         wgt_layout->setAlignment(Qt::AlignCenter);
-        wgt_layout->setContentsMargins(50, 0, 50, 0);
+        wgt_layout->setContentsMargins(5, 0, 5, 0);
         wgt_layout->setSpacing(0);
         wgt->setLayout(wgt_layout);
 qInfo() << QString("Создание итема меню устройства: %1").arg(widget->objectName());
