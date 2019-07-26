@@ -8602,7 +8602,9 @@ void ConfiguratorWindow::expandedWindow()
     if(!(states & Qt::WindowMaximized))
         showMaximized();
     else
+    {
         showNormal();
+    }
 }
 //--------------------------------------------
 void ConfiguratorWindow::mouseMove(QPoint pos)
@@ -8977,7 +8979,7 @@ void ConfiguratorWindow::openFileProject()
     QDir dir;
     QString projectPathName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
                                                            QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
-                                                           arg("project"), tr("Проекты (*.project)"));
+                                                           arg("newProject"), tr("Проекты (*.project)"));
     openProject(projectPathName);
 }
 //--------------------------------------------------------------------
