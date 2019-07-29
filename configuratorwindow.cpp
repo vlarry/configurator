@@ -39,7 +39,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_journal_progress(nullptr),
     m_project_cur_path(""),
     m_serial_port_name(""),
-    m_calibration_controller(nullptr)
+    m_calibration_controller(nullptr),
+    m_is_new_baudrate(false)
 {
     ui->setupUi(this);
 
@@ -151,6 +152,23 @@ void ConfiguratorWindow::stateChanged(bool state)
         m_status_bar->clearSerialNumber(); // удаляем старый серийный номер
         synchronization(true); // запускаем синхронизацию
 
+        // установка одинаковых скоростей (скорости текущего соединения со скоростью настройки соединения - перезаписи)
+        QString baudrate = QString::number(m_serialPortSettings_window->baudrate());
+
+        if(!baudrate.isEmpty())
+        {
+            int index = ui->comboBoxCommunicationBaudrate->findText(baudrate);
+
+            if(index != -1)
+                ui->comboBoxCommunicationBaudrate->setCurrentIndex(index);
+        }
+        //...
+
+        if(m_is_new_baudrate)
+            sendDeviceCommand(2); // сохранение настроек - скорости соединения
+
+        m_is_new_baudrate = false;
+
         DeviceMenuItemType item = menuIndex();
 
         if(item == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
@@ -183,6 +201,21 @@ void ConfiguratorWindow::stateChanged(bool state)
         endJournalRead(m_journal_isolation);
 
         m_calibration_controller->setCalculateState(false, CCalibrationController::TYPE_NONE);
+
+        if(m_is_new_baudrate)
+        {
+            QTimer::singleShot(500, [this]()
+            {
+                QSerialPort::BaudRate baudrate = static_cast<QSerialPort::BaudRate>(ui->comboBoxCommunicationBaudrate->currentText().toInt());
+
+                if(baudrate != QSerialPort::UnknownBaud)
+                {
+                    m_serialPortSettings_window->setBaudrate(baudrate);
+                    ui->toolButtonConnect->setChecked(true);
+                    serialPortCtrl();
+                }
+            });
+        }
     }
 }
 //------------------------------------------
@@ -1350,21 +1383,12 @@ void ConfiguratorWindow::synchronizationDateTime()
 /*!
  * \brief ConfiguratorWindow::settingCommunicationsWrite
  *
- * Запись настроек связи
+ * Запись настроек связи - скорость передачи данных по com-порту
  */
 void ConfiguratorWindow::settingCommunicationsWrite()
 {
-
-//    int answer = showMessageBox(tr("Запись настроек связи"), tr("Вы действительно хотите перезаписать настройки связи?"), QMessageBox::Question);
-//    if(answer == QMessageBox::No)
-//        return;
-
-//    sendRequestWrite(0x26, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationRequestTimeout->value()), 255);
-//    sendRequestWrite(0x27, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationTimeoutSpeed->value()), 255);
-//    sendRequestWrite(0x25, QVector<quint16>() << static_cast<quint16>(ui->spinBoxCommunicationAddress->value()), 255);
-//    connect(m_timer_new_address_set, &QTimer::timeout, this, &ConfiguratorWindow::setNewAddress);
-//    m_timer_new_address_set->start(500);
-    setNewAddress();
+    m_is_new_baudrate = true; // взводим флаг о изменение скорости порта
+    sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Read
@@ -8592,13 +8616,6 @@ void ConfiguratorWindow::updateSerialPortSettings()
 
     if(index != -1)
         ui->comboBoxCommunicationBaudrate->setCurrentIndex(index);
-}
-//--------------------------------------
-void ConfiguratorWindow::setNewAddress()
-{
-    sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
-    sendDeviceCommand(19); // установить новый адрес MODBUS
-    sendDeviceCommand(2);
 }
 //---------------------------------------
 void ConfiguratorWindow::expandedWindow()

@@ -597,7 +597,6 @@
             void testStyle(bool state);
             void readStatusInfo();
             void updateSerialPortSettings();
-            void setNewAddress(); // отправка команды на смену адреса предварительно установленного (срабатывает по таймеру);
             void expandedWindow(); // управление разворачиванием окна
             void mouseMove(QPoint pos);
             void newProject();
@@ -824,6 +823,7 @@
             QString                          m_project_cur_path; // путь к текущему проекту
             QString                          m_serial_port_name; // имя com-порта по умолчанию
             CCalibrationController          *m_calibration_controller; // контроллер калибровокs
+            bool                             m_is_new_baudrate; // флаг оповещающий о записи новой скорости подключения в блок
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)
