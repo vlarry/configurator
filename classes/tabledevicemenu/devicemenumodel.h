@@ -21,6 +21,7 @@
         public:
             enum RowType
             {
+                BUTTON_ROLL,
                 HEADER,
                 SUBHEADER,
                 ITEM
@@ -66,13 +67,14 @@
         public:
             CDeviceMenuTableWidget(QWidget* parent = nullptr);
             void setColumns(const QStringList& columns);
-            void addGroup(const group_t& group);
+            void addGroup(const group_t& group, bool isTop = false);
 
         protected:
             void showEvent(QShowEvent* event);
 
         private slots:
             void rowClicked(QTableWidgetItem* item_cur);
+            void itemRoll(bool state);
 
         private:
             int  rowCountSubgroup(const group_list_t& list);

@@ -3284,7 +3284,7 @@ void ConfiguratorWindow::initMenuPanel()
 
     // группа аналоговые основные
     group = loadMenuGroup(tr("Основные"));
-    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
+    ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group, true);
 
     // группа аналоговые калибровки "Ток"
     group = loadMenuGroup(tr("Ток"));
@@ -3308,7 +3308,7 @@ void ConfiguratorWindow::initMenuPanel()
 
     // группа по току
     group = loadMenuGroup(tr("МТЗ1"));
-    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group, true);
     group = loadMenuGroup(tr("МТЗ2"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("МТЗ3"));
@@ -3322,7 +3322,7 @@ void ConfiguratorWindow::initMenuPanel()
 
     // группа по напряжению
     group = loadMenuGroup(tr("Umax1"));
-    ui->tableWidgetProtectionGroupPower->addGroup(group);
+    ui->tableWidgetProtectionGroupPower->addGroup(group, true);
     group = loadMenuGroup(tr("Umax2"));
     ui->tableWidgetProtectionGroupPower->addGroup(group);
     group = loadMenuGroup(tr("Umin1"));
@@ -3334,7 +3334,7 @@ void ConfiguratorWindow::initMenuPanel()
 
     // группа направленные - новое название "Утечка"
     group = loadMenuGroup(tr("ОЗЗ1"));
-    ui->tableWidgetProtectionGroupDirect->addGroup(group);
+    ui->tableWidgetProtectionGroupDirect->addGroup(group, true);
     group = loadMenuGroup(tr("ОЗЗ2"));
     ui->tableWidgetProtectionGroupDirect->addGroup(group);
     group = loadMenuGroup(tr("НЗЗ1"));
@@ -3348,7 +3348,7 @@ void ConfiguratorWindow::initMenuPanel()
 
     // группа по частоте
     group = loadMenuGroup(tr("АЧР1"));
-    ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+    ui->tableWidgetProtectionGroupFrequency->addGroup(group, true);
     group = loadMenuGroup(tr("АЧР2"));
     ui->tableWidgetProtectionGroupFrequency->addGroup(group);
     group = loadMenuGroup(tr("АЧР3"));
@@ -3356,7 +3356,7 @@ void ConfiguratorWindow::initMenuPanel()
 
     // группа внешние
     group = loadMenuGroup(tr("Дуговая"));
-    ui->tableWidgetProtectionGroupExternal->addGroup(group);
+    ui->tableWidgetProtectionGroupExternal->addGroup(group, true);
     group = loadMenuGroup(tr("Внешняя1"));
     ui->tableWidgetProtectionGroupExternal->addGroup(group);
     group = loadMenuGroup(tr("Внешняя2"));
@@ -3366,19 +3366,19 @@ void ConfiguratorWindow::initMenuPanel()
 
     // группа по температуре
     group = loadMenuGroup(tr("Температурная1"));
-    ui->tableWidgetProtectionGroupTemperature->addGroup(group);
+    ui->tableWidgetProtectionGroupTemperature->addGroup(group, true);
     group = loadMenuGroup(tr("Температурная2"));
     ui->tableWidgetProtectionGroupTemperature->addGroup(group);
 
     // группа резервные
     group = loadMenuGroup(tr("Уров1"));
-    ui->tableWidgetProtectionGroupReserve->addGroup(group);
+    ui->tableWidgetProtectionGroupReserve->addGroup(group, true);
     group = loadMenuGroup(tr("Уров2"));
     ui->tableWidgetProtectionGroupReserve->addGroup(group);
 
     // группа автоматики "Выключатель"
     group = loadMenuGroup(tr("Параметры ВКЛ"));
-    ui->tableWidgetAutomationSwitch->addGroup(group);
+    ui->tableWidgetAutomationSwitch->addGroup(group, true);
     group = loadMenuGroup(tr("Параметры ОТКЛ"));
     ui->tableWidgetAutomationSwitch->addGroup(group);
     group = loadMenuGroup(tr("Контроль состояний"));
@@ -3388,17 +3388,17 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Схема внешнего управления"));
 
     // группа автоматики "АПВ"
-    ui->tableWidgetAutomationSwitch->addGroup(group);
+    ui->tableWidgetAutomationSwitch->addGroup(group, true);
     group = loadMenuGroup(tr("АПВ"));
     ui->tableWidgetAutomationAPV->addGroup(group);
 
     // группа автоматики "АВР"
     group = loadMenuGroup(tr("АВР"));
-    ui->tableWidgetAutomationAVR->addGroup(group);
+    ui->tableWidgetAutomationAVR->addGroup(group, true);
 
     // группа автоматики "КЦН"
     group = loadMenuGroup(tr("КЦН"));
-    ui->tableWidgetAutomationKCN->addGroup(group);
+    ui->tableWidgetAutomationKCN->addGroup(group, true);
 
     // формирование связей между отдельными ячейками
     // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2

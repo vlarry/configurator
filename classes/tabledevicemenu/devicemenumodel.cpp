@@ -26,13 +26,23 @@ void CDeviceMenuTableWidget::setColumns(const QStringList& columns)
     setColumnCount(columns.count());
     setHorizontalHeaderLabels(columns);
 }
-//---------------------------------------------------------------------------------
-void CDeviceMenuTableWidget::addGroup(const CDeviceMenuTableWidget::group_t& group)
+//---------------------------------------------------------------------------------------------
+void CDeviceMenuTableWidget::addGroup(const CDeviceMenuTableWidget::group_t& group, bool isTop)
 {
+    // isTop - начало меню (true - вставка дополнительной кнопки сворачивания/разворачивания)
+
     int cur_row = rowCount();
     int row_count = cur_row + group.items.count() + rowCountSubgroup(group.subgroup) + 1;
 
-    setRowCount(row_count);
+    if(isTop)
+    {
+        setRowCount(row_count + 1);
+        insertHeader(0, group.name, BUTTON_ROLL);
+        cur_row++;
+    }
+    else
+        setRowCount(row_count);
+
     insertHeader(cur_row, group.name);
 
     m_group_rows[cur_row] = group.items.count() + rowCountSubgroup(group.subgroup) + 1;
@@ -112,6 +122,43 @@ void CDeviceMenuTableWidget::rowClicked(QTableWidgetItem* item_cur)
         }
     }
 }
+//-----------------------------------------------
+void CDeviceMenuTableWidget::itemRoll(bool state)
+{
+    QString text = (state)?tr("Свернуть"):tr("Развернуть");
+
+    QPushButton *button = qobject_cast<QPushButton*>(sender());
+
+    if(button)
+    {
+        button->setText(text);
+    }
+
+    for(int row = 1; row < rowCount(); row++)
+    {
+        QTableWidgetItem *item_cur = item(row, 0);
+
+        if(item_cur)
+        {
+            RowType rowType = static_cast<RowType>(item_cur->data(Qt::UserRole + 100).toInt());
+
+            if(rowType == HEADER || rowType == SUBHEADER)
+            {
+                int row_beg   = item_cur->row();
+                int row_count = m_group_rows[item_cur->row()];
+
+                GroupState groupState = (state)?OPEN:CLOSE;
+
+                item_cur->setData(Qt::UserRole + 101, groupState);
+
+                for(int row = row_beg + 1; row < row_count + row_beg; row++)
+                {
+                    setRowHidden(row, !state);
+                }
+            }
+        }
+    }
+}
 //--------------------------------------------------------------------------------------------
 int CDeviceMenuTableWidget::rowCountSubgroup(const CDeviceMenuTableWidget::group_list_t& list)
 {
@@ -141,23 +188,51 @@ void CDeviceMenuTableWidget::insertHeader(int row, const QString& name, RowType 
         gradient.setColorAt(0.5, Qt::gray);
         gradient.setColorAt(1, QColor(190, 190, 190));
     }
-    else
+    else if(type == SUBHEADER)
     {
         gradient.setColorAt(0, QColor(230, 230, 230));
         gradient.setColorAt(0.5, Qt::lightGray);
         gradient.setColorAt(1, QColor(230, 230, 230));
     }
+    else if(type == BUTTON_ROLL)
+    {
+        QWidget*     button_wgt  = new QWidget;
+        QHBoxLayout* layout_button = new QHBoxLayout;
+        QPushButton* button = new QPushButton(tr("Развернуть"), button_wgt);
+        QFont f = button->font();
+        f.setFamily("Arial");
+        f.setPointSize(10);
+        f.setBold(true);
 
-    QTableWidgetItem* item = new QTableWidgetItem;
+        button->setFont(f);
+        button->setCheckable(true);
+        button->setChecked(false);
 
-    item->setText(name);
-    item->setTextAlignment(Qt::AlignCenter);
-    item->setFont(f);
-    item->setData(Qt::UserRole + 100, type);
-    item->setData(Qt::UserRole + 101, OPEN);
-    item->setBackground(QBrush(gradient));
+        layout_button->addWidget(button);
+        layout_button->setAlignment(Qt::AlignCenter);
+        layout_button->setContentsMargins(0, 0, 0, 0);
+        layout_button->setSpacing(0);
+        button_wgt->setLayout(layout_button);
 
-    setItem(row, 0, item);
+        setCellWidget(row, 0, button_wgt);
+
+        connect(button, &QPushButton::toggled, this, &CDeviceMenuTableWidget::itemRoll);
+    }
+
+    if(type != BUTTON_ROLL)
+    {
+        QTableWidgetItem* item = new QTableWidgetItem;
+
+        item->setText(name);
+        item->setTextAlignment(Qt::AlignCenter);
+        item->setFont(f);
+        item->setData(Qt::UserRole + 100, type);
+        item->setData(Qt::UserRole + 101, OPEN);
+        item->setBackground(QBrush(gradient));
+
+        setItem(row, 0, item);
+    }
+
     setSpan(row, 0, 1, columnCount());
 }
 //-----------------------------------------------------------------------------------------------------
