@@ -2782,6 +2782,26 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
         readJournalCount(m_journal_isolation);
     }
 
+    if(type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG) // выбраны калибровки
+    {
+        if(accessCalibration())
+        {
+            ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+            ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
+            // открываем доступ к калибровкам
+//            ui->tableWidgetSettingsAnalogGroupGeneral->setEnabled(true);
+//            ui->pushButtonCalibrationRoll->setEnabled(true);
+//            ui->tabWidgetCalibration->setEnabled(true);
+            //...
+        }
+        else
+        {
+            int i = m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN];
+            ui->stwgtMain->setCurrentIndex(i);
+            return;
+        }
+    }
+
     if(type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG ||
        type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_CALIB ||
        type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG_GENERAL) // управление чтением расчетных величин для калибровок
@@ -10403,7 +10423,11 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     ui->pbtnWriteAllBlock->setVisible(true);
     ui->pushButtonWriteEditItem->setVisible(true);
 
-    ui->tableWidgetSettingsAnalogGroupGeneral->setDisabled(true); // перекрываем доступ к калибровкам
+    // перекрываем доступ к калибровкам
+//    ui->tableWidgetSettingsAnalogGroupGeneral->setDisabled(true);
+//    ui->pushButtonCalibrationRoll->setDisabled(true);
+//    ui->tabWidgetCalibration->setDisabled(true);
+    //...
 
     if(ui->tabwgtMenu->currentIndex() == TAB_HELP_INDEX)
     {
@@ -10490,15 +10514,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     {
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
-    }
-    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG) // выбраны калибровки
-    {
-        if(accessCalibration())
-        {
-            ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
-            ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
-            ui->tableWidgetSettingsAnalogGroupGeneral->setEnabled(true); // открываем доступ к калибровкам
-        }
     }
 }
 //-------------------------------------------------------------
