@@ -118,10 +118,38 @@
          <number>0</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayoutContainer">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="spacing">
            <number>0</number>
           </property>
+          <item>
+           <widget class="QScrollArea" name="scrollArea">
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>362</width>
+               <height>703</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayoutContainer"/>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
