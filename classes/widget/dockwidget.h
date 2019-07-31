@@ -6,6 +6,7 @@
     #include <QDropEvent>
     #include <QDrag>
     #include <QToolButton>
+    #include <QSplitter>
     #include <QDebug>
     #include "cdockpanelitemctrl.h"
     #include "containerwidget.h"
@@ -46,6 +47,7 @@
         private:
             Ui::CDockWidget*    ui;
             CDockPanelItemCtrl* m_controlItem;
+            QSplitter*          m_splitter;
             static int          m_idCount;
     };
 #endif // DOCKWIDGET_H

@@ -6,13 +6,17 @@ int CDockWidget::m_idCount = 0;
 CDockWidget::CDockWidget(QWidget* parent):
     QFrame(parent),
     ui(new Ui::CDockWidget),
-    m_controlItem(nullptr)
+    m_controlItem(nullptr),
+    m_splitter(nullptr)
 {
     ui->setupUi(this);
     ui->pushButtonItemCtrlBottom->hide();
     ui->pushButtonItemCtrlLeft->hide();
     ui->pushButtonItemCtrlRight->hide();
     ui->pushButtonItemCtrlTop->hide();
+
+    m_splitter = new QSplitter(Qt::Vertical, ui->widgetContainer);
+    ui->verticalLayoutContainer->addWidget(m_splitter);
 
     setAcceptDrops(true);
 }
@@ -29,11 +33,11 @@ void CDockWidget::addContainer(CContainerWidget* container)
         container->setID(m_idCount++);
         container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
         container->setSide(m_controlItem->dir());
-        container->setPosition(ui->verticalLayoutContainer->count());
+        container->setPosition(m_splitter->count());
+
         container->setHeaderBackground(QColor(190, 190, 190));
         container->show();
-        ui->verticalLayoutContainer->addWidget(container);
-
+        m_splitter->addWidget(container);
         connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
     }
 }
@@ -45,10 +49,9 @@ CDockPanelItemCtrl *CDockWidget::control()
 //----------------------------------------------
 CContainerWidget* CDockWidget::container(int id)
 {
-    for(int i = 0; i < ui->verticalLayoutContainer->count(); i++)
+    for(int i = 0; i < m_splitter->count(); i++)
     {
-        QLayoutItem* item = ui->verticalLayoutContainer->itemAt(i);
-        CContainerWidget* tcontainer = static_cast<CContainerWidget*>(item->widget());
+        CContainerWidget* tcontainer = static_cast<CContainerWidget*>(m_splitter->widget(i));
 
         if(tcontainer->id() == id)
             return tcontainer;
@@ -127,18 +130,19 @@ void CDockWidget::removeItem(int id)
 {
     for(int i = 0; i < ui->verticalLayoutContainer->count(); i++)
     {
-        QLayoutItem* item = ui->verticalLayoutContainer->itemAt(i);
+        QWidget* wgt = m_splitter->widget(i);
 
-        if(item)
+        if(wgt)
         {
-            CContainerWidget* tcontainer = static_cast<CContainerWidget*>(item->widget());
+            CContainerWidget* tcontainer = static_cast<CContainerWidget*>(wgt);
 
             if(tcontainer->id() == id)
             {
                 tcontainer->setPosition(-1);
                 tcontainer->setSide(CDockPanelItemCtrl::DirNone);
-                ui->verticalLayout->removeWidget(tcontainer);
-                if(ui->verticalLayoutContainer->isEmpty()) // контейнер пуст
+                delete tcontainer;
+
+                if(m_splitter->count() == 0) // контейнер пуст
                     emit m_controlItem->clicked();
             }
         }
