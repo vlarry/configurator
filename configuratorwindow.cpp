@@ -4415,6 +4415,20 @@ void ConfiguratorWindow::bruResistanceStateVariableSend(CModBusDataUnit &unit)
     if(m_modbus->isConnected())
         m_modbus->sendData(unit);
 }
+//----------------------------------------------
+void ConfiguratorWindow::containerVisibleState()
+{
+    ui->pushButtonDeviceMenu->setChecked(m_containerWidgetDeviceMenu->isVisible());
+    ui->pushButtonCalculateVarible->setChecked(m_containerWidgetVariable->isVisible());
+    ui->pushButtonDebugInfo->setChecked(m_containerDebugInfo->isVisible());
+    ui->pushButtonInputs->setChecked(m_containerInputs->isVisible());
+    ui->pushButtonIndicatorStates->setChecked(m_containerIndicatorState->isVisible());
+    ui->pushButtonOutputAll->setChecked(m_containerOutputAll->isVisible());
+    ui->pushButtonMonitorI11_I17->setChecked(m_containerMonitorI11I17->isVisible());
+    ui->pushButtonStatusInfo->setChecked(m_containerStatusInfo->isVisible());
+    ui->pushButtonTerminal->setChecked(m_containerTerminalModbus->isVisible());
+    ui->pushButtonMessageEvent->setChecked(m_containerTerminalEvent->isVisible());
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -7052,6 +7066,7 @@ void ConfiguratorWindow::unblockInterface()
     ui->dockWidgetVariable->show();
     ui->framePanelMessage->show();
     emit ui->widgetMenuBar->activateButtons();
+    containerVisibleState();
 }
 /*!
  * \brief ConfiguratorWindow::clearTableDB

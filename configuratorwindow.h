@@ -618,6 +618,7 @@
             void applicationCloseProcess();
             void calibrationTypeChanged(int index); // отслеживание переключения вкладки виджета калибровок для вывода расчетных величин
             void bruResistanceStateVariableSend(CModBusDataUnit &unit);
+            void containerVisibleState(); // проверка видимости контенеров (при загрузке проекта - для подсветки кнопок управления их видимостью)
 
         protected:
             void keyPressEvent(QKeyEvent* event);

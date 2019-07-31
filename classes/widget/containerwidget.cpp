@@ -44,7 +44,6 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     setAnchor(m_anchor);
     setWidget(contentWidget);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-//    resize(800, 600);
 
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::containerClose);
