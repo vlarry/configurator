@@ -61,3 +61,8 @@ QToolButton::menu-indicator
 	subcontrol-position: right center;
 	image: url(:/images/resource/images/menu_indicator.png);
 }
+
+QSplitter#DockSplitter::handle
+{
+	background-color: gray;
+}

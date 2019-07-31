@@ -16,6 +16,9 @@ CDockWidget::CDockWidget(QWidget* parent):
     ui->pushButtonItemCtrlTop->hide();
 
     m_splitter = new QSplitter(Qt::Vertical, ui->widgetContainer);
+    m_splitter->setChildrenCollapsible(true);
+    m_splitter->setObjectName("DockSplitter");
+    m_splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     ui->verticalLayoutContainer->addWidget(m_splitter);
 
     setAcceptDrops(true);
@@ -33,11 +36,14 @@ void CDockWidget::addContainer(CContainerWidget* container)
         container->setID(m_idCount++);
         container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
         container->setSide(m_controlItem->dir());
-        container->setPosition(m_splitter->count());
+
+        int container_pos = m_splitter->count();
+        container->setPosition(container_pos);
 
         container->setHeaderBackground(QColor(190, 190, 190));
         container->show();
         m_splitter->addWidget(container);
+        m_splitter->setStretchFactor(container_pos, 1);
         connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
     }
 }

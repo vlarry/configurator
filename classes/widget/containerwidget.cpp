@@ -28,7 +28,7 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     ui->labelHeader->installEventFilter(this);
     ui->toolButtonGrip->installEventFilter(this);
     ui->toolButtonGrip->setCursor(QCursor(Qt::SizeFDiagCursor));
-    setFrameShape(QFrame::NoFrame);
+    setFrameShape(QFrame::Box);
 
     QFont f(ui->labelHeader->font());
     f.setPointSize(14);
@@ -38,9 +38,13 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     ui->toolButtonHeaderClose->setFixedSize(ui->labelHeader->height(), ui->labelHeader->height());
     ui->toolButtonHeaderFunction->setFixedSize(ui->labelHeader->height(), ui->labelHeader->height());
 
+    contentWidget->setMinimumSize(0, 0);
+    contentWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
     setAnchor(m_anchor);
     setWidget(contentWidget);
-    resize(800, 600);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//    resize(800, 600);
 
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::containerClose);
