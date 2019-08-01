@@ -602,7 +602,7 @@
             void newProject();
             void openFileProject();
             void openExistsProject(const QString &projectPath);
-            void saveProject();
+            bool saveProject();
             void saveAsProject();
             void exportToExcelProject();
             void importFromExcelProject();
@@ -619,6 +619,7 @@
             void calibrationTypeChanged(int index); // отслеживание переключения вкладки виджета калибровок для вывода расчетных величин
             void bruResistanceStateVariableSend(CModBusDataUnit &unit);
             void containerVisibleState(); // проверка видимости контенеров (при загрузке проекта - для подсветки кнопок управления их видимостью)
+            void setChanged(); // установка флага изменения настроек, которые записываются в файл проекта
 
         protected:
             void keyPressEvent(QKeyEvent* event);
@@ -825,6 +826,7 @@
             QString                          m_serial_port_name; // имя com-порта по умолчанию
             CCalibrationController          *m_calibration_controller; // контроллер калибровокs
             bool                             m_is_new_baudrate; // флаг оповещающий о записи новой скорости подключения в блок
+            bool                             m_is_set_change; // флаг оповещающий о редактировании настроек, которые сохраняются в файл проекта
     };
     // Регистрация пользовательских типов
     Q_DECLARE_METATYPE(row_property_t)

@@ -18,6 +18,8 @@
     //-----------------------------------------------
     class CDeviceMenuTableWidget: public QTableWidget
     {
+        Q_OBJECT
+
         public:
             enum RowType
             {
@@ -75,6 +77,9 @@
         private slots:
             void rowClicked(QTableWidgetItem* item_cur);
             void itemRoll(bool state);
+
+        signals:
+            void itemEdit();
 
         private:
             int  rowCountSubgroup(const group_list_t& list);

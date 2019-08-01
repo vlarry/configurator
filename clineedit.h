@@ -36,6 +36,9 @@
         private slots:
             void validateTextChanged(const QString& text);
 
+        signals:
+            void editValue();
+
         private:
             bool          m_focus;
             ValidatorType m_validator_type;

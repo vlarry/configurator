@@ -109,6 +109,7 @@ void CLineEdit::validateTextChanged(const QString& text)
     {
         t_palette.setColor(QPalette::Text, QColor(Qt::black));
         m_is_edit = true;
+        emit editValue(); // сигнал редактирования значения
     }
     else
     {

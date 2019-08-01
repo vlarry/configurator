@@ -280,6 +280,8 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
             cb->addItems(subitemlist);
 
         widget = cb;
+
+        connect(cb, &CMenuComboBox::editValue, this, &CDeviceMenuTableWidget::itemEdit);
     }
     else if(item.type.toUpper() == "FLOAT" || item.type.toUpper() == "INT") // иначе поле ввода
     {
@@ -319,6 +321,8 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         }
 
         widget = le;
+
+        connect(le, &CLineEdit::editValue, this, &CDeviceMenuTableWidget::itemEdit);
     }
 
     if(widget)

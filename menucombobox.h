@@ -15,6 +15,9 @@
         public slots:
             void isCurrentIndexChanged(int);
 
+        signals:
+            void editValue();
+
         private:
             bool m_is_edit; // было изменение текущего индекса?
     };

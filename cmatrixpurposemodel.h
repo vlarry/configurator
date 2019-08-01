@@ -35,6 +35,8 @@
     //---------------------------------------------------
     class CMatrixPurposeModel: public QAbstractTableModel
     {
+        Q_OBJECT
+
         public:
             enum IO_Type
             {
@@ -56,6 +58,9 @@
             int      columnCount(const QModelIndex& parent = QModelIndex()) const;
             IO_Type  ioDataType() const;
 
+        public slots:
+            void slotDataIsChanged(const QModelIndex&, const QModelIndex&, const QVector<int>&);
+
         private:
             bool          setData(const QModelIndex& index, const QVariant& value, int role);
             QVariant      data(const QModelIndex& index, int role = Qt::DisplayRole) const;
@@ -65,6 +70,9 @@
                                                   const QVector<QPair<QString, QString> >& labels);
             void          fillHeaderProtectionModel(const QStringList& labels);
             void          fillHeaderMonitorModel(const QStringList& rows, const QStringList& columns);
+
+        signals:
+            void dataIsChanged();
 
         private:
             CMatrix            m_matrix;

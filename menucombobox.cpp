@@ -20,4 +20,5 @@ void CMenuComboBox::resetIsEdit()
 void CMenuComboBox::isCurrentIndexChanged(int)
 {
     m_is_edit = true;
+    emit editValue();
 }

@@ -29,6 +29,8 @@ CMatrixPurposeModel::CMatrixPurposeModel(QVector<QPair<QString, QString> >& labe
             m_matrix.addRow(CRow(unit_t({ var.key, var.name, var.description, var.bit, UNCHECKED }), columns));
         };
     }
+
+    connect(this, &CMatrixPurposeModel::dataChanged, this, &CMatrixPurposeModel::slotDataIsChanged);
 }
 //----------------------------------------------------------------------------------------------------------------
 CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, IO_Type io_type, QAbstractTableModel* parent):
@@ -48,6 +50,8 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& labels, IO_Type io_t
     {
         m_matrix.addRow(CRow(unit_t({ "", label, "", -1, UNCHECKED }), columns));
     }
+
+    connect(this, &CMatrixPurposeModel::dataChanged, this, &CMatrixPurposeModel::slotDataIsChanged);
 }
 //------------------------------------------------------------------------------------------------------------
 CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& columns, const QStringList& rows, IO_Type io_type,
@@ -66,6 +70,8 @@ CMatrixPurposeModel::CMatrixPurposeModel(const QStringList& columns, const QStri
     {
         m_matrix.addRow(CRow(unit_t({ "", row_label, "", -1, UNCHECKED }), column_array));
     }
+
+    connect(this, &CMatrixPurposeModel::dataChanged, this, &CMatrixPurposeModel::slotDataIsChanged);
 }
 //------------------------------------
 void CMatrixPurposeModel::updateData()
@@ -102,6 +108,11 @@ int CMatrixPurposeModel::columnCount(const QModelIndex& parent) const
 CMatrixPurposeModel::IO_Type CMatrixPurposeModel::ioDataType() const
 {
     return m_io_type;
+}
+//------------------------------------------------------------------------------------------------------
+void CMatrixPurposeModel::slotDataIsChanged(const QModelIndex&, const QModelIndex&, const QVector<int>&)
+{
+    emit dataIsChanged();
 }
 //------------------------------------------------------------------------------------------
 bool CMatrixPurposeModel::setData(const QModelIndex& index, const QVariant& value, int role)

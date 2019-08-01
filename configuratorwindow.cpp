@@ -40,7 +40,8 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_project_cur_path(""),
     m_serial_port_name(""),
     m_calibration_controller(nullptr),
-    m_is_new_baudrate(false)
+    m_is_new_baudrate(false),
+    m_is_set_change(false)
 {
     ui->setupUi(this);
 
@@ -2618,7 +2619,7 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
 //------------------------------------
 void ConfiguratorWindow::exitFromApp()
 {
-    if(m_isProject)
+    if(m_isProject && m_is_set_change)
         saveProject();
 
     close();
@@ -3350,6 +3351,8 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Угол сдвига фазы"));
     ui->tableWidgetSettingsAnalogGroupGeneral->addGroup(group);
 
+    connect(ui->tableWidgetSettingsAnalogGroupGeneral, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
+
     // группа по току
     group = loadMenuGroup(tr("МТЗ1"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group, true);
@@ -3364,6 +3367,8 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Imin"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
 
+    connect(ui->tableWidgetProtectionGroupMTZ, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
+
     // группа по напряжению
     group = loadMenuGroup(tr("Umax1"));
     ui->tableWidgetProtectionGroupPower->addGroup(group, true);
@@ -3375,6 +3380,8 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupPower->addGroup(group);
     group = loadMenuGroup(tr("3U0"));
     ui->tableWidgetProtectionGroupPower->addGroup(group);
+
+    connect(ui->tableWidgetProtectionGroupPower, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
 
     // группа направленные - новое название "Утечка"
     group = loadMenuGroup(tr("ОЗЗ1"));
@@ -3390,6 +3397,8 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Вакуум"));
     ui->tableWidgetProtectionGroupDirect->addGroup(group);
 
+    connect(ui->tableWidgetProtectionGroupDirect, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
+
     // группа по частоте
     group = loadMenuGroup(tr("АЧР1"));
     ui->tableWidgetProtectionGroupFrequency->addGroup(group, true);
@@ -3397,6 +3406,8 @@ void ConfiguratorWindow::initMenuPanel()
     ui->tableWidgetProtectionGroupFrequency->addGroup(group);
     group = loadMenuGroup(tr("АЧР3"));
     ui->tableWidgetProtectionGroupFrequency->addGroup(group);
+
+    connect(ui->tableWidgetProtectionGroupFrequency, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
 
     // группа внешние
     group = loadMenuGroup(tr("Дуговая"));
@@ -3408,17 +3419,23 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Внешняя3"));
     ui->tableWidgetProtectionGroupExternal->addGroup(group);
 
+    connect(ui->tableWidgetProtectionGroupExternal, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
+
     // группа по температуре
     group = loadMenuGroup(tr("Температурная1"));
     ui->tableWidgetProtectionGroupTemperature->addGroup(group, true);
     group = loadMenuGroup(tr("Температурная2"));
     ui->tableWidgetProtectionGroupTemperature->addGroup(group);
 
+    connect(ui->tableWidgetProtectionGroupTemperature, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
+
     // группа резервные
     group = loadMenuGroup(tr("Уров1"));
     ui->tableWidgetProtectionGroupReserve->addGroup(group, true);
     group = loadMenuGroup(tr("Уров2"));
     ui->tableWidgetProtectionGroupReserve->addGroup(group);
+
+    connect(ui->tableWidgetProtectionGroupReserve, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
 
     // группа автоматики "Выключатель"
     group = loadMenuGroup(tr("Параметры ВКЛ"));
@@ -3430,19 +3447,27 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Блокировки"));
     ui->tableWidgetAutomationSwitch->addGroup(group);
     group = loadMenuGroup(tr("Схема внешнего управления"));
+    ui->tableWidgetAutomationSwitch->addGroup(group, true);
+
+    connect(ui->tableWidgetAutomationSwitch, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
 
     // группа автоматики "АПВ"
-    ui->tableWidgetAutomationSwitch->addGroup(group, true);
     group = loadMenuGroup(tr("АПВ"));
     ui->tableWidgetAutomationAPV->addGroup(group);
+
+    connect(ui->tableWidgetAutomationAPV, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
 
     // группа автоматики "АВР"
     group = loadMenuGroup(tr("АВР"));
     ui->tableWidgetAutomationAVR->addGroup(group, true);
 
+    connect(ui->tableWidgetAutomationAVR, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
+
     // группа автоматики "КЦН"
     group = loadMenuGroup(tr("КЦН"));
     ui->tableWidgetAutomationKCN->addGroup(group, true);
+
+    connect(ui->tableWidgetAutomationKCN, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
 
     // формирование связей между отдельными ячейками
     // Объединение ячеек Датчик1 и Датчик2 Температуры1 с датчиками Температуры2
@@ -4429,6 +4454,12 @@ void ConfiguratorWindow::containerVisibleState()
     ui->pushButtonTerminal->setChecked(m_containerTerminalModbus->isVisible());
     ui->pushButtonMessageEvent->setChecked(m_containerTerminalEvent->isVisible());
 }
+//-----------------------------------
+void ConfiguratorWindow::setChanged()
+{
+    if(!m_is_set_change)
+        m_is_set_change = true;
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -4494,6 +4525,8 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
     table->setVerticalHeader(vheader);
     table->setModel(model);
 
+    connect(model, &CMatrixPurposeModel::dataIsChanged, this, &ConfiguratorWindow::setChanged);
+
     int row_index = 0;
 
     if(table == ui->tablewgtLedPurpose || table == ui->tablewgtRelayPurpose)
@@ -4532,6 +4565,8 @@ void ConfiguratorWindow::initTable(QTableView* table, QVector<QPair<QString, QSt
 
         row_index += item.var_list.count();
     }
+
+    m_is_set_change = false;
 }
 //----------------------------------------------------------------------------------------------
 void ConfiguratorWindow::initTableProtection(QTableView* table, block_protection_list_t& labels)
@@ -4557,6 +4592,10 @@ void ConfiguratorWindow::initTableProtection(QTableView* table, block_protection
 
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+    connect(model, &CMatrixPurposeModel::dataIsChanged, this, &ConfiguratorWindow::setChanged);
+
+    m_is_set_change = false;
 }
 /*!
  * \brief ConfiguratorWindow::initIndicatorStates
@@ -7382,6 +7421,8 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
 
     m_project_cur_path = projectPathName;
     emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(projectPathName);
+
+    m_is_set_change = false;
 }
 //--------------------------------------------------------------------------------
 int ConfiguratorWindow::rowSheetExcel(QXlsx::Document &xlsx, QStringList &columns)
@@ -9021,6 +9062,7 @@ void ConfiguratorWindow::newProject()
     m_progressbar->progressStop();
 
     m_project_cur_path = projectPathName;
+    m_is_set_change = true; // создан новый проект - есть возможность сохранения его в файл
     emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
 }
 //----------------------------------------
@@ -9065,10 +9107,15 @@ void ConfiguratorWindow::openExistsProject(const QString &projectPath)
     openProject(projectPath);
 }
 //------------------------------------
-void ConfiguratorWindow::saveProject()
+bool ConfiguratorWindow::saveProject()
 {
     if(m_project_cur_path.isEmpty())
-        return;
+        return false;
+
+    int answer = QMessageBox::question(this, tr("Сохранение проекта"), tr("Вы хотите сохранить текущие настройки в проект?"));
+
+    if(answer == QMessageBox::No)
+        return false;
 
     QSqlDatabase *db = nullptr;
 
@@ -9078,7 +9125,8 @@ void ConfiguratorWindow::saveProject()
                              arg(m_project_cur_path));
         disconnectDb(db);
         m_progressbar->progressStop();
-        return;
+
+        return false;
     }
 
     m_progressbar->setProgressTitle(tr("Сохранение проекта"));
@@ -9112,8 +9160,11 @@ void ConfiguratorWindow::saveProject()
 
     if(!clearTableDB(db, "containerSettings"))
     {
-        outLogMessage(tr("Загрузка настроек контейнера: не удалось удалить старые данные из таблицы"));
-        return;
+        QString text = tr("Загрузка настроек контейнера: не удалось удалить старые данные из таблицы");
+        outLogMessage(text);
+        m_popup->setPopupText(tr("Ошибка сохранения проекта!\n%1").arg(text));
+        m_popup->show();
+        return false;
     }
 
     saveContainerSettings(m_containerWidgetVariable, db);
@@ -9130,6 +9181,12 @@ void ConfiguratorWindow::saveProject()
     outLogMessage(tr("Данные проекта успешно сохранены"));
     m_progressbar->progressStop();
     disconnectDb(db);
+    m_is_set_change = false; // очищаем флаг изменения настроек при записи
+
+    m_popup->setPopupText(tr("Проект успешно сохранен"));
+    m_popup->show();
+
+    return true;
 }
 //--------------------------------------
 void ConfiguratorWindow::saveAsProject()
@@ -9180,21 +9237,21 @@ void ConfiguratorWindow::saveAsProject()
         }
     }
 
-    QString text = tr("Проект успешно сохранен!");
-
     if(!QFile::copy(m_project_cur_path, projectPathName))
     {
-        text = tr("Не удалось сохранить проект.\nВозможно у Вас нет прав на этот каталог!");
-        showMessageBox(tr("Сохранить проект как"), text, QMessageBox::Warning);
-        outLogMessage(text);
+        showMessageBox(tr("Сохранить проект как"), tr("Ошибка сохранения проекта!\nВозможно этот файл уже используется."),
+                       QMessageBox::Warning);
+        outLogMessage(tr("Ошибка сохранения проекта!\nВозможно этот файл уже используется."));
         return;
     }
 
-    m_popup->setPopupText(text);
-    m_popup->show();
-
     m_project_cur_path = projectPathName;
-    emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
+    m_is_set_change = true;
+
+    if(saveProject())
+    {
+        emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
+    }
 }
 //---------------------------------------------
 void ConfiguratorWindow::exportToExcelProject()
