@@ -2844,14 +2844,6 @@ void ConfiguratorWindow::readSettings()
     protectionReserveGroupRead();
     protectionControlGroupRead();
     automationGroupRead();
-    settingCommunicationsRead();
-    dateTimeRead();
-    purposeLedsRead();
-    purposeMemoryOutLedRead();
-    purposeRelayRead();
-    purposeMemoryOutRelayRead();
-    purposeInputRead();
-    blockProtectionCtrlRead();
 }
 //---------------------------------------
 void ConfiguratorWindow::readSetCurrent()
@@ -2964,7 +2956,9 @@ void ConfiguratorWindow::writeSettings()
         return;
     }
 
-    int answer = showMessageBox(tr("Сохранение настроек утройства"), tr("Вы действительно хотите перезаписать настройки?"), QMessageBox::Question);
+    int answer = showMessageBox(tr("Сохранение настроек утройства"), tr("Вы действительно хотите перезаписать настройки?"),
+                                QMessageBox::Question);
+
     if(answer == QMessageBox::No)
         return;
 
@@ -2980,14 +2974,6 @@ void ConfiguratorWindow::writeSettings()
     protectionReserveGroupWrite();
     protectionControlGroupWrite();
     automationGroupWrite();
-    dateTimeWrite();
-    purposeLedsWrite();
-    purposeMemoryOutLedWrite();
-    purposeRelayWrite();
-    purposeMemoryOutRelayWrite();
-    purposeInputWrite();
-    blockProtectionCtrlWrite();
-    settingCommunicationsWrite();
 
     sendDeviceCommand(2);
 }
@@ -10558,6 +10544,10 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
     {
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
+
+        ui->pbtnReadAllBlock->hide();
+        ui->pbtnWriteAllBlock->hide();
+        ui->pushButtonWriteEditItem->hide();
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS ||
@@ -10573,6 +10563,10 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
         ui->pushButtonDefaultSettings->setVisible(true);
+
+        ui->pbtnReadAllBlock->hide();
+        ui->pbtnWriteAllBlock->hide();
+        ui->pushButtonWriteEditItem->hide();
 
         resizeColumns();
     }
