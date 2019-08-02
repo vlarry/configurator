@@ -283,7 +283,9 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
                     close();
 
                     if(m_anchor == AnchorType::AnchorDockWidget)
+                    {
                         emit removeContainer(m_id);
+                    }
 
                     Qt::DropAction result = drag->exec(Qt::MoveAction);
 

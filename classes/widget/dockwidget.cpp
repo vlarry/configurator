@@ -43,7 +43,6 @@ void CDockWidget::addContainer(CContainerWidget* container)
         container->setHeaderBackground(QColor(190, 190, 190));
         container->show();
         m_splitter->addWidget(container);
-        m_splitter->setStretchFactor(container_pos, 1);
         connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
     }
 }
@@ -134,7 +133,11 @@ void CDockWidget::setControlItemDir(CDockPanelItemCtrl::DirType dir)
 //----------------------------------
 void CDockWidget::removeItem(int id)
 {
-    for(int i = 0; i < ui->verticalLayoutContainer->count(); i++)
+    return;
+    qDebug() << QString("УДАЛЕНИЕ КОНТЕЙНЕРА: размер ленты контейнеров %1").arg(m_splitter->count());
+    qDebug() << QString("Поиск контейнера с номером %1").arg(id);
+
+    for(int i = 0; i < m_splitter->count(); i++)
     {
         QWidget* wgt = m_splitter->widget(i);
 
@@ -144,12 +147,16 @@ void CDockWidget::removeItem(int id)
 
             if(tcontainer->id() == id)
             {
+                qDebug() << QString("Удаление контейнера №%1").arg(tcontainer->id());
                 tcontainer->setPosition(-1);
                 tcontainer->setSide(CDockPanelItemCtrl::DirNone);
                 delete tcontainer;
 
-                if(m_splitter->count() == 0) // контейнер пуст
+                if(m_splitter->count() == 0) // конвейер контейнеров пуст
+                {
+                    qDebug() << "Конвейер контейнеров пуст";
                     emit m_controlItem->clicked();
+                }
             }
         }
     }
@@ -157,6 +164,7 @@ void CDockWidget::removeItem(int id)
 //------------------------------------------------------
 void CDockWidget::dragEnterEvent(QDragEnterEvent* event)
 {
+    qDebug() << "dragEnterEvent";
     if(event->mimeData()->hasFormat("application/widget_container"))
     {
         if(event->source() == this)
@@ -180,6 +188,7 @@ void CDockWidget::dragEnterEvent(QDragEnterEvent* event)
 //----------------------------------------------------
 void CDockWidget::dragMoveEvent(QDragMoveEvent *event)
 {
+    qDebug() << "dragMoveEvent";
     if(event->mimeData()->hasFormat("application/widget_container"))
     {
         if(event->source() == this)
@@ -203,12 +212,14 @@ void CDockWidget::dragMoveEvent(QDragMoveEvent *event)
 //------------------------------------------------------
 void CDockWidget::dragLeaveEvent(QDragLeaveEvent *event)
 {
+    qDebug() << "dragLeaveEvent";
     Q_UNUSED(event);
     setStyleSheet("CDockWidget { border: none; }");
 }
 //--------------------------------------------
 void CDockWidget::dropEvent(QDropEvent* event)
 {
+    qDebug() << "dropEvent";
     CContainerWidget* container = event->mimeData()->property("CONTAINER").value<CContainerWidget*>();
     setStyleSheet("CDockWidget { border: none; }");
 
