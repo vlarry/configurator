@@ -9087,7 +9087,7 @@ void ConfiguratorWindow::openFileProject()
     QDir dir;
     QString projectPathName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
                                                            QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
-                                                           arg("newProject"), tr("Проекты (*.project)"));
+                                                           arg("newProject.project"), tr("Проекты (*.project)"));
     openProject(projectPathName);
 }
 //--------------------------------------------------------------------
