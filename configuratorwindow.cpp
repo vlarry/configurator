@@ -8,6 +8,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_isProject(false),
     m_modbus(nullptr),
     m_treeWidgetDeviceMenu(nullptr),
+    m_variableWidget(nullptr),
     m_containerWidgetVariable(nullptr),
     m_containerWidgetDeviceMenu(nullptr),
     m_containerIndicatorState(nullptr),
@@ -44,44 +45,6 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_is_set_change(false)
 {
     ui->setupUi(this);
-
-    m_modbus                    = new CModBus(this);
-    m_treeWidgetDeviceMenu      = new QTreeWidget(this);
-    m_serialPortSettings_window = new CSerialPortSetting;
-    m_status_bar                = new CStatusBar(statusBar());
-    m_popup                     = new PopUp(this);
-    m_watcher                   = new QFutureWatcher<void>(this);
-    m_progressbar               = new CProgressBarWidget(m_status_bar);
-    m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator", this);
-    m_tim_calculate             = new QTimer(this);
-    m_timer_new_address_set     = new QTimer(this);
-    m_tim_debug_info            = new QTimer(this);
-    m_timer_synchronization     = new QTimer(this);
-    m_journal_timer             = new QTimer(this);
-    m_calibration_controller    = new CCalibrationController(ui->widgetCalibrationOfCurrent, ui->widgetCalibrationPower, ui->widgetCalibrationBRUPowerDC,
-                                                             ui->widgetCalibrationBRUResistance);
-
-    statusBar()->addPermanentWidget(m_status_bar, 100);
-
-    connectSystemDb();
-    initJournals();
-    initMenuPanel();
-    initCellBind(); // инициализация привязки настроек к адресам
-    initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
-    initModelTables();
-    initDeviceCode(); // инициализация списка кодов устройств
-    initEventJournal(); // инициализация параметров журнала событий
-    initCrashJournal(); // инициализация параметров журнала аварий
-    initHalfhourJournal(); // инициализация параметров журнала получасовок
-    initProtectionList(); // инициализация списка защит
-    initSubWindow(); // инициализация дополнительных окон
-    initIndicatorStates(); // инициализация окна отображения состояний индикаторов
-    initMonitorPurpose();
-    initOutputAll();
-    initInputs();
-    initDebugInfo();
-    initWordStatus();
-
     setWindowFlag(Qt::FramelessWindowHint);
 
     // удаление вкладки Экран (также закоментирован индекс вкладки в хедере)
@@ -4615,9 +4578,13 @@ void ConfiguratorWindow::initIndicatorStates()
 
     m_output_window->setLists(led_list, relay_list);
 }
-//--------------------------------------
-void ConfiguratorWindow::initSubWindow()
+//------------------------------------
+void ConfiguratorWindow::initWindows()
 {
+    m_treeWidgetDeviceMenu   = new QTreeWidget(this);
+    m_variableWidget         = new CVariableWidget(this);
+    m_event_window           = new CTerminalWindow(this);
+    m_terminal_modbus        = new CTerminal(this);
     m_output_window          = new CIndicatorState(this);
     m_monitor_purpose_window = new CMonitorPurpose(tr("Монитор привязок по I11/I17"), this);
     m_outputall_window       = new COutputAll(tr("Все выходы"), this);
@@ -4625,34 +4592,85 @@ void ConfiguratorWindow::initSubWindow()
     m_debuginfo_window       = new CDebugInfo(tr("Отладочная информация"), this);
     m_status_window          = new CStatusInfo(this);
 
+    // инициализация панели расчетных величин
+    m_variableWidget->init(m_system_db);
+    m_variableWidget->setProperty("TYPE", "VARIABLE");
+    m_variableWidget->setObjectName("panelVariable");
+    m_containerWidgetVariable = new CContainerWidget(tr("Панель измерений"), m_variableWidget,
+                                                     CContainerWidget::AnchorType::AnchorDockWidget, this);
+    m_containerWidgetVariable->setSuperParent(this);
+    m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
+    m_containerWidgetVariable->setSide(CDockPanelItemCtrl::DirRight);
+    m_containerWidgetVariable->setName("VARIABLE");
+
+    // инициализация панели меню
+    m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
+    m_treeWidgetDeviceMenu->setObjectName("panelDeviceMenu");
+    m_containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
+                                                       CContainerWidget::AnchorType::AnchorDockWidget, this);
+    m_containerWidgetDeviceMenu->setSuperParent(this);
+    m_containerWidgetDeviceMenu->setButtonFunctionState(true);
+    m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
+    m_containerWidgetDeviceMenu->setSide(CDockPanelItemCtrl::DirLeft);
+    m_containerWidgetDeviceMenu->setName("DEVICE_MENU");
+    connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
+
+    // инициализация панели сообщений
+    m_event_window->setObjectName("terminalWindowEvent");
+    m_containerTerminalEvent = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
+    m_containerTerminalEvent->setHeaderBackground(QColor(190, 190, 190));
+    m_containerTerminalEvent->setSuperParent(this);
+    m_containerTerminalEvent->setSide(CDockPanelItemCtrl::DirBottom);
+    m_containerTerminalEvent->setName("EVENT_MESSAGE");
+
+    // инициализация терминала MODBUS
+    m_terminal_modbus->setObjectName("terminalModbus");
+    m_containerTerminalModbus = new CContainerWidget(tr("Терминал"), m_terminal_modbus, CContainerWidget::AnchorType::AnchorDockWidget, this);
+    m_containerTerminalModbus->setHeaderBackground(QColor(190, 190, 190));
+    m_containerTerminalModbus->setSuperParent(this);
+    m_containerTerminalModbus->setSide(CDockPanelItemCtrl::DirBottom);
+    m_containerTerminalModbus->setName("TERMINAL");
+
     m_containerIndicatorState = new CContainerWidget(tr("Состояние выходов"), m_output_window, CContainerWidget::AnchorType::AnchorFree,
                                                      this);
+    m_containerIndicatorState->setObjectName("InputIndicatorStates");
+    m_containerIndicatorState->setName("INDICATOR_STATE");
     m_containerIndicatorState->setSuperParent(this);
     m_containerIndicatorState->setHeaderBackground(QColor(190, 190, 190));
     m_containerIndicatorState->hide();
 
     m_containerMonitorI11I17 = new CContainerWidget(tr("Монитор привязок по I11/I17"), m_monitor_purpose_window,
                                                     CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerMonitorI11I17->setObjectName("Monitor_I11_I17");
+    m_containerMonitorI11I17->setName("MONITOR_I11_I17");
     m_containerMonitorI11I17->setSuperParent(this);
     m_containerMonitorI11I17->setHeaderBackground(QColor(190, 190, 190));
     m_containerMonitorI11I17->hide();
 
     m_containerOutputAll = new CContainerWidget(tr("Все выходы"), m_outputall_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerOutputAll->setObjectName("OutputAll");
+    m_containerOutputAll->setName("OUTPUT_ALL");
     m_containerOutputAll->setSuperParent(this);
     m_containerOutputAll->setHeaderBackground(QColor(190, 190, 190));
     m_containerOutputAll->hide();
 
     m_containerInputs = new CContainerWidget(tr("Входы"), m_inputs_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerInputs->setObjectName("Inputs");
+    m_containerInputs->setName("INPUTS");
     m_containerInputs->setSuperParent(this);
     m_containerInputs->setHeaderBackground(QColor(190, 190, 190));
     m_containerInputs->hide();
 
     m_containerDebugInfo = new CContainerWidget(tr("Отладочная информация"), m_debuginfo_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerDebugInfo->setObjectName("DebugInfo");
+    m_containerDebugInfo->setName("DEBUG_INFO");
     m_containerDebugInfo->setSuperParent(this);
     m_containerDebugInfo->setHeaderBackground(QColor(190, 190, 190));
     m_containerDebugInfo->hide();
 
     m_containerStatusInfo = new CContainerWidget(tr("Информация о статусах"), m_status_window, CContainerWidget::AnchorType::AnchorFree, this);
+    m_containerStatusInfo->setObjectName("StatusInfo");
+    m_containerStatusInfo->setName("STATUS_INFO");
     m_containerStatusInfo->setSuperParent(this);
     m_containerStatusInfo->setHeaderBackground(QColor(190, 190, 190));
     m_containerStatusInfo->hide();
@@ -9802,6 +9820,42 @@ void ConfiguratorWindow::initApplication()
     {
         setWindowState(Qt::WindowMaximized);
 
+        m_modbus                    = new CModBus(this);
+        m_serialPortSettings_window = new CSerialPortSetting;
+        m_status_bar                = new CStatusBar(statusBar());
+        m_popup                     = new PopUp(this);
+        m_watcher                   = new QFutureWatcher<void>(this);
+        m_progressbar               = new CProgressBarWidget(m_status_bar);
+        m_settings                  = new QSettings(QSettings::IniFormat, QSettings::UserScope, ORGANIZATION_NAME, "configurator", this);
+        m_tim_calculate             = new QTimer(this);
+        m_timer_new_address_set     = new QTimer(this);
+        m_tim_debug_info            = new QTimer(this);
+        m_timer_synchronization     = new QTimer(this);
+        m_journal_timer             = new QTimer(this);
+        m_calibration_controller    = new CCalibrationController(ui->widgetCalibrationOfCurrent, ui->widgetCalibrationPower, ui->widgetCalibrationBRUPowerDC,
+                                                                 ui->widgetCalibrationBRUResistance);
+
+        statusBar()->addPermanentWidget(m_status_bar, 100);
+
+        connectSystemDb();
+        initWindows(); // инициализация окон
+        initJournals();
+        initMenuPanel();
+        initCellBind(); // инициализация привязки настроек к адресам
+        initPurposeBind(); // инициализация привязки "матрицы привязок выходов" к адресам
+        initModelTables();
+        initDeviceCode(); // инициализация списка кодов устройств
+        initEventJournal(); // инициализация параметров журнала событий
+        initCrashJournal(); // инициализация параметров журнала аварий
+        initHalfhourJournal(); // инициализация параметров журнала получасовок
+        initProtectionList(); // инициализация списка защит
+        initIndicatorStates(); // инициализация окна отображения состояний индикаторов
+        initMonitorPurpose();
+        initOutputAll();
+        initInputs();
+        initDebugInfo();
+        initWordStatus();
+
         ui->tabWidgetMessage->setCurrentIndex(0);
 
         m_version_window = new CVersionSoftware(this);
@@ -9875,53 +9929,6 @@ void ConfiguratorWindow::initApplication()
         ui->pbtnMenuNewProject->setShortcut(QKeySequence("CTRL+N"));
         ui->pbtnMenuOpenProject->setShortcut(QKeySequence("CTRL+O"));
         ui->pbtnMenuSaveProject->setShortcut(QKeySequence("CTRL+S"));
-
-        // инициализация панели расчетных величин
-        CVariableWidget* tableWidgetVariable = new CVariableWidget(ui->dockWidgetVariable);
-        tableWidgetVariable->init(m_system_db);
-        tableWidgetVariable->setProperty("TYPE", "VARIABLE");
-        m_containerWidgetVariable = new CContainerWidget(tr("Панель измерений"), tableWidgetVariable,
-                                                         CContainerWidget::AnchorType::AnchorDockWidget, this);
-        m_containerWidgetVariable->setSuperParent(this);
-        m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
-        m_containerWidgetVariable->setSide(CDockPanelItemCtrl::DirRight);
-        m_containerWidgetVariable->setName("VARIABLE");
-
-        // инициализация панели меню
-        m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
-        m_containerWidgetDeviceMenu = new CContainerWidget(tr("Меню устройства"), m_treeWidgetDeviceMenu,
-                                                           CContainerWidget::AnchorType::AnchorDockWidget, this);
-        m_containerWidgetDeviceMenu->setSuperParent(this);
-        m_containerWidgetDeviceMenu->setButtonFunctionState(true);
-        m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
-        m_containerWidgetDeviceMenu->setSide(CDockPanelItemCtrl::DirLeft);
-        m_containerWidgetDeviceMenu->setName("DEVICE_MENU");
-        connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
-
-        // инициализация панели сообщений
-        m_event_window = new CTerminalWindow(this);
-        m_event_window->setObjectName("terminalWindowEvent");
-        m_containerTerminalEvent = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
-        m_containerTerminalEvent->setHeaderBackground(QColor(190, 190, 190));
-        m_containerTerminalEvent->setSuperParent(this);
-        m_containerTerminalEvent->setSide(CDockPanelItemCtrl::DirBottom);
-        m_containerTerminalEvent->setName("EVENT_MESSAGE");
-
-        // инициализация терминала MODBUS
-        m_terminal_modbus = new CTerminal(this);
-        m_terminal_modbus->setObjectName("terminalModbus");
-        m_containerTerminalModbus = new CContainerWidget(tr("Терминал"), m_terminal_modbus, CContainerWidget::AnchorType::AnchorDockWidget, this);
-        m_containerTerminalModbus->setHeaderBackground(QColor(190, 190, 190));
-        m_containerTerminalModbus->setSuperParent(this);
-        m_containerTerminalModbus->setSide(CDockPanelItemCtrl::DirBottom);
-        m_containerTerminalModbus->setName("TERMINAL");
-
-        m_containerIndicatorState->setName("INDICATOR_STATE");
-        m_containerMonitorI11I17->setName("MONITOR_I11_I17");
-        m_containerOutputAll->setName("OUTPUT_ALL");
-        m_containerInputs->setName("INPUTS");
-        m_containerDebugInfo->setName("DEBUG_INFO");
-        m_containerStatusInfo->setName("STATUS_INFO");
 
         // Расположение контейнеров по умолчанию
         ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
@@ -12433,10 +12440,13 @@ void ConfiguratorWindow::panelVisibleCalculateVariable()
 //-----------------------------------------------
 void ConfiguratorWindow::panelVisibleDeviceMenu()
 {
-    if(m_containerWidgetDeviceMenu->isHidden())
-        m_containerWidgetDeviceMenu->show();
-    else
-        m_containerWidgetDeviceMenu->hide();
+    if(m_containerWidgetDeviceMenu)
+    {
+        if(m_containerWidgetDeviceMenu->isHidden())
+            m_containerWidgetDeviceMenu->show();
+        else
+            m_containerWidgetDeviceMenu->hide();
+    }
 }
 /*!
  * \brief ConfiguratorWindow::recordCountDb
@@ -13004,17 +13014,41 @@ void ConfiguratorWindow::initConnect()
     connect(m_tim_calculate, &QTimer::timeout, this, &ConfiguratorWindow::calculateRead);
     connect(ui->checkboxCalibTimeout, &QCheckBox::clicked, this, &ConfiguratorWindow::chboxCalculateTimeoutStateChanged);
     connect(ui->sboxTimeoutCalc, SIGNAL(valueChanged(int)), this, SLOT(timeCalculateChanged(int)));
-    connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
+
+    // Управление контейнерами панелей
     connect(m_containerIndicatorState, &CContainerWidget::containerClose, ui->pushButtonIndicatorStates, &QPushButton::setChecked);
     connect(m_containerIndicatorState, &CContainerWidget::containerClose, this, &ConfiguratorWindow::indicatorVisiblity);
-    connect(ui->pushButtonMonitorI11_I17, &QPushButton::clicked, this, &ConfiguratorWindow::monitorI11I17Visiblity);
     connect(m_containerMonitorI11I17, &CContainerWidget::containerClose, ui->pushButtonMonitorI11_I17, &QPushButton::setChecked);
-    connect(ui->pushButtonOutputAll, &QPushButton::clicked, this, &ConfiguratorWindow::outputAllVisiblity);
+    connect(m_containerMonitorI11I17, &CContainerWidget::containerClose, this, &ConfiguratorWindow::monitorI11I17Visiblity);
     connect(m_containerOutputAll, &CContainerWidget::containerClose, ui->pushButtonOutputAll, &QPushButton::setChecked);
-    connect(ui->pushButtonInputs, &QPushButton::clicked, this, &ConfiguratorWindow::inputVisiblity);
+    connect(m_containerOutputAll, &CContainerWidget::containerClose, this, &ConfiguratorWindow::outputAllVisiblity);
     connect(m_containerInputs, &CContainerWidget::containerClose, ui->pushButtonInputs, &QPushButton::setChecked);
-    connect(ui->pushButtonStatusInfo, &QPushButton::clicked, this, &ConfiguratorWindow::statusInfoVisiblity);
+    connect(m_containerInputs, &CContainerWidget::containerClose, this, &ConfiguratorWindow::inputVisiblity);
     connect(m_containerStatusInfo, &CContainerWidget::containerClose, ui->pushButtonStatusInfo, &QPushButton::setChecked);
+    connect(m_containerStatusInfo, &CContainerWidget::containerClose, this, &ConfiguratorWindow::statusInfoVisiblity);
+    connect(m_containerDebugInfo, &CContainerWidget::containerClose, ui->pushButtonDebugInfo, &QPushButton::setChecked);
+    connect(m_containerDebugInfo, &CContainerWidget::containerClose, this, &ConfiguratorWindow::debugInfoVisiblity);
+    connect(m_containerTerminalModbus, &CContainerWidget::containerClose, ui->pushButtonTerminal, &QPushButton::setChecked);
+    connect(m_containerTerminalModbus, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleTerminal);
+    connect(m_containerWidgetDeviceMenu, &CContainerWidget::containerClose, ui->pushButtonDeviceMenu, &QPushButton::setChecked);
+    connect(m_containerWidgetDeviceMenu, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
+    connect(m_containerTerminalEvent, &CContainerWidget::containerClose, ui->pushButtonMessageEvent, &QPushButton::setChecked);
+    connect(m_containerTerminalEvent, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleMessage);
+    connect(m_containerWidgetVariable, &CContainerWidget::containerClose, ui->pushButtonCalculateVarible, &QPushButton::setChecked);
+    connect(m_containerWidgetVariable, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleCalculateVariable);
+
+    connect(ui->pushButtonIndicatorStates, &QPushButton::clicked, this, &ConfiguratorWindow::indicatorVisiblity);
+    connect(ui->pushButtonMonitorI11_I17, &QPushButton::clicked, this, &ConfiguratorWindow::monitorI11I17Visiblity);
+    connect(ui->pushButtonOutputAll, &QPushButton::clicked, this, &ConfiguratorWindow::outputAllVisiblity);
+    connect(ui->pushButtonInputs, &QPushButton::clicked, this, &ConfiguratorWindow::inputVisiblity);
+    connect(ui->pushButtonStatusInfo, &QPushButton::clicked, this, &ConfiguratorWindow::statusInfoVisiblity);
+    connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);
+    connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
+    connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
+    connect(ui->pushButtonMessageEvent, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleMessage);
+    connect(ui->pushButtonCalculateVarible, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleCalculateVariable);
+    //...
+
     connect(m_status_window, &CStatusInfo::buttonUpdate, this, &ConfiguratorWindow::readStatusInfo);
     connect(m_treeWidgetDeviceMenu, &QTreeWidget::itemClicked, this, &ConfiguratorWindow::itemClicked);
     connect(ui->pbtnReadAllBlock, &QPushButton::clicked, this, &ConfiguratorWindow::readSettings);
@@ -13058,8 +13092,7 @@ void ConfiguratorWindow::initConnect()
     connect(m_output_window, &CIndicatorState::buttonUpdate, this, &ConfiguratorWindow::sendOutputAllRequest);
     connect(m_debuginfo_window, &CDebugInfo::readInfo, this, &ConfiguratorWindow::debugInfoCtrl);
     connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoRead);
-    connect(ui->pushButtonDebugInfo, &QPushButton::clicked, this, &ConfiguratorWindow::debugInfoVisiblity);
-    connect(m_containerDebugInfo, &CContainerWidget::containerClose, ui->pushButtonDebugInfo, &QPushButton::setChecked);
+
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
     connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
     connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
@@ -13113,9 +13146,5 @@ void ConfiguratorWindow::initConnect()
 
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
-    connect(ui->pushButtonCalculateVarible, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleCalculateVariable);
-    connect(ui->pushButtonMessageEvent, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleMessage);
-    connect(ui->pushButtonTerminal, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleTerminal);
-    connect(ui->pushButtonDeviceMenu, &QPushButton::clicked, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
     connect(ui->pushButtonCalibrationRoll, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRoll);
 }

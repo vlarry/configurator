@@ -655,7 +655,7 @@
             void initTable(QTableView* table, QVector<QPair<QString, QString> >& column_labels, group_t& group_rows);
             void initTableProtection(QTableView* table, block_protection_list_t& labels);
             void initIndicatorStates();
-            void initSubWindow();
+            void initWindows();
             void displayCalculateValues(QVector<quint16> values);
             void displayDateTime(CModBusDataUnit& unit);
             void displaySettingResponse(CModBusDataUnit& unit);
@@ -771,6 +771,7 @@
             bool                             m_isProject; // флаг создания/загрузки проекта
             CModBus*                         m_modbus;
             QTreeWidget*                     m_treeWidgetDeviceMenu;
+            CVariableWidget*                 m_variableWidget;
             CContainerWidget*                m_containerWidgetVariable;
             CContainerWidget*                m_containerWidgetDeviceMenu;
             CContainerWidget*                m_containerIndicatorState;

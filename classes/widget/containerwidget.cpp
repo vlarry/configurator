@@ -45,9 +45,9 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     setWidget(contentWidget);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
+//    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::containerClose);
-    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::processClose);
+//    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::processClose);
     connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionStateChanged);
 }
 //-----------------------------------

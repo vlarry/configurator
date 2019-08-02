@@ -25,5 +25,6 @@ void CMenuComboBox::isCurrentIndexChanged(int)
 //------------------------------------------
 void CMenuComboBox::wheelEvent(QWheelEvent*)
 {
+    // блокируем прокрутку в выпадающем списке
     return;
 }
