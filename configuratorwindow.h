@@ -780,7 +780,7 @@
             CContainerWidget*                m_containerInputs;
             CContainerWidget*                m_containerDebugInfo;
             CContainerWidget*                m_containerStatusInfo;
-            CContainerWidget*                m_containerTerminalEvent;
+            CContainerWidget*                m_containerWidgetMessage;
             CContainerWidget*                m_containerTerminalModbus;
             CSerialPortSetting*              m_serialPortSettings_window;
             CIndicatorState*                 m_output_window;

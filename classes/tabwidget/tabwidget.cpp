@@ -9,6 +9,7 @@ CTabWidget::CTabWidget(QWidget* parent):
 
     this->tabBar()->setAcceptDrops(true);
     connect(this, &CTabWidget::tabBarDoubleClicked, this, &CTabWidget::tabDoubleClicked);
+    connect(this, &CTabWidget::removeContainer, this, &CTabWidget::tabRemove);
 }
 //--------------------------------------------------------
 void CTabWidget::addContainer(CContainerWidget* container)
@@ -16,7 +17,10 @@ void CTabWidget::addContainer(CContainerWidget* container)
     container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
     container->setSide(CDockPanelItemCtrl::DirBottom);
 
-    addTab(container, container->headerTitle());
+    int index = addTab(container, container->headerTitle());
+
+    if(index != -1)
+        setCurrentIndex(index);
 }
 //----------------------------------------------
 void CTabWidget::setSuperParent(QWidget* parent)
@@ -52,6 +56,23 @@ void CTabWidget::tabDoubleClicked(int index)
 
     container->move(pos);
     container->show();
+}
+//----------------------------------------------
+void CTabWidget::tabRemove(const QString &title)
+{
+    if(!title.isEmpty())
+    {
+        for(int i = 0; i < count(); i++)
+        {
+            QString text = tabBar()->tabText(i);
+
+            if(title.toUpper() == text.toUpper())
+            {
+                removeTab(i);
+                break;
+            }
+        }
+    }
 }
 //-----------------------------------------------------
 void CTabWidget::dragEnterEvent(QDragEnterEvent* event)

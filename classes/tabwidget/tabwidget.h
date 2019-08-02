@@ -23,6 +23,10 @@
 
         private slots:
             void tabDoubleClicked(int index);
+            void tabRemove(const QString &title);
+
+        signals:
+            void removeContainer(const QString&);
 
         protected:
             void dragEnterEvent(QDragEnterEvent* event);

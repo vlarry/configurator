@@ -17,7 +17,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     m_containerInputs(nullptr),
     m_containerDebugInfo(nullptr),
     m_containerStatusInfo(nullptr),
-    m_containerTerminalEvent(nullptr),
+    m_containerWidgetMessage(nullptr),
     m_serialPortSettings_window(nullptr),
     m_output_window(nullptr),
     m_monitor_purpose_window(nullptr),
@@ -4401,7 +4401,7 @@ void ConfiguratorWindow::containerVisibleState()
     ui->pushButtonMonitorI11_I17->setChecked(m_containerMonitorI11I17->isVisible());
     ui->pushButtonStatusInfo->setChecked(m_containerStatusInfo->isVisible());
     ui->pushButtonTerminal->setChecked(m_containerTerminalModbus->isVisible());
-    ui->pushButtonMessageEvent->setChecked(m_containerTerminalEvent->isVisible());
+    ui->pushButtonMessageEvent->setChecked(m_containerWidgetMessage->isVisible());
 }
 //-----------------------------------
 void ConfiguratorWindow::setChanged()
@@ -4617,11 +4617,11 @@ void ConfiguratorWindow::initWindows()
 
     // инициализация панели сообщений
     m_event_window->setObjectName("terminalWindowEvent");
-    m_containerTerminalEvent = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
-    m_containerTerminalEvent->setHeaderBackground(QColor(190, 190, 190));
-    m_containerTerminalEvent->setSuperParent(this);
-    m_containerTerminalEvent->setSide(CDockPanelItemCtrl::DirBottom);
-    m_containerTerminalEvent->setName("EVENT_MESSAGE");
+    m_containerWidgetMessage = new CContainerWidget(tr("События"), m_event_window, CContainerWidget::AnchorType::AnchorDockWidget, this);
+    m_containerWidgetMessage->setHeaderBackground(QColor(190, 190, 190));
+    m_containerWidgetMessage->setSuperParent(this);
+    m_containerWidgetMessage->setSide(CDockPanelItemCtrl::DirBottom);
+    m_containerWidgetMessage->setName("EVENT_MESSAGE");
 
     // инициализация терминала MODBUS
     m_terminal_modbus->setObjectName("terminalModbus");
@@ -7414,7 +7414,7 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     loadContainerSettings(m_containerInputs, db);
     loadContainerSettings(m_containerDebugInfo, db);
     loadContainerSettings(m_containerStatusInfo, db);
-    loadContainerSettings(m_containerTerminalEvent, db);
+    loadContainerSettings(m_containerWidgetMessage, db);
     loadContainerSettings(m_containerTerminalModbus, db);
 
     disconnectDb(db);
@@ -9179,7 +9179,7 @@ bool ConfiguratorWindow::saveProject()
     saveContainerSettings(m_containerInputs, db);
     saveContainerSettings(m_containerDebugInfo, db);
     saveContainerSettings(m_containerStatusInfo, db);
-    saveContainerSettings(m_containerTerminalEvent, db);
+    saveContainerSettings(m_containerWidgetMessage, db);
     saveContainerSettings(m_containerTerminalModbus, db);
 
     outLogMessage(tr("Данные проекта успешно сохранены"));
@@ -9933,7 +9933,7 @@ void ConfiguratorWindow::initApplication()
         // Расположение контейнеров по умолчанию
         ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
         ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
-        ui->tabWidgetMessage->addTab(m_containerTerminalEvent, tr("События"));
+        ui->tabWidgetMessage->addTab(m_containerWidgetMessage, tr("События"));
         ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
 
         bool is_remove = deleteLogFile();
@@ -12417,17 +12417,41 @@ void ConfiguratorWindow::panelVisibleCtrl(QWidget* widget)
 void ConfiguratorWindow::panelVisibleTerminal()
 {
     if(m_containerTerminalModbus->isHidden())
+    {
+        if(m_containerTerminalModbus->anchor() == CContainerWidget::AnchorType::AnchorDockWidget)
+        {
+            ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
+        }
+
         m_containerTerminalModbus->show();
+    }
     else
+    {
         m_containerTerminalModbus->hide();
+
+        if(m_containerTerminalModbus->anchor() == CContainerWidget::AnchorType::AnchorDockWidget)
+            emit ui->tabWidgetMessage->removeContainer(tr("Терминал"));
+    }
 }
 //--------------------------------------------
 void ConfiguratorWindow::panelVisibleMessage()
 {
-    if(m_containerTerminalEvent->isHidden())
-        m_containerTerminalEvent->show();
+    if(m_containerWidgetMessage->isHidden())
+    {
+        if(m_containerWidgetMessage->anchor() == CContainerWidget::AnchorType::AnchorDockWidget)
+        {
+            ui->tabWidgetMessage->addTab(m_containerWidgetMessage, tr("События"));
+        }
+
+        m_containerWidgetMessage->show();
+    }
     else
-        m_containerTerminalEvent->hide();
+    {
+        m_containerWidgetMessage->hide();
+
+        if(m_containerWidgetMessage->anchor() == CContainerWidget::AnchorType::AnchorDockWidget)
+            emit ui->tabWidgetMessage->removeContainer(tr("События"));
+    }
 }
 //------------------------------------------------------
 void ConfiguratorWindow::panelVisibleCalculateVariable()
@@ -13032,8 +13056,8 @@ void ConfiguratorWindow::initConnect()
     connect(m_containerTerminalModbus, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleTerminal);
     connect(m_containerWidgetDeviceMenu, &CContainerWidget::containerClose, ui->pushButtonDeviceMenu, &QPushButton::setChecked);
     connect(m_containerWidgetDeviceMenu, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleDeviceMenu);
-    connect(m_containerTerminalEvent, &CContainerWidget::containerClose, ui->pushButtonMessageEvent, &QPushButton::setChecked);
-    connect(m_containerTerminalEvent, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleMessage);
+    connect(m_containerWidgetMessage, &CContainerWidget::containerClose, ui->pushButtonMessageEvent, &QPushButton::setChecked);
+    connect(m_containerWidgetMessage, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleMessage);
     connect(m_containerWidgetVariable, &CContainerWidget::containerClose, ui->pushButtonCalculateVarible, &QPushButton::setChecked);
     connect(m_containerWidgetVariable, &CContainerWidget::containerClose, this, &ConfiguratorWindow::panelVisibleCalculateVariable);
 
