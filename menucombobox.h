@@ -2,6 +2,7 @@
     #define MENUCOMBOBOX_H
     //------------------
     #include <QComboBox>
+    #include <QWheelEvent>
     //-----------------------------------
     class CMenuComboBox: public QComboBox
     {
@@ -17,6 +18,9 @@
 
         signals:
             void editValue();
+
+        protected:
+            void wheelEvent(QWheelEvent*);
 
         private:
             bool m_is_edit; // было изменение текущего индекса?

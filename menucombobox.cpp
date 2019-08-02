@@ -22,3 +22,8 @@ void CMenuComboBox::isCurrentIndexChanged(int)
     m_is_edit = true;
     emit editValue();
 }
+//------------------------------------------
+void CMenuComboBox::wheelEvent(QWheelEvent*)
+{
+    return;
+}
