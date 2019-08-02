@@ -204,12 +204,44 @@ void CDeviceMenuTableWidget::insertHeader(int row, const QString& name, RowType 
         f.setPointSize(10);
         f.setBold(true);
 
+        QFontMetrics fm(f);
+
+        int w = fm.width(button->text())*1.2f;
+
+        button->setMinimumWidth(w);
         button->setFont(f);
         button->setCheckable(true);
         button->setChecked(false);
 
+        QString button_style = "QPushButton"
+                               "{"
+                               "    border: 2px solid lightgray;"
+                               "    border-radius: 10px;"
+                               "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                               "                                      stop: 0 #f6f7fa, stop: 1 #dadbde);"
+                               "}"
+                               "QPushButton:pressed"
+                               "{"
+                               "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                               "                                      stop: 0 #dadbde, stop: 1 #f6f7fa);"
+                               "}"
+                               "QPushButton:flat"
+                               "{"
+                               "    border: none;"
+                               "}"
+                               "QPushButton:checked"
+                               "{"
+                               "    border: 2px solid gray;"
+                               "}"
+                               "QPushButton:default"
+                               "{"
+                               "    border-color: navy;"
+                               "}";
+
+        button->setStyleSheet(button_style);
+
         layout_button->addWidget(button);
-        layout_button->setAlignment(Qt::AlignCenter);
+        layout_button->setAlignment(Qt::AlignRight);
         layout_button->setContentsMargins(0, 0, 0, 0);
         layout_button->setSpacing(0);
         button_wgt->setLayout(layout_button);
