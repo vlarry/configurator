@@ -1496,7 +1496,7 @@ void ConfiguratorWindow::protectionMTZGroupRead()
     protectionMTZ4Read();
     protectionMotorGroupRead();
 
-    sendProtectionWorkModeRequest("MTZ1,MTZ2,MTZ3,STARTING,IMIN", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Read
