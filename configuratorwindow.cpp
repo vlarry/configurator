@@ -1367,7 +1367,6 @@ void ConfiguratorWindow::protectionMTZ1Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     sendSettingControlReadRequest("M05", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ2Read
@@ -1382,7 +1381,6 @@ void ConfiguratorWindow::protectionMTZ2Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     sendSettingControlReadRequest("M09", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3Read
@@ -1398,7 +1396,6 @@ void ConfiguratorWindow::protectionMTZ3Read()
 
     sendSettingControlReadRequest("M13", DEVICE_MENU_PROTECT_ITEM_CURRENT);
     sendSettingControlReadRequest("TZ", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ3", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ3SetCharRead
@@ -1485,7 +1482,6 @@ void ConfiguratorWindow::protectionMTZ4Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     sendSettingControlReadRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("MTZ4", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZGroupRead
@@ -1499,6 +1495,8 @@ void ConfiguratorWindow::protectionMTZGroupRead()
     protectionMTZ3Read();
     protectionMTZ4Read();
     protectionMotorGroupRead();
+
+    sendProtectionWorkModeRequest("MTZ1,MTZ2,MTZ3,STARTING,IMIN", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Read
@@ -1513,7 +1511,6 @@ void ConfiguratorWindow::protectionUmax1Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
 
     sendSettingControlReadRequest("M32", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("UMAX1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax2Read
@@ -1528,7 +1525,6 @@ void ConfiguratorWindow::protectionUmax2Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
 
     sendSettingControlReadRequest("M35", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("UMAX2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin1Read
@@ -1545,7 +1541,6 @@ void ConfiguratorWindow::protectionUmin1Read()
     sendSettingControlReadRequest("M38", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M39", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingReadRequestVariableState("N98", "V09,V15", "_1", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("UMIN1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmin2Read
@@ -1562,7 +1557,6 @@ void ConfiguratorWindow::protectionUmin2Read()
     sendSettingControlReadRequest("M43", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingControlReadRequest("M44", DEVICE_MENU_PROTECT_ITEM_POWER);
     sendSettingReadRequestVariableState("N99", "V09,V15", "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("UMIN2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protection3U0Read
@@ -1577,7 +1571,6 @@ void ConfiguratorWindow::protection3U0Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_POWER);
 
     sendSettingControlReadRequest("M48", DEVICE_MENU_PROTECT_ITEM_POWER);
-    sendProtectionWorkModeRequest("3U0", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionPowerGroupRead
@@ -1591,6 +1584,8 @@ void ConfiguratorWindow::protectionPowerGroupRead()
     protectionUmin1Read();
     protectionUmin2Read();
     protection3U0Read();
+
+    sendProtectionWorkModeRequest("UMAX1,UMAX2,UMIN1,UMIN2,3U0", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_POWER);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedOZZ1Read
@@ -1679,7 +1674,6 @@ void ConfiguratorWindow::protectionAchr1Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 
     sendSettingControlReadRequest("M51", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendProtectionWorkModeRequest("ACHR1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr2Read
@@ -1694,7 +1688,6 @@ void ConfiguratorWindow::protectionAchr2Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 
     sendSettingControlReadRequest("M55", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendProtectionWorkModeRequest("ACHR2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr3Read
@@ -1709,7 +1702,6 @@ void ConfiguratorWindow::protectionAchr3Read()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 
     sendSettingControlReadRequest("M59", DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
-    sendProtectionWorkModeRequest("ACHR3", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionFrequencyGroupRead
@@ -1721,6 +1713,8 @@ void ConfiguratorWindow::protectionFrequencyGroupRead()
     protectionAchr1Read();
     protectionAchr2Read();
     protectionAchr3Read();
+
+    sendProtectionWorkModeRequest("ACHR1,ACHR2,ACHR3", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
 }
 /*!
  * \brief ConfiguratorWindow::protectionArc
@@ -1735,7 +1729,6 @@ void ConfiguratorWindow::protectionArcRead()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 
     sendSettingControlReadRequest("M63", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendProtectionWorkModeRequest("ITEMARC", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt1
@@ -1746,7 +1739,6 @@ void ConfiguratorWindow::protectionExt1Read()
 {
     sendSettingControlReadRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M72", "M72", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendProtectionWorkModeRequest("EXT1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2
@@ -1757,7 +1749,6 @@ void ConfiguratorWindow::protectionExt2Read()
 {
     sendSettingControlReadRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M74", "M74", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendProtectionWorkModeRequest("EXT2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3
@@ -1768,7 +1759,6 @@ void ConfiguratorWindow::protectionExt3Read()
 {
     sendSettingControlReadRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M76", "M76", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendProtectionWorkModeRequest("EXT3", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternal
@@ -1781,6 +1771,8 @@ void ConfiguratorWindow::protectionExternalGroupRead()
     protectionExt1Read();
     protectionExt2Read();
     protectionExt3Read();
+
+    sendProtectionWorkModeRequest("ITEMARC,EXT1,EXT2,EXT3", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionStartingRead
@@ -1795,7 +1787,6 @@ void ConfiguratorWindow::protectionStartingRead()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     sendSettingControlReadRequest("M19", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("STARTING", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionIminRead
@@ -1810,7 +1801,6 @@ void ConfiguratorWindow::protectionIminRead()
         sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     sendSettingControlReadRequest("M29", DEVICE_MENU_PROTECT_ITEM_CURRENT);
-    sendProtectionWorkModeRequest("IMIN", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionMotorRead
@@ -1834,7 +1824,6 @@ void ConfiguratorWindow::protectionTemp1Read()
     sendSettingReadRequest("M67", "M67", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingReadRequest("X20", "X20", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingReadRequest("M69", "M69", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
-    sendProtectionWorkModeRequest("TEMP1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp2Read
@@ -1848,7 +1837,6 @@ void ConfiguratorWindow::protectionTemp2Read()
     sendSettingReadRequest("M68", "M68", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingReadRequest("X21", "X21", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
     sendSettingReadRequest("M70", "M70", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
-    sendProtectionWorkModeRequest("TEMP2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemperatureRead
@@ -1859,6 +1847,8 @@ void ConfiguratorWindow::protectionTemperatureGroupRead()
 {
     protectionTemp1Read();
     protectionTemp2Read();
+
+    sendProtectionWorkModeRequest("TEMP1,TEMP2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel1Read
@@ -1870,7 +1860,6 @@ void ConfiguratorWindow::protectionLevel1Read()
     sendSettingControlReadRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequest("M78", "M78", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequestVariableState("I67", "I50,I15,I66,N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendProtectionWorkModeRequest("LEVEL1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel2Read
@@ -1882,7 +1871,6 @@ void ConfiguratorWindow::protectionLevel2Read()
     sendSettingControlReadRequest("K11", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequest("M79", "M79", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingReadRequestVariableState("I68", "I50,I15,I66,N55", "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE);
-    sendProtectionWorkModeRequest("LEVEL2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionSignalStartRead
@@ -1909,6 +1897,8 @@ void ConfiguratorWindow::protectionReserveGroupRead()
 {
     protectionLevel1Read();
     protectionLevel2Read();
+
+    sendProtectionWorkModeRequest("LEVEL1,LEVEL2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionBRURead
@@ -5318,66 +5308,22 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
     if(!table)
         return;
 
-    QString    wgtName  = QString("comboBox%1").arg(tprotect);
-    CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
-
-    if(!comboBox)
-        return;
-
-    QString var;
-
-    if(m_protections.find(tprotect) != m_protections.end())
-        var = m_protections[tprotect].var_name;
-
-    if(var.isEmpty())
-        return;
-
-    int bitNumber = -1;
-
-    if(m_variable_bits.find(var) != m_variable_bits.end())
-        bitNumber = m_variable_bits[var];
-
-    if(bitNumber == -1)
-        return;
-
-    int i11_pos = bitNumber/16;
-    int i17_pos = i11_pos + 20;
-    int bit     = bitNumber%16;
-
-    int i11_state = ((unit[i11_pos]&(1 << bit)) >> bit);
-    int i17_state = ((unit[i17_pos]&(1 << bit)) >> bit);
-
-    int row = i11_state << 1 | i17_state;
-
-    if(row < comboBox->count())
-        comboBox->setCurrentIndex(row);
-
-    comboBox->resetIsEdit();
-
-    qDebug() << "Отображение режима работы защиты " << tprotect << ": данные-> " << unit.values();
-}
-//---------------------------------------------------------------------
-void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
-{
-    QString tprotect = unit.property("PROTECTION").toString();
-
-    if(tprotect.isEmpty())
-        return;
-
-    DeviceMenuItemType      group = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
-    CDeviceMenuTableWidget* table = groupMenuWidget(group);
-
-    if(!table)
-        return;
-
     QStringList protectList = tprotect.split(',');
-    QVector<quint16> values = unit.values();
 
-    qDebug() << "Запись режима работы защит " << tprotect << " (принятые данные): " << values;
+    if(protectList.isEmpty())
+        return;
+
+    QVector<quint32> values;
+
+    // перевод данных в из 16-битного в 32-битный формат
+    for(int i = 0; i < unit.count() - 1; i += 2)
+    {
+        values << quint32((unit[i] << 16) | unit[i + 1]);
+    }
 
     for(const QString &protect_name: protectList)
     {
-        QString    wgtName  = QString("comboBox%1").arg(protect_name);
+        QString wgtName = QString("comboBox%1").arg(protect_name);
         CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
 
         if(!comboBox)
@@ -5399,9 +5345,76 @@ void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
         if(bitNumber == -1)
             return;
 
-        int i11_pos = bitNumber/16;
-        int i17_pos = i11_pos + 20;
-        int bit     = bitNumber%16;
+        int i11_pos = bitNumber/32;
+        int i17_pos = i11_pos + 10;
+        int bit     = bitNumber%32;
+
+        int i11_state = ((values[i11_pos]&(1 << bit)) >> bit);
+        int i17_state = ((values[i17_pos]&(1 << bit)) >> bit);
+
+        int row = i11_state << 1 | i17_state;
+
+        if(row < comboBox->count())
+            comboBox->setCurrentIndex(row);
+
+        comboBox->resetIsEdit();
+    }
+
+    qDebug() << "Отображение режима работы защиты " << tprotect << ": данные-> " << values;
+}
+//---------------------------------------------------------------------
+void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
+{
+    QString tprotect = unit.property("PROTECTION").toString();
+
+    if(tprotect.isEmpty())
+        return;
+
+    DeviceMenuItemType      group = static_cast<DeviceMenuItemType>(unit.property("GROUP").toInt());
+    CDeviceMenuTableWidget* table = groupMenuWidget(group);
+
+    if(!table)
+        return;
+
+    QStringList protectList = tprotect.split(',');
+
+    QVector<quint32> values;
+
+    // перевод данных в из 16-битного в 32-битный формат
+    for(int i = 0; i < unit.count() - 1; i += 2)
+    {
+        values << quint32((unit[i] << 16) | unit[i + 1]);
+    }
+
+    qDebug() << "Запись режима работы защит " << tprotect << " (принятые данные): " << values;
+
+    for(const QString &protect_name: protectList)
+    {
+        QString wgtName = QString("comboBox%1").arg(protect_name);
+        CMenuComboBox* comboBox = qobject_cast<CMenuComboBox*>(groupMenuCellWidgetByName(table, wgtName, 1));
+
+        if(!comboBox)
+            return;
+
+        QString var;
+
+        if(m_protections.find(protect_name) != m_protections.end())
+            var = m_protections[protect_name].var_name;
+
+        if(var.isEmpty())
+            return;
+
+        int bitNumber = -1;
+
+        if(m_variable_bits.find(var) != m_variable_bits.end())
+            bitNumber = m_variable_bits[var];
+
+        if(bitNumber == -1)
+            return;
+
+        int i11_pos = bitNumber/32;
+        int i17_pos = i11_pos + 10;
+        int bit     = bitNumber%32;
 
         int i11_state = -1;
         int i17_state = -1;
@@ -5431,10 +5444,10 @@ void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
         if(i11_state == -1 || i17_state == -1)
             return;
 
-        values[i11_pos] &= (~quint16(1 << bit)); // очищаем бит I11
-        values[i11_pos] |= quint16(i11_state << bit); // устанавливаем бит I11
-        values[i17_pos] &= (~quint16(1 << bit)); // очищаем бит I17
-        values[i17_pos] |= quint16(i17_state << bit); // устанавливаем бит I17
+        values[i11_pos] &= (~quint32(1 << bit)); // очищаем бит I11
+        values[i11_pos] |= quint32(i11_state << bit); // устанавливаем бит I11
+        values[i17_pos] &= (~quint32(1 << bit)); // очищаем бит I17
+        values[i17_pos] |= quint32(i17_state << bit); // устанавливаем бит I17
     }
 
     qDebug() << "Запись режима работы защит " << tprotect << " (модифицированные данные): " << values;
@@ -5446,12 +5459,18 @@ void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
         if(addr == -1)
             return;
 
+        QVector<quint16> data;
+
+        // перевод 32 битных данных к 16 битным и переворот страшего и младшего полуслова
+        for(int i = 0; i < values.count(); i++)
+            data << quint16((values[i] >> 16)&0x0000FFFF) << quint16(values[i]&0x0000FFFF);
+
         qDebug() << QString("Запись режима работы защит %1 по адресу %2").arg(addr);
 
         sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
 
         CModBusDataUnit new_unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters,
-                                 static_cast<quint16>(addr), values);
+                                 static_cast<quint16>(addr), data);
 
         m_modbus->sendData(new_unit);
     }
@@ -10024,7 +10043,7 @@ void ConfiguratorWindow::exportToPDF(const JournalPtr journal, const QString& re
 
     cursor.insertBlock();
     cursor.setCharFormat(charHeaderNextFormat);
-    cursor.insertText(tr("Блок БЗУ-2-16"));
+    cursor.insertText(tr("Блок БЗУ-2-11.01"));
 
     cursor.insertBlock();
     cursor.setCharFormat(charHeaderNextFormat);
