@@ -3050,12 +3050,13 @@ void ConfiguratorWindow::writeSetEditItem()
 
     bool isEdit = false;
 
-    QStringList workmode_list =
-    {
-        "MTZ1", "MTZ2", "MTZ3", "MTZ4", "UMAX1", "UMAX2", "UMIN1", "UMIN2", "3U0", "OZZ1", "OZZ2",
-        "NZZ1", "NZZ2", "ACHR1", "ACHR2", "ACHR3", "ITEMARC", "EXT1", "EXT2", "EXT3", "STARTING",
-        "IMIN", "TEMP1", "TEMP2", "LEVEL1", "LEVEL2", "BRU", "VACUUM"
-    }; // Список ключей, которые отвечают за режим работы защиты
+    QString workmode_current = "MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN"; // по току
+    QString workmode_power = "UMAX1,UMAX2,UMIN1,UMIN2,3U0"; // по напряжению
+    QString workmode_leak = "OZZ1,OZZ2,NZZ1,NZZ2,BRU,VACUUM"; // утечка
+    QString workmode_frequency = "ACHR1,ACHR2,ACHR3"; // по частоте
+    QString workmode_external = "ITEMARC,EXT1,EXT2,EXT3"; // внешние
+    QString workmode_temperature = "TEMP1,TEMP2"; // по температуре
+    QString workmode_reserve = "LEVEL1,LEVEL2"; // резервные
 
     for(int i = 0; i < table->rowCount(); i++)
     {
@@ -3080,8 +3081,26 @@ void ConfiguratorWindow::writeSetEditItem()
                     {
                         key = combobox->property("ITEM_KEY").toString();
 
-                        if(workmode_list.contains(key)) // если ключ имеется в списке ключей режимов работы, то читаем
-                            sendProtectionWorkModeRequest(key, FUNCTION_SAVE, group); // режим работы защиты
+                        QString workmode_list;
+
+                        // проверка на редактирование режимов работы защит
+                        if(workmode_current.contains(key))
+                            workmode_list = workmode_current;
+                        else if(workmode_power.contains(key))
+                            workmode_list = workmode_power;
+                        else if(workmode_leak.contains(key))
+                            workmode_list = workmode_leak;
+                        else if(workmode_frequency.contains(key))
+                            workmode_list = workmode_frequency;
+                        else if(workmode_external.contains(key))
+                            workmode_list = workmode_external;
+                        else if(workmode_temperature.contains(key))
+                            workmode_list = workmode_temperature;
+                        else if(workmode_reserve.contains(key))
+                            workmode_list = workmode_reserve;
+
+                        if(!workmode_list.isEmpty()) // если ключ относится к режимам работы защит
+                            sendProtectionWorkModeRequest(workmode_list, FUNCTION_SAVE, group); // записываем режимы работ защит
                         else // иначе читаем уставку "Управление"
                             sendSettingControlWriteRequest(key, group);
 
