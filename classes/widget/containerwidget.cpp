@@ -13,7 +13,8 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     m_id(-1),
     m_background_color(QColor()),
     m_position(-1),
-    m_name("")
+    m_name(""),
+    m_default_size(QSize(0, 0))
 {
     ui->setupUi(this);
     setMouseTracking(true);
@@ -45,10 +46,10 @@ CContainerWidget::CContainerWidget(const QString& title, QWidget* contentWidget,
     setWidget(contentWidget);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-//    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::close);
     connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::containerClose);
-//    connect(ui->toolButtonHeaderClose, &QToolButton::clicked, this, &CContainerWidget::processClose);
     connect(ui->toolButtonHeaderFunction, &QToolButton::clicked, this, &CContainerWidget::buttonFunctionStateChanged);
+
+    ui->toolButtonGrip->hide();
 }
 //-----------------------------------
 CContainerWidget::~CContainerWidget()
@@ -220,6 +221,20 @@ void CContainerWidget::setName(const QString& name)
 {
     m_name = name;
 }
+//--------------------------------------------------
+void CContainerWidget::setDefaultSize(const QSize s)
+{
+    m_default_size = s;
+
+    if(m_default_size.width() > 0 && m_default_size.height() > 0)
+        setFixedSize(m_default_size);
+}
+//--------------------------------------------
+void CContainerWidget::updateDefaultGeometry()
+{
+    if(m_default_size.width() > 0 && m_default_size.height() > 0)
+        setFixedSize(m_default_size);
+}
 //-----------------------------------------------------------
 void CContainerWidget::buttonFunctionStateChanged(bool state)
 {
@@ -299,6 +314,13 @@ bool CContainerWidget::eventFilter(QObject* object, QEvent* event)
                             tcontainer->setParent(m_superParent);
                             tcontainer->setHeaderBackground(QColor(190, 190, 190));
                             tcontainer->show();
+
+                            if(m_default_size.width() != 0 && m_default_size.height() != 0)
+                            {
+                                tcontainer->setFixedSize(m_default_size);
+                                tcontainer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                            }
+
                             tcontainer->move(pos);
                             tcontainer->setAnchor(AnchorType::AnchorFree);
                         }

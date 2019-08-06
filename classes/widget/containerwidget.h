@@ -58,6 +58,8 @@
             void setSide(CDockPanelItemCtrl::DirType dir);
             void setPosition(int pos);
             void setName(const QString& name);
+            void setDefaultSize(const QSize s);
+            void updateDefaultGeometry();
 
         public slots:
             void buttonFunctionStateChanged(bool state = false);
@@ -86,5 +88,6 @@
             QColor                      m_background_color;
             int                         m_position;
             QString                     m_name;
+            QSize                       m_default_size;
     };
 #endif // CONTAINERWIDGET_H

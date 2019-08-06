@@ -4592,6 +4592,7 @@ void ConfiguratorWindow::initWindows()
     m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
     m_containerWidgetVariable->setSide(CDockPanelItemCtrl::DirRight);
     m_containerWidgetVariable->setName("VARIABLE");
+    m_containerWidgetVariable->setDefaultSize(QSize(600, 720));
 
     // инициализация панели меню
     m_treeWidgetDeviceMenu->setProperty("TYPE", "DEVICE_MENU");
@@ -4603,6 +4604,7 @@ void ConfiguratorWindow::initWindows()
     m_containerWidgetDeviceMenu->setHeaderBackground(QColor(190, 190, 190));
     m_containerWidgetDeviceMenu->setSide(CDockPanelItemCtrl::DirLeft);
     m_containerWidgetDeviceMenu->setName("DEVICE_MENU");
+    m_containerWidgetDeviceMenu->setDefaultSize(QSize(500, 720));
     connect(m_containerWidgetDeviceMenu->buttonFunction(), &QToolButton::clicked, this, &ConfiguratorWindow::expandItemTree);
 
     // инициализация панели сообщений
@@ -4612,6 +4614,7 @@ void ConfiguratorWindow::initWindows()
     m_containerWidgetMessage->setSuperParent(this);
     m_containerWidgetMessage->setSide(CDockPanelItemCtrl::DirBottom);
     m_containerWidgetMessage->setName("EVENT_MESSAGE");
+    m_containerWidgetMessage->setDefaultSize(QSize(700, 500));
 
     // инициализация терминала MODBUS
     m_terminal_modbus->setObjectName("terminalModbus");
@@ -4620,49 +4623,62 @@ void ConfiguratorWindow::initWindows()
     m_containerTerminalModbus->setSuperParent(this);
     m_containerTerminalModbus->setSide(CDockPanelItemCtrl::DirBottom);
     m_containerTerminalModbus->setName("TERMINAL");
+    m_containerTerminalModbus->setDefaultSize(QSize(700, 500));
 
+    // инициализация окна простмотра состояний светодиодов и реле
     m_containerIndicatorState = new CContainerWidget(tr("Состояние выходов"), m_output_window, CContainerWidget::AnchorType::AnchorFree,
                                                      this);
     m_containerIndicatorState->setObjectName("InputIndicatorStates");
     m_containerIndicatorState->setName("INDICATOR_STATE");
     m_containerIndicatorState->setSuperParent(this);
     m_containerIndicatorState->setHeaderBackground(QColor(190, 190, 190));
+    m_containerIndicatorState->setDefaultSize(QSize(550, 650));
     m_containerIndicatorState->hide();
 
+    // инициализация окна просмотра привязок I11 и I17
     m_containerMonitorI11I17 = new CContainerWidget(tr("Монитор привязок по I11/I17"), m_monitor_purpose_window,
                                                     CContainerWidget::AnchorType::AnchorFree, this);
     m_containerMonitorI11I17->setObjectName("Monitor_I11_I17");
     m_containerMonitorI11I17->setName("MONITOR_I11_I17");
     m_containerMonitorI11I17->setSuperParent(this);
     m_containerMonitorI11I17->setHeaderBackground(QColor(190, 190, 190));
+    m_containerMonitorI11I17->setDefaultSize(QSize(400, 720));
     m_containerMonitorI11I17->hide();
 
+    // инициализация окна просмотра состояний всех выходов
     m_containerOutputAll = new CContainerWidget(tr("Все выходы"), m_outputall_window, CContainerWidget::AnchorType::AnchorFree, this);
     m_containerOutputAll->setObjectName("OutputAll");
     m_containerOutputAll->setName("OUTPUT_ALL");
     m_containerOutputAll->setSuperParent(this);
     m_containerOutputAll->setHeaderBackground(QColor(190, 190, 190));
+    m_containerOutputAll->setDefaultSize(QSize(500, 550));
     m_containerOutputAll->hide();
 
+    // инициализация окна просмотра состояний выходов
     m_containerInputs = new CContainerWidget(tr("Входы"), m_inputs_window, CContainerWidget::AnchorType::AnchorFree, this);
     m_containerInputs->setObjectName("Inputs");
     m_containerInputs->setName("INPUTS");
     m_containerInputs->setSuperParent(this);
     m_containerInputs->setHeaderBackground(QColor(190, 190, 190));
+    m_containerInputs->setDefaultSize(QSize(500, 550));
     m_containerInputs->hide();
 
+    // инициализация окна отладочной информации
     m_containerDebugInfo = new CContainerWidget(tr("Отладочная информация"), m_debuginfo_window, CContainerWidget::AnchorType::AnchorFree, this);
     m_containerDebugInfo->setObjectName("DebugInfo");
     m_containerDebugInfo->setName("DEBUG_INFO");
     m_containerDebugInfo->setSuperParent(this);
     m_containerDebugInfo->setHeaderBackground(QColor(190, 190, 190));
+    m_containerDebugInfo->setDefaultSize(QSize(800, 650));
     m_containerDebugInfo->hide();
 
+    // инициализация окна информации о статусах
     m_containerStatusInfo = new CContainerWidget(tr("Информация о статусах"), m_status_window, CContainerWidget::AnchorType::AnchorFree, this);
     m_containerStatusInfo->setObjectName("StatusInfo");
     m_containerStatusInfo->setName("STATUS_INFO");
     m_containerStatusInfo->setSuperParent(this);
     m_containerStatusInfo->setHeaderBackground(QColor(190, 190, 190));
+    m_containerStatusInfo->setDefaultSize(QSize(950, 400));
     m_containerStatusInfo->hide();
 }
 //----------------------------------------------------------------------
@@ -9952,8 +9968,8 @@ void ConfiguratorWindow::initApplication()
         // Расположение контейнеров по умолчанию
         ui->dockWidgetVariable->addContainer(m_containerWidgetVariable);
         ui->dockWidgetMenuDevice->addContainer(m_containerWidgetDeviceMenu);
-        ui->tabWidgetMessage->addTab(m_containerWidgetMessage, tr("События"));
-        ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
+        ui->tabWidgetMessage->addContainer(m_containerWidgetMessage);
+        ui->tabWidgetMessage->addContainer(m_containerTerminalModbus);
 
         bool is_remove = deleteLogFile();
 

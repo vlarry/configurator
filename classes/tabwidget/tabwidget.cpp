@@ -16,6 +16,9 @@ void CTabWidget::addContainer(CContainerWidget* container)
 {
     container->setAnchor(CContainerWidget::AnchorType::AnchorDockWidget);
     container->setSide(CDockPanelItemCtrl::DirBottom);
+    container->setMinimumSize(0, 0);
+    container->setMaximumSize(10000, 10000);
+    container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     int index = addTab(container, container->headerTitle());
 
@@ -56,6 +59,7 @@ void CTabWidget::tabDoubleClicked(int index)
 
     container->move(pos);
     container->show();
+    container->updateDefaultGeometry();
 }
 //----------------------------------------------
 void CTabWidget::tabRemove(const QString &title)

@@ -42,6 +42,9 @@ void CDockWidget::addContainer(CContainerWidget* container)
 
         container->setHeaderBackground(QColor(190, 190, 190));
         container->show();
+        container->setMinimumSize(0, 0);
+        container->setMaximumSize(10000, 10000);
+        container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         m_splitter->addWidget(container);
         connect(container, &CContainerWidget::removeContainer, this, &CDockWidget::removeItem);
     }
