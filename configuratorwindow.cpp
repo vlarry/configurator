@@ -12455,7 +12455,7 @@ void ConfiguratorWindow::panelVisibleTerminal()
     {
         if(m_containerTerminalModbus->anchor() == CContainerWidget::AnchorType::AnchorDockWidget)
         {
-            ui->tabWidgetMessage->addTab(m_containerTerminalModbus, tr("Терминал"));
+            ui->tabWidgetMessage->addContainer(m_containerTerminalModbus);
         }
 
         m_containerTerminalModbus->show();
@@ -12475,7 +12475,7 @@ void ConfiguratorWindow::panelVisibleMessage()
     {
         if(m_containerWidgetMessage->anchor() == CContainerWidget::AnchorType::AnchorDockWidget)
         {
-            ui->tabWidgetMessage->addTab(m_containerWidgetMessage, tr("События"));
+            ui->tabWidgetMessage->addContainer(m_containerWidgetMessage);
         }
 
         m_containerWidgetMessage->show();
