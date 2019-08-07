@@ -168,7 +168,7 @@
                 DEVICE_MENU_ITEM_SETTINGS_ROOT                   = 5000,
                 DEVICE_MENU_PROTECT_ITEM_CURRENT                 = 1100,
                 DEVICE_MENU_PROTECT_ITEM_POWER                   = 1200,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED                = 1300,
+                DEVICE_MENU_PROTECT_ITEM_LEAK                    = 1300, // утечка
                 DEVICE_MENU_PROTECT_ITEM_FREQUENCY               = 1400,
                 DEVICE_MENU_PROTECT_ITEM_EXTERNAL                = 1500,
                 DEVICE_MENU_PROTECT_ITEM_MOTOR                   = 1600,
@@ -194,10 +194,10 @@
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2             = 1204,
                 DEVICE_MENU_PROTECT_ITEM_POWER_UMIN2_COREC_KCU   = 1214, // переход на коррекцию КЦУ (вкладка автоматика/выключатель)
                 DEVICE_MENU_PROTECT_ITEM_POWER_3U0               = 1205,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ1           = 1301,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED_OZZ2           = 1302,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ1           = 1303,
-                DEVICE_MENU_PROTECT_ITEM_DIRECTED_NZZ2           = 1304,
+                DEVICE_MENU_PROTECT_ITEM_LEAK_OZZ1               = 1301,
+                DEVICE_MENU_PROTECT_ITEM_LEAK_OZZ2               = 1302,
+                DEVICE_MENU_PROTECT_ITEM_LEAK_NZZ1               = 1303,
+                DEVICE_MENU_PROTECT_ITEM_LEAK_NZZ2               = 1304,
                 DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR1         = 1401,
                 DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR2         = 1402,
                 DEVICE_MENU_PROTECT_ITEM_FREQUENCY_ACHR3         = 1403,
@@ -391,7 +391,7 @@
             void protectionOZZ2Read();
             void protectionNZZ1Read();
             void protectionNZZ2Read();
-            void protectionDirectedGroupRead();
+            void protectionLeakGroupRead();
             void protectionAchr1Read();
             void protectionAchr2Read();
             void protectionAchr3Read();
@@ -463,7 +463,7 @@
             void protectionOZZ2Write();
             void protectionNZZ1Write();
             void protectionNZZ2Write();
-            void protectionDirectedGroupWrite();
+            void protectionLeakGroupWrite();
             void protectionAchr1Write();
             void protectionAchr2Write();
             void protectionAchr3Write();

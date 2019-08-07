@@ -543,7 +543,8 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
     protectionMTZ2Write();
     protectionMTZ3Write();
     protectionMTZ4Write();
-    protectionMotorGroupWrite();
+    protectionStartingWrite();
+    protectionIminWrite();
 
     QString protection = "MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN";
     sendProtectionWorkModeRequest(protection, FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
@@ -646,9 +647,9 @@ void ConfiguratorWindow::protectionOZZ1Write()
     QStringList list = QStringList() << "M23" << "X07" << "M24";
 
     for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlWriteRequest("M22", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlWriteRequest("M22", DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionOZZ2Write
@@ -660,9 +661,9 @@ void ConfiguratorWindow::protectionOZZ2Write()
     QStringList list = QStringList() << "K24" << "X07a" << "K25";
 
     for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlWriteRequest("K23", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlWriteRequest("K23", DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionNZZ1Write
@@ -674,9 +675,9 @@ void ConfiguratorWindow::protectionNZZ1Write()
     QStringList list = QStringList() << "M26" << "X08" << "M27" << "X09" << "K21" << "M54" << "M28" << "M26C" << "M27C" << "K21C" << "X16" << "M28C";
 
     for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlWriteRequest("M25", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlWriteRequest("M25", DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionNZZ2Write
@@ -688,16 +689,16 @@ void ConfiguratorWindow::protectionNZZ2Write()
     QStringList list = QStringList() << "K27" << "X08a" << "K28" << "X09a" << "K29" << "M58" << "K30" << "K27C" << "K28C" << "K29C" << "X17" << "K30C";
 
     for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlWriteRequest("K26", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlWriteRequest("K26", DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupWrite
  *
  * Запись группы защит Направленные
  */
-void ConfiguratorWindow::protectionDirectedGroupWrite()
+void ConfiguratorWindow::protectionLeakGroupWrite()
 {
     protectionOZZ1Write();
     protectionOZZ2Write();
@@ -706,7 +707,7 @@ void ConfiguratorWindow::protectionDirectedGroupWrite()
     protectionBRUWrite();
     protectionVacuumWrite();
 
-    sendProtectionWorkModeRequest("OZZ1,OZZ2,NZZ1,NZZ2,BRU,VACUUM", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendProtectionWorkModeRequest("OZZ1,OZZ2,NZZ1,NZZ2,BRU,VACUUM", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr1Write
@@ -1001,11 +1002,11 @@ void ConfiguratorWindow::protectionBRUWrite()
     QStringList list = QStringList() << "M97" << "M98" << "M99f" << "M99" << "M99c" << "M99d" << "M99e" << "M96";
 
     for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlWriteRequest("M93", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendSettingControlWriteRequest("M95", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendSettingControlWriteRequest("M99a", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlWriteRequest("M93", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendSettingControlWriteRequest("M95", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendSettingControlWriteRequest("M99a", DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumWrite
@@ -1017,9 +1018,9 @@ void ConfiguratorWindow::protectionVacuumWrite()
     QStringList list = QStringList() << "M91" << "X23" << "M92";
 
     for(QString key: list)
-        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlWriteRequest("M90", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlWriteRequest("M90", DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlGroupWrite
@@ -1494,7 +1495,8 @@ void ConfiguratorWindow::protectionMTZGroupRead()
     protectionMTZ2Read();
     protectionMTZ3Read();
     protectionMTZ4Read();
-    protectionMotorGroupRead();
+    protectionStartingRead();
+    protectionIminRead();
 
     sendProtectionWorkModeRequest("MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
@@ -1597,10 +1599,10 @@ void ConfiguratorWindow::protectionOZZ1Read()
     QStringList list = QStringList() << "M23" << "X07" << "M24";
 
     for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlReadRequest("M22", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("OZZ1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlReadRequest("M22", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendProtectionWorkModeRequest("OZZ1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedOZZ2Read
@@ -1612,10 +1614,10 @@ void ConfiguratorWindow::protectionOZZ2Read()
     QStringList list = QStringList() << "K24" << "X07a" << "K25";
 
     for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlReadRequest("K23", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("OZZ2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlReadRequest("K23", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendProtectionWorkModeRequest("OZZ2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ1Read
@@ -1627,10 +1629,10 @@ void ConfiguratorWindow::protectionNZZ1Read()
     QStringList list = QStringList() << "M26" << "X08" << "M27" << "X09" << "K21" << "M54" << "M28" << "M26C" << "M27C" << "K21C" << "X16" << "M28C";
 
     for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlReadRequest("M25", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("NZZ1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlReadRequest("M25", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendProtectionWorkModeRequest("NZZ1", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedNZZ2Read
@@ -1642,17 +1644,17 @@ void ConfiguratorWindow::protectionNZZ2Read()
     QStringList list = QStringList() << "K27" << "X08a" << "K28" << "X09a" << "K29" << "M58" << "K30" << "K27C" << "K28C" << "K29C" << "X17" << "K30C";
 
     for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlReadRequest("K26", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("NZZ2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlReadRequest("K26", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendProtectionWorkModeRequest("NZZ2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionDirectedGroupRead
  *
  * Чтение группы направленных защит
  */
-void ConfiguratorWindow::protectionDirectedGroupRead()
+void ConfiguratorWindow::protectionLeakGroupRead()
 {
     protectionOZZ1Read();
     protectionOZZ2Read();
@@ -1910,12 +1912,12 @@ void ConfiguratorWindow::protectionBRURead()
     QStringList list = QStringList() << "M97" << "M98" << "M99f" << "M99" << "M99c" << "M99d" << "M99e" << "M96";
 
     for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlReadRequest("M93", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendSettingControlReadRequest("M95", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendSettingControlReadRequest("M99a", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("BRU", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlReadRequest("M93", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendSettingControlReadRequest("M95", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendSettingControlReadRequest("M99a", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendProtectionWorkModeRequest("BRU", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionVacuumRead
@@ -1927,10 +1929,10 @@ void ConfiguratorWindow::protectionVacuumRead()
     QStringList list = QStringList() << "M91" << "X23" << "M92";
 
     for(QString key: list)
-        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_LEAK);
 
-    sendSettingControlReadRequest("M90", DEVICE_MENU_PROTECT_ITEM_DIRECTED);
-    sendProtectionWorkModeRequest("VACUUM", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_DIRECTED);
+    sendSettingControlReadRequest("M90", DEVICE_MENU_PROTECT_ITEM_LEAK);
+    sendProtectionWorkModeRequest("VACUUM", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_LEAK);
 }
 /*!
  * \brief ConfiguratorWindow::protectionControlRead
@@ -1942,22 +1944,6 @@ void ConfiguratorWindow::protectionControlGroupRead()
     protectionBRURead();
     protectionVacuumRead();
 }
-/*!
- * \brief ConfiguratorWindow::amplitudeReadOfCurrent
- *
- * Чтение амплитуд по фазам
- */
-//void ConfiguratorWindow::amplitudeReadOfCurrent()
-//{
-//    if(ui->widgetCalibrationOfCurrent->ctrl3I0()->isChecked())
-//        sendRequestRead(235, 2, AMPLITUDE_READ_CH2, CModBusDataUnit::ReadInputRegisters);
-//    if(ui->widgetCalibrationOfCurrent->ctrlIa()->isChecked())
-//        sendRequestRead(250, 2, AMPLITUDE_READ_CH3, CModBusDataUnit::ReadInputRegisters);
-//    if(ui->widgetCalibrationOfCurrent->ctrlIb()->isChecked())
-//        sendRequestRead(265, 2, AMPLITUDE_READ_CH4, CModBusDataUnit::ReadInputRegisters);
-//    if(ui->widgetCalibrationOfCurrent->ctrlIc()->isChecked())
-//        sendRequestRead(280, 2, AMPLITUDE_READ_CH5, CModBusDataUnit::ReadInputRegisters);
-//}
 /*!
  * \brief ConfiguratorWindow::automationSwitchRead
  *
@@ -2789,7 +2775,7 @@ void ConfiguratorWindow::readSettings()
     inputAnalogGroupRead();
     protectionMTZGroupRead();
     protectionPowerGroupRead();
-    protectionDirectedGroupRead();
+    protectionLeakGroupRead();
     protectionFrequencyGroupRead();
     protectionExternalGroupRead();
     protectionMotorGroupRead();
@@ -2823,8 +2809,8 @@ void ConfiguratorWindow::readSetCurrent()
             protectionPowerGroupRead();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED: // чтение направленных защит
-            protectionDirectedGroupRead();
+        case DEVICE_MENU_PROTECT_ITEM_LEAK: // чтение направленных защит
+            protectionLeakGroupRead();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_FREQUENCY: // чтение защит по частоте
@@ -2919,7 +2905,7 @@ void ConfiguratorWindow::writeSettings()
     inputAnalogGroupWrite();
     protectionMTZGroupWrite();
     protectionPowerGroupWrite();
-    protectionDirectedGroupWrite();
+    protectionLeakGroupWrite();
     protectionFrequencyGroupWrite();
     protectionExternalGroupWrite();
     protectionMotorGroupWrite();
@@ -2955,8 +2941,8 @@ void ConfiguratorWindow::writeSetCurrent()
             protectionPowerGroupWrite();
         break;
 
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED: // запись направленных защит
-            protectionDirectedGroupWrite();
+        case DEVICE_MENU_PROTECT_ITEM_LEAK: // запись направленных защит
+            protectionLeakGroupWrite();
         break;
 
         case DEVICE_MENU_PROTECT_ITEM_FREQUENCY: // запись защит по частоте
@@ -3175,7 +3161,7 @@ void ConfiguratorWindow::initMenuPanel()
     QTreeWidgetItem* protectItemPower       = new QTreeWidgetItem(itemProtections, QStringList() << tr("По напряжению"),
                                                                   DEVICE_MENU_PROTECT_ITEM_POWER); // по напряжению
     QTreeWidgetItem* protectItemDirected    = new QTreeWidgetItem(itemProtections, QStringList() << tr("Утечка"),
-                                                                  DEVICE_MENU_PROTECT_ITEM_DIRECTED); // направленные
+                                                                  DEVICE_MENU_PROTECT_ITEM_LEAK); // направленные
     QTreeWidgetItem* protectItemFrequency   = new QTreeWidgetItem(itemProtections, QStringList() << tr("По частоте"),
                                                                   DEVICE_MENU_PROTECT_ITEM_FREQUENCY); // по частоте
     QTreeWidgetItem* protectItemExternal    = new QTreeWidgetItem(itemProtections, QStringList() << tr("Внешние"),
@@ -3241,7 +3227,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG]         = 0;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 1;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]                   = 2;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_DIRECTED]                = 3;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_LEAK]                = 3;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]               = 4;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]                = 5;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE]             = 6;
@@ -6028,7 +6014,7 @@ CDeviceMenuTableWidget* ConfiguratorWindow::groupMenuWidget(DeviceMenuItemType t
         case DEVICE_MENU_PROTECT_ITEM_POWER:
             return ui->tableWidgetProtectionGroupPower;
 
-        case DEVICE_MENU_PROTECT_ITEM_DIRECTED:
+        case DEVICE_MENU_PROTECT_ITEM_LEAK:
             return ui->tableWidgetProtectionGroupDirect;
 
         case DEVICE_MENU_PROTECT_ITEM_FREQUENCY:
@@ -6960,6 +6946,8 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
         return;
     }
 
+    bool isLoad = false;
+
     for(int row = 0; row < table->rowCount(); row++)
     {
         QWidget* widget = groupMenuCellWidget(table, row, 1);
@@ -6967,7 +6955,8 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
         if(!widget)
             continue;
 
-        query.next();
+        if(!query.next())
+            continue;
 
         QString val = query.value("val").toString();
         QString type = query.value("type").toString();
@@ -6975,7 +6964,10 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
         if(val.isEmpty() || type.isEmpty())
             continue;
 
-        if(type.toUpper() == "COMBOBOX")
+        if(!isLoad)
+            isLoad = true;
+
+        if(type.toUpper() == "COMBOBOX" && widget->objectName().toUpper().contains("COMBOBOX"))
         {
             CMenuComboBox* comboBox = static_cast<CMenuComboBox*>(widget);
 
@@ -6989,7 +6981,7 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
                 comboBox->resetIsEdit();
             }
         }
-        else if(type.toUpper() == "LINEEDIT")
+        else if(type.toUpper() == "LINEEDIT" && widget->objectName().toUpper().contains("LINEEDIT"))
         {
             CLineEdit* lineEdit = static_cast<CLineEdit*>(widget);
 
@@ -6998,6 +6990,11 @@ void ConfiguratorWindow::loadDeviceSetToProject(ConfiguratorWindow::DeviceMenuIt
 
             lineEdit->resetIsEdit();
         }
+    }
+
+    if(!isLoad)
+    {
+        outLogMessage(tr("Загрузка уставок: не удалось загрузить уставки из файла проекта для таблицы %1").arg(tableName));
     }
 
     m_progressbar->increment(3);
@@ -7021,7 +7018,11 @@ void ConfiguratorWindow::loadDeviceCommunication(QSqlDatabase *db)
         return;
     }
 
-    query.next();
+    if(!query.first())
+    {
+        outLogMessage(tr("Загрузка настроек связи: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
 
 //    int address = query.value("address").toInt();
     int speed = query.value("speed").toInt();
@@ -7052,7 +7053,11 @@ void ConfiguratorWindow::loadDeviceCalibrationCurrent(QSqlDatabase *db)
         return;
     }
 
-    query.next();
+    if(!query.first())
+    {
+        outLogMessage(tr("Загрузка настроек калиброки по току: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
 
     QString standardPhase = query.value("standardPhase").toString();
     QString standard3I0 = query.value("standard3I0").toString();
@@ -7093,7 +7098,11 @@ void ConfiguratorWindow::loadContainerSettings(CContainerWidget* container, QSql
         return;
     }
 
-    query.next();
+    if(!query.first())
+    {
+        outLogMessage(tr("Загрузка настроек контейнера: не удалось загрузить настройки из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
 
     QString side = query.value("side").toString();
     bool visible = query.value("visible").toBool();
@@ -7450,10 +7459,9 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     loadDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_LEAK, "DIR", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
@@ -9205,10 +9213,9 @@ bool ConfiguratorWindow::saveProject()
     saveDeviceSetToProject(DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG, "ANALOG", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CURRENT, "MTZ", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_LEAK, "DIR", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_EXTERNAL, "EXT", db);
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_MOTOR, "MOTOR", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_TEMPERATURE, "TEMP", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_RESERVE, "RESERVE", db);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_CONTROL, "CTRL", db);
@@ -11688,7 +11695,7 @@ void ConfiguratorWindow::exportProtectionAutomaticToDB()
     m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
     m_progressbar->progressIncrement(5);
-    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_LEAK, "DIR", db);
     m_progressbar->progressIncrement(5);
     saveDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
     m_progressbar->progressIncrement(5);
@@ -11757,7 +11764,7 @@ void ConfiguratorWindow::importProtectionAutomaticFromDB()
     m_progressbar->progressIncrement(10);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_POWER, "PWR", db);
     m_progressbar->progressIncrement(10);
-    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_DIRECTED, "DIR", db);
+    loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_LEAK, "DIR", db);
     m_progressbar->progressIncrement(10);
     loadDeviceSetToProject(DEVICE_MENU_PROTECT_ITEM_FREQUENCY, "FREQ", db);
     m_progressbar->progressIncrement(10);
