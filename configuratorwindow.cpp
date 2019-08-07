@@ -7139,6 +7139,9 @@ void ConfiguratorWindow::blockInterface()
     ui->framePanelMessage->hide();
     emit ui->widgetMenuBar->deactivateButtons();
     m_project_cur_path = "";
+
+    int index_screen = m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN];
+    ui->stwgtMain->setCurrentIndex(index_screen); // вызываем экран приветствия
 }
 /*!
  * \brief ConfiguratorWindow::unblockInterface
