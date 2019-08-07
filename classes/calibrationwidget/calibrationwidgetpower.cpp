@@ -317,6 +317,76 @@ bool CCalibrationWidgetPower::stateCalculateUpdate() const
 {
     return ui->checkBoxCalculateValueUpdate->isChecked();
 }
+//---------------------------------------------------
+void CCalibrationWidgetPower::setDataCount(int count)
+{
+    ui->spinBoxSetDataCount->setValue(count);
+}
+//------------------------------------------------------
+void CCalibrationWidgetPower::setPauseRequest(int pause)
+{
+    ui->spinBoxPauseRequest->setValue(pause);
+}
+//---------------------------------------------------------
+void CCalibrationWidgetPower::setStandardPhase(float value)
+{
+    ui->lineEditPowerStandardPhase->setText(QLocale::system().toString(value, 'f', 6));
+}
+//---------------------------------------------------------------
+void CCalibrationWidgetPower::setStandardPhaseLinear(float value)
+{
+    ui->lineEditPowerStandardPhaseLinear->setText(QLocale::system().toString(value, 'f', 6));
+}
+//------------------------------------------------------
+void CCalibrationWidgetPower::setStandard3U(float value)
+{
+    ui->lineEditPowerStandard3U->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------------
+void CCalibrationWidgetPower::setStateUa(bool state)
+{
+    ui->checkBoxUA->setChecked(state);
+}
+//--------------------------------------------------
+void CCalibrationWidgetPower::setStateUb(bool state)
+{
+    ui->checkBoxUB->setChecked(state);
+}
+//--------------------------------------------------
+void CCalibrationWidgetPower::setStateUc(bool state)
+{
+    ui->checkBoxUC->setChecked(state);
+}
+//---------------------------------------------------
+void CCalibrationWidgetPower::setStateUab(bool state)
+{
+    ui->checkBoxUAB->setChecked(state);
+}
+//---------------------------------------------------
+void CCalibrationWidgetPower::setStateUbc(bool state)
+{
+    ui->checkBoxUBC->setChecked(state);
+}
+//---------------------------------------------------
+void CCalibrationWidgetPower::setStateUca(bool state)
+{
+    ui->checkBoxUCA->setChecked(state);
+}
+//----------------------------------------------------
+void CCalibrationWidgetPower::setState3U0S(bool state)
+{
+    ui->checkBox3U0S->setChecked(state);
+}
+//---------------------------------------------------
+void CCalibrationWidgetPower::setState3US(bool state)
+{
+    ui->checkBox3US->setChecked(state);
+}
+//---------------------------------------------------
+void CCalibrationWidgetPower::setState3U0(bool state)
+{
+    ui->checkBox3U0->setChecked(state);
+}
 //----------------------------------------------------
 void CCalibrationWidgetPower::setFactorUa(float value)
 {

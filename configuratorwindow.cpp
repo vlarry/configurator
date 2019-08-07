@@ -6325,6 +6325,104 @@ bool ConfiguratorWindow::createProjectTableCalibrationCurrent(QSqlDatabase *db)
     return true;
 }
 /*!
+ * \brief ConfiguratorWindow::createProjectTableCalibrationPowerAC
+ * \param db Указатель на текущую базу файла проекта
+ * \return Истина, если таблица успешно создана
+ *
+ * Создание таблицы калибровок по напряжению AC
+ */
+bool ConfiguratorWindow::createProjectTableCalibrationPowerAC(QSqlDatabase *db)
+{
+    if((db && !db->isOpen()))
+        return false;
+
+    QSqlQuery query(*db);
+
+    if(!query.exec(QString("CREATE TABLE deviceCalibrationPowerAC ("
+                           "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
+                           "standardPhase STRING, "
+                           "standardInterPhase STRING, "
+                           "standardMultiplier STRING, "
+                           "stateUa INTEGER, "
+                           "stateUb INTEGER, "
+                           "stateUc INTEGER,"
+                           "stateUab INTEGER, "
+                           "stateUbc INTEGER, "
+                           "stateUca INTEGER, "
+                           "state3U0S INTEGER, "
+                           "state3US INTEGER, "
+                           "state3U0 INTEGER, "
+                           "dataCount INTEGER, "
+                           "pauseRequest INTEGER);")))
+    {
+        outLogMessage(tr("Ошибка создания таблицы калибровок по напряжению AC: %1").arg(query.lastError().text()));
+        return false;
+    }
+
+    return true;
+}
+/*!
+ * \brief ConfiguratorWindow::createProjectTableCalibrationBruResistance
+ * \param db Указатель на текущую базу файла проекта
+ * \return Истина, если таблица успешно создана
+ *
+ * Создание таблицы калибровок БРУ по сопротивлению
+ */
+bool ConfiguratorWindow::createProjectTableCalibrationBruResistance(QSqlDatabase *db)
+{
+    if((db && !db->isOpen()))
+        return false;
+
+    QSqlQuery query(*db);
+
+    if(!query.exec(QString("CREATE TABLE deviceCalibrationBruResistance ("
+                           "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
+                           "Rmin STRING, "
+                           "Rmax STRING, "
+                           "stateRa INTEGER, "
+                           "stateRb INTEGER, "
+                           "stateRc INTEGER);")))
+    {
+        outLogMessage(tr("Ошибка создания таблицы калибровок БРУ по сопротивлению: %1").arg(query.lastError().text()));
+        return false;
+    }
+
+    return true;
+}
+/*!
+ * \brief ConfiguratorWindow::createProjectTableCalibrationBruPowerDC
+ * \param db Указатель на текущую базу файла проекта
+ * \return Истина, если таблица успешно создана
+ *
+ * Создание таблицы калибровок БРУ по постоянному напряжению
+ */
+bool ConfiguratorWindow::createProjectTableCalibrationBruPowerDC(QSqlDatabase *db)
+{
+    if((db && !db->isOpen()))
+        return false;
+
+    QSqlQuery query(*db);
+
+    if(!query.exec(QString("CREATE TABLE deviceCalibrationBruPowerDC ("
+                           "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, "
+                           "PhaseMin STRING, "
+                           "PhaseMax STRING, "
+                           "MultiplierMin STRING, "
+                           "MultiplierMax STRING, "
+                           "stateUa INTEGER, "
+                           "stateUb INTEGER, "
+                           "stateUc INTEGER, "
+                           "stateUU INTEGER"
+                           "dataCount INTEGER, "
+                           "pauseRequest INTEGER);")))
+    {
+        outLogMessage(tr("Ошибка создания таблицы калибровок БРУ по постоянноиу напряжению: %1").arg(query.lastError().text()));
+        return false;
+    }
+
+    return true;
+}
+/*!
  * \brief ConfiguratorWindow::createProjectTableContainer
  * \return Истина, в случае успешного создания таблицы
  *
@@ -6718,6 +6816,122 @@ void ConfiguratorWindow::saveDeviceCalibrationCurrent(QSqlDatabase *db)
     m_progressbar->increment(3);
 }
 /*!
+ * \brief ConfiguratorWindow::saveDeviceCalibrationPowerAC
+ *
+ * Сохранение калибровок по напряжению AC (эталонных значений) в проектном файле
+ */
+void ConfiguratorWindow::saveDeviceCalibrationPowerAC(QSqlDatabase *db)
+{
+    if(!db || (db && !db->isOpen()))
+        return;
+
+    QSqlQuery query(*db);
+
+    if(!query.exec(QString("DELETE FROM deviceCalibrationPowerAC;")))
+    {
+        outLogMessage(tr("Сохранение эталонных значений калибровок по напряжению AC: ошибка удаления данных из таблицы (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    query.clear();
+
+    if(!query.exec(QString("INSERT INTO deviceCalibrationPowerAC (standardPhase, standardInterPhase, standardMultiplier, "
+                           "stateUa, stateUb, stateUc, stateUab, stateUbc, stateUca, state3U0S, state3US, state3U0, "
+                           "dataCount, pauseRequest)"
+                           " VALUES(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14);").
+                   arg(static_cast<double>(ui->widgetCalibrationPower->standardPhase())).
+                   arg(static_cast<double>(ui->widgetCalibrationPower->standardPhaseLinear())).
+                   arg(static_cast<double>(ui->widgetCalibrationPower->standard3U())).
+                   arg(ui->widgetCalibrationPower->stateUa()).
+                   arg(ui->widgetCalibrationPower->stateUb()).
+                   arg(ui->widgetCalibrationPower->stateUc()).
+                   arg(ui->widgetCalibrationPower->stateUab()).
+                   arg(ui->widgetCalibrationPower->stateUbc()).
+                   arg(ui->widgetCalibrationPower->stateUca()).
+                   arg(ui->widgetCalibrationPower->state3U0S()).
+                   arg(ui->widgetCalibrationPower->state3US()).
+                   arg(ui->widgetCalibrationPower->state3U0()).
+                   arg(ui->widgetCalibrationPower->dataCount()).
+                   arg(ui->widgetCalibrationPower->pauseRequest())))
+    {
+        outLogMessage(tr("Ошибка сохранения эталонных значений калибровок по напряжению AC устройства: %1").arg(query.lastError().text()));
+    }
+
+    m_progressbar->increment(3);
+}
+/*!
+ * \brief ConfiguratorWindow::saveDeviceCalibrationBruResistance
+ *
+ * Сохранение калибровок БРУ по сопротивлению (эталонных значений) в проектном файле
+ */
+void ConfiguratorWindow::saveDeviceCalibrationBruResistance(QSqlDatabase *db)
+{
+    if(!db || (db && !db->isOpen()))
+        return;
+
+    QSqlQuery query(*db);
+
+    if(!query.exec(QString("DELETE FROM deviceCalibrationBruResistance;")))
+    {
+        outLogMessage(tr("Сохранение эталонных значений калибровок БРУ по сопротивлению: ошибка удаления данных из таблицы (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    query.clear();
+
+    if(!query.exec(QString("INSERT INTO deviceCalibrationBruResistance (Rmin, Rmax, stateRa, stateRb, stateRc)"
+                           " VALUES(%1, %2, %3, %4, %5);").
+                   arg(static_cast<double>(ui->widgetCalibrationBRUResistance->standardPhaseMin())).
+                   arg(static_cast<double>(ui->widgetCalibrationBRUResistance->standardPhaseMax())).
+                   arg(ui->widgetCalibrationBRUResistance->stateRa()).
+                   arg(ui->widgetCalibrationBRUResistance->stateRb()).
+                   arg(ui->widgetCalibrationBRUResistance->stateRc())))
+    {
+        outLogMessage(tr("Ошибка сохранения эталонных значений калибровок БРУ по сопротивлению устройства: %1").arg(query.lastError().text()));
+    }
+
+    m_progressbar->increment(3);
+}
+/*!
+ * \brief ConfiguratorWindow::saveDeviceCalibrationBruPowerDC
+ *
+ * Сохранение калибровок БРУ по постоянному напряжению (эталонных значений) в проектном файле
+ */
+void ConfiguratorWindow::saveDeviceCalibrationBruPowerDC(QSqlDatabase *db)
+{
+    if(!db || (db && !db->isOpen()))
+        return;
+
+    QSqlQuery query(*db);
+
+    if(!query.exec(QString("DELETE FROM deviceCalibrationBruPowerDC;")))
+    {
+        outLogMessage(tr("Сохранение эталонных значений калибровок БРУ по напряжению DC: ошибка удаления данных из таблицы (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    query.clear();
+
+    if(!query.exec(QString("INSERT INTO deviceCalibrationBruPowerDC (PhaseMin, PhaseMax, MultiplierMin, MultiplierMax, "
+                           "stateUa, stateUb, stateUc, stateUU, dataCount, pauseRequest)"
+                           " VALUES(%1, %2, %3, %4, %5, %6, %7, %8);").
+                   arg(static_cast<double>(ui->widgetCalibrationBRUPowerDC->standardPhaseMin())).
+                   arg(static_cast<double>(ui->widgetCalibrationBRUPowerDC->standardPhaseMax())).
+                   arg(static_cast<double>(ui->widgetCalibrationBRUPowerDC->standardPhaseMultiplierMin())).
+                   arg(static_cast<double>(ui->widgetCalibrationBRUPowerDC->standardPhaseMultiplierMax())).
+                   arg(ui->widgetCalibrationBRUPowerDC->stateUa()).
+                   arg(ui->widgetCalibrationBRUPowerDC->stateUb()).
+                   arg(ui->widgetCalibrationBRUPowerDC->stateUc()).
+                   arg(ui->widgetCalibrationBRUPowerDC->stateUMultiplier()).
+                   arg(ui->widgetCalibrationBRUPowerDC->dataCount()).
+                   arg(ui->widgetCalibrationBRUPowerDC->pauseRequest())))
+    {
+        outLogMessage(tr("Ошибка сохранения эталонных значений калибровок БРУ по напряжению DC устройства: %1").arg(query.lastError().text()));
+    }
+
+    m_progressbar->increment(3);
+}
+/*!
  * \brief ConfiguratorWindow::saveContainerSettings
  * \param Указатель на контейнер
  *
@@ -7076,6 +7290,151 @@ void ConfiguratorWindow::loadDeviceCalibrationCurrent(QSqlDatabase *db)
     ui->widgetCalibrationOfCurrent->set3I0State(state3I0);
     ui->widgetCalibrationOfCurrent->setDataCount(dataCount);
     ui->widgetCalibrationOfCurrent->setPauseRequest(pauseRequest);
+
+    m_progressbar->increment(3);
+}
+/*!
+ * \brief ConfiguratorWindow::loadDeviceCalibrationPowerAC
+ *
+ * Загрузка настроек калибровки по переменному напряжению из файла проекта
+ */
+void ConfiguratorWindow::loadDeviceCalibrationPowerAC(QSqlDatabase *db)
+{
+    if(!db || (db && !db->isOpen()))
+        return;
+
+    QSqlQuery query(*db);
+    QString query_str = QString("SELECT * FROM deviceCalibrationPowerAC;");
+
+    if(!query.exec(query_str))
+    {
+        outLogMessage(tr("Загрузка настроек калиброки по напряжению AC: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    if(!query.first())
+    {
+        outLogMessage(tr("Загрузка настроек калиброки по напряжению AC: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    QString standardPhase = query.value("standardPhase").toString();
+    QString standardInterPhase = query.value("standardInterPhase").toString();
+    QString standardMultiplier = query.value("standardMultiplier").toString();
+    bool stateUa = query.value("stateUa").toBool();
+    bool stateUb = query.value("stateUb").toBool();
+    bool stateUc = query.value("stateUc").toBool();
+    bool stateUab = query.value("stateUab").toBool();
+    bool stateUbc = query.value("stateUbc").toBool();
+    bool stateUca = query.value("stateUca").toBool();
+    bool state3U0S = query.value("state3U0S").toBool();
+    bool state3US = query.value("state3US").toBool();
+    bool state3U0 = query.value("state3U0").toBool();
+    int dataCount = query.value("dataCount").toInt();
+    int pauseRequest = query.value("pauseRequest").toInt();
+
+    ui->widgetCalibrationPower->setStandardPhase(QLocale::system().toFloat(standardPhase));
+    ui->widgetCalibrationPower->setStandardPhaseLinear(QLocale::system().toFloat(standardInterPhase));
+    ui->widgetCalibrationPower->setStandard3U(QLocale::system().toFloat(standardMultiplier));
+    ui->widgetCalibrationPower->setStateUa(stateUa);
+    ui->widgetCalibrationPower->setStateUb(stateUb);
+    ui->widgetCalibrationPower->setStateUc(stateUc);
+    ui->widgetCalibrationPower->setStateUab(stateUab);
+    ui->widgetCalibrationPower->setStateUbc(stateUbc);
+    ui->widgetCalibrationPower->setStateUca(stateUca);
+    ui->widgetCalibrationPower->setState3U0S(state3U0S);
+    ui->widgetCalibrationPower->setState3US(state3US);
+    ui->widgetCalibrationPower->setState3U0(state3U0);
+    ui->widgetCalibrationPower->setDataCount(dataCount);
+    ui->widgetCalibrationPower->setPauseRequest(pauseRequest);
+
+    m_progressbar->increment(3);
+}
+/*!
+ * \brief ConfiguratorWindow::loadDeviceCalibrationCurrent
+ *
+ * Загрузка настроек калибровки БРУ по сопротивлению из файла проекта
+ */
+void ConfiguratorWindow::loadDeviceCalibrationBruResistance(QSqlDatabase *db)
+{
+    if(!db || (db && !db->isOpen()))
+        return;
+
+    QSqlQuery query(*db);
+    QString query_str = QString("SELECT * FROM deviceCalibrationBruResistance;");
+
+    if(!query.exec(query_str))
+    {
+        outLogMessage(tr("Загрузка настроек калиброки БРУ по сопротивлению: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    if(!query.first())
+    {
+        outLogMessage(tr("Загрузка настроек калиброки БРУ по сопротивлению: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    QString Rmin = query.value("Rmin").toString();
+    QString Rmax = query.value("Rmax").toString();
+    bool stateRa = query.value("stateRa").toBool();
+    bool stateRb = query.value("stateRb").toBool();
+    bool stateRc = query.value("stateRc").toBool();
+
+    ui->widgetCalibrationBRUResistance->setStandardPhaseMin(QLocale::system().toFloat(Rmin));
+    ui->widgetCalibrationBRUResistance->setStandardPhaseMax(QLocale::system().toFloat(Rmax));
+    ui->widgetCalibrationBRUResistance->setStateRa(stateRa);
+    ui->widgetCalibrationBRUResistance->setStateRa(stateRb);
+    ui->widgetCalibrationBRUResistance->setStateRa(stateRc);
+
+    m_progressbar->increment(3);
+}
+/*!
+ * \brief ConfiguratorWindow::loadDeviceCalibrationCurrent
+ *
+ * Загрузка настроек калибровки БРУ по постоянному напряжению из файла проекта
+ */
+void ConfiguratorWindow::loadDeviceCalibrationBruPowerDC(QSqlDatabase *db)
+{
+    if(!db || (db && !db->isOpen()))
+        return;
+
+    QSqlQuery query(*db);
+    QString query_str = QString("SELECT * FROM deviceCalibrationBruPowerDC;");
+
+    if(!query.exec(query_str))
+    {
+        outLogMessage(tr("Загрузка настроек калиброки БРУ по напряжению DC: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    if(!query.first())
+    {
+        outLogMessage(tr("Загрузка настроек калиброки БРУ по напряжению DC: не удалось загрузить из БД (%1)").arg(query.lastError().text()));
+        return;
+    }
+
+    QString phaseMin = query.value("PhaseMin").toString();
+    QString phaseMax = query.value("PhaseMax").toString();
+    QString multiplierMin = query.value("MultiplierMin").toString();
+    QString multiplierMax = query.value("MultiplierMax").toString();
+    bool stateUa = query.value("stateUa").toBool();
+    bool stateUb = query.value("stateUb").toBool();
+    bool stateUc = query.value("stateUc").toBool();
+    bool stateUU = query.value("stateUab").toBool();
+    int dataCount = query.value("dataCount").toInt();
+    int pauseRequest = query.value("pauseRequest").toInt();
+
+    ui->widgetCalibrationBRUPowerDC->setPhaseMin(QLocale::system().toFloat(phaseMin));
+    ui->widgetCalibrationBRUPowerDC->setPhaseMax(QLocale::system().toFloat(phaseMax));
+    ui->widgetCalibrationBRUPowerDC->setPhaseMultiplierMin(QLocale::system().toFloat(multiplierMin));
+    ui->widgetCalibrationBRUPowerDC->setPhaseMultiplierMax(QLocale::system().toFloat(multiplierMax));
+    ui->widgetCalibrationBRUPowerDC->setStateUa(stateUa);
+    ui->widgetCalibrationBRUPowerDC->setStateUb(stateUb);
+    ui->widgetCalibrationBRUPowerDC->setStateUc(stateUc);
+    ui->widgetCalibrationBRUPowerDC->setStateMultiplier(stateUU);
+    ui->widgetCalibrationPower->setDataCount(dataCount);
+    ui->widgetCalibrationPower->setPauseRequest(pauseRequest);
 
     m_progressbar->increment(3);
 }
@@ -7471,6 +7830,9 @@ void ConfiguratorWindow::openProject(const QString &projectPathName)
     loadDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_KCN, "AUTO_KCN", db);
     loadDeviceCommunication(db);
     loadDeviceCalibrationCurrent(db);
+    loadDeviceCalibrationPowerAC(db);
+    loadDeviceCalibrationBruResistance(db);
+    loadDeviceCalibrationBruPowerDC(db);
     loadContainerSettings(m_containerWidgetVariable, db);
     loadContainerSettings(m_containerWidgetDeviceMenu, db);
     loadContainerSettings(m_containerIndicatorState, db);
@@ -8997,7 +9359,7 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(4);
 
     // Создание таблицы уставок группы "Для двигателя"
     if(!createProjectTableSet("MOTOR", project_db))
@@ -9009,7 +9371,7 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 
     // Создание таблицы уставок группы "Защиты по температуре"
     if(!createProjectTableSet("TEMP", project_db))
@@ -9021,7 +9383,7 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 
     // Создание таблицы уставок группы "Резервные защиты"
     if(!createProjectTableSet("RESERVE", project_db))
@@ -9033,7 +9395,7 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 
     // Создание таблицы уставок группы "Предварительного контроля"
     if(!createProjectTableSet("CTRL", project_db))
@@ -9045,7 +9407,7 @@ void ConfiguratorWindow::newProject()
         return;
     }
 
-    m_progressbar->increment(5);
+    m_progressbar->increment(3);
 
     // Создание таблицы уставок группы "Автоматика->Выключатель"
     if(!createProjectTableSet("AUTO_SWITCH", project_db))
@@ -9100,10 +9462,46 @@ void ConfiguratorWindow::newProject()
 
     m_progressbar->increment(5);
 
-    // Создание таблицы настроек связи
+    // Создание таблицы калибровок по току
     if(!createProjectTableCalibrationCurrent(project_db))
     {
         showMessageBox(tr("Создание таблицы калибровок по току"), tr("Невозможно создать таблицу калибровок по току в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
+        return;
+    }
+
+    m_progressbar->increment(3);
+
+    // Создание таблицы калибровок по напряжению AC
+    if(!createProjectTableCalibrationPowerAC(project_db))
+    {
+        showMessageBox(tr("Создание таблицы калибровок по напряжению AC"), tr("Невозможно создать таблицу калибровок по напряжению AC в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
+        return;
+    }
+
+    m_progressbar->increment(3);
+
+    // Создание таблицы калибровок БРУ по сопротивлению
+    if(!createProjectTableCalibrationBruResistance(project_db))
+    {
+        showMessageBox(tr("Создание таблицы калибровок БРУ по сопротивлению"), tr("Невозможно создать таблицу калибровок БРУ по сопротивлению в файле проекта"),
+                       QMessageBox::Warning);
+        disconnectDb(project_db);
+        m_progressbar->progressStop();
+        return;
+    }
+
+    m_progressbar->increment(3);
+
+    // Создание таблицы калибровок БРУ по постоянному напряжению
+    if(!createProjectTableCalibrationBruPowerDC(project_db))
+    {
+        showMessageBox(tr("Создание таблицы калибровок БРУ по напряжению"), tr("Невозможно создать таблицу калибровок БРУ по постоянному напряжению в файле проекта"),
                        QMessageBox::Warning);
         disconnectDb(project_db);
         m_progressbar->progressStop();
@@ -9225,6 +9623,9 @@ bool ConfiguratorWindow::saveProject()
     saveDeviceSetToProject(DEVICE_MENU_ITEM_AUTOMATION_KCN, "AUTO_KCN", db);
     saveDeviceCommunication(db);
     saveDeviceCalibrationCurrent(db);
+    saveDeviceCalibrationPowerAC(db);
+    saveDeviceCalibrationBruResistance(db);
+    saveDeviceCalibrationBruPowerDC(db);
 
     if(!clearTableDB(db, "containerSettings"))
     {

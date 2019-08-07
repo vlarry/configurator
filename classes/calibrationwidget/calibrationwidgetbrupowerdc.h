@@ -88,6 +88,19 @@
 
             bool stateCalculateUpdate() const;
 
+            void setDataCount(int count);
+            void setPauseRequest(int pause);
+
+            void setPhaseMin(float value);
+            void setPhaseMax(float value);
+            void setPhaseMultiplierMin(float value);
+            void setPhaseMultiplierMax(float value);
+
+            void setStateUa(bool state);
+            void setStateUb(bool state);
+            void setStateUc(bool state);
+            void setStateMultiplier(bool state);
+
             void setFactorShiftUa(float value);
             void setFactorShiftUb(float value);
             void setFactorShiftUc(float value);

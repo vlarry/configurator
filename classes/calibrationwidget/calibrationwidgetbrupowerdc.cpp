@@ -220,6 +220,56 @@ bool CCalibrationWidgetBRUPowerDC::stateCalculateUpdate() const
 {
     return ui->checkBoxCalculateValueUpdate->isChecked();
 }
+//--------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setDataCount(int count)
+{
+    ui->spinBoxSetDataCount->setValue(count);
+}
+//-----------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setPauseRequest(int pause)
+{
+    ui->spinBoxPauseRequest->setValue(pause);
+}
+//---------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setPhaseMin(float value)
+{
+    ui->lineEditPowerStandardPhaseMin->setText(QLocale::system().toString(value, 'f', 6));
+}
+//---------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setPhaseMax(float value)
+{
+    ui->lineEditPowerStandardPhaseMax->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setPhaseMultiplierMin(float value)
+{
+    ui->lineEditPowerStandardMultiplierMin->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setPhaseMultiplierMax(float value)
+{
+    ui->lineEditPowerStandardMultiplierMax->setText(QLocale::system().toString(value, 'f', 6));
+}
+//-------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setStateUa(bool state)
+{
+    ui->checkBoxUA->setChecked(state);
+}
+//-------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setStateUb(bool state)
+{
+    ui->checkBoxUB->setChecked(state);
+}
+//-------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setStateUc(bool state)
+{
+    ui->checkBoxUC->setChecked(state);
+}
+//---------------------------------------------------------------
+void CCalibrationWidgetBRUPowerDC::setStateMultiplier(bool state)
+{
+    ui->checkBoxUMultiplier->setChecked(state);
+}
 //--------------------------------------------------------------
 void CCalibrationWidgetBRUPowerDC::setFactorShiftUa(float value)
 {

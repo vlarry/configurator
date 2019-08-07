@@ -176,6 +176,31 @@ bool CCalibrationWidgetBRUResistance::stateCalculateUpdate() const
 {
     return ui->checkBoxCalculateValueUpdate->isChecked();
 }
+//--------------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setStandardPhaseMin(float value)
+{
+    ui->lineEditPowerStandardPhaseMin->setText(QLocale::system().toString(value, 'f', 6));
+}
+//--------------------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setStandardPhaseMax(float value)
+{
+    ui->lineEditPowerStandardPhaseMax->setText(QLocale::system().toString(value, 'f', 6));
+}
+//----------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setStateRa(bool state)
+{
+    ui->checkBoxRA->setChecked(state);
+}
+//----------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setStateRb(bool state)
+{
+    ui->checkBoxRB->setChecked(state);
+}
+//----------------------------------------------------------
+void CCalibrationWidgetBRUResistance::setStateRc(bool state)
+{
+    ui->checkBoxRC->setChecked(state);
+}
 //-----------------------------------------------------------------
 void CCalibrationWidgetBRUResistance::setFactorShiftRa(float value)
 {

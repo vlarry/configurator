@@ -95,6 +95,25 @@
 
             bool stateCalculateUpdate() const;
 
+            void setDataCount(int count);
+            void setPauseRequest(int pause);
+
+            void setStandardPhase(float value);
+            void setStandardPhaseLinear(float value);
+            void setStandard3U(float value);
+
+            void setStateUa(bool state);
+            void setStateUb(bool state);
+            void setStateUc(bool state);
+
+            void setStateUab(bool state);
+            void setStateUbc(bool state);
+            void setStateUca(bool state);
+
+            void setState3U0S(bool state);
+            void setState3US(bool state);
+            void setState3U0(bool state);
+
             void setFactorUa(float value);
             void setFactorUb(float value);
             void setFactorUc(float value);

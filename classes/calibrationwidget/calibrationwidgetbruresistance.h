@@ -79,6 +79,13 @@
 
             bool stateCalculateUpdate() const;
 
+            void setStandardPhaseMin(float value);
+            void setStandardPhaseMax(float value);
+
+            void setStateRa(bool state);
+            void setStateRb(bool state);
+            void setStateRc(bool state);
+
             void setFactorShiftRa(float value);
             void setFactorShiftRb(float value);
             void setFactorShiftRc(float value);
