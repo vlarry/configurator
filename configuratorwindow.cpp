@@ -129,7 +129,7 @@ void ConfiguratorWindow::stateChanged(bool state)
         //...
 
         if(m_is_new_baudrate)
-            sendDeviceCommand(2); // сохранение настроек - скорости соединения
+            saveDeviceSettings(); // сохранение настроек - скорости соединения
 
         m_is_new_baudrate = false;
 
@@ -402,6 +402,8 @@ void ConfiguratorWindow::inputAnalogGroupWrite()
 {
     inputAnalogGeneralWrite();
     inputAnalogCalibrateWrite();
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Write
@@ -548,6 +550,8 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
 
     QString protection = "MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN";
     sendProtectionWorkModeRequest(protection, FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Write
@@ -636,6 +640,8 @@ void ConfiguratorWindow::protectionPowerGroupWrite()
     protectionUmin2Write();
     protection3U0Write();
     sendProtectionWorkModeRequest("UMAX1,UMAX2,UMIN1,UMIN2,3U0", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_POWER);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionOZZ1Write
@@ -708,6 +714,8 @@ void ConfiguratorWindow::protectionLeakGroupWrite()
     protectionVacuumWrite();
 
     sendProtectionWorkModeRequest("OZZ1,OZZ2,NZZ1,NZZ2,BRU,VACUUM", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_LEAK);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionAchr1Write
@@ -763,6 +771,8 @@ void ConfiguratorWindow::protectionFrequencyGroupWrite()
     protectionAchr3Write();
 
     sendProtectionWorkModeRequest("ACHR1,ACHR2,ACHR3", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_FREQUENCY);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionArcWrite
@@ -819,6 +829,8 @@ void ConfiguratorWindow::protectionExternalGroupWrite()
     protectionExt3Write();
 
     sendProtectionWorkModeRequest("ITEMARC,EXT1,EXT2,EXT3", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionStartingWrite
@@ -859,6 +871,8 @@ void ConfiguratorWindow::protectionMotorGroupWrite()
 {
     protectionStartingWrite();
     protectionIminWrite();
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionTemp1Write
@@ -897,6 +911,8 @@ void ConfiguratorWindow::protectionTemperatureGroupWrite()
     protectionTemp1Write();
     protectionTemp2Write();
     sendProtectionWorkModeRequest("TEMP1,TEMP2", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_TEMPERATURE);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionLevel1Write
@@ -980,6 +996,8 @@ void ConfiguratorWindow::protectionSignalStartWrite()
     unit.setProperty("REQUEST", PORTECT_RESERVE_SIGNAL_START);
 
     m_modbus->sendData(unit);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionReserveGroupWrite
@@ -991,6 +1009,8 @@ void ConfiguratorWindow::protectionReserveGroupWrite()
     protectionLevel1Write();
     protectionLevel2Write();
     sendProtectionWorkModeRequest("LEVEL1,LEVEL2", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionBRUWrite
@@ -1031,6 +1051,8 @@ void ConfiguratorWindow::protectionControlGroupWrite()
 {
     protectionBRUWrite();
     protectionVacuumWrite();
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchWrite
@@ -1240,6 +1262,8 @@ void ConfiguratorWindow::purposeLedsWrite()
     sendPurposeWriteRequest("LED3", "LED4");
     sendPurposeWriteRequest("LED5", "LED6");
     sendPurposeWriteRequest("LED7", "LED8");
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::purposeInputWrite
@@ -1252,6 +1276,8 @@ void ConfiguratorWindow::purposeInputWrite()
     sendPurposeDIWriteRequest(594, 676);
     sendPurposeInverseDIWriteRequest(768, 848);
     sendPurposeInverseDIWriteRequest(850, 932);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::purposeRelayWrite
@@ -1266,6 +1292,8 @@ void ConfiguratorWindow::purposeRelayWrite()
     sendPurposeWriteRequest("DO8", "DO9");
     sendPurposeWriteRequest("DO10", "DO11");
     sendPurposeWriteRequest("DO12", "DO13");
+
+    saveDeviceSettings();
 }
 //-------------------------------------------------
 void ConfiguratorWindow::purposeMemoryOutLedWrite()
@@ -1286,6 +1314,8 @@ void ConfiguratorWindow::purposeMemoryOutLedWrite()
 
     if(!data.isEmpty())
         sendRequestWrite(0x90C, data, CModBusDataUnit::WriteMultipleRegisters);
+
+    saveDeviceSettings();
 }
 //---------------------------------------------------
 void ConfiguratorWindow::purposeMemoryOutRelayWrite()
@@ -1306,6 +1336,8 @@ void ConfiguratorWindow::purposeMemoryOutRelayWrite()
 
     if(!data.isEmpty())
         sendRequestWrite(0x900, data, CModBusDataUnit::WriteMultipleRegisters);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::dateTimeWrite
@@ -1339,6 +1371,8 @@ void ConfiguratorWindow::dateTimeWrite(const QDateTime& dateTime)
     unit.setProperty(tr("REQUEST"), DATETIME_TYPE);
 
     m_modbus->sendData(unit);
+
+    saveDeviceSettings();
 }
 //------------------------------------------------
 void ConfiguratorWindow::synchronizationDateTime()
@@ -1354,6 +1388,7 @@ void ConfiguratorWindow::settingCommunicationsWrite()
 {
     m_is_new_baudrate = true; // взводим флаг о изменение скорости порта
     sendDeviceCommand(ui->comboBoxCommunicationBaudrate->currentIndex() + 6); // новая скорость
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::protectionMTZ1Read
@@ -2122,6 +2157,8 @@ void ConfiguratorWindow::automationGroupWrite()
     automationAPVWrite();
     automationAVRWrite();
     automationKCNWrite();
+
+    saveDeviceSettings();
 }
 //----------------------------------------
 void ConfiguratorWindow::purposeLedsRead()
@@ -2913,8 +2950,6 @@ void ConfiguratorWindow::writeSettings()
     protectionReserveGroupWrite();
     protectionControlGroupWrite();
     automationGroupWrite();
-
-    sendDeviceCommand(2);
 }
 //----------------------------------------
 void ConfiguratorWindow::writeSetCurrent()
@@ -3017,8 +3052,6 @@ void ConfiguratorWindow::writeSetCurrent()
 
         default: return;
     }
-
-    sendDeviceCommand(2);
 }
 /*!
  * \brief ConfiguratorWindow::writeSetEditItem
@@ -3111,8 +3144,12 @@ void ConfiguratorWindow::writeSetEditItem()
     }
 
     if(!isEdit)
+    {
         QMessageBox::information(this, tr("Запись уставок"), tr("Ни одна из настроек не была изменена!\n"
                                                                 "Отмена записи"));
+    }
+    else
+        saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::expandItemTree
@@ -8005,7 +8042,7 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
         value++;
 
-    sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
+//    sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
 
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, quint16(addr),
                          QVector<quint16>() << value);
@@ -8087,7 +8124,7 @@ void ConfiguratorWindow::sendSettingWriteRequest(const QString& first, const QSt
         return;
     }
 
-    sendDeviceCommand(45); // установка ключа для записи уставок
+//    sendDeviceCommand(45); // установка ключа для записи уставок
 
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), funType, quint16(addr), data);
 
