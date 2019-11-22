@@ -235,6 +235,7 @@ void CJournal::reset()
     m_buffer.clear();
     m_isRead = false;
     m_isShiftPrt = false;
+    m_filter.setType(CFilter::FilterLimitType);
 }
 //--------------------
 void CJournal::print()

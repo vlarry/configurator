@@ -2246,6 +2246,54 @@ void ConfiguratorWindow::processReadJournals(bool state)
     {
         if(state)
         {
+            if(journal->filter().type() == CFilter::FilterDateType)
+            {
+                uint8_t index_storage = 0xFF;
+
+                if(journal == m_journal_event)
+                    index_storage = 1;
+                else if(journal == m_journal_crash)
+                    index_storage = 2;
+                else if(journal == m_journal_halfhour)
+                    index_storage = 3;
+                else if(journal == m_journal_isolation)
+                    index_storage = 4;
+
+                if(index_storage == 2 || index_storage == 3 || index_storage == 4) // пока не реализовано в прошивке
+                {
+                    outLogMessage(tr("Поиск по дате в этих журналах не реализован!!!"));
+                }
+
+                if(index_storage == 0xFF) // если журнал не соответствует ни одному из заданных
+                {
+                    journal->reset(); // отменяем чтение журнала
+
+                    return;
+                }
+
+                CModBusDataUnit::vlist_t val;
+
+                QDate date = journal->filter().dateFrom();
+                quint8 year = date.year() - 2000;
+                quint8 month = date.month();
+                quint8 day = date.day();
+
+qInfo() << QString("Дата выборки: %1.%2.%3").arg(day).arg(month).arg(year);
+
+                val << (quint16(index_storage << 8) | year) << quint16((month << 8) | day);
+
+qInfo() << QString("Данные запроса: %1, %2, %3, %4").arg(index_storage).arg(year).arg(month).arg(day);
+
+                CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()),
+                                     CModBusDataUnit::WriteMultipleRegisters, 0x302D, val);
+
+                unit.setProperty(tr("REQUEST"), WRITE_JOURNAL_DATE_SEEK_SET_REQUEST);
+
+                m_modbus->sendData(unit);
+
+                return;
+            }
+
             if(journal->filter().limitUpperValue() == 0)
             {
                 m_popup->setPopupText(tr("Записей в устройстве для чтения нет"));
@@ -2291,6 +2339,20 @@ void ConfiguratorWindow::processReadJournals(bool state)
             }
         }
     }
+}
+/*!
+ * \brief ConfiguratorWindow::processJournalDateSetControl
+ *
+ * Чтение результата поиска даты начала чтения в журнале
+ */
+void ConfiguratorWindow::processJournalDateSetControl()
+{
+    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()),
+                         CModBusDataUnit::ReadHoldingRegisters, 0x302D, 1);
+
+    unit.setProperty(tr("REQUEST"), READ_JOURNAL_DATE_SEEK_SET_CONTROL);
+
+    m_modbus->sendData(unit);
 }
 //--------------------------------------
 void ConfiguratorWindow::processExport()
@@ -2460,6 +2522,91 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
         }
         else if(type == READ_JOURNAL)
             endJournalRead(journal);
+    }
+    else if(type == WRITE_JOURNAL_DATE_SEEK_SET_REQUEST || type == READ_JOURNAL_DATE_SEEK_SET_CONTROL ||
+            type == READ_JOURNAL_DATE_SEEK_COUNT || type == READ_JOURNAL_DATE_SHIFT_PTR)
+    {
+        if(type == WRITE_JOURNAL_DATE_SEEK_SET_REQUEST)
+        {
+            if(!showErrorMessage(tr("Установка даты чтения журнала"), unit))
+            {
+                QTimer::singleShot(1000, this, processJournalDateSetControl);
+            }
+        }
+        else if(type == READ_JOURNAL_DATE_SEEK_SET_CONTROL)
+        {
+            if(!showErrorMessage(tr("Контроль поиска даты чтения журнала"), unit))
+            {
+                quint8 res = quint8(unit[0] >> 8);
+
+                if(res == 0x00) // поиск даты чтения журнала завершен успешно
+                {
+                    qInfo() << "Поиск даты чтения журнала завершен успешно";
+
+                    CModBusDataUnit unit(static_cast<quint8>(m_serialPortSettings_window->deviceID()),
+                                         CModBusDataUnit::ReadInputRegisters, 52, 2);
+
+                    unit.setProperty(tr("REQUEST"), READ_JOURNAL_DATE_SEEK_COUNT);
+
+                    m_modbus->sendData(unit);
+                }
+                else if(res == 0x10) // поиск даты чтения журнала завершился ошибкой
+                {
+                    qInfo() << "Поиск даты чтения журнала завершен ошибкой";
+                    JournalPtr journal = currentJournalWidget();
+
+                    if(journal)
+                    {
+                        endJournalRead(journal);
+                    }
+
+                    return;
+                }
+                else
+                {
+                    qInfo() << "Поиск даты чтения журнала продолжается";
+                    processJournalDateSetControl();
+                }
+            }
+        }
+        else if(type == READ_JOURNAL_DATE_SEEK_COUNT)
+        {
+            if(!showErrorMessage(tr("Чтение количества доступных данных по дате журнала"), unit))
+            {
+                if(unit.count() == 2)
+                {
+                    quint32 value = static_cast<quint32>(unit[1]) | static_cast<quint32>((unit[0] << 16));
+                    qInfo() << QString("Количество записей по дате: %1").arg(value);
+
+                    JournalPtr journal = currentJournalWidget();
+
+                    if(journal)
+                    {
+                        CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()),
+                                             CModBusDataUnit::ReadHoldingRegisters, quint16(journal->addrShiftPtr()), 2);
+
+                        unit.setProperty(tr("REQUEST"), READ_JOURNAL_DATE_SHIFT_PTR);
+
+                        m_modbus->sendData(unit);
+                    }
+                }
+            }
+        }
+        else if(type == READ_JOURNAL_DATE_SHIFT_PTR)
+        {
+            if(unit.count() == 2)
+            {
+                quint32 value = static_cast<quint32>(unit[1]) | static_cast<quint32>((unit[0] << 16));
+                qInfo() << QString("Сдвиг указателя на начало даты чтения журнала: %1").arg(value);
+
+                JournalPtr journal = currentJournalWidget();
+
+                if(journal)
+                {
+                    endJournalRead(journal);
+                }
+            }
+        }
     }
     else if(type == READ_SERIAL_NUMBER)
     {

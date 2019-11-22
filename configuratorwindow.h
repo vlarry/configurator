@@ -123,6 +123,10 @@
                 READ_JOURNAL,
                 READ_JOURNAL_COUNT,
                 READ_JOURNAL_SHIFT_PTR,
+                WRITE_JOURNAL_DATE_SEEK_SET_REQUEST, // установка даты чтения журнала (для поиска по дате)
+                READ_JOURNAL_DATE_SEEK_SET_CONTROL, // запрос на проверку результата поиска даты журнала для чтения
+                READ_JOURNAL_DATE_SEEK_COUNT, // количество записей по найденной дате
+                READ_JOURNAL_DATE_SHIFT_PTR, // чтение значения смещения указателя сдвига
                 READ_STATUS_MCP_INFO,
                 READ_STATUS_MODULE_INFO,
                 DATETIME_TYPE,
@@ -508,6 +512,7 @@
             void synchronizationDateTime();
             void settingCommunicationsWrite();
             void processReadJournals(bool state);
+            void processJournalDateSetControl();
             void processExport();
             void processImport();
             void readyReadData(CModBusDataUnit& unit);
