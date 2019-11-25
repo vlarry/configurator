@@ -108,6 +108,22 @@ void CJournal::initRead()
     m_isRead = true; // устанавливаем флаг чтения активным
 }
 /*!
+  \brief CJournal::initRead
+  \param msg_count количество сообщений для чтения
+  \param shift_ptr смещение указателя сдвига
+  *
+  * Инициализация чтения журнала (для чтения сообщений по дате)
+  */
+void CJournal::initRead(quint32 msg_count, quint32 shift_ptr)
+{
+    m_shift_ptr_cur = shift_ptr; // позиция указателя смещения окна чтения
+    m_msg_count = 0; // счетчик прочитанных сообщений
+    m_msg_to_shift = m_msg_on_page; // количество сообщений до смещения указателя окна
+    m_msg_read = msg_count; // количество сообщений которое необходимо прочитать
+
+    m_isRead = true; // устанавливаем флаг чтения активным
+}
+/*!
  * \brief CJournal::read
  * \param id адрес устройства
  * \param type тип запроса

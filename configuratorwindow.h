@@ -512,6 +512,8 @@
             void synchronizationDateTime();
             void settingCommunicationsWrite();
             void processReadJournals(bool state);
+            void searchDateJournals(JournalPtr journal);
+            void startReadJournal(JournalPtr journal);
             void processJournalDateSetControl();
             void processExport();
             void processImport();
@@ -567,6 +569,7 @@
             void importPurposeFromJSON();
             void widgetStackIndexChanged(int);
             void setJournalShiftPtr(JournalPtr journal);
+            void setJournalShiftPtr(quint16 addr, quint32 shift_ptr);
             void timeoutSynchronization();
             void timeoutDebugInfo();
             void debugInfoCtrl(int timer, bool state = false);

@@ -43,6 +43,7 @@
             CFilter &filter();
             CJournalWidget *widget();
             void initRead();
+            void initRead(quint32 msg_count, quint32 shift_ptr);
             CModBusDataUnit read(int id, int type, bool *isShift);
             void receiver(const CModBusDataUnit::vlist_t &data);
             bool isReadState() const;
