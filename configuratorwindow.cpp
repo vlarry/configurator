@@ -2278,7 +2278,8 @@ void ConfiguratorWindow::processReadJournals(bool state)
 
             if(result == QMessageBox::Yes)
             {
-                journal->reset(); // отменяем чтение журнала
+//                journal->reset(); // отменяем чтение журнала
+                journal->setReadState(false);
             }
         }
     }
@@ -2524,10 +2525,10 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
             }
             else
             {
-                if(journal->msgCount() == journal->msgRead())
-                {
+//                if(journal->msgCount() == journal->msgRead())
+//                {
                     journal->print();
-                }
+//                }
 
                 endJournalRead(journal);
             }

@@ -190,7 +190,7 @@ CModBusDataUnit CJournal::read(int id, int type, bool *isShift)
 void CJournal::receiver(const CModBusDataUnit::vlist_t &data)
 {
     m_buffer += data;
-
+qDebug() << QString("Buffer size: %1").arg(m_buffer.count());
     int count = data.count()/m_msg_size; // количество сообщений в полученных данных
 
     if(m_buffer.count()%m_msg_size == 0)
