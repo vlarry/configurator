@@ -10674,7 +10674,8 @@ void ConfiguratorWindow::exportToPDF(const JournalPtr journal, const QString& re
     tableFormat.setBorderBrush(Qt::SolidPattern);
     tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Ridge);
     tableFormat.setBorder(1);
-    tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
+    tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 75));
+    tableFormat.setAlignment(Qt::AlignCenter);
 
     QTextCursor cursor(reportPDF);
     QTextBlockFormat blockFormat;
