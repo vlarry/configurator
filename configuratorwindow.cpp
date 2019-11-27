@@ -7212,7 +7212,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
         QString date   = query.value("date").toString();
         QString time   = query.value("time").toString();
 
-        journal->setItem(row, 0, new CTableWidgetItem(QString(row + 1)));
+        journal->setItem(row, 0, new CTableWidgetItem(QString::number(row + 1)));
         journal->setItem(row, 1, new CTableWidgetItem(id_msg));
         journal->setItem(row, 2, new CTableWidgetItem(date));
         journal->setItem(row, 3, new CTableWidgetItem(time));
