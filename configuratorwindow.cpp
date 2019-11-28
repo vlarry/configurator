@@ -1078,6 +1078,8 @@ void ConfiguratorWindow::automationSwitchWrite()
     sendSettingWriteRequest("X22", "X22", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
     sendSettingWriteRequest("K08", "K08", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
     sendSettingWriteRequest("K05", "K05", DEVICE_MENU_ITEM_AUTOMATION_SWITCH);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::automationSwitchTruckWrite
@@ -1090,6 +1092,8 @@ void ConfiguratorWindow::automationSwitchTruckWrite()
     sendSettingControlWriteRequest("K41", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingWriteRequest("K45", "K49", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingWriteRequest("K58", "K59", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::automationBlockWrite
@@ -1101,6 +1105,8 @@ void ConfiguratorWindow::automationBlockWrite()
     sendSettingControlWriteRequest("K13", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlWriteRequest("K14", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingControlWriteRequest("K15", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::automationBusWrite
@@ -1148,6 +1154,8 @@ void ConfiguratorWindow::automationDisconnectorsGroupWrite()
     automationBusWrite();
     automationLineWrite();
     automationEarthWrite();
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::automationCtrlTNWrite
@@ -1158,6 +1166,8 @@ void ConfiguratorWindow::automationCtrlTNWrite()
 {
     sendSettingControlWriteRequest("K18", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
     sendSettingWriteRequest("K19", "K19", DEVICE_MENU_ITEM_AUTOMATION_ROOT);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::automationAVRWrite
@@ -1182,6 +1192,8 @@ void ConfiguratorWindow::automationAPVWrite()
 
     QString list = "V04,V07,V10,V13,V19,N64,V22,N67,V44,V62,V65,V68,V81,V86,V90";
     sendSettingReadRequestVariableState("I69", list, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV, true);
+
+    sendDeviceCommand(2);
 }
 /*!
  * \brief ConfiguratorWindow::automationKCNWrite
@@ -8688,6 +8700,8 @@ void ConfiguratorWindow::sendSettingWriteRequestVariableState(int addr, const QS
                     arg(var_pos).arg(bit_pos);
     }
 
+    sendDeviceCommand(45); // установка ключа записи
+
     CModBusDataUnit::vlist_t data;
 
     // перевод 32 битных данных к 16 битным и переворот страшего и младшего полуслова
@@ -8696,6 +8710,8 @@ void ConfiguratorWindow::sendSettingWriteRequestVariableState(int addr, const QS
 
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteMultipleRegisters, addr, data);
     m_modbus->sendData(unit);
+
+    saveDeviceSettings();
 }
 /*!
  * \brief ConfiguratorWindow::sendRequestCalibration
@@ -13591,7 +13607,8 @@ bool ConfiguratorWindow::showErrorMessage(const QString& title, CModBusDataUnit&
 {
     if(unit.error() != CModBusDataUnit::ERROR_NO)
     {
-        showMessageBox(title, tr("Ошибка: %1.").arg(CModBusDataUnit::errorDescription(unit.error())), QMessageBox::Warning);
+        showMessageBox(title, tr("Ошибка: %1(%2).").arg(CModBusDataUnit::errorDescription(unit.error())).arg(QString::number(unit.address())),
+                       QMessageBox::Warning);
         return true;
     }
 
