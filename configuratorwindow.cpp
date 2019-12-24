@@ -11279,6 +11279,11 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
     }
+    else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG)
+    {
+        ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+        ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
+    }
 }
 //-------------------------------------------------------------
 void ConfiguratorWindow::setJournalShiftPtr(JournalPtr journal)
