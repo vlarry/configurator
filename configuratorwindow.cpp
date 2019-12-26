@@ -3612,13 +3612,13 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Блокировки"));
     ui->tableWidgetAutomationSwitch->addGroup(group);
     group = loadMenuGroup(tr("Схема внешнего управления"));
-    ui->tableWidgetAutomationSwitch->addGroup(group, true);
+    ui->tableWidgetAutomationSwitch->addGroup(group);
 
     connect(ui->tableWidgetAutomationSwitch, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
 
     // группа автоматики "АПВ"
     group = loadMenuGroup(tr("АПВ"));
-    ui->tableWidgetAutomationAPV->addGroup(group);
+    ui->tableWidgetAutomationAPV->addGroup(group, true);
 
     connect(ui->tableWidgetAutomationAPV, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
 
