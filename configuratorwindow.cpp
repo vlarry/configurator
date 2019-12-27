@@ -2296,7 +2296,7 @@ void ConfiguratorWindow::processReadJournals(bool state)
         }
     }
 }
-//------------------------------------------------------------------
+//-------------------------------------------------------------
 void ConfiguratorWindow::searchDateJournals(JournalPtr journal)
 {
     if(!journal)
@@ -11870,7 +11870,7 @@ void ConfiguratorWindow::exportJournalToDb(JournalPtr journal_ptr)
         }
         else if(journal_type == "CRASH")
         {
-            QString protect_name = journal->widget()->table()->item(i, 3)->text();
+            QString protect_name = journal->widget()->table()->item(i, 4)->text();
 
             query.prepare("INSERT OR REPLACE INTO journals (id_msg, date, time, protection, id_journal, sn_device)"
                           "VALUES(:id_msg, :date, :time, :protection, :id_journal, :sn_device)");
