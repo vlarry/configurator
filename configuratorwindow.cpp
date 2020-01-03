@@ -9031,7 +9031,8 @@ void ConfiguratorWindow::deviceDefaultSettings()
     if(answer == QMessageBox::Yes)
     {
         sendDeviceCommand(0x0001); // отправка команды на сброс настроек по умолчанию
-        readSetCurrent(); // читаем настройки после сброса
+
+        QTimer::singleShot(1000, this, readSetCurrent); // чтение настроек после сброса после паузы 1сек
     }
 }
 //-----------------------------------------
@@ -10559,7 +10560,7 @@ void ConfiguratorWindow::initApplication()
 
         ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
         ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
-        ui->pushButtonDefaultSettings->setVisible(false); // скрытие кнопки сброса настроек по умолчанию
+        ui->pushButtonDefaultSettings->setVisible(true); // видимость кнопки сброса настроек по умолчанию
 
         QDateTime dt(QDateTime::currentDateTime());
 
@@ -11171,7 +11172,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
     ui->pushButtonJournalRead->setVisible(false);
     ui->pushButtonJournalClear->setVisible(false);
-    ui->pushButtonDefaultSettings->setVisible(false);
+    ui->pushButtonDefaultSettings->setVisible(true);
 
     ui->pbtnReadCurrentBlock->setVisible(true);
     ui->pbtnReadAllBlock->setVisible(true);
@@ -11260,7 +11261,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
-        ui->pushButtonDefaultSettings->setVisible(true);
 
         ui->pbtnReadAllBlock->hide();
         ui->pbtnWriteAllBlock->hide();
