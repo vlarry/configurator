@@ -1176,7 +1176,8 @@ void ConfiguratorWindow::automationCtrlTNWrite()
  */
 void ConfiguratorWindow::automationAVRWrite()
 {
-
+    sendSettingControlWriteRequest("M81", DEVICE_MENU_ITEM_AUTOMATION_AVR);
+    sendSettingWriteRequest("M84", "M84", DEVICE_MENU_ITEM_AUTOMATION_AVR);
 }
 /*!
  * \brief ConfiguratorWindow::automationAPVWrite
@@ -2102,7 +2103,8 @@ void ConfiguratorWindow::automationCtrlTNRead()
  */
 void ConfiguratorWindow::automationAVRRead()
 {
-
+    sendSettingControlReadRequest("M81", DEVICE_MENU_ITEM_AUTOMATION_AVR);
+    sendSettingReadRequest("M84", "M84", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_ITEM_AUTOMATION_AVR);
 }
 /*!
  * \brief ConfiguratorWindow::automationKCNRead
