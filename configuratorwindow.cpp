@@ -8461,6 +8461,7 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
             if(key == row_key)
             {
                 row_index = j;
+                break;
             }
         }
 
@@ -8481,7 +8482,9 @@ void ConfiguratorWindow::sendPurposeDIWriteRequest(int first_addr, int last_addr
 
             values << static_cast<quint16>((value&0xFFFF0000) >> 16) << static_cast<quint16>(value&0x0000FFFF);
         }
-        else if(key.contains("_R")) // если имя переменной оканчивается на "_R", т.е. переменная является резервной, то заполяем значение состояниями привязок нулями
+        else if(key.contains("RESERVE") || row_index == -1)
+        // если имя переменной содержит слово "RESERVE", т.е. переменная является резервной или переменная не найдена в таблице,
+        // то заполяем значение состояниями привязок нулями
         {
             values << static_cast<quint16>(0) << static_cast<quint16>(0);
         }
