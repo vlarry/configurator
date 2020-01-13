@@ -5393,6 +5393,15 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
         input_inverse_data << value;
     }
 
+    if(input_data.count() != var_list.count() || input_inverse_data.count() != var_list.count())
+    {
+        qWarning() << QString("Не совпадает количество принятых переменных с прочитанными из таблицы привязок базы данных!");
+        return;
+    }
+
+    int columns = matrix.columnCount();
+qDebug() << QString("Количество столбцов: %1").arg(columns);
+
     for(int i = 0; i < var_list.count(); i++)
     {
         QString key = var_list[i].toUpper();
@@ -5402,7 +5411,10 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
         for(int k = 0; k < matrix.rowCount(); k++) // производим поиск позиции текущей переменной в строках, т.к. строки
         {                                          // идут не по порядку - разбиты на группы (позиция переменной в var_list
                                                    // определяет ее положение в полученных данных учитывая смещение)
-            if(matrix[k].data().key.toUpper() == key)
+
+            QString matrix_key = matrix[k].data().key.toUpper();
+
+            if(matrix_key == key)
             {
                 row_index = k;
                 break;
@@ -5411,7 +5423,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
 
         if(row_index != -1)
         {
-            for(int j = 0; j < matrix.columnCount(); j++)
+            for(int j = 0; j < columns; j++)
             {
                 bool input_state   = input_data[i]&(1 << j);
                 bool inverse_state = input_inverse_data[i]&(1 << j);
@@ -5425,6 +5437,9 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
 
                 matrix[row_index][j].data().state = state;
             }
+        }
+        else {
+            qWarning() << QString("Привязка входов: Нет переменной в базе данных -> %1").arg(key);
         }
     }
 
