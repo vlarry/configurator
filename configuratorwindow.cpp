@@ -9006,13 +9006,13 @@ void ConfiguratorWindow::startMenuJournalImportFromDB(const QString &type)
     int index = -1;
 
     if(type == "CRASH")
-        index = 11;
-    else if(type == "EVENT")
         index = 12;
-    else if(type == "HALFHOUR")
+    else if(type == "EVENT")
         index = 13;
-    else if(type == "ISOLATION")
+    else if(type == "HALFHOUR")
         index = 14;
+    else if(type == "ISOLATION")
+        index = 15;
 
     if(index != -1)
     {
