@@ -384,6 +384,7 @@ void CWidgetMenu::initMenu()
     ui->toolButtonSettings->setID(BUTTON_SETTINGS_PROJECT);
     ui->toolButtonCloseProject->setID(BUTTON_CLOSE_PROJECT);
     ui->toolButtonSettingDebug->setID(BUTTON_SETTING_DEBUG);
+    ui->toolButtonSettingDefault->setID(BUTTON_SETTING_DEFAULT);
     ui->toolButtonExit->setID(BUTTON_EXIT_APP);
 
     QAction *actionNewProject = new QAction(QIcon(":/images/resource/images/new.png"), tr("Новый"), this);
@@ -412,6 +413,7 @@ void CWidgetMenu::initMenu()
     connect(ui->toolButtonSaveAsProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonCloseProject, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonSettingDebug, &CToolButton::clicked, this, &CWidgetMenu::clicked);
+    connect(ui->toolButtonSettingDefault, &CToolButton::clicked, this, &CWidgetMenu::clicked);
     connect(ui->toolButtonExit, &CToolButton::clicked, this, &CWidgetMenu::clicked);
 
     connect(ui->toolButtonNewProject, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
@@ -634,6 +636,10 @@ void CWidgetMenu::clicked()
 
         case BUTTON_SETTING_DEBUG:
             emit settings();
+        break;
+
+        case BUTTON_SETTING_DEFAULT:
+            emit defaltSet();
         break;
 
         default: qDebug() << QString("ID кнопки не определено: %1").arg(button_id); break;

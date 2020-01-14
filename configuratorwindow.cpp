@@ -10581,7 +10581,6 @@ void ConfiguratorWindow::initApplication()
 
         ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
         ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
-        ui->pushButtonDefaultSettings->setVisible(true); // видимость кнопки сброса настроек по умолчанию
 
         QDateTime dt(QDateTime::currentDateTime());
 
@@ -11193,7 +11192,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
     ui->pushButtonJournalRead->setVisible(false);
     ui->pushButtonJournalClear->setVisible(false);
-    ui->pushButtonDefaultSettings->setVisible(true);
 
     ui->pbtnReadCurrentBlock->setVisible(true);
     ui->pbtnReadAllBlock->setVisible(true);
@@ -13758,7 +13756,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbus, &CModBus::stateChanged, ui->pushButtonJournalRead, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::readyRead, this, &ConfiguratorWindow::readyReadData);
     connect(m_modbus, &CModBus::errorDevice, this, &ConfiguratorWindow::errorDevice);
-    connect(m_modbus, &CModBus::stateChanged, ui->pushButtonDefaultSettings, &QPushButton::setEnabled);
     connect(m_modbus, &CModBus::baudrateChanged, m_serialPortSettings_window, &CSerialPortSetting::setBaudrate);
     connect(m_modbus, &CModBus::errorChannel, this, &ConfiguratorWindow::errorConnect);
     connect(ui->toolButtonConnect, &QPushButton::clicked, m_modbus, &CModBus::userStateCtrl);
@@ -13827,7 +13824,7 @@ void ConfiguratorWindow::initConnect()
 //    connect(ui->stwgtMain, &QStackedWidget::currentChanged, this, &ConfiguratorWindow::widgetStackIndexChanged);
     connect(m_timer_synchronization, &QTimer::timeout, this, &ConfiguratorWindow::timeoutSynchronization);
     connect(ui->pbtnFilter, &QPushButton::clicked, this, &ConfiguratorWindow::filterDialog);
-    connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
+//    connect(ui->pushButtonDefaultSettings, &QPushButton::clicked, this, &ConfiguratorWindow::deviceDefaultSettings);
     connect(ui->dateEdit, &QDateEdit::dateChanged, this, &ConfiguratorWindow::dateDeviceChanged);
     connect(m_serialPortSettings_window, &CSerialPortSetting::autospeed, this, &ConfiguratorWindow::autospeedStateChanged);
     connect(ui->splitterCentralWidget, &QSplitter::splitterMoved, this, &ConfiguratorWindow::panelMoved);
@@ -13879,6 +13876,7 @@ void ConfiguratorWindow::initConnect()
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::closeProject, this, &ConfiguratorWindow::closeProject);
     connect(ui->widgetMenuBar, &CMenuBar::minimizeMenu, this, &ConfiguratorWindow::minimizeTabMenu);
     connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::settings, this, &ConfiguratorWindow::authorization);
+    connect(ui->widgetMenuBar->widgetMenu(), &CWidgetMenu::defaltSet, this, &ConfiguratorWindow::deviceDefaultSettings);
 
     connect(m_calibration_controller, &CCalibrationController::calibrationSaveToFlash, this, &ConfiguratorWindow::saveDeviceSettings);
     connect(m_calibration_controller, &CCalibrationController::calibration, this, &ConfiguratorWindow::sendRequestCalibration);
