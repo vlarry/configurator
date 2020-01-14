@@ -11567,9 +11567,9 @@ void ConfiguratorWindow::importJournalToTable(JournalPtr journal_ptr)
             QString category  = query.value("category").toString();
             QString parameter = query.value("parameter").toString();
 
-            table->setItem(row, 6, new CTableWidgetItem(type));
+            table->setItem(row, 4, new CTableWidgetItem(type));
             table->setItem(row, 5, new CTableWidgetItem(category));
-            table->setItem(row, 4, new CTableWidgetItem(parameter));
+            table->setItem(row, 6, new CTableWidgetItem(parameter));
         }
         else if(journal_type == "CRASH")
         {
