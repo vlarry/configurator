@@ -2539,11 +2539,8 @@ void ConfiguratorWindow::readyReadData(CModBusDataUnit& unit)
             }
             else
             {
-//                if(journal->msgCount() == journal->msgRead())
-//                {
-                    journal->print();
-//                }
-
+                qDebug() << QString("Завершение чтения журнала.");
+                journal->print();
                 endJournalRead(journal);
             }
         }

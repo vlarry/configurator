@@ -247,12 +247,23 @@ date_t CJournalWidget::secsToDate(quint32 secs)
 //----------------------------------------------------------------
 void CJournalWidget::printCrash(const QVector<quint8>& data) const
 {
-    if(data.count() < 256 || (data.count()%256) != 0)
-        return;
+    qDebug() << QString("Вывод журнала аварий: Размер %1 байт").arg(data.count());
+
+    int data_count = data.count();
+
+    if(data_count < 256 || (data_count%256) != 0)
+    {
+        qDebug() << QString("Вывод журнала аварий: Размер журнала не кратен 256");
+
+        if(data_count < 256 && (data_count%128) != 0) // размер не кратен 128, т.е. ошибка, то выходим (иначе не успели принять вторую половину пакета
+            return;
+        else
+            data_count -= 128; // обрезаем размер данных, чтобы выводить только полную информацию
+    }
 
     int row = ui->tableWidgetJournal->rowCount();
 
-    for(int index = 0; index < data.count(); index += 256)
+    for(int index = 0; index < data_count; index += 256)
     {
         QVector<quint8> msg_data = data.mid(index, 256);
 
@@ -450,6 +461,8 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
     }
 
     emit printFinished();
+
+    qDebug() << QString("Вывод журнала аварий завершен успешно!");
 }
 //----------------------------------------------------------------
 void CJournalWidget::printEvent(const QVector<quint8>& data) const
