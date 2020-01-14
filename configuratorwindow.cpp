@@ -6026,7 +6026,7 @@ int ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const CDeviceMen
             if(combobox)
             {
                 bool isOk  = false;
-                int  index = doc.read(row + offset + 2, 2).toInt(&isOk);
+                int  index = doc.read(row + offset + 1, 2).toInt(&isOk);
 
                 if(isOk)
                     combobox->setCurrentIndex(index - 1);
@@ -6040,7 +6040,7 @@ int ConfiguratorWindow::readDataFromExcel(QXlsx::Document& doc, const CDeviceMen
 
             if(lineedit)
             {
-                QString text = doc.read(row + offset + 2, 2).toString();
+                QString text = doc.read(row + offset + 1, 2).toString();
 
                 if(!text.isEmpty())
                     lineedit->setText(text);
@@ -10018,7 +10018,6 @@ void ConfiguratorWindow::exportToExcelProject()
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupExternal, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetProtectionGroupReserve, pos - 1);
-    pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationSwitch, pos - 1);
 
     xlsx.addSheet(tr("Автоматика"));
 
@@ -10032,6 +10031,7 @@ void ConfiguratorWindow::exportToExcelProject()
 
     pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationSwitch);
     pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationAPV, pos - 1);
+    pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationAVR, pos - 1);
     pos = writeDataToExcel(xlsx, ui->tableWidgetAutomationKCN, pos - 1);
 
     xlsx.addSheet(tr("Аналоговые входы"));
@@ -10080,12 +10080,12 @@ void ConfiguratorWindow::importFromExcelProject()
     int offset = 0;
 
     offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupMTZ, offset);
-    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupPower, offset);
-    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupDirect, offset);
-    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupFrequency, offset);
-    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupExternal, offset);
-    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, offset);
-    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupReserve, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupPower, offset - 1);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupDirect, offset - 2);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupFrequency, offset - 3);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupExternal, offset - 4);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupTemperature, offset - 5);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetProtectionGroupReserve, offset - 6);
 
     if(!xlsx.selectSheet(tr("Автоматика")))
     {
@@ -10095,9 +10095,10 @@ void ConfiguratorWindow::importFromExcelProject()
 
     offset = 0;
 
-    readDataFromExcel(xlsx, ui->tableWidgetAutomationSwitch, offset);
-    readDataFromExcel(xlsx, ui->tableWidgetAutomationAPV, offset);
-    readDataFromExcel(xlsx, ui->tableWidgetAutomationKCN, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetAutomationSwitch, offset);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetAutomationAPV, offset - 1);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetAutomationAVR, offset - 2);
+    offset += readDataFromExcel(xlsx, ui->tableWidgetAutomationKCN, offset - 3);
 
     if(!xlsx.selectSheet(tr("Аналоговые входы")))
     {
