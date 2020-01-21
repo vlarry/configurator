@@ -921,7 +921,7 @@ void ConfiguratorWindow::protectionTemperatureGroupWrite()
  */
 void ConfiguratorWindow::protectionLevel1Write()
 {
-    sendSettingControlWriteRequest("77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
+    sendSettingControlWriteRequest("M77", DEVICE_MENU_PROTECT_ITEM_RESERVE);
     sendSettingWriteRequest("M78", "M78", DEVICE_MENU_PROTECT_ITEM_RESERVE);
 
     sendSettingReadRequestVariableState("I67", "I50,I15,I66,N55", "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
@@ -1008,7 +1008,6 @@ void ConfiguratorWindow::protectionReserveGroupWrite()
 {
     protectionLevel1Write();
     protectionLevel2Write();
-    sendProtectionWorkModeRequest("LEVEL1,LEVEL2", FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 
     saveDeviceSettings();
 }
@@ -1947,8 +1946,6 @@ void ConfiguratorWindow::protectionReserveGroupRead()
 {
     protectionLevel1Read();
     protectionLevel2Read();
-
-    sendProtectionWorkModeRequest("LEVEL1,LEVEL2", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_RESERVE);
 }
 /*!
  * \brief ConfiguratorWindow::protectionBRURead
