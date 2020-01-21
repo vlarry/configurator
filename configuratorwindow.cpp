@@ -795,6 +795,7 @@ void ConfiguratorWindow::protectionExt1Write()
 {
     sendSettingControlWriteRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingWriteRequest("M72", "M72", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("K07", "K07", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2Write
@@ -805,6 +806,7 @@ void ConfiguratorWindow::protectionExt2Write()
 {
     sendSettingControlWriteRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingWriteRequest("M74", "M74", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M04", "M04", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3Write
@@ -815,6 +817,7 @@ void ConfiguratorWindow::protectionExt3Write()
 {
     sendSettingControlWriteRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingWriteRequest("M76", "M76", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingWriteRequest("M45", "M45", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternalGroupWrite
@@ -1788,6 +1791,7 @@ void ConfiguratorWindow::protectionExt1Read()
 {
     sendSettingControlReadRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M72", "M72", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingReadRequest("K07", "K07", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2
@@ -1798,6 +1802,7 @@ void ConfiguratorWindow::protectionExt2Read()
 {
     sendSettingControlReadRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M74", "M74", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingReadRequest("M04", "M04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3
@@ -1808,6 +1813,7 @@ void ConfiguratorWindow::protectionExt3Read()
 {
     sendSettingControlReadRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M76", "M76", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingReadRequest("M45", "M45", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternal

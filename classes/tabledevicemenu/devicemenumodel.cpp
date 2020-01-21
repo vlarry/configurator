@@ -311,6 +311,11 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         if(!subitemlist.isEmpty())
             cb->addItems(subitemlist);
 
+        int val_default = item.unit.val_default;
+
+        if(val_default < cb->count())
+            cb->setCurrentIndex(val_default);
+
         widget = cb;
 
         connect(cb, &CMenuComboBox::editValue, this, &CDeviceMenuTableWidget::itemEdit);
