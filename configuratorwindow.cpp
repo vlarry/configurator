@@ -5435,7 +5435,8 @@ qDebug() << QString("Количество столбцов: %1").arg(columns);
                 matrix[row_index][j].data().state = state;
             }
         }
-        else {
+        else
+        {
             qWarning() << QString("Привязка входов: Нет переменной в базе данных -> %1").arg(key);
         }
     }
@@ -10691,15 +10692,20 @@ void ConfiguratorWindow::exportToPDF(const JournalPtr journal, const QString& re
     QTextDocument* reportPDF = new QTextDocument;
     reportPDF->setPageSize(printer->pageRect().size());
 
+    QString key = journal->widget()->property("TYPE").toString();
+
     QTextTableFormat tableFormat;
     QVector<QTextLength> columnLength;
 
     columnLength << QTextLength(QTextLength::PercentageLength, 1);
     columnLength << QTextLength(QTextLength::PercentageLength, 1);
     columnLength << QTextLength(QTextLength::PercentageLength, 1);
-    columnLength << QTextLength(QTextLength::VariableLength, 60);
-    columnLength << QTextLength(QTextLength::PercentageLength, 20);
-    columnLength << QTextLength(QTextLength::PercentageLength, 20);
+    columnLength << QTextLength(QTextLength::PercentageLength, 1);
+    columnLength << QTextLength(QTextLength::PercentageLength, 90);
+    columnLength << QTextLength(QTextLength::PercentageLength, 1);
+
+    if(key == "EVENT")
+        columnLength << QTextLength(QTextLength::PercentageLength, 1);
 
     tableFormat.setColumnWidthConstraints(columnLength);
     tableFormat.setCellPadding(5);
@@ -10708,7 +10714,6 @@ void ConfiguratorWindow::exportToPDF(const JournalPtr journal, const QString& re
     tableFormat.setBorderBrush(Qt::SolidPattern);
     tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Ridge);
     tableFormat.setBorder(1);
-    tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 75));
     tableFormat.setAlignment(Qt::AlignCenter);
 
     QTextCursor cursor(reportPDF);
@@ -10744,8 +10749,6 @@ void ConfiguratorWindow::exportToPDF(const JournalPtr journal, const QString& re
     int columnCount = journal->widget()->table()->columnCount();
 
     QPoint pos = QPoint(0, journal->widget()->table()->rowCount() - 1);
-
-    QString key = journal->widget()->property("TYPE").toString();
 
     CFilter filter = journal->filter();
 
@@ -10867,7 +10870,24 @@ void ConfiguratorWindow::exportToPDF(const JournalPtr journal, const QString& re
             QTableWidgetItem* item = journal->widget()->table()->item(pos.x() + i, j);
 
             if(item)
-                cellCursor.insertText(journal->widget()->table()->item(pos.x() + i, j)->text());
+            {
+                QString text = journal->widget()->table()->item(pos.x() + i, j)->text();
+
+                if(key == "EVENT" && j == columnCount - 1)
+                {
+                    QStringList l = text.split("(");
+
+                    if(l.count() > 1)
+                    {
+                        l = l.at(1).split(')');
+
+                        if(l.count() > 0)
+                            text = l.at(0);
+                    }
+                }
+
+                cellCursor.insertText(text);
+            }
         }
 
         if(!list.isEmpty())
