@@ -5609,12 +5609,22 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         int i11_state = ((values[i11_pos]&(1 << bit)) >> bit);
         int i17_state = ((values[i17_pos]&(1 << bit)) >> bit);
 
-        int row = i11_state << 1 | i17_state;
+        int row = -1;
 
-        if(row < comboBox->count())
+        if(!i11_state && !i17_state) // сигнализация
+            row = 0;
+        else if(i11_state && !i17_state) // отключение без блокировки
+            row = 2;
+        else if(i11_state && i17_state) // отключение с блокировкой
+            row = 1;
+
+        if(row >= 0 && row < comboBox->count())
+        {
             comboBox->setCurrentIndex(row);
-
-        comboBox->resetIsEdit();
+            comboBox->resetIsEdit();
+        }
+        else
+            qWarning() << QString("Установка рабочего режима защиты: недопустимое значение I11(%1) и I17(%2).").arg(i11_state).arg(i17_state);
     }
 
     qDebug() << "Отображение режима работы защиты " << tprotect << ": данные-> " << values;
@@ -5637,7 +5647,7 @@ void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
 
     QVector<quint32> values;
 
-    // перевод данных в из 16-битного в 32-битный формат
+    // перевод данных из 16-битного в 32-битный формат
     for(int i = 0; i < unit.count() - 1; i += 2)
     {
         values << quint32((unit[i] << 16) | unit[i + 1]);
@@ -5680,17 +5690,17 @@ void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
 
         switch(state)
         {
-            case 0:
+            case 0: // сигнализация
                 i11_state = 0;
                 i17_state = 0;
             break;
 
-            case 1:
-                i11_state = 0;
+            case 1: // отключение с блокировкой
+                i11_state = 1;
                 i17_state = 1;
             break;
 
-            case 2:
+            case 2: // отключение без блокировки
                 i11_state = 1;
                 i17_state = 0;
             break;
@@ -5699,7 +5709,10 @@ void ConfiguratorWindow::protectionWorkModeWrite(CModBusDataUnit &unit)
         }
 
         if(i11_state == -1 || i17_state == -1)
+        {
+            qWarning() << QString("Запись рабочего режима защиты: недопустимое значение I11(%1) и I17(%1).").arg(i11_state).arg(i17_state);
             return;
+        }
 
         values[i11_pos] &= (~quint32(1 << bit)); // очищаем бит I11
         values[i11_pos] |= quint32(i11_state << bit); // устанавливаем бит I11
