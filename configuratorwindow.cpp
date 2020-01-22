@@ -795,7 +795,7 @@ void ConfiguratorWindow::protectionExt1Write()
 {
     sendSettingControlWriteRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingWriteRequest("M72", "M72", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendSettingWriteRequest("K07", "K07", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingControlWriteRequest("K07", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2Write
@@ -806,7 +806,7 @@ void ConfiguratorWindow::protectionExt2Write()
 {
     sendSettingControlWriteRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingWriteRequest("M74", "M74", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendSettingWriteRequest("M04", "M04", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingControlWriteRequest("M04", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3Write
@@ -817,7 +817,7 @@ void ConfiguratorWindow::protectionExt3Write()
 {
     sendSettingControlWriteRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingWriteRequest("M76", "M76", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendSettingWriteRequest("M45", "M45", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingControlWriteRequest("M45", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternalGroupWrite
@@ -1791,7 +1791,7 @@ void ConfiguratorWindow::protectionExt1Read()
 {
     sendSettingControlReadRequest("M71", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M72", "M72", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendSettingReadRequest("K07", "K07", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingControlReadRequest("K07", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt2
@@ -1802,7 +1802,7 @@ void ConfiguratorWindow::protectionExt2Read()
 {
     sendSettingControlReadRequest("M73", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M74", "M74", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendSettingReadRequest("M04", "M04", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingControlReadRequest("M04", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExt3
@@ -1813,7 +1813,7 @@ void ConfiguratorWindow::protectionExt3Read()
 {
     sendSettingControlReadRequest("M75", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
     sendSettingReadRequest("M76", "M76", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
-    sendSettingReadRequest("M45", "M45", CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
+    sendSettingControlReadRequest("M45", DEVICE_MENU_PROTECT_ITEM_EXTERNAL);
 }
 /*!
  * \brief ConfiguratorWindow::protectionExternal
@@ -5282,7 +5282,9 @@ void ConfiguratorWindow::displaySettingControlResponce(const CModBusDataUnit& un
 
     quint16 i = unit[0];
 
-    if(indexName.toUpper() != "TZ")
+    QString var_name = indexName.toUpper();
+
+    if(var_name != "TZ" && var_name != "K07" && var_name != "M04" && var_name != "M45")
         i--;
 qDebug() << QString("Отображение уставки: переменная->%1, значение = %2").arg(indexName).arg(i);
     comboBox->setCurrentIndex(i);
@@ -8254,7 +8256,9 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
 
     quint16 value = quint16(comboBox->currentIndex());
 
-    if(index.toUpper() != "TZ") // токозависимые характеристики учитывают и ноль, остальные с единицы
+    QString var_name = index.toUpper();
+
+    if(var_name != "TZ" && var_name != "K07" && var_name != "M04" && var_name != "M45") // эти переменные идут от нуля, остальные с единицы
         value++;
 
 //    sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
