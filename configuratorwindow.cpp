@@ -8261,8 +8261,6 @@ void ConfiguratorWindow::sendSettingControlWriteRequest(const QString& index, De
     if(var_name != "TZ" && var_name != "K07" && var_name != "M04" && var_name != "M45") // эти переменные идут от нуля, остальные с единицы
         value++;
 
-//    sendDeviceCommand(45); // отправка команды на снятие ключа блокировки записи привязок
-
     CModBusDataUnit unit(quint8(m_serialPortSettings_window->deviceID()), CModBusDataUnit::WriteSingleRegister, quint16(addr),
                          QVector<quint16>() << value);
     unit.setProperty("REQUEST", GENERAL_CONTROL_TYPE);
@@ -8569,7 +8567,9 @@ void ConfiguratorWindow::sendPurposeInverseDIWriteRequest(int first_addr, int la
 
             values << static_cast<quint16>((value&0xFFFF0000) >> 16) << static_cast<quint16>(value&0x0000FFFF);
         }
-        else if(key.contains("_R")) // если имя переменной оканчивается на "_R", т.е. переменная является резервной, то заполяем значение состояниями привязок нулями
+        else if(key.contains("RESERVE") || row_index == -1)
+        // если имя переменной содержит слово "RESERVE", т.е. переменная является резервной или переменная не найдена в таблице,
+        // то заполяем значение состояниями привязок нулями
         {
             values << static_cast<quint16>(0) << static_cast<quint16>(0);
         }
