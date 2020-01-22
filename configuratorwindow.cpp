@@ -5609,8 +5609,8 @@ void ConfiguratorWindow::displayProtectionWorkMode(CModBusDataUnit& unit)
         int i17_pos = i11_pos + 10;
         int bit     = bitNumber%32;
 
-        int i11_state = ((values[i11_pos]&(1 << bit)) >> bit);
-        int i17_state = ((values[i17_pos]&(1 << bit)) >> bit);
+        bool i11_state = (values[i11_pos]&(1 << bit));
+        bool i17_state = (values[i17_pos]&(1 << bit));
 
         int row = -1;
 
