@@ -5877,7 +5877,15 @@ void ConfiguratorWindow::displayDebugInfo(const CModBusDataUnit& unit)
 //--------------------------------------
 void ConfiguratorWindow::versionParser()
 {
-    QFile file(tr(":/files/resource/files/version.txt"));
+    QString path = ":/files/resource/files/";
+
+#ifdef CLIENT_RELEASE
+    path += "version_client.txt";
+#else
+    path += "version.txt";
+#endif
+
+    QFile file(path);
 
     if(!file.open(QFile::ReadOnly))
     {
@@ -5934,7 +5942,10 @@ void ConfiguratorWindow::versionParser()
                     }
                     else if(fMajor && !fMinor)
                     {
-                        version += ((temp.toFloat() < 10.0f)?tr("0") + temp:temp) + tr(" build ");
+                        if(temp.toFloat() == 0.0f)
+                            version += temp + tr(" build ");
+                        else
+                            version += ((temp.toFloat() < 10.0f)?tr("0") + temp:temp) + tr(" build ");
                         fMinor   = true;
                         param    = tr("BUILD");
 

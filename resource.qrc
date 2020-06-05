@@ -81,6 +81,7 @@
     </qresource>
     <qresource prefix="/files">
         <file>resource/files/version.txt</file>
+        <file>resource/files/version_client.txt</file>
     </qresource>
     <qresource prefix="/styles">
         <file>resource/styles/default_style.qss</file>
