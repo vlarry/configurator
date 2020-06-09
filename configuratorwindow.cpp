@@ -9437,10 +9437,10 @@ void ConfiguratorWindow::newProject()
     if(!dir.exists("outputs/projects"))
         dir.mkdir("outputs/projects");
 
-    QString selectedFilter  = tr("Файлы проектов (*.project)");
+    QString selectedFilter  = tr("Файлы проектов (*.cprj)");
     QString projectPathName = QFileDialog::getSaveFileName(this, tr("Создание файла проекта"), QString(dir.absolutePath() + "/%1/%2").
-                                                           arg("outputs/projects").arg("newProject.project"),
-                                                           tr("Файлы проектов (*.project);;Все файлы (*.*)"), &selectedFilter,
+                                                           arg("outputs/projects").arg("newProject.cprj"),
+                                                           tr("Файлы проектов (*.cprj);;Все файлы (*.*)"), &selectedFilter,
                                                            QFileDialog::DontConfirmOverwrite);
 
     if(projectPathName.isEmpty())
@@ -9825,7 +9825,7 @@ void ConfiguratorWindow::openFileProject()
     QDir dir;
     QString projectPathName = QFileDialog::getOpenFileName(this, tr("Открытие файла проекта"),
                                                            QString(dir.absolutePath() + "/%1/%2").arg("outputs/projects").
-                                                           arg("newProject.project"), tr("Проекты (*.project)"));
+                                                           arg("newProject.cprj"), tr("Проекты (*.cprj)"));
     openProject(projectPathName);
 }
 //--------------------------------------------------------------------
@@ -9941,9 +9941,9 @@ void ConfiguratorWindow::saveAsProject()
     if(!dir.exists("outputs/projects"))
         dir.mkdir("outputs/projects");
 
-    QString selectedFilter  = tr("Файлы проектов (*.project)");
+    QString selectedFilter  = tr("Файлы проектов (*.cprj)");
     QString projectPathName = QFileDialog::getSaveFileName(this, tr("Сохранить файл проекта как..."), QString(m_project_cur_path),
-                                                           tr("Файлы проектов (*.project);;Все файлы (*.*)"), &selectedFilter,
+                                                           tr("Файлы проектов (*.cprj);;Все файлы (*.*)"), &selectedFilter,
                                                            QFileDialog::DontConfirmOverwrite);
 
     if(projectPathName.isEmpty())
@@ -10610,6 +10610,7 @@ void ConfiguratorWindow::initApplication()
 
         ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
         ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
+        ui->pbtnFilter->setVisible(false); // скрытие кнопки фильтра
 
         QDateTime dt(QDateTime::currentDateTime());
 
@@ -11240,6 +11241,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
     ui->pushButtonJournalRead->setVisible(false);
     ui->pushButtonJournalClear->setVisible(false);
+    ui->pbtnFilter->setVisible(false);
 
     ui->pbtnReadCurrentBlock->setVisible(true);
     ui->pbtnReadAllBlock->setVisible(true);
@@ -11294,6 +11296,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
+        ui->pbtnFilter->setVisible(true);
 
         ui->pbtnReadCurrentBlock->setVisible(false);
         ui->pbtnReadAllBlock->setVisible(false);
