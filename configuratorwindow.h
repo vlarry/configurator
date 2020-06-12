@@ -771,6 +771,7 @@
             void openProject(const QString &projectPathName);
             int rowSheetExcel(QXlsx::Document &xlsx, QStringList &columns);
             int bitByVariableName(const QString &key);
+            void setDefaultSettings();
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

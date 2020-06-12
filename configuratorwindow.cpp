@@ -8186,6 +8186,75 @@ int ConfiguratorWindow::bitByVariableName(const QString &key)
 
     return m_variable_bits[key];
 }
+/*!
+ * \brief ConfiguratorWindow::setDefaultSettings
+ *
+ * Установка всех уставок в значения по умолчанию
+ */
+void ConfiguratorWindow::setDefaultSettings()
+{
+    QVector<DeviceMenuItemType> list_dev_menu =
+    {
+        DEVICE_MENU_PROTECT_ITEM_CURRENT,
+        DEVICE_MENU_PROTECT_ITEM_POWER,
+        DEVICE_MENU_PROTECT_ITEM_LEAK,
+        DEVICE_MENU_PROTECT_ITEM_FREQUENCY,
+        DEVICE_MENU_PROTECT_ITEM_EXTERNAL,
+        DEVICE_MENU_PROTECT_ITEM_TEMPERATURE,
+        DEVICE_MENU_PROTECT_ITEM_RESERVE,
+        DEVICE_MENU_ITEM_AUTOMATION_APV,
+        DEVICE_MENU_ITEM_AUTOMATION_AVR,
+        DEVICE_MENU_ITEM_AUTOMATION_KCN,
+        DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG
+    };
+
+    for(int item = 0; item < list_dev_menu.count(); item++)
+    {
+        CDeviceMenuTableWidget *table = groupMenuWidget(list_dev_menu[item]);
+
+        if(!table)
+            continue;
+
+        for(int i = 0; i < table->rowCount(); i++)
+        {
+            QWidget* wgt = table->cellWidget(i, 1);
+
+            if(!wgt)
+                continue;
+
+            QObjectList obj_list = wgt->children();
+
+            for(QObject* obj: obj_list)
+            {
+                QString key;
+
+                if(obj->isWidgetType())
+                {
+                    if(obj->objectName().toUpper().contains("COMBOBOX"))
+                    {
+                        CMenuComboBox *combobox = qobject_cast<CMenuComboBox*>(obj);
+
+                        if(combobox)
+                        {
+                            combobox->resetIsEdit();
+                            combobox->resetToDefault();
+                        }
+                    }
+                    else if(obj->objectName().toUpper().contains("LINEEDIT"))
+                    {
+                        CLineEdit *lineedit = qobject_cast<CLineEdit*>(obj);
+
+                        if(lineedit)
+                        {
+                            lineedit->resetIsEdit();
+                            lineedit->resetToDefault();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ConfiguratorWindow::sendSettingReadRequest(const QString& first, const QString& last, CModBusDataUnit::FunctionType type, int size,
                                                 DeviceMenuItemType index)
@@ -10170,7 +10239,10 @@ void ConfiguratorWindow::importFromExcelProject()
 void ConfiguratorWindow::closeProject()
 {
     if(m_isProject)
+    {
+        setDefaultSettings();
         blockInterface();
+    }
 }
 //--------------------------------------------------
 void ConfiguratorWindow::minimizeTabMenu(bool state)

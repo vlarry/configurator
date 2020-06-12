@@ -20,13 +20,26 @@
                 FLOAT
             };
 
+            struct RangeType
+            {
+                float min;
+                float max;
+                float def;
+            };
+
         public:
             CLineEdit(QWidget* parent = nullptr);
             bool isValidateText(const QString& text) const;
             void setValidatorType(ValidatorType type);
             ValidatorType validatorType() const;
             bool isEdit() const;
+            const RangeType& range() const;
             void resetIsEdit();
+            void resetToDefault();
+            void setRange(RangeType &range);
+            void setRangeMin(float min);
+            void setRangeMax(float max);
+            void setRangeDefault(float def);
 
         protected:
             void mouseReleaseEvent(QMouseEvent* event);
@@ -43,5 +56,6 @@
             bool          m_focus;
             ValidatorType m_validator_type;
             bool          m_is_edit; // было редактирование ячейки?
+            RangeType     m_range;
     };
 #endif // CLINEEDIT_H

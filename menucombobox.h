@@ -10,8 +10,11 @@
 
         public:
             CMenuComboBox(QWidget *parent = nullptr);
+            int  defaultIndex() const;
             bool isEdit() const;
             void resetIsEdit();
+            void resetToDefault();
+            void setDefaultIndex(int index);
 
         public slots:
             void isCurrentIndexChanged(int);
@@ -23,6 +26,7 @@
             void wheelEvent(QWheelEvent*);
 
         private:
-            bool m_is_edit; // было изменение текущего индекса?
+            bool m_is_edit; // было изменение текущего индекса
+            int  m_def; // номер пункта по умолчанию
     };
 #endif // MENUCOMBOBOX_H

@@ -4,7 +4,8 @@ CLineEdit::CLineEdit(QWidget* parent):
     QLineEdit(parent),
     m_focus(false),
     m_validator_type(FLOAT),
-    m_is_edit(false)
+    m_is_edit(false),
+    m_range({ 0.0f, 0.0f, 0.0f })
 {
     connect(this, &CLineEdit::textChanged, this, &CLineEdit::validateTextChanged);
 }
@@ -61,10 +62,47 @@ bool CLineEdit::isEdit() const
 {
     return m_is_edit;
 }
+//--------------------------------------------------
+const CLineEdit::RangeType &CLineEdit::range() const
+{
+    return m_range;
+}
 //---------------------------
 void CLineEdit::resetIsEdit()
 {
     m_is_edit = false;
+}
+//------------------------------
+void CLineEdit::resetToDefault()
+{
+    if(validatorType() == INT)
+    {
+        setText(QLocale::system().toString(static_cast<int>(m_range.def)));
+    }
+    else if(validatorType() == FLOAT)
+    {
+        setText(QLocale::system().toString(static_cast<double>(m_range.def), 'f', 2));
+    }
+}
+//---------------------------------------------------
+void CLineEdit::setRange(CLineEdit::RangeType &range)
+{
+    m_range = range;
+}
+//------------------------------------
+void CLineEdit::setRangeMin(float min)
+{
+    m_range.min = min;
+}
+//------------------------------------
+void CLineEdit::setRangeMax(float max)
+{
+    m_range.max = max;
+}
+//----------------------------------------
+void CLineEdit::setRangeDefault(float def)
+{
+    m_range.def = def;
 }
 //---------------------------------------------------
 void CLineEdit::mouseReleaseEvent(QMouseEvent* event)

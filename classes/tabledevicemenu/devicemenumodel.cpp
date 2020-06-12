@@ -314,7 +314,10 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         int val_default = item.unit.val_default;
 
         if(val_default < cb->count())
+        {
             cb->setCurrentIndex(val_default);
+            cb->setDefaultIndex(val_default);
+        }
 
         widget = cb;
 
@@ -335,6 +338,10 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
             min = 0.0f;
             max = 1000.0f;
         }
+
+        CLineEdit::RangeType rt = { min, max, val_default };
+
+        le->setRange(rt);
 
         if(item.type.toUpper() == "INT")
         {
