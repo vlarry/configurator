@@ -163,6 +163,7 @@ void ConfiguratorWindow::stateChanged(bool state)
         endJournalRead(m_journal_event);
         endJournalRead(m_journal_halfhour);
         endJournalRead(m_journal_isolation);
+        endJournalRead(m_journal_set);
 
         m_calibration_controller->setCalculateState(false, CCalibrationController::TYPE_NONE);
 
@@ -2317,8 +2318,10 @@ void ConfiguratorWindow::searchDateJournals(JournalPtr journal)
         index_storage = 3;
     else if(journal == m_journal_isolation)
         index_storage = 4;
+    else if(journal == m_journal_set)
+        index_storage = 5;
 
-    if(index_storage == 2 || index_storage == 3 || index_storage == 4) // пока не реализовано в прошивке
+    if(index_storage == 2 || index_storage == 3 || index_storage == 4 || index_storage == 5) // пока не реализовано в прошивке
     {
         outLogMessage(tr("Поиск по дате в этих журналах не реализован!!!"));
     }
@@ -2943,6 +2946,7 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
         readJournalCount(m_journal_crash);
         readJournalCount(m_journal_halfhour);
         readJournalCount(m_journal_isolation);
+        readJournalCount(m_journal_set);
     }
 
     if(type == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG) // выбраны калибровки
@@ -3419,8 +3423,10 @@ void ConfiguratorWindow::initMenuPanel()
                                                             DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS);
     QTreeWidgetItem* journalIsolation = new QTreeWidgetItem(itemJournals, QStringList() << tr("Изоляции"),
                                                             DEVICE_MENU_ITEM_JOURNALS_ISOLATION);
+    QTreeWidgetItem* journalSet       = new QTreeWidgetItem(itemJournals, QStringList() << tr("Уставок"),
+                                                            DEVICE_MENU_ITEM_JOURNALS_SET);
 
-    itemJournals->addChildren(QList<QTreeWidgetItem*>() << journalCrash << journalEvents << journalHalfHour << journalIsolation);
+    itemJournals->addChildren(QList<QTreeWidgetItem*>() << journalCrash << journalEvents << journalHalfHour << journalIsolation << journalSet);
 
     // НАСТРОЙКИ
     QTreeWidgetItem* settingInputAnalog    = new QTreeWidgetItem(itemSettings, QStringList() << tr("Аналоговые входы"),
@@ -3476,6 +3482,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_MEASURES_ROOT]                   = 23; // вывод окна приветствия
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ROOT]                   = 23; // вывод окна приветствия
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_PROTECTION]     = 24;
+    m_menu_items[DEVICE_MENU_ITEM_JOURNALS_SET]                    = 26;
 
     QStringList columns = QStringList() << tr("Имя") << tr("Параметр") << tr("Предел") << tr("Ед. изм.");
 
@@ -4063,26 +4070,32 @@ void ConfiguratorWindow::initJournals()
     QStringList halfHourJournalHeaders  = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Тип записи") << tr("Время учета, сек");
     QStringList isolationJournalHeaders = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Тип измерения") << tr("Ra, кОм") <<
                                                            tr("Rb, кОм") << tr("Rc, кОм");
+    QStringList setJournalHeaders       = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Источник") << tr("Код доступа") <<
+                                                           tr("Контейнер пред знач") << tr("Контейнер нового знач") << tr("Индекс знач");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
     ui->widgetJournalHalfHour->setProperty("NAME", tr("получасовок"));
     ui->widgetJournalIsolation->setProperty("NAME", tr("изоляций"));
+    ui->widgetJournalSet->setProperty("NAME", tr("уставок"));
 
     ui->widgetJournalCrash->setProperty("TYPE", tr("CRASH"));
     ui->widgetJournalEvent->setProperty("TYPE", tr("EVENT"));
     ui->widgetJournalHalfHour->setProperty("TYPE", tr("HALFHOUR"));
     ui->widgetJournalIsolation->setProperty("TYPE", tr("ISOLATION"));
+    ui->widgetJournalSet->setProperty("TYPE", tr("SET"));
 
     ui->widgetJournalCrash->setTableHeaders(CJournalWidget::CRASH_PROPERTY, crashJournalHeaders);
     ui->widgetJournalEvent->setTableHeaders(CJournalWidget::EVENT_PROPERTY, eventJournalHeaders);
     ui->widgetJournalHalfHour->setTableHeaders(CJournalWidget::HALFHOUR_PROPERTY, halfHourJournalHeaders);
     ui->widgetJournalIsolation->setTableHeaders(CJournalWidget::ISOLATION_PROPERTY, isolationJournalHeaders);
+    ui->widgetJournalSet->setTableHeaders(CJournalWidget::SET_PROPERTY, setJournalHeaders);
 
-    ui->widgetJournalCrash->setTableColumnWidth(QVector<int>() << 75 << 100 << 100 << 175);
+    ui->widgetJournalCrash->setTableColumnWidth(QVector<int>() << 50 << 75 << 100 << 100 << 175);
     ui->widgetJournalEvent->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300 << 100);
     ui->widgetJournalHalfHour->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300);
-//    ui->widgetJournalIsolation->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 200 << 200 << 200 << 200 << 200);
+    ui->widgetJournalIsolation->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 200 << 200 << 200 << 200 << 200);
+    ui->widgetJournalSet->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 200 << 300 << 300 << 200);
 
     ui->widgetJournalCrash->setVisibleProperty(CJournalWidget::CRASH_PROPERTY, true);
     ui->widgetJournalHalfHour->setVisibleProperty(CJournalWidget::HALFHOUR_PROPERTY , true);
@@ -4091,6 +4104,7 @@ void ConfiguratorWindow::initJournals()
     m_journal_crash = new CJournal(0x80, 0x26, 0x3011, 0x2000, ui->widgetJournalCrash);
     m_journal_halfhour = new CJournal(0x20, 0x2A, 0x3016, 0x5000, ui->widgetJournalHalfHour);
     m_journal_isolation = new CJournal(0x10, 0x2E, 0x301B, 0x6000, ui->widgetJournalIsolation);
+    m_journal_set = new CJournal(0x0C, 0x32, 0x3020, 0x7000, ui->widgetJournalSet);
 }
 //-------------------------------------------
 void ConfiguratorWindow::initProtectionList()
@@ -4566,6 +4580,12 @@ void ConfiguratorWindow::applicationCloseProcess()
     {
         delete m_journal_isolation;
         m_journal_isolation = nullptr;
+    }
+
+    if(m_journal_set)
+    {
+        delete m_journal_set;
+        m_journal_set = nullptr;
     }
 
     delete m_modbus;
@@ -7347,6 +7367,7 @@ bool ConfiguratorWindow::loadJournalFromProject(const CJournalWidget* widgetJour
 
     journal->resizeColumnsToContents();
     journal->horizontalHeader()->setStretchLastSection(true);
+
     m_progressbar->increment(3);
 
     return true;
@@ -7875,6 +7896,10 @@ JournalPtr ConfiguratorWindow::currentJournalWidget()
             journal = m_journal_isolation;
         break;
 
+        case DEVICE_MENU_ITEM_JOURNALS_SET:
+            journal = m_journal_set;
+        break;
+
         default:
             journal = nullptr;
         break;
@@ -8026,6 +8051,8 @@ JournalPtr ConfiguratorWindow::journalWidgetByType(const QString &type)
         journal = m_journal_halfhour;
     else if(type == "ISOLATION")
         journal = m_journal_isolation;
+    else if(type == "SET")
+        journal = m_journal_set;
     else
         journal = nullptr;
 
@@ -11262,7 +11289,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
     DeviceMenuItemType index = menuIndex();
 
-    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
+    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_SET)
     {
         switch(index)
         {
@@ -11282,6 +11309,10 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
                 readJournalCount(m_journal_isolation);
             break;
 
+            case DEVICE_MENU_ITEM_JOURNALS_SET:
+                readJournalCount(m_journal_set);
+            break;
+
             default: break;
         }
 
@@ -11289,10 +11320,10 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         int width = ui->stwgtMain->width() - 760;
 
-        ui->widgetJournalCrash->table()->setFixedWidth(475);
-        ui->widgetJournalEvent->setTableColumnWidth(3, width);
-        ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
-        ui->widgetJournalIsolation->setTableColumnWidth(3, width);
+//        ui->widgetJournalCrash->table()->setFixedWidth(475);
+//        ui->widgetJournalEvent->setTableColumnWidth(3, width);
+//        ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
+//        ui->widgetJournalIsolation->setTableColumnWidth(3, width);
 
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);

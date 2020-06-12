@@ -175,7 +175,8 @@
                 EVENT_PROPERTY,
                 CRASH_PROPERTY,
                 HALFHOUR_PROPERTY,
-                ISOLATION_PROPERTY
+                ISOLATION_PROPERTY,
+                SET_PROPERTY
             };
 
         public:
@@ -209,6 +210,7 @@
             void printEvent(const QVector<quint8> &data) const;
             void printHalfHour(const QVector<quint8> &data) const;
             void printIsolation(const QVector<quint8> &data) const;
+            void printSet(const QVector<quint8> &data) const;
 
         signals:
             void clickedButtonRead(bool = false);

@@ -15,25 +15,28 @@ CJournalWidget::CJournalWidget(QWidget* parent):
     ui->tableWidgetJournal->horizontalHeader()->setSortIndicatorShown(true);
     ui->tableWidgetJournal->verticalHeader()->hide();
 
-    ui->listViewPropertyCrashJournal->hide(); // по умолчанию окно свойств журнала аварий скрыто
-    ui->tableWidgetPropertyHalfhourJournal->hide(); // по умолчанию окно свойств журнала получасовок скрыто
-
     connect(ui->widgetJournalHeader, &CHeaderJournal::clickedButtonRead, this, &CJournalWidget::clickedButtonRead);
     connect(ui->tableWidgetJournal, &CJournalTable::clicked, this, &CJournalWidget::clickedItemTable);
     connect(this, &CJournalWidget::printFinished, this, &CJournalWidget::updateTableJournal);
 
     setAutoFillBackground(true);
 
-    CJournalPropertyModel* model = new CJournalPropertyModel(ui->listViewPropertyCrashJournal);
+    CJournalPropertyModel* model = new CJournalPropertyModel();
 
     ui->listViewPropertyCrashJournal->setModel(model);
-    ui->listViewPropertyCrashJournal->setItemDelegate(new CJournalPropertyDelegate(ui->listViewPropertyCrashJournal));
-    qDebug() << "constructo JornalWidget";
+    ui->listViewPropertyCrashJournal->setItemDelegate(new CJournalPropertyDelegate());
+
+    ui->listViewPropertyCrashJournal->hide(); // по умолчанию окно свойств журнала аварий скрыто
+    ui->tableWidgetPropertyHalfhourJournal->hide(); // по умолчанию окно свойств журнала получасовок скрыто
+
+    ui->splitter->setStretchFactor(0, 3);
+    ui->splitter->setStretchFactor(1, 2);
+
+    qDebug() << "constructor JornalWidget";
 }
 //-------------------------------
 CJournalWidget::~CJournalWidget()
 {
-
     delete ui;
 }
 //--------------------------------------------
@@ -99,6 +102,10 @@ void CJournalWidget::print(const QVector<quint16>& data) const
     {
         printIsolation(bytes);
     }
+    else if(journal_type == "SET")
+    {
+        printSet(bytes);
+    }
 }
 //----------------------------------------------------------------------------------------------------------
 void CJournalWidget::setTableHeaders(CJournalWidget::PropertyType property_type, const QStringList& headers)
@@ -118,6 +125,8 @@ void CJournalWidget::setTableColumnWidth(const QVector<int>& list)
     {
         ui->tableWidgetJournal->setColumnWidth(i, list[i]);
     }
+
+    ui->tableWidgetJournal->horizontalHeader()->setStretchLastSection(true);
 }
 //-------------------------------------------------------------
 void CJournalWidget::setTableColumnWidth(int column, int width)
@@ -126,6 +135,8 @@ void CJournalWidget::setTableColumnWidth(int column, int width)
         return;
 
     ui->tableWidgetJournal->setColumnWidth(column, width);
+
+    ui->tableWidgetJournal->horizontalHeader()->setStretchLastSection(true);
 }
 //-------------------------------------------------------
 void CJournalWidget::setJournalDescription(QVariant data)
@@ -136,7 +147,10 @@ void CJournalWidget::setJournalDescription(QVariant data)
 void CJournalWidget::setVisibleProperty(PropertyType property, bool state)
 {
     if(property == CRASH_PROPERTY)
+    {
+//        ui->listViewPropertyCrashJournal->setFixedWidth(300);
         ui->listViewPropertyCrashJournal->setVisible(state);
+    }
     else if(property == HALFHOUR_PROPERTY)
         ui->tableWidgetPropertyHalfhourJournal->setVisible(state);
 }
@@ -304,7 +318,7 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
         union // объединение для преобразования в тип float
         {
             quint8  bytes[4];
-            float   _float;
+            float   value;
             quint32 _int;
         } val;
 
@@ -339,7 +353,7 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
                     val.bytes[i] = msg_data[pos];
                 }
 
-                property_list << property_data_item_t({ item.name, QString::number(static_cast<double>(val._float), 'f', 6) });
+                property_list << property_data_item_t({ item.name, QString::number(static_cast<double>(val.value), 'f', 6) });
             }
         }
 
@@ -358,7 +372,7 @@ void CJournalWidget::printCrash(const QVector<quint8>& data) const
                     val.bytes[i] = msg_data[pos];
                 }
 
-                property_list << property_data_item_t({ value.name, QString::number(static_cast<double>(val._float), 'f', 6) });
+                property_list << property_data_item_t({ value.name, QString::number(static_cast<double>(val.value), 'f', 6) });
             }
         }
 
@@ -584,7 +598,7 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
                 union
                 {
                     quint8 buf[4];
-                    float  _float;
+                    float  value;
                 } value;
 
                 halfhour_t halfhour;
@@ -598,7 +612,7 @@ void CJournalWidget::printHalfHour(const QVector<quint8>& data) const
                     value.buf[2] = data[index + 2];
                     value.buf[3] = data[index + 3];
 
-                    halfhour.values << value._float;
+                    halfhour.values << value.value;
                 }
 
                 ui->tableWidgetJournal->setRowData(row, QVariant::fromValue(halfhour));
@@ -640,7 +654,7 @@ void CJournalWidget::printIsolation(const QVector<quint8> &data) const
             union
             {
                 quint8 buf[4];
-                float  _float;
+                float  value;
             } value;
 
             value.buf[0] = data[8];
@@ -648,7 +662,7 @@ void CJournalWidget::printIsolation(const QVector<quint8> &data) const
             value.buf[2] = data[10];
             value.buf[3] = data[11];
 
-            ui->tableWidgetJournal->setItem(row, 5, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value._float, 'f', 2))));
+            ui->tableWidgetJournal->setItem(row, 5, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value.value, 'f', 2))));
             ui->tableWidgetJournal->item(row, 5)->setTextAlignment(Qt::AlignCenter);
 
             value.buf[0] = data[12];
@@ -656,7 +670,7 @@ void CJournalWidget::printIsolation(const QVector<quint8> &data) const
             value.buf[2] = data[14];
             value.buf[3] = data[15];
 
-            ui->tableWidgetJournal->setItem(row, 6, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value._float, 'f', 2))));
+            ui->tableWidgetJournal->setItem(row, 6, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value.value, 'f', 2))));
             ui->tableWidgetJournal->item(row, 6)->setTextAlignment(Qt::AlignCenter);
 
             value.buf[0] = data[16];
@@ -664,9 +678,109 @@ void CJournalWidget::printIsolation(const QVector<quint8> &data) const
             value.buf[2] = data[18];
             value.buf[3] = data[19];
 
-            ui->tableWidgetJournal->setItem(row, 7, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value._float, 'f', 2))));
+            ui->tableWidgetJournal->setItem(row, 7, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(value.value, 'f', 2))));
             ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignCenter);
         }
+    }
+
+    emit printFinished();
+}
+//--------------------------------------------------------------
+void CJournalWidget::printSet(const QVector<quint8> &data) const
+{
+    union
+    {
+        quint8 buf[4];
+        float  value;
+    } Float;
+
+    union
+    {
+        quint8 buf[2];
+        quint16 value;
+    } U16;
+
+    for(int i = 0; i < data.count(); i += 24)
+    {
+        quint16   id  = static_cast<quint16>((data[i + 1] << 8) | data[i]);
+        QDateTime dt  = unpackDateTime(QVector<quint8>() << data[i + 2] << data[i + 3] << data[i + 4] << data[i + 5] << data[i + 6]);
+        int       row = ui->tableWidgetJournal->rowCount();
+
+        ui->tableWidgetJournal->insertRow(row);
+
+        ui->tableWidgetJournal->setItem(row, 0, new CTableWidgetItem(QString("%1").arg(row + m_row_start)));
+        ui->tableWidgetJournal->setItem(row, 1, new CTableWidgetItem(QString("%1").arg(id)));
+        ui->tableWidgetJournal->setItem(row, 2, new CTableWidgetItem(dt.date().toString("dd.MM.yyyy")));
+        ui->tableWidgetJournal->setItem(row, 3, new CTableWidgetItem(dt.time().toString("HH:mm:ss.zzz")));
+
+        ui->tableWidgetJournal->item(row, 0)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
+
+        QStringList source_str_list = QStringList() << tr("меню") << tr("АРМ (запись по MODBUS)") << tr("БЗУ (установка умолчаний)");
+
+        quint8 source = (data[i + 7]&0xF0) >> 4;
+        quint8 code = (data[i + 7]&0x0F);
+        quint8 source_index = 0;
+
+        if(source < source_str_list.count())
+            source_index = source;
+
+        ui->tableWidgetJournal->setItem(row, 4, new CTableWidgetItem(QString("%1").arg(source_str_list[source_index])));
+        ui->tableWidgetJournal->setItem(row, 5, new CTableWidgetItem(QString("%1").arg(code)));
+
+        ui->tableWidgetJournal->item(row, 4)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 5)->setTextAlignment(Qt::AlignCenter);
+
+        QString value = "";
+
+        if((data[i + 8] | (data[i + 9] << 8) | (data[i + 10] << 16) | (data[i + 11] << 24)) <= 255) // значение слишком маленькое, чтобы предствлять тип float
+        {
+            U16.buf[0] = data[i + 8];
+            U16.buf[1] = data[i + 9];
+
+            value = QLocale::system().toString(U16.value);
+        }
+        else
+        {
+            Float.buf[0] = data[i + 8];
+            Float.buf[1] = data[i + 9];
+            Float.buf[2] = data[i + 10];
+            Float.buf[3] = data[i + 11];
+
+            value = QLocale::system().toString(Float.value, 'f', 2);
+        }
+
+        ui->tableWidgetJournal->setItem(row, 6, new CTableWidgetItem(QString("%1").arg(value)));
+
+        if((data[i + 12] | (data[i + 13] << 8) | (data[i + 14] << 16) | (data[i + 15] << 24)) <= 255) // значение слишком маленькое, чтобы предствлять тип float
+        {
+            U16.buf[0] = data[i + 12];
+            U16.buf[1] = data[i + 13];
+
+            value = QLocale::system().toString(U16.value);
+        }
+        else
+        {
+            Float.buf[0] = data[i + 12];
+            Float.buf[1] = data[i + 13];
+            Float.buf[2] = data[i + 14];
+            Float.buf[3] = data[i + 15];
+
+            value = QLocale::system().toString(Float.value, 'f', 2);
+        }
+
+        ui->tableWidgetJournal->setItem(row, 7, new CTableWidgetItem(QString("%1").arg(value)));
+
+        U16.buf[0] = data[i + 16];
+        U16.buf[1] = data[i + 17];
+
+        ui->tableWidgetJournal->setItem(row, 8, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(U16.value))));
+
+        ui->tableWidgetJournal->item(row, 6)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidgetJournal->item(row, 8)->setTextAlignment(Qt::AlignCenter);
     }
 
     emit printFinished();

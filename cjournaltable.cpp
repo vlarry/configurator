@@ -3,7 +3,7 @@
 CJournalTable::CJournalTable(QWidget* parent):
     QTableWidget(parent)
 {
-
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 /*!
  * \brief CJournalTable::rowData

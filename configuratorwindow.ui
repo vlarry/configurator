@@ -36,21 +36,6 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="spacing">
-     <number>7</number>
-    </property>
-    <property name="leftMargin">
-     <number>11</number>
-    </property>
-    <property name="topMargin">
-     <number>11</number>
-    </property>
-    <property name="rightMargin">
-     <number>11</number>
-    </property>
-    <property name="bottomMargin">
-     <number>11</number>
-    </property>
     <item>
      <widget class="CMenuBar" name="widgetMenuBar" native="true">
       <property name="sizePolicy">
@@ -1813,7 +1798,7 @@
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="currentIndex">
-            <number>23</number>
+            <number>12</number>
            </property>
            <widget class="QWidget" name="pageInAnalogMain">
             <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2261,7 +2246,11 @@
               <number>2</number>
              </property>
              <item>
-              <widget class="CJournalWidget" name="widgetJournalIsolation" native="true"/>
+              <widget class="CJournalWidget" name="widgetJournalIsolation" native="true">
+               <property name="cursor">
+                <cursorShape>ArrowCursor</cursorShape>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -2793,6 +2782,35 @@
             </layout>
            </widget>
            <widget class="QWidget" name="pageDebugVariable"/>
+           <widget class="QWidget" name="pageJournalSet">
+            <layout class="QVBoxLayout" name="verticalLayout_21">
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <item>
+              <widget class="CJournalWidget" name="widgetJournalSet" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
           <widget class="QFrame" name="framePanelMessage">
            <property name="sizePolicy">

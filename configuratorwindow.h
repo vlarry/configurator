@@ -224,6 +224,7 @@
                 DEVICE_MENU_ITEM_JOURNALS_EVENTS                 = 3012,
                 DEVICE_MENU_ITEM_JOURNALS_HALF_HOURS             = 3013,
                 DEVICE_MENU_ITEM_JOURNALS_ISOLATION              = 3014,
+                DEVICE_MENU_ITEM_JOURNALS_SET                    = 3015,
                 DEVICE_MENU_ITEM_MEASURES_INPUTS                 = 4011,
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG         = 5100,
                 DEVICE_MENU_ITEM_SETTINGS_ITEM_COMMUNICATIONS    = 5200,
@@ -837,6 +838,7 @@
             JournalPtr                       m_journal_event; // журнал событий
             JournalPtr                       m_journal_halfhour; // журнал получасовок
             JournalPtr                       m_journal_isolation; // журнал изоляции
+            JournalPtr                       m_journal_set; // журнал уставок
             JournalProgress                 *m_journal_progress; // прогресбар для чтения журнала
             QString                          m_project_cur_path; // путь к текущему проекту
             QString                          m_serial_port_name; // имя com-порта по умолчанию
