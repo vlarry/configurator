@@ -718,7 +718,7 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
         ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
         ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
 
-        QStringList source_str_list = QStringList() << tr("меню") << tr("АРМ (запись по MODBUS)") << tr("БЗУ (установка умолчаний)");
+        QStringList source_str_list = QStringList() << tr("меню") << tr("АРМ (запись по MODBUS)") << tr("БЗУ (установка умолчаний)") << tr("БЗУ (прочее)");
 
         quint8 source = (data[i + 7]&0xF0) >> 4;
         quint8 code = (data[i + 7]&0x0F);

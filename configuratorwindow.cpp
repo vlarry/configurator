@@ -2392,7 +2392,7 @@ void ConfiguratorWindow::processExport()
 {
     DeviceMenuItemType index = menuIndex();
 
-    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
+    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_SET)
         exportJournalToDb();
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
@@ -2410,7 +2410,7 @@ void ConfiguratorWindow::processImport()
 {
     DeviceMenuItemType index = menuIndex();
 
-    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_ISOLATION)
+    if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_SET)
         importJournalToTable();
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
@@ -7980,7 +7980,8 @@ void ConfiguratorWindow::endJournalRead(JournalPtr journal)
         QString msg;
         QString journal_type = journal->widget()->property("TYPE").toString();
         QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?
-                                                         tr("Получасовок"):(journal_type == "ISOLATION")?tr("Изоляций"):tr("Неизвестный");
+                                                         tr("Получасовок"):(journal_type == "ISOLATION")?tr("Изоляций"):
+                                                         (journal_type == "SET")?tr("Уставок"):tr("Неизвестный");
 
         if(m_journal_progress)
         {
@@ -8031,7 +8032,7 @@ QString ConfiguratorWindow::journalName(JournalPtr journal)
 
     QString journal_type = journal->widget()->property("TYPE").toString();
     QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?tr("Получасовок"):
-                           (journal_type == "ISOLATION")?tr("Изоляций"):tr("Неизвестный");
+                           (journal_type == "ISOLATION")?tr("Изоляций"):(journal_type == "SET")?tr("Уставок"):tr("Неизвестный");
 
     return journal_name;
 }
@@ -9040,7 +9041,7 @@ void ConfiguratorWindow::clearJournal()
 
     QString journal_type = journal->widget()->property("TYPE").toString();
     QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?tr("Получасовок"):
-                                                     tr("Неизвестный");
+                           (journal_type == "SET")?tr("Уставок"):tr("Неизвестный");
 
     journal->widget()->journalClear();
     journal->widget()->headerClear();
@@ -9141,6 +9142,8 @@ void ConfiguratorWindow::startMenuJournalImportFromDB(const QString &type)
         index = 14;
     else if(type == "ISOLATION")
         index = 15;
+    else if(type == "SET")
+        index = 26;
 
     if(index != -1)
     {
@@ -9902,6 +9905,8 @@ void ConfiguratorWindow::newProject()
     m_project_cur_path = projectPathName;
     m_is_set_change = true; // создан новый проект - есть возможность сохранения его в файл
     emit ui->widgetMenuBar->widgetMenu()->addOpenDocument(m_project_cur_path);
+
+    setDefaultSettings();
 }
 //----------------------------------------
 void ConfiguratorWindow::openFileProject()
@@ -10512,6 +10517,28 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
         if(!query.exec(db_str))
         {
             showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу свойств журналов получасовок: ").arg(query.lastError().text()),
+                           QMessageBox::Warning);
+            return false;
+        }
+    }
+    else if(journal_type == "SET")
+    {
+        // создание таблицы для хранения журналов уставок
+        db_str = QString("CREATE TABLE %1 ("
+                 "id_msg INTEGER NOT NULL, "
+                 "date STRING NOT NULL, "
+                 "time STRING, "
+                 "source STRING, "
+                 "code STRING, "
+                 "p_container STRING, "
+                 "n_container STRING, "
+                 "index_val STRING, "
+                 "sn_device INTEGER NOT NULL, "
+                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));").arg(tableName);
+
+        if(!query.exec(db_str))
+        {
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу журналов уставок: ").arg(query.lastError().text()),
                            QMessageBox::Warning);
             return false;
         }
@@ -11390,13 +11417,6 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
 
         ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
 
-        int width = ui->stwgtMain->width() - 760;
-
-//        ui->widgetJournalCrash->table()->setFixedWidth(475);
-//        ui->widgetJournalEvent->setTableColumnWidth(3, width);
-//        ui->widgetJournalHalfHour->setTableColumnWidth(3, width);
-//        ui->widgetJournalIsolation->setTableColumnWidth(3, width);
-
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
         ui->pbtnFilter->setVisible(true);
@@ -11724,6 +11744,10 @@ void ConfiguratorWindow::importJournalToTable(JournalPtr journal_ptr)
             table->setItem(row, 4, new CTableWidgetItem(type));
             table->setItem(row, 5, new CTableWidgetItem(category));
             table->setItem(row, 6, new CTableWidgetItem(parameter));
+
+            table->item(row, 4)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 5)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 6)->setTextAlignment(Qt::AlignCenter);
         }
         else if(journal_type == "CRASH")
         {
@@ -11731,6 +11755,7 @@ void ConfiguratorWindow::importJournalToTable(JournalPtr journal_ptr)
             int     id_journal = query.value("id_journal").toInt();
 
             table->setItem(row, 4, new CTableWidgetItem(protection));
+            table->item(row, 4)->setTextAlignment(Qt::AlignCenter);
 
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*db);
@@ -11761,6 +11786,8 @@ void ConfiguratorWindow::importJournalToTable(JournalPtr journal_ptr)
 
             table->setItem(row, 4, new CTableWidgetItem(type));
             table->setItem(row, 5, new CTableWidgetItem(time_reset));
+            table->item(row, 4)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 5)->setTextAlignment(Qt::AlignCenter);
 
             // формирование запроса для получения свойств записи
             QSqlQuery query_property(*db);
@@ -11780,6 +11807,26 @@ void ConfiguratorWindow::importJournalToTable(JournalPtr journal_ptr)
 
             if(!halfhour.values.isEmpty() && (!type.isEmpty() && type.toUpper() == tr("ДАННЫЕ")))
                 table->setRowData(row, QVariant::fromValue(halfhour));
+        }
+        else if(journal_type == "SET")
+        {
+            QString source      = query.value("source").toString();
+            QString code        = query.value("code").toString();
+            QString p_container = query.value("p_container").toString();
+            QString n_container = query.value("n_container").toString();
+            QString index       = query.value("index_val").toString();
+
+            table->setItem(row, 4, new CTableWidgetItem(source));
+            table->setItem(row, 5, new CTableWidgetItem(code));
+            table->setItem(row, 6, new CTableWidgetItem(p_container));
+            table->setItem(row, 7, new CTableWidgetItem(n_container));
+            table->setItem(row, 8, new CTableWidgetItem(index));
+
+            table->item(row, 4)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 5)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 6)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 7)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 8)->setTextAlignment(Qt::AlignCenter);
         }
 
         m_progressbar->progressIncrement();
@@ -11996,8 +12043,6 @@ void ConfiguratorWindow::exportJournalToDb(JournalPtr journal_ptr)
         return;
 
     QPoint pos(0, table->rowCount() - 1);
-
-
     CFilter filter = journal->filter(); // получаем фильтр
 
     if(filter && filter.type() == CFilter::FilterDateType) // фильтр активен
@@ -12129,6 +12174,31 @@ void ConfiguratorWindow::exportJournalToDb(JournalPtr journal_ptr)
                 }
 
                 id_journal++;
+            }
+        }
+        else if(journal_type == "SET")
+        {
+            QString source      = journal->widget()->table()->item(i, 4)->text();
+            QString code        = journal->widget()->table()->item(i, 5)->text();
+            QString p_container = journal->widget()->table()->item(i, 6)->text();
+            QString n_container = journal->widget()->table()->item(i, 7)->text();
+            QString index       = journal->widget()->table()->item(i, 6)->text();
+
+            query.prepare(QString("INSERT OR REPLACE INTO journals (id_msg, date, time, source, code, p_container, n_container, index_val, sn_device)"
+                                  "VALUES(:id_msg, :date, :time, :source, :code, :p_container, :n_container, :index_val, :sn_device)"));
+            query.bindValue(":id_msg", id_msg);
+            query.bindValue(":date", date);
+            query.bindValue(":time", time);
+            query.bindValue(":source", source);
+            query.bindValue(":code", code);
+            query.bindValue(":p_container", p_container);
+            query.bindValue(":n_container", n_container);
+            query.bindValue(":index_val", index);
+            query.bindValue(":sn_device", id);
+
+            if(!query.exec())
+            {
+                outLogMessage(tr("Ошибка вставки данных журнала событий в БД: %1").arg(query.lastError().text()));
             }
         }
 

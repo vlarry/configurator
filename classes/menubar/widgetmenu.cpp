@@ -174,6 +174,10 @@ void CWidgetMenu::emitExport(CWidgetMenu::ButtonIDType id)
         {
             journal_type = "ISOLATION";
         }
+        else if(m_operation.operation == BUTTON_JOURNAL_SET_EXPORT)
+        {
+            journal_type = "SET";
+        }
 
         if(journal_type.isEmpty())
             return;
@@ -318,6 +322,10 @@ void CWidgetMenu::emitImport(CWidgetMenu::ButtonIDType id)
         {
             journal_type = "ISOLATION";
         }
+        else if(m_operation.operation == BUTTON_JOURNAL_SET_IMPORT)
+        {
+            journal_type = "SET";
+        }
 
         if(journal_type.isEmpty())
             return;
@@ -442,6 +450,7 @@ void CWidgetMenu::initMenu()
     ui->toolButtonJournalEventExport->setButtonMenu(true, 3);
     ui->toolButtonJournalHalfhourExport->setButtonMenu(true, 3);
     ui->toolButtonJournalIsolationExport->setButtonMenu(true, 3);
+    ui->toolButtonJournalSetExport->setButtonMenu(true, 3);
     ui->toolButtonSettingsAnalogInputExport->setButtonMenu(true, 3);
     ui->toolButtonSettingsDiscretInputExport->setButtonMenu(true, 3);
     ui->toolButtonSettingsRelayExport->setButtonMenu(true, 3);
@@ -454,6 +463,7 @@ void CWidgetMenu::initMenu()
     ui->toolButtonJournalEventExport->setID(BUTTON_JOURNAL_EVENT_EXPORT);
     ui->toolButtonJournalHalfhourExport->setID(BUTTON_JOURNAL_HALFHOUR_EXPORT);
     ui->toolButtonJournalIsolationExport->setID(BUTTON_JOURNAL_ISOLATION_EXPORT);
+    ui->toolButtonJournalSetExport->setID(BUTTON_JOURNAL_SET_EXPORT);
     ui->toolButtonSettingsAnalogInputExport->setID(BUTTON_SETTINGS_ANALOG_INPUT_EXPORT);
     ui->toolButtonSettingsDiscretInputExport->setID(BUTTON_SETTINGS_DISCRET_INPUT_EXPORT);
     ui->toolButtonSettingsRelayExport->setID(BUTTON_SETTINGS_RELAY_EXPORT);
@@ -463,11 +473,11 @@ void CWidgetMenu::initMenu()
     m_button_menu_list << ui->toolButtonExportProject << ui->toolButtonImportProject << ui->toolButtonSettings <<
                           ui->toolButtonProtectionExport << ui->toolButtonJournalExport << ui->toolButtonSettingsExport <<
                           ui->toolButtonJournalCrashExport << ui->toolButtonJournalEventExport << ui->toolButtonJournalHalfhourExport <<
-                          ui->toolButtonJournalIsolationExport << ui->toolButtonSettingsAnalogInputExport <<
+                          ui->toolButtonJournalIsolationExport << ui->toolButtonJournalSetExport << ui->toolButtonSettingsAnalogInputExport <<
                           ui->toolButtonSettingsDiscretInputExport << ui->toolButtonSettingsRelayExport << ui->toolButtonSettingsLedExport <<
                           ui->toolButtonSettingsProtectionBlockExport << ui->toolButtonProtectionImport << ui->toolButtonJournalImport <<
                           ui->toolButtonSettingsImport << ui->toolButtonJournalCrashImport << ui->toolButtonJournalEventImport <<
-                          ui->toolButtonJournalHalfhourImport << ui->toolButtonJournalIsolationImport <<
+                          ui->toolButtonJournalHalfhourImport << ui->toolButtonJournalIsolationImport << ui->toolButtonJournalSetImport <<
                           ui->toolButtonSettingsAnalogInputImport << ui->toolButtonSettingsDiscretInputImport <<
                           ui->toolButtonSettingsRelayImport << ui->toolButtonSettingsLedImport <<
                           ui->toolButtonSettingsProtectionBlockImport;
@@ -507,6 +517,7 @@ void CWidgetMenu::initMenu()
     connect(ui->toolButtonJournalEventExport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonJournalHalfhourExport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonJournalIsolationExport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
+    connect(ui->toolButtonJournalSetExport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
 
     connect(ui->toolButtonSettingsAnalogInputExport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonSettingsDiscretInputExport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
@@ -522,6 +533,7 @@ void CWidgetMenu::initMenu()
     ui->toolButtonJournalEventImport->setButtonMenu(true, 3);
     ui->toolButtonJournalHalfhourImport->setButtonMenu(true, 3);
     ui->toolButtonJournalIsolationImport->setButtonMenu(true, 3);
+    ui->toolButtonJournalSetImport->setButtonMenu(true, 3);
     ui->toolButtonSettingsAnalogInputImport->setButtonMenu(true, 3);
     ui->toolButtonSettingsDiscretInputImport->setButtonMenu(true, 3);
     ui->toolButtonSettingsRelayImport->setButtonMenu(true, 3);
@@ -534,6 +546,7 @@ void CWidgetMenu::initMenu()
     ui->toolButtonJournalEventImport->setID(BUTTON_JOURNAL_EVENT_IMPORT);
     ui->toolButtonJournalHalfhourImport->setID(BUTTON_JOURNAL_HALFHOUR_IMPORT);
     ui->toolButtonJournalIsolationImport->setID(BUTTON_JOURNAL_ISOLATION_IMPORT);
+    ui->toolButtonJournalSetImport->setID(BUTTON_JOURNAL_SET_IMPORT);
     ui->toolButtonSettingsAnalogInputImport->setID(BUTTON_SETTINGS_ANALOG_INPUT_IMPORT);
     ui->toolButtonSettingsDiscretInputImport->setID(BUTTON_SETTINGS_DISCRET_INPUT_IMPORT);
     ui->toolButtonSettingsRelayImport->setID(BUTTON_SETTINGS_RELAY_IMPORT);
@@ -563,6 +576,7 @@ void CWidgetMenu::initMenu()
     connect(ui->toolButtonJournalEventImport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonJournalHalfhourImport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonJournalIsolationImport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
+    connect(ui->toolButtonJournalSetImport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
 
     connect(ui->toolButtonSettingsAnalogInputImport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
     connect(ui->toolButtonSettingsDiscretInputImport, &CToolButton::hovered, this, &CWidgetMenu::hoverChanged);
@@ -679,6 +693,7 @@ void CWidgetMenu::hoverChanged(int id)
         case BUTTON_JOURNAL_EVENT_EXPORT:
         case BUTTON_JOURNAL_HALFHOUR_EXPORT:
         case BUTTON_JOURNAL_ISOLATION_EXPORT:
+        case BUTTON_JOURNAL_SET_EXPORT:
             exportJournalMenu();
             m_operation.operation = id;
         break;
@@ -727,6 +742,7 @@ void CWidgetMenu::hoverChanged(int id)
         case BUTTON_JOURNAL_EVENT_IMPORT:
         case BUTTON_JOURNAL_HALFHOUR_IMPORT:
         case BUTTON_JOURNAL_ISOLATION_IMPORT:
+        case BUTTON_JOURNAL_SET_IMPORT:
             importJournalMenu();
             m_operation.operation = id;
         break;

@@ -152,7 +152,7 @@ void CSerialPortSetting::closeEvent(QCloseEvent* event)
 //----------------------------------------------------
 QSerialPort::Parity CSerialPortSetting::parity() const
 {
-    QSerialPort::Parity p;
+    QSerialPort::Parity p = QSerialPort::NoParity;
 
     switch(ui->comboBoxParity->currentIndex())
     {

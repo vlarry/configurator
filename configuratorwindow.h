@@ -77,7 +77,7 @@
     #include "ccheckboxinternalvariable.h"
     #include "calibrationcontroller.h"
     //--------------------
-    #define CLIENT_RELEASE
+//    #define CLIENT_RELEASE
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");
     const QString ORGANIZATION_DOMAIN = QObject::tr("http://www.rpa.ua/");
