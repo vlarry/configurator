@@ -10521,6 +10521,26 @@ bool ConfiguratorWindow::createJournalTable(QSqlDatabase* db, const QString& jou
             return false;
         }
     }
+    else if(journal_type == "ISOLATION")
+    {
+        // создание таблицы для хранения журналов изоляций
+        db_str = QString("CREATE TABLE %1 ("
+                 "id_msg INTEGER NOT NULL, "
+                 "date STRING(25) NOT NULL, "
+                 "time STRING(25), "
+                 "type STRING(25), "
+                 "ra STRING(25), "
+                 "rb STRING(25), "
+                 "rc STRING(25), "
+                 "sn_device INTEGER NOT NULL, "
+                 "CONSTRAINT new_pk PRIMARY KEY (id_msg, date, time, sn_device));").arg(tableName);
+
+        if(!query.exec(db_str))
+        {
+            showMessageBox(tr("Создание таблицы"), tr("Невозможно создать таблицу журналов изоляций: ").arg(query.lastError().text()), QMessageBox::Warning);
+            return false;
+        }
+    }
     else if(journal_type == "SET")
     {
         // создание таблицы для хранения журналов уставок
@@ -11808,6 +11828,23 @@ void ConfiguratorWindow::importJournalToTable(JournalPtr journal_ptr)
             if(!halfhour.values.isEmpty() && (!type.isEmpty() && type.toUpper() == tr("ДАННЫЕ")))
                 table->setRowData(row, QVariant::fromValue(halfhour));
         }
+        else if(journal_type == "ISOLATION")
+        {
+            QString type = query.value("type").toString();
+            QString ra   = query.value("ra").toString();
+            QString rb   = query.value("rb").toString();
+            QString rc   = query.value("rc").toString();
+
+            table->setItem(row, 4, new CTableWidgetItem(type));
+            table->setItem(row, 5, new CTableWidgetItem(ra));
+            table->setItem(row, 6, new CTableWidgetItem(rb));
+            table->setItem(row, 7, new CTableWidgetItem(rc));
+
+            table->item(row, 4)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 5)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 6)->setTextAlignment(Qt::AlignCenter);
+            table->item(row, 7)->setTextAlignment(Qt::AlignCenter);
+        }
         else if(journal_type == "SET")
         {
             QString source      = query.value("source").toString();
@@ -12176,6 +12213,29 @@ void ConfiguratorWindow::exportJournalToDb(JournalPtr journal_ptr)
                 id_journal++;
             }
         }
+        else if(journal_type == "ISOLATION")
+        {
+            QString type = journal->widget()->table()->item(i, 4)->text();
+            QString ra   = journal->widget()->table()->item(i, 5)->text();
+            QString rb   = journal->widget()->table()->item(i, 6)->text();
+            QString rc   = journal->widget()->table()->item(i, 7)->text();
+
+            query.prepare(QString("INSERT OR REPLACE INTO journals (id_msg, date, time, type, ra, rb, rc, sn_device)"
+                                  "VALUES(:id_msg, :date, :time, :type, :ra, :rb, :rc, :sn_device)"));
+            query.bindValue(":id_msg", id_msg);
+            query.bindValue(":date", date);
+            query.bindValue(":time", time);
+            query.bindValue(":type", type);
+            query.bindValue(":ra", ra);
+            query.bindValue(":rb", rb);
+            query.bindValue(":rc", rc);
+            query.bindValue(":sn_device", id);
+
+            if(!query.exec())
+            {
+                outLogMessage(tr("Ошибка вставки данных журнала изоляций в БД: %1").arg(query.lastError().text()));
+            }
+        }
         else if(journal_type == "SET")
         {
             QString source      = journal->widget()->table()->item(i, 4)->text();
@@ -12198,7 +12258,7 @@ void ConfiguratorWindow::exportJournalToDb(JournalPtr journal_ptr)
 
             if(!query.exec())
             {
-                outLogMessage(tr("Ошибка вставки данных журнала событий в БД: %1").arg(query.lastError().text()));
+                outLogMessage(tr("Ошибка вставки данных журнала уставок в БД: %1").arg(query.lastError().text()));
             }
         }
 
