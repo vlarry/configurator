@@ -3456,7 +3456,7 @@ void ConfiguratorWindow::initMenuPanel()
     m_menu_items[DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG]         = 0;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_CURRENT]                 = 1;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_POWER]                   = 2;
-    m_menu_items[DEVICE_MENU_PROTECT_ITEM_LEAK]                = 3;
+    m_menu_items[DEVICE_MENU_PROTECT_ITEM_LEAK]                    = 3;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_FREQUENCY]               = 4;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_EXTERNAL]                = 5;
     m_menu_items[DEVICE_MENU_PROTECT_ITEM_TEMPERATURE]             = 6;
@@ -4071,7 +4071,8 @@ void ConfiguratorWindow::initJournals()
     QStringList isolationJournalHeaders = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Тип измерения") << tr("Ra, кОм") <<
                                                            tr("Rb, кОм") << tr("Rc, кОм");
     QStringList setJournalHeaders       = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Источник") << tr("Код доступа") <<
-                                                           tr("Контейнер пред знач") << tr("Контейнер нового знач") << tr("Индекс знач");
+                                                           tr("Параметр") << tr("Контейнер пред знач") << tr("Контейнер нового знач") <<
+                                                           tr("Индекс знач");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
@@ -4095,7 +4096,7 @@ void ConfiguratorWindow::initJournals()
     ui->widgetJournalEvent->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300 << 100);
     ui->widgetJournalHalfHour->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 300);
     ui->widgetJournalIsolation->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 200 << 200 << 200 << 200 << 200);
-    ui->widgetJournalSet->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 200 << 300 << 300 << 200);
+    ui->widgetJournalSet->setTableColumnWidth(QVector<int>() << 50 << 100 << 100 << 100 << 200 << 200 << 300 << 300 << 300 << 150);
 
     ui->widgetJournalCrash->setVisibleProperty(CJournalWidget::CRASH_PROPERTY, true);
     ui->widgetJournalHalfHour->setVisibleProperty(CJournalWidget::HALFHOUR_PROPERTY , true);
@@ -4105,6 +4106,14 @@ void ConfiguratorWindow::initJournals()
     m_journal_halfhour = new CJournal(0x20, 0x2A, 0x3016, 0x5000, ui->widgetJournalHalfHour);
     m_journal_isolation = new CJournal(0x10, 0x2E, 0x301B, 0x6000, ui->widgetJournalIsolation);
     m_journal_set = new CJournal(0x0C, 0x32, 0x3020, 0x7000, ui->widgetJournalSet);
+
+    set_property_t set;
+    loadJournalSetProperty(set);
+
+    if(!set.isEmpty())
+    {
+        ui->widgetJournalSet->setPropertySettings(set);
+    }
 }
 //-------------------------------------------
 void ConfiguratorWindow::initProtectionList()
@@ -8254,6 +8263,44 @@ void ConfiguratorWindow::setDefaultSettings()
                 }
             }
         }
+    }
+}
+//------------------------------------------------------------------
+void ConfiguratorWindow::loadJournalSetProperty(set_property_t &map)
+{
+    QSqlQuery query(m_system_db);
+
+    if(!query.exec("SELECT key, valindex, valbind, valdescription FROM menu_item where type='SET' and valindex is not NULL and valbind is not NULL;"))
+    {
+        outLogMessage(tr("Не удалось прочитать свойства журнала уставок: %1").arg(query.lastError().text()));
+        return;
+    }
+
+    while(query.next())
+    {
+        int valindex = query.value("valindex").toInt();
+        QString key = query.value("key").toString();
+        QString valbind = query.value("valbind").toString();
+        QString valdesc = query.value("valdescription").toString();
+
+        QVector<QString> items;
+
+        if(valbind.toUpper() == "INT")
+        {
+            QSqlQuery query_items(m_system_db);
+
+            if(!query_items.exec(QString("select name from menu_item_choice where key='%1';").arg(key)))
+            {
+                outLogMessage(tr("Не удалось прочитать итемы переменной %1: %2").arg(key).arg(query.lastError().text()));
+            }
+
+            while(query_items.next())
+            {
+                items << query_items.value("name").toString();
+            }
+        }
+
+        map[valindex] = { { key, items }, valdesc, valbind };
     }
 }
 //--------------------------------------------------------------------------------------------------------------------------------------

@@ -175,6 +175,11 @@ void CJournalWidget::setHalfhourHeaders(const QVector<halfhour_item_t>& halfhour
     ui->tableWidgetPropertyHalfhourJournal->setHorizontalHeaderLabels(hor_labels);
     ui->tableWidgetPropertyHalfhourJournal->setVerticalHeaderLabels(ver_labels);
 }
+//-----------------------------------------------------------------
+void CJournalWidget::setPropertySettings(const set_property_t &set)
+{
+    m_set_property = set;
+}
 //---------------------------------------
 void CJournalWidget::journalClear() const
 {
@@ -733,54 +738,71 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
         ui->tableWidgetJournal->item(row, 4)->setTextAlignment(Qt::AlignCenter);
         ui->tableWidgetJournal->item(row, 5)->setTextAlignment(Qt::AlignCenter);
 
-        QString value = "";
+        quint16 valindex = static_cast<quint16>((data[i + 17] << 8) | data[i + 16]);
 
-        if((data[i + 8] | (data[i + 9] << 8) | (data[i + 10] << 16) | (data[i + 11] << 24)) <= 255) // значение слишком маленькое, чтобы предствлять тип float
+        if(m_set_property.find(valindex) != m_set_property.end())
         {
-            U16.buf[0] = data[i + 8];
-            U16.buf[1] = data[i + 9];
+            set_param_t param = m_set_property[valindex];
 
-            value = QLocale::system().toString(U16.value);
+            QString strval_prev = "";
+            QString strval_next = "";
+
+            ui->tableWidgetJournal->setItem(row, 6, new CTableWidgetItem(QString("%1").arg(param.description)));
+            ui->tableWidgetJournal->item(row, 6)->setTextAlignment(Qt::AlignLeft);
+
+            if(param.type.toUpper() == "FLOAT")
+            {
+                Float.buf[0] = data[i + 8];
+                Float.buf[1] = data[i + 9];
+                Float.buf[2] = data[i + 10];
+                Float.buf[3] = data[i + 11];
+
+                strval_prev = QLocale::system().toString(Float.value, 'f', 2);
+
+                Float.buf[0] = data[i + 12];
+                Float.buf[1] = data[i + 13];
+                Float.buf[2] = data[i + 14];
+                Float.buf[3] = data[i + 15];
+
+                strval_next = QLocale::system().toString(Float.value, 'f', 2);
+            }
+            else if(param.type.toUpper() == "INT")
+            {
+                QVector<QString> items = param.item.items;
+
+                U16.buf[0] = data[i + 8];
+                U16.buf[1] = 0;
+
+                if(!items.isEmpty() && U16.value <= items.count())
+                {
+                    int index = U16.value - 1;
+
+                    if(index < 0)
+                        index = 0;
+
+                    strval_prev = items[index];
+
+                    U16.buf[0] = data[i + 12];
+                    U16.buf[1] = 0;
+
+                    if(!items.isEmpty() && U16.value <= items.count())
+                    {
+                        index = U16.value - 1;
+
+                        if(index < 0)
+                            index = 0;
+
+                        strval_next = items[index];
+                    }
+                }
+            }
+
+            ui->tableWidgetJournal->setItem(row, 7, new CTableWidgetItem(QString("%1").arg(strval_prev)));
+            ui->tableWidgetJournal->setItem(row, 8, new CTableWidgetItem(QString("%1").arg(strval_next)));
+
+            ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignCenter);
+            ui->tableWidgetJournal->item(row, 8)->setTextAlignment(Qt::AlignCenter);
         }
-        else
-        {
-            Float.buf[0] = data[i + 8];
-            Float.buf[1] = data[i + 9];
-            Float.buf[2] = data[i + 10];
-            Float.buf[3] = data[i + 11];
-
-            value = QLocale::system().toString(Float.value, 'f', 2);
-        }
-
-        ui->tableWidgetJournal->setItem(row, 6, new CTableWidgetItem(QString("%1").arg(value)));
-
-        if((data[i + 12] | (data[i + 13] << 8) | (data[i + 14] << 16) | (data[i + 15] << 24)) <= 255) // значение слишком маленькое, чтобы предствлять тип float
-        {
-            U16.buf[0] = data[i + 12];
-            U16.buf[1] = data[i + 13];
-
-            value = QLocale::system().toString(U16.value);
-        }
-        else
-        {
-            Float.buf[0] = data[i + 12];
-            Float.buf[1] = data[i + 13];
-            Float.buf[2] = data[i + 14];
-            Float.buf[3] = data[i + 15];
-
-            value = QLocale::system().toString(Float.value, 'f', 2);
-        }
-
-        ui->tableWidgetJournal->setItem(row, 7, new CTableWidgetItem(QString("%1").arg(value)));
-
-        U16.buf[0] = data[i + 16];
-        U16.buf[1] = data[i + 17];
-
-        ui->tableWidgetJournal->setItem(row, 8, new CTableWidgetItem(QString("%1").arg(QLocale::system().toString(U16.value))));
-
-        ui->tableWidgetJournal->item(row, 6)->setTextAlignment(Qt::AlignCenter);
-        ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignCenter);
-        ui->tableWidgetJournal->item(row, 8)->setTextAlignment(Qt::AlignCenter);
     }
 
     emit printFinished();

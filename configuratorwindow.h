@@ -772,6 +772,7 @@
             int rowSheetExcel(QXlsx::Document &xlsx, QStringList &columns);
             int bitByVariableName(const QString &key);
             void setDefaultSettings();
+            void loadJournalSetProperty(set_property_t &map);
 
         signals:
             void buttonReadJournalStateChanged(bool = false);

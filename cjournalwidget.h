@@ -162,8 +162,23 @@
         QString name;
         QString description;
     };
+    //--------------
+    struct set_key_t
+    {
+        QString key;
+        QVector<QString> items;
+    };
+    //----------------
+    struct set_param_t
+    {
+        set_key_t item;
+        QString description;
+        QString type;
+    };
     //-------------------------------------------------
     typedef QVector<halfhour_item_t> halfhour_labels_t;
+    //--------------------------------------------
+    typedef QMap<int, set_param_t> set_property_t; // карта для журнала уставок (привязка значение к текстовому описанию контейнера значения)
     //----------------------------------
     class CJournalWidget: public QWidget
     {
@@ -195,6 +210,7 @@
             void setJournalDescription(QVariant data);
             void setVisibleProperty(PropertyType property, bool state = false);
             void setHalfhourHeaders(const QVector<halfhour_item_t>& halfhour_cols, const QVector<halfhour_item_t>& halfhour_rows);
+            void setPropertySettings(const set_property_t &set);
 
             void journalClear() const;
             bool journalIsEmpty() const;
@@ -227,10 +243,12 @@
             QVariant              m_journal_data;
             PropertyType          m_property_type;
             int                   m_row_start; // старт порядкового номера строк в таблице
+            set_property_t        m_set_property; // для хранения привязок журнала уставок
     };
     // регистрация новых пользовательских типов
     Q_DECLARE_METATYPE(event_t)
     Q_DECLARE_METATYPE(protection_t)
     Q_DECLARE_METATYPE(halfhour_t)
     Q_DECLARE_METATYPE(halfhour_labels_t)
+    Q_DECLARE_METATYPE(set_property_t)
 #endif // CJOURNALWIDGET_H
