@@ -705,6 +705,10 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
         quint16 value;
     } U16;
 
+    QStringList source_str_list = QStringList() << tr("меню") << tr("АРМ (запись по MODBUS)") << tr("БЗУ (установка умолчаний)") << tr("БЗУ (прочее)");
+    QStringList baudrate_list = QStringList() << "300" << "600" << "1200" << "2400" << "4800" << "9600" << "19200" << "38400" << "57600" << "115200";
+    QStringList parity_list = QStringList() << "None" << "Odd" << "Even";
+
     for(int i = 0; i < data.count(); i += 24)
     {
         quint16   id  = static_cast<quint16>((data[i + 1] << 8) | data[i]);
@@ -722,8 +726,6 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
         ui->tableWidgetJournal->item(row, 1)->setTextAlignment(Qt::AlignCenter);
         ui->tableWidgetJournal->item(row, 2)->setTextAlignment(Qt::AlignCenter);
         ui->tableWidgetJournal->item(row, 3)->setTextAlignment(Qt::AlignCenter);
-
-        QStringList source_str_list = QStringList() << tr("меню") << tr("АРМ (запись по MODBUS)") << tr("БЗУ (установка умолчаний)") << tr("БЗУ (прочее)");
 
         quint8 source = (data[i + 7]&0xF0) >> 4;
         quint8 code = (data[i + 7]&0x0F);
@@ -748,7 +750,7 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
             QString strval_next = "";
 
             ui->tableWidgetJournal->setItem(row, 6, new CTableWidgetItem(QString("%1").arg(param.description)));
-            ui->tableWidgetJournal->item(row, 6)->setTextAlignment(Qt::AlignLeft);
+            ui->tableWidgetJournal->item(row, 6)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
             if(param.type.toUpper() == "FLOAT")
             {
@@ -796,6 +798,69 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
                     }
                 }
             }
+            else if(param.type.toUpper() == "MODE")
+            {
+                quint8 i11_prev = data[i + 8]&0x01;
+                quint8 i17_prev = ((data[i + 8]&0x02) >> 1)&0x01;
+                quint8 i11_next = data[i + 12]&0x01;
+                quint8 i17_next = ((data[i + 12]&0x02) >> 1)&0x01;
+
+                if(!i11_prev && !i17_prev) // 0 | 0
+                    strval_prev = "Сигнал";
+                else if(i11_prev && !i17_prev) // 0 | 1
+                {
+                    strval_prev = "Отключение";
+                }
+                else if(!i11_prev && i17_prev) // 1 | 0
+                {
+                    strval_prev = "Откл. с блок.";
+                }
+                else if(i11_prev && i17_prev) // 1 | 1
+                {
+                    strval_prev = "Запрещено!";
+                }
+
+                if(!i11_next && !i17_next) // 0 | 0
+                    strval_next = "Сигнал";
+                else if(i11_next && !i17_next) // 0 | 1
+                {
+                    strval_next = "Отключение";
+                }
+                else if(!i11_next && i17_next) // 1 | 0
+                {
+                    strval_next = "Откл. с блок.";
+                }
+                else if(i11_next && i17_next) // 1 | 1
+                {
+                    strval_next = "Запрещено!";
+                }
+            }
+            else if(param.type.toUpper() == "U8" || param.type.toUpper() == "U16") // настройки
+            {
+                U16.buf[0] = data[i + 8];
+                U16.buf[1] = data[i + 9];
+
+                if(param.item.key.toUpper() == "MODBUS_ISPEED")
+                    strval_prev = baudrate_list[U16.value];
+                else if(param.item.key.toUpper() == "MODBUS_IPARITY")
+                    strval_prev = parity_list[U16.value];
+                else if(param.item.key.toUpper() == "MODBUS_ISTOP")
+                    strval_prev = QLocale::system().toString(U16.value + 1);
+                else
+                    strval_prev = QLocale::system().toString(U16.value);
+
+                U16.buf[0] = data[i + 12];
+                U16.buf[1] = data[i + 13];
+
+                if(param.item.key.toUpper() == "MODBUS_ISPEED")
+                    strval_next = baudrate_list[U16.value];
+                else if(param.item.key.toUpper() == "MODBUS_IPARITY")
+                    strval_next = parity_list[U16.value];
+                else if(param.item.key.toUpper() == "MODBUS_ISTOP")
+                    strval_next = QLocale::system().toString(U16.value + 1);
+                else
+                    strval_next = QLocale::system().toString(U16.value);
+            }
 
             ui->tableWidgetJournal->setItem(row, 7, new CTableWidgetItem(QString("%1").arg(strval_prev)));
             ui->tableWidgetJournal->setItem(row, 8, new CTableWidgetItem(QString("%1").arg(strval_next)));
@@ -803,6 +868,12 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
             ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignCenter);
             ui->tableWidgetJournal->item(row, 8)->setTextAlignment(Qt::AlignCenter);
         }
+
+        U16.buf[0] = data[i + 16];
+        U16.buf[1] = data[i + 17];
+
+        ui->tableWidgetJournal->setItem(row, 9, new CTableWidgetItem(QString("%1").arg(U16.value)));
+        ui->tableWidgetJournal->item(row, 9)->setTextAlignment(Qt::AlignCenter);
     }
 
     emit printFinished();
