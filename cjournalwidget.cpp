@@ -709,6 +709,39 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
     QStringList baudrate_list = QStringList() << "300" << "600" << "1200" << "2400" << "4800" << "9600" << "19200" << "38400" << "57600" << "115200";
     QStringList parity_list = QStringList() << "None" << "Odd" << "Even";
 
+    QVector<QPair<int, QString>> item_umin =
+    {
+        qMakePair(1, tr("Пуск МТЗ3")),
+        qMakePair(0, tr("Пуск Пусковой"))
+    };
+
+    QVector<QPair<int, QString>> item_level =
+    {
+        qMakePair(3, tr("Пуск УРОВ по КЦУ")),
+        qMakePair(2, tr("Отказ цепи отключения")),
+        qMakePair(1, tr("Отказ после защиты")),
+        qMakePair(0, tr("Работа ВАКУУМ"))
+    };
+
+    QVector<QPair<int, QString>> item_apv =
+    {
+        qMakePair(14, tr("Откл МТЗ1")),
+        qMakePair(13, tr("Откл МТЗ2")),
+        qMakePair(12, tr("Откл МТЗ3")),
+        qMakePair(11, tr("Откл МТЗ4")),
+        qMakePair(10, tr("Откл ОЗЗ1")),
+        qMakePair(9, tr("Откл ОЗЗ2")),
+        qMakePair(8, tr("Откл НЗЗ1")),
+        qMakePair(7, tr("Откл НЗЗ2")),
+        qMakePair(6, tr("Откл 3U0")),
+        qMakePair(5, tr("Откл АЧР1")),
+        qMakePair(4, tr("Откл АЧР2")),
+        qMakePair(3, tr("Откл АЧР3")),
+        qMakePair(2, tr("Откл ВНЕШНЯЯ1")),
+        qMakePair(1, tr("Откл ВНЕШНЯЯ2")),
+        qMakePair(0, tr("Откл ВНЕШНЯЯ3"))
+    };
+
     for(int i = 0; i < data.count(); i += 24)
     {
         quint16   id  = static_cast<quint16>((data[i + 1] << 8) | data[i]);
@@ -835,6 +868,41 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
                     strval_next = "Запрещено!";
                 }
             }
+            else if(param.type.toUpper() == "BIND")
+            {
+                QVector<QPair<int, QString>> items;
+
+                if(param.item.key.toUpper().contains("UMIN")) // umin1/2
+                {
+                    items = item_umin;
+                }
+                else if(param.item.key.toUpper().contains("LEVEL")) // level1/2
+                {
+                    items = item_level;
+                }
+                else if(param.item.key.toUpper().contains("APV")) // apv
+                {
+                    items = item_apv;
+                }
+
+                quint16 val_prev = ((data[i + 9] << 8) | data[i + 8]);
+                quint16 val_next = ((data[i + 13] << 8) | data[i + 12]);
+
+                for(int i = 0; i < items.count(); i++)
+                {
+                    bool val_bit_prev = (val_prev & (1 << items[i].first));
+                    bool val_bin_next = (val_next & (1 << items[i].first));
+
+                    strval_prev += QString("%1: %2").arg(items[i].second).arg((val_bit_prev)?"Вкл":"Откл");
+                    strval_next += QString("%1: %2").arg(items[i].second).arg((val_bin_next)?"Вкл":"Откл");
+
+                    if(i < items.count() - 1)
+                    {
+                        strval_prev += "\n";
+                        strval_next += "\n";
+                    }
+                }
+            }
             else if(param.type.toUpper() == "U8" || param.type.toUpper() == "U16") // настройки
             {
                 U16.buf[0] = data[i + 8];
@@ -865,8 +933,16 @@ void CJournalWidget::printSet(const QVector<quint8> &data) const
             ui->tableWidgetJournal->setItem(row, 7, new CTableWidgetItem(QString("%1").arg(strval_prev)));
             ui->tableWidgetJournal->setItem(row, 8, new CTableWidgetItem(QString("%1").arg(strval_next)));
 
-            ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignCenter);
-            ui->tableWidgetJournal->item(row, 8)->setTextAlignment(Qt::AlignCenter);
+            if(param.type.toUpper() != "BIND")
+            {
+                ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignCenter);
+                ui->tableWidgetJournal->item(row, 8)->setTextAlignment(Qt::AlignCenter);
+            }
+            else
+            {
+                ui->tableWidgetJournal->item(row, 7)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+                ui->tableWidgetJournal->item(row, 8)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            }
         }
 
         U16.buf[0] = data[i + 16];
@@ -944,6 +1020,7 @@ void CJournalWidget::clickedItemTable(const QModelIndex& index)
 void CJournalWidget::updateTableJournal() const
 {
     ui->tableWidgetJournal->resizeColumnsToContents();
+    ui->tableWidgetJournal->resizeRowsToContents();
     ui->tableWidgetJournal->horizontalHeader()->setStretchLastSection(true);
     ui->widgetJournalHeader->setTextTableCountMessages(ui->tableWidgetJournal->rowCount());
     ui->tableWidgetJournal->setSortingEnabled(true);

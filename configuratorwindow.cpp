@@ -4071,8 +4071,8 @@ void ConfiguratorWindow::initJournals()
     QStringList isolationJournalHeaders = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Тип измерения") << tr("Ra, кОм") <<
                                                            tr("Rb, кОм") << tr("Rc, кОм");
     QStringList setJournalHeaders       = QStringList() << tr("№") << tr("ID") << tr("Дата") << tr("Время") << tr("Источник") << tr("Код доступа") <<
-                                                           tr("Параметр") << tr("Контейнер пред знач") << tr("Контейнер нового знач") <<
-                                                           tr("Индекс знач");
+                                                           tr("Параметр") << tr("Предыдущее значение") <<
+                                                           tr("Новое значение") << tr("Индекс значения");
 
     ui->widgetJournalCrash->setProperty("NAME", tr("аварий"));
     ui->widgetJournalEvent->setProperty("NAME", tr("событий"));
