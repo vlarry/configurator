@@ -383,6 +383,7 @@
             void protectionMTZ3PropertyStrongInversionRead();
             void protectionMTZ3PropertyExtremalInversionRead();
             void protectionMTZ4Read();
+            void protectionAsymmetricRead();
             void protectionMTZGroupRead();
             void protectionUmax1Read();
             void protectionUmax2Read();
@@ -455,6 +456,7 @@
             void protectionMTZ3PropertyStrongInversionWrite();
             void protectionMTZ3PropertyExtremalInversionWrite();
             void protectionMTZ4Write();
+            void protectionAsymmetricWrite();
             void protectionMTZGroupWrite();
             void protectionUmax1Write();
             void protectionUmax2Write();

@@ -536,6 +536,20 @@ void ConfiguratorWindow::protectionMTZ4Write()
     sendSettingControlWriteRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
+ * \brief ConfiguratorWindow::protectionAsymmetricWrite
+ *
+ * Запись настроек Асимметрия
+ */
+void ConfiguratorWindow::protectionAsymmetricWrite()
+{
+    QStringList list = QStringList() << "K52" << "K43" << "K53" << "K46";
+
+    for(QString key: list)
+        sendSettingWriteRequest(key, key, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
+    sendSettingControlWriteRequest("K34", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+}
+/*!
  * \brief ConfiguratorWindow::protectionMTZGroupWrite
  *
  * Запись настроек группы МТЗ
@@ -548,8 +562,9 @@ void ConfiguratorWindow::protectionMTZGroupWrite()
     protectionMTZ4Write();
     protectionStartingWrite();
     protectionIminWrite();
+    protectionAsymmetricWrite();
 
-    QString protection = "MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN";
+    QString protection = "MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN,ASYM";
     sendProtectionWorkModeRequest(protection, FUNCTION_SAVE, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 
     saveDeviceSettings();
@@ -1536,6 +1551,20 @@ void ConfiguratorWindow::protectionMTZ4Read()
     sendSettingControlReadRequest("M16", DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
+ * \brief ConfiguratorWindow::protectionAsymmetricRead
+ *
+ * Чтение защиты Асимметрия
+ */
+void ConfiguratorWindow::protectionAsymmetricRead()
+{
+    QStringList list = QStringList() << "K52" << "K43" << "K53" << "K46";
+
+    for(QString key: list)
+        sendSettingReadRequest(key, key, CModBusDataUnit::ReadHoldingRegisters, 2, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+
+    sendSettingControlReadRequest("K34", DEVICE_MENU_PROTECT_ITEM_CURRENT);
+}
+/*!
  * \brief ConfiguratorWindow::protectionMTZGroupRead
  *
  * Чтение группы защит МТЗ
@@ -1548,8 +1577,9 @@ void ConfiguratorWindow::protectionMTZGroupRead()
     protectionMTZ4Read();
     protectionStartingRead();
     protectionIminRead();
+    protectionAsymmetricRead();
 
-    sendProtectionWorkModeRequest("MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
+    sendProtectionWorkModeRequest("MTZ1,MTZ2,MTZ3,MTZ4,STARTING,IMIN,ASYM", FUNCTION_READ, DEVICE_MENU_PROTECT_ITEM_CURRENT);
 }
 /*!
  * \brief ConfiguratorWindow::protectionUmax1Read
@@ -3539,6 +3569,8 @@ void ConfiguratorWindow::initMenuPanel()
     group = loadMenuGroup(tr("Пусковая"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
     group = loadMenuGroup(tr("Imin"));
+    ui->tableWidgetProtectionGroupMTZ->addGroup(group);
+    group = loadMenuGroup(tr("Асимметрия"));
     ui->tableWidgetProtectionGroupMTZ->addGroup(group);
 
     connect(ui->tableWidgetProtectionGroupMTZ, &CDeviceMenuTableWidget::itemEdit, this, &ConfiguratorWindow::setChanged);
