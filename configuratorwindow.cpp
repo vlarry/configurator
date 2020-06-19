@@ -4688,6 +4688,12 @@ void ConfiguratorWindow::setChanged()
     if(!m_is_set_change)
         m_is_set_change = true;
 }
+//------------------------------------
+void ConfiguratorWindow::helpProgram()
+{
+    QProcess *process = new QProcess(this);
+    process->start("hh.exe Help.chm");
+}
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
 {
@@ -7827,6 +7833,7 @@ void ConfiguratorWindow::blockInterface()
     ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+    ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
     ui->pbtnMenuSaveProject->setDisabled(true);
     ui->pbtnMenuSaveAsProject->setDisabled(true);
     ui->dockWidgetMenuDevice->hide();
@@ -10832,6 +10839,7 @@ void ConfiguratorWindow::initApplication()
 
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
         ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+        ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
 
         ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
         ui->pushButtonJournalClear->setVisible(false); // скрытие кнопки очистки журналов
@@ -14260,4 +14268,6 @@ void ConfiguratorWindow::initConnect()
     connect(m_modbus, &CModBus::rawData, m_terminal_modbus, &CTerminal::appendData);
     connect(m_terminal_modbus, &CTerminal::sendDeviceCommand, this, &ConfiguratorWindow::sendDeviceCommand);
     connect(ui->pushButtonCalibrationRoll, &QPushButton::clicked, this, &ConfiguratorWindow::calibrationRoll);
+
+    connect(ui->pbtnMenuHelpProgram, &QPushButton::clicked, this, &ConfiguratorWindow::helpProgram);
 }

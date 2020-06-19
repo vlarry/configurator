@@ -90,7 +90,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>6</number>
       </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
@@ -1627,7 +1627,7 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_100">
         <item>
-         <widget class="QPushButton" name="pbtnMenuReference">
+         <widget class="QPushButton" name="pbtnMenuHelpProgram">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -3007,7 +3007,7 @@
   <tabstop>tablewgtRelayPurpose</tabstop>
   <tabstop>pbtnClearKeyboardProtectionCtrl</tabstop>
   <tabstop>tablewgtProtectionCtrl</tabstop>
-  <tabstop>pbtnMenuReference</tabstop>
+  <tabstop>pbtnMenuHelpProgram</tabstop>
   <tabstop>pbtnVersionSoftware</tabstop>
   <tabstop>tabwgtMenu</tabstop>
  </tabstops>

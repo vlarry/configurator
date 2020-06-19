@@ -77,7 +77,7 @@
     #include "ccheckboxinternalvariable.h"
     #include "calibrationcontroller.h"
     //--------------------
-//    #define CLIENT_RELEASE
+    #define CLIENT_RELEASE
     //-----------------------------------------------------
     const QString ORGANIZATION_NAME   = QObject::tr("РПА");
     const QString ORGANIZATION_DOMAIN = QObject::tr("http://www.rpa.ua/");
@@ -629,6 +629,7 @@
             void bruResistanceStateVariableSend(CModBusDataUnit &unit);
             void containerVisibleState(); // проверка видимости контенеров (при загрузке проекта - для подсветки кнопок управления их видимостью)
             void setChanged(); // установка флага изменения настроек, которые записываются в файл проекта
+            void helpProgram(); // вызов справки программы
 
         protected:
             void keyPressEvent(QKeyEvent* event);
