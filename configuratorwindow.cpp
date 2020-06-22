@@ -7862,6 +7862,7 @@ void ConfiguratorWindow::unblockInterface()
     ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
     ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
     ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
+    ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
     ui->pbtnMenuSaveProject->setEnabled(true);
     ui->pbtnMenuSaveAsProject->setEnabled(true);
     ui->dockWidgetMenuDevice->show();
