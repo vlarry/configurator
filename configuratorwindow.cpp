@@ -4692,7 +4692,7 @@ void ConfiguratorWindow::setChanged()
 void ConfiguratorWindow::helpProgram()
 {
     QProcess *process = new QProcess(this);
-    process->start("hh.exe Help.chm");
+    process->start("hh.exe Помощь.chm");
 }
 //----------------------------------------
 void ConfiguratorWindow::connectSystemDb()
@@ -9125,20 +9125,25 @@ void ConfiguratorWindow::clearJournal()
     if(!journal)
         return;
 
-
     QString journal_type = journal->widget()->property("TYPE").toString();
     QString journal_name = (journal_type == "CRASH")?tr("Аварий"):(journal_type == "EVENT")?tr("Событий"):(journal_type == "HALFHOUR")?tr("Получасовок"):
                            (journal_type == "SET")?tr("Уставок"):tr("Неизвестный");
 
-    journal->widget()->journalClear();
-    journal->widget()->headerClear();
-    journal->filter().reset();
+    int res = QMessageBox::question(this, tr("Очистка журнала"), tr("Вы хотите очистить журнал \"%1\"").arg(journal_name),
+                                    QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
 
-    QString text = tr("Очистка таблицы журнала %1").arg(journal_name);
-    m_status_bar->setStatusMessage(text, 2000);
-    outApplicationEvent(text);
+    if(res == QMessageBox::StandardButton::Yes)
+    {
+        journal->widget()->journalClear();
+        journal->widget()->headerClear();
+        journal->filter().reset();
 
-    readJournalCount(journal);
+        QString text = tr("Очистка таблицы журнала %1").arg(journal_name);
+        m_status_bar->setStatusMessage(text, 2000);
+        outApplicationEvent(text);
+
+        readJournalCount(journal);
+    }
 }
 //-----------------------------------------------------------
 void ConfiguratorWindow::startExportToPDF(JournalPtr journal)
