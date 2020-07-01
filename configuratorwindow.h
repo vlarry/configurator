@@ -251,7 +251,7 @@
 //                TAB_SCREEN_INDEX,
                 TAB_SET_INDEX,
                 TAB_READ_WRITE_INDEX,
-                TAB_FILTER_INDEX,
+//                TAB_FILTER_INDEX,
                 TAB_HELP_INDEX
             };
             /*!

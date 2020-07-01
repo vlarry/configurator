@@ -48,7 +48,7 @@ ConfiguratorWindow::ConfiguratorWindow(QWidget* parent):
     setWindowFlag(Qt::FramelessWindowHint);
 
     // удаление вкладки Экран (также закоментирован индекс вкладки в хедере)
-    ui->tabwgtMenu->removeTab(3); // индекс вкладки "Экран" - 3
+//    ui->tabwgtMenu->removeTab(3); // индекс вкладки "Экран" - 3
 }
 //---------------------------------------
 ConfiguratorWindow::~ConfiguratorWindow()
@@ -3018,6 +3018,8 @@ void ConfiguratorWindow::itemClicked(QTreeWidgetItem* item, int)
         widgetStackIndexChanged(menu_item);
         ui->stwgtMain->setCurrentIndex(menu_item);
     }
+
+    ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
 }
 //-------------------------------------
 void ConfiguratorWindow::readSettings()
@@ -7832,7 +7834,7 @@ void ConfiguratorWindow::blockInterface()
 //    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
-    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+//    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
     ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
     ui->pbtnMenuSaveProject->setDisabled(true);
     ui->pbtnMenuSaveAsProject->setDisabled(true);
@@ -7860,7 +7862,7 @@ void ConfiguratorWindow::unblockInterface()
 //    ui->tabwgtMenu->setTabEnabled(TAB_SCREEN_INDEX, true);
     ui->tabwgtMenu->setTabEnabled(TAB_SET_INDEX, true);
     ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
-    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
+//    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
     ui->tabwgtMenu->setCurrentIndex(TAB_SET_INDEX);
     ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
     ui->pbtnMenuSaveProject->setEnabled(true);
@@ -10844,7 +10846,7 @@ void ConfiguratorWindow::initApplication()
         m_status_bar->connectStateChanged(false);
 
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
-        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+//        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
         ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
 
         ui->pushButtonJournalRead->setVisible(false);  // скрытие кнопки чтения журналов
@@ -11476,7 +11478,7 @@ void ConfiguratorWindow::importPurposeFromJSON()
 void ConfiguratorWindow::widgetStackIndexChanged(int)
 {
     ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, false);
-    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
+//    ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, false);
 
     ui->pushButtonJournalRead->setVisible(false);
     ui->pushButtonJournalClear->setVisible(false);
@@ -11528,7 +11530,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
             default: break;
         }
 
-        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
+//        ui->tabwgtMenu->setTabEnabled(TAB_FILTER_INDEX, true);
 
         ui->pushButtonJournalRead->setVisible(true);
         ui->pushButtonJournalClear->setVisible(true);
@@ -11583,6 +11585,7 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
                 index != DEVICE_MENU_ITEM_NONE))
     {
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
+        ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
     }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IN_ANALOG)
@@ -11590,6 +11593,8 @@ void ConfiguratorWindow::widgetStackIndexChanged(int)
         ui->tabwgtMenu->setTabEnabled(TAB_READ_WRITE_INDEX, true);
         ui->tabwgtMenu->setCurrentIndex(TAB_READ_WRITE_INDEX);
     }
+
+    ui->tabwgtMenu->setTabEnabled(TAB_HELP_INDEX, true);
 }
 //-------------------------------------------------------------
 void ConfiguratorWindow::setJournalShiftPtr(JournalPtr journal)
@@ -14221,7 +14226,7 @@ void ConfiguratorWindow::initConnect()
 
     connect(m_tim_debug_info, &QTimer::timeout, this, &ConfiguratorWindow::timeoutDebugInfo);
     connect(m_journal_timer, &QTimer::timeout, this, &ConfiguratorWindow::timeoutJournalRead);
-    connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
+//    connect(ui->checkBoxTestStyle, &QCheckBox::clicked, this, &ConfiguratorWindow::testStyle);
     connect(m_serialPortSettings_window, &CSerialPortSetting::updateSettings, this, &ConfiguratorWindow::updateSerialPortSettings);
     connect(ui->widgetMenuBar, &CMenuBar::closeWindow, this, &ConfiguratorWindow::applicationCloseProcess);
     connect(ui->widgetMenuBar, &CMenuBar::expandedWindow, this, &ConfiguratorWindow::expandedWindow);
