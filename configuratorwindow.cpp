@@ -2423,12 +2423,18 @@ void ConfiguratorWindow::processExport()
     DeviceMenuItemType index = menuIndex();
 
     if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_SET)
+    {
         exportJournalToDb();
+    }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY)
     {
         exportPurposeToJSON();
+    }
+    else if(index >= DEVICE_MENU_PROTECT_ITEM_CURRENT && index <= DEVICE_MENU_ITEM_AUTOMATION_APV)
+    {
+        exportProtectionAutomaticToDB();
     }
     else
     {
@@ -2441,12 +2447,18 @@ void ConfiguratorWindow::processImport()
     DeviceMenuItemType index = menuIndex();
 
     if(index >= DEVICE_MENU_ITEM_JOURNALS_CRASHES && index <= DEVICE_MENU_ITEM_JOURNALS_SET)
+    {
         importJournalToTable();
+    }
     else if(index == DEVICE_MENU_ITEM_SETTINGS_ITEM_WELLCOME_SCREEN || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_LEDS ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV01_RELAY ||
             index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_INPUTS || index == DEVICE_MENU_ITEM_SETTINGS_ITEM_IO_MDVV02_RELAY)
     {
         importPurposeFromJSON();
+    }
+    else if(index >= DEVICE_MENU_PROTECT_ITEM_CURRENT && index <= DEVICE_MENU_ITEM_AUTOMATION_APV)
+    {
+        importProtectionAutomaticFromDB();
     }
     else
     {
