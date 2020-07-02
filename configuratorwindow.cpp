@@ -5449,7 +5449,7 @@ void ConfiguratorWindow::displayPurposeDIResponse(const QVector<quint16>& input_
         return;
     }
 
-    QVector<QString> var_list = loadVaribleByType("DI");
+    QVector<QString> var_list = loadVaribleByType("DI01");
 
     if(var_list.isEmpty())
         return;
@@ -13963,6 +13963,8 @@ QVector<QString> ConfiguratorWindow::loadVaribleByType(const QString& type)
 
             if(!var_list.contains(var_key))
                 var_list << var_key;
+            else
+                qWarning() << tr("Переменная %1 уже содержится в списке!").arg(var_key);
         }
     }
 
