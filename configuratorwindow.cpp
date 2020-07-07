@@ -4895,7 +4895,7 @@ void ConfiguratorWindow::initWindows()
     m_variableWidget->init(m_system_db);
     m_variableWidget->setProperty("TYPE", "VARIABLE");
     m_variableWidget->setObjectName("panelVariable");
-    m_containerWidgetVariable = new CContainerWidget(tr("Панель измерений"), m_variableWidget,
+    m_containerWidgetVariable = new CContainerWidget(tr("Измеряемые величины"), m_variableWidget,
                                                      CContainerWidget::AnchorType::AnchorDockWidget, this);
     m_containerWidgetVariable->setSuperParent(this);
     m_containerWidgetVariable->setHeaderBackground(QColor(190, 190, 190));
