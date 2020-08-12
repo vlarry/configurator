@@ -3311,6 +3311,10 @@ void ConfiguratorWindow::writeSetEditItem()
     QString workmode_temperature = "TEMP1,TEMP2"; // по температуре
     QString workmode_reserve = "LEVEL1,LEVEL2"; // резервные
 
+    QString apv_start_signal = "V04,V07,V10,V13,V19,N64,V22,N67,V44,V62,V65,V68,V81,V86,V90";
+    QString umin_block_signal = "V09,V15";
+    QString level_start_signal = "I50,I15,I66,N55";
+
     for(int i = 0; i < table->rowCount(); i++)
     {
         QWidget* wgt = table->cellWidget(i, 1);
@@ -3332,7 +3336,7 @@ void ConfiguratorWindow::writeSetEditItem()
 
                     if(combobox && combobox->isEdit())
                     {
-                        key = combobox->property("ITEM_KEY").toString();
+                        key = combobox->property("ITEM_KEY").toString().split("_")[0];
 
                         QString workmode_list;
 
@@ -3352,10 +3356,29 @@ void ConfiguratorWindow::writeSetEditItem()
                         else if(workmode_reserve.contains(key))
                             workmode_list = workmode_reserve;
 
-                        if(!workmode_list.isEmpty()) // если ключ относится к режимам работы защит
+                        if(!workmode_list.isEmpty())
                             sendProtectionWorkModeRequest(workmode_list, FUNCTION_SAVE, group); // записываем режимы работ защит
-                        else // иначе читаем уставку "Управление"
-                            sendSettingControlWriteRequest(key, group);
+                        else
+                        {
+                            if(apv_start_signal.contains(key)) // если тип привязки "ПРИВЯЗКА", то записываем в матрицу
+                            {
+                                sendSettingReadRequestVariableState("I69", apv_start_signal, "_1", DEVICE_MENU_ITEM_AUTOMATION_APV, true);
+                            }
+                            else if(umin_block_signal.contains(key))
+                            {
+                                sendSettingReadRequestVariableState("N98", umin_block_signal, "_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
+                                sendSettingReadRequestVariableState("N99", umin_block_signal, "_1_1", DEVICE_MENU_PROTECT_ITEM_POWER, true);
+                            }
+                            else if(level_start_signal.contains(key))
+                            {
+                                sendSettingReadRequestVariableState("I67", level_start_signal, "_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+                                sendSettingReadRequestVariableState("I68", level_start_signal, "_1_1", DEVICE_MENU_PROTECT_ITEM_RESERVE, true);
+                            }
+                            else
+                            {
+                                sendSettingControlWriteRequest(key, group);
+                            }
+                        }
 
                         combobox->resetIsEdit();
                         isEdit = true;
@@ -6231,6 +6254,7 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
         item.type     = query.value("data_type").toString();
         item.row      = query.value("row").toInt();
         item.name     = query.value("description").toString();
+        item.bind     = query.value("valbind").toString();
 
         if(item.type.toUpper() == "LIST") // если тип - "СПИСОК", то читаем список подпунктов
         {
@@ -6244,6 +6268,7 @@ CDeviceMenuTableWidget::group_t ConfiguratorWindow::loadMenuGroup(const QString&
                {
                    CDeviceMenuTableWidget::item_t subitem;
                    subitem.name = query_list.value("name").toString();
+                   subitem.bind = query_list.value("valbind").toString();
                    subitemlist << subitem;
                }
 

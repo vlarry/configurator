@@ -3,3 +3,9 @@ MINOR: 0.0
 BUILD: 20200612
 <DESCRIPTION>
 </DESCRIPTION>
+MAJOR: 1
+MINOR: 0.1
+BUILD: 20200812
+<DESCRIPTION>
+- Исправление записи переменных по кнопке "Запись только измененных настроек".
+</DESCRIPTION>

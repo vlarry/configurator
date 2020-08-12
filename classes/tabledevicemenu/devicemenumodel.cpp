@@ -302,6 +302,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         CMenuComboBox* cb = new CMenuComboBox(wgt);
 
         cb->setObjectName(QString("comboBox%1%2").arg(item.key).arg(index_str));
+        cb->setProperty("CELLBIND", item.bind);
 
         QStringList subitemlist;
 
@@ -373,6 +374,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
     if(widget)
     {
         widget->setProperty("ITEM_KEY", item.key);
+        widget->setProperty("CELLBIND", item.bind);
         widget->setFixedWidth(190);
         widget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         wgt_layout->setObjectName(QString("layoutWidget%1%2").arg(item.key).arg(index_str));
