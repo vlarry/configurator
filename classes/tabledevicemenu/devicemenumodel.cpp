@@ -328,6 +328,7 @@ void CDeviceMenuTableWidget::insertItem(int row, const CDeviceMenuTableWidget::i
         CLineEdit* le = new CLineEdit(wgt);
         le->setObjectName(QString("lineEdit%1%2").arg(item.key).arg(index_str));
         le->setAlignment(Qt::AlignCenter);
+        le->setProperty("CELLTYPE", item.type.toUpper());
 
         float min         = item.unit.min;
         float max         = item.unit.max;

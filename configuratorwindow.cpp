@@ -3368,8 +3368,16 @@ void ConfiguratorWindow::writeSetEditItem()
                     if(lineedit && lineedit->isEdit())
                     {
                         key = lineedit->property("ITEM_KEY").toString();
+                        QString celltype = lineedit->property("CELLTYPE").toString();
+                        int size = 2;
+
+                        if(!celltype.isEmpty() && celltype == "INT")
+                        {
+                            size = 1;
+                        }
+
                         isEdit = true;
-                        sendSettingWriteRequest(key, key, group);
+                        sendSettingWriteRequest(key, key, group, size);
                         lineedit->resetIsEdit();
                     }
                 }
